@@ -12,8 +12,8 @@ export class JudicialRefDataService {
       { personal_code: personalCodes });
   }
 
-  public searchJudicialUserByIdamID(personalCodes: string[]): Observable<JudicialUserModel[]> {
+  public searchJudicialUserByIdamID(idamIds: string[]): Observable<JudicialUserModel[]> {
     return this.http.post<JudicialUserModel[]>('api/prd/judicial/searchJudicialUserByIdamId',
-      { sidam_ids: personalCodes });
+      { sidam_ids: idamIds });
   }
 }

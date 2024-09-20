@@ -17,7 +17,7 @@ import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy {
   public caseId: string;
-  public caseRoles: CaseRole[];
+  public usersWithAccess: CaseRole[];
   public caseWorkers: Caseworker[];
   public idamIds: string[];
   public restrictedCases: RestrictedCase[];
@@ -37,8 +37,8 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
     const loadingToken = this.loadingService.register();
     this.caseId = this.route.snapshot.params.cid;
     this.allocateServiceSubscription = this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
-      switchMap((caseRoles) => {
-        this.caseRoles = caseRoles;
+      switchMap((usersWithAccess) => {
+        this.usersWithAccess = usersWithAccess;
         return of(this.getUniqueIdamIds());
       }), take(1),
       switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
@@ -61,7 +61,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
   }
 
   private getUniqueIdamIds(): string[] {
-    const idamIds = this.caseRoles.map((role) => role.actorId);
+    const idamIds = this.usersWithAccess.map((user) => user.actorId);
     this.idamIds = idamIds.filter((value, index) => idamIds.indexOf(value) === index);
     return this.idamIds;
   }
@@ -70,9 +70,9 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
     const restrictedCases: RestrictedCase[] = [];
     this.idamIds.forEach(async (id) => {
       const user = caseworkers.find((caseworker) => caseworker.idamId === id);
-      const caseRole = this.caseRoles.find((role) => role.actorId === id);
+      const userWithAccess = this.usersWithAccess.find((user) => user.actorId === id);
       if (!user) {
-        if (caseRole.roleCategory === 'JUDICIAL') {
+        if (userWithAccess.roleCategory === 'JUDICIAL') {
           await this.judicialRefDataService.searchJudicialUserByIdamID([id])
             .pipe(
               tap((judge) => {
@@ -80,7 +80,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
                   restrictedCases.push({
                     user: judge[0].fullName,
                     email: judge[0].emailId,
-                    role: caseRole.roleName
+                    role: userWithAccess.roleName
                   });
                 }
               }),
@@ -92,11 +92,11 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
             .subscribe();
         }
       }
-      if (user && caseRole) {
+      if (user && userWithAccess) {
         restrictedCases.push({
           user: `${user.firstName} ${user.lastName}`,
           email: user.email,
-          role: caseRole.roleName
+          role: userWithAccess.roleName
         });
       }
     });

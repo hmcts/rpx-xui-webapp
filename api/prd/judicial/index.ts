@@ -41,9 +41,7 @@ export async function searchJudicialUserByIdamId(req: EnhancedRequest, res: Resp
   const markupPath: string = `${prdUrl}/refdata/judicial/users`;
   try {
     // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-    req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-      ? HEADER_ACCEPT_V2
-      : HEADER_ACCEPT_V1;
+    req.headers.accept = HEADER_ACCEPT_V2;
     const headers = setHeaders(req);
     const { status, data }: { status: number, data: RawJudicialUserModel[] } = await http.post(markupPath, reqBody, { headers });
     const result = data.map(transformToJudicialUserModel);

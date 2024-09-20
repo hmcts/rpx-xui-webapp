@@ -21,7 +21,7 @@
     </div>
 
     <!-- Query management workflow pages -->
-    <ng-container *ngIf="!showSummary && !showConfirmation" [formGroup]="formGroup">
+    <ng-container *ngIf="!showSummary && !showConfirmation && !eventDataError" [formGroup]="formGroup">
       <ng-container [ngSwitch]="queryCreateContext">
         <div class="query-form-container">
           <ccd-qualifying-question-options *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
@@ -67,6 +67,7 @@
     <!-- Check your answers page -->
     <ccd-query-check-your-answers
       *ngIf="showSummary"
+      [evenData]="eventData"
       [queryItem]="queryItem"
       [formGroup]="formGroup"
       [queryCreateContext]="queryCreateContext"

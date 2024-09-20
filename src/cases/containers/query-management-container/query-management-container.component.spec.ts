@@ -4,8 +4,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
+  CaseField,
   CaseNotifier,
+  CasesService,
   CaseView,
+  FieldType,
   FormDocument,
   QualifyingQuestionsErrorMessage,
   QueryCreateContext,
@@ -14,7 +17,7 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { QueryManagementContainerComponent } from './query-management-container.component';
 
@@ -56,9 +59,75 @@ describe('QueryManagementContainerComponent', () => {
     triggers: [],
     events: []
   };
-  const casesService = jasmine.createSpyObj('casesService', ['caseView, cachedCaseView']);
+
+  const eventMockData = {
+    id: 'queryManagementRaiseQuery',
+    name: 'queryManagementRaiseQuery',
+    description: 'Respond to a query',
+    event_token: 'token0011223344',
+
+    case_fields: [
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'ComponentLauncher',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'ComponentLauncher'
+        } as FieldType,
+        id: 'QueryManagement1',
+        label: 'Query management component'
+      } as CaseField,
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'CaseQueriesCollection',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'Complex'
+        } as FieldType,
+        id: 'qmCaseQueriesCollection',
+        label: 'Query management case queries collection',
+        value: {
+          caseMessages: [{
+            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+            value: {
+              attachments: [],
+              body: 'testing by olu',
+              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+              createdOn: new Date('2024-08-27T15:44:50.700Z'),
+              hearingDate: '2023-01-10',
+              id: 'id-007',
+              isHearingRelated: 'Yes',
+              name: 'Piran Sam',
+              parentId: 'ca',
+              subject: 'Review attached document'
+            }
+          }],
+          partyName: '',
+          roleOnCase: ''
+        }
+      } as CaseField
+    ],
+    wizard_pages: [],
+    hasFields(): boolean {
+      return true;
+    },
+    hasPages(): boolean {
+      return false;
+    }
+  };
+  const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
   const mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+  casesService.getEventTrigger.and.returnValue(of(eventMockData));
+  casesService.createEvent.and.returnValue(of({ status: 200 }));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -88,11 +157,13 @@ describe('QueryManagementContainerComponent', () => {
                 case: CASE_VIEW
               },
               params: {
-                cid: '123'
+                cid: '123',
+                dataid: 'id-007'
               }
             }
           }
         },
+        { provide: CasesService, useValue: casesService },
         { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: locationMock },
         { provide: CaseNotifier, useValue: mockCaseNotifier },
@@ -179,7 +250,37 @@ describe('QueryManagementContainerComponent', () => {
     });
 
     it('should set the query item', () => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: '4'
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      expect(component.queryCreateContext).toEqual(QueryCreateContext.FOLLOWUP);
       expect(component.queryItem).toBeDefined();
+    });
+
+    it('should set follow question up to the right object', () => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: '4',
+          dataid: 'id-007'
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      expect(component.queryItem.id).toEqual('id-007');
+      expect(component.queryItem.subject).toEqual('Review attached document');
+      expect(component.queryItem.name).toEqual('Piran Sam');
+      expect(component.queryItem.body).toEqual('testing by olu');
+      expect(component.queryItem.attachments).toEqual([]);
+      expect(component.queryItem.isHearingRelated).toEqual('Yes');
+      expect(component.queryItem.hearingDate).toEqual('2023-01-10');
+      expect(component.queryItem.createdOn).toEqual(new Date('2024-08-27T15:44:50.700Z'));
+      expect(component.queryItem.createdBy).toEqual('120b3665-0b8a-4e80-ace0-01d8d63c1005');
     });
 
     describe('raiseAQuery', () => {
@@ -540,4 +641,26 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
   });
+
+  describe('getEventTrigger', () => {
+    it('should handle error correctly when getEventTrigger fails', () => {
+      // Mock the service to return an error
+      const errorMock = new Error('Network error');
+      casesService.getEventTrigger.and.returnValue(throwError(() => errorMock));
+
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+
+      component['getEventTrigger']();
+
+      expect(component.eventDataError).toBe(true);
+
+      // Verify that an error message is added to errorMessages
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: 'Error',
+        description: 'Something unexpected happened. please try again later.'
+      });
+    });
+  });
 });
+

@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const headlessMode = process.env.HEAD !== 'true';
+export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
   testDir: "./playwright_tests/E2E",

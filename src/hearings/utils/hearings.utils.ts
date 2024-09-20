@@ -182,11 +182,16 @@ export class HearingsUtils {
           return true;
         }
       }
+    } else if ((hearingWindowToCompare?.dateRangeStart || hearingWindow?.dateRangeEnd) && !(hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd)){
+      return true;
     }
 
     if (hearingWindow?.firstDateTimeMustBe) {
       return HearingsUtils.hasDateChanged(hearingWindowToCompare?.firstDateTimeMustBe, hearingWindow?.firstDateTimeMustBe);
+    } else if (hearingWindowToCompare?.firstDateTimeMustBe && !hearingWindow?.firstDateTimeMustBe){
+      return true;
     }
+
     return false;
   }
 

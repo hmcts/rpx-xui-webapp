@@ -586,21 +586,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
-    const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
 
     if (this.hearingRequestMainModel.partyDetails) {
       if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
-        return true;
-      }
-    }
-    if ((hearingWindowHMC?.firstDateTimeMustBe) ||
-      (hearingWindowHMC?.dateRangeStart || hearingWindowHMC?.dateRangeEnd)) {
-      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow)){
-        return true;
-      }
-    }
-    if (this.hearingRequestMainModel.hearingDetails.hearingPriorityType){
-      if (HearingsUtils.hasHearingPriorityChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType)){
         return true;
       }
     }

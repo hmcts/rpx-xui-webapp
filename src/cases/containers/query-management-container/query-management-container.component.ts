@@ -12,7 +12,8 @@ import {
   QueryListItem,
   CasesService,
   CaseEventTrigger,
-  CaseField
+  CaseField,
+  EventTriggerService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
@@ -57,6 +58,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
+  public eventTrigger$: Observable<CaseEventTrigger>;
 
   private caseDetails: CaseView;
 
@@ -68,7 +70,8 @@ export class QueryManagementContainerComponent implements OnInit {
     private readonly location: Location,
     private readonly caseNotifier: CaseNotifier,
     private readonly featureToggleService: FeatureToggleService,
-    private readonly casesService: CasesService
+    private readonly casesService: CasesService,
+    private readonly eventTriggerService: EventTriggerService
   ) {}
 
   public ngOnInit(): void {
@@ -93,9 +96,6 @@ export class QueryManagementContainerComponent implements OnInit {
     } else {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
-      if (this.queryItemId && this.queryItemId === QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION){
-        this.getEventTrigger();
-      }
     }
   }
 
@@ -115,6 +115,7 @@ export class QueryManagementContainerComponent implements OnInit {
       // Submit triggered from the markdown page, navigate to the URL provided in the config
       this.router.navigateByUrl(this.qualifyingQuestion.url);
     } else {
+      this.getEventTrigger();
       this.processFormSubmission();
     }
   }
@@ -302,21 +303,20 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   private getEventTrigger():void {
-    this.eventData = null; // Initial state before data is fetched
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
-      let eventTrigger$;
 
       if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
-        eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
       } else {
-        eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
       }
 
-      eventTrigger$.subscribe({
+      this.eventTrigger$.subscribe({
         next: (eventTrigger) => {
           this.eventData = eventTrigger;
-          console.log('this.eventData', this.eventData);
+          this.eventTriggerService.announceEventTrigger(eventTrigger);
+
           if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
             this.processFilteredMessages();
           }
@@ -379,7 +379,7 @@ export class QueryManagementContainerComponent implements OnInit {
       if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId || this.isNonEmptyObject(value)) {
         return value;
       }
-      return '';
+      return {};
     }
   }
 

@@ -186,7 +186,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true,
+        hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -268,7 +268,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true,
+        hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false

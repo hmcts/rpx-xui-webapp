@@ -62,6 +62,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   private caseDetails: CaseView;
 
+  public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
 
   constructor(
@@ -96,6 +97,10 @@ export class QueryManagementContainerComponent implements OnInit {
     } else {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
+
+      if (this.queryItemId && this.queryItemId === QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
+        this.getEventTrigger();
+      }
     }
   }
 
@@ -115,7 +120,6 @@ export class QueryManagementContainerComponent implements OnInit {
       // Submit triggered from the markdown page, navigate to the URL provided in the config
       this.router.navigateByUrl(this.qualifyingQuestion.url);
     } else {
-      this.getEventTrigger();
       this.processFormSubmission();
     }
   }
@@ -136,6 +140,7 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   private processFormSubmission(): void {
+    this.eventData = this.eventTrigger;
     this.showSummary = true;
     this.submitted = true;
     this.validateForm();
@@ -314,8 +319,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
       this.eventTrigger$.subscribe({
         next: (eventTrigger) => {
-          this.eventData = eventTrigger;
-          this.eventTriggerService.announceEventTrigger(eventTrigger);
+          this.eventTrigger = eventTrigger;
 
           if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
             this.processFilteredMessages();
@@ -338,8 +342,8 @@ export class QueryManagementContainerComponent implements OnInit {
     const messageId = this.activatedRoute.snapshot.params.dataid;
     let caseQueriesCollections = [];
 
-    if (this.eventData?.case_fields?.length) {
-      caseQueriesCollections = this.eventData.case_fields.reduce((acc, caseField) => {
+    if (this.eventTrigger?.case_fields?.length) {
+      caseQueriesCollections = this.eventTrigger.case_fields.reduce((acc, caseField) => {
         const extractedCaseQueriesFromCaseField = this.extractCaseQueriesFromCaseField(caseField);
 
         if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
@@ -376,10 +380,10 @@ export class QueryManagementContainerComponent implements OnInit {
 
     // Handle Complex type fields
     if (field_type.type === QueryManagementContainerComponent.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId || this.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && this.isNonEmptyObject(value)) {
         return value;
       }
-      return {};
+      return null;
     }
   }
 

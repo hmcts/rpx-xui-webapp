@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService, SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 @Component({
   selector: 'exui-case-details-home',
   templateUrl: './case-details-home.component.html'
@@ -12,7 +13,8 @@ export class CaseDetailsHomeComponent implements OnInit {
     private readonly alertService: AlertService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly loggerService: LoggerService,
   ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation) {
@@ -34,6 +36,8 @@ export class CaseDetailsHomeComponent implements OnInit {
           jurisdiction: data.case.case_type.jurisdiction.id
         };
         this.sessionStorageService.setItem('caseInfo', JSON.stringify(caseInfo));
+      } else {
+        this.loggerService.log('CaseDetailsHomeComponent: No data available to add caseInfo details in session storage');
       }
     });
   }

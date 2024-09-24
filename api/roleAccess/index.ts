@@ -96,7 +96,9 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
         }
       });
     }
-    return res.status(response.status).send(finalRoles);
+    // filter out any users with role professional
+    const filteredRoles = finalRoles.filter((role) => role.roleCategory !== 'PROFESSIONAL');
+    return res.status(response.status).send(filteredRoles);
   } catch (error) {
     next(error);
   }

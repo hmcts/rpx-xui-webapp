@@ -292,7 +292,7 @@ export class CaseFlagsUtils {
     partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): AmendmentLabelStatus {
     // Find the party from service hearing values model
     const partyInSHV = partiesInSHV.find((party) => party.partyID === flags[0].partyId);
-    const isNewParty = !partiesInHMC.map((party) => party.partyID)?.includes(partyInSHV.partyID);
+    const isNewParty = !partiesInHMC.map((party) => party.partyID)?.includes(partyInSHV?.partyID);
     // The party from service hearing values model is not present in the hearing reqquest model then
     // it is a new party and the label against the party should be displayed as ACTION NEEDED
     if (isNewParty) {

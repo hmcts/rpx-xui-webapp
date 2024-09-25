@@ -183,9 +183,9 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
           this.resetPagination(newLocations, newWorkTypes, services);
         }
         this.initialFilterApplied = true;
-        this.selectedLocations = (newLocations).map((l) => l.epimms_id);
-        this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
-        this.selectedServices = services.filter((service) => service !== 'services_all');
+        this.selectedLocations = newLocations?.map((l) => l.epimms_id);
+        this.selectedWorkTypes = newWorkTypes?.filter((workType) => workType !== 'types_of_work_all');
+        this.selectedServices = services?.filter((service) => service !== 'services_all');
         this.doLoad();
       });
   }

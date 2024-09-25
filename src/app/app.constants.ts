@@ -164,7 +164,7 @@ const caseDetailsUrl: string = '/cases/case-details/';
 
 const accessViewUrl: string = '/access-view/';
 
-const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
+const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';

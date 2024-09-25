@@ -31,6 +31,7 @@ class MockConfigService {
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
+
 const mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get', 'getDeploymentEnv']);
 mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
 mockEnvironmentService.get.and.returnValue('someUrl');
@@ -60,6 +61,8 @@ describe('AppConfiguration', () => {
       ]
     });
     mockFeatureToggleService.getValue.and.returnValue(of(true));
+    const iss = TestBed.inject(InitialisationSyncService);
+    iss.initialisationComplete(true);
   });
 
   it('should be created ', inject([AppConfig, Window], (service: AppConfig) => {
@@ -175,5 +178,16 @@ describe('AppConfiguration', () => {
   it('should have called LogService log method', inject([AppConfig, Window], (service: AppConfig) => {
     service.logMessage('hello world');
     expect(mockLoggerService.log).toHaveBeenCalledWith('hello world');
+  }));
+
+  it('should add attributes to an object retaining original attributes', inject([AppConfig], (service: AppConfig) => {
+    const testObj = { foo: 'bar', thud: 1 };
+    const expectedObj = {
+      ...testObj,
+      'wibble': 'wassock'
+    };
+    const result = service.addAttribute(testObj, 'wibble', 'wassock');
+    expect(result).toEqual(expectedObj);
+    expect(typeof result).toEqual(typeof(expectedObj));
   }));
 });

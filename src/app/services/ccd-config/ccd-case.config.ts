@@ -35,59 +35,45 @@ export class AppConfig extends AbstractAppConfig {
     this.initialisationSyncService.waitForInitialisation((init) => {
       console.log(`waitForInitialisation callback called: ${init}`);
       if (init) {
-        this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            document_management_secure_enabled: val
-          }
+        // odd case where LD flag doesn't match the attribute name in the config
+        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false).subscribe({
+          next: (val) => this.config = this.addAttribute(this.config, 'document_management_secure_enabled', val)
         });
-
-        this.featureToggleService.getValue('access-management-mode', true).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            access_management_mode: val
-          }
+        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.accessManagementMode, true).subscribe({
+          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.accessManagementMode, val)
         });
-
-        this.featureToggleService.getValue('wa-service-config',
-          LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv)).subscribe({
+        // Avoid possible race condition where the observable doesn't emit until after the config
+        // has been passed to the toolkit by setting the default value before calling LD
+        const defCfg = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
+        this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.waServiceConfig, defCfg);
+        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, defCfg).subscribe({
           next: (val) => {
             console.log('got value for wa-service-config: ' + JSON.stringify(val));
-            this.config = {
-              ...this.config,
-              wa_service_config: val
-            };
+            this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.waServiceConfig, val);
           }
         });
-
-        this.featureToggleService.getValue('icp-enabled', false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            icp_enabled: val
-          }
+        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.icpEnabled, false).subscribe({
+          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.icpEnabled, val)
         });
-        this.featureToggleService.getValue('icp-jurisdictions', []).subscribe({
-          next: (val: string[]) => this.config = {
-            ...this.config,
-            icp_jurisdictions: val
-          }
+        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.icpJurisdictions, []).subscribe({
+          next: (val: string[]) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.icpJurisdictions, val)
         });
-
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            enable_restricted_case_access: val
-          }
+          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, val)
         });
-
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            enable_case_file_view_version_1_1: val
-          }
+          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, val)
         });
       }
     });
+  }
+
+  // Add a named attribute to an object in a properly typed way
+  public addAttribute<T extends object, K extends string, V>(obj: T, key: K, value: V):T & { [P in K]: V } {
+    return {
+      ...obj,
+      [key]: value
+    } as T & { [P in K]: V };
   }
 
   public load(): Promise<void> {

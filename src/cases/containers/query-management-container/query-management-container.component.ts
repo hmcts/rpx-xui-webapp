@@ -140,6 +140,14 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   private processFormSubmission(): void {
+    // Show error message for follow up, new query submission
+    if (this.eventDataError) {
+      this.getEventTrigger();
+      this.submitted = true;
+      this.validateForm();
+      return;
+    }
+
     this.eventData = this.eventTrigger;
     this.showSummary = true;
     this.submitted = true;
@@ -200,40 +208,32 @@ export class QueryManagementContainerComponent implements OnInit {
     this.errorMessages = [];
 
     if (!this.formGroup.get('subject').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.QUERY_SUBJECT,
-        fieldId: 'subject'
-      });
+      this.addError(RaiseQueryErrorMessage.QUERY_SUBJECT, 'subject');
     }
 
     if (!this.formGroup.get('body').valid) {
-      this.errorMessages.push({
-        title: '',
-        description:
-          this.queryCreateContext === QueryCreateContext.RESPOND ?
-            RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
-        fieldId: 'body'
-      });
+      const raiseQueryErrorMessage = this.queryCreateContext === QueryCreateContext.RESPOND ?
+        RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY;
+      this.addError(raiseQueryErrorMessage, 'body');
     }
 
     if (!this.formGroup.get('isHearingRelated').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
-        fieldId: 'isHearingRelated-yes'
-      });
+      this.addError(RaiseQueryErrorMessage.QUERY_HEARING_RELATED, 'isHearingRelated-yes');
     } else {
       if (this.formGroup.get('isHearingRelated').value === true &&
         this.formGroup.get('hearingDate').value === null) {
-        this.errorMessages.push({
-          title: '',
-          description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
-          fieldId: 'hearingDate-day'
-        });
+        this.addError(RaiseQueryErrorMessage.QUERY_HEARING_DATE, 'hearingDate-day');
       }
     }
     window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+  }
+
+  private addError(message: string, field: string): void {
+    this.errorMessages.push({
+      title: '',
+      description: message,
+      fieldId: field
+    });
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -328,10 +328,8 @@ export class QueryManagementContainerComponent implements OnInit {
         error: (err) => {
           console.error('Error occurred while fetching event data:', err);
           this.eventDataError = true;
-          this.errorMessages.push({
-            title: 'Error',
-            description: 'Something unexpected happened. please try again later.'
-          });
+          this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
       });
     });
@@ -372,6 +370,8 @@ export class QueryManagementContainerComponent implements OnInit {
     } else {
       //If queryItem shouldn't empty, and it is expected to have an id. IF it is empty then it is an error.
       console.error(`No messages found for messageId: ${messageId}`);
+      this.eventDataError = true;
+      this.addError('This case is not configured for query management.', 'caseNotFoundError');
     }
   }
 

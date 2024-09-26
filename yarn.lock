@@ -580,6 +580,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@axe-core/playwright@npm:^4.9.1":
+  version: 4.10.0
+  resolution: "@axe-core/playwright@npm:4.10.0"
+  dependencies:
+    axe-core: ~4.10.0
+  peerDependencies:
+    playwright-core: ">= 1.0.0"
+  checksum: cba9b7f625c8ed510e661d8d014f7e924fb85175b918b818cb808eec848c3e8a2cbbe2960ccf8dd4b9f84a4a4ea33eeeace48de2560a4a5777dd0ee6281d0c81
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.22.13":
   version: 7.22.13
   resolution: "@babel/code-frame@npm:7.22.13"
@@ -3364,12 +3375,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.3-query-management":
-  version: 7.1.3-query-management
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.3-query-management"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.4-query-management":
+  version: 7.1.4-query-management
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.4-query-management"
   dependencies:
     tslib: ^2.3.0
-  checksum: fd68f6db01332f4e2bde8f4b7060835be501bd3f2aeff1648ed4c01e35130f3a41420166c6b9684923482d5349675d6ca2157c7f388348e6fcdd980e2673d957
+  checksum: fce83fb3874b3cd5f8fb7911163f06a3207a77df05af4f81081fd5091e161c36f8d3e289af5c04ecdbc8002b37c1b9312bf4477783925b42ffc286cda76f4c92
   languageName: node
   linkType: hard
 
@@ -8017,6 +8028,24 @@ __metadata:
   version: 3.5.6
   resolution: "axe-core@npm:3.5.6"
   checksum: 000777d2b6bf1f390beb1fb4b8714ed9127797c021c345b032db0c144e07320dbbe8cb0bcb7688b90b79cfbd3cdc1f27a4dc857804e3c61d7e0defb34deeb830
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:~4.10.0":
+  version: 4.10.0
+  resolution: "axe-core@npm:4.10.0"
+  checksum: 7eca827fd8d98d7e4b561df65437be608155c613d8f262ae9e4a6ade02c156c7362dcbc3f71b4b526edce686f7c686280236bcff1d6725e2ef8327def72a8c41
+  languageName: node
+  linkType: hard
+
+"axe-html-reporter@npm:^2.2.3":
+  version: 2.2.11
+  resolution: "axe-html-reporter@npm:2.2.11"
+  dependencies:
+    mustache: ^4.0.1
+  peerDependencies:
+    axe-core: ">=3"
+  checksum: f2743a43a46a24078b7d199f474957a7170e822972cb7aa0bc3cbb0c2765c348e33d8697f147070b3dc944c06d479197cd05347ee46170292beabba118a05e43
   languageName: node
   linkType: hard
 
@@ -18527,6 +18556,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mustache@npm:^4.0.1":
+  version: 4.2.0
+  resolution: "mustache@npm:4.2.0"
+  bin:
+    mustache: bin/mustache
+  checksum: 928fcb63e3aa44a562bfe9b59ba202cccbe40a46da50be6f0dd831b495be1dd7e38ca4657f0ecab2c1a89dc7bccba0885eab7ee7c1b215830da765758c7e0506
+  languageName: node
+  linkType: hard
+
 "mutable-div@npm:^2.0.0":
   version: 2.0.0
   resolution: "mutable-div@npm:2.0.0"
@@ -21977,9 +22015,10 @@ __metadata:
     "@angular/platform-browser-dynamic": ^17.3.6
     "@angular/router": ^17.3.6
     "@angular/ssr": ^17.3.6
+    "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.1.3-query-management
+    "@hmcts/ccd-case-ui-toolkit": 7.1.4-query-management
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8
@@ -22025,6 +22064,7 @@ __metadata:
     accessibility-checker: ^3.1.70
     allure-js-commons: ^2.11.1
     applicationinsights: 1.7.2
+    axe-html-reporter: ^2.2.3
     axios: ^1.6.8
     axios-mock-adapter: ^1.22.0
     base-64: ^0.1.0

@@ -1,5 +1,4 @@
 import { http } from '../lib/http';
-import * as log4jui from '../lib/log4jui';
 import * as sinon from 'sinon';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
@@ -16,6 +15,7 @@ describe('createAccessLogFromRequest', () => {
   let mockRequest: any;
   let createAccessLogStub: sinon.SinonStub<[string, AccessLog], Promise<any>>;
   let mockHttpPost: sinon.SinonStub;
+  let loggerSpy: sinon.SinonSpy;
 
   beforeEach(() => {
     mockRequest = {
@@ -47,7 +47,7 @@ describe('createAccessLogFromRequest', () => {
 
     mockHttpPost = sinon.stub(http, 'post').resolves({ status: 201 });
 
-    sinon.stub(log4jui.getLogger('lauService'), 'error');
+    loggerSpy = sinon.spy(lauService.logger, 'error');
 
     sinon.stub(lauService, 'featureSpecificChallengedAccessEnabled').value(true);
     mockRequest.session = {
@@ -65,6 +65,7 @@ describe('createAccessLogFromRequest', () => {
 
   afterEach(() => {
     mockHttpPost.restore(); // Restore stubs/spies to their original methods
+    loggerSpy.restore();
     lauService.setFeatureSpecificChallengedAccessEnabled(false); // Reset feature flag to its default state
   });
 
@@ -110,8 +111,8 @@ describe('createAccessLogFromRequest', () => {
     mockRequest.body.requestedRoles[0].notes[0].comment = 'invalid-json';
 
     const result = await lauService.logAccessRequest(mockRequest, true);
-
-    expect(result).to.equal(false);
+    sinon.assert.calledOnce(loggerSpy);
+    expect(result).to.deep.equal({ status: 201 });
   });
 
   it('should not create access log if featureSpecificChallengedAccessEnabled is false', async () => {

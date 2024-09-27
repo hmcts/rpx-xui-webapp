@@ -9,7 +9,7 @@ import { EnhancedRequest } from '../lib/models';
 
 export const baseURL = getConfigValue(SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH);
 export let featureSpecificChallengedAccessEnabled = showFeature(FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED);
-const logger = log4jui.getLogger('lauService');
+export const logger = log4jui.getLogger('lauService');
 
 export const ENDPOINTS = {
   CREATE_ACTION_LOG: '/audit/accessRequest'
@@ -112,17 +112,25 @@ export async function logAccessRequest(req: EnhancedRequest, isRequest: boolean)
  */
 async function createAccessLogFromRequest(req: EnhancedRequest) {
   const process = req.body.roleRequest.process;
+  const requestedRole = req.body.requestedRoles[0];
+  let reason = 'N/A';
   try {
-    const detail: detailObject = JSON.parse(req.body.requestedRoles[0].notes[0].comment);
+    const comment = JSON.parse(requestedRole.notes[0].comment);
+    reason = getRequestReason(process, comment);
+  } catch (error) {
+    logger.error(error);
+  }
+
+  try {
     const accessLog: AccessLog = {
       requestType: (process === 'specific-access') ? REQUEST_TYPE.SPECIFIC : REQUEST_TYPE.CHALLENGED,
-      caseRef: req.body.requestedRoles[0].attributes.caseId,
-      userId: req.body.requestedRoles[0].actorId,
+      caseRef: requestedRole?.attributes?.caseId,
+      userId: requestedRole?.actorId,
       action: process === 'specific-access' ? ACTION_TYPE.CREATED : ACTION_TYPE.APPROVED,
-      timestamp: req.body.requestedRoles[0].notes[0].time,
-      reason: getRequestReason(process, detail),
-      requestStartTimestamp: req.body.requestedRoles[0].notes[0].time,
-      requestEndTimestamp: req.body.requestedRoles[0].endTime
+      timestamp: requestedRole?.notes[0]?.time,
+      reason: reason,
+      requestStartTimestamp: requestedRole?.notes[0]?.time,
+      requestEndTimestamp: requestedRole?.endTime
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);
   } catch (error) {
@@ -185,16 +193,16 @@ async function createAccessLogFromDecision(req: EnhancedRequest) {
   const approval = !!req.body.specificAccessStateData;
   const data = approval? req.body.specificAccessStateData : req.body;
 
-  const userInfo = req.session.passport.user.userinfo;
-  const actorId = userInfo.id ? userInfo.id : userInfo.uid;
+  const userInfo = req.session?.passport?.user?.userinfo;
+  const actorId = userInfo?.id ? userInfo.id : userInfo.uid;
   try {
     const accessLog: AccessLog = {
       requestType: REQUEST_TYPE.SPECIFIC,
-      caseRef: data.caseId,
+      caseRef: data?.caseId,
       userId: actorId,
       action: approval ? ACTION_TYPE.APPROVED : ACTION_TYPE.REJECTED,
       timestamp: new Date().toISOString(),
-      reason: data.specificAccessReason,
+      reason: data?.specificAccessReason,
       requestStartTimestamp: req.body.period?.startDate,
       requestEndTimestamp: req.body.period?.endDate
     };

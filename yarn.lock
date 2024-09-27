@@ -3460,16 +3460,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.29":
-  version: 2.0.29
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.29"
+"@hmcts/rpx-xui-common-lib@npm:2.0.29-msg-banner-fix":
+  version: 2.0.29-msg-banner-fix
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.29-msg-banner-fix"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: c6fa9dddbbcf714f92c44a1240ac50445ef5695255a8f66d4724894c7bf2426b834574f34acc8e13e38a5b6b936d7b15edf4bc1083d4fd9314f8e8863281dc4b
+  checksum: 4254be03545d9e21bff8eec650fd580a074fa94fd54f3cff7d937af3c2724757674f48eb14c5b04e7754d4b18181874d07e22b4b301e1e2fc7f6454b4c2e95a4
   languageName: node
   linkType: hard
 
@@ -22014,7 +22014,7 @@ __metadata:
     "@hmcts/media-viewer": 4.0.8
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.29
+    "@hmcts/rpx-xui-common-lib": 2.0.29-msg-banner-fix
     "@hmcts/rpx-xui-node-lib": 2.29.1
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^14.0.0

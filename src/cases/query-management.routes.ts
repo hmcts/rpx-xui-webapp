@@ -17,6 +17,10 @@ export const ROUTES: Routes = [
       {
         path: ':qid',
         component: QueryManagementContainerComponent
+      },
+      {
+        path: ':qid/:dataid',
+        component: QueryManagementContainerComponent
       }
     ]
   }

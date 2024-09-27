@@ -67,6 +67,7 @@
     <!-- Check your answers page -->
     <ccd-query-check-your-answers
       *ngIf="showSummary"
+      [eventData]="eventData"
       [queryItem]="queryItem"
       [formGroup]="formGroup"
       [queryCreateContext]="queryCreateContext"

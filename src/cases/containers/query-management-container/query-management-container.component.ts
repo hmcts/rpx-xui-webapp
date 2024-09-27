@@ -9,13 +9,16 @@ import {
   FormDocument,
   QualifyingQuestionsErrorMessage,
   QueryCreateContext,
-  QueryListItem
+  QueryListItem,
+  CasesService,
+  CaseEventTrigger,
+  CaseField,
+  EventTriggerService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
-import { caseMessagesMockData } from '../../mock/query-management.mock';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
@@ -34,6 +37,13 @@ export class QueryManagementContainerComponent implements OnInit {
   private static readonly QUERY_ITEM_RESPOND = '3';
   private static readonly QUERY_ITEM_FOLLOWUP = '4';
 
+  private readonly RAISE_A_QUERY_EVENT_TRIGGER_ID = 'queryManagementRaiseQuery';
+  private readonly RESPOND_TO_QUERY_EVENT_TRIGGER_ID = 'queryManagementRespondQuery';
+
+  private static readonly caseLevelCaseFieldId = 'CaseQueriesCollection';
+  public static readonly FIELD_TYPE_COLLECTION = 'Collection';
+  public static readonly FIELD_TYPE_COMPLEX = 'Complex';
+
   private queryItemId: string;
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
@@ -47,13 +57,22 @@ export class QueryManagementContainerComponent implements OnInit {
   public qualifyingQuestion: QualifyingQuestion;
   public qualifyingQuestions$: Observable<QualifyingQuestion[]>;
   public qualifyingQuestionsControl: FormControl;
+  public eventDataError: boolean = false;
+  public eventTrigger$: Observable<CaseEventTrigger>;
+
+  private caseDetails: CaseView;
+
+  public eventTrigger: CaseEventTrigger;
+  public eventData: CaseEventTrigger;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly location: Location,
     private readonly caseNotifier: CaseNotifier,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly casesService: CasesService,
+    private readonly eventTriggerService: EventTriggerService
   ) {}
 
   public ngOnInit(): void {
@@ -61,7 +80,6 @@ export class QueryManagementContainerComponent implements OnInit {
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
-
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
 
     this.formGroup = new FormGroup({
@@ -73,11 +91,16 @@ export class QueryManagementContainerComponent implements OnInit {
     });
 
     if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
-      this.queryItem = new QueryListItem();
-      Object.assign(this.queryItem, caseMessagesMockData[0].caseMessages[0].value);
+      if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
+        this.getEventTrigger();
+      }
     } else {
       this.formGroup.get('subject')?.setValidators([Validators.required]);
       this.formGroup.get('isHearingRelated')?.setValidators([Validators.required]);
+
+      if (this.queryItemId && this.queryItemId === QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
+        this.getEventTrigger();
+      }
     }
   }
 
@@ -92,30 +115,47 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public submitForm(): void {
     if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
-      // Validate qualifying question selection
-      if (this.validateQualifyingQuestion()) {
-        // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
-        // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
-        this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
-
-        if (this.qualifyingQuestion.markdown?.length) {
-          this.queryCreateContext = this.getQueryCreateContext();
-        } else {
-          this.router.navigateByUrl(this.qualifyingQuestion.url);
-        }
-      }
+      this.handleQualifyingQuestions();
     } else if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
       // Submit triggered from the markdown page, navigate to the URL provided in the config
       this.router.navigateByUrl(this.qualifyingQuestion.url);
     } else {
-      this.showSummary = true;
+      this.processFormSubmission();
+    }
+  }
+
+  private handleQualifyingQuestions(): void {
+    // Validate qualifying question selection
+    if (this.validateQualifyingQuestion()) {
+      // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
+      // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
+      this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
+
+      if (this.qualifyingQuestion.markdown?.length) {
+        this.queryCreateContext = this.getQueryCreateContext();
+      } else {
+        this.router.navigateByUrl(this.qualifyingQuestion.url);
+      }
+    }
+  }
+
+  private processFormSubmission(): void {
+    // Show error message for follow up, new query submission
+    if (this.eventDataError) {
+      this.getEventTrigger();
       this.submitted = true;
       this.validateForm();
-      this.showSummary = this.errorMessages?.length === 0;
-      // Reset hearing date if isHearingRelated
-      if (!this.formGroup.get('isHearingRelated').value) {
-        this.formGroup.get('hearingDate').setValue(null);
-      }
+      return;
+    }
+
+    this.eventData = this.eventTrigger;
+    this.showSummary = true;
+    this.submitted = true;
+    this.validateForm();
+    this.showSummary = this.errorMessages?.length === 0;
+    // Reset hearing date if isHearingRelated
+    if (!this.formGroup.get('isHearingRelated').value) {
+      this.formGroup.get('hearingDate').setValue(null);
     }
   }
 
@@ -168,40 +208,32 @@ export class QueryManagementContainerComponent implements OnInit {
     this.errorMessages = [];
 
     if (!this.formGroup.get('subject').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.QUERY_SUBJECT,
-        fieldId: 'subject'
-      });
+      this.addError(RaiseQueryErrorMessage.QUERY_SUBJECT, 'subject');
     }
 
     if (!this.formGroup.get('body').valid) {
-      this.errorMessages.push({
-        title: '',
-        description:
-          this.queryCreateContext === QueryCreateContext.RESPOND ?
-            RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY,
-        fieldId: 'body'
-      });
+      const raiseQueryErrorMessage = this.queryCreateContext === QueryCreateContext.RESPOND ?
+        RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY;
+      this.addError(raiseQueryErrorMessage, 'body');
     }
 
     if (!this.formGroup.get('isHearingRelated').valid) {
-      this.errorMessages.push({
-        title: '',
-        description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
-        fieldId: 'isHearingRelated-yes'
-      });
+      this.addError(RaiseQueryErrorMessage.QUERY_HEARING_RELATED, 'isHearingRelated-yes');
     } else {
       if (this.formGroup.get('isHearingRelated').value === true &&
         this.formGroup.get('hearingDate').value === null) {
-        this.errorMessages.push({
-          title: '',
-          description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
-          fieldId: 'hearingDate-day'
-        });
+        this.addError(RaiseQueryErrorMessage.QUERY_HEARING_DATE, 'hearingDate-day');
       }
     }
     window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+  }
+
+  private addError(message: string, field: string): void {
+    this.errorMessages.push({
+      title: '',
+      description: message,
+      fieldId: field
+    });
   }
 
   public navigateToErrorElement(elementId: string): void {
@@ -273,5 +305,93 @@ export class QueryManagementContainerComponent implements OnInit {
     await this.router.navigate(['cases', 'case-details', this.caseId],
       { fragment: 'tasks' }
     );
+  }
+
+  private getEventTrigger():void {
+    this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
+      this.caseDetails = caseDetails;
+
+      if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
+        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+      } else {
+        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
+      }
+
+      this.eventTrigger$.subscribe({
+        next: (eventTrigger) => {
+          this.eventTrigger = eventTrigger;
+
+          if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
+            this.processFilteredMessages();
+          }
+        },
+        error: (err) => {
+          console.error('Error occurred while fetching event data:', err);
+          this.eventDataError = true;
+          this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        }
+      });
+    });
+  }
+
+  // Function to filter and process the messages based on the event data
+  private processFilteredMessages():void {
+    const messageId = this.activatedRoute.snapshot.params.dataid;
+    let caseQueriesCollections = [];
+
+    if (this.eventTrigger?.case_fields?.length) {
+      caseQueriesCollections = this.eventTrigger.case_fields.reduce((acc, caseField) => {
+        const extractedCaseQueriesFromCaseField = this.extractCaseQueriesFromCaseField(caseField);
+
+        if (extractedCaseQueriesFromCaseField && typeof extractedCaseQueriesFromCaseField === 'object') {
+          acc.push(extractedCaseQueriesFromCaseField);
+        }
+
+        return acc;
+      }, []);
+    }
+
+    const filteredMessages = caseQueriesCollections
+      .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
+      .flat() // Flatten into a single array of messages
+      .filter((message) => message.value.id === messageId); // Filter by message id
+
+    if (filteredMessages.length > 0) {
+      // Access matching message
+      const matchingMessage = filteredMessages[0]?.value;
+
+      if (matchingMessage) {
+        this.queryItem = new QueryListItem();
+
+        // Assign the matching message to queryItem
+        Object.assign(this.queryItem, matchingMessage);
+      }
+    } else {
+      //If queryItem shouldn't empty, and it is expected to have an id. IF it is empty then it is an error.
+      console.error(`No messages found for messageId: ${messageId}`);
+      this.eventDataError = true;
+      this.addError('This case is not configured for query management.', 'caseNotFoundError');
+    }
+  }
+
+  private extractCaseQueriesFromCaseField(caseField: CaseField) {
+    const { field_type, value } = caseField;
+
+    // Handle Complex type fields
+    if (field_type.type === QueryManagementContainerComponent.FIELD_TYPE_COMPLEX) {
+      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && this.isNonEmptyObject(value)) {
+        return value;
+      }
+      return null;
+    }
+  }
+
+  private isObject(elem: any): boolean {
+    return typeof elem === 'object' && elem !== null;
+  }
+
+  private isNonEmptyObject(elem: any): boolean {
+    return this.isObject(elem) && Object.keys(elem).length !== 0;
   }
 }

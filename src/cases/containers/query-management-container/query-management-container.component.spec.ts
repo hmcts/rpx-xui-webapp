@@ -649,7 +649,7 @@ describe('QueryManagementContainerComponent', () => {
       casesService.getEventTrigger.and.returnValue(throwError(() => errorMock));
 
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-
+      // eslint-disable-next-line dot-notation
       component['getEventTrigger']();
 
       expect(component.eventDataError).toBe(true);
@@ -657,8 +657,9 @@ describe('QueryManagementContainerComponent', () => {
       // Verify that an error message is added to errorMessages
       expect(component.errorMessages.length).toBe(1);
       expect(component.errorMessages[0]).toEqual({
-        title: 'Error',
-        description: 'Something unexpected happened. please try again later.'
+        title: '',
+        description: 'Something unexpected happened. please try again later.',
+        fieldId: 'evenDataError'
       });
     });
   });

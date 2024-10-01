@@ -13,13 +13,14 @@ import {
   ACTION,
   AnswerSource,
   HearingChannelEnum,
-  HearingDateEnum, HearingResult, PartyType
+  HearingDateEnum, PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
+import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-hearing-actual-summary-base',
@@ -62,7 +63,8 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly ccdDatePipe: DatePipe
   ) {
     this.hearingRoles = this.route.snapshot.data.hearingRole;
     this.hearingTypes = this.route.snapshot.data.hearingTypes;
@@ -121,18 +123,6 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     return this.actualHearingDays && this.actualHearingDays.length > 1 ? 'Hearing date(s)' : 'Hearing date';
   }
 
-  public getHearingResultReasonTypeDescription(hearingOutcome: HearingOutcomeModel): string {
-    const hearingActualReasonsRefData = hearingOutcome.hearingResult === HearingResult.COMPLETED
-      ? [] : hearingOutcome.hearingResult === HearingResult.ADJOURNED
-        ? this.actualPartHeardReasonCodes : this.actualCancellationReasonCodes;
-
-    const hearingActualReason = hearingActualReasonsRefData && hearingActualReasonsRefData.find((refData) => refData.key === hearingOutcome.hearingResultReasonType);
-    if (hearingActualReason) {
-      return hearingActualReason.value_en;
-    }
-    return '';
-  }
-
   public isHearingAllRequiredDaysCovered(): boolean {
     let isAllDaysCovered: boolean = true;
     const isActualHearingDaysAvailable = this.hearingActualsMainModel.hearingActuals?.actualHearingDays?.length > 0;
@@ -152,45 +142,6 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     return hearingTypeFromLookup ? hearingTypeFromLookup.value_en : '';
   }
 
-  // public isHearingActualsDaysAvailable(hearingDate: string) {
-  //   const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-  //       .find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
-  //   return !!hearingInfo && this.isAcutalTimingAvailable(hearingInfo);
-  // }
-
-  // public isHearingActualsPartiesAvailable(hearingDate: string): boolean {
-  //   const hearingInfo = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.actualHearingDays
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.length
-  //     && this.hearingActualsMainModel.hearingActuals.actualHearingDays.find((hearingsInfo: ActualHearingDayModel) => hearingsInfo.hearingDate === hearingDate);
-  //   return hearingInfo && (hearingInfo.notRequired || hearingInfo.actualDayParties.length > 0);
-  // }
-
-  public isAllHearingActualsPartiesAvailable(hearingActualsMainModel: HearingActualsMainModel) {
-    const hasAllActualDays = hearingActualsMainModel.hearingActuals && hearingActualsMainModel.hearingActuals.actualHearingDays
-      && hearingActualsMainModel.hearingActuals.actualHearingDays.length === hearingActualsMainModel.hearingPlanned.plannedHearingDays.length;
-    return hasAllActualDays && hearingActualsMainModel.hearingActuals.actualHearingDays.every(
-      (actualDay) => actualDay.notRequired || actualDay.actualDayParties.length > 0
-    );
-  }
-
-  public confirmActualHearingTimeAndParties(hearingDay: ActualHearingDayModel) {
-    const updatedActuals = {
-      hearingDate: hearingDay.hearingDate,
-      hearingStartTime: hearingDay.hearingStartTime,
-      hearingEndTime: hearingDay.hearingEndTime,
-      pauseDateTimes: hearingDay.pauseDateTimes,
-      actualDayParties: [...hearingDay.actualDayParties]
-    } as ActualHearingDayModel;
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(this.hearingActualsMainModel, hearingDay.hearingDate, updatedActuals);
-
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals: patchedHearingActuals
-    }));
-  }
-
   public calculateEarliestHearingDate(hearingDays: ActualHearingDayModel[]): string {
     const moments: moment.Moment[] = hearingDays.map((d) => moment(d.hearingDate));
     if (moments.length > 1) {
@@ -201,7 +152,12 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   public getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {
-    return ActualHearingsUtils.getPauseDateTime(day, state);
+    return this.getTime(ActualHearingsUtils.getPauseDateTime(day, state));
+  }
+
+  // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe
+  public getTime(time: string, zone: string = 'local', format: string = 'HH:mm'): string {
+    return time ? moment(this.ccdDatePipe.transform(time, zone)).format(format) : null;
   }
 
   public isDetailsProvidedForDay(day): boolean {

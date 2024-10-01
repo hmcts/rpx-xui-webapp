@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { AppConstants } from '../../../app/app.constants';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -28,7 +27,6 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
@@ -73,8 +71,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>,
-    protected checkReleaseVersionService: CheckReleaseVersionService
+    protected store: Store<fromActions.State>
   ) { }
 
   public get tasks(): Task[] {
@@ -194,12 +191,18 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
+    // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
     const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+      this.caseworkerService.getUsersFromServices(jurisdictions)
     ));
     // similar to case list wrapper changes
     caseworkersByService$.subscribe((caseworkers) => {
       this.caseworkers = caseworkers;
+      // EUI-2027 - Load tasks again in case this is start of new caching of caseworkers
+      // note: the if is relevant to stop the same request happening at exactly the same time on available tasks causing an error
+      if (this.tasks.length > 0) {
+        this.doLoad();
+      }
     }, (error) => {
       handleFatalErrors(error.status, this.router);
     });

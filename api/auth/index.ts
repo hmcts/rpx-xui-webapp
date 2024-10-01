@@ -79,10 +79,10 @@ export const getXuiNodeMiddleware = () => {
     routes: [
       '/workallocation/caseworker',
       '/api/role-access/roles/getJudicialUsers',
-      '/workallocation/retrieveCaseWorkersForServices',
-      '/workallocation/retrieveCaseWorkersForSpecificService',
       '/workallocation/getJudicialUsers',
-      '/api/prd/judicial/searchJudicialUserByPersonalCodes'
+      '/workallocation/caseworker/getUsersByServiceName',
+      '/api/prd/judicial/searchJudicialUserByPersonalCodes',
+      '/api/prd/judicial/searchJudicialUserByIdamId'
     ],
     scope: 'openid profile roles manage-user create-user search-user',
     userName

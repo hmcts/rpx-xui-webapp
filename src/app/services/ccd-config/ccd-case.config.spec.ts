@@ -4,9 +4,11 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
-import { EnvironmentConfig } from '../../../models/environmentConfig.model';
 import { AppConfigService } from '../config/configuration.services';
 import { AppConfig } from './ccd-case.config';
+import { InitialisationSyncService } from './initialisation-sync-service';
+import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { LoggerService } from '../logger/logger.service';
 
 class MockConfigService {
   private readonly config;
@@ -19,7 +21,6 @@ class MockConfigService {
       hrs_url: 'dummy',
       remote_hrs_url: 'dummy',
       access_management_mode: true,
-      access_management_basic_view_mock: 'dummy',
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
       notification_url: 'dummy'
@@ -30,11 +31,13 @@ class MockConfigService {
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
-let mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['get']);
-mockEnvironmentService = {
-  config$: of({} as EnvironmentConfig),
-  get: 'someUrl'
-};
+const mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get', 'getDeploymentEnv']);
+mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
+mockEnvironmentService.get.and.returnValue('someUrl');
+
+const mockWindow = jasmine.createSpyObj('Window', ['location']);
+mockWindow.location.and.returnValue(new URL('https://manage-case.platform.hmcts.net'));
+const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
@@ -46,20 +49,22 @@ describe('AppConfiguration', () => {
         HttpClientTestingModule
       ],
       providers: [
+        { provide: Window, useValue: mockWindow },
         AppConfig,
         AppConfigService,
+        InitialisationSyncService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        { provide: EnvironmentService, useValue: mockEnvironmentService }
+        { provide: EnvironmentService, useValue: mockEnvironmentService },
+        { provide: LoggerService, useValue: mockLoggerService }
       ]
     });
-    spyOn(mockEnvironmentService, 'get').and.returnValue('someUrl');
     mockFeatureToggleService.getValue.and.returnValue(of(true));
   });
 
-  it('should be created', inject([AppConfig], (service: AppConfig) => {
+  it('should be created ', inject([AppConfig, Window], (service: AppConfig) => {
     expect(service).toBeTruthy();
-    expect(mockFeatureToggleService.getValue).toHaveBeenCalled();
+    expect(mockEnvironmentService.getDeploymentEnv).toHaveBeenCalled();
   }));
 
   it('should have load', inject([AppConfig], (service: AppConfig) => {
@@ -138,22 +143,6 @@ describe('AppConfiguration', () => {
     expect(service.getAnnotationApiUrl()).toBeUndefined();
   }));
 
-  it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getNotificationUrl()).toBe('dummy');
-  }));
-
-  it('should have getNotificationUrl defined', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getNotificationUrl()).toBeDefined();
-  }));
-
-  it('should have getNotificationUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getNotificationUrl()).toBe('dummy');
-  }));
-
-  it('should have getNotificationUrl defined', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getNotificationUrl()).toBeDefined();
-  }));
-
   it('should have getDocumentManagementUrlV2', inject([AppConfig], (service: AppConfig) => {
     expect(service.getDocumentManagementUrlV2).toBeDefined();
   }));
@@ -175,15 +164,16 @@ describe('AppConfiguration', () => {
     expect(service.getAccessManagementMode()).toBe(true);
   }));
 
-  it('should have getAccessManagementBasicViewMock return value', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getAccessManagementBasicViewMock()).toBe(true);
-  }));
-
   it('should have getLocationRefApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getLocationRefApiUrl()).toBe('dummy');
   }));
 
   it('should have getCamRoleAssignmentsApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
+  }));
+
+  it('should have called LogService log method', inject([AppConfig, Window], (service: AppConfig) => {
+    service.logMessage('hello world');
+    expect(mockLoggerService.log).toHaveBeenCalledWith('hello world');
   }));
 });

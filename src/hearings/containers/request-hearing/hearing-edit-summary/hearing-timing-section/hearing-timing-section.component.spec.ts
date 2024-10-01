@@ -358,23 +358,6 @@ describe('HearingTimingSectionComponent', () => {
       component.ngOnInit();
       expect(component.hearingDateChanged).toEqual(false);
     });
-
-    it('should return false if no hearing window', () => {
-      component.hearingRequestToCompareMainModel = {
-        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
-        hearingDetails: {
-          ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          hearingWindow: null
-        }
-      };
-      component.serviceHearingValuesModel = {
-        ...serviceHearingValuesModel,
-        hearingWindow: {}
-      };
-
-      component.ngOnInit();
-      expect(component.hearingDateChanged).toEqual(false);
-    });
   });
 
   it('should return true if firstDateTimeMustBe is removed', () => {

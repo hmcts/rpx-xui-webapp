@@ -44,7 +44,7 @@ export class AppConfig extends AbstractAppConfig {
         });
         // Avoid possible race condition where the observable doesn't emit until after the config
         // has been passed to the toolkit by setting the default value before calling LD
-        const defCfg = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
+        const defCfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
         this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.waServiceConfig, defCfg);
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, defCfg).subscribe({
           next: (val) => {
@@ -221,6 +221,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWAServiceConfig(): WAFeatureConfig {
+    console.log('in ccd-config getWAServiceConfig, config = ', JSON.stringify(this.config.wa_service_config));
     return this.config.wa_service_config;
   }
 

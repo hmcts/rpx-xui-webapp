@@ -1,11 +1,12 @@
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
+import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 
 // Temporary solution to the problem that LaunchDarkly initialisation doesn't complete before we
 // need to initialise ccd-case-ui-toolkit.
 // The full fix is to resolve the race condition so that toolkit initialisation
 // doesn't start until LD is fully initialised
 export class LaunchDarklyDefaultsConstants {
-  public static readonly waServiceConfigTest = {
+  public static readonly waServiceConfigTest: WAFeatureConfig = {
     configurations: [
       {
         caseTypes: [
@@ -74,7 +75,7 @@ export class LaunchDarklyDefaultsConstants {
     ]
   };
 
-  public static readonly waServiceConfigProd = {
+  public static readonly waServiceConfigProd:WAFeatureConfig = {
     configurations: [
       {
         caseTypes: [
@@ -139,7 +140,7 @@ export class LaunchDarklyDefaultsConstants {
     ]
   };
 
-  public static getWaServiceConfig(env: DeploymentEnvironmentEnum): object {
+  public static getWaServiceConfig(env: DeploymentEnvironmentEnum): WAFeatureConfig {
     if (env === DeploymentEnvironmentEnum.PROD) {
       return LaunchDarklyDefaultsConstants.waServiceConfigProd;
     }

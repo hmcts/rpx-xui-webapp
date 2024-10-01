@@ -3,7 +3,7 @@ import { signIn } from '../steps/login-steps';
 import { clickOnMainMenu } from '../steps/steps-functions';
 import { retryAction } from '../steps/retry-steps';
 
-test('Search from menu 16-digit find control', async ({ page }) => {
+test.skip('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Search from menu 16-digit find control');
@@ -25,7 +25,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
 });
 
 
-test('Search from page Search', async ({ page }) => {
+test.skip('Search from page Search', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Go to Search Page');

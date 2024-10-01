@@ -169,7 +169,6 @@
     "ts-enum-util": "4.0.2",
     "tslib": "^2.6.1",
     "web-animations-js": "^2.3.2",
-    "yarn": "^1.22.18",
     "zone.js": "~0.14.4"
   },
   "devDependencies": {

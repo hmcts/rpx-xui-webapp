@@ -1,4 +1,4 @@
-export const previewConfig = {
+export const baseConfig = {
   '(judge)|(judiciary)': [
     {
       'active': true,
@@ -15,10 +15,7 @@ export const previewConfig = {
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
         'caseworker-publiclaw',
-        'caseworker-employment-etjudge',
-        'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-st_cic'
+        'caseworker-employment-etjudge'
       ],
       'text': 'My work'
     },
@@ -51,8 +48,7 @@ export const previewConfig = {
         'caseworker-civil',
         'caseworker-privatelaw',
         'caseworker-publiclaw-judiciary',
-        'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-employment-etjudge'
       ],
       'text': 'Case list'
     },
@@ -71,8 +67,7 @@ export const previewConfig = {
         'caseworker-divorce-financialremedy-judiciary',
         'caseworker-probate-judge',
         'caseworker-publiclaw-judiciary',
-        'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-employment-etjudge'
       ],
       'text': 'Find case'
     },
@@ -87,10 +82,9 @@ export const previewConfig = {
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
         'caseworker-publiclaw',
-        'caseworker-employment-etjudge',
-        'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-st_cic'
+        'caseworker-st_cic-judge',
+        'caseworker-st_cic-senior-judge',
+        'caseworker-employment-etjudge'
       ],
       'text': 'Search'
     },
@@ -142,11 +136,8 @@ export const previewConfig = {
       'href': '/noc',
       'roles': [
         'caseworker-divorce-solicitor',
-        'caseworker-civil',
-        'caseworker-civil-solictor',
         'caseworker-probate-solicitor',
-        'caseworker-privatelaw-solicitor',
-        'caseworker-befta_master-solicitor'
+        'caseworker-privatelaw-solicitor'
       ],
       'text': 'Notice of change'
     },
@@ -176,10 +167,7 @@ export const previewConfig = {
         'caseworker-ia-admofficer',
         'caseworker-privatelaw',
         'caseworker-publiclaw',
-        'caseworker-employment',
-        'caseworker-sscs-clerk',
-        'caseworker-sscs-registrar',
-        'caseworker-st_cic'
+        'caseworker-employment'
       ],
       'text': 'My work'
     },
@@ -294,8 +282,8 @@ export const previewConfig = {
         'caseworker-privatelaw',
         'caseworker-publiclaw',
         'caseworker-st_cic',
-        'caseworker-sscs-clerk',
-        'caseworker-sscs-registrar',
+        'caseworker-st_cic-senior-caseworker',
+        'caseworker-sscs',
         'caseworker-employment'
       ],
       'text': 'Search'

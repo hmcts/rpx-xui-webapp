@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { getConfigValue, showFeature } from './index';
-import { menuConfigs } from './menuConfigs/configs';
+import { setupMenuConfig } from './menuConfigs/configs';
 import {
   FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
@@ -16,22 +16,25 @@ import {
   SERVICES_WA_WORKFLOW_API_URL
 } from './references';
 
-import { JUILogger } from 'lib/models';
-import * as log4jui from '../lib/log4jui';
-const logger: JUILogger = log4jui.getLogger('uiConfig');
-
 export const router = express.Router({ mergeParams: true });
 
 router.get('/', uiConfigurationRouter);
 
+// as this value will only ever change from a server restart cache it so we dont have to run all the logic
+// to build the config everytime a user does something to call this endpoint
+let menuConfigCache;
 function getHeaderConfig() {
+  if (menuConfigCache){
+    return menuConfigCache;
+  }
   const previewID = process.env.PREVIEW_DEPLOYMENT_ID;
   const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
   const aatConfigEnvs = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
   const environment = previewID ? 'preview' :
     aatConfigEnvs.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
-  logger.info(`Environment set to: ${environment} (Preview ID: ${previewID}, Env URL: ${envUrl})`);
-  return menuConfigs[environment];
+  const menuConfig = setupMenuConfig(environment);
+  menuConfigCache = menuConfig;
+  return menuConfig;
 }
 
 /**

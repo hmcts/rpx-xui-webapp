@@ -3921,12 +3921,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.65":
-  version: 7.0.65
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.65"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.66":
+  version: 7.0.66
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.66"
   dependencies:
     tslib: ^2.3.0
-  checksum: 6297ca74712143c145bad5da21e43b0900166bd0267e1c2f4a6108afdd104b4a2f49998b153308be192ffdf2c449c498189bb7ca5cf7e34f488fafa4cb8a3f58
+  checksum: 158438779c8eb3fce548ddd997caa82d4eea2025f52696fbab910b95f95c20d62f5f104e84c15a3b220d3a84adbfc147e519fb3c1870d42e3f55a68c165233ba
   languageName: node
   linkType: hard
 
@@ -4007,16 +4007,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.29":
-  version: 2.0.29
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.29"
+"@hmcts/rpx-xui-common-lib@npm:2.0.30":
+  version: 2.0.30
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.30"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: c6fa9dddbbcf714f92c44a1240ac50445ef5695255a8f66d4724894c7bf2426b834574f34acc8e13e38a5b6b936d7b15edf4bc1083d4fd9314f8e8863281dc4b
+  checksum: ebf2c7d083295359b5b88b552b19dc56e9260010deb187b95abb1276c536825012ddec109f424d2612d7de8e80d71fdb9fd3b261238dffbb5d5ddfe9a4d2b7d4
   languageName: node
   linkType: hard
 
@@ -25011,13 +25011,13 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.65
+    "@hmcts/ccd-case-ui-toolkit": 7.0.66
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.29
+    "@hmcts/rpx-xui-common-lib": 2.0.30
     "@hmcts/rpx-xui-node-lib": 2.29.1
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^14.0.0

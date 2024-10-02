@@ -138,7 +138,7 @@ module.exports = async function () {
         output.print(`Test ${test.state} : ${test.title}`)
         await mockClient.logMessage(`************ Test status|${test.title}:${test.state }`)
 
-        actor().flushLogsToReport();
+        //actor().flushLogsToReport();
 
         const authCookies = idamLogin.authToken
         if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2e'){

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { signIn, signOut } from "../steps/login-steps";
 import { clickToStaffPage } from "../steps/staff-steps";
 
-test.skip('Simplified search results', async ({ page }) => {
+test('Simplified search results', async ({ page }) => {
     await signIn(page, "STAFF_ADMIN");
     await clickToStaffPage(page);
     console.log("Using simple search");
@@ -13,7 +13,7 @@ test.skip('Simplified search results', async ({ page }) => {
     await signOut(page);
   });
 
-test.skip('Simplified search', async ({ page }) => {
+test('Simplified search', async ({ page }) => {
     await signIn(page, "STAFF_ADMIN");
     await clickToStaffPage(page);
     console.log("Using Simple search");

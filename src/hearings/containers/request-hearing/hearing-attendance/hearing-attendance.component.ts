@@ -196,6 +196,9 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   public getHearingChannels(): string[] {
+    if (this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES) {
+      return [HearingChannelEnum.ONPPR];
+    }
     return this.attendanceFormGroup.controls.hearingLevelChannels.value.filter((channel) => channel.selected).map((channel) => channel.key);
   }
 

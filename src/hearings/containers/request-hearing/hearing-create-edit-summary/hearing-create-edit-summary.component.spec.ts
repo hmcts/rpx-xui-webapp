@@ -172,6 +172,7 @@ describe('HearingCreateEditSummaryComponent', () => {
   it('should call removeUnnecessarySummaryTemplateItems in ngOnInit', () => {
     const rmvSummaryTemp = spyOn(component, 'removeUnnecessarySummaryTemplateItems');
     component.ngOnInit();
+    expect(hearingsService.hearingRequestForSubmitValid).toEqual(false);
     expect(rmvSummaryTemp).toHaveBeenCalled();
   });
 

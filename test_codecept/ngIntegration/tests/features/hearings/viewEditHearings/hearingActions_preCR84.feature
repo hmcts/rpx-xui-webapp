@@ -6,7 +6,7 @@ Feature: Hearings CR84 OFF: View or edit action
     Scenario: Hearing View or edit action
         Given I set MOCK with user details with user identifier "HEARING_MANAGER_CR84_OFF"
             | roles        | caseworker-privatelaw,caseworker-privatelaw-courtadmin,case-allocator,hearing-manager |
-            | roleCategory | LEGAL_OPERATIONS                                                                      |
+            | roleCategory | LEGAL_O                                                                               |
 
         # Given I set MOCK person with user "IAC_CaseOfficer_R2" and roles "<Roles>,task-supervisor,case-allocator"
 
@@ -40,15 +40,15 @@ Feature: Hearings CR84 OFF: View or edit action
 
         Then I validate fields displayed in view or edit hearing page
             | field                                 | value  | changeLinkDisplay | amendedFlagDisplayed_preCR84 |
-            | Status                                | LISTED | false             |                              |
-            | Will additional security be required? | No     | true              |                              |
+            | Status                                | LISTED | true             |                              |
+            | Will additional security be required? | No     | false              |                              |
 
 
         When In view or edit hearing page, I click change link for field "Reasonable adjustments"
         Then I am on hearings workflow page "Hearing requirements"
         Then In hearings requirements page, I see case flags displayed for parties
             | partyName  |
-            | Jane Smith |
+            | Tom Smith |
 
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
@@ -57,7 +57,7 @@ Feature: Hearings CR84 OFF: View or edit action
         Then I am on hearings workflow page "Do you require any additional facilities?"
         Then In additional facilities page, I see case flags displayed for parties
             | partyName   |
-            | Jane Smith 2 |
+            | John Smith 2 |
 
         When I click continue in hearing workflow
         Then I validate view or edit hearing page displayed
@@ -67,7 +67,7 @@ Feature: Hearings CR84 OFF: View or edit action
         Then I am on hearings workflow page "Participant attendance"
         When In create hearing page "Participant attendance", I input values
             | field                         | value |
-            | Will this be a paper hearing? | No    |
+            | Will this be a paper hearing? | Yes    |
         Then In hearings Participant attendance page, I see parties
             | partyName                     |
             | Party1 name FN Party1 name LN |
@@ -76,8 +76,8 @@ Feature: Hearings CR84 OFF: View or edit action
         When In hearing page "Participant attendance", I input values
             | field                                                    | value                                   |
             | Will this be a paper hearing?                            | No                                      |
-            | What will be the methods of attendance for this hearing? | In Person,Video,Telephone               |
-            | How will each participant attend the hearing?            | Party1 name FN Party1 name LN,In Person |
+            | What will be the methods of attendance for this hearing? | I Person,Video,Telephone               |
+            | How will each participant attend hearing?                | Party1 name FN Party1 name LN,In Person |
             | How will each participant attend the hearing?            | Party2 name FN Party2 name LN,Video     |
             | How many people will attend the hearing in person?       | 2                                       |
         When I click continue in hearing workflow

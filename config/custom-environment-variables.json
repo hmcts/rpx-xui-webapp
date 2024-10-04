@@ -53,7 +53,7 @@
       },
       "ia": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
-        "caseTypes": "SERVICES_HEAARINGS_CASETYPES_IAC"
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_IAC"
       },
       "employment": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
@@ -121,6 +121,7 @@
   "secrets": {
     "rpx": {
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "appinsights-connection-string-mc": "APPINSIGHTS_CONNECTION_STRING",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
@@ -129,6 +130,7 @@
       "system-user-password": "SYSTEM_USER_PASSWORD"
     }
   },
+  "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
   "jurisdictions": "JURISDICTIONS",
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",

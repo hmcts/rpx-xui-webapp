@@ -26,6 +26,7 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   }
 
   ngOnInit(): void {
+    this.hearingsService.hearingRequestForSubmitValid = false;
     this.removeUnnecessarySummaryTemplateItems();
   }
 

@@ -18,10 +18,10 @@
     <div class="govuk-summary-list__value">
       <div *ngFor="let partyFlags of partiesWithFlags | keyvalue">
         <div *ngIf="partyFlags?.value?.length > 0">
+          <strong class="bold">{{ partyFlags.key }}</strong>
           <exui-amendment-label *ngIf="!partyNamesInHMCRequestToCompare.includes(partyFlags.key)"
             [displayLabel]="amendmentLabelEnum.AMENDED">
           </exui-amendment-label>
-          <strong class="bold">{{ partyFlags.key }}</strong>
           <ul>
             <li *ngFor="let flag of partyFlags.value">
               {{ flag.name }}

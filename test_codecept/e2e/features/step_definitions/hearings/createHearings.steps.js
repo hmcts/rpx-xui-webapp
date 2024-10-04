@@ -77,6 +77,15 @@ When('In hearing page {string}, I input values', async function (page, datatable
     await inputValuesInPage(page, datatable)
 })
 
+When('In hearing page {string}, I input values and click continue', async function (page, datatable) {
+    await browserWaits.retryWithActionCallback(async () => {
+        await inputValuesInPage(page, datatable);
+        await createHearingWorkflow.continueBtn.click();
+        await browserWaits.waitForElement($('exui-hearing-edit-summary,exui-hearing-view-edit-summary'));
+    });
+})
+
+
 
 When('In create hearing work flow, I click submit request', async function (page, datatable) {
     await createHearingWorkflow.clickSubmitRequest()

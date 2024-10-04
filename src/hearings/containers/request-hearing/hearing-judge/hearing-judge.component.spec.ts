@@ -167,6 +167,15 @@ describe('HearingJudgeComponent', () => {
     expect(component.isFormValid()).toBeFalsy();
   });
 
+  it('should not validate the same judge name in include and exclude list when no specific judge option selected', () => {
+    component.showSpecificJudge(RadioOptions.NO);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
+    component.excludedJudge.judgeList = [judgeInfo];
+    component.isFormValid();
+    component.checkSameJudgeSelectionError();
+    expect(component.selectJudgeNameError).toBe(null);
+  });
+
   it('should check prepareHearingRequestData', () => {
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
     component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);

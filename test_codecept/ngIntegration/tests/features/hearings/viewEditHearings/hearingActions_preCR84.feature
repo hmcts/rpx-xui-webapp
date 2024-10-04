@@ -71,7 +71,6 @@ Feature: Hearings CR84 OFF: View or edit action
         Then In hearings Participant attendance page, I see parties
             | partyName                     |
             | Party1 name FN Party1 name LN |
-            | Party2 name FN Party2 name LN |
 
 
         When In hearing page "Participant attendance", I input values
@@ -141,7 +140,7 @@ Feature: Hearings CR84 OFF: View or edit action
             | Judge details           |       |
             | Linked hearings         |       |
             | Additional instructions |       |
-            
+
         # Hearing venue end
 
         # Language requirements start

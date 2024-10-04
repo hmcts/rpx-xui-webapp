@@ -130,12 +130,10 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('functionalTest:preview') {
-        
+
         stage('Functional api tests') {
              try {
                  yarnBuilder.yarn('test:functionalAPI')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
              } finally {
                  publishHTML([
                      allowMissing         : true,
@@ -148,12 +146,10 @@ withPipeline(type, product, component) {
                  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional/**/*'
              }
         }
-        
+
         stage('Functional NG Int') {
              try {
                  yarnBuilder.yarn('test:functionalNGInt')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
              } finally {
                  publishHTML([
                       allowMissing         : true,
@@ -166,7 +162,7 @@ withPipeline(type, product, component) {
                  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
              }
         }
-        
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -190,12 +186,10 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('functionalTest:aat') {
-        
+
         stage('Functional api tests') {
              try {
                  yarnBuilder.yarn('test:functionalAPI')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
              } finally {
                  publishHTML([
                      allowMissing         : true,
@@ -212,8 +206,6 @@ withPipeline(type, product, component) {
         stage('Functional NG Int') {
              try {
                  yarnBuilder.yarn('test:functionalNGInt')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
              } finally {
                  publishHTML([
                       allowMissing         : true,
@@ -226,7 +218,7 @@ withPipeline(type, product, component) {
                  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
              }
         }
-        
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

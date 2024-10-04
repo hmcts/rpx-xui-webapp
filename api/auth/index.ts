@@ -1,4 +1,4 @@
-import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { AUTH, AuthOptions, SessionMetadata, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -28,8 +28,19 @@ import {
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
+const os = require('os');
 
 const logger = log4jui.getLogger('auth');
+
+const podName = process.env.HOSTNAME || os.hostname();
+const totalReplicas = 24;
+const specialReplicasCount = 2;
+
+function shouldSetSpecialFlag(totalReplicas, specialReplicasCount) {
+  const randomNumber = Math.floor(Math.random() * totalReplicas);
+  return randomNumber < specialReplicasCount;
+}
+const isSpecialPod = shouldSetSpecialFlag(totalReplicas, specialReplicasCount);
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -110,14 +121,18 @@ export const getXuiNodeMiddleware = () => {
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
-      maxAge: 28800000,
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',
     resave: false,
     saveUninitialized: false,
     secret: getConfigValue(SESSION_SECRET)
-  };
+  } as SessionMetadata;
+
+  console.log(`pod name : ${podName}`);
+  if (!isSpecialPod){
+    baseStoreOptions.cookie.maxAge = 28800000;
+  }
 
   const redisStoreOptions = {
     redisStore: {

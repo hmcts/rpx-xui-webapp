@@ -319,7 +319,7 @@ describe('HearingAttendanceComponent', () => {
       mode: 'view-edit'
     };
     component.ngOnInit();
-    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
   });
 
   it('should call initialiseFromHearingValuesForAmendments for manual amendments journey with party changes', () => {

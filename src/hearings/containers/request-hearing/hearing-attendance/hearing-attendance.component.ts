@@ -79,9 +79,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('parties') &&
       this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
         this.initialiseFromHearingValuesForAmendments();
+      } else {
+        // This will be triggered when a user is amending
+        this.initialiseFormValues(this.hearingRequestMainModel.partyDetails);
       }
-      // This will be triggered when a user is amending
-      this.initialiseFormValues(this.hearingRequestMainModel.partyDetails);
     } else {
       // This will be triggered on a create request
       this.initialiseFormValues(this.serviceHearingValuesModel.parties);

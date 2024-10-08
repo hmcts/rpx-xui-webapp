@@ -16,6 +16,7 @@ properties([
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.YarnBuilder
 
 def type      = "nodejs"
 def product   = "xui"
@@ -24,6 +25,11 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 
 class XUIYarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
+   //create constructor to call parent class constructor
+    XUIYarnBuilder(def steps) {
+        super(steps)
+    }
+
  @Override
     def functionalTest() {
         try {

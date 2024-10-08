@@ -351,7 +351,6 @@ export class QueryManagementContainerComponent implements OnInit {
         return acc;
       }, []);
     }
-
     const filteredMessages = caseQueriesCollections
       .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
       .flat() // Flatten into a single array of messages

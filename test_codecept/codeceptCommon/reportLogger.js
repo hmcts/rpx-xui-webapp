@@ -51,23 +51,21 @@ class CodeceptMochawesomeLog{
         console.log(message)
     }
 
-    AddMessage(message, logLevel){
-        // if (!this._isLevelEnabled(logLevel)) return;
+  AddMessage(message, logLevel) {
+    // if (!this._isLevelEnabled(logLevel)) return;
 
-        try{
-            // browser.get_I().addMochawesomeContext(this.getDate() + message);
-            message = "=> " + message
-            var buf = message.toString("binary")
-            browser.get_I().say( buf)
-            // fs.appendFileSync(this.featureLogFilePath, '\n' + message)
-        }
-        catch(err){
-            console.log("Error occured adding message to report. "+err.message+' \n '+err.stack);
-            // fs.appendFileSync(this.featureLogFilePath, '\n' + err.message + ' \n ' + err.stack)
+    try {
+      // browser.get_I().addMochawesomeContext(this.getDate() + message);
+      message = '=> ' + message;
+      // temporarily disable ACW browser.get_I().say(buf)
+      // fs.appendFileSync(this.featureLogFilePath, '\n' + message)
+    } catch (err) {
+      console.log("Error occured adding message to report. " + err.message + ' \n ' + err.stack);
+      // fs.appendFileSync(this.featureLogFilePath, '\n' + err.message + ' \n ' + err.stack)
 
-        }
-        console.log( message)
     }
+    console.log(message)
+  }
 
     AddMessageToReportOnly(message, logLevel) {
         // if (!this._isLevelEnabled(logLevel)) return;
@@ -101,7 +99,7 @@ class CodeceptMochawesomeLog{
         // if (!this._isLevelEnabled(logLevel)) return;
         try{
             I.addMochawesomeContext(JSON.stringify(json, null, 2));
-                
+
         } catch (err) {
             console.log("Error occured adding message to report. " + err.stack);
         }
@@ -117,14 +115,14 @@ class CodeceptMochawesomeLog{
         // I.saveScreenshot('debug.png', true)
         this.AddMessage(`!!! Add screenshot not implemented !!!`)
 
-        
+
     }
 
     async getScreenshot(onbrowser){
         const scrrenshotBrowser = onbrowser ? onbrowser : browser;
         const stream = await scrrenshotBrowser.takeScreenshot();
         const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-        return decodedImage; 
+        return decodedImage;
     }
 
 
@@ -134,12 +132,12 @@ class CodeceptMochawesomeLog{
         const topRow = rows[0]
         const rowsCount = rows.length;
         const columnsCount = topRow.length;
-        
+
         const columnSizes = [];
 
         for (let i = 0; i < columnsCount; i++){
             const columnValues = rows.map(row => row[i])
-            
+
             let columnSize = columnValues.sort((a,b) => a.length < b.length ? 1:-1)[0].length
             columnSize = columnSize + 3;
             columnSizes[i] = columnSize;
@@ -148,7 +146,7 @@ class CodeceptMochawesomeLog{
 
         let totalTableLength  = 0;
 
-        
+
         columnSizes.forEach(colLength => totalTableLength += colLength )
         this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength+1,'-') )
         for (let row = 0; row < rowsCount; row++){
@@ -157,15 +155,15 @@ class CodeceptMochawesomeLog{
                 tableRow += rows[row][col].padEnd(columnSizes[col], ' ')
             }
             this.AddMessage('=== BDD)    |'+tableRow+'|')
-           
+
         }
         this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength+1, '-'))
 
     }
 
     // _isLevelEnabled(msgLoglevel)`=== BDD)
-    //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  
-    //     return msgLoglevel >= this.logLevel; 
+    //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;
+    //     return msgLoglevel >= this.logLevel;
     // }
 
 }

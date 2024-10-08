@@ -3375,12 +3375,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.5-query-management":
-  version: 7.1.5-query-management
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.5-query-management"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.7-query-management-cqc-workaround":
+  version: 7.1.7-query-management-cqc-workaround
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.7-query-management-cqc-workaround"
   dependencies:
     tslib: ^2.3.0
-  checksum: 83c6ba7fba954d3f1410daae6f5d2e0abb2b392e44d01a009e739dccbd1b097e63a0f5ac5dd2ebbbe0ace17fc3e3f437072611585c4d3852d90a984efe38310b
+  checksum: 0583f948d85f6bac04b1e19eaa25bed2f6ca8faaf418a562e825620f44fb3c7f1913d32e6eeb4a6f66dc2750a01233e152eb8b1bee6eb80f42ce8c121ebc3a58
   languageName: node
   linkType: hard
 
@@ -22018,7 +22018,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.1.5-query-management
+    "@hmcts/ccd-case-ui-toolkit": 7.1.7-query-management-cqc-workaround
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8

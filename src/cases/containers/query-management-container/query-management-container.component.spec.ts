@@ -41,7 +41,7 @@ describe('QueryManagementContainerComponent', () => {
 
   const locationMock = jasmine.createSpyObj('Location', ['back']);
   const CASE_VIEW: CaseView = {
-    case_id: '1234',
+    case_id: '123',
     case_type: {
       id: 'TestAddressBookCase',
       name: 'Test Address Book Case',
@@ -113,6 +113,39 @@ describe('QueryManagementContainerComponent', () => {
           partyName: '',
           roleOnCase: ''
         }
+      },
+      {
+        field_type: {
+          collection_field_type: null,
+          complex_fields: [],
+          fixed_list_items: [],
+          id: 'CaseQueriesCollection',
+          max: null,
+          min: null,
+          regular_expression: null,
+          type: 'Complex'
+        } as FieldType,
+        id: 'qmCaseQueriesCollection1',
+        label: 'Query management case queries collection',
+        value: {
+          caseMessages: [{
+            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+            value: {
+              attachments: [],
+              body: 'testing by olu',
+              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c10051',
+              createdOn: new Date('2024-08-27T15:44:50.700Z'),
+              hearingDate: '2023-01-10',
+              id: 'id-007',
+              isHearingRelated: 'Yes',
+              name: 'Piran Sam',
+              parentId: 'ca',
+              subject: 'Review attached document'
+            }
+          }],
+          partyName: '',
+          roleOnCase: ''
+        }
       } as CaseField
     ],
     wizard_pages: [],
@@ -123,6 +156,18 @@ describe('QueryManagementContainerComponent', () => {
       return false;
     }
   };
+
+  const roleAssignmentInfo = [
+    { substantive: 'Y',
+      caseId: '123',
+      jurisdiction: 'PUBLICLAW',
+      isCaseAllocator: false,
+      roleType: 'CASE',
+      roleName: '[SOLICITORA]',
+      beginTime: '2022-12-18T18:08:48.526067Z'
+    }
+  ];
+
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
   const mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
@@ -145,7 +190,8 @@ describe('QueryManagementContainerComponent', () => {
               userDetails: {
                 userInfo: {
                   name: 'Test User'
-                }
+                },
+                roleAssignmentInfo
               }
             }
           }

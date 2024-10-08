@@ -25,7 +25,8 @@ def channel   = '#xui-pipeline'
 
 def oldYarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
-class yarnBuilder extends uk.gov.hmcts.contino.YarnBuilder(this) {
+class yarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
+ @Override
     def functionalTest() {
         try {
               yarn("test:functionalE2E")

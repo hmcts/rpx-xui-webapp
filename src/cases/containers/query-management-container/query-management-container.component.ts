@@ -12,16 +12,17 @@ import {
   QueryListItem,
   CasesService,
   CaseEventTrigger,
-  CaseField,
-  EventTriggerService
+  CaseField
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, combineLatest } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
+import { select, Store } from '@ngrx/store';
+import * as fromRoot from '../../../app/store';
+import { combineLatest, Observable } from 'rxjs';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -59,8 +60,11 @@ export class QueryManagementContainerComponent implements OnInit {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
+  public roleName: string;
 
   private caseDetails: CaseView;
+  private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
+  public readonly FIELD_TYPE_COMPLEX = 'Complex';
 
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
@@ -72,7 +76,7 @@ export class QueryManagementContainerComponent implements OnInit {
     private readonly caseNotifier: CaseNotifier,
     private readonly featureToggleService: FeatureToggleService,
     private readonly casesService: CasesService,
-    private readonly eventTriggerService: EventTriggerService
+    private readonly store: Store<fromRoot.State>
   ) {}
 
   public ngOnInit(): void {
@@ -118,7 +122,7 @@ export class QueryManagementContainerComponent implements OnInit {
       this.handleQualifyingQuestions();
     } else if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
       // Submit triggered from the markdown page, navigate to the URL provided in the config
-      this.router.navigateByUrl(this.qualifyingQuestion.url);
+      this.router.navigateByUrl(this.qualifyingQuestion?.url);
     } else {
       this.processFormSubmission();
     }
@@ -321,6 +325,10 @@ export class QueryManagementContainerComponent implements OnInit {
         next: (eventTrigger) => {
           this.eventTrigger = eventTrigger;
 
+          if (this.queryCreateContext === QueryCreateContext.NEW_QUERY){
+            this.caseQueriesCollectionsCount();
+          }
+
           if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
             this.processFilteredMessages();
           }
@@ -332,6 +340,38 @@ export class QueryManagementContainerComponent implements OnInit {
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
       });
+    });
+  }
+
+  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
+  // When creating a New Query, if caseQueriesCollections is more than one, then  the method getUserDetailsRoleName()
+  private caseQueriesCollectionsCount() {
+    const numberOfCaseQueriesCollections = this.eventTrigger?.case_fields?.filter(
+      (caseField) =>
+        caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
+        caseField.field_type.type === this.FIELD_TYPE_COMPLEX
+    )?.length || 0;
+console.log('numberOfCaseQueriesCollections', numberOfCaseQueriesCollections);
+    if (numberOfCaseQueriesCollections > 1) {
+      this.getUserDetailsRoleName();
+    }
+  }
+
+  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
+  private getUserDetailsRoleName(): void {
+    this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
+      console.log('user--', user);
+      const matchedRoleAssignment = user.roleAssignmentInfo?.find(
+        (m) => m.caseId === this.caseDetails.case_id
+      );
+      if (matchedRoleAssignment) {
+        this.roleName = matchedRoleAssignment.roleName;
+        console.log('matchedRoleAssignment--u', matchedRoleAssignment, user.roleAssignmentInfo,
+          this.caseDetails.case_id, matchedRoleAssignment.roleName
+        );
+      } else {
+        this.roleName = '';
+      }
     });
   }
 

@@ -28,6 +28,9 @@
           <li class="hmcts-footer__list-item" *ngFor="let item of navigation.items">
             <a class="govuk-footer__link" [routerLink]="item.href" [target]="item.target">{{item.text | rpxTranslate}}</a>
           </li>
+          <li> <ng-container *xuilibFeatureToggle="'welsh-language'">
+            <a href="javascript:void(0)" (click)="toggleLanguage(currentLang == 'cy' ? 'en' : currentLang == 'en' ? 'cy' : 'en')" class="language govuk-footer__link">{{currentLang == 'cy' ? 'English' : currentLang == 'en' ? 'Cymraeg' : 'English' }}</a>
+          </ng-container></li>
         </ul>
       </div>
       <div class="govuk-footer__meta-item">

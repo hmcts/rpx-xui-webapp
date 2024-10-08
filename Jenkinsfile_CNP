@@ -23,9 +23,7 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
-def oldYarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-
-class yarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
+class XUIYarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
  @Override
     def functionalTest() {
         try {
@@ -55,6 +53,8 @@ class yarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
 
     }
 }
+
+def yarnBuilder = new XUIYarnBuilder(this)
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 

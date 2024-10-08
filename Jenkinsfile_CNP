@@ -150,11 +150,11 @@ withPipeline(type, product, component) {
                allowMissing         : true,
                alwaysLinkToLastBuild: true,
                keepAll              : true,
-               reportDir            : "functional-output/tests/ngIntegration/",
+               reportDir            : "functional-output/tests/codecept-ngIntegration/",
                reportFiles          : 'index.html',
                reportName           : 'PREVIEW NG Integration Test'
            ])
-           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
+           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/codecept-ngIntegration/**/*'
         }
 
         publishHTML([

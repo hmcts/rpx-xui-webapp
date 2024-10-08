@@ -13,7 +13,7 @@ import {
   ACTION,
   AnswerSource,
   HearingChannelEnum,
-  HearingDateEnum, PartyType
+  PartyType
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -96,7 +96,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
         this.actualHearingDays = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel, false);
         this.actualHearingDaysCYA = ActualHearingsUtils.getActualHearingDays(this.hearingActualsMainModel, true);
         this.hearingDateRange = this.calculateEarliestHearingDate(this.actualHearingDays);
-        this.individualParties = state.hearingValues.serviceHearingValuesModel.parties?.filter((party) => party.partyType === PartyType.IND);
+        this.individualParties = state.hearingValues.serviceHearingValuesModel?.parties?.filter((party) => party.partyType === PartyType.IND);
 
         this.hearingActualsMainModel.hearingPlanned.plannedHearingDays.forEach(
           (plannedDay) => {
@@ -143,16 +143,20 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   public calculateEarliestHearingDate(hearingDays: ActualHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map((d) => moment(d.hearingDate));
+    const moments: moment.Moment[] = hearingDays.map((d) => moment.tz(this.convertUTCDateToLocalDate(new Date(d.hearingStartTime)), moment.tz.guess()));
     if (moments.length > 1) {
-      return `${moment.min(moments).format('DD MMMM YYYY')} - ${moment.max(moments).format('DD MMMM YYYY')}`;
+      return `${moment.min(moments).format('DD MMM YYYY')} - ${moment.max(moments).format('DD MMM YYYY')}`;
     }
 
-    return moment.max(moments).format(HearingDateEnum.DisplayMonth);
+    return moment.max(moments).format('DD MMM YYYY');
   }
 
   public getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {
     return this.getTime(ActualHearingsUtils.getPauseDateTime(day, state));
+  }
+
+  private convertUTCDateToLocalDate(date): Date {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
   }
 
   // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe

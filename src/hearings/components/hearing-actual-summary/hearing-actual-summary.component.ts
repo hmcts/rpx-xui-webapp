@@ -5,6 +5,7 @@ import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel 
 import { AnswerSource, HearingChannelEnum, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import * as fromHearingStore from '../../store';
+import * as moment from 'moment';
 
 @Component({
   selector: 'exui-hearing-actual-summary',
@@ -52,5 +53,19 @@ export class HearingActualSummaryComponent implements OnInit {
 
   public get isMultiDayHearing(): boolean {
     return this.hearingActualsMainModel.hearingActuals.actualHearingDays.length > 1;
+  }
+
+  public actualHearingDate(): string {
+    return this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime ?
+      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime :
+      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
+  }
+
+  private convertUTCDateToLocalDate(date): Date {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+  }
+
+  public actualMultiDaysHearingDates(): string {
+    return `${moment.tz(this.convertUTCDateToLocalDate(new Date(this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0].hearingStartTime)), moment.tz.guess()).format('DD MMM YYYY')} - ${moment.tz(this.convertUTCDateToLocalDate(new Date(this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[this.hearingActualsMainModel?.hearingActuals?.actualHearingDays.length - 1].hearingStartTime)), moment.tz.guess()).format('DD MMM YYYY')}`;
   }
 }

@@ -27,9 +27,7 @@ def channel   = '#xui-pipeline'
 class XUIYarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
    //create constructor to call parent class constructor
     XUIYarnBuilder(def steps) {
-        super(steps)
-        this.localSteps = steps
-        this.securitytest = new SecurityScan(this.steps)
+        super.YarnBuilder(steps)
     }
 
  @Override

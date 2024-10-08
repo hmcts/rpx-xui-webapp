@@ -1,3 +1,4 @@
+import { AppConstants } from 'src/app/app.constants';
 import { Organisation } from '../../models';
 import {
   LoadOrganisation,
@@ -24,7 +25,8 @@ describe('LoadOrganisationSuccess', () => {
       addressLine2: '',
       country: 'UK',
       contactInformation: [],
-      paymentAccount: []
+      paymentAccount: [],
+      organisationProfileIds: [AppConstants.OGD_PROFILE_TYPES.SOLICITOR_PROFILE]
     };
     const action = new LoadOrganisationSuccess(payload);
     expect({ ...action }).toEqual({

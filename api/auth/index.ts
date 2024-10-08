@@ -1,4 +1,4 @@
-import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { AUTH, AuthOptions, xuiNode, XuiNodeOptions } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -30,6 +30,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 
 const logger = log4jui.getLogger('auth');
+let idamLogins = Math.floor(Math.random() * 10); // Initialize IDAM logins counter with numbers 0 to 9
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -39,6 +40,9 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
 
   logger.info('Setting session and cookies');
+
+  // Increment the idamLogins counter for each successful authentication
+  idamLogins++;
 
   res.cookie(cookieUserId, userinfo.uid);
   res.cookie(cookieToken, accessToken);
@@ -107,10 +111,15 @@ export const getXuiNodeMiddleware = () => {
     useRoutes: true
   };
 
+  // Determine if session cookies should be used based on observed logins
+  function shouldUseSessionCookie(): boolean {
+    return idamLogins % 10 === 0; // Use session cookies for 1 in 10 sessions use a session cookie,
+  }
+
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
-      maxAge: 28800000,
+      ...(shouldUseSessionCookie() ? {} : { maxAge: 28800000 }), // Conditionally add maxAge attribute if session cookies are not used, setting expiration time to 8 hours (28800000 milliseconds)
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',
@@ -140,8 +149,7 @@ export const getXuiNodeMiddleware = () => {
       }
     }
   };
-
-  const nodeLibOptions = {
+  const nodeLibOptions:XuiNodeOptions = {
     auth: {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
@@ -151,9 +159,9 @@ export const getXuiNodeMiddleware = () => {
     },
     session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
   };
-
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
   logger._logger.info('Setting XuiNodeLib options');
   return xuiNode.configure(nodeLibOptions);
 };
+

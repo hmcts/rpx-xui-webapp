@@ -1,17 +1,9 @@
-import globals from "globals";
-
 module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended'
     // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
   ],
-  languageOptions: {
-    globals: {
-      ...globals.browser,
-      ...globals.node,
-    }
-  },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: [

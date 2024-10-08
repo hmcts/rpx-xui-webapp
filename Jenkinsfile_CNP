@@ -23,6 +23,16 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
+class AandAYarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
+def functionalTest() {
+    try {
+      yarn("test:functional")
+    } finally {
+      steps.junit allowEmptyResults: true, testResults: 'functional-output/**/*result.xml'
+      steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
+    }
+  }
+}
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
@@ -68,7 +78,6 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('test') {
-
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -104,7 +113,6 @@ withPipeline(type, product, component) {
             reportFiles          : 'Report.html',
             reportName           : 'Manage Cases a11y Test Report'
         ])
-
     }
 
     afterSuccess('smoketest:demo') {
@@ -131,38 +139,6 @@ withPipeline(type, product, component) {
 
     afterSuccess('functionalTest:preview') {
 
-        stage('Functional api tests') {
-             try {
-                 yarnBuilder.yarn('test:functionalAPI')
-             } finally {
-                 publishHTML([
-                     allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/api_functional/",
-                     reportFiles          : 'mochawesome.html',
-                     reportName           : 'PREVIEW API Functional Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional/**/*'
-             }
-        }
-
-        stage('Functional NG Int') {
-             try {
-                 yarnBuilder.yarn('test:functionalNGInt')
-             } finally {
-                 publishHTML([
-                      allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/ngIntegration/",
-                     reportFiles          : 'index.html',
-                     reportName           : 'PREVIEW NG Integration Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
-             }
-        }
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -186,39 +162,6 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('functionalTest:aat') {
-
-        stage('Functional api tests') {
-             try {
-                 yarnBuilder.yarn('test:functionalAPI')
-             } finally {
-                 publishHTML([
-                     allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/api_functional/",
-                     reportFiles          : 'mochawesome.html',
-                     reportName           : 'AAT API Functional Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional/**/*'
-             }
-        }
-
-        stage('Functional NG Int') {
-             try {
-                 yarnBuilder.yarn('test:functionalNGInt')
-             } finally {
-                 publishHTML([
-                      allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/ngIntegration/",
-                     reportFiles          : 'index.html',
-                     reportName           : 'AAT NG Integration Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
-             }
-        }
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

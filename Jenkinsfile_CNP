@@ -24,11 +24,8 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
+@groovy.transform.InheritConstructors
 class XUIYarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
-   //create constructor to call parent class constructor
-    XUIYarnBuilder(def steps) {
-        super.YarnBuilder(steps)
-    }
 
  @Override
     def functionalTest() {

@@ -351,7 +351,6 @@ export class QueryManagementContainerComponent implements OnInit {
         caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
         caseField.field_type.type === this.FIELD_TYPE_COMPLEX
     )?.length || 0;
-console.log('numberOfCaseQueriesCollections', numberOfCaseQueriesCollections);
     if (numberOfCaseQueriesCollections > 1) {
       this.getUserDetailsRoleName();
     }

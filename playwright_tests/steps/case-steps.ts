@@ -1,4 +1,4 @@
-import config from "../../config"
+import config from "../config"
 
 export async function routeToCasePage(page, caseId: string) {
     const casePageUrl = config.CaseBaseURL + '/case-details/' + caseId;

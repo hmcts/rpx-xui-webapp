@@ -1,5 +1,5 @@
-import config from "../../config";
-const testConfig = require("../../../test_codecept/e2e/config/appTestConfig");
+import config from "../config";
+const testConfig = require("../../test_codecept/e2e/config/appTestConfig");
 
 export async function signIn(page: any, userIdentifier: string, goToCaseBaseURL: boolean = true) {
   const matchingUsers = testConfig.users[testConfig.testEnv].filter(
@@ -14,7 +14,6 @@ export async function signIn(page: any, userIdentifier: string, goToCaseBaseURL:
   await page.getByLabel("Password").fill(matchingUsers[0].key);
   await page.getByRole("button", { name: "Sign in" }).click();
   console.log("Signed in as " + email);
-  
 }
 
 export async function signOut(page) {
@@ -24,5 +23,4 @@ export async function signOut(page) {
   } catch (error) {
     console.log(`Sign out failed: ${error}`);
   }
-  
 }

@@ -16,7 +16,6 @@ properties([
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
-import uk.gov.hmcts.contino.YarnBuilder
 
 def type      = "nodejs"
 def product   = "xui"
@@ -24,40 +23,7 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
-@groovy.transform.InheritConstructors
-class XUIYarnBuilder extends uk.gov.hmcts.contino.YarnBuilder {
-
- @Override
-    def functionalTest() {
-        try {
-              yarn("test:functionalE2E")
-            } finally {
-              steps.junit allowEmptyResults: true, testResults: 'functional-output/**/*result.xml'
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-            }
-        try {
-              yarn("test:functionalPlaywright")
-            } finally {
-              steps.junit allowEmptyResults: true, testResults: 'functional-output/**/*result.xml'
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-            }
-        try {
-              yarn("test:functionalAPI")
-            } finally {
-              steps.junit allowEmptyResults: true, testResults: 'functional-output/**/*result.xml'
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-            }
-        try {
-              yarn("test:functionalNGInt")
-            } finally {
-              steps.junit allowEmptyResults: true, testResults: 'functional-output/**/*result.xml'
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-            }
-
-    }
-}
-
-def yarnBuilder = new XUIYarnBuilder(this)
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 

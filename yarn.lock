@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.66-unavailable-date-show-fields":
-  version: 7.0.66-unavailable-date-show-fields
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.66-unavailable-date-show-fields"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.67-unavailable-date-show-fields":
+  version: 7.0.67-unavailable-date-show-fields
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.67-unavailable-date-show-fields"
   dependencies:
     tslib: ^2.3.0
-  checksum: d4f54a3bfe6f3559aa240303cb38726c5b523c3cdece150797f0c69c91df43d590257dfe9a5867c043258da031c773d840265b6fa44289334f54a8b7a1e5bfe7
+  checksum: 0e987026d928b872734e845eb02d799d743993f881d07bdb1774154c5489f79217ef5eccccc862cbb8e34ba8850a39bc7725115636be5f4eac8c621fd698dece
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.66-unavailable-date-show-fields
+    "@hmcts/ccd-case-ui-toolkit": 7.0.67-unavailable-date-show-fields
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8

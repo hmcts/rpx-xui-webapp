@@ -179,7 +179,6 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
         ])
-    }
 
         publishHTML([
             allowMissing         : true,

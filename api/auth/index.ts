@@ -131,6 +131,7 @@ export const getXuiNodeMiddleware = () => {
     baseStoreOptions.cookie.maxAge = 28800000;
   } else {
     trackTrace('Pod is serving session cookie');
+    logger.info('Pod is serving session cookie');
   }
 
   const redisStoreOptions = {

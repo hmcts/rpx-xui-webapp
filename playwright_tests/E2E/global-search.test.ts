@@ -8,16 +8,17 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Search from menu 16-digit find control');
-  const caseId = findCaseId(page)
+  const caseId = findCaseId(page);
   await expect(page.getByText('-digit case reference:')).toBeVisible();
+  await expect(page.waitForSelector('exui-case-list'));
   await page.getByLabel('-digit case reference:').click();
-  await page.getByLabel('-digit case reference:').fill(caseId); 
+  await page.getByLabel('-digit case reference:').fill(caseId);
   await retryAction(async () => {
     await page.locator('//button[contains(text(), "Find")]').click();
     await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
   });
   await axeTest(page);
-  
+
   console.log('Check the case details are displayed');
   await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Do this next' })).toBeVisible();

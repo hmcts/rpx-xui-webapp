@@ -25,7 +25,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.getByRole('heading', { name: 'Create a case' })).toBeVisible();
   await page.getByRole('button', { name: 'Test submit' }).click();
-  
+
   await expect(page.getByText('Flags for legal rep Party 1')).toBeVisible();
   const heading = await page.$('h1.heading-h1.ng-star-inserted');
   const text = await heading.textContent();
@@ -52,6 +52,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByText('Respondent (Party 2)')).toBeVisible();
   await page.getByLabel('Applicant (Party 1)').check();
   await page.getByRole('button', { name: 'Next' }).click();
+  await page.waitForTimeout(3000);
   await axeTest(page);
 
   console.log("Select support type");

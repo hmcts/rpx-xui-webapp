@@ -8,9 +8,8 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Search from menu 16-digit find control');
-  const caseId = findCaseId(page);
-  // await expect(page.getByText('-digit case reference:')).toBeVisible();
-  await expect(page.waitForSelector('exui-case-list'));
+  const caseId = findCaseId(page)
+  await expect(page.getByText('-digit case reference:')).toBeVisible();
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId);
   await retryAction(async () => {

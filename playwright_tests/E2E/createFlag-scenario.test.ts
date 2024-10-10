@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
-import config from "../config"
+import config from '../config'
 import { signIn } from './steps/login-steps';
 import axeTest from "./helpers/accessibilityTestHelper";
 
-test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) => {
+test('Create case flag Add/Update Reasonable adjustment', async ({ page }) => {
   await signIn(page, "USER_WITH_FLAGS");
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
 
@@ -33,7 +33,7 @@ test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) =
   console.log("Case created with ID: " + caseId);
   await axeTest(page);
 
-  console.log("Creating support request");
+  console.log("Creating case flag");
   await expect(page.getByText('Party 1', { exact: true })).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Case flags' })).toBeVisible();
@@ -41,22 +41,21 @@ test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) =
   await expect(page.getByRole('heading', { name: 'Support requested' })).toBeVisible();
   await expect(page.getByText('Test data', { exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Test data' }).click();
-  await page.getByLabel('Next step').selectOption('4: Object');
+  await page.getByLabel('Next step').selectOption('1: Object');
   await page.getByRole('button', { name: 'Go' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
   await axeTest(page);
 
-  console.log("Who is the support for");
-  await expect(page.getByRole('heading', { name: 'Who is the support for?' })).toBeVisible();
+  console.log("Where should flag be created?");
+  await expect(page.getByRole('heading', { name: 'Where should this flag be added?' })).toBeVisible();
   await expect(page.getByText('Applicant (Party 1)')).toBeVisible();
   await expect(page.getByText('Respondent (Party 2)')).toBeVisible();
   await page.getByLabel('Applicant (Party 1)').check();
   await page.getByRole('button', { name: 'Next' }).click();
-  await page.waitForTimeout(3000);
   await axeTest(page);
 
-  console.log("Select support type");
-  await expect(page.getByRole('heading', { name: 'Select support type' })).toBeVisible();
+  console.log("Select flag type");
+  await expect(page.getByRole('heading', { name: 'Select flag type' })).toBeVisible();
   await expect(page.getByText('Reasonable adjustment')).toBeVisible();
   await page.getByLabel('Reasonable adjustment').check();
   await page.getByRole('button', { name: 'Next' }).click();
@@ -79,34 +78,32 @@ test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) =
   await page.getByRole('button', { name: 'Next' }).click();
   await axeTest(page);
 
-  console.log("Tell us more about the request");
-  await expect(page.getByText('Tell us more about the request')).toBeVisible();
-  await page.getByLabel('Tell us more about the request').click();
-  await page.getByLabel('Tell us more about the request').fill('Test auto comment');
+  console.log("Add comments for this flag");
+  await expect(page.getByText('Add comments for this flag')).toBeVisible();
+  await page.getByLabel('Add comments for this flag').click();
+  await page.getByLabel('Add comments for this flag').fill('Test auto comment');
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
   await axeTest(page);
 
-  console.log("Review support request");
-  await expect(page.getByRole('heading', { name: 'Review support request' })).toBeVisible();
+  console.log("Review flag details");
+  await expect(page.getByRole('heading', { name: 'Review flag details' })).toBeVisible();
   await expect(page.getByRole('cell').getByText('Applicant')).toBeVisible();
   await expect(page.getByText('Documents in a specified')).toBeVisible();
   await expect(page.getByText('Test auto comment')).toBeVisible();
-  await expect(page.getByText('Requested')).toBeVisible();
+  await expect(page.getByText('Active')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Change party name' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Change flag type' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Change comments' })).toBeVisible();
-  await expect(page.locator('ccd-case-flag-summary-list div').filter({ hasText: 'Status Requested' }).getByRole('definition').nth(1)).toBeVisible();
+  await expect(page.locator('ccd-case-flag-summary-list div').filter({ hasText: 'Active' }).getByRole('definition').nth(1)).toBeVisible();
 
   console.log("Submit support request");
   await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.locator('cut-alert')).toContainText('has been updated with event: Request support');
+  await expect(page.locator('cut-alert')).toContainText('has been updated with event: Create case flag');
   await expect(page.getByText(caseId+" has been updated")).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
   await expect(page.getByRole('table', { name: 'Respondent' }).getByRole('caption')).toBeVisible();
   await page.waitForSelector('ccd-case-full-access-view');
-  const ele = await page.$('ccd-notification-banner .govuk-notification-banner__content');
-  expect(ele == null).toBeTruthy();
   await axeTest(page);
 });

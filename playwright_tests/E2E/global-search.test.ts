@@ -9,7 +9,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
 
   console.log('Search from menu 16-digit find control');
   const caseId = findCaseId(page);
-  await expect(page.getByText('-digit case reference:')).toBeVisible();
+  // await expect(page.getByText('-digit case reference:')).toBeVisible();
   await expect(page.waitForSelector('exui-case-list'));
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId);

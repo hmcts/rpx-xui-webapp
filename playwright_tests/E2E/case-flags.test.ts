@@ -32,7 +32,7 @@ test('View case flag', async ({ page }) => {
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
   const tableClass= "govuk-table";
   const tableName = "Applicant";
-  await checkNumberOfRow(page, tableClass, tableName, 5);//One row for the header
+  await checkNumberOfRow(page, tableClass, tableName, 7);//One row for the header
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
 
   const rowTextRef = "Support filling in forms";

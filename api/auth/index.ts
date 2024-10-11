@@ -32,7 +32,7 @@ import { EnhancedRequest } from '../lib/models';
 const logger = log4jui.getLogger('auth');
 
 const totalReplicas = 24;
-const specialReplicasCount = 2;
+const specialReplicasCount = 5;
 
 function shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount) {
   const randomNumber = Math.floor(Math.random() * totalReplicas);

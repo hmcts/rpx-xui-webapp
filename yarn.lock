@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.64-external-link-history":
-  version: 7.0.64-external-link-history
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.64-external-link-history"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.67-external-link-history":
+  version: 7.0.67-external-link-history
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.67-external-link-history"
   dependencies:
     tslib: ^2.3.0
-  checksum: a359214672e95eca0a2c01607aae8a505d0dda810bec17e8a70d52842db612e91623cfea584f2ff473725fb2c835335202dd2b318b853ce517916d43f32a0dc9
+  checksum: d8656f098f4debc3410563a98e514a2087c1ed5da012bc9c94baca76939306213c30bc7bea033343b927f9971798b0121928686cbb9331e624ae7e2f1e381991
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.64-external-link-history
+    "@hmcts/ccd-case-ui-toolkit": 7.0.67-external-link-history
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
+import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "../steps/table-steps"
 import config from "../config"
-import { routeToCasePage } from './steps/case-steps';
+import { routeToCasePage } from '../steps/case-steps';
 
 test('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);

@@ -270,6 +270,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initTaskTypeFilter(),
       TaskManagerFilterComponent.initTaskNameFilter()
     ];
+
     this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         map((f: FilterSetting) => {
@@ -284,7 +285,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           return f;
         }),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
-        filter((f: FilterSetting) => !f.reset)
+        filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           if (field.name === 'location') {

@@ -29,7 +29,7 @@ describe('Jurisdiction', () => {
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATE LAW' },
     { serviceId: 'PUBLICLAW', serviceName: 'Public Law' },
     { serviceId: 'EMPLOYMENT', serviceName: 'EMPLOYMENT' },
-    { serviceId: 'ST__CIC', serviceName: 'ST__CIC' }
+    { serviceId: 'ST__CIC', serviceName: 'ST_CIC' }
   ];
 
   beforeEach(() => {

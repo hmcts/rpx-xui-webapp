@@ -245,16 +245,17 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Party name is not present in HMC so ignoring it.
     // Is paper hearing flag is transient to indicate whether it is paper hearing
     // As well as, ignoring keys which are initialised with null value
-    if (key === 'partyName' || key === 'isPaperHearing' || value === null) {
+    // Also ignores empty array values
+    if (key === 'partyName' || key === 'isPaperHearing' || value === null || Array.isArray(value) && value.length < 1) {
       return undefined;
     }
+
     return value;
   }
 
   private setPropertiesUpdatedAutomatically(): void {
     // Set properties updated on page visit
     this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
-
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {
@@ -274,7 +275,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)
       ]
     };
-
     // Set banner
     this.setBanner();
 

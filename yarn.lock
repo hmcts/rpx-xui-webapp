@@ -2677,15 +2677,15 @@ __metadata:
   linkType: hard
 
 "@cucumber/cucumber@npm:^10.8.0":
-  version: 10.8.0
-  resolution: "@cucumber/cucumber@npm:10.8.0"
+  version: 10.9.0
+  resolution: "@cucumber/cucumber@npm:10.9.0"
   dependencies:
     "@cucumber/ci-environment": 10.0.1
     "@cucumber/cucumber-expressions": 17.1.0
     "@cucumber/gherkin": 28.0.0
     "@cucumber/gherkin-streams": 5.0.1
     "@cucumber/gherkin-utils": 9.0.0
-    "@cucumber/html-formatter": 21.3.1
+    "@cucumber/html-formatter": 21.6.0
     "@cucumber/message-streams": 4.0.1
     "@cucumber/messages": 24.1.0
     "@cucumber/tag-expressions": 6.1.0
@@ -2706,6 +2706,7 @@ __metadata:
     lodash.merge: ^4.6.2
     lodash.mergewith: ^4.6.2
     luxon: 3.2.1
+    mime: ^3.0.0
     mkdirp: ^2.1.5
     mz: ^2.7.0
     progress: ^2.0.3
@@ -2723,7 +2724,7 @@ __metadata:
     yup: 1.2.0
   bin:
     cucumber-js: bin/cucumber.js
-  checksum: 970112e541cd57d4cb627ff592e7d23b03f29b668b1d73bd331d44b4f08068caa42064eb2c29ab8a82e696a902048f11a1badc4856cf186e4deb8175cefcbeb6
+  checksum: 3b23dadb5d51b866d0086e1bab26bbf0944849ab006eb7559d378d9a45fac612d0f4da89fd27f5c78c125de9b793ee1632ef541ed112f5e26a8f2c3d703c3824
   languageName: node
   linkType: hard
 
@@ -2818,12 +2819,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/html-formatter@npm:21.3.1":
-  version: 21.3.1
-  resolution: "@cucumber/html-formatter@npm:21.3.1"
+"@cucumber/html-formatter@npm:21.6.0":
+  version: 21.6.0
+  resolution: "@cucumber/html-formatter@npm:21.6.0"
   peerDependencies:
     "@cucumber/messages": ">=18"
-  checksum: d8524a5c1f2da616e48790642bf29e1c97c14e348fd9f127f6b81e20bd417e37539d937864de4ec3825d6e8a619c2bc1cd3f155e80aa9618f51eadbbd7e041e9
+  checksum: 5a82e98b4ff453aab485630ad7be4cea114fb4c5a8e0e0e30832eb010b348ab96f7f2d8a2a239b06d5d737ec216328af166adbf4e9cb0fe29460179c0b45c521
   languageName: node
   linkType: hard
 
@@ -3374,12 +3375,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.67":
-  version: 7.0.67
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.67"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.8-query-management-cqc-workaround":
+  version: 7.1.8-query-management-cqc-workaround
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.8-query-management-cqc-workaround"
   dependencies:
     tslib: ^2.3.0
-  checksum: 9e7c57155f7d58f36cedcf1b83f5d5d6cfd2e5b4c7d8afa2f02e88e48f6e92d418d583cdd7ebc1afa6c7d1c508acdd9f8324457122c50cc3b09cf2e40c378748
+  checksum: 3e84d3d99f56f5ef822e4e3d51b3a0e9cf604893b46fb8bae0f55bc600483250e5d7a8532e3093c137e535d618b222584176e2be4355d5c891e2a30861d2b28c
   languageName: node
   linkType: hard
 
@@ -18029,6 +18030,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mime@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "mime@npm:3.0.0"
+  bin:
+    mime: cli.js
+  checksum: f43f9b7bfa64534e6b05bd6062961681aeb406a5b53673b53b683f27fcc4e739989941836a355eef831f4478923651ecc739f4a5f6e20a76487b432bfd4db928
+  languageName: node
+  linkType: hard
+
 "mimic-fn@npm:^1.0.0":
   version: 1.2.0
   resolution: "mimic-fn@npm:1.2.0"
@@ -22008,7 +22018,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.67
+    "@hmcts/ccd-case-ui-toolkit": 7.1.8-query-management-cqc-workaround
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8
@@ -24601,9 +24611,9 @@ __metadata:
   linkType: hard
 
 "type-fest@npm:^4.8.3":
-  version: 4.23.0
-  resolution: "type-fest@npm:4.23.0"
-  checksum: 75466563be2d3d116a0b70ffe76a7f72947e3350ceacbc8509a7d841670dddc2fbb008109f0307888137794cf25681fd50f65bf8873bcdc17bc7ac8912c70114
+  version: 4.24.0
+  resolution: "type-fest@npm:4.24.0"
+  checksum: f02e28bb12ce290f9880937b3c65d3cc4f0fdd89776b4b78d392aece0eb031c7ea9c1d6c536011c63bb8d0a6c72359336287f23f940204508a42a442c98c4d25
   languageName: node
   linkType: hard
 

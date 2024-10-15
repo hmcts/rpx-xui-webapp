@@ -19,10 +19,15 @@ export class HeaderConfigService {
 
   private getRoleConfig(userRoles: string[], headerCfg: object): Observable<NavigationItem[]> {
     const configKeys = Object.keys(headerCfg);
-    const selectedConfig = configKeys.find((config) => {
+    const defaultKey = '.+';
+    const otherConfigKeys = configKeys.filter((config) => config !== defaultKey);
+    let selectedConfig = otherConfigKeys.find((config) => {
       const rolePattern = new RegExp(config);
       return userRoles.some((role) => rolePattern.test(role));
     });
+    if (!selectedConfig) {
+      selectedConfig = defaultKey;
+    }
     this.roleCfg = selectedConfig ? headerCfg[selectedConfig] : [];
     return of(this.roleCfg);
   }

@@ -2,7 +2,7 @@ const nodeAppDataModel = require('../../../dataModels/nodeApp');
 
 const testData = require('../../../e2e/config/appTestConfig');
 const userUtil = require('../../util/userRole');
-const baseConfig = require('../../config/baseConfig').default;
+const baseConfig = require('../../config/baseConfig')
 class NodeAppMockData {
 
     constructor(){

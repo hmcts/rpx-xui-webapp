@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
@@ -39,7 +40,8 @@ describe('AppHeaderComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        StoreModule.forRoot({})
+        StoreModule.forRoot({}),
+        HttpClientTestingModule
       ],
       declarations: [
         AppHeaderComponent
@@ -63,6 +65,10 @@ describe('AppHeaderComponent', () => {
         {
           provide: LoggerService,
           useValue: loggerServiceMock
+        },
+        {
+          provide: Window,
+          useValue: window
         },
         AppHeaderComponent
       ]

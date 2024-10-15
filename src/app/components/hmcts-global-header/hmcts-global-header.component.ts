@@ -74,7 +74,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.items.currentValue !== changes.items.previousValue) {
+    if (changes.items?.currentValue !== changes.items?.previousValue) {
       this.splitAndFilterNavItems(this.items);
     }
   }

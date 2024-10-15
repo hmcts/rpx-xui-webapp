@@ -1,9 +1,8 @@
 const nodeAppDataModel = require('../../../dataModels/nodeApp');
 
-
 const testData = require('../../../e2e/config/appTestConfig');
 const userUtil = require('../../util/userRole');
-
+const baseConfig = require('../../config/baseConfig')
 class NodeAppMockData {
 
     constructor(){
@@ -79,7 +78,8 @@ class NodeAppMockData {
             "manageCaseLink": "https://xui-webapp-aat.service.core-compute-aat.internal/cases",
             "manageOrgLink": "https://xui-mo-webapp-aat.service.core-compute-aat.internal",
             "protocol": "http",
-            "ccdGatewayUrl":"http://localhost:3001"
+            "ccdGatewayUrl":"http://localhost:3001",
+            "headerConfig": baseConfig
         };
     }
 

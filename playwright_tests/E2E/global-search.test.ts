@@ -45,10 +45,10 @@ test('Search from page Search', async ({ page }) => {
 });
 
 function findCaseId(page: any) {
-    if (page.url().includes('aat')) {
-      console.log('Use aat case id');
-      return '1714721967501327';
+    if (page.url().includes('demo')) {
+      console.log('Use demo case id');
+      return '1662020492250902';
     }
-    console.log('Use demo case id');
-    return '1662020492250902';
+    console.log('Use aat case id');
+    return '1714721967501327';
 }

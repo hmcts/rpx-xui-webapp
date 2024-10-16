@@ -48,9 +48,9 @@
 
     <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
     <div class="hmcts-header__content">
-      <nav class="hmcts-header__navigation" attr.aria-label="{{navigation.label | rpxTranslate}}">
+      <nav class="hmcts-header__navigation" attr.aria-label="{{navigation?.label | rpxTranslate}}">
         <ul class="hmcts-header__navigation-list">
-          <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
+          <li *ngFor="let item of navigation?.items; let i = index" class="hmcts-header__navigation-item">
             <a class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue"
                [routerLink]="">
               {{item.text | rpxTranslate}}
@@ -69,7 +69,7 @@
       <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (leftItems | async)">
-            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item.active ? true : null" [routerLink]="item.href">
+            <a class="hmcts-primary-navigation__link" (click)="onEmitSubMenu(item)" [attr.aria-current]="item?.active ? true : null" [routerLink]="item?.href">
               {{item.text | rpxTranslate}}
             </a>
           </li>

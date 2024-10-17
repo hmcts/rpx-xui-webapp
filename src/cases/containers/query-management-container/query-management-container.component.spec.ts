@@ -7,6 +7,7 @@ import {
   CaseField,
   CaseNotifier,
   CasesService,
+  QualifyingQuestionService,
   CaseView,
   FieldType,
   FormDocument,
@@ -169,6 +170,7 @@ describe('QueryManagementContainerComponent', () => {
   ];
 
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
+  const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['setQualifyingQuestionSelection']);
   const mockCaseNotifier = new CaseNotifier(casesService);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
   casesService.getEventTrigger.and.returnValue(of(eventMockData));
@@ -209,6 +211,7 @@ describe('QueryManagementContainerComponent', () => {
             }
           }
         },
+        { provide: QualifyingQuestionService, useValue: qualifyingQuestionService },
         { provide: CasesService, useValue: casesService },
         { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: locationMock },

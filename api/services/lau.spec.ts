@@ -146,7 +146,6 @@ describe('createAccessLog', () => {
       action: 'CREATED',
       timestamp: '2023-09-06T12:34:56.789Z',
       reason: 'mock-reason',
-      requestStartTimestamp: '2023-09-06T10:00:00.000Z',
       requestEndTimestamp: '2023-09-06T11:00:00.000Z'
     };
 
@@ -176,7 +175,6 @@ describe('createAccessLog', () => {
       action: 'CREATED',
       timestamp: '2023-09-06T12:34:56.789Z',
       reason: 'mock-reason',
-      requestStartTimestamp: '2023-09-06T10:00:00.000Z',
       requestEndTimestamp: '2023-09-06T11:00:00.000Z'
     };
 

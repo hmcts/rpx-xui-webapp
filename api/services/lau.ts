@@ -18,7 +18,8 @@ export const ENDPOINTS = {
 export const ACTION_TYPE = {
   CREATED: 'CREATED',
   APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  AUTO_APPROVED: 'AUTO-APPROVED'
 };
 
 export const REQUEST_TYPE = {
@@ -44,7 +45,6 @@ export type AccessLog = {
   action: string;
   timestamp: string;
   reason: string;
-  requestStartTimestamp: string;
   requestEndTimestamp: string;
 }
 
@@ -126,11 +126,10 @@ async function createAccessLogFromRequest(req: EnhancedRequest) {
       requestType: (process === 'specific-access') ? REQUEST_TYPE.SPECIFIC : REQUEST_TYPE.CHALLENGED,
       caseRef: requestedRole?.attributes?.caseId,
       userId: requestedRole?.actorId,
-      action: process === 'specific-access' ? ACTION_TYPE.CREATED : ACTION_TYPE.APPROVED,
+      action: process === 'specific-access' ? ACTION_TYPE.CREATED : ACTION_TYPE.AUTO_APPROVED,
       timestamp: requestedRole?.notes[0]?.time,
       reason: reason,
-      requestStartTimestamp: requestedRole?.notes[0]?.time,
-      requestEndTimestamp: requestedRole?.endTime
+      requestEndTimestamp: null
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);
   } catch (error) {
@@ -203,7 +202,6 @@ async function createAccessLogFromDecision(req: EnhancedRequest) {
       action: approval ? ACTION_TYPE.APPROVED : ACTION_TYPE.REJECTED,
       timestamp: new Date().toISOString(),
       reason: data?.specificAccessReason,
-      requestStartTimestamp: req.body.period?.startDate,
       requestEndTimestamp: req.body.period?.endDate
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);

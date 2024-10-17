@@ -23977,7 +23977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^5.3.10":
+"terser-webpack-plugin@npm:^5.3.10, terser-webpack-plugin@npm:^5.3.3":
   version: 5.3.10
   resolution: "terser-webpack-plugin@npm:5.3.10"
   dependencies:
@@ -23999,28 +23999,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^5.3.3":
-  version: 5.3.9
-  resolution: "terser-webpack-plugin@npm:5.3.9"
-  dependencies:
-    "@jridgewell/trace-mapping": ^0.3.17
-    jest-worker: ^27.4.5
-    schema-utils: ^3.1.1
-    serialize-javascript: ^6.0.1
-    terser: ^5.16.8
-  peerDependencies:
-    webpack: ^5.1.0
-  peerDependenciesMeta:
-    "@swc/core":
-      optional: true
-    esbuild:
-      optional: true
-    uglify-js:
-      optional: true
-  checksum: 41705713d6f9cb83287936b21e27c658891c78c4392159f5148b5623f0e8c48559869779619b058382a4c9758e7820ea034695e57dc7c474b4962b79f553bc5f
-  languageName: node
-  linkType: hard
-
 "terser@npm:5.29.1":
   version: 5.29.1
   resolution: "terser@npm:5.29.1"
@@ -24032,20 +24010,6 @@ __metadata:
   bin:
     terser: bin/terser
   checksum: a884c81a9d6c05560309078192e0cc60cb64b76637f7ca237b350ca54e97a9d4b927a5afa08a59646ef3cbf0511728c944793cb718a3e7e48dd4a2a201737eef
-  languageName: node
-  linkType: hard
-
-"terser@npm:^5.16.8":
-  version: 5.19.4
-  resolution: "terser@npm:5.19.4"
-  dependencies:
-    "@jridgewell/source-map": ^0.3.3
-    acorn: ^8.8.2
-    commander: ^2.20.0
-    source-map-support: ~0.5.20
-  bin:
-    terser: bin/terser
-  checksum: 09273ce7d3fbe8fea0ec2603ad1c06cc304838bdac42bbfe77835b0b0b6c4a894054575ca518fe16c95d5c401574a8c703f4fde97da45f1c972ea568e6ecafda
   languageName: node
   linkType: hard
 

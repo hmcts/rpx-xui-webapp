@@ -12,7 +12,8 @@ import {
   QueryListItem,
   CasesService,
   CaseEventTrigger,
-  CaseField
+  CaseField,
+  QualifyingQuestionService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
@@ -76,7 +77,8 @@ export class QueryManagementContainerComponent implements OnInit {
     private readonly caseNotifier: CaseNotifier,
     private readonly featureToggleService: FeatureToggleService,
     private readonly casesService: CasesService,
-    private readonly store: Store<fromRoot.State>
+    private readonly store: Store<fromRoot.State>,
+    private readonly qualifyingQuestionService: QualifyingQuestionService
   ) {}
 
   public ngOnInit(): void {
@@ -134,6 +136,7 @@ export class QueryManagementContainerComponent implements OnInit {
       // Submit triggered after selecting a qualifying question from qualifying questions radio options display page
       // Display the markdown page if markdown content is available, else navigate to the URL provided in the config
       this.qualifyingQuestion = this.qualifyingQuestionsControl.value;
+      this.qualifyingQuestionService.setQualifyingQuestionSelection(this.qualifyingQuestion);
 
       if (this.qualifyingQuestion.markdown?.length) {
         this.queryCreateContext = this.getQueryCreateContext();
@@ -186,6 +189,10 @@ export class QueryManagementContainerComponent implements OnInit {
       this.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
     } else {
       this.location.back();
+
+      if (this.queryCreateContext !== QueryCreateContext.NEW_QUERY) {
+        this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+      }
     }
   }
 

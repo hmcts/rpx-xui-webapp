@@ -35,7 +35,7 @@ export class AppConfig extends AbstractAppConfig {
     this.initialisationSyncService.waitForInitialisation((init) => {
       console.log(`waitForInitialisation callback called: ${init}`);
       if (init) {
-         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false).subscribe({
+        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false).subscribe({
           next: (val) => this.config = this.addAttribute(this.config,
             AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled], val)
         });

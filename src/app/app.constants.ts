@@ -31,12 +31,10 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.secureDocumentStoreEnabled, 'document_management_secure_enabled'], // should refactor this
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
-  [featureNames.enableCaseFileViewVersion1_1,featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
+  [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
   [featureNames.enableRestrictedCaseAccess, featureToAttributeName(featureNames.enableRestrictedCaseAccess)],
   [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)]
 ]);
-
-
 
 const footerDataNavigation = {
   items: [

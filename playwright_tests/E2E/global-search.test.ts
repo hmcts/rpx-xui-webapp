@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { signIn } from './steps/login-steps';
 import { clickOnMainMenu } from './steps/steps-functions';
 import { retryAction } from './steps/retry-steps';
+import { waitForSpinner } from './steps/spinner-steps';
 import axeTest from "./helpers/accessibilityTestHelper";
 
 test('Search from menu 16-digit find control', async ({ page }) => {
@@ -9,6 +10,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
 
   console.log('Search from menu 16-digit find control');
   const caseId = findCaseId(page)
+  await waitForSpinner(page);
   await expect(page.getByText('-digit case reference:')).toBeVisible();
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId);

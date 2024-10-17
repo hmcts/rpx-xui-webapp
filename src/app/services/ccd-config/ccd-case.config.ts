@@ -35,34 +35,41 @@ export class AppConfig extends AbstractAppConfig {
     this.initialisationSyncService.waitForInitialisation((init) => {
       console.log(`waitForInitialisation callback called: ${init}`);
       if (init) {
-        // odd case where LD flag doesn't match the attribute name in the config
-        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false).subscribe({
-          next: (val) => this.config = this.addAttribute(this.config, 'document_management_secure_enabled', val)
+         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false).subscribe({
+          next: (val) => this.config = this.addAttribute(this.config,
+            AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled], val)
         });
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.accessManagementMode, true).subscribe({
-          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.accessManagementMode, val)
+          next: (val) => this.config = this.addAttribute(this.config,
+            AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.accessManagementMode], val)
         });
         // Avoid possible race condition where the observable doesn't emit until after the config
         // has been passed to the toolkit by setting the default value before calling LD
         const defCfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
-        this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.waServiceConfig, defCfg);
+        this.config = this.addAttribute(this.config,
+          AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.waServiceConfig], defCfg);
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, defCfg).subscribe({
           next: (val) => {
             console.log('got value for wa-service-config: ' + JSON.stringify(val));
-            this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.waServiceConfig, val);
+            this.config = this.addAttribute(this.config,
+              AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.waServiceConfig], val);
           }
         });
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.icpEnabled, false).subscribe({
-          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.icpEnabled, val)
+          next: (val) => this.config = this.addAttribute(this.config,
+            AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.icpEnabled], val)
         });
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.icpJurisdictions, []).subscribe({
-          next: (val: string[]) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.icpJurisdictions, val)
+          next: (val: string[]) => this.config = this.addAttribute(this.config,
+            AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.icpJurisdictions], val)
         });
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, false).subscribe({
-          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, val)
+          next: (val) => this.config = this.addAttribute(this.config,
+            AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess], val)
         });
         this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, false).subscribe({
-          next: (val) => this.config = this.addAttribute(this.config, AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, val)
+          next: (val) => this.config = this.addAttribute(this.config,
+            AppConstants.FEATURE_TO_ATTRIBUTE_MAP[AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1], val)
         });
       }
     });

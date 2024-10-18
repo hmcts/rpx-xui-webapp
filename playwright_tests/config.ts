@@ -19,10 +19,13 @@ interface Config {
 }
 
 const baseURL = process.env.APPBASEURL || "https://manage-case.aat.platform.hmcts.net";
+const queryMgmtURL = process.env.QM_BASE_URL || "https://xui-fpl-case-service-pr-5582.preview.platform.hmcts.net";
+
 
 const config: Config = {
   AppBaseURL: baseURL,
   CaseBaseURL: baseURL + "/cases",
+  QMBaseURL:queryMgmtURL
 };
 
 export default config as {
@@ -30,4 +33,5 @@ export default config as {
 } & {
   AppBaseURL: string;
   CaseBaseURL: string;
+  QMBaseURL:string;
 };

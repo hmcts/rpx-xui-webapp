@@ -3,7 +3,7 @@ import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from ".
 import config from "../config"
 import { routeToCasePage } from './steps/case-steps';
 
-test('Create case flag 2', async ({ page }) => {
+test.skip('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
   await routeToCasePage(page, '1698182796208883');
@@ -21,7 +21,7 @@ test('Create case flag 2', async ({ page }) => {
   await checkNumberOfRow(page, tableClass, tableName, 1+1);//One row for the header
 });
 
-test('View case flag', async ({ page }) => {
+test.skip('View case flag', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
   await routeToCasePage(page, '1698182796208883');

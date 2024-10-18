@@ -11,6 +11,7 @@ import { ApplicationTheme, NavigationItem } from '../../models/theming.model';
 import { UserDetails } from '../../models/user-details.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import { LoggerService } from '../../services/logger/logger.service';
+import { HeaderConfigService } from '../../services/header-config/header-config.service';
 import { environment } from '../../../environments/environment';
 import * as fromActions from '../../store';
 
@@ -54,6 +55,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromActions.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly loggerService: LoggerService,
+    private readonly headerConfigService: HeaderConfigService,
     public router: Router
   ) {}
 
@@ -106,12 +108,11 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   public async setHeaderContent(userDetails) {
     if (userDetails.userInfo) {
       this.userRoles = userDetails.userInfo.roles;
-      this.hideNavigationListener(this.store);
-      this.setApplicationThemeForUser();
-      this.featureToggleService.getValue('mc-menu-items', this.defaultMenuItems).subscribe((menuItems) => {
-        this.hideNavigationListener(this.store);
+      this.headerConfigService.constructHeaderConfig(this.userRoles).subscribe((menuItems) => {
         this.setAppHeaderNavItems(menuItems);
       });
+      this.hideNavigationListener(this.store);
+      this.setApplicationThemeForUser();
     }
   }
 

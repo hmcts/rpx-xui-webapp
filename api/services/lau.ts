@@ -129,7 +129,7 @@ async function createAccessLogFromRequest(req: EnhancedRequest) {
       action: process === 'specific-access' ? ACTION_TYPE.CREATED : ACTION_TYPE.AUTO_APPROVED,
       timestamp: requestedRole?.notes[0]?.time,
       reason: reason,
-      requestEndTimestamp: null
+      requestEndTimestamp: process ==='specific-access' ? null : requestedRole?.endTime
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);
   } catch (error) {

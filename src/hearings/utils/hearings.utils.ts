@@ -211,8 +211,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = HearingsUtils.convertStringToDate(inputDateString);
-    const dateToCompare = HearingsUtils.convertStringToDate(dateToCompareString);
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }

@@ -244,6 +244,17 @@ describe('HearingsUtils', () => {
       const date2 = '2022-11-23T09:00:00.000Z';
       expect(HearingsUtils.hasDateChanged(date1, date2)).toEqual(true);
     });
+    it('Date comparison null values', () => {
+      const date1 = null;
+      const date2 = null;
+      expect(HearingsUtils.hasDateChanged(date1, date2)).toEqual(false);
+    });
+
+    it('Date comparison mix of null and undefined', () => {
+      const date1 = null;
+      const date2 = undefined;
+      expect(HearingsUtils.hasDateChanged(date1, date2)).toEqual(false);
+    });
   });
 
   describe('Test of hasHearingPriorityChanged functionality', () => {

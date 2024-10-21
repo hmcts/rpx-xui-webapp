@@ -63,7 +63,7 @@ export class QueryManagementContainerComponent implements OnInit {
   public eventTrigger$: Observable<CaseEventTrigger>;
   public roleName: string;
 
-  private caseDetails: CaseView;
+  public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
 

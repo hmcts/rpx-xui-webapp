@@ -10,8 +10,8 @@ import { AppTitleModel } from '../../models/app-title.model';
 import { ApplicationTheme, NavigationItem } from '../../models/theming.model';
 import { UserDetails } from '../../models/user-details.model';
 import { UserNavModel } from '../../models/user-nav.model';
-import { LoggerService } from '../../services/logger/logger.service';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
+import { LoggerService } from '../../services/logger/logger.service';
 import { environment } from '../../../environments/environment';
 import * as fromActions from '../../store';
 

@@ -33,6 +33,7 @@
           </ccd-qualifying-question-detail>
           <ccd-query-write-raise-query *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"
             [formGroup]="formGroup"
+            [caseDetails]="caseDetails"
             [queryCreateContext]="queryCreateContext" [submitted]="submitted">
           </ccd-query-write-raise-query>
           <ccd-query-write-respond-to-query

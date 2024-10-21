@@ -36,7 +36,6 @@ const specialReplicasCount = 5;
 
 function shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount) {
   const randomNumber = Math.floor(Math.random() * totalReplicas);
-  logger.error(randomNumber);
   return randomNumber < specialReplicasCount;
 }
 const isSpecialPod = shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount);

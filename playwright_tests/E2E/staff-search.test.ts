@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { signIn, signOut } from "./steps/login-steps";
 import { clickToStaffPage, fillSearchBox } from "./steps/staff-steps";
+import { waitForSpinner } from './steps/spinner-steps';
 import axeTest from "./helpers/accessibilityTestHelper";
 
 test('Simplified search results', async ({ page }) => {
     await signIn(page, "STAFF_ADMIN");
+    await expect(page.getByLabel('Manage Cases')).toBeVisible();
+
+    await waitForSpinner(page);
     await clickToStaffPage(page);
   
     console.log("Using simple search");

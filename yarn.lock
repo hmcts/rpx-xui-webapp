@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.67":
-  version: 7.0.67
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.67"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.69-exui-2388-rc1":
+  version: 7.0.69-exui-2388-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.69-exui-2388-rc1"
   dependencies:
     tslib: ^2.3.0
-  checksum: 9e7c57155f7d58f36cedcf1b83f5d5d6cfd2e5b4c7d8afa2f02e88e48f6e92d418d583cdd7ebc1afa6c7d1c508acdd9f8324457122c50cc3b09cf2e40c378748
+  checksum: 9ed2dc2c0d0d4e84a3bc5acbd5dd0aa863423acd8e9291f495d3980c35b7a5e8c3e151fedad7b8795834dec45c9a6f68fd57dd2cb07a3da7eaa6e1dbf7bd0127
   languageName: node
   linkType: hard
 
@@ -3402,9 +3402,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.8":
-  version: 4.0.8
-  resolution: "@hmcts/media-viewer@npm:4.0.8"
+"@hmcts/media-viewer@npm:4.0.8-exui-2388-rc1":
+  version: 4.0.8-exui-2388-rc1
+  resolution: "@hmcts/media-viewer@npm:4.0.8-exui-2388-rc1"
   dependencies:
     "@swimlane/ngx-datatable": ^20.0.0
     mutable-div: ^2.0.0
@@ -3423,7 +3423,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 620252ce3e8af449881cb19aa96a47360bdf73eae17a94bd27619918f4e02f9f622b32ba26a696ced04f91a0dd27c42dbcbd6cb17be8c2fd168236d6de565f77
+  checksum: 4cd48c518b491c63ebec2cc849e295d12b1152e22eaae6c838ba92b3b957d889f2b55fef71c235b3418ffba04732fab75abac2c074e2ce0d561f62f27a1b218c
   languageName: node
   linkType: hard
 
@@ -22008,10 +22008,10 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.67
+    "@hmcts/ccd-case-ui-toolkit": 7.0.69-exui-2388-rc1
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
-    "@hmcts/media-viewer": 4.0.8
+    "@hmcts/media-viewer": 4.0.8-exui-2388-rc1
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.30

@@ -9,8 +9,7 @@ import { InitialisationSyncService } from './initialisation-sync-service';
 import { LaunchDarklyDefaultsConstants } from './launch-darkly-defaults.constants';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 import { LoggerService } from '../logger/logger.service';
-import { combineLatest, forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
 
 /**
  * see more:

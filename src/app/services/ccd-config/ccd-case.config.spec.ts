@@ -64,7 +64,6 @@ describe('AppConfiguration', () => {
     });
     const iss = TestBed.inject(InitialisationSyncService);
     iss.initialisationComplete(true);
-
   });
 
   it('should be created ', inject([AppConfig, Window], (service: AppConfig) => {

@@ -46,18 +46,25 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.accessManagementMode, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, [], obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
         console.log('Created observers and subscribers ' + obArray.length);
         if (obArray.length === 7) {
-          combineLatest(...obArray)
+          combineLatest(...obArray).subscribe((foo) => {
+            foo.forEach((item) => {
+              console.log('result item ' + item);
+            });
+            this.initialisationComplete = true;
+          });
+          /*
             .pipe(map( (res) => {
               res.forEach((item) => {
                 console.log('result item ' + item);
               });
               this.initialisationComplete = true;
             }));
+           */
         }
       }
     });

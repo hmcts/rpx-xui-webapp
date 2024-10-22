@@ -302,7 +302,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public async goToQueryList(): Promise<void> {
     await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'Queries (read-only view)' }
+      { fragment: 'Query Management' }
     );
   }
 

@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -42,7 +42,10 @@ const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-
+  mockFeatureToggleService.getValue.and.callFake((featureMame: string, defVal: any) => {
+    console.log('fake getValue for ' + featureMame);
+    return of(defVal);
+  });
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -52,7 +55,6 @@ describe('AppConfiguration', () => {
       providers: [
         { provide: Window, useValue: mockWindow },
         AppConfig,
-        AppConfigService,
         InitialisationSyncService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
@@ -60,9 +62,9 @@ describe('AppConfiguration', () => {
         { provide: LoggerService, useValue: mockLoggerService }
       ]
     });
-    mockFeatureToggleService.getValue.and.returnValue(of(true));
     const iss = TestBed.inject(InitialisationSyncService);
     iss.initialisationComplete(true);
+
   });
 
   it('should be created ', inject([AppConfig, Window], (service: AppConfig) => {
@@ -190,4 +192,9 @@ describe('AppConfiguration', () => {
     expect(result).toEqual(expectedObj);
     expect(typeof result).toEqual(typeof(expectedObj));
   }));
+
+  it('should be initialised after all LD observables complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
+    tick(5000);
+    expect(service.initialisationComplete).toBeTruthy();
+  })));
 });

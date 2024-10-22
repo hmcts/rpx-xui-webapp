@@ -22142,7 +22142,6 @@ __metadata:
     rpx-xui-translation: 1.0.4
     rx-polling-hmcts: 1.1.1
     rxjs: ^7.8.1
-    rxjs-compat: ^6.6.7
     sass: ^1.66.1
     shortid: ^2.2.14
     sinon: ^7.3.2
@@ -22221,13 +22220,6 @@ __metadata:
   peerDependencies:
     rxjs: ">=5.5.0"
   checksum: de528139444890a0df7350b79fbd1b87530ef8cc33dc69eceae4cadadf961d5013c44b9e886d4d62142de2c6359b7a6a9103d7ebf066591f442d7921fc4a58df
-  languageName: node
-  linkType: hard
-
-"rxjs-compat@npm:^6.6.7":
-  version: 6.6.7
-  resolution: "rxjs-compat@npm:6.6.7"
-  checksum: a47339680d8da5ad8d00693ff75653deff99206ca9a12fc21c48d5dc88b972d0aed2dbcdf34b8f7ae52fe8817931f70a0e25a053ea75eb24802f2daf6c8a47b7
   languageName: node
   linkType: hard
 

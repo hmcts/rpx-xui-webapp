@@ -157,7 +157,6 @@
     "rpx-xui-translation": "1.0.4",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
-    "rxjs-compat": "^6.6.7",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
     "stream": "^0.0.2",

@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.69":
-  version: 7.0.69
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.69"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.70-testing":
+  version: 7.0.70-testing
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.70-testing"
   dependencies:
     tslib: ^2.3.0
-  checksum: da9f009d48aa9e66f790fc886a56788212d65d3f234f76f5df5d7b458f716ddd21c4a8b9cc5b89383f0b0d79e24c96549c1d0565247ae6a98091a78b9b5245cf
+  checksum: e2611c1d4a3afd7564f29d7dd2106e74b8c0456fad98a724dca31a0089f66d4111ecf939baeff27b3d672f6b6da90dfcc54d960efd1bdb52616d6637941005a3
   languageName: node
   linkType: hard
 
@@ -11239,9 +11239,9 @@ __metadata:
   linkType: hard
 
 "dexie@npm:^3.2.2":
-  version: 3.2.4
-  resolution: "dexie@npm:3.2.4"
-  checksum: 4e5294a954118b6862c864b8c3970904a1733daebcd919488624520696411e2e81ed1bceeac3634c5c15a21e37ce4b8502ed41c4edfbc5ba3f5925c34d56497b
+  version: 3.2.7
+  resolution: "dexie@npm:3.2.7"
+  checksum: 257504ed23cea2e5ed5c18a17a031c0a44aff70c5b3d6a63536b544cec9027c4c492a608165d5e7a44a104570c92dec2aa59c7bcec0c65f52000f979e1193dfd
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.69
+    "@hmcts/ccd-case-ui-toolkit": 7.0.70-testing
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8
@@ -22139,7 +22139,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
     puppeteer: ^22.4.1
-    rpx-xui-translation: 1.0.4
+    rpx-xui-translation: 1.0.5-testing
     rx-polling-hmcts: 1.1.1
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
@@ -22170,9 +22170,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.4":
-  version: 1.0.4
-  resolution: "rpx-xui-translation@npm:1.0.4"
+"rpx-xui-translation@npm:1.0.5-testing":
+  version: 1.0.5-testing
+  resolution: "rpx-xui-translation@npm:1.0.5-testing"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -22180,7 +22180,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^15.2.9
     "@angular/core": ^15.2.9
-  checksum: bfa7008625ad4d7a4769b7b15d1878992625331a9740e14a398a5c8ad26731255ccfec12f3930c6a7c98c68e0fb9e426cab5a7f5abff218fb12a0c754e28242d
+  checksum: 8710c55f19ddf3347d88847335de7309926cf65f62d4ac32f3384400ab55cbb1f77d862a6d20054acce1b3511e5c5f1b79012475095e965566e46b5d8fecfcae
   languageName: node
   linkType: hard
 

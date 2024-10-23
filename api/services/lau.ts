@@ -201,7 +201,7 @@ async function createAccessLogFromDecision(req: EnhancedRequest) {
       userId: actorId,
       action: approval ? ACTION_TYPE.APPROVED : ACTION_TYPE.REJECTED,
       timestamp: new Date().toISOString(),
-      reason: data?.comment,
+      reason: data?.comment ? `Request more information - ${data.comment}` : data?.comment,
       requestEndTimestamp: req.body.period?.endDate
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);

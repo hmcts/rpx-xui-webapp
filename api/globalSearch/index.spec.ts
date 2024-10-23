@@ -143,7 +143,6 @@ describe('Jurisdiction', () => {
     { serviceId: 'CIVIL', serviceName: 'CIVIL' },
     { serviceId: 'PRIVATELAW', serviceName: 'PRIVATELAW' },
     { serviceId: 'PUBLICLAW', serviceName: 'PUBLICLAW' },
-    { serviceId: 'ST_CIC', serviceName: 'ST_CIC' },
     { serviceId: 'EMPLOYMENT', serviceName: 'EMPLOYMENT' }
   ];
 
@@ -191,8 +190,6 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     const services = globalSearchServices.generateServices(fefDataHMCTS);
-    console.log('services:-', services);
-    console.log('serviceList:-', serviceList);
     expect(services).to.deep.equal(serviceList);
   });
 

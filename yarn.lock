@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.69":
-  version: 7.0.69
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.69"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.69-exui-1227-mp3Andmp4NotOpeningInCaseFileView":
+  version: 7.0.69-exui-1227-mp3Andmp4NotOpeningInCaseFileView
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.69-exui-1227-mp3Andmp4NotOpeningInCaseFileView"
   dependencies:
     tslib: ^2.3.0
-  checksum: da9f009d48aa9e66f790fc886a56788212d65d3f234f76f5df5d7b458f716ddd21c4a8b9cc5b89383f0b0d79e24c96549c1d0565247ae6a98091a78b9b5245cf
+  checksum: 83d94eb40467b0c4b3117ad899019ccfb6cb5118c8dfa96c9193898a650709f73c23521e1389bbb82f2ea30f0ffde8d071f7fdc7915fea1f7e28cc7568ad1285
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.69
+    "@hmcts/ccd-case-ui-toolkit": 7.0.69-exui-1227-mp3Andmp4NotOpeningInCaseFileView
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8

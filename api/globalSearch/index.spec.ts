@@ -8,7 +8,7 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
-import { RefDataHMCTSService } from 'api/ref-data/models/ref-data-hmcts-service.model';
+import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 
 chai.use(sinonChai);
 

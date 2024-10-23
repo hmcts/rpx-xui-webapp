@@ -8,7 +8,7 @@ import {
 } from '../configuration/references';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { EnhancedRequest } from '../lib/models';
-import { RefDataHMCTSService } from 'ref-data/models/ref-data-hmcts-service.model';
+import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 

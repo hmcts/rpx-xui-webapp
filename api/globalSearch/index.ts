@@ -1,35 +1,28 @@
+import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { NextFunction, Response } from 'express';
 import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   GLOBAL_SEARCH_SERVICES,
-  SERVICES_CCD_DATA_STORE_API_PATH,
-  SERVICES_LOCATION_REF_API_URL
+  SERVICES_CCD_DATA_STORE_API_PATH
 } from '../configuration/references';
 import { GlobalSearchService } from '../interfaces/globalSearchService';
 import { EnhancedRequest } from '../lib/models';
-import { RefDataHMCTSService } from 'ref-data/models/ref-data-hmcts-service.model';
-import { http } from '../lib/http';
-import { setHeaders } from '../lib/proxy';
 
 /**
  * Get global search services
  * api/globalsearch/services
  */
-
-const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
-
 export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
   try {
     // Return global search services from session if available
     if (req.session.globalSearchServices && req.session.globalSearchServices.length !== 0) {
       return res.json(req.session.globalSearchServices);
     }
 
-    const response = await http.get(`${apiPath}`, { headers: setHeaders(req) });
-
-    const services: any = generateServices(response.data);
+    // Retrieve jurisdictions from session if available
+    // Else perform api call to get jurisdictions
+    const services: any = generateServices(req.session.jurisdictions as Jurisdiction[]);
 
     // Store generated global search services to session
     req.session.globalSearchServices = services;
@@ -60,22 +53,25 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  * @param jurisdictions
  * @returns
  */
-export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSearchService[] {
+export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
   // Retrieve global search services id from config
+  console.log('jurisdictions', jurisdictions);
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
+  console.log('globalSearchServiceIds', globalSearchServiceIds);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
   // Generate global search services
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
-    const jurisdiction = refDataHMCTS ? refDataHMCTS.find((x) => x.ccd_service_name === serviceId) : null;
+    const jurisdiction = jurisdictions ? jurisdictions.find((x) => x.id === serviceId) : null;
     if (jurisdiction) {
-      globalSearchServices.push({ serviceId: jurisdiction.ccd_service_name, serviceName: jurisdiction.ccd_service_name });
+      globalSearchServices.push({ serviceId: jurisdiction.id, serviceName: jurisdiction.name });
     } else {
       globalSearchServices.push({ serviceId, serviceName: serviceId });
     }
   });
 
   // Return generated global search services
+  console.log('globalSearchServices:-', globalSearchServices);
   return globalSearchServices;
 }

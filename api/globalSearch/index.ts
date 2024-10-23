@@ -55,9 +55,7 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  */
 export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchService[] {
   // Retrieve global search services id from config
-  console.log('jurisdictions', jurisdictions);
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
-  console.log('globalSearchServiceIds', globalSearchServiceIds);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
   // Generate global search services
@@ -72,6 +70,5 @@ export function generateServices(jurisdictions: Jurisdiction[]): GlobalSearchSer
   });
 
   // Return generated global search services
-  console.log('globalSearchServices:-', globalSearchServices);
   return globalSearchServices;
 }

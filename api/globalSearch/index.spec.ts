@@ -191,6 +191,8 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     const services = globalSearchServices.generateServices(fefDataHMCTS);
+    console.log('services:-',services);
+    console.log('serviceList:-',serviceList);
     expect(services).to.deep.equal(serviceList);
   });
 

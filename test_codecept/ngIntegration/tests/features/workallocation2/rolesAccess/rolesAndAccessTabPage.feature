@@ -55,7 +55,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - 1 judicial, 1 LegalOps, 1 Exclusion
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator,judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation | roleCategory     | roleName       |
             | IA           | N           | ORGANISATION | 20001        | LEGAL_OPERATIONS | case-allocator |
@@ -98,7 +98,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - Validate columns and data displayed
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator,judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation | roleCategory     | roleName       |
             | IA           | N           | ORGANISATION | 20001        | LEGAL_OPERATIONS | case-allocator |
@@ -189,7 +189,7 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 
     Scenario: Case with roles - Validate non case allocator user - columns and data displayed
 
-        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator" with reference "userDetails"
+        Given I set MOCK with user "IAC_Judge_WA_R2" and roles "caseworker-ia-iacjudge,caseworker-ia,caseworker ,task-supervisor,case-allocator,judge" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation | roleCategory     | roleName       |
             | IA           | N           | ORGANISATION | 20001        | LEGAL_OPERATIONS | task-supervisior |

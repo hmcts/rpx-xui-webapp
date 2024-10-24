@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.66-ungrey-back-button":
-  version: 7.0.66-ungrey-back-button
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.66-ungrey-back-button"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.70":
+  version: 7.0.70
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.70"
   dependencies:
     tslib: ^2.3.0
-  checksum: 7a2b9e00bec5d73276cc3f17eaf120e3e4e76dece8aca7d8d23f2dd652468cd8812985f36a60883d9b7f9c1964bd2fa60456b1510b3544130f176518b31a0e38
+  checksum: f8715ee8db96beeae4fb907e2b437d42df196039096326b5bac4265ba5d553310c3e1a2639223deaef416c122f7f0f29f05f75909bd6740f77d899f935f3ebe3
   languageName: node
   linkType: hard
 
@@ -3460,16 +3460,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.29":
-  version: 2.0.29
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.29"
+"@hmcts/rpx-xui-common-lib@npm:2.0.30":
+  version: 2.0.30
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.30"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: c6fa9dddbbcf714f92c44a1240ac50445ef5695255a8f66d4724894c7bf2426b834574f34acc8e13e38a5b6b936d7b15edf4bc1083d4fd9314f8e8863281dc4b
+  checksum: ebf2c7d083295359b5b88b552b19dc56e9260010deb187b95abb1276c536825012ddec109f424d2612d7de8e80d71fdb9fd3b261238dffbb5d5ddfe9a4d2b7d4
   languageName: node
   linkType: hard
 
@@ -22008,13 +22008,13 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.66-ungrey-back-button
+    "@hmcts/ccd-case-ui-toolkit": 7.0.70
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.29
+    "@hmcts/rpx-xui-common-lib": 2.0.30
     "@hmcts/rpx-xui-node-lib": 2.29.1
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^14.0.0

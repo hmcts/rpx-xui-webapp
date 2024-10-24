@@ -20,9 +20,9 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
     // caseId hardcoded for now
     caseId = '1729586799128026';
     queryName = 'QM E2E '+ faker.name.firstName(1) + ' '+ faker.name.lastName(1) ;
-    queryDescription= 'Query Description for'+ queryName;
+    queryDescription= ' Query Description for '+ queryName;
     console.log('....>>>>>>>>  Query Name   >>>>>>>> ' +  queryName);
-    console.log('....>>>>>>>>  Query Description  >>>>>>>> ' +  queryDescription);
+
   });
 
 
@@ -31,12 +31,11 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
     console.log('...Raise a new Query ...');
     // Login as Solicitor on a Existing case
     // TODO have a new FPL Case created before this suite of tests are run - once FPLA have their code in AAT.
-    // Currently we Use an existing case on the fpl-pr environment
+    // Currently we use an existing case on the fpl-pr environment as a workaround.
 
     await loginExUIForQueryManagement(page, 'solicitor');
     await expect(page.getByRole('heading', {name: 'Case list'})).toBeVisible();
     const xuiQMLandingUrl = page.url()+`/case-details/${caseId}`+`#Query%20Management`;
-    console.log( ' url landing is  ' + xuiQMLandingUrl);
 
     await page.goto(xuiQMLandingUrl);
 
@@ -67,7 +66,7 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
     // can this be changed or xpath'ified as a last resort
     await page.locator('[id="formControlName\\ \\+\\ \\\'-year\\\'"]').fill('2024');
 
-    // Hard wait for ensuring that the queriesCollection FieldID is available
+    // Hard wait for ensuring that the queriesCollection is populated by RxJS and is available
     await page.waitForTimeout(5000);
     await axeTest(page);
 
@@ -97,7 +96,7 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
 
   test('Respond to a Query as a Admin / Caseworker from FPL @QM', async ({page}) => {
 
-    console.log('..Respond to a Query as a Caseworker/Admin');
+    console.log('...Respond to a Query as a Caseworker/Admin');
 
     // Login as CW Admin
     await loginExUIForQueryManagement(page, 'admin');
@@ -114,6 +113,7 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
     await axeTest(page);
 
     await page.getByRole('button', {name: 'Response to a query'}).click();
+    await page.waitForTimeout(5000);
 
     // Respond to a Query - Query Details Page
     await expect(page.getByRole('rowheader', {name: 'Last submitted by'})).toBeVisible();
@@ -125,21 +125,19 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
     await axeTest(page);
 
     await page.getByRole('button', {name: 'Continue'}).click();
+    await page.waitForTimeout(5000);
+
 
     // Review Query Response Details page
     await expect(page.getByRole('heading', {name: 'Review query response details'})).toBeVisible();
-    //await expect(page.getByRole('rowheader', { name: 'Document attached' })).toBeVisible();
     await expect(page.getByRole('link', {name: 'Cancel and return to tasks'})).toBeVisible();
     await expect(page.getByRole('button', {name: 'Previous'})).toBeVisible();
     await expect(page.getByRole('button', {name: 'Submit'})).toBeVisible();
 
     // Submit the 'Response'
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>   Response to a Query  - Before Submit -  >>>>>>>>>>>>>>>>>>>>');
     await axeTest(page);
-
     await page.getByRole('button', {name: 'Submit'}).click();
     await page.waitForTimeout(5000);
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>   Response to a Query  - After  Submit  >>>>>>>>>>>>>>>>>>>>');
     await page.getByText('Sign out').click();
 
   });
@@ -185,7 +183,6 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
 
     await page.getByRole('button', {name: 'Submit'}).click();
     await page.waitForTimeout(5000);
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>   Follow Up Query Post-Submit  >>>>>>>>>>>>>>>>>>>>');
 
     await page.getByText('Sign out').click();
     await page.waitForTimeout(1000);
@@ -193,15 +190,6 @@ test.describe('FPL Test Case Data to be shared by all Tests @QM', () => {
   });
 
 });
-
-function findCaseId(page: any) {
-  if (page.url().includes('aat')) {
-    console.log('Use aat case id');
-    return '1714721967501327';
-  }
-  console.log('Use demo case id');
-  return '1662020492250902';
-}
 
 async function loginExUIForQueryManagement(page, role) {
 

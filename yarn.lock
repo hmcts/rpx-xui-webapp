@@ -5212,7 +5212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.48.1":
+"@playwright/test@npm:^1.42.0":
   version: 1.48.1
   resolution: "@playwright/test@npm:1.48.1"
   dependencies:
@@ -21689,7 +21689,7 @@ __metadata:
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     "@pact-foundation/pact": ^9.11.1
     "@pact-foundation/pact-node": ^10.9.7
-    "@playwright/test": ^1.48.1
+    "@playwright/test": ^1.42.0
     "@stryker-mutator/api": ^8.0.0
     "@stryker-mutator/core": ^8.0.0
     "@stryker-mutator/html-reporter": ^3.1.0

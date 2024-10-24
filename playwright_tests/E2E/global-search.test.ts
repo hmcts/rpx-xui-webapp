@@ -5,6 +5,7 @@ import { retryAction } from './steps/retry-steps';
 import {routeToCasePage, routeToQueryManagementCase} from './steps/case-steps';
 var path = require('path');
 import config from '../config';
+import { waitForSpinner } from './steps/spinner-steps';
 import axeTest from "./helpers/accessibilityTestHelper";
 
 
@@ -14,6 +15,7 @@ test.skip('Search from menu 16-digit find control', async ({ page }) => {
 
   console.log('Search from menu 16-digit find control');
   const caseId = findCaseId(page)
+  await waitForSpinner(page);
   await expect(page.getByText('-digit case reference:')).toBeVisible();
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId);
@@ -48,12 +50,12 @@ test.skip('Search from page Search', async ({ page }) => {
 });
 
 function findCaseId(page: any) {
-    if (page.url().includes('aat')) {
-      console.log('Use aat case id');
-      return '1714721967501327';
+    if (page.url().includes('demo')) {
+      console.log('Use demo case id');
+      return '1662020492250902';
     }
-    console.log('Use demo case id');
-    return '1662020492250902';
+    console.log('Use aat case id');
+    return '1714721967501327';
 }
 
 async function loginExUIForQueryManagement(page, role) {

@@ -205,5 +205,6 @@
     "consumerVersion": "PACT_CONSUMER_VERSION",
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"
-  }
+  },
+  "headerConfig": "HEADER_CONFIG"
 }

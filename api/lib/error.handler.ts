@@ -22,12 +22,10 @@ export default function errorHandler(err, req: Request, res: Response, next: Nex
   } else {
     if (err) {
       logger._logger.error(err.toString());
-    }
-    else {
+    } else {
       logger._logger.error('errorHanndler called with no error');
     }
   }
-
   const errorStatus = err.status ? err.status : 500;
   const errorContent = err.data ? err.data : { message: 'Internal Server Error' };
   res.status(errorStatus).send(errorContent);

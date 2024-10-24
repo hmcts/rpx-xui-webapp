@@ -15,7 +15,7 @@ import { http } from './http';
 import { EnhancedRequest } from './models';
 import { exists } from './util';
 
-const hearingsPreviewCcdEnabled = getConfigValue(SERVICES_HEARINGS_ENABLE_PREVIEW_CCD);
+const hearingsPreviewCcdEnabled = getConfigValue(SERVICES_HEARINGS_ENABLE_PREVIEW_CCD) === 'true';
 
 export function setHeaders(req: express.Request, contentType?: string) {
   const headers: any = {};

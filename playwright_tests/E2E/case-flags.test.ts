@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
 import config from "../config"
 import { routeToCasePage } from './steps/case-steps';
+import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from './steps/flag-steps';
 
 test('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
@@ -23,16 +24,18 @@ test('Create case flag 2', async ({ page }) => {
 
 test('View case flag', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
-
   await routeToCasePage(page, '1698182796208883');
+  const currentActiveFlags = getActiveFlagsForCase(page);
+
+  console.log('Check the banner shows the correct value');
+  await expect(page.getByText(`There are ${await currentActiveFlags} active flags on`)).toBeVisible();
+  await page.getByText('Case flags', { exact: true }).click();
+  console.log('Check all the party tables on the page for any active flags');
+  await checkActiveRowsMatchesBanner(page, currentActiveFlags);
 
   console.log("Check Applicant details");
-  await expect(page.getByText('There are 6 active flags on')).toBeVisible();
-  await page.getByText('Case flags', { exact: true }).click();
-  await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
   const tableClass= "govuk-table";
   const tableName = "Applicant";
-  await checkNumberOfRow(page, tableClass, tableName, 7);//One row for the header
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
 
   const rowTextRef = "Support filling in forms";

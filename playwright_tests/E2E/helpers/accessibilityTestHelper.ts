@@ -5,9 +5,9 @@ import { axeTestEnabled } from "../../../playwright.config";
 
  const fs = require('fs');
 
- async function axeTest(page: Page): Promise<void> {
+ async function axeTest(page: Page,forceEnable=false): Promise<void> {
 
-   if (!axeTestEnabled) {
+   if (!axeTestEnabled && !forceEnable) {
      console.log("Skipping accessibility axe test as ENABLE_AXE_TESTS is not set to true");
      return;
    }

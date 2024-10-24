@@ -9,16 +9,18 @@ import { InitialisationSyncService } from './initialisation-sync-service';
 import { LaunchDarklyDefaultsConstants } from './launch-darkly-defaults.constants';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 import { LoggerService } from '../logger/logger.service';
+import { combineLatest, Observable } from 'rxjs';
 
 /**
  * see more:
  * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
  * is explained why this is needed
  */
+type ConfigValue = string | boolean | Array<string> | object
 
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-  public workallocationUrl: string;
+  public initialisationComplete = false;
   protected config: CaseEditorConfig;
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
   constructor(
@@ -30,64 +32,59 @@ export class AppConfig extends AbstractAppConfig {
     private readonly loggerService: LoggerService
   ) {
     super();
+    console.log('In AppConfig constructor');
     this.deploymentEnv = environmentService.getDeploymentEnv();
     this.config = this.appConfigService.getEditorConfiguration() || {};
     this.initialisationSyncService.waitForInitialisation((init) => {
       console.log(`waitForInitialisation callback called: ${init}`);
       if (init) {
-        this.featureToggleService.getValue('mc-document-secure-mode-enabled', false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            document_management_secure_enabled: val
-          }
-        });
-
-        this.featureToggleService.getValue('access-management-mode', true).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            access_management_mode: val
-          }
-        });
-
-        this.featureToggleService.getValue('wa-service-config',
-          LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv)).subscribe({
-          next: (val) => {
-            console.log('got value for wa-service-config: ' + JSON.stringify(val));
-            this.config = {
-              ...this.config,
-              wa_service_config: val
-            };
-          }
-        });
-
-        this.featureToggleService.getValue('icp-enabled', false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            icp_enabled: val
-          }
-        });
-        this.featureToggleService.getValue('icp-jurisdictions', []).subscribe({
-          next: (val: string[]) => this.config = {
-            ...this.config,
-            icp_jurisdictions: val
-          }
-        });
-
-        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            enable_restricted_case_access: val
-          }
-        });
-
-        this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, false).subscribe({
-          next: (val) => this.config = {
-            ...this.config,
-            enable_case_file_view_version_1_1: val
-          }
-        });
+        //combineLatestWith()
+        const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
+        const obArray: Array<Observable<ConfigValue>> = [];
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.accessManagementMode, true, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, true, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
+        console.log('Created observers and subscribers ' + obArray.length);
+        if (obArray.length === 7) {
+          combineLatest(...obArray).subscribe((foo) => {
+            foo.forEach((item) => {
+              console.log('result item ' + item);
+            });
+            this.initialisationComplete = true;
+          });
+          /*
+            .pipe(map( (res) => {
+              res.forEach((item) => {
+                console.log('result item ' + item);
+              });
+              this.initialisationComplete = true;
+            }));
+           */
+        }
       }
     });
+  }
+
+  private setUpLaunchDarklyForFeature<V extends ConfigValue>(featureName: string, defaultVal: V,
+    obArray: Array<Observable<V>>) : void {
+    console.log('Setting up LD for feature ' + featureName);
+    const ob = this.featureToggleService.getValue(featureName, defaultVal);
+    const cbFn = (val) => this.config = this.addAttribute(this.config,
+      AppConstants.FEATURE_TO_ATTRIBUTE_MAP[featureName], val);
+    ob.subscribe(cbFn);
+    obArray.push(ob);
+  }
+
+  // Add a named attribute to an object in a properly typed way
+  public addAttribute<T extends object, K extends string, V>(obj: T, key: K, value: V):T & { [P in K]: V } {
+    return {
+      ...obj,
+      [key]: value
+    } as T & { [P in K]: V };
   }
 
   public load(): Promise<void> {
@@ -235,6 +232,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWAServiceConfig(): WAFeatureConfig {
+    console.log('in ccd-config getWAServiceConfig, config = ', JSON.stringify(this.config.wa_service_config));
     return this.config.wa_service_config;
   }
 

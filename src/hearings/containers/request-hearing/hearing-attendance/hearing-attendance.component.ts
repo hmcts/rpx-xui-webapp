@@ -249,10 +249,11 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   private patchValues(party: PartyDetailsModel): FormGroup {
     const individualDetails = party.individualDetails && this.initIndividualDetailsFormGroup(party.individualDetails);
     const organisationDetails = party.organisationDetails;
+    const partyName = party.partyName ? party.partyName : `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
     return this.fb.group({
       partyID: [party.partyID],
       partyType: [party.partyType],
-      partyName: [party.partyName],
+      partyName: [partyName],
       partyRole: [party.partyRole],
       ...individualDetails && ({ individualDetails }),
       ...organisationDetails && ({ organisationDetails }),

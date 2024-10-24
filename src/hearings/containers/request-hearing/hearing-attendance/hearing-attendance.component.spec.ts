@@ -16,6 +16,8 @@ import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingAttendanceComponent } from './hearing-attendance.component';
+import { IndividualDetailsModel } from '../../../models/hearingActualsMainModel';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 
 const refData: LovRefDataModel[] = [
   {
@@ -492,7 +494,57 @@ describe('HearingAttendanceComponent', () => {
       expect(component.attendanceFormGroup.controls.estimation.value).toEqual(3);
     });
   });
+  describe('HearingAttendanceComponent', () => {
+    let component: HearingAttendanceComponent;
 
+    beforeEach(() => {
+      fixture = TestBed.createComponent(HearingAttendanceComponent);
+      component = fixture.componentInstance;
+    });
+
+    it('should patch values correctly when partyName is defined', () => {
+      const party: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'John Doe',
+        individualDetails: {
+          title: 'Mr',
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inperson'
+        } as IndividualDetailsModel,
+        organisationDetails: null,
+        unavailabilityDOW: null,
+        unavailabilityRanges: [],
+        partyAmendmentStatus: AmendmentLabelStatus.AMENDED
+      };
+
+      const formGroup: FormGroup = component['patchValues'](party);
+      expect(formGroup.value.partyName).toBe('John Doe');
+    });
+
+    it('should patch values correctly when partyName is not defined', () => {
+      const party: PartyDetailsModel = {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inperson'
+        } as IndividualDetailsModel,
+        organisationDetails: null,
+        unavailabilityDOW: null,
+        unavailabilityRanges: [],
+        partyAmendmentStatus: AmendmentLabelStatus.AMENDED
+      };
+
+      const formGroup: FormGroup = component['patchValues'](party);
+      expect(formGroup.value.partyName).toBe('Jane Doe');
+    });
+  });
   afterEach(() => {
     fixture.destroy();
   });

@@ -16650,14 +16650,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-spec-reporter@npm:0.0.34":
-  version: 0.0.34
-  resolution: "karma-spec-reporter@npm:0.0.34"
+"karma-spec-reporter@npm:0.0.36":
+  version: 0.0.36
+  resolution: "karma-spec-reporter@npm:0.0.36"
   dependencies:
     colors: 1.4.0
   peerDependencies:
     karma: ">=0.9"
-  checksum: eaada610a3ecd13fd80bf358e72543e4407f3db22988dc472628e91652b75e97b6b7ad848014875f770fd3536f48777452c5bc9dece052b8030985f29527b459
+  checksum: e9bf5f4d0e16226048f4e1311821a00adfd9277a65694462ed91a47f5f0989e5ca47ccb7cb98b56a8646aaaaf377105bdfed3dd74805e29987a036f1a39f524f
   languageName: node
   linkType: hard
 
@@ -22106,7 +22106,7 @@ __metadata:
     karma-jasmine-html-reporter: ^1.4.0
     karma-parallel: ^0.3.1
     karma-sonarqube-unit-reporter: ^0.0.23
-    karma-spec-reporter: 0.0.34
+    karma-spec-reporter: 0.0.36
     launchdarkly-js-client-sdk: ^2.16.3
     local-storage: ^2.0.0
     lodash: ^4.17.21

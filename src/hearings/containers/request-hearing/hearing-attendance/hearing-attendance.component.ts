@@ -118,6 +118,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       if (!individualPartyIdsInHMC.includes(partyDetailsModel.partyID)) {
         partyDetailsModel = {
           ...partyDetailsModel,
+          partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`,
           partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
         };
         (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
@@ -249,11 +250,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   private patchValues(party: PartyDetailsModel): FormGroup {
     const individualDetails = party.individualDetails && this.initIndividualDetailsFormGroup(party.individualDetails);
     const organisationDetails = party.organisationDetails;
-    const partyName = party.partyName ? party.partyName : `${party.individualDetails.firstName} ${party.individualDetails.lastName}`;
     return this.fb.group({
       partyID: [party.partyID],
       partyType: [party.partyType],
-      partyName: [partyName],
+      partyName: [party.partyName],
       partyRole: [party.partyRole],
       ...individualDetails && ({ individualDetails }),
       ...organisationDetails && ({ organisationDetails }),

@@ -16,8 +16,6 @@ import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingAttendanceComponent } from './hearing-attendance.component';
-import { IndividualDetailsModel } from '../../../models/hearingActualsMainModel';
-import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 
 const refData: LovRefDataModel[] = [
   {
@@ -350,6 +348,58 @@ describe('HearingAttendanceComponent', () => {
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
   });
 
+  it('should set the party details from the service values hearing model', () => {
+    const newParty: PartyDetailsModel =
+    {
+      'partyID': 'P5',
+      'partyType': PartyType.IND,
+      'partyRole': 'appellant',
+      'individualDetails': {
+        'title': 'Mr',
+        'firstName': 'Brian',
+        'lastName': 'May',
+        'preferredHearingChannel': 'inPerson',
+        'reasonableAdjustments': [
+          'RA0042',
+          'SM0001'
+        ]
+      },
+      'unavailabilityRanges': [
+        {
+          'unavailableFromDate': '2021-12-10T09:00:00.000Z',
+          'unavailableToDate': '2021-12-31T09:00:00.000Z',
+          'unavailabilityType': UnavailabilityType.ALL_DAY
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.parties.push(newParty);
+
+    component.attendanceFormGroup.controls.parties = new FormArray([]);
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: partyDetailsFromLatestSHV,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
+    expect(component.attendanceFormGroup.controls.parties.value[1].partyID).toEqual('P5');
+    expect(component.attendanceFormGroup.controls.parties.value[1].partyName).toEqual('Brian May');
+    component.serviceHearingValuesModel.parties.pop();
+  });
+
   it('should call initialiseFromHearingValuesForAmendments for manual amendments journey with party changes', () => {
     spyOn(component, 'initialiseFromHearingValuesForAmendments');
     component.hearingCondition = {
@@ -492,57 +542,6 @@ describe('HearingAttendanceComponent', () => {
     it('should equal 3 as partyDetails is empty', () => {
       fixture.detectChanges();
       expect(component.attendanceFormGroup.controls.estimation.value).toEqual(3);
-    });
-  });
-  describe('HearingAttendanceComponent', () => {
-    let component: HearingAttendanceComponent;
-
-    beforeEach(() => {
-      fixture = TestBed.createComponent(HearingAttendanceComponent);
-      component = fixture.componentInstance;
-    });
-
-    it('should patch values correctly when partyName is defined', () => {
-      const party: PartyDetailsModel = {
-        partyID: 'P1',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        partyName: 'John Doe',
-        individualDetails: {
-          title: 'Mr',
-          firstName: 'John',
-          lastName: 'Doe',
-          preferredHearingChannel: 'inperson'
-        } as IndividualDetailsModel,
-        organisationDetails: null,
-        unavailabilityDOW: null,
-        unavailabilityRanges: [],
-        partyAmendmentStatus: AmendmentLabelStatus.AMENDED
-      };
-
-      const formGroup: FormGroup = component['patchValues'](party);
-      expect(formGroup.value.partyName).toBe('John Doe');
-    });
-
-    it('should patch values correctly when partyName is not defined', () => {
-      const party: PartyDetailsModel = {
-        partyID: 'P2',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: 'Miss',
-          firstName: 'Jane',
-          lastName: 'Doe',
-          preferredHearingChannel: 'inperson'
-        } as IndividualDetailsModel,
-        organisationDetails: null,
-        unavailabilityDOW: null,
-        unavailabilityRanges: [],
-        partyAmendmentStatus: AmendmentLabelStatus.AMENDED
-      };
-
-      const formGroup: FormGroup = component['patchValues'](party);
-      expect(formGroup.value.partyName).toBe('Jane Doe');
     });
   });
   afterEach(() => {

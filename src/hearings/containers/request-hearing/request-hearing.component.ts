@@ -26,7 +26,7 @@ export class RequestHearingComponent implements OnDestroy {
 
   public resetFocus(): void {
     (document.getElementsByClassName('govuk-back-link')[0] as HTMLElement).focus();
-  };
+  }
 
   public onContinue(): void {
     this.hearingsService.navigateAction(ACTION.CONTINUE);

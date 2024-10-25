@@ -41,8 +41,8 @@ export abstract class RequestHearingPageFlow {
       const element = document.getElementById(frag);
       if (element) {
         element.scrollIntoView();
-        element.focus();
       }
+      (document.getElementsByClassName('govuk-back-link')[0] as HTMLElement).focus();
     });
   }
 
@@ -53,6 +53,7 @@ export abstract class RequestHearingPageFlow {
         break;
       case ACTION.CONTINUE:
         this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel, this.hearingCondition));
+        this.fragmentFocus();
         break;
       case ACTION.SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));

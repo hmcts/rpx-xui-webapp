@@ -1,12 +1,10 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from './base.page';
-import config2 from '../settings/test-docs/file-config';
 import axeTest from "../helpers/accessibilityTestHelper";
 import config from "../../config";
 
 export class RaiseQuery extends BasePage{
 
-  readonly url: string;
   readonly signOut: Locator;
   readonly submit: Locator;
 
@@ -16,7 +14,7 @@ export class RaiseQuery extends BasePage{
     this.submit = page.getByRole('button', { name: 'Submit' });
   }
 
-  async  fillQueryDetails(caseId:string,queryName,queryDescription) {
+  async  fillQueryDetails(caseId:string,queryName,queryDescription,manageDocuments) {
 
     await expect(this.page.getByRole('heading', {name: 'Case list'})).toBeVisible();
     const xuiQMLandingUrl = config.QMBaseURL + '/case-details/' + caseId + '#Query%20Management';
@@ -47,10 +45,8 @@ export class RaiseQuery extends BasePage{
     await this.page.getByLabel('Month').press('Tab');
     await this.page.locator('//*[@id="formControlName + \'-year\'"]').fill('2024');
 
-    // upload document
-    // await manageDocuments.uploadDocuments();
-    //await page.getByRole('textbox', { name: 'Upload a document' })
-    //.setInputFiles(config.test);
+    // Upload Document
+    await manageDocuments.uploadDocuments();
 
     // Hard wait for ensuring that the queriesCollection is populated by RxJS and is available
     await this.page.waitForTimeout(5000);
@@ -66,11 +62,14 @@ export class RaiseQuery extends BasePage{
       { role: 'button', name: 'Submit' },
       { role: 'link', name: ' Cancel and return to case ' }
     ];
-
     this.checkVisiblityOfElements(elements);
+
+    const reviewQueryDetailsSummary =[queryName,queryDescription,'testPdf.pdf'];
+    this.verifyTextMessages(reviewQueryDetailsSummary);
 
     await this.page.waitForTimeout(5000);
     await this.page.getByRole('button', {name: 'Submit'}).click();
+    //this.submit;
 
     // Query Submitted Page - Check static content
     await expect(this.page.getByRole('heading', {name: 'Query submitted'})).toBeVisible();
@@ -86,17 +85,21 @@ export class RaiseQuery extends BasePage{
 
     //  Sign out
     await this.page.getByText('Sign out').click();
+    //this.signOut;
+
     await this.page.waitForTimeout(3000);
   }
 
   private async verifyTextMessages(messages){
     for (const msg of messages) {
-      await expect(this.page.getByText(msg)).toBeVisible();
+      await expect(this.page.getByText(msg, {exact:true})).toBeVisible();
     }
   }
+
   private async checkVisiblityOfElements(elements){
     for (const element of elements) {
       await expect(this.page.getByRole(element.role, { name: element.name })).toBeVisible();
     }
   }
+
 }

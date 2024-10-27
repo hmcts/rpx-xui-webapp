@@ -1,6 +1,5 @@
 import {expect, Locator, Page} from '@playwright/test';
 import {BasePage} from './base.page';
-import config2 from '../settings/test-docs/file-config';
 import axeTest from "../helpers/accessibilityTestHelper";
 import config from '../../config';
 
@@ -33,10 +32,10 @@ export class SignIn extends BasePage {
     await this.page.getByLabel('Email address').click();
 
     if(role == 'solicitor') {
-      console.log('>>>>>>>>>>>>       Solicitor has LOGGED IN >>>>>>>>>>>>>>>>>>...');
+      console.log(' >>>>>>>>>>>> Solicitor has LOGGED IN >>>>>>>...');
       await this.page.getByLabel('Email address').fill('solicitor1@solicitors.uk');
     }else if(role =='admin') {
-      console.log('>>>>>>>>>>>>       Admin has LOGGED IN >>>>>>>>>>>>>>>>>>...');
+      console.log('>>>>>>>>>>>>  Admin has LOGGED IN >>>>>');
       await this.page.getByLabel('Email address').fill('fpl-ctsc-admin@justice.gov.uk');
     }
     await this.page.getByLabel('Password').click();
@@ -49,6 +48,7 @@ export class SignIn extends BasePage {
       await this.analyticCookie.click();
     }
     await this.isSignedIn();
+
     const hideMessagesCount = await this.hideMessage.count();
     for (let i = 0; i < hideMessagesCount; ++i) {
       await this.hideMessage.nth(0).click();

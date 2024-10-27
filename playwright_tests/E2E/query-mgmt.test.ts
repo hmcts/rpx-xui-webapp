@@ -21,7 +21,7 @@ test.describe('FPL Test Case Data for QueryManagement  @QM', () => {
     console.log('...Raise a new Query :Solicitor ...');
     // TODO have a new FPL Case created before this suite of tests are run - once FPLA have their code in AAT.
     await signIn.idamLogin('solicitor');
-    await raiseAQuery.fillQueryDetails(caseId,queryName,queryDescription);
+    await raiseAQuery.fillQueryDetails(caseId,queryName,queryDescription,manageDocuments);
     await raiseAQuery.reviewAndSubmitQueryDetails(queryName,queryDescription);
 
   });

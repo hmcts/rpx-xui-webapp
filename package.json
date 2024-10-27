@@ -169,6 +169,8 @@
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "@babel/eslint-parser": "^7.17.0",
     "@angular-devkit/build-angular": "~17.3.6",
     "@angular-eslint/builder": "17.3.0",
     "@angular-eslint/eslint-plugin": "17.3.0",

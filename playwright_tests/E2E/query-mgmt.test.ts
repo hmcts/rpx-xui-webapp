@@ -7,7 +7,7 @@ let queryName = ''
 let queryDescription='';
 let caseId='' ;
 
-test.describe('FPL Test Case Data to be shared by all QueryManagement Tests @QM', () => {
+test.describe('FPL Test Case Data for QueryManagement  @QM', () => {
 
   test.beforeAll(async () => {
     console.log(' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Setup Data required across these tests  ~~~~~~~~~~~~~~~~~~~~~~');

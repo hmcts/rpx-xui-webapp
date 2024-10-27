@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const headlessMode = process.env.HEAD !== 'true';
-export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+//export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
   testDir: "./playwright_tests/E2E",
@@ -10,7 +10,7 @@ module.exports = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: 3, // Set the number of retries for all projects
+  retries: 0, // Set the number of retries for all projects
 
   timeout: 3 * 60 * 1000,
   expect: {

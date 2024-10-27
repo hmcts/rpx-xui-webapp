@@ -42,6 +42,5 @@ test.describe('FPL Test Case Data to be shared by all QueryManagement Tests @QM'
     await page.goto(xuiQMLandingUrl);
     await respondToQuery.followUpResponse(queryName,caseId);
 
-
   });
 });

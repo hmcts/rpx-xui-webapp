@@ -22,11 +22,6 @@ export class RespondToQuery extends BasePage{
     let rowHeaders = ['Last submitted by', 'Submission date', 'Query body', 'What is the date of the hearing?'];
 
     // TODO Review Query Response Details page
-    // await expect(page.getByRole('rowheader', {name: 'Last submitted by'})).toBeVisible();
-    // await expect(page.getByRole('rowheader', {name: 'Submission date'})).toBeVisible();
-    // await expect(page.getByRole('rowheader', {name: 'Query body'})).toBeVisible();
-    // await expect(page.getByRole('rowheader', {name: 'What is the date of the hearing?'})).toBeVisible();
-
     for (const header of rowHeaders) {
       await expect(this.page.getByRole('rowheader', {name: header})).toBeVisible();
     }
@@ -36,13 +31,7 @@ export class RespondToQuery extends BasePage{
     await axeTest(this.page);
 
     await this.page.getByRole('button', {name: 'Continue'}).click();
-    //await page.continueButton.click();
     await this.page.waitForTimeout(5000);
-
-    // await expect(page.getByRole('heading', {name: 'Review query response details'})).toBeVisible();
-    // await expect(page.getByRole('link', {name: 'Cancel and return to tasks'})).toBeVisible();
-    // await expect(page.getByRole('button', {name: 'Previous'})).toBeVisible();
-    // await expect(page.getByRole('button', {name: 'Submit'})).toBeVisible();
 
     const elementsToCheck = [
       { role: 'heading', name: 'Review query response details' },
@@ -51,23 +40,22 @@ export class RespondToQuery extends BasePage{
       { role: 'button', name: 'Submit' }
     ];
 
-    // for (const element of elementsToCheck) {
-    //   await expect(page.getByRole(element.role, { name: element.name })).toBeVisible();
-    // }
+    this.checkVisiblityOfElements(elementsToCheck);
+
     // Submit the 'Response'
     await axeTest(this.page);
     await this.page.getByRole('button', {name: 'Submit'}).click();
     await this.page.waitForTimeout(5000);
+
     await this.page.getByText('Sign out').click();
     await this.page.waitForTimeout(3000);
-
-
-
   }
 
 
   async followUpResponse(queryName,caseId){
+
     console.log('....Solicitor - Follow Up Response ....');
+
     await this.page.getByRole('link', {name: queryName}).click();
     // Query Details Page is displayed now - with the Ask Follow up question link at the bottom
     await expect(this.page.locator('#ask-follow-up-question')).toContainText('Ask a follow-up question');
@@ -84,26 +72,35 @@ export class RespondToQuery extends BasePage{
 
     await this.page.getByRole('button', {name: 'Continue'}).click();
 
-    await expect(this.page.getByText('Query detail', {exact: true})).toBeVisible();
-    await expect(this.page.getByText('this is the followup question')).toBeVisible();
-    await expect(this.page.getByText('Query detail', {exact: true})).toBeVisible();
     await expect(this.page.getByRole('heading', {name: 'Review query details'})).toBeVisible();
     await expect(this.page.locator('#main-content div').filter({hasText: 'Cancel and return to query list'})).toBeVisible();
 
-    await this.page.waitForTimeout(1000);
+    // Submit the FollowUp Query 'Response'
+    await this.page.waitForTimeout(3000);
+    await this.page.getByRole('button', {name: 'Submit'}).click();
+    await this.page.waitForTimeout(2000);
     await axeTest(this.page);
 
-    // Submit the FollowUp Query 'Response'
-    await this.page.waitForTimeout(4000);
+    await this.verifyTextVisibility([
+                          'Query submitted',
+                          'Your query has been sent to HMCTS',
+                          'Our team will read your query and will respond'], true);
 
-    await this.page.getByRole('button', {name: 'Submit'}).click();
-    await this.page.waitForTimeout(5000);
-
-    await expect(this.page.getByText('Query submitted', {exact: true})).toBeVisible();
-    await expect(this.page.getByText('Your query has been sent to HMCTS', {exact: true})).toBeVisible();
-    await expect(this.page.getByText('Our team will read your query and will respond', {exact: true})).toBeVisible();
-
-    await this.page.getByText('Sign out').click();
+    await this.page.getByRole('link', {name: 'Go back to the case'}).click();
     await this.page.waitForTimeout(3000);
+    await this.page.getByText('Sign out').click();
+
+  }
+
+  private async verifyTextVisibility(texts: string[], exact: boolean = true) {
+    for (const text of texts) {
+      await expect(this.page.getByText(text, { exact })).toBeVisible();
+    }
+  }
+
+  private async checkVisiblityOfElements(elements){
+    for (const element of elements) {
+      await expect(this.page.getByRole(element.role, { name: element.name })).toBeVisible();
+    }
   }
 }

@@ -61,18 +61,25 @@ export class RaiseQuery extends BasePage{
   }
   async  reviewAndSubmitQueryDetails(queryName,queryDescription) {
 
-    await expect(this.page.getByRole('button', {name: 'Previous'})).toBeVisible();
-    await expect(this.page.getByRole('button', {name: 'Submit'})).toBeVisible();
-    await expect(this.page.getByRole('link', {name: ' Cancel and return to case '})).toBeVisible();
+    const elements = [
+      { role: 'button', name: 'Previous' },
+      { role: 'button', name: 'Submit' },
+      { role: 'link', name: ' Cancel and return to case ' }
+    ];
+
+    this.checkVisiblityOfElements(elements);
 
     await this.page.waitForTimeout(5000);
     await this.page.getByRole('button', {name: 'Submit'}).click();
 
     // Query Submitted Page - Check static content
     await expect(this.page.getByRole('heading', {name: 'Query submitted'})).toBeVisible();
-    await expect(this.page.getByText('Your query has been sent to HMCTS')).toBeVisible();
-    await expect(this.page.getByText('Our team will read your query and will respond')).toBeVisible();
-    await expect(this.page.getByText('You can Go back to the case')).toBeVisible();
+
+    const messages = ['Your query has been sent to HMCTS', 'Our team will read your query and will respond',
+      'You can Go back to the case'];
+
+    this.verifyTextMessages(messages);
+
     await this.page.getByRole('link', {name: 'Go back to the case'}).click();
     await this.page.waitForTimeout(2000);
     await axeTest(this.page);
@@ -80,5 +87,16 @@ export class RaiseQuery extends BasePage{
     //  Sign out
     await this.page.getByText('Sign out').click();
     await this.page.waitForTimeout(3000);
+  }
+
+  private async verifyTextMessages(messages){
+    for (const msg of messages) {
+      await expect(this.page.getByText(msg)).toBeVisible();
+    }
+  }
+  private async checkVisiblityOfElements(elements){
+    for (const element of elements) {
+      await expect(this.page.getByRole(element.role, { name: element.name })).toBeVisible();
+    }
   }
 }

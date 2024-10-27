@@ -1,8 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { BasePage } from './base.page';
-import config2 from '../settings/test-docs/file-config';
 import axeTest from '../helpers/accessibilityTestHelper';
-import config from "../../config";
 export class RespondToQuery extends BasePage{
 
 
@@ -78,7 +76,7 @@ export class RespondToQuery extends BasePage{
     // Submit the FollowUp Query 'Response'
     await this.page.waitForTimeout(3000);
     await this.page.getByRole('button', {name: 'Submit'}).click();
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(5000);
     await axeTest(this.page);
 
     await this.verifyTextVisibility([

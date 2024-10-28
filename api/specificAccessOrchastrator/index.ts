@@ -63,7 +63,7 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
     }
   } catch (error) {
     next(error);
-    return res.status(error.status).send(error);
+    return error;
   }
 }
 

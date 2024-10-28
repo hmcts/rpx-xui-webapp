@@ -74,7 +74,7 @@ export class AppConfig extends AbstractAppConfig {
     console.log('Setting up LD for feature ' + featureName);
     const ob = this.featureToggleService.getValue(featureName, defaultVal);
     const cbFn = (val) => {
-      console.log ('LD callback called for feature ' + featureName);
+      console.log('LD callback called for feature ' + featureName);
       this.config = this.addAttribute(this.config,
         AppConstants.FEATURE_TO_ATTRIBUTE_MAP[featureName], val);
     };

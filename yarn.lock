@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.70-testing":
-  version: 7.0.70-testing
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.70-testing"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.72":
+  version: 7.0.72
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.72"
   dependencies:
     tslib: ^2.3.0
-  checksum: e2611c1d4a3afd7564f29d7dd2106e74b8c0456fad98a724dca31a0089f66d4111ecf939baeff27b3d672f6b6da90dfcc54d960efd1bdb52616d6637941005a3
+  checksum: 18c988ad03172cfe150805d18e3ff975a4bdb879278e5b8868c5c4ade66a0dfca607cebc0752278982f2d96648f687acfdafbed5b686b1cda2aced2d9b444abe
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": ^4.9.1
     "@cucumber/cucumber": ^10.8.0
     "@edium/fsm": ^2.1.2
-    "@hmcts/ccd-case-ui-toolkit": 7.0.70-testing
+    "@hmcts/ccd-case-ui-toolkit": 7.0.72
     "@hmcts/ccpay-web-component": 6.2.1
     "@hmcts/frontend": 0.0.50-alpha
     "@hmcts/media-viewer": 4.0.8
@@ -22139,7 +22139,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.5
     puppeteer: ^22.4.1
-    rpx-xui-translation: 1.0.5-testing
+    rpx-xui-translation: 1.0.6
     rx-polling-hmcts: 1.1.1
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
@@ -22170,9 +22170,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.5-testing":
-  version: 1.0.5-testing
-  resolution: "rpx-xui-translation@npm:1.0.5-testing"
+"rpx-xui-translation@npm:1.0.6":
+  version: 1.0.6
+  resolution: "rpx-xui-translation@npm:1.0.6"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
@@ -22180,7 +22180,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^15.2.9
     "@angular/core": ^15.2.9
-  checksum: 8710c55f19ddf3347d88847335de7309926cf65f62d4ac32f3384400ab55cbb1f77d862a6d20054acce1b3511e5c5f1b79012475095e965566e46b5d8fecfcae
+  checksum: d57dc044dd1e1495764f55990d7b1a64bebb4e156729bad0709160aa5b274a1035cf474389be70d44c443bc373646528808d7dc4687129a821ed243e90fc3a1c
   languageName: node
   linkType: hard
 

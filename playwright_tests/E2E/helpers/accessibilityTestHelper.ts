@@ -17,12 +17,12 @@ import { createHtmlReport } from 'axe-html-reporter';
    console.log(" Running Axe Accessibility .....");
    const accessibilityScanResults = await new AxeBuilder({ page })
      .withTags([
-       "wcag2a"
-       // "wcag2aa",
-       // "wcag21a",
-       // "wcag21aa",
-       // "wcag22a",
-       // "wcag22aa",
+       "wcag2a",
+       "wcag2aa",
+       "wcag21a",
+       "wcag21aa",
+       "wcag22a",
+       "wcag22aa",
      ])
      .analyze();
    const reportHTML = createHtmlReport({
@@ -38,8 +38,7 @@ import { createHtmlReport } from 'axe-html-reporter';
      });
    }
    fs.writeFileSync("functional-output/tests/accessibility-report.html", reportHTML);
-
-   //expect(accessibilityScanResults.violations).toEqual([]);
+   expect(accessibilityScanResults.violations).toEqual([]);
  }
 
  export default axeTest;

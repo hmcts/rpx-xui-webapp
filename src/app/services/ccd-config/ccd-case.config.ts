@@ -52,7 +52,7 @@ export class AppConfig extends AbstractAppConfig {
         if (obArray.length === 7) {
           combineLatest(...obArray).subscribe((foo) => {
             foo.forEach((item) => {
-              console.log('result item ' + item);
+              console.log('result item ' + JSON.stringify(item));
             });
             this.initialisationComplete = true;
           });
@@ -73,8 +73,11 @@ export class AppConfig extends AbstractAppConfig {
     obArray: Array<Observable<V>>) : void {
     console.log('Setting up LD for feature ' + featureName);
     const ob = this.featureToggleService.getValue(featureName, defaultVal);
-    const cbFn = (val) => this.config = this.addAttribute(this.config,
-      AppConstants.FEATURE_TO_ATTRIBUTE_MAP[featureName], val);
+    const cbFn = (val) => {
+      console.log ('LD callback called for feature ' + featureName);
+      this.config = this.addAttribute(this.config,
+        AppConstants.FEATURE_TO_ATTRIBUTE_MAP[featureName], val);
+    };
     ob.subscribe(cbFn);
     obArray.push(ob);
   }

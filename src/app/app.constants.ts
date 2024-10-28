@@ -20,7 +20,7 @@ const featureNames = {
 };
 
 function featureToAttributeName(key: string): string {
-  return key.split('_').join('-');
+  return key.split('-').join('_');
 }
 
 export const featureToAttributeMap = new Map<string, string>([

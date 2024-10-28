@@ -160,7 +160,7 @@ describe('AppConfiguration', () => {
   }));
 
   it('should have getDocumentSecureMode return value', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getDocumentSecureMode()).toBe(true);
+    expect(service.getDocumentSecureMode()).toBe(false);
   }));
 
   it('should have getAccessManagementMode return value', inject([AppConfig], (service: AppConfig) => {

@@ -12,7 +12,9 @@ test.describe('FPL Test Case Data for QueryManagement  @QM', () => {
   test.beforeAll(async () => {
     console.log(' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Setup Data required across these tests  ~~~~~~~~~~~~~~~~~~~~~~');
     // caseId hardcoded for now - will need to script it once availble on AAT.
-    caseId = '1730145870311253';
+    // caseID  on https://xui-fpl-case-service-pr-5582.preview.platform.hmcts.net/cases
+    // Note: this is a long running pr branch of FPL and cases are not available once pods are refreshed.
+    caseId = '1730145870311253'; //
     queryName = faker.name.firstName(1) + ' '+ faker.name.lastName(1) + ' QM E2E' ;
     queryDescription= ' Query Description for '+ queryName;
  });

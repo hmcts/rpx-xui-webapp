@@ -3,7 +3,7 @@ import { signIn, signOut } from "./steps/login-steps";
 import axeTest from "./helpers/accessibilityTestHelper";
 
 
-test.skip('All work tabs', async ({ page }) => {
+test('All work tabs', async ({ page }) => {
 await signIn(page, "IAC_CaseOfficer_R2", false);
 
 console.log("All work tabs header cheks");
@@ -16,7 +16,7 @@ await assertTableColumnNames(page, true, false);
 });
 
 
-test.skip('My work tabs', async ({ page }) => {
+test('My work tabs', async ({ page }) => {
   await signIn(page, "IAC_CaseOfficer_R2", false);
 
   console.log("My work columns");
@@ -47,7 +47,7 @@ test.skip('My work tabs', async ({ page }) => {
   await axeTest(page);
 });
 
-test.skip('View tasks, E2E journey of Caseworker-ia-officer user', async ({ page }) => {
+test('View tasks, E2E journey of Caseworker-ia-officer user', async ({ page }) => {
   await signIn(page, "IAC_CaseOfficer_R2", false);
 
   console.log("Check all header tabs");

@@ -541,7 +541,7 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
   console.log(req?.session);
   console.log(req?.session?.passport?.user?.userinfo);
   console.log(`user id is ${req?.session?.passport?.user?.userinfo?.uid}, evaluates to ${!req?.session?.passport?.user?.userinfo?.uid}`);
-  if (!req?.session?.passport?.user?.userinfo?.uid) {
+  if (!req?.session?.passport?.user?.userinfo) {
     return next(new Error('User not authenticated'));
   }
   try {

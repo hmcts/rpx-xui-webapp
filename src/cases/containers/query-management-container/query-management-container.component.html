@@ -59,7 +59,7 @@
         <button class="govuk-button govuk-button--secondary" data-module="govuk-button" (click)="previous()">
           {{ 'Previous' | rpxTranslate }}
         </button>
-        <button class="govuk-button" data-module="govuk-button" (click)="submitForm()">
+        <button class="govuk-button" data-module="govuk-button" (click)="submitForm()" *ngIf="showContinueButton">
           {{ 'Continue' | rpxTranslate }}
         </button>
       </div>

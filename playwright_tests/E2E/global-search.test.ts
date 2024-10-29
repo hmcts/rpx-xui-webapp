@@ -2,20 +2,13 @@ import { test, expect } from '@playwright/test';
 import { signIn } from './steps/login-steps';
 import { clickOnMainMenu } from './steps/steps-functions';
 import { retryAction } from './steps/retry-steps';
-import {routeToCasePage, routeToQueryManagementCase} from './steps/case-steps';
-var path = require('path');
-import config from '../config';
-import { waitForSpinner } from './steps/spinner-steps';
 import axeTest from "./helpers/accessibilityTestHelper";
-
-
 
 test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Search from menu 16-digit find control');
   const caseId = findCaseId(page)
-  await waitForSpinner(page);
   await expect(page.getByText('-digit case reference:')).toBeVisible();
   await page.getByLabel('-digit case reference:').click();
   await page.getByLabel('-digit case reference:').fill(caseId);
@@ -23,7 +16,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
     await page.locator('//button[contains(text(), "Find")]').click();
     await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
   });
-  //await axeTest(page);
+  await axeTest(page);
 
   console.log('Check the case details are displayed');
   await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
@@ -32,6 +25,8 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await expect(page.getByText('Home Office Reference/Case ID')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
 });
+
+
 test('Search from page Search', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
@@ -46,7 +41,7 @@ test('Search from page Search', async ({ page }) => {
   await page.getByLabel('16-digit case reference', { exact: true }).fill(nonExistentCaseId);
   await page.getByRole('button', { name: 'Search' }).click();
   await expect(page.getByRole('heading', { name: 'No results found' })).toBeVisible();
-  //await axeTest(page);
+  await axeTest(page);
 });
 
 function findCaseId(page: any) {
@@ -56,22 +51,4 @@ function findCaseId(page: any) {
     }
     console.log('Use aat case id');
     return '1714721967501327';
-}
-
-async function loginExUIForQueryManagement(page, role) {
-  console.log(' ||| Enter loginExUIForQueryManagement ' + Date.now().toLocaleString() )
-  await page.goto(config.QMBaseURL);
-  await page.getByLabel('Email address').click();
-  if(role == 'solicitor') {
-    console.log('>>>>>>>>>>>>       Solicitor has LOGGED IN >>>>>>>>>>>>>>>>>>...');
-    await page.getByLabel('Email address').fill('solicitor1@solicitors.uk');
-  }else if(role =='admin') {
-    await page.getByLabel('Email address').fill('fpl-ctsc-admin@justice.gov.uk');
-  }
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('Password12');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.waitForTimeout(3000)
-  console.log(' ||| Exit loginExUIForQueryManagement()  ' + Date.now().toLocaleString() )
-
 }

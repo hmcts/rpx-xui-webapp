@@ -112,7 +112,10 @@
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
     "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
     "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH",
-    "translation": "SERVICES_TRANSLATION_API_URL"
+    "translation": "SERVICES_TRANSLATION_API_URL",
+    "lau": {
+      "specificChallengedAccessApi": "SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH"
+    } 
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -177,6 +180,10 @@
       "__name": "FEATURE_JRD_E_LINKS_V2_ENABLED",
       "__format": "json"
     },
+    "lauSpecificChallengedEnabled": {
+      "__name": "FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED",
+      "__format": "json"
+    },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
       "__format": "json"
@@ -208,5 +215,6 @@
     "consumerVersion": "PACT_CONSUMER_VERSION",
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"
-  }
+  },
+  "headerConfig": "HEADER_CONFIG"
 }

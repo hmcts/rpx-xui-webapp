@@ -69,6 +69,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
+  public showContinueButton: boolean = true;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -140,6 +141,9 @@ export class QueryManagementContainerComponent implements OnInit {
 
       if (this.qualifyingQuestion.markdown?.length) {
         this.queryCreateContext = this.getQueryCreateContext();
+        if (!this.qualifyingQuestion.url) {
+          this.showContinueButton = false; //Hide Continue button when when qualifying question has no url
+        }
       } else {
         this.router.navigateByUrl(this.qualifyingQuestion.url);
       }
@@ -187,6 +191,10 @@ export class QueryManagementContainerComponent implements OnInit {
   public previous(): void {
     if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL) {
       this.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+      if (!this.showContinueButton) {
+        this.showContinueButton = true;
+      }
     } else {
       this.location.back();
 

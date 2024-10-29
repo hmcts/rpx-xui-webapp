@@ -18,7 +18,7 @@ test('login Verify the direct link navigate to login page', async ({ page }) => 
     await axeTest(page);
   });
 
-test('login un-authenticated user login', async ({ page }) => {
+  test('login un-authenticated user login', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
     await page.getByLabel('Email address').fill('test_nonexisting_or_invalid@gmail.com');
     await page.getByLabel('Password').click();

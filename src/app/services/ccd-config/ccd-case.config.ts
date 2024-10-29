@@ -76,7 +76,7 @@ export class AppConfig extends AbstractAppConfig {
     const cbFn = (val) => {
       console.log('LD callback called for feature ' + featureName);
       this.config = this.addAttribute(this.config,
-        AppConstants.FEATURE_TO_ATTRIBUTE_MAP[featureName], val);
+        AppConstants.FEATURE_TO_ATTRIBUTE_MAP.get(featureName), val);
     };
     ob.subscribe(cbFn);
     obArray.push(ob);

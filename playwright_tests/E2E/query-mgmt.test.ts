@@ -12,7 +12,7 @@ test.describe('FPL Test Case Data for QueryManagement  @QM', () => {
   test.beforeAll(async () => {
     console.log(' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Setup Data required across these tests  ~~~~~~~~~~~~~~~~~~~~~~');
     // caseId hardcoded for now - will need to script it once availble on AAT.
-    caseId = '1729972152278154';
+    caseId = '1730145870311253';
     queryName = faker.name.firstName(1) + ' '+ faker.name.lastName(1) + ' QM E2E' ;
     queryDescription= ' Query Description for '+ queryName;
  });

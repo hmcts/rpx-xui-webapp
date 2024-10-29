@@ -74,9 +74,9 @@ export class RespondToQuery extends BasePage{
     await expect(this.page.locator('#main-content div').filter({hasText: 'Cancel and return to query list'})).toBeVisible();
 
     // Submit the FollowUp Query 'Response'
-    await this.page.waitForTimeout(3000);
+    await this.page.waitForTimeout(1000);
     await this.page.getByRole('button', {name: 'Submit'}).click();
-    await this.page.waitForTimeout(5000);
+    await this.page.waitForTimeout(6000);
     await axeTest(this.page);
 
     await this.verifyTextVisibility([

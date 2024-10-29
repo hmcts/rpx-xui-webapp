@@ -4,7 +4,7 @@ import config from "../config"
 import { routeToCasePage } from './steps/case-steps';
 import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from './steps/flag-steps';
 
-test.skip('Create case flag 2', async ({ page }) => {
+test('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
   await routeToCasePage(page, '1698182796208883');
@@ -22,7 +22,7 @@ test.skip('Create case flag 2', async ({ page }) => {
   await checkNumberOfRow(page, tableClass, tableName, 1+1);//One row for the header
 });
 
-test.skip('View case flag', async ({ page }) => {
+test('View case flag', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
   await routeToCasePage(page, '1698182796208883');
   const currentActiveFlags = getActiveFlagsForCase(page);

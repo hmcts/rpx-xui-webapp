@@ -3,7 +3,7 @@ import { signIn } from "./steps/login-steps"
 import config from "../config"
 import axeTest from "./helpers/accessibilityTestHelper";
 
-test.skip('login and log out from EUI with valid user', async ({ page }) => {
+test('login and log out from EUI with valid user', async ({ page }) => {
   await signIn(page, 'PROD_LIKE');
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
   await page.getByText('Sign out').click();
@@ -11,14 +11,14 @@ test.skip('login and log out from EUI with valid user', async ({ page }) => {
   await axeTest(page);
 });
 
-test.skip('login Verify the direct link navigate to login page', async ({ page }) => {
+test('login Verify the direct link navigate to login page', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
     await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
     await expect(page.url()).toContain('idam-web-public');
     await axeTest(page);
   });
 
-  test.skip('login un-authenticated user login', async ({ page }) => {
+test('login un-authenticated user login', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
     await page.getByLabel('Email address').fill('test_nonexisting_or_invalid@gmail.com');
     await page.getByLabel('Password').click();

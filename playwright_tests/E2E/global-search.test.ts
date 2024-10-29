@@ -10,7 +10,7 @@ import axeTest from "./helpers/accessibilityTestHelper";
 
 
 
-test.skip('Search from menu 16-digit find control', async ({ page }) => {
+test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Search from menu 16-digit find control');
@@ -32,7 +32,7 @@ test.skip('Search from menu 16-digit find control', async ({ page }) => {
   await expect(page.getByText('Home Office Reference/Case ID')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
 });
-test.skip('Search from page Search', async ({ page }) => {
+test('Search from page Search', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Go to Search Page');

@@ -538,7 +538,8 @@ export async function getTaskNames(req: EnhancedRequest, res: Response): Promise
  * getUsersByServiceName
  */
 export async function getUsersByServiceName(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
-  if (!req?.auth?.userId) {
+  
+  if (!req?.session?.passport?.user?.userinfo?.uid) {
     return next(new Error('User not authenticated'));
   }
   try {

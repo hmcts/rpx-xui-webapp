@@ -68,9 +68,9 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSea
   // Generate global search services
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
-    const jurisdiction = refDataHMCTS ? refDataHMCTS.find((x) => x.ccd_service_name === serviceId) : null;
+    const jurisdiction = refDataHMCTS ? refDataHMCTS.find((x) => x.ccd_service_name.toLocaleLowerCase() === serviceId.toLocaleLowerCase()) : null;
     if (jurisdiction) {
-      globalSearchServices.push({ serviceId: jurisdiction.ccd_service_name, serviceName: jurisdiction.ccd_service_name });
+      globalSearchServices.push({ serviceId: jurisdiction.ccd_service_name, serviceName: jurisdiction.service_short_description });
     } else {
       globalSearchServices.push({ serviceId, serviceName: serviceId });
     }

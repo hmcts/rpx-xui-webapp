@@ -121,7 +121,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     title: 'For damages general enquires is:',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'DamagesClaims@justice.gov.uk',
-    phone: '0300 123 1372',
+    phone: '0300 123 1056',
     openingTimes: 'Monday to Friday, 8:30am to 5pm'
   },
   {
@@ -164,7 +164,7 @@ const caseDetailsUrl: string = '/cases/case-details/';
 
 const accessViewUrl: string = '/access-view/';
 
-const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
+const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';

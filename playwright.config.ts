@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const headlessMode = process.env.HEAD !== 'true';
+export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
   testDir: "./playwright_tests/E2E",
@@ -22,7 +23,7 @@ module.exports = defineConfig({
 
   reporter: [[process.env.CI ? 'html' : 'list'],
              ['html', { outputFolder: 'functional-output/tests/playwright-e2e' }]],
-  
+
   projects: [
     {
       name: "chromium",
@@ -31,47 +32,58 @@ module.exports = defineConfig({
         headless: headlessMode,
         trace: "on-first-retry",
       },
-    },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"],
-        screenshot: 'only-on-failure',
-        headless: headlessMode,
-        trace: 'off'
-      },
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"],
-        screenshot: 'only-on-failure',
-        headless: headlessMode,
-        trace: 'off'
-      },
-    },
-    {
-      name: "MobileChrome",
-      use: { ...devices["Pixel 5"],
-        screenshot: 'only-on-failure',
-        headless: headlessMode,
-        trace: 'off'
-      },
-    },
-    {
-      name: "MobileSafari",
-      use: { ...devices["iPhone 12"],
-        screenshot: 'only-on-failure',
-        headless: headlessMode,
-        trace: 'off'
-      },
-    },
-    {
-      name: "MicrosoftEdge",
-      use: { ...devices["Desktop Edge"],
-        channel: "msedge",
-        screenshot: 'only-on-failure',
-        headless: headlessMode,
-        trace: 'off'
-      },
-    },
-  ],
+    }
+  ]
 });
+
+// projects: [
+//   {
+//     name: "chromium",
+//     use: { ...devices["Desktop Chrome"],
+//       channel: "chrome",
+//       headless: headlessMode,
+//       trace: "on-first-retry",
+//     },
+//   },
+//   {
+//     name: "firefox",
+//     use: { ...devices["Desktop Firefox"],
+//       screenshot: 'only-on-failure',
+//       headless: headlessMode,
+//       trace: 'off'
+//     },
+//   },
+//   {
+//     name: "webkit",
+//     use: { ...devices["Desktop Safari"],
+//       screenshot: 'only-on-failure',
+//       headless: headlessMode,
+//       trace: 'off'
+//     },
+//   },
+//   {
+//     name: "MobileChrome",
+//     use: { ...devices["Pixel 5"],
+//       screenshot: 'only-on-failure',
+//       headless: headlessMode,
+//       trace: 'off'
+//     },
+//   },
+//   {
+//     name: "MobileSafari",
+//     use: { ...devices["iPhone 12"],
+//       screenshot: 'only-on-failure',
+//       headless: headlessMode,
+//       trace: 'off'
+//     },
+//   },
+//   {
+//     name: "MicrosoftEdge",
+//     use: { ...devices["Desktop Edge"],
+//       channel: "msedge",
+//       screenshot: 'only-on-failure',
+//       headless: headlessMode,
+//       trace: 'off'
+//     },
+//   },
+// ],

@@ -11,25 +11,25 @@
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Start time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{ actualHearingDay?.hearingStartTime | date: dateFormat.DisplayTime}}
+          {{ actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: dateFormat.DisplayTime }}
         </dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Finish time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{actualHearingDay?.hearingEndTime | date:dateFormat.DisplayTime}}
+          {{actualHearingDay?.hearingEndTime | ccdDate: 'local' | date:dateFormat.DisplayTime }}
         </dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Pause time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{actualHearingDay.pauseDateTimes[0]?.pauseStartTime | date:dateFormat.DisplayTime}}
+          {{actualHearingDay.pauseDateTimes[0]?.pauseStartTime | ccdDate: 'local' | date:dateFormat.DisplayTime }}
         </dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
         <dt class="govuk-summary-list__key">{{ 'Resume time' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
-          {{actualHearingDay.pauseDateTimes[0]?.pauseEndTime | date:dateFormat.DisplayTime}}
+          {{ actualHearingDay.pauseDateTimes[0]?.pauseEndTime | ccdDate: 'local' | date:dateFormat.DisplayTime  }}
         </dd>
       </div>
     </dl>
@@ -40,7 +40,7 @@
         <dt class="govuk-summary-list__key">{{ 'Names' | rpxTranslate }}</dt>
         <dd class="govuk-summary-list__value">
           <div *ngFor="let party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-            {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
+            {{ party?.individualDetails?.firstName }} {{ party?.individualDetails?.lastName }}
           </div>
         </dd>
       </div>
@@ -50,7 +50,7 @@
           <dt class="govuk-summary-list__key">{{ 'How participants will attend' | rpxTranslate }}</dt>
           <dd class="govuk-summary-list__value">
             <div *ngFor="let party of ActualHearingsUtils.getParties(hearingActualsMainModel, hearingDate)">
-              {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}: {{party.partyChannelSubType | convertToValue: partyChannels}}
+              {{ party?.individualDetails?.firstName }} {{ party?.individualDetails?.lastName }}: {{party?.partyChannelSubType | convertToValue: partyChannels}}
             </div>
           </dd>
         </div>

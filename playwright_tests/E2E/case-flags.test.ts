@@ -2,10 +2,11 @@ import { test, expect } from '@playwright/test';
 import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
 import config from "../config"
 import { routeToCasePage } from './steps/case-steps';
+import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from './steps/flag-steps';
 
 test('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
-  
+
   await routeToCasePage(page, '1698182796208883');
   await expect(page.getByText('Case flags', { exact: true })).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
@@ -23,18 +24,20 @@ test('Create case flag 2', async ({ page }) => {
 
 test('View case flag', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
-  
   await routeToCasePage(page, '1698182796208883');
-  
-  console.log("Check Applicant details");
-  await expect(page.getByText('There are 4 active flags on')).toBeVisible();
+  const currentActiveFlags = getActiveFlagsForCase(page);
+
+  console.log('Check the banner shows the correct value');
+  await expect(page.getByText(`There are ${await currentActiveFlags} active flags on`)).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
-  await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
+  console.log('Check all the party tables on the page for any active flags');
+  await checkActiveRowsMatchesBanner(page, currentActiveFlags);
+
+  console.log("Check Applicant details");
   const tableClass= "govuk-table";
   const tableName = "Applicant";
-  await checkNumberOfRow(page, tableClass, tableName, 5);//One row for the header
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
-  
+
   const rowTextRef = "Support filling in forms";
   const textsToCheck = [/Test/, /24 Oct 2023/, /Active/];
   await checkTableRowContent(page, tableClass, tableName, rowTextRef, textsToCheck);
@@ -62,7 +65,7 @@ test('View case flag', async ({ page }) => {
   await checkTableCellContent(page, tableName, 4, 1, "Test auto comment");
   await checkTableCellContent(page, tableName, 4, 2, "05 Feb 2024");
   await checkTableCellContent(page, tableName, 4, 4, "REQUESTED");
-  
+
 });
 
 async function loginExUIWithCaseFlag(page) {

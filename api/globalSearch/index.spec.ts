@@ -139,11 +139,11 @@ describe('Jurisdiction', () => {
   ];
   const serviceList: GlobalSearchService[] = [
 
-    { serviceId: 'IA', serviceName: 'IA' },
-    { serviceId: 'CIVIL', serviceName: 'CIVIL' },
-    { serviceId: 'PRIVATELAW', serviceName: 'PRIVATELAW' },
-    { serviceId: 'PUBLICLAW', serviceName: 'PUBLICLAW' },
-    { serviceId: 'EMPLOYMENT', serviceName: 'EMPLOYMENT' }
+    { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
+    { serviceId: 'CIVIL', serviceName: 'Damages' },
+    { serviceId: 'PRIVATELAW', serviceName: 'Family Private Law' },
+    { serviceId: 'PUBLICLAW', serviceName: 'Family Public Law' },
+    { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' }
   ];
 
   beforeEach(() => {

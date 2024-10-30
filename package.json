@@ -277,7 +277,7 @@
     "lodash": "^4.17.21",
     "braces": "^3.0.3",
     "ws": "^8.18.0",
-    "axios": "1.7.5"
+    "axios": "1.7.5",
     "webpack": "^5.94.0"
   },
   "packageManager": "yarn@4.5.0"

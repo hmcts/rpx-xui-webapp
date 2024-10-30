@@ -39,25 +39,22 @@ class IdamLogin{
     }
 
     async do(){
-        this.xuiLoginResponse = {}
+        this.xuiLoginResponse = {};
         this.idamLoginGetResponse = {};
         this.idamAuthorizeResponse = {};
         this.idamLoginresponse = {};
-        this.xuiCallbackResponse = {}
+        this.xuiCallbackResponse = {};
         this.userDetailsResponse = {};
-        try{
-            await this.onXuiLogin()
-            await this.onIdamAuthorize()
-            await this.onIdamLoginGet()
-            await this.onIdamLoginPost()
-            await this.onXuiCallback()
-            await this.getUserDetails()
-
-
-            this.authToken = this.userDetailsResponse.details.data.userInfo.token
-
-        }catch(err){
-            reportLogger.AddMessage('************* Login error *************')
+        try {
+            await this.onXuiLogin();
+            await this.onIdamAuthorize();
+            await this.onIdamLoginGet();
+            await this.onIdamLoginPost();
+            await this.onXuiCallback();
+            await this.getUserDetails();
+            this.authToken = this.userDetailsResponse?.details?.data?.userInfo?.token;
+        } catch(err) {
+            reportLogger.AddMessage('************* Login error *************');
             // reportLogger.AddMessage(
             //     JSON.stringify({
             //         xuiLoginResponse: this.xuiLoginResponse,

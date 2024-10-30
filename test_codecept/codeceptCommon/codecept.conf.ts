@@ -111,7 +111,7 @@ exports.config = {
       // disableScreenshots: false,
       fullPageScreenshots: true,
       uniqueScreenshotNames: true,
-      video: true,
+      video: false,
       screenshot: true,
       windowSize: "1600x900"
     }

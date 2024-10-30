@@ -238,9 +238,8 @@ export class AppConfig extends AbstractAppConfig {
     console.log('in ccd-config getWAServiceConfig, config = ', JSON.stringify(this.config.wa_service_config));
     if (this.initialisationComplete) {
       return this.config.wa_service_config;
-    } else {
-      return LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
     }
+    return LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
   }
 
   public getLocationRefApiUrl(): string {

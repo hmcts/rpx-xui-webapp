@@ -32,11 +32,9 @@ export class AppConfig extends AbstractAppConfig {
     private readonly loggerService: LoggerService
   ) {
     super();
-    console.log('In AppConfig constructor');
     this.deploymentEnv = environmentService.getDeploymentEnv();
     this.config = this.appConfigService.getEditorConfiguration() || {};
     this.initialisationSyncService.waitForInitialisation((init) => {
-      console.log(`waitForInitialisation callback called: ${init}`);
       if (init) {
         //combineLatestWith()
         const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
@@ -48,22 +46,11 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
-        console.log('Created observers and subscribers ' + obArray.length);
         if (obArray.length === 7) {
-          combineLatest(...obArray).subscribe((foo) => {
-            foo.forEach((item) => {
-              console.log('result item ' + JSON.stringify(item));
-            });
+          combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
+            console.log('LD initialisation complete with ' + items?.length + ' items');
           });
-          /*
-            .pipe(map( (res) => {
-              res.forEach((item) => {
-                console.log('result item ' + item);
-              });
-              this.initialisationComplete = true;
-            }));
-           */
         }
       }
     });
@@ -71,10 +58,8 @@ export class AppConfig extends AbstractAppConfig {
 
   private setUpLaunchDarklyForFeature<V extends ConfigValue>(featureName: string, defaultVal: V,
     obArray: Array<Observable<V>>) : void {
-    console.log('Setting up LD for feature ' + featureName);
     const ob = this.featureToggleService.getValue(featureName, defaultVal);
     const cbFn = (val) => {
-      console.log('LD callback called for feature ' + featureName);
       this.config = this.addAttribute(this.config,
         AppConstants.FEATURE_TO_ATTRIBUTE_MAP.get(featureName), val);
     };
@@ -235,7 +220,6 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWAServiceConfig(): WAFeatureConfig {
-    console.log('in ccd-config getWAServiceConfig, config = ', JSON.stringify(this.config.wa_service_config));
     if (this.initialisationComplete) {
       return this.config.wa_service_config;
     }

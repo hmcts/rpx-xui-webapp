@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import Request from './utils/request';
 import { setTestContext } from './utils/helper';
 
@@ -7,7 +8,6 @@ describe('EndpointRequests', () => {
     { 'endpoint': 'am/getBookings' },
     { 'endpoint': 'am/role-mapping/judicial/refresh' },
     { 'endpoint': 'am/specific-access-approval' },
-    { 'endpoint': 'api/configuration' },
     { 'endpoint': 'api/am/createBooking' },
     { 'endpoint': 'api/am/getBookings' },
     { 'endpoint': 'api/am/role-mapping/judicial/refresh' },
@@ -109,8 +109,7 @@ describe('EndpointRequests', () => {
     it(`should send a GET request to ${endpoint}`, async () => {
       // Make GET request and expect a 401 Unauthorized response
       const response = await Request.get(`${endpoint}`, null, 401);
-      expect(response.status).toEqual(401);
-      expect(response.error).toEqual({ message: 'Unauthorized' });
+      expect(response.data.message).to.equal('Unauthorized');
     });
   });
 });

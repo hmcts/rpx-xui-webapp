@@ -69,7 +69,7 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSea
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
     // search for the service name based on the globalSearchServiceId
-    const jurisdiction = refDataHMCTS ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
+    const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
     if (jurisdiction) {
       // handle Civil service which has different service_short_description
       globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: jurisdiction.length > 1 ? 'Civil' : jurisdiction[0].service_short_description });

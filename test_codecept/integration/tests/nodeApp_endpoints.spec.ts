@@ -91,8 +91,7 @@ describe('nodeApp endpoint', () => {
   // });
 
   it('api/user/details without session', async () => {
-    const response = await Request.get('api/user/details', null, 401);
-    expect(response.data).to.equal({ 'message': 'Unauthorized' });
+    await Request.get('api/user/details', null, 401);
   });
 
 

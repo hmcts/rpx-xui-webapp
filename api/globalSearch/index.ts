@@ -68,11 +68,11 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSea
   // Generate global search services
   const globalSearchServices: GlobalSearchService[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
-    // search for the service name based on the globalSearchServiceId 
+    // search for the service name based on the globalSearchServiceId
     const jurisdiction = refDataHMCTS ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
     if (jurisdiction) {
-      // handle Civil service which has different service_short_description 
-      globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName:jurisdiction.length > 1 ? 'Civil' : jurisdiction[0].service_short_description });
+      // handle Civil service which has different service_short_description
+      globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: jurisdiction.length > 1 ? 'Civil' : jurisdiction[0].service_short_description });
     } else {
       globalSearchServices.push({ serviceId, serviceName: serviceId });
     }

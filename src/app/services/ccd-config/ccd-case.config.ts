@@ -36,7 +36,6 @@ export class AppConfig extends AbstractAppConfig {
     this.config = this.appConfigService.getEditorConfiguration() || {};
     this.initialisationSyncService.waitForInitialisation((init) => {
       if (init) {
-        //combineLatestWith()
         const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
         const obArray: Array<Observable<ConfigValue>> = [];
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false, obArray);

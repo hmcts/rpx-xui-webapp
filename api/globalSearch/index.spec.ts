@@ -30,6 +30,24 @@ describe('Jurisdiction', () => {
     },
     {
       jurisdiction: 'Civil',
+      service_id: 6,
+      org_unit: 'HMCTS',
+      business_area: 'Civil, Family and Tribunals',
+      sub_business_area: 'Civil and Family',
+      service_description: 'Specified Money Claims',
+      service_code: 'AAA6',
+      service_short_description: 'Specified Money Claims',
+      ccd_service_name: 'Civil',
+      last_update: '2021-02-10T11:53:58.808063',
+      ccd_case_types: [
+        'MoneyClaimCase',
+        'CMC_ExceptionRecord',
+        'CIVIL',
+        'GENERALAPPLICATION'
+      ]
+    },
+    {
+      jurisdiction: 'Civil',
       service_id: 7,
       org_unit: 'HMCTS',
       business_area: 'Civil, Family and Tribunals',

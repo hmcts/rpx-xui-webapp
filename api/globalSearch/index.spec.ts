@@ -117,24 +117,6 @@ describe('Jurisdiction', () => {
       ccd_case_types: ['CriminalInjuriesCompensation']
     },
     {
-      jurisdiction: 'Employment Tribunerals',
-      service_id: 43,
-      org_unit: 'HMCTS',
-      business_area: 'Civil, Family and Tribunals',
-      sub_business_area: 'Tribunals',
-      service_description: 'Employment Claims',
-      service_code: 'BHA1',
-      service_short_description: 'Employment Claims',
-      ccd_service_name: 'EMPLOYMENT',
-      last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: [
-        'ET_EnglandWales',
-        'ET_Scotland',
-        'ET_Scotland_Multiple',
-        'ET_EnglandWales_Multiple'
-      ]
-    },
-    {
       jurisdiction: 'Family',
       service_id: 13,
       org_unit: 'HMCTS',

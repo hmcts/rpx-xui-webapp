@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.74-welsh-translation":
-  version: 7.0.74-welsh-translation
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.74-welsh-translation"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.74-welsh-translation-testing":
+  version: 7.0.74-welsh-translation-testing
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.74-welsh-translation-testing"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c8eea222df12cebf5c7db408d48c31f749d02c3ca1363b02ac1507019d5c8bddd4fd336de0dce8da4b451f5754e72ab5642e0a4d4d0663df3d94f146a606e774
+  checksum: 10/cbfb2eefbfae823cfa00a306bad01ed7a5e3abea581b37320a39cfd5d154393a29e46da068dea8c7fa7614881a9ca82b3965a7dde7ea4fa536218f1cc81272ff
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.9.1"
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.74-welsh-translation"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.74-welsh-translation-testing"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.8"

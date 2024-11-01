@@ -35,7 +35,7 @@ let features = ''
 if (testType === 'e2e' || testType === 'smoke'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
-  
+
   features = pipelineBranch === 'master' && !local ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
 
 } else{
@@ -51,7 +51,7 @@ let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctiona
 if (pipelineBranch === 'master' && testType === 'ngIntegration'){
   bddTags = 'AAT_only'
   process.env.LAUNCH_DARKLY_CLIENT_ID = '645baeea2787d812993d9d70'
-} 
+}
 
 const tags = process.env.DEBUG ? 'functional_debug' : bddTags
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`
@@ -114,7 +114,7 @@ exports.config = {
       // disableScreenshots: false,
       fullPageScreenshots: true,
       uniqueScreenshotNames: true,
-      video: true,
+      video: false,
       screenshot: true,
       windowSize: "1600x900"
     }

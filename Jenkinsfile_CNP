@@ -137,6 +137,24 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
         ])
+
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/api_functional/",
+            reportFiles          : 'mochawesome.html',
+            reportName           : 'PREVIEW API Functional Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW NG Integration Test'
+        ])
     }
 
     afterSuccess('smoketest:aat') {
@@ -159,5 +177,23 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/api_functional/",
+            reportFiles          : 'mochawesome.html',
+            reportName           : 'AAT API Functional Test'
+        ])
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'AAT NG Integration Test'
+        ])
     }
 }
+

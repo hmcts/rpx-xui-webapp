@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from '../../../app/app.constants';
@@ -9,15 +10,12 @@ import { InitialisationSyncService } from './initialisation-sync-service';
 import { LaunchDarklyDefaultsConstants } from './launch-darkly-defaults.constants';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 import { LoggerService } from '../logger/logger.service';
-import { combineLatest, Observable } from 'rxjs';
 
+type ConfigValue = string | boolean | Array<string> | object;
 /**
- * see more:
  * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
- * is explained why this is needed
+ * explains why this is needed
  */
-type ConfigValue = string | boolean | Array<string> | object
-
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
   public initialisationComplete = false;

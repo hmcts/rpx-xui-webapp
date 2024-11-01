@@ -43,7 +43,6 @@ const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
   mockFeatureToggleService.getValue.and.callFake((featureMame: string, defVal: any) => {
-    console.log('fake getValue for ' + featureMame);
     return of(defVal);
   });
   beforeEach(() => {

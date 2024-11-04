@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { signIn, signOut } from './steps/login-steps';
 import { waitForSpinner } from './steps/spinner-steps';
-import { getCaseReferenceFromFirstRow } from './steps/table-steps';
+import { getCaseReferenceFromFirstRow, dealWithShortenedCaseRefLabel } from './steps/table-steps';
 import { confirmNextSteps, confirmTabsVisible, caseDetailsCheck, validateWorkBasketComplexValues, validateWorkbasketInputs } from './steps/test-case';
 import { waitForSpecificResponse } from './helpers/responseListenerHelper';
 
@@ -19,7 +19,7 @@ test('Validate next steps drop down', async ({ page }) => {
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
   const firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  await page.getByLabel(`go to case with Case reference:${firstCaseRef.trim(4)}`).click();
+  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData?.triggers;
   const nextStepsMatch = await confirmNextSteps(page, expectedData);
@@ -41,7 +41,7 @@ test('Validate tabs are visible', async ({ page }) => {
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
   const firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  await page.getByLabel(`go to case with Case reference:${firstCaseRef.trim(4)}`).click();
+  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData?.tabs;
   const tabsMatch = await confirmTabsVisible(page, expectedData);
@@ -63,7 +63,7 @@ test('Validate tabs details', async ({ page }) => {
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
   const firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  await page.getByLabel(`go to case with Case reference:${firstCaseRef.trim(4)}`).click();
+  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData;
   await caseDetailsCheck(page, expectedData);

@@ -28,3 +28,8 @@ export async function getCaseReferenceFromFirstRow(page) {
   const caseID = await cell.textContent();
   return caseID;
 }
+
+export function dealWithShortenedCaseRefLabel(caseId): string{
+  //label has last 4 digits of case ref cut off, do the same so navigation can occur
+  return caseId.trim(4);
+}

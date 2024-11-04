@@ -1,106 +1,11 @@
 import { expect } from 'chai';
 import Request from './utils/request';
 import { setTestContext } from './utils/helper';
+import { endpoints } from './config/authenticatedRoutes';
 
 describe('EndpointRequests', () => {
-  const endpoints = [
-    { 'endpoint': 'am/createBooking' },
-    { 'endpoint': 'am/getBookings' },
-    { 'endpoint': 'am/role-mapping/judicial/refresh' },
-    { 'endpoint': 'am/specific-access-approval' },
-    { 'endpoint': 'api/am/createBooking' },
-    { 'endpoint': 'api/am/getBookings' },
-    { 'endpoint': 'api/am/role-mapping/judicial/refresh' },
-    { 'endpoint': 'api/am/specific-access-approval' },
-    { 'endpoint': 'api/role-access/exclusions/post' },
-    { 'endpoint': 'api/role-access/exclusions/confirm' },
-    { 'endpoint': 'api/role-access/exclusions/delete' },
-    { 'endpoint': 'api/role-access/allocate-role/confirm' },
-    { 'endpoint': 'api/role-access/allocate-role/reallocate' },
-    { 'endpoint': 'api/role-access/allocate-role/delete' },
-    { 'endpoint': 'api/role-access/allocate-role/valid-roles' },
-    { 'endpoint': 'api/role-access/roles/post' },
-    { 'endpoint': 'api/role-access/roles/access-get' },
-    { 'endpoint': 'api/role-access/roles/access-get-by-caseId' },
-    { 'endpoint': 'api/role-access/roles/getJudicialUsers' },
-    { 'endpoint': 'api/role-access/roles/get-my-access-new-count' },
-    { 'endpoint': 'api/role-access/roles/manageLabellingRoleAssignment/:caseId' },
-    { 'endpoint': 'api/role-access/allocate-role/specific-access-approval' },
-    { 'endpoint': 'api/am/createBooking' },
-    { 'endpoint': 'api/am/getBookings' },
-    { 'endpoint': 'api/am/role-mapping/judicial/refresh' },
-    { 'endpoint': 'api/am/specific-access-approval' },
-    { 'endpoint': 'api/role-access/exclusions/post' },
-    { 'endpoint': 'api/role-access/exclusions/confirm' },
-    { 'endpoint': 'api/role-access/exclusions/delete' },
-    { 'endpoint': 'api/role-access/allocate-role/confirm' },
-    { 'endpoint': 'api/role-access/allocate-role/reallocate' },
-    { 'endpoint': 'api/role-access/allocate-role/delete' },
-    { 'endpoint': 'api/role-access/allocate-role/valid-roles' },
-    { 'endpoint': 'api/role-access/roles/post' },
-    { 'endpoint': 'api/role-access/roles/access-get' },
-    { 'endpoint': 'api/role-access/roles/access-get-by-caseId' },
-    { 'endpoint': 'api/role-access/roles/getJudicialUsers' },
-    { 'endpoint': 'api/role-access/roles/get-my-access-new-count' },
-    { 'endpoint': 'api/role-access/roles/manageLabellingRoleAssignment/:caseId' },
-    { 'endpoint': 'api/role-access/allocate-role/specific-access-approval' },
-    { 'endpoint': 'api/locations/getLocationsById' },
-    { 'endpoint': 'api/locations/getLocations' },
-    { 'endpoint': 'api/caseshare/orgs' },
-    { 'endpoint': 'api/caseshare/users' },
-    { 'endpoint': 'api/caseshare/cases' },
-    { 'endpoint': 'api/caseshare/case-assignments' },
-    { 'endpoint': 'api/caseshare/case-assignments' },
-    { 'endpoint': 'api/noc/nocQuestions' },
-    { 'endpoint': 'api/noc/validateNoCQuestions' },
-    { 'endpoint': 'api/noc/submitNocEvents' },
-    { 'endpoint': 'api/organisation' },
-    { 'endpoint': 'api/staff-supported-jurisdiction/get' },
-    { 'endpoint': 'api/wa-supported-jurisdiction/get' },
-    { 'endpoint': 'api/globalSearch/services' },
-    { 'endpoint': 'api/globalSearch/results' },
-    { 'endpoint': 'api/locations/getLocationsById' },
-    { 'endpoint': 'api/locations/getLocations' },
-    { 'endpoint': 'api/ref-data/services' },
-    { 'endpoint': 'api/ref-data/regions' },
-    { 'endpoint': 'api/ref-data/locations-by-service-code' },
-    { 'endpoint': 'api/ref-data/locations' },
-    { 'endpoint': 'api/prd/caseFlag/getCaseFlagRefData' },
-    { 'endpoint': 'api/prd/location/getLocations' },
-    { 'endpoint': 'api/prd/location/getLocationById' },
-    { 'endpoint': 'api/prd/lov/getLovRefData' },
-    { 'endpoint': 'api/prd/judicial/searchJudicialUserByPersonalCodes' },
-    { 'endpoint': 'api/prd/judicial/searchJudicialUserByIdamId' },
-    { 'endpoint': 'api/prd/judicial/getJudicialUsersSearch' },
-    { 'endpoint': 'api/hearings/loadServiceHearingValues' },
-    { 'endpoint': 'api/hearings/getHearings' },
-    { 'endpoint': 'api/hearings/getHearing' },
-    { 'endpoint': 'api/hearings/submitHearingRequest' },
-    { 'endpoint': 'api/hearings/hearingActuals/:hearingId' },
-    { 'endpoint': 'api/hearings/hearingActualsCompletion/:hearingId' },
-    { 'endpoint': 'api/hearings/loadServiceLinkedCases' },
-    { 'endpoint': 'api/hearings/loadLinkedCasesWithHearings' },
-    { 'endpoint': 'api/hearings/getLinkedHearingGroup' },
-    { 'endpoint': 'api/hearings/postLinkedHearingGroup' },
-    { 'endpoint': 'api/specific-access-request' },
-    { 'endpoint': 'api/specific-access-request/request-more-information' },
-    { 'endpoint': 'api/specific-access-request/update-attributes' },
-    { 'endpoint': 'api/challenged-access-request' },
-    { 'endpoint': 'api/challenged-access-request/update-attributes' },
-    { 'endpoint': 'api/staff-ref-data/getFilteredUsers' },
-    { 'endpoint': 'api/staff-ref-data/getUsersByPartialName' },
-    { 'endpoint': 'api/staff-ref-data/fetchUsersById' },
-    { 'endpoint': 'api/staff-ref-data/fetchSingleUserById' },
-    { 'endpoint': 'api/staff-ref-data/getUserTypes' },
-    { 'endpoint': 'api/staff-ref-data/getJobTitles' },
-    { 'endpoint': 'api/staff-ref-data/getSkills' },
-    { 'endpoint': 'api/staff-ref-data/addNewUser' },
-    { 'endpoint': 'api/staff-ref-data/updateUser' }
-  ];
-
   beforeEach(function() {
     this.timeout(120000);
-
     setTestContext(this);
     Request.clearSession();
   });
@@ -108,7 +13,7 @@ describe('EndpointRequests', () => {
   endpoints.forEach(({ endpoint }) => {
     it(`should send a GET request to ${endpoint}`, async () => {
       // Make GET request and expect a 401 Unauthorized response
-      const response = await Request.get(`${endpoint}`, null, 401);
+      const response = await Request.get(endpoint, null, 401);
       expect(response.data.message).to.equal('Unauthorized');
     });
   });

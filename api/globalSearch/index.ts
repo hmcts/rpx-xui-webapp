@@ -72,7 +72,11 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSea
     const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
     if (jurisdiction) {
       // handle Civil service which has different service_short_description
-      globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: jurisdiction.length > 1 ? 'Civil' : jurisdiction[0].service_short_description });
+      if (jurisdiction.length > 1) {
+        globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });
+      } else {
+        globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: jurisdiction[0].service_short_description });
+      }
     } else {
       globalSearchServices.push({ serviceId, serviceName: serviceId });
     }
@@ -80,4 +84,10 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSea
 
   // Return generated global search services
   return globalSearchServices;
+}
+
+function toTitleCase(serviceName: string): string {
+  return serviceName.replace(/([a-zA-Z])([a-zA-Z]*)/g, (match, firstLetter, rest) => {
+    return firstLetter.toUpperCase() + rest.toLowerCase();
+  });
 }

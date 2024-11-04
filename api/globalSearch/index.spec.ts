@@ -86,7 +86,7 @@ describe('Jurisdiction', () => {
       ccd_case_types: ['CARE_SUPERVISION_EPO']
     },
     {
-      jurisdiction: 'Employment Tribunerals',
+      jurisdiction: 'Employment Tribunals',
       service_id: 43,
       org_unit: 'HMCTS',
       business_area: 'Civil, Family and Tribunals',

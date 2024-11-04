@@ -3460,22 +3460,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.28":
-  version: 2.0.28
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.28"
+"@hmcts/rpx-xui-common-lib@npm:2.0.31":
+  version: 2.0.31
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.31"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 8dd8cd659f702a89069906356564d177046bc43610272bdf06dc8422b38c7625e46f868a9f1a918b570cb3c8e0960d513a94efa42332539b2cf8d0a30456fe7f
+  checksum: 3e3c4fbdf8843bfd075d3005fdd7521214faa9e4f4fd1299aeca9b90680cd3cc7b272bc5675e25fdf2c272ded9c3ff00124bcb77b45b8255b9c3ecb569ae5c84
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.29.3-user-details-log":
-  version: 2.29.3-user-details-log
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.29.3-user-details-log"
+"@hmcts/rpx-xui-node-lib@npm:2.29.3-user-details-log-2":
+  version: 2.29.3-user-details-log-2
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.29.3-user-details-log-2"
   dependencies:
     "@hapi/joi": ^17.1.1
     axios: ^1.7.7
@@ -3491,13 +3491,13 @@ __metadata:
     jwt-decode: ^2.2.0
     openid-client: ^3.10.0
     otplib: ^12.0.1
-    passport: ^0.7.0
+    passport: ^0.5.3
     passport-oauth2: ^1.5.0
     redis: ^3.0.2
     session-file-store: ^1.5.0
     ts-auto-mock: ^3.5.0
     ttypescript: ^1.5.13
-  checksum: f6c17ce7e3735c1e35d97e949828b2e5b121380aa5d20517bbb729bb4233fabdbf0b44608000a67ccf9e4f64c2d58357c8353971a33bb2fb5d717a408e2b927a
+  checksum: 0bf1c0f84aece9b2696f80083dd4869a67b27fea17200aaab85187200a06b7435df0ce59029bde60312a4fab650771b6836099ed8415b545fd92a2ea3784c164
   languageName: node
   linkType: hard
 
@@ -20297,14 +20297,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "passport@npm:0.7.0"
+"passport@npm:^0.5.3":
+  version: 0.5.3
+  resolution: "passport@npm:0.5.3"
   dependencies:
     passport-strategy: 1.x.x
     pause: 0.0.1
-    utils-merge: ^1.0.1
-  checksum: 5080b46df2df7a84f7ba4a8a20437ce71a1346fd27ab47b62df3251a666af9f3430d6c8a1beda3174f6a9d91edc823b57b88050d423a6cff9831848a2d97725c
+  checksum: 5430b31b7e2066cff9954c8b151fb44479faf98ea7de210d4388961168a00990dbe52d3cc110d4b778650ebab7613ff4bdda5bbe1e297eb35298c6b83456f507
   languageName: node
   linkType: hard
 
@@ -22147,8 +22146,8 @@ __metadata:
     "@hmcts/media-viewer": 4.0.8
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.28
-    "@hmcts/rpx-xui-node-lib": 2.29.3-user-details-log
+    "@hmcts/rpx-xui-common-lib": 2.0.31
+    "@hmcts/rpx-xui-node-lib": 2.29.3-user-details-log-2
     "@microsoft/applicationinsights-web": ^3.1.0
     "@ng-idle/core": ^14.0.0
     "@ng-idle/keepalive": ^14.0.0
@@ -25237,7 +25236,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x, utils-merge@npm:^1.0.1":
+"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x":
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080

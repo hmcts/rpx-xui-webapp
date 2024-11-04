@@ -110,7 +110,7 @@
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
     "accessibility-checker": "^3.1.70",
     "applicationinsights": "1.7.2",
-    "axios": "^1.6.8",
+    "axios": "^1.7.7",
     "axios-mock-adapter": "^1.22.0",
     "class-transformer": "^0.3.2",
     "compression": "^1.7.4",
@@ -277,6 +277,7 @@
     "lodash": "^4.17.21",
     "braces": "^3.0.3",
     "ws": "^8.18.0",
+    "axios": "1.7.7",
     "webpack": "^5.94.0"
   },
   "packageManager": "yarn@4.5.0"

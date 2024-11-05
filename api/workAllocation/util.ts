@@ -306,7 +306,8 @@ export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: Sta
   const roleAssignment = roleAssignments.find((roleAssign) =>
     roleAssign.actorId === user.id &&
     // added line below to stop irrelevant role setting role category
-    (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction)));
+    (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction))
+  );
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 

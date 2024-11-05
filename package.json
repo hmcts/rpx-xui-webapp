@@ -108,7 +108,7 @@
     "@ngrx/store": "^17.2.0",
     "@ngrx/store-devtools": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
-    "accessibility-checker": "^3.1.70",
+    "accessibility-checker": "^3.1.76",
     "applicationinsights": "1.7.2",
     "axios": "^1.7.7",
     "axios-mock-adapter": "^1.22.0",
@@ -249,7 +249,7 @@
     "protractor": "~7.0.0",
     "protractor-cucumber-framework": "^9.7.0",
     "protractor-multiple-cucumber-html-reporter-plugin": "1.8.0",
-    "puppeteer": "^22.4.1",
+    "puppeteer": "^22.8.2",
     "sass": "^1.66.1",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
@@ -278,7 +278,10 @@
     "braces": "^3.0.3",
     "ws": "^8.18.0",
     "axios": "1.7.7",
-    "webpack": "^5.94.0"
+    "webpack": "^5.94.0",
+    "@babel/traverse": "^7.23.3",
+    "chromedriver": "^119.0.1",
+    "puppeteer": "^22.8.2"
   },
   "packageManager": "yarn@4.5.0"
 }

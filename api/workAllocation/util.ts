@@ -356,10 +356,13 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number): any {
-  const attributes: any = {
-    jurisdiction: jurisdictions
-  };
+export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number, allRoles?: boolean): any {
+  let attributes: any = {};
+  if (!allRoles) {
+    attributes = {
+      jurisdiction: jurisdictions
+    };
+  }
 
   const payload = {
     attributes,

@@ -291,7 +291,6 @@
     "formidable": "^3.5.2",
     "unzipper": "^0.12.3",
     "glob": "^10.4.5",
-    "got": "^14.4.4",
     "pac-resolver": "^7.0.1",
     "socks": "^2.8.3",
     "mermaid": "^10.9.3",

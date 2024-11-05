@@ -287,7 +287,7 @@ export function mapUsersToCachedCaseworkers(users: StaffUserDetails[], roleAssig
         idamId: staffUser.staff_profile.id,
         lastName: staffUser.staff_profile.last_name,
         locations: mapCachedCaseworkerLocation(staffUser.staff_profile.base_location),
-        roleCategory: getUserRoleCategory(roleAssignments, staffUser.staff_profile),
+        roleCategory: getUserRoleCategory(roleAssignments, staffUser.staff_profile, staffUser.ccd_service_names),
         services: staffUser.ccd_service_names
       };
       caseworkers.push(thisCaseWorker);
@@ -301,9 +301,12 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
-export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile): string {
+export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
   // TODO: Will need to be updated
-  const roleAssignment = roleAssignments.find((roleAssign) => roleAssign.actorId === user.id);
+  const roleAssignment = roleAssignments.find((roleAssign) =>
+    roleAssign.actorId === user.id &&
+    // added line below to stop irrelevant role setting role category
+    (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction)));
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
 

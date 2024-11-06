@@ -374,7 +374,6 @@ export class QueryManagementContainerComponent implements OnInit {
   // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
   private getUserDetailsRoleName(): void {
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
-      console.log('user--', user);
       const matchedRoleAssignment = user.roleAssignmentInfo?.find(
         (m) => m.caseId === this.caseDetails.case_id
       );

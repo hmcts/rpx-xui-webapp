@@ -290,13 +290,10 @@
     "follow-redirects": "^1.15.9",
     "formidable": "^3.5.2",
     "unzipper": "^0.12.3",
-    "glob": "^10.4.5",
     "pac-resolver": "^7.0.1",
     "socks": "^2.8.3",
     "mermaid": "^10.9.3",
-    "reflect-metadata": "^0.2.2",
-    "rimraf": "^5.0.10",
-    "semver": "^7.6.0"
+    "reflect-metadata": "^0.2.2"
   },
   "packageManager": "yarn@4.5.0"
 }

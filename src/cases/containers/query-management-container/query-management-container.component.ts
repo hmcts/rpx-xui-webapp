@@ -380,9 +380,6 @@ export class QueryManagementContainerComponent implements OnInit {
       );
       if (matchedRoleAssignment) {
         this.roleName = matchedRoleAssignment.roleName;
-        console.log('matchedRoleAssignment--u', matchedRoleAssignment, user.roleAssignmentInfo,
-          this.caseDetails.case_id, matchedRoleAssignment.roleName
-        );
       } else {
         this.roleName = '';
       }

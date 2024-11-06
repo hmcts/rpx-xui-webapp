@@ -1236,13 +1236,15 @@ describe('workAllocation.utils', () => {
     it('should correctly get the users role category', () => {
       expect(util.getUserRoleCategory(mockRoleAssignment, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.equal('LEGAL_OPERATIONS');
       expect(util.getUserRoleCategory(mockRoleAssignment, mockUsers[1].staff_profile, mockUsers[1].ccd_service_names)).to.equal('ADMIN');
-      const specificMockRole = [{ actorId: '123', roleCategory: 'CTSC', attributes: { jurisdiction: 'IA' } } as RoleAssignment];
+      const specificMockRole = [{ actorId: '123', roleCategory: 'CTSC', attributes: { jurisdiction: 'ia' } } as RoleAssignment];
       expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.equal('CTSC');
       // checks that if service of role does not match, role cateogry not set
       expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
       specificMockRole[0].attributes = {};
       // checks that if role not service specific, role category is set
       expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal('CTSC');
+      specificMockRole[0].roleCategory = undefined;
+      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
     });
 
     it('should correctly get the users location', () => {

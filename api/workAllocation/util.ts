@@ -304,9 +304,10 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
   // TODO: Will need to be updated
   const roleAssignment = roleAssignments.find((roleAssign) =>
-    roleAssign.actorId === user.id &&
+    roleAssign.actorId === user.id && roleAssign.roleCategory &&
     // added line below to stop irrelevant role setting role category
-    (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction))
+    // note - we know services are already capitalised
+    (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction.toUpperCase()))
   );
   return roleAssignment ? roleAssignment.roleCategory : null;
 }

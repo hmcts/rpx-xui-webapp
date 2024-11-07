@@ -26494,12 +26494,12 @@ __metadata:
   linkType: hard
 
 "yarn@npm:^1.22.18":
-  version: 1.22.19
-  resolution: "yarn@npm:1.22.19"
+  version: 1.22.22
+  resolution: "yarn@npm:1.22.22"
   bin:
     yarn: bin/yarn.js
     yarnpkg: bin/yarn.js
-  checksum: 10/b3929d0a482291a87f6eb1459a9caf9cf6e2fe6d5267f83e44a150337a8c241bd69a62694d99eca14fb878a864c518247fc1522c4fa6d40a97db449af70d1760
+  checksum: 10/98d80230beaa81f186b2256dff5ef9dce2dd6073c94299209f8e562da9018cff4275c95c27c788aaa4a9c3c186ea8a9aee9a5b83570696a4c8a9d1fff2d4da3a
   languageName: node
   linkType: hard
 

@@ -19,7 +19,7 @@ class IdamLogin{
 
         this.authToken = '';
 
-       
+
 
         this.xuiCookies = {}
         this.idamCookies = {}
@@ -54,7 +54,7 @@ class IdamLogin{
             await this.getUserDetails()
 
 
-            this.authToken = this.userDetailsResponse.details.data.userInfo.token
+            this.authToken = this.userDetailsResponse?.details?.data?.userInfo?.token
 
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')
@@ -124,12 +124,12 @@ class IdamLogin{
                 clearInterval(interval)
             }, 35 * 1000)
 
-          
-           
+
+
         });
         // const response = await axiosInstance.get(this.conf.xuiBaseUrl + '/auth/login')
         this.xuiLoginResponse.status = this.getResponseStatus(response)
-        
+
         this.xuiLoginResponse.details =  {
             response,
             idamAuthorizeUrl:`${response.headers.location}`,
@@ -270,7 +270,7 @@ class IdamLogin{
         this.userDetailsResponse.details = { data: response.data }
         return response.data;
     }
-    
+
 
 }
 

@@ -3,22 +3,23 @@ const path = require('path')
 
 const files = fs.readdirSync(path.resolve(__dirname, '../../config'));
 
-const secretsPath = '/mnt/secrets/rpx';
+const secretsPath = '/mnt/secrets/';
 
-function readSecrets() {
-  const secrets = {};
-  
-  fs.readdirSync(secretsPath).forEach(file => {
-    const secretName = path.basename(file);
-    const secretValue = fs.readFileSync(path.join(secretsPath, file), 'utf8').trim();
-    secrets[secretName] = secretValue;
-  });
-
-  return secrets;
+function loadSecrets() {
+    const secrets = {};
+    if (fs.existsSync(secretsDir)) {
+        fs.readdirSync(secretsDir).forEach(file => {
+            const secretKey = path.basename(file); // Each filename is the key
+            const secretValue = fs.readFileSync(path.join(secretsDir, file), 'utf8').trim();
+            secrets[secretKey] = secretValue;
+        });
+    } else {
+        console.error(`Secrets directory ${secretsDir} not found.`);
+    }
+    return secrets;
 }
 
-// Now you can use the secrets object in your config
-const secrets = readSecrets();
+const secrets = loadSecrets();
 console.log('Loaded secrets:', secrets);
 
 console.log(files);

@@ -3,7 +3,7 @@ const path = require('path')
 
 const files = fs.readdirSync(path.resolve(__dirname, '../../config'));
 
-const secretsPath = '/mnt/secrets/';
+const secretsDir = '/mnt/secrets/';
 
 function loadSecrets() {
     const secrets = {};

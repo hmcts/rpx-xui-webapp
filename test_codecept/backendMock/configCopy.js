@@ -3,6 +3,24 @@ const path = require('path')
 
 const files = fs.readdirSync(path.resolve(__dirname, '../../config'));
 
+const secretsPath = '/mnt/secrets/rpx';
+
+function readSecrets() {
+  const secrets = {};
+  
+  fs.readdirSync(secretsPath).forEach(file => {
+    const secretName = path.basename(file);
+    const secretValue = fs.readFileSync(path.join(secretsPath, file), 'utf8').trim();
+    secrets[secretName] = secretValue;
+  });
+
+  return secrets;
+}
+
+// Now you can use the secrets object in your config
+const secrets = readSecrets();
+console.log('Loaded secrets:', secrets);
+
 console.log(files);
 console.log(process.env);
 const mockConfig = files.find(file => file === 'local-mock.json');

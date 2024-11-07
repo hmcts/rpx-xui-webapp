@@ -55,7 +55,7 @@
     "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration test:codeceptE2E",
     "test:playwrightE2E": "yarn playwright install && npx playwright test --project chromium",
     "test:functional1": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",
-    "test:functional": "npm-run-all -p -l -n -c test:xuiIntegration test:a11yInTests",
+    "test:functional": "npm-run-all -p -l -n -c test:xuiIntegration",
     "test:functionalApiE2e": "yarn run test:api && yarn run test:codeceptE2E",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",

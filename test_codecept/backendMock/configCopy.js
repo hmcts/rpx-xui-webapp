@@ -4,7 +4,7 @@ const path = require('path')
 const files = fs.readdirSync(path.resolve(__dirname, '../../config'));
 
 console.log(files);
-
+console.log(process.env);
 const mockConfig = files.find(file => file === 'local-mock.json');
 let defaultConfig;
 let defaultSecrets;

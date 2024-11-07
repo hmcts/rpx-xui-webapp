@@ -3,45 +3,6 @@ const path = require('path')
 
 const files = fs.readdirSync(path.resolve(__dirname, '../../config'));
 
-const secretsDir = '/mnt/secrets/';
-const secretsDir2 = '/mnt/secrets/rpx';
-
-function loadSecrets() {
-    const secrets = {};
-    if (fs.existsSync(secretsDir)) {
-        fs.readdirSync(secretsDir).forEach(file => {
-            const secretKey = path.basename(file); // Each filename is the key
-            const secretValue = fs.readFileSync(path.join(secretsDir, file), 'utf8').trim();
-            secrets[secretKey] = secretValue;
-        });
-    } else {
-        console.error(`Secrets directory ${secretsDir} not found.`);
-    }
-    return secrets;
-}
-
-const secrets = loadSecrets();
-console.log('Loaded secrets:', secrets);
-
-function loadSecrets2() {
-    const secrets = {};
-    if (fs.existsSync(secretsDir2)) {
-        fs.readdirSync(secretsDir2).forEach(file => {
-            const secretKey = path.basename(file); // Each filename is the key
-            const secretValue = fs.readFileSync(path.join(secretsDir2, file), 'utf8').trim();
-            secrets[secretKey] = secretValue;
-        });
-    } else {
-        console.error(`Secrets directory ${secretsDir2} not found.`);
-    }
-    return secrets;
-}
-
-const secrets2 = loadSecrets2();
-console.log('Loaded secrets2:', secrets2);
-
-console.log(files);
-console.log(process.env);
 const mockConfig = files.find(file => file === 'local-mock.json');
 let defaultConfig;
 let defaultSecrets;

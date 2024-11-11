@@ -7525,15 +7525,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:1.7.2":
-  version: 1.7.2
-  resolution: "applicationinsights@npm:1.7.2"
+"applicationinsights@npm:1.8.10":
+  version: 1.8.10
+  resolution: "applicationinsights@npm:1.8.10"
   dependencies:
     cls-hooked: "npm:^4.2.2"
     continuation-local-storage: "npm:^3.2.1"
-    diagnostic-channel: "npm:0.2.0"
-    diagnostic-channel-publishers: "npm:^0.3.3"
-  checksum: 10/505b36d5d34e6bdb477bae1e12eddb9166bf7e906c782fce5d2802962fb8b26fe54816301233012bf573b4197a2b47f3ad161dd65fe17fa4b652ceb3cf489f9e
+    diagnostic-channel: "npm:0.3.1"
+    diagnostic-channel-publishers: "npm:0.4.4"
+  checksum: 10/c3358b622f0b506891c587ba729d333c2d7e816e3bd8e07dfffdfd6f3201c2918ba6e91360c4e345368fc28b2162cb1effbd845084f7043c2330b02a61f366d0
   languageName: node
   linkType: hard
 
@@ -11076,21 +11076,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diagnostic-channel-publishers@npm:^0.3.3":
-  version: 0.3.5
-  resolution: "diagnostic-channel-publishers@npm:0.3.5"
+"diagnostic-channel-publishers@npm:0.4.4":
+  version: 0.4.4
+  resolution: "diagnostic-channel-publishers@npm:0.4.4"
   peerDependencies:
     diagnostic-channel: "*"
-  checksum: 10/14d68a2ce6481bdc2a52514703f3973e24740246b36c930c145aa0014acbceda7c422996430f196bf7dfee4e6c048ad23ef981c03f0c2bfee5959c2b5cbdd097
+  checksum: 10/39ec421fee46d9d0c282b6eddcdc45bc50bd33e8fa74fec3555084c1f240600f1929f86e977785d96667feecfa7e24da8082f9a46b78460b3040d21bebc4e402
   languageName: node
   linkType: hard
 
-"diagnostic-channel@npm:0.2.0":
-  version: 0.2.0
-  resolution: "diagnostic-channel@npm:0.2.0"
+"diagnostic-channel@npm:0.3.1":
+  version: 0.3.1
+  resolution: "diagnostic-channel@npm:0.3.1"
   dependencies:
     semver: "npm:^5.3.0"
-  checksum: 10/68e0e92076d6562e5f378e1f01f5fe5d1933449a4e1ec17ce9fb29c23e78e17e36514d279570880efc763ff638d2fb8a8b0ee44d351e6cc124579c62cad3a14d
+  checksum: 10/3bc8e2e96aa390d60e9d469172cdff7ebf84bc6c86b6e43b5dc384c6bb63ffb5c74e61f6b364dcd140283e4a8d504cd2cc0ad6409af59a4b4b65ca8f4d589b06
   languageName: node
   linkType: hard
 
@@ -21740,7 +21740,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^7.2.0"
     accessibility-checker: "npm:^3.1.70"
     allure-js-commons: "npm:^2.11.1"
-    applicationinsights: "npm:1.7.2"
+    applicationinsights: "npm:1.8.10"
     axe-html-reporter: "npm:^2.2.3"
     axios: "npm:^1.7.7"
     axios-mock-adapter: "npm:^1.22.0"

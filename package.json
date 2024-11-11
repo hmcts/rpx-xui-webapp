@@ -150,7 +150,6 @@
     "rpx-xui-translation": "1.0.4",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
-    "rxjs-compat": "^6.6.7",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
     "stream": "^0.0.2",
@@ -158,7 +157,6 @@
     "ts-enum-util": "4.0.2",
     "tslib": "^2.6.1",
     "web-animations-js": "^2.3.2",
-    "yarn": "^1.22.18",
     "zone.js": "~0.14.4"
   },
   "devDependencies": {

@@ -39,25 +39,22 @@ class IdamLogin{
     }
 
     async do(){
-        this.xuiLoginResponse = {}
+        this.xuiLoginResponse = {};
         this.idamLoginGetResponse = {};
         this.idamAuthorizeResponse = {};
         this.idamLoginresponse = {};
-        this.xuiCallbackResponse = {}
+        this.xuiCallbackResponse = {};
         this.userDetailsResponse = {};
-        try{
-            await this.onXuiLogin()
-            await this.onIdamAuthorize()
-            await this.onIdamLoginGet()
-            await this.onIdamLoginPost()
-            await this.onXuiCallback()
-            await this.getUserDetails()
-
-
-            this.authToken = this.userDetailsResponse?.details?.data?.userInfo?.token
-
-        }catch(err){
-            reportLogger.AddMessage('************* Login error *************')
+        try {
+            await this.onXuiLogin();
+            await this.onIdamAuthorize();
+            await this.onIdamLoginGet();
+            await this.onIdamLoginPost();
+            await this.onXuiCallback();
+            await this.getUserDetails();
+            this.authToken = this.userDetailsResponse?.details?.data?.userInfo?.token;
+        } catch(err) {
+            reportLogger.AddMessage('************* Login error *************');
             // reportLogger.AddMessage(
             //     JSON.stringify({
             //         xuiLoginResponse: this.xuiLoginResponse,
@@ -141,36 +138,37 @@ class IdamLogin{
 
 
 
-    async onIdamAuthorize() {
-        if (this.xuiLoginResponse === null) { throw new Error('xuiLogin required') }
-
-        reportLogger.AddMessage('API: IDAM Authorize url ' + this.xuiLoginResponse.details.idamAuthorizeUrl)
-
-        const response = await axiosInstance.get(this.xuiLoginResponse.details.idamAuthorizeUrl)
-
-        const redirectlocation = response.headers.location;
-        const redirect_url = redirectlocation.split('redirect_uri')[1];
-
-        const redirectQueryParams = redirect_url.split('callback&')[1].split('&').map(params => {
-            const nameValue = params.split('=')
-            return {
-                name: nameValue[0],
-                value: nameValue[1]
-            }
-        })
-
+  async onIdamAuthorize() {
+    if (this.xuiLoginResponse === null) {
+      throw new Error('xuiLogin required')
+    }
+    reportLogger.AddMessage('API: IDAM Authorize url ' + this.xuiLoginResponse.details.idamAuthorizeUrl);
+    const response = await axiosInstance.get(this.xuiLoginResponse.details.idamAuthorizeUrl);
+    if (response.status < 400) {
+      const redirectlocation = response.headers.location;
+      if (redirectlocation) {
+        const redirect_url = redirectlocation?.split('redirect_uri')[1];
+        const redirectQueryParams = redirect_url?.split('callback&')[1]?.split('&')?.map((params) => {
+          const nameValue = params.split('=');
+          return {
+            name: nameValue[0],
+            value: nameValue[1]
+          };
+        });
         this.idamAuthorizeResponse.status = this.getResponseStatus(response);
         this.idamAuthorizeResponse.details = {
-            response,
-            idamLoginRedirect: redirectlocation,
-            setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie']),
-            state: redirectQueryParams.find(param => param.name === 'state').value,
-            nonce: redirectQueryParams.find(param => param.name === 'nonce').value
-        }
+          response,
+          idamLoginRedirect: redirectlocation,
+          setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie']),
+          state: redirectQueryParams.find((param) => param.name === 'state').value,
+          nonce: redirectQueryParams.find((param) => param.name === 'nonce').value
+        };
         reportLogger.AddMessage('API: IDAM authorize call success')
-
+      } else {
+        reportLogger.AddMessage('API: IdAM authorisation failed ' + response.status + ':' + response.statusText);
+      }
     }
-
+  }
     async onIdamLoginGet() {
         if (this.idamAuthorizeResponse === null) { throw new Error('idam authorize required') }
         const cookiesString = `${this.getCookieString(this.idamAuthorizeResponse.details.setCookies)}`

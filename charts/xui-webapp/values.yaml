@@ -22,7 +22,7 @@ nodejs:
     REFORM_SERVICE_NAME: xui-webapp
     NODE_ENV: production
     NODE_CONFIG_ENV: production
-    NODE_OPTIONS: --max-old-space-size=8192
+    NODE_OPTIONS: --max-old-space-size=2048
     UV_THREADPOOL_SIZE: 64
     XUI_ENV: preview
     LOGGING: debug
@@ -157,4 +157,3 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
 idam-pr:
   enabled: false
-

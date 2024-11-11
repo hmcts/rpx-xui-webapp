@@ -82,6 +82,7 @@
         "rpx": {
             "launch-darkly-client-id": "5de6610b23ce5408280f2268",
             "appinsights-instrumentationkey-mc": "***REMOVED***",
+            "appinsights-connection-string-mc": "InstrumentationKey=***REMOVED***;IngestionEndpoint=https://uksouth-0.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/;ApplicationId=46b383c1-eae6-46f8-a657-f5639d68b379",
             "mc-s2s-client-secret": "FHYQN3ZQ3BF66XWR",
             "mc-idam-client-secret": "***REMOVED***",
             "webapp-redis-connection-string": "redis://localhost:6379",

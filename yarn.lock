@@ -3060,9 +3060,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.29.3-user-details-log-2":
-  version: 2.29.3-user-details-log-2
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.29.3-user-details-log-2"
+"@hmcts/rpx-xui-node-lib@npm:2.29.4":
+  version: 2.29.4
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.29.4"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3084,7 +3084,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     ts-auto-mock: "npm:^3.5.0"
     ttypescript: "npm:^1.5.13"
-  checksum: 10/0ce16f0c13a83bf9ac085b10eeb4f4b4cde2c80cabb9feecbfc348052e04b537d4a29dfc843429240f85fbdeb95961127845e8540776ed0f5dd68e435ec9d7b2
+  checksum: 10/969b536f12927aaf61ec39e062fa3de14d0516515800e9ebb1c0d83728202a19005258c3da6c25a43d8f29e4563ba756b5771d7e292f3e87c9210d20e4faf266
   languageName: node
   linkType: hard
 
@@ -5022,7 +5022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-node@npm:^10.17.2, @pact-foundation/pact-node@npm:^10.9.7":
+"@pact-foundation/pact-node@npm:^10.17.2, @pact-foundation/pact-node@npm:^10.18.0":
   version: 10.18.0
   resolution: "@pact-foundation/pact-node@npm:10.18.0"
   dependencies:
@@ -5057,7 +5057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact@npm:^9.11.1":
+"@pact-foundation/pact@npm:^9.17.2":
   version: 9.18.1
   resolution: "@pact-foundation/pact@npm:9.18.1"
   dependencies:
@@ -21702,7 +21702,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.30"
-    "@hmcts/rpx-xui-node-lib": "npm:2.29.3-user-details-log-2"
+    "@hmcts/rpx-xui-node-lib": "npm:2.29.4"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^14.0.0"
     "@ng-idle/keepalive": "npm:^14.0.0"
@@ -21712,8 +21712,8 @@ __metadata:
     "@ngrx/store": "npm:^17.2.0"
     "@ngrx/store-devtools": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
-    "@pact-foundation/pact": "npm:^9.11.1"
-    "@pact-foundation/pact-node": "npm:^10.9.7"
+    "@pact-foundation/pact": "npm:^9.17.2"
+    "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:^1.42.0"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^8.0.0"

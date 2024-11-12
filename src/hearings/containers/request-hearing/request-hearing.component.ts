@@ -27,11 +27,11 @@ export class RequestHearingComponent implements OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
     private readonly hearingsService: HearingsService) {
-      this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-        (hearingState) => {
-          this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
-          this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
-        });
+    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
+      (hearingState) => {
+        this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
+        this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+      });
   }
 
   public onBack(): void {

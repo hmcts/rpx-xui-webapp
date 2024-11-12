@@ -228,11 +228,7 @@ export class HearingsUtils {
     const individualHMCPartyIds = individualPartiesInHMC.map((party) => party.partyID);
     const individualPartiesInSHV = serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     const individualSHVPartyIds = individualPartiesInSHV.map((party) => party.partyID);
-
-    console.log('SHV PARTY IDs', individualSHVPartyIds);
-    console.log('HMC PARTY IDs', individualHMCPartyIds);
-    
-    const contains = individualHMCPartyIds.some( hmcParty => individualSHVPartyIds.includes(hmcParty) );
+    const contains = individualHMCPartyIds.some((hmcParty) => individualSHVPartyIds.includes(hmcParty));
     return contains;
   }
 }

@@ -1,4 +1,4 @@
-import { initialState, serviceHearingValuesModel } from '../hearing.test.data';
+import { initialState } from '../hearing.test.data';
 import { KEY_MODE } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';

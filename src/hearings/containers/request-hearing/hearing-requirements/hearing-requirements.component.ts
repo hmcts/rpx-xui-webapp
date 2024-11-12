@@ -67,11 +67,10 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     super(hearingStore, hearingsService, featureToggleService, route);
     this.caseFlagsRefData = this.route.snapshot.data.caseFlags;
     this.caseTypeRefData = this.route.snapshot.data.caseType;
-
   }
 
   public ngOnInit(): void {
-      this.setReasonableAdjustmentFlags();
+    this.setReasonableAdjustmentFlags();
     if (this.hearingListMainModel) {
       this.referenceId = this.hearingListMainModel.caseRef;
     }

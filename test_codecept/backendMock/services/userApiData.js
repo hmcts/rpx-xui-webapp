@@ -17,13 +17,13 @@ class UserApiData{
         const response = this.getUserData(auth, apiMethod)
         if (response) {
             res.status(response.status).send(response.data)
-           
+
         } else {
             res.send(defaultResponseCallback())
         }
     }
-    
-    
+
+
     setUserData(token, apiMethod, response) {
         // apiMethod = apiMethod.toUpperCase();
         if (apiMethod === 'AddMockRoleAssignments'){
@@ -49,7 +49,7 @@ class UserApiData{
         }else{
             apiResponse.response = response
         }
-       
+
         // fs.writeFileSync(this.debugUserDataFile, JSON.stringify(userSession.apiData, null, 2))
     }
 
@@ -98,17 +98,17 @@ class UserApiData{
             })
             return allSessionsRequests;
         }else{
-            let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
+            let userSession = this.sessionUsers.find(sess => sess.token && (sess.token === token.replace('Bearer ', '')))
             if (!userSession) {
                 return null;
             }
             const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
             return apiResponse ? apiResponse.request : null
         }
-        
+
     }
 
-   
+
 
     getUserSessionData(token){
         let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
@@ -134,7 +134,7 @@ class UserApiData{
 
     }
 
-    
+
     clearUserData(token){
         console.log('clear user data started')
         let userSession = this.sessionUsers.find(sess => sess.token === token)

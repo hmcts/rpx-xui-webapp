@@ -17,13 +17,13 @@ class UserApiData{
         const response = this.getUserData(auth, apiMethod)
         if (response) {
             res.status(response.status).send(response.data)
-
+           
         } else {
             res.send(defaultResponseCallback())
         }
     }
-
-
+    
+    
     setUserData(token, apiMethod, response) {
         // apiMethod = apiMethod.toUpperCase();
         if (apiMethod === 'AddMockRoleAssignments'){
@@ -49,12 +49,12 @@ class UserApiData{
         }else{
             apiResponse.response = response
         }
-
+       
         // fs.writeFileSync(this.debugUserDataFile, JSON.stringify(userSession.apiData, null, 2))
     }
 
     getUserData(token, apiMethod) {
-        let userSession = this.getUserSessionData(token)
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
         if (!userSession) {
             return null;
         }
@@ -64,8 +64,8 @@ class UserApiData{
 
     captureRequestDetails(apiMethod, requestObj) {
         // apiMethod = apiMethod.toUpperCase();
-        const token = requestObj.headers?.authorization?.replace('Bearer ','')
-        let userSession = this.sessionUsers.find(token && ((sess) => sess.token === token))
+        const token = requestObj.headers.authorization.replace('Bearer ','')
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {
                 requests: [],
@@ -98,24 +98,21 @@ class UserApiData{
             })
             return allSessionsRequests;
         }else{
-            let userSession = this.getUserSessionData(token)
+            let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
             if (!userSession) {
                 return null;
             }
             const apiResponse = userSession.apiData.find(methodData => methodData.method === apiMethod)
             return apiResponse ? apiResponse.request : null
         }
-
+        
     }
 
+   
 
-
-    getUserSessionData(token) {
-      if (token) {
-        let userSession = this.sessionUsers.find((sess) => sess.token === token.replace('Bearer ', ''))
+    getUserSessionData(token){
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
         return userSession
-      }
-      return null;
     }
 
     logSessionRequest(token, req){
@@ -137,7 +134,7 @@ class UserApiData{
 
     }
 
-
+    
     clearUserData(token){
         console.log('clear user data started')
         let userSession = this.sessionUsers.find(sess => sess.token === token)

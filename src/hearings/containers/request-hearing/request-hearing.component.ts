@@ -45,18 +45,20 @@ export class RequestHearingComponent implements OnDestroy {
   public submitRequest(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_REASON) {
       this.hearingsService.submitUpdatedRequestClicked = true;
+      this.hearingsService.navigateAction(action);
     } else if (action === ACTION.SUBMIT) {
       if (!HearingsUtils.checkHearingPartiesConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
         this.showMismatchErrorMessage = true;
         this.validationErrors = { id: 'reload-error-message', message: this.reloadMessage };
       } else {
         this.hearingsService.hearingRequestForSubmitValid = true;
+        this.hearingsService.navigateAction(action);
       }
     } else {
       // if we are submitting and awaiting backend process
       this.hearingsService.hearingRequestForSubmitValid = false;
+      this.hearingsService.navigateAction(action);
     }
-    this.hearingsService.navigateAction(action);
   }
 
   public buttonDisabled(action: ACTION): boolean {

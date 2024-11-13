@@ -3445,12 +3445,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.15":
-  version: 7.1.15
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.15"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.15-fix-event-hiding":
+  version: 7.1.15-fix-event-hiding
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.15-fix-event-hiding"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/6d85396d94e6fed7a2074af36d4e8c37e80cd6791aa6194bbb19791a01a9eef24aa765224d3b8c81a7667e044883f4d7700803b21117e7ed666189458dbb587e
+  checksum: 10/d6e4a1488a276499339165b0b9e0820452f2fc37faf73f1392a6a31d90a1a9842214437b97e743c19de225f9016d631326d3cefd7106a7857c983b89cc8b74f2
   languageName: node
   linkType: hard
 
@@ -22173,7 +22173,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.9.1"
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.15"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.15-fix-event-hiding"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.8"

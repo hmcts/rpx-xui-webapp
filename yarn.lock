@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.74-dynamic-radio-fix":
-  version: 7.0.74-dynamic-radio-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.74-dynamic-radio-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.77":
+  version: 7.0.77
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.77"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/8d7373effa2ec270a04a2cc1ab2cc23f6223db1fab90e4d85f904aa869b22ba4eeb56aee67b5e24413f5078de322faf65112af30b5f9ff7305c6a01d239b95e4
+  checksum: 10/0c96c31d2ba21409efc9646778ae7a69c44d97d20d6273132deb4312e8e4223f7512d7444638749040d795516a3c05e06cd8f24a1d887ca5eada34173bf36589
   languageName: node
   linkType: hard
 
@@ -22008,7 +22008,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.9.1"
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.74-dynamic-radio-fix"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.77"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.8"

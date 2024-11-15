@@ -542,7 +542,7 @@ describe('CaseViewerContainerComponent - Hearings tab not visible with missing l
     fixture.detectChanges();
   });
 
-  it('should display Hearings tab', () => {
+  it('should not display Hearings tab', () => {
     component.appendedTabs$.subscribe((tabs) =>
       expect(tabs.length).toEqual(0)
     );

@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { combineLatest, of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { AppConstants } from '../../../app/app.constants';
+import { AppConstants, PUI_CASE_MANAGER } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -134,7 +134,7 @@ export class CaseViewerContainerComponent implements OnInit {
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
 
     if (this.launchDarklyError(features, supportedServices)) {
-      return !userRoles.includes('pui-case-manager');
+      return !userRoles.includes(PUI_CASE_MANAGER);
     }
     let requiredFeature = false;
     features.configurations.forEach((serviceConfig) => {

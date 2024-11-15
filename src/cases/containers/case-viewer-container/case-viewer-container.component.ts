@@ -14,6 +14,8 @@ import { WAFeatureConfig } from '../../../work-allocation/models/common/service-
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
+import { isEmpty } from 'lodash';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -120,6 +122,7 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
+    private readonly loggerService: LoggerService,
     private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
@@ -129,6 +132,10 @@ export class CaseViewerContainerComponent implements OnInit {
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
+
+    if (this.launchDarklyError(features, supportedServices)) {
+      return !userRoles.includes('pui-case-manager');
+    }
     let requiredFeature = false;
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
@@ -137,6 +144,16 @@ export class CaseViewerContainerComponent implements OnInit {
       }
     });
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
+  }
+
+  private launchDarklyError(features: WAFeatureConfig, supportedServices: string[]) {
+    if (isEmpty(features) || isEmpty(supportedServices)) {
+      const errorMessage = `Error in LaunchDarkly configuration.  WAFeatureConfig is empty = ${isEmpty(features)} and supportedServices is empty = ${isEmpty(supportedServices)}`;
+      console.log(errorMessage);
+      this.loggerService.error(errorMessage);
+      return true;
+    }
+    return false;
   }
 
   public ngOnInit(): void {

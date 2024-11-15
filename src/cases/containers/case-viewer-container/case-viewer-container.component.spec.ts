@@ -15,6 +15,7 @@ import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'ccd-case-viewer',
@@ -166,12 +167,25 @@ class MockFeatureToggleService implements FeatureToggleService {
   }
 }
 
+class MockFeatureToggleServiceEmpty extends MockFeatureToggleService{
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
+    if (_key === 'wa-service-config') {
+      // @ts-ignore
+      return of([]);
+    }
+    // @ts-ignore
+    return of([]);
+  }
+}
+
 class MockAllocateRoleService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
     return of([]);
   }
 }
+const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
 const TABS: CaseTab[] = [
   {
@@ -206,6 +220,11 @@ const roles = [
 const rolesWithHearingRoles = [
   'caseworker',
   'hearing-manager'
+];
+
+const rolesWithSolicitor = [
+  'caseworker',
+  'pui-case-manager'
 ];
 
 describe('CaseViewerContainerComponent', () => {
@@ -260,6 +279,7 @@ describe('CaseViewerContainerComponent', () => {
             }
           }
         },
+        { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
@@ -349,6 +369,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
             }
           }
         },
+        { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
@@ -370,6 +391,160 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
   it('should display Hearings tab', () => {
     component.appendedTabs$.subscribe((tabs) =>
       expect(tabs[0].id).toEqual('hearings')
+    );
+  });
+});
+
+describe('CaseViewerContainerComponent - Hearings tab visible with missing launch darkly info', () => {
+  let component: CaseViewerContainerComponent;
+  let fixture: ComponentFixture<CaseViewerContainerComponent>;
+  let store: MockStore;
+
+  const initialState: State = {
+    routerReducer: null,
+    appConfig: {
+      config: {},
+      termsAndCondition: null,
+      loaded: true,
+      loading: true,
+      termsAndConditions: null,
+      isTermsAndConditionsFeatureEnabled: null,
+      useIdleSessionTimeout: null,
+      userDetails: {
+        sessionTimeout: {
+          idleModalDisplayTime: 0,
+          totalIdleTime: 0
+        },
+        canShareCases: true,
+        userInfo: {
+          id: '',
+          active: true,
+          email: 'juser4@mailinator.com',
+          forename: 'XUI test',
+          roles: rolesWithHearingRoles,
+          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+          surname: 'judge'
+        },
+        roleAssignmentInfo: []
+      },
+      decorate16digitCaseReferenceSearchBoxInHeader: false
+    }
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      providers: [
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                case: CASE_VIEW
+              }
+            }
+          }
+        },
+        { provide: LoggerService, useValue: loggerServiceMock },
+        { provide: FeatureToggleService, useClass: MockFeatureToggleServiceEmpty },
+        { provide: AllocateRoleService, useClass: MockAllocateRoleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+      ],
+      declarations: [CaseViewerContainerComponent, CaseViewerComponent]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CaseViewerContainerComponent);
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
+    component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    fixture.detectChanges();
+  });
+
+  it('should display Hearings tab', () => {
+    component.appendedTabs$.subscribe((tabs) =>
+      expect(tabs[0].id).toEqual('hearings')
+    );
+  });
+});
+
+describe('CaseViewerContainerComponent - Hearings tab not visible with missing launch darkly info due to solicitor', () => {
+  let component: CaseViewerContainerComponent;
+  let fixture: ComponentFixture<CaseViewerContainerComponent>;
+  let store: MockStore;
+
+  const initialState: State = {
+    routerReducer: null,
+    appConfig: {
+      config: {},
+      termsAndCondition: null,
+      loaded: true,
+      loading: true,
+      termsAndConditions: null,
+      isTermsAndConditionsFeatureEnabled: null,
+      useIdleSessionTimeout: null,
+      userDetails: {
+        sessionTimeout: {
+          idleModalDisplayTime: 0,
+          totalIdleTime: 0
+        },
+        canShareCases: true,
+        userInfo: {
+          id: '',
+          active: true,
+          email: 'juser4@mailinator.com',
+          forename: 'XUI test',
+          roles: rolesWithSolicitor,
+          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
+          surname: 'judge'
+        },
+        roleAssignmentInfo: []
+      },
+      decorate16digitCaseReferenceSearchBoxInHeader: false
+    }
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      providers: [
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                case: CASE_VIEW
+              }
+            }
+          }
+        },
+        { provide: LoggerService, useValue: loggerServiceMock },
+        { provide: FeatureToggleService, useClass: MockFeatureToggleServiceEmpty },
+        { provide: AllocateRoleService, useClass: MockAllocateRoleService },
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+      ],
+      declarations: [CaseViewerContainerComponent, CaseViewerComponent]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CaseViewerContainerComponent);
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
+    component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    fixture.detectChanges();
+  });
+
+  it('should display Hearings tab', () => {
+    component.appendedTabs$.subscribe((tabs) =>
+      expect(tabs.length).toEqual(0)
     );
   });
 });
@@ -425,6 +600,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
             }
           }
         },
+        { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }

@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { combineLatest, of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { AppConstants, PUI_CASE_MANAGER } from '../../../app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -27,6 +27,7 @@ export class CaseViewerContainerComponent implements OnInit {
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
+  private waDefaultSupportedJurisdictions: string[] = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC'];
   private waDefaultServiceConfig: any = {
     'configurations': [
       {
@@ -132,28 +133,31 @@ export class CaseViewerContainerComponent implements OnInit {
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
-
-    if (this.launchDarklyError(features, supportedServices)) {
-      return !userRoles.includes(PUI_CASE_MANAGER);
-    }
     let requiredFeature = false;
+
+    if (isEmpty(features)){
+      this.launchDarklyError('WAFeatureConfig');
+      features = this.waDefaultServiceConfig;
+    }
+    if (isEmpty(supportedServices)){
+      this.launchDarklyError('WASupportedJurisdictions');
+      supportedServices = this.waDefaultSupportedJurisdictions;
+    }
+
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
         // EUI-724 - Needed as separator between WA and non-WA services/case types
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
+
     return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 
-  private launchDarklyError(features: WAFeatureConfig, supportedServices: string[]) {
-    if (isEmpty(features) || isEmpty(supportedServices)) {
-      const errorMessage = `Error in LaunchDarkly configuration.  WAFeatureConfig is empty = ${isEmpty(features)} and supportedServices is empty = ${isEmpty(supportedServices)}`;
-      console.log(errorMessage);
-      this.loggerService.error(errorMessage);
-      return true;
-    }
-    return false;
+  private launchDarklyError(missingConfig: string): void {
+    const logMessage = 'Error in LaunchDarkly configuration. ' + missingConfig + ' is empty.';
+    console.log(logMessage);
+    this.loggerService.log(logMessage);
   }
 
   public ngOnInit(): void {

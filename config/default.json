@@ -202,8 +202,7 @@
           "https://*.google-analytics.com",
           "https://*.googletagmanager.com",
           "https://*.analytics.google.com",
-          "wss://*.webpubsub.azure.com",
-          "https://*.in.applicationinsights.azure.com"
+          "wss://*.webpubsub.azure.com"
         ],
         "mediaSrc": ["'self'"],
         "objectSrc": ["'self'"],

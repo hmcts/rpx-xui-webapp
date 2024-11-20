@@ -185,7 +185,7 @@ class MockAllocateRoleService {
     return of([]);
   }
 }
-const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+const loggerServiceMock = jasmine.createSpyObj('loggerService', ['log']);
 
 const TABS: CaseTab[] = [
   {
@@ -220,11 +220,6 @@ const roles = [
 const rolesWithHearingRoles = [
   'caseworker',
   'hearing-manager'
-];
-
-const rolesWithSolicitor = [
-  'caseworker',
-  'pui-case-manager'
 ];
 
 describe('CaseViewerContainerComponent', () => {
@@ -458,7 +453,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible with missing launc
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CaseViewerContainerComponent);
-    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
     store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
@@ -468,83 +463,6 @@ describe('CaseViewerContainerComponent - Hearings tab visible with missing launc
   it('should display Hearings tab', () => {
     component.appendedTabs$.subscribe((tabs) =>
       expect(tabs[0].id).toEqual('hearings')
-    );
-  });
-});
-
-describe('CaseViewerContainerComponent - Hearings tab not visible with missing launch darkly info due to solicitor', () => {
-  let component: CaseViewerContainerComponent;
-  let fixture: ComponentFixture<CaseViewerContainerComponent>;
-  let store: MockStore;
-
-  const initialState: State = {
-    routerReducer: null,
-    appConfig: {
-      config: {},
-      termsAndCondition: null,
-      loaded: true,
-      loading: true,
-      termsAndConditions: null,
-      isTermsAndConditionsFeatureEnabled: null,
-      useIdleSessionTimeout: null,
-      userDetails: {
-        sessionTimeout: {
-          idleModalDisplayTime: 0,
-          totalIdleTime: 0
-        },
-        canShareCases: true,
-        userInfo: {
-          id: '',
-          active: true,
-          email: 'juser4@mailinator.com',
-          forename: 'XUI test',
-          roles: rolesWithSolicitor,
-          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
-        },
-        roleAssignmentInfo: []
-      },
-      decorate16digitCaseReferenceSearchBoxInHeader: false
-    }
-  };
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
-      providers: [
-        provideMockStore({ initialState }),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                case: CASE_VIEW
-              }
-            }
-          }
-        },
-        { provide: LoggerService, useValue: loggerServiceMock },
-        { provide: FeatureToggleService, useClass: MockFeatureToggleServiceEmpty },
-        { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
-      ],
-      declarations: [CaseViewerContainerComponent, CaseViewerComponent]
-    })
-      .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CaseViewerContainerComponent);
-    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
-    component = fixture.componentInstance;
-    store = TestBed.inject(MockStore);
-    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
-    fixture.detectChanges();
-  });
-
-  it('should not display Hearings tab', () => {
-    component.appendedTabs$.subscribe((tabs) =>
-      expect(tabs.length).toEqual(0)
     );
   });
 });

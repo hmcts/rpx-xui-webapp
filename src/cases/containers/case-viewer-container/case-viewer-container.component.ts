@@ -135,7 +135,7 @@ export class CaseViewerContainerComponent implements OnInit {
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
 
-    if (isEmpty(features)){
+    if (!isEmpty(features)){
       this.launchDarklyError('WAFeatureConfig');
       features = this.waDefaultServiceConfig;
     }

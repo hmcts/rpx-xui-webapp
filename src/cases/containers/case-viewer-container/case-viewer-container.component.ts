@@ -135,12 +135,12 @@ export class CaseViewerContainerComponent implements OnInit {
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
     this.loggerService.log('in enablePrependedTabs');
-    if (isEmpty(features)){
+    if (!isEmpty(features)){
       this.loggerService.log('in check of empty features  ');
       this.launchDarklyError('WAFeatureConfig');
       features = this.waDefaultServiceConfig;
     }
-    if (!isEmpty(supportedServices)){
+    if (isEmpty(supportedServices)){
       this.loggerService.log('in check of empty supportedServices ');
       this.launchDarklyError('WASupportedJurisdictions');
       supportedServices = this.waDefaultSupportedJurisdictions;

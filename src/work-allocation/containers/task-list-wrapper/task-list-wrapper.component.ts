@@ -396,7 +396,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public isCurrentUserJudicial(): boolean {
-    return this.userRoleCategory.toUpperCase() === RoleCategory.JUDICIAL;
+    return this.userRoleCategory?.toUpperCase() === RoleCategory.JUDICIAL;
   }
 
   // Do the actual load. This is separate as it's called from two methods.

@@ -79,7 +79,14 @@ class IdamLogin{
     }
 
     getCookiesFromSetCookies(rawCookies){
-        const cookies = []
+      if (rawCookies){
+        rawCookies.forEach((cookie) => {
+          if(cookie.indexOf('xui-webapp=') !== -1){
+            this.fallbackSessionCookie = cookie;
+          }
+        })
+      }
+      const cookies = []
         if (!Array.isArray(rawCookies)){
             reportLogger.AddMessage(`raw cookies : ${rawCookies}`)
             throw new Error('Idamlogin process, Cookies error: ' + rawCookies);
@@ -230,20 +237,45 @@ class IdamLogin{
 
     }
 
-    async onXuiCallback(){
-        const response = await axiosInstance.get(`${this.idamLoginresponse.details.xuiCallback}`,{
-            headers:{
-                Cookie : this.getCookieString(this.xuiLoginResponse.details.setCookies)
-            }
-        })
+  async onXuiCallback() {
+    let retry = true;
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    while (retry && attempts < maxAttempts) {
+      reportLogger.AddMessage('LOGIN: onXuiCallBack');
+      const response = await axiosInstance.get(`${this.idamLoginresponse.details.xuiCallback}`, {
+        headers: {
+          Cookie: this.getCookieString(this.xuiLoginResponse.details.setCookies)
+        }
+      });
+      if (response.headers['set-cookie'].some(header => header.includes('xui-webapp='))) {
+        reportLogger.AddMessage('headers contain xui-webapp');
         this.xuiCallbackResponse.status = this.getResponseStatus(response);
         this.xuiCallbackResponse.details = {
+          setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
+        };
+        reportLogger.AddMessage(this.xuiCallbackResponse);
+        reportLogger.AddMessage('API: XUI callback call success');
+        retry = false;
+      } else {
+        reportLogger.AddMessage('xui-webapp header not found, retrying...');
+        attempts++;
+        if (this.fallbackSessionCookie){
+          response.headers['set-cookie'].push(this.fallbackSessionCookie);
+          this.xuiCallbackResponse.status = this.getResponseStatus(response);
+          this.xuiCallbackResponse.details = {
             setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
+          };
+          retry = false;
         }
-        reportLogger.AddMessage('API: XUI callback call success')
-
+      }
     }
 
+    if (attempts >= maxAttempts) {
+      console.log('Max retry attempts reached. Exiting...');
+    }
+  }
 
     async getUserDetails(){
 

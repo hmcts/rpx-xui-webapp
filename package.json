@@ -283,8 +283,7 @@
     "socks": "^2.8.3",
     "mermaid": "^10.9.3",
     "reflect-metadata": "^0.2.2",
-    "https-proxy-agent": "^7.0.5",
-    "passport": "^0.5.3"
+    "https-proxy-agent": "^7.0.5"
   },
   "packageManager": "yarn@4.5.0"
 }

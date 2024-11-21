@@ -35,7 +35,7 @@
     "hearings": {
       "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
-        "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
+        "serviceApi": "http://sscs-tribunals-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
       },
       "privatelaw": {
@@ -105,7 +105,10 @@
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
     "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
-    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
+    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal",
+    "lau": {
+      "specificChallengedAccessApi": "http://lau-case-backend-prod.service.core-compute-prod.internal"
+    }
   },
   "protocol": "https",
   "microservice": "xui_webapp",
@@ -164,6 +167,7 @@
     "oidcEnabled": false,
     "workAllocationEnabled": false,
     "jrdELinksV2Enabled": false,
+    "lauSpecificChallengedEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,

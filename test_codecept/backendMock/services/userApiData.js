@@ -26,7 +26,7 @@ class UserApiData{
 
     setUserData(token, apiMethod, response) {
         // apiMethod = apiMethod.toUpperCase();
-        if (apiMethod === 'AddMockRoleAssignments'){
+        if (apiMethod === 'AddMockRoleAssignments' || apiMethod === 'OnUserRoleAssignments'){
             roleAssignmentsService.addRoleAssigmemntsToSession(token,response.data)
             return;
         }

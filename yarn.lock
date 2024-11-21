@@ -3533,9 +3533,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.29.5-exui-2079-rc6":
-  version: 2.29.5-exui-2079-rc6
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.29.5-exui-2079-rc6"
+"@hmcts/rpx-xui-node-lib@npm:2.29.5-exui-2079-rc7":
+  version: 2.29.5-exui-2079-rc7
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.29.5-exui-2079-rc7"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     axios: "npm:^1.7.7"
@@ -3557,7 +3557,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     ts-auto-mock: "npm:^3.5.0"
     ttypescript: "npm:^1.5.13"
-  checksum: 10/0c786bfd458615d5b849218577981f4b0a515e46b27e43b9732cdfe4a1c9e4b923795b4921a7c9a38bf8f4cf25bb9ff9e5060935098c8baa62698cf89e795b87
+  checksum: 10/5461600b2c5ecc70d14ba1466c31ef19f670c550b21e839b9885c7e7a7be52129c50a46c3f50145adc4b9204255401df1bc5d96310709d2ba0734ab1fde1b944
   languageName: node
   linkType: hard
 
@@ -19631,14 +19631,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "passport@npm:0.6.0"
+"passport@npm:^0.5.3":
+  version: 0.5.3
+  resolution: "passport@npm:0.5.3"
   dependencies:
     passport-strategy: "npm:1.x.x"
     pause: "npm:0.0.1"
-    utils-merge: "npm:^1.0.1"
-  checksum: 10/5051e1d773ac0d802d4d71315f5fee566b8765b9731396b60c1d6822b7983bef31ae2f51af94d973ade94fb040efae0816e736e534b55294d0fbd10efcdf2d36
+  checksum: 10/11ca647263572e0285179c8a13942e64be72c6c40759cb1fcebb8258cc5e57bc1671d08071ca0da0a15045ab0e5bb6745aff4b04cb52b2f66815dc45d612015e
   languageName: node
   linkType: hard
 
@@ -21450,7 +21449,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.30"
-    "@hmcts/rpx-xui-node-lib": "npm:2.29.5-exui-2079-rc6"
+    "@hmcts/rpx-xui-node-lib": "npm:2.29.5-exui-2079-rc7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^14.0.0"
     "@ng-idle/keepalive": "npm:^14.0.0"
@@ -24458,7 +24457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x, utils-merge@npm:^1.0.1":
+"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x":
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798

@@ -94,7 +94,7 @@
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.0.30",
-    "@hmcts/rpx-xui-node-lib": "2.29.5-exui-2079-rc6",
+    "@hmcts/rpx-xui-node-lib": "2.29.5-exui-2079-rc7",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^14.0.0",
     "@ng-idle/keepalive": "^14.0.0",
@@ -283,7 +283,8 @@
     "socks": "^2.8.3",
     "mermaid": "^10.9.3",
     "reflect-metadata": "^0.2.2",
-    "https-proxy-agent": "^7.0.5"
+    "https-proxy-agent": "^7.0.5",
+    "passport": "^0.5.3"
   },
   "packageManager": "yarn@4.5.0"
 }

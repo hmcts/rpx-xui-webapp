@@ -171,23 +171,33 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasHearingDatesChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
-    if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
-      if (hearingWindow?.dateRangeStart) {
-        if (this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart)){
-          return true;
-        }
-      }
-      if (hearingWindow?.dateRangeEnd) {
-        if (HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd)){
-          return true;
-        }
-      }
+    if (this.isDateRangeChanged(hearingWindow, hearingWindowToCompare)) {
+      return true;
     }
+    if (this.isFirstDateTimeChanged(hearingWindow, hearingWindowToCompare)) {
+      return true;
+    }
+    return false;
+  }
 
+  private static isDateRangeChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
+    const hasStartDateChanged = hearingWindow?.dateRangeStart && this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart);
+    const hasEndDateChanged = hearingWindow?.dateRangeEnd && HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd);
+    if (hasStartDateChanged || hasEndDateChanged) {
+      return true;
+    }
+    if (!hearingWindow?.dateRangeStart && !hearingWindow?.dateRangeEnd &&
+      (hearingWindowToCompare?.dateRangeStart || hearingWindowToCompare?.dateRangeEnd)) {
+      return true;
+    }
+    return false;
+  }
+
+  private static isFirstDateTimeChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
     if (hearingWindow?.firstDateTimeMustBe) {
       return HearingsUtils.hasDateChanged(hearingWindowToCompare?.firstDateTimeMustBe, hearingWindow?.firstDateTimeMustBe);
     }
-    return false;
+    return hearingWindowToCompare?.firstDateTimeMustBe ? true : false;
   }
 
   /**
@@ -201,8 +211,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = HearingsUtils.convertStringToDate(inputDateString);
-    const dateToCompare = HearingsUtils.convertStringToDate(dateToCompareString);
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }

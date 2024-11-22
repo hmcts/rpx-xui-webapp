@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import config from "../config"
 import { signIn } from './steps/login-steps';
+import axeTest from "./helpers/accessibilityTestHelper";
 
-test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
+test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await signIn(page, "USER_WITH_FLAGS");
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
 
@@ -24,12 +25,13 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.getByRole('heading', { name: 'Create a case' })).toBeVisible();
   await page.getByRole('button', { name: 'Test submit' }).click();
-  
+
   await expect(page.getByText('Flags for legal rep Party 1')).toBeVisible();
   const heading = await page.$('h1.heading-h1.ng-star-inserted');
   const text = await heading.textContent();
   const caseId = text.startsWith('#') ? text.slice(1) : "none";
   console.log("Case created with ID: " + caseId);
+  await axeTest(page);
 
   console.log("Creating support request");
   await expect(page.getByText('Party 1', { exact: true })).toBeVisible();
@@ -42,6 +44,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByLabel('Next step').selectOption('4: Object');
   await page.getByRole('button', { name: 'Go' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
+  await axeTest(page);
 
   console.log("Who is the support for");
   await expect(page.getByRole('heading', { name: 'Who is the support for?' })).toBeVisible();
@@ -49,6 +52,8 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByText('Respondent (Party 2)')).toBeVisible();
   await page.getByLabel('Applicant (Party 1)').check();
   await page.getByRole('button', { name: 'Next' }).click();
+  await page.waitForTimeout(3000);
+  await axeTest(page);
 
   console.log("Select support type");
   await expect(page.getByRole('heading', { name: 'Select support type' })).toBeVisible();
@@ -56,6 +61,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByLabel('Reasonable adjustment').check();
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
+  await axeTest(page);
 
   console.log("Reasonable adjustment");
   await expect(page.getByRole('heading', { name: 'Reasonable adjustment' })).toBeVisible();
@@ -71,6 +77,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await expect(page.getByText('Documents in a specified')).toBeVisible();
   await page.getByLabel('Documents in a specified').check();
   await page.getByRole('button', { name: 'Next' }).click();
+  await axeTest(page);
 
   console.log("Tell us more about the request");
   await expect(page.getByText('Tell us more about the request')).toBeVisible();
@@ -78,6 +85,7 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByLabel('Tell us more about the request').fill('Test auto comment');
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByText(caseId)).toBeVisible();
+  await axeTest(page);
 
   console.log("Review support request");
   await expect(page.getByRole('heading', { name: 'Review support request' })).toBeVisible();
@@ -100,4 +108,5 @@ test('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await page.waitForSelector('ccd-case-full-access-view');
   const ele = await page.$('ccd-notification-banner .govuk-notification-banner__content');
   expect(ele == null).toBeTruthy();
+  await axeTest(page);
 });

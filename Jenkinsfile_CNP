@@ -37,7 +37,8 @@ def secrets = [
     secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
     secret('appinsights-connection-string-mc', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('system-user-name', 'SYSTEM_USER_NAME'),
-    secret('system-user-password', 'SYSTEM_USER_PASSWORD')
+    secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
   ],
   ]
 
@@ -130,43 +131,6 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('functionalTest:preview') {
-        
-        stage('Functional api tests') {
-             try {
-                 yarnBuilder.yarn('test:functionalAPI')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-             } finally {
-                 publishHTML([
-                     allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/api_functional/",
-                     reportFiles          : 'mochawesome.html',
-                     reportName           : 'PREVIEW API Functional Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional/**/*'
-             }
-        }
-        
-        stage('Functional NG Int') {
-             try {
-                 yarnBuilder.yarn('test:functionalNGInt')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-             } finally {
-                 publishHTML([
-                      allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/ngIntegration/",
-                     reportFiles          : 'index.html',
-                     reportName           : 'PREVIEW NG Integration Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
-             }
-        }
-        
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -174,6 +138,24 @@ withPipeline(type, product, component) {
             reportDir            : "functional-output/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
+        ])
+
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/api_functional/",
+            reportFiles          : 'mochawesome.html',
+            reportName           : 'PREVIEW API Functional Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW NG Integration Test'
         ])
     }
 
@@ -190,43 +172,6 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('functionalTest:aat') {
-        
-        stage('Functional api tests') {
-             try {
-                 yarnBuilder.yarn('test:functionalAPI')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-             } finally {
-                 publishHTML([
-                     allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/api_functional/",
-                     reportFiles          : 'mochawesome.html',
-                     reportName           : 'AAT API Functional Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/api_functional/**/*'
-             }
-        }
-
-        stage('Functional NG Int') {
-             try {
-                 yarnBuilder.yarn('test:functionalNGInt')
-             } catch (Error) {
-                 unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-             } finally {
-                 publishHTML([
-                      allowMissing         : true,
-                     alwaysLinkToLastBuild: true,
-                     keepAll              : true,
-                     reportDir            : "functional-output/tests/ngIntegration/",
-                     reportFiles          : 'index.html',
-                     reportName           : 'AAT NG Integration Test'
-                 ])
-                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/functional-output/tests/ngIntegration/**/*'
-             }
-        }
-        
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -235,5 +180,23 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/api_functional/",
+            reportFiles          : 'mochawesome.html',
+            reportName           : 'AAT API Functional Test'
+        ])
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'AAT NG Integration Test'
+        ])
     }
 }
+

@@ -75,4 +75,9 @@ describe('HmctsGlobalFooterComponent', () => {
   it('should be created by angular', () => {
     expect(fixture).not.toBeNull();
   });
+
+  it('should change the language', () => {
+    component.toggleLanguage('en');
+    expect(component.currentLang).toBe('en');
+  });
 });

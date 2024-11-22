@@ -279,7 +279,7 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
-  xit('should allow todays date', () => {
+  it('should allow todays date', () => {
     component.firstDateOfHearingError = null;
     const currentDate = new Date();
     const day = currentDate.getDate();

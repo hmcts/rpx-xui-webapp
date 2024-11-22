@@ -16908,14 +16908,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-spec-reporter@npm:0.0.34":
-  version: 0.0.34
-  resolution: "karma-spec-reporter@npm:0.0.34"
+"karma-spec-reporter@npm:0.0.36":
+  version: 0.0.36
+  resolution: "karma-spec-reporter@npm:0.0.36"
   dependencies:
     colors: "npm:1.4.0"
   peerDependencies:
     karma: ">=0.9"
-  checksum: 10/5500c14163aa475dfeaa23bb4b876719baf57666df8d5f6a429f0749823960abf2c90e0abb9eb5be9a98fae440c228b1f6bd5ca111a3cbfd89b295322ab3342b
+  checksum: 10/a60db6dd94253b7e4cea338602f961db116143e40b30a0767ccad534953a30537519bc248dab5659806f36dfef4f42d2b933c89b367c4a48b20a056cee1a8ada
   languageName: node
   linkType: hard
 
@@ -22408,7 +22408,7 @@ __metadata:
     karma-jasmine-html-reporter: "npm:^1.4.0"
     karma-parallel: "npm:^0.3.1"
     karma-sonarqube-unit-reporter: "npm:^0.0.23"
-    karma-spec-reporter: "npm:0.0.34"
+    karma-spec-reporter: "npm:0.0.36"
     launchdarkly-js-client-sdk: "npm:^2.16.3"
     local-storage: "npm:^2.0.0"
     lodash: "npm:^4.17.21"

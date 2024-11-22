@@ -3374,12 +3374,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.64-incorrect-font-size-fix-v2":
-  version: 7.0.64-incorrect-font-size-fix-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.64-incorrect-font-size-fix-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.20-incorrect-font-size-fix-v2":
+  version: 7.1.20-incorrect-font-size-fix-v2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.20-incorrect-font-size-fix-v2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/fb58a8c66d89d15d6fb57d114af8d18fd24a9300a9b08d2e12d053e278eaacb5c4bfc5f5f73b05cb268c8805599f824e30c1ea7a6a29ec776d52f025ae41ef78
+  checksum: 10/74c4db0298a1738b41806be6e278fdc7a16819aeb7bcab7f657874d67bc45d68a5e2e51c49fc8decf62c7c4df1b0b6ff1f823aa87d5ede0b8e6bc927e95d1f07
   languageName: node
   linkType: hard
 
@@ -22067,7 +22067,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.9.1"
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.64-incorrect-font-size-fix-v2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.20-incorrect-font-size-fix-v2"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.8"

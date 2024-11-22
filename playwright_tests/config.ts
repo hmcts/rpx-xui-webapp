@@ -18,7 +18,7 @@ interface Config {
   [key: string]: UserCredentials | string;
 }
 
-const baseURL = process.env.APPBASEURL || "https://manage-case.aat.platform.hmcts.net";
+const baseURL = process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net";
 
 const config: Config = {
   AppBaseURL: baseURL,

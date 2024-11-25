@@ -9689,11 +9689,11 @@ __metadata:
   linkType: hard
 
 "config@npm:^3.2.5":
-  version: 3.3.9
-  resolution: "config@npm:3.3.9"
+  version: 3.3.12
+  resolution: "config@npm:3.3.12"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/00e0ea40ffe407e63d13078ca5e36f52f0438bfe5a83ac0563e4fd566f91ffac9068ef74e18f1efbed0449e25b6a5f080772f168f133fd9eb365397cb1ef691e
+  checksum: 10/f7973d1192c98d9b8d49e273bef816b4c74a6bab6e7c500792d3fe239e87fa3a80fac89ee552b7da7e2c3d9f6f8f3568e856f08ebd9861917cf47a655cee3e6a
   languageName: node
   linkType: hard
 

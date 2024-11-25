@@ -6197,11 +6197,11 @@ __metadata:
   linkType: hard
 
 "@types/express-session@npm:^1.17.0":
-  version: 1.17.7
-  resolution: "@types/express-session@npm:1.17.7"
+  version: 1.18.0
+  resolution: "@types/express-session@npm:1.18.0"
   dependencies:
     "@types/express": "npm:*"
-  checksum: 10/24bf477383a7eeb6a3c832a08bce4acc1a442ff283bd586210ce70fde265c0e201aa80534b1b782e344323839154fa6f011956f79ebf5fa83aae5c90ccd61cde
+  checksum: 10/66757c413983c9e6bb90d16ef7bc1e5d15f7f2e64dba63340b0ed5eccc1929fcb55a694e356b5676e5beb672d11db91a5cc71f6b5860077a02740de9ab8bb5c4
   languageName: node
   linkType: hard
 

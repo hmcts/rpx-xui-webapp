@@ -22046,7 +22046,7 @@ __metadata:
     stream: "npm:^0.0.2"
     striptags: "npm:^3.1.1"
     terser-webpack-plugin: "npm:^5.3.3"
-    ts-enum-util: "npm:4.0.2"
+    ts-enum-util: "npm:4.1.0"
     ts-loader: "npm:^9.4.4"
     ts-node: "npm:~10.9.0"
     tslib: "npm:^2.6.1"
@@ -24295,10 +24295,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-enum-util@npm:4.0.2":
-  version: 4.0.2
-  resolution: "ts-enum-util@npm:4.0.2"
-  checksum: 10/cdeba22ce35486c20692f0080c45a650fcec9d4796c9343a13fc7df0be9b8c4248f7d38a646320695b1d3a072e840793a2bef290a9a425df3c2528d0ffda3fcf
+"ts-enum-util@npm:4.1.0":
+  version: 4.1.0
+  resolution: "ts-enum-util@npm:4.1.0"
+  checksum: 10/a03b57f5b4cea995f60ac94911870ce51b0c39746a12c8401775289188dc6c7ade3aba4302d493e3d9ea18f5eea6628a2e25f810b5ec010e7df16853e9f100de
   languageName: node
   linkType: hard
 

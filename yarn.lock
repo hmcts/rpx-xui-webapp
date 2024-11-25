@@ -19281,12 +19281,12 @@ __metadata:
   linkType: hard
 
 "node-html-parser@npm:^6.1.5":
-  version: 6.1.6
-  resolution: "node-html-parser@npm:6.1.6"
+  version: 6.1.13
+  resolution: "node-html-parser@npm:6.1.13"
   dependencies:
     css-select: "npm:^5.1.0"
     he: "npm:1.2.0"
-  checksum: 10/90e1fc36fbc916c63e94164a5673c93da5242f756a88d5c641197632d5e622edde447a398fda1dbc034342d837a16f224db9a842fc0d828739dd1095cf302e6f
+  checksum: 10/f5ebc5cea22e819e7b726b483e12241039ebdeac6eba198ebdb55a0921536798c1acd9c6f543e82f77542dc44fb2230f55891b1baae218c17969dd08f7295d14
   languageName: node
   linkType: hard
 

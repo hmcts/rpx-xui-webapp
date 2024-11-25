@@ -34,16 +34,22 @@
         [displayLabel]="amendmentLabelEnum.AMENDED">
       </exui-amendment-label>
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
-        Earliest start date: {{ earliestHearingDate }}
-        <br>
-        Latest end date: {{ latestHearingDate }}
-        <exui-amendment-label *ngIf="hearingDateChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+        <div *ngIf="earliestHearingDate.length > 0">
+          Earliest start date: {{ earliestHearingDate }}
+        <exui-amendment-label *ngIf="dateRangeStartChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>
+        </div>
+        <div *ngIf="latestHearingDate.length > 0">
+          Latest end date: {{ latestHearingDate }}
+
+        <exui-amendment-label *ngIf="dateRangeEndChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+        </exui-amendment-label>
+        </div>
       </div>
       <div *ngIf="specificDateSelection === radioOptions.YES">
         <dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>
         {{ firstHearingDate }}
-        <exui-amendment-label *ngIf="hearingDateChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
+        <exui-amendment-label *ngIf="firstDateTimeMustBeChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>
       </div>
     </div>

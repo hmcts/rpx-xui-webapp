@@ -6350,11 +6350,11 @@ __metadata:
   linkType: hard
 
 "@types/jasminewd2@npm:~2.0.3":
-  version: 2.0.10
-  resolution: "@types/jasminewd2@npm:2.0.10"
+  version: 2.0.13
+  resolution: "@types/jasminewd2@npm:2.0.13"
   dependencies:
     "@types/jasmine": "npm:*"
-  checksum: 10/ba1615c07301fde9ba72a1201f26609abd2e03bb4199145d4b2cc0cb707d222ef32bf02eba66047482aaacf434b502b238e15289d55f59b1f18f9562cfbae368
+  checksum: 10/a661e1add2d7c0582b05e79fcdbc0297fa4292b38b1273e2970d88d0775c85ecc322e1417c84826b5e6caeceab4dc267f5f00300c0c11d0fc459601057698700
   languageName: node
   linkType: hard
 

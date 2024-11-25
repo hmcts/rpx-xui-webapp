@@ -4,9 +4,12 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask, getTypesOfWork } from '.';
+import { baseWorkAllocationTaskUrl, getTask, postTaskAction, searchTask, getTypesOfWork, getUsersByServiceName } from '.';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
+import { FullUserDetailCache } from './fullUserDetailCache';
+import { CachedCaseworker } from './interfaces/common';
+import { hasTTLExpired } from './caseWorkerUserDataCacheService';
 
 chai.use(sinonChai);
 
@@ -25,6 +28,42 @@ describe('workAllocation', () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe('getUsersByServiceName', () => {
+    it('should return a set of users for the given service name', async () => {
+      const req = mockReq({
+        body: {
+          term: 'test',
+          services: ['service1']
+        },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['role1']
+              }
+            }
+          }
+        }
+      });
+      const res = mockRes();
+      const next = sandbox.spy();
+
+      const mockUserData: CachedCaseworker[] = [
+        { idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }] },
+        { idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }] }
+      ];
+
+      sandbox.stub(FullUserDetailCache, 'getAllUserDetails').returns(mockUserData);
+      // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
+      hasTTLExpired();
+      await getUsersByServiceName(req, res, next);
+      expect(res.send).to.have.been.calledWith(sinon.match(mockUserData));
+      expect(res.status).to.have.been.calledWith(200);
+    });
   });
 
   describe('getTask', () => {

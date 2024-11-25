@@ -6142,11 +6142,11 @@ __metadata:
   linkType: hard
 
 "@types/csurf@npm:^1.11.0":
-  version: 1.11.3
-  resolution: "@types/csurf@npm:1.11.3"
+  version: 1.11.5
+  resolution: "@types/csurf@npm:1.11.5"
   dependencies:
     "@types/express-serve-static-core": "npm:*"
-  checksum: 10/5db4b4f4adabc592846d2efe7c1c95de541adf6b536a7d6f523f1583e480a381418d3841ae2f159d81a863cc1c047559c311a0853e915e301cc717c7d0ff08f7
+  checksum: 10/a51b0f3276a8c88eb986709790c227c5cc4b7d663136ee360edd17ac88df1dab5d8ccf9feed737ee46530243bff11f66ead725c585e417c1ca710d0b0245ded3
   languageName: node
   linkType: hard
 

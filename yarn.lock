@@ -16581,14 +16581,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-jasmine@npm:5.0.1":
-  version: 5.0.1
-  resolution: "karma-jasmine@npm:5.0.1"
+"karma-jasmine@npm:5.1.0":
+  version: 5.1.0
+  resolution: "karma-jasmine@npm:5.1.0"
   dependencies:
     jasmine-core: "npm:^4.1.0"
   peerDependencies:
     karma: ^6.0.0
-  checksum: 10/b26566a22ffed32b181c144fca6bf412a1e3f165de574c6b912ec2fe06bb878d1a141489b1b13d40df233aad8063ef321541b8ecd7bf5835dd59ef9b2490e6e1
+  checksum: 10/9cdc39a227fb95dae9dd13e418007b86a59f42e17e74921be3b9f7d0f0d8f8aeaf9a1104c915af5a0f88bb4a6f874f3f802757386302bd8e85fa790e00baeb3d
   languageName: node
   linkType: hard
 
@@ -22020,7 +22020,7 @@ __metadata:
     karma-chrome-launcher: "npm:3.1.1"
     karma-coverage: "npm:~2.2.0"
     karma-coverage-istanbul-reporter: "npm:~2.0.1"
-    karma-jasmine: "npm:5.0.1"
+    karma-jasmine: "npm:5.1.0"
     karma-jasmine-html-reporter: "npm:^1.4.0"
     karma-parallel: "npm:^0.3.1"
     karma-sonarqube-unit-reporter: "npm:^0.0.23"

@@ -22340,7 +22340,7 @@ __metadata:
     webpack-cli: "npm:^4.10.0"
     webpack-node-externals: "npm:^3.0.0"
     webpack-source-map-support: "npm:^2.0.1"
-    zone.js: "npm:~0.14.4"
+    zone.js: "npm:~0.15.0"
   languageName: unknown
   linkType: soft
 
@@ -26389,9 +26389,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zone.js@npm:~0.14.4":
-  version: 0.14.8
-  resolution: "zone.js@npm:0.14.8"
-  checksum: 10/0aa7f25c4845dc27f944f01cc1b976b36321b6ccd887c58f5ce6d8485109fc4707fbe3e3c6f300995f8684ca8bd1728f15ec847dd9ca0c33af01d492a4e2d513
+"zone.js@npm:~0.15.0":
+  version: 0.15.0
+  resolution: "zone.js@npm:0.15.0"
+  checksum: 10/99b9381edcf1ca3da147375a9776f8ad5e6570b9e2cbd33095284a67904d94b5083448440ffcb8ec1e418a505020de0e37837db04d6a0303e111b054a8b752a2
   languageName: node
   linkType: hard

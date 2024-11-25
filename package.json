@@ -158,7 +158,7 @@
     "ts-enum-util": "4.0.2",
     "tslib": "^2.6.1",
     "web-animations-js": "^2.3.2",
-    "zone.js": "~0.14.4"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~17.3.6",

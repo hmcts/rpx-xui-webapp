@@ -246,7 +246,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Is paper hearing flag is transient to indicate whether it is paper hearing
     // As well as, ignoring keys which are initialised with null value
     // Also ignores empty array values
-    if (key === 'partyName' || key === 'isPaperHearing' || value === null || Array.isArray(value) && value.length < 1) {
+    if (key === 'partyName' || key === 'isPaperHearing' || value === null || (Array.isArray(value) && value.length < 1)) {
       return undefined;
     }
 

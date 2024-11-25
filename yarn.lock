@@ -18667,7 +18667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multiple-cucumber-html-reporter@npm:^1.11.0":
+"multiple-cucumber-html-reporter@npm:^1.11.7":
   version: 1.21.6
   resolution: "multiple-cucumber-html-reporter@npm:1.21.6"
   dependencies:
@@ -21066,17 +21066,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protractor-multiple-cucumber-html-reporter-plugin@npm:1.8.0":
-  version: 1.8.0
-  resolution: "protractor-multiple-cucumber-html-reporter-plugin@npm:1.8.0"
+"protractor-multiple-cucumber-html-reporter-plugin@npm:1.8.1":
+  version: 1.8.1
+  resolution: "protractor-multiple-cucumber-html-reporter-plugin@npm:1.8.1"
   dependencies:
     fs-extra: "npm:^3.0.1"
-    multiple-cucumber-html-reporter: "npm:^1.11.0"
+    multiple-cucumber-html-reporter: "npm:^1.11.7"
   peerDependencies:
     cucumber: ">= 1.3.0 || >= 2.0.0 || >= 3.0.0"
     protractor: ">= 4.0.0"
     protractor-cucumber-framework: ">= 3.1.2"
-  checksum: 10/5008413352248a51d6f5f0e1902f43166fab9e2b0077d0c171c65b3dfcb3a56c6a2a40eb66559a4445959dd413297886187c5c58ddbf7ddcfb74f216230a3eff
+  checksum: 10/a64415965348f9d9efcac7331536ea9fcea7cec6e3abab4dc49e1bbbd7411586b5ce8dd64ccc5a9236738a0310cfd61a95e2a0d5daee3a7c8416c3f10bf87cf5
   languageName: node
   linkType: hard
 
@@ -22319,7 +22319,7 @@ __metadata:
     portfinder: "npm:^1.0.28"
     protractor: "npm:~7.0.0"
     protractor-cucumber-framework: "npm:^9.7.0"
-    protractor-multiple-cucumber-html-reporter-plugin: "npm:1.8.0"
+    protractor-multiple-cucumber-html-reporter-plugin: "npm:1.8.1"
     protractor-screenshot-utils: "npm:^1.0.5"
     puppeteer: "npm:^22.4.1"
     rpx-xui-translation: "npm:1.0.4"

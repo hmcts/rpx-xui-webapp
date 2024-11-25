@@ -8884,14 +8884,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai-as-promised@npm:7.1.1":
-  version: 7.1.1
-  resolution: "chai-as-promised@npm:7.1.1"
+"chai-as-promised@npm:7.1.2":
+  version: 7.1.2
+  resolution: "chai-as-promised@npm:7.1.2"
   dependencies:
     check-error: "npm:^1.0.2"
   peerDependencies:
-    chai: ">= 2.1.2 < 5"
-  checksum: 10/5d9ecab37b313047f5ea25d00b1cb6e7f2710c6e2f57d91aed7cfed5008d995cb65ea723af4e5d782bafd9a6eff5a4267af53dfe7212dc10dd1d92b9127bc531
+    chai: ">= 2.1.2 < 6"
+  checksum: 10/be372540dad92ef85cde3954bc0e9b0b33e4e6454f3740b17bfb16e36eda638911619089c05a4e4f2bf6722563bf893bb78c2af59b318c23abb2199e5c20ca1f
   languageName: node
   linkType: hard
 
@@ -21977,7 +21977,7 @@ __metadata:
     axios-mock-adapter: "npm:^1.22.0"
     base-64: "npm:^0.1.0"
     chai: "npm:^4.3.10"
-    chai-as-promised: "npm:7.1.1"
+    chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.3.2"
     codeceptjs: "npm:3.5.6"
     codeceptjs-cucumber-json-reporter: "npm:^1.0.14"

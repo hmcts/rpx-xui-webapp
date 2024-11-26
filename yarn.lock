@@ -12692,13 +12692,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"faker@npm:^5.1.0":
-  version: 5.5.3
-  resolution: "faker@npm:5.5.3"
-  checksum: 10/fc46449712aa0971a106dc84ae988bd3f08ba0f0862ed107cd2e5dc2df39424efb0687634f5a6c2d8d24a9b59a5474b5b003b9bc142ecebcea2d42af116b3966
-  languageName: node
-  linkType: hard
-
 "fast-csv@npm:^4.3.1":
   version: 4.3.6
   resolution: "fast-csv@npm:4.3.6"
@@ -22020,7 +22013,6 @@ __metadata:
     eslint: "npm:^8.37.0"
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:1.0.7"
-    faker: "npm:^5.1.0"
     file-saver: "npm:^2.0.2"
     form-data: "npm:^2.5.1"
     get-port: "npm:^5.1.1"

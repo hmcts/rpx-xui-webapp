@@ -91,7 +91,7 @@
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.8-exui-2537-rc4",
-    "@hmcts/nodejs-healthcheck": "1.7.0",
+    "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.0.30",
     "@hmcts/rpx-xui-node-lib": "2.29.5-exui-2079-without-openid-client-upgrade-rc12",
@@ -131,7 +131,7 @@
     "http-proxy-middleware": "1.1.x",
     "isomorphic-fetch": "^3.0.0",
     "karma-coverage": "^2.2.1",
-    "launchdarkly-js-client-sdk": "^2.16.3",
+    "launchdarkly-js-client-sdk": "^3.5.0",
     "local-storage": "^2.0.0",
     "lodash": "^4.17.21",
     "lz-string": "^1.5.0",
@@ -283,7 +283,8 @@
     "socks": "^2.8.3",
     "mermaid": "^10.9.3",
     "reflect-metadata": "^0.2.2",
-    "https-proxy-agent": "^7.0.5"
+    "https-proxy-agent": "^7.0.5",
+    "tar": "^6.2.1"
   },
   "packageManager": "yarn@4.5.0"
 }

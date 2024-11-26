@@ -10414,8 +10414,8 @@ __metadata:
   linkType: hard
 
 "cucumber-html-reporter@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "cucumber-html-reporter@npm:7.1.1"
+  version: 7.2.0
+  resolution: "cucumber-html-reporter@npm:7.2.0"
   dependencies:
     "@cucumber/cucumber": "npm:9.1.2"
     chalk: "npm:^2.4.2"
@@ -10427,7 +10427,7 @@ __metadata:
     node-emoji: "npm:^1.10.0"
     open: "npm:^6.4.0"
     uuid: "npm:^3.3.3"
-  checksum: 10/667d66f49d0e51d8f46f279190c255ae9cb9be0772b1c2306dbc79256e7fda2b1201606c7efc69c85a760611342cf144f3be4db82bae3ba946fac4610105ff5b
+  checksum: 10/dcbbe84247b3604489dc071c6c6e145fe3ded3736d1eae9ff550bb7ae4b3ed10040fdb74f34327c6bef2d47b49ae62365a11ec2302d49eb7b5dab09c24670daf
   languageName: node
   linkType: hard
 

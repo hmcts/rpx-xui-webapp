@@ -26,16 +26,16 @@ export class AlertComponent implements OnInit, OnDestroy {
     this.alertMessageObservable = this.alertService.alerts.pipe(select((alert) => alert));
     this.alertMessageSubscription = this.alertMessageObservable.subscribe((alert) => {
       if (alert?.level === 'success') {
-      this.level = alert.level;
-      this.successMessage = this.hyphenate(alert.message);
+        this.level = alert.level;
+        this.successMessage = this.hyphenate(alert.message);
       } else if (alert?.level === 'warning') {
-      this.level = alert.level;
-      this.warningMessage = this.hyphenate(alert.message);
+        this.level = alert.level;
+        this.warningMessage = this.hyphenate(alert.message);
       } else if (alert?.level === 'error') {
-      this.level = alert.level;
-      this.errorMessage = this.hyphenate(alert.message);
+        this.level = alert.level;
+        this.errorMessage = this.hyphenate(alert.message);
       } else {
-      this.successMessage = '';
+        this.successMessage = '';
       }
     });
   }

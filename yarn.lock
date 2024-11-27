@@ -3342,6 +3342,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@faker-js/faker@npm:9.2.0"
+  checksum: 10/c233aaa41ebc4f4bed36c1304c399c424b9e5abca9cb8fe54ce73d4162ec7acd66f294b90c85ed7a5df774400e44f0a10364bdd41f49e72cb519a48b5948939f
+  languageName: node
+  linkType: hard
+
 "@fast-csv/format@npm:4.3.5":
   version: 4.3.5
   resolution: "@fast-csv/format@npm:4.3.5"
@@ -12889,13 +12896,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"faker@npm:^5.1.0":
-  version: 5.5.3
-  resolution: "faker@npm:5.5.3"
-  checksum: 10/fc46449712aa0971a106dc84ae988bd3f08ba0f0862ed107cd2e5dc2df39424efb0687634f5a6c2d8d24a9b59a5474b5b003b9bc142ecebcea2d42af116b3966
-  languageName: node
-  linkType: hard
-
 "fast-csv@npm:^4.3.1":
   version: 4.3.6
   resolution: "fast-csv@npm:4.3.6"
@@ -22186,6 +22186,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.9.1"
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
+    "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.0.75-exui-2515"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
@@ -22259,7 +22260,6 @@ __metadata:
     eslint: "npm:^8.37.0"
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:1.0.7"
-    faker: "npm:^5.1.0"
     file-saver: "npm:^2.0.2"
     form-data: "npm:^2.5.1"
     get-port: "npm:^5.1.1"

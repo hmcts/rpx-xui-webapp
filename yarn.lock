@@ -3342,6 +3342,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@faker-js/faker@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@faker-js/faker@npm:9.2.0"
+  checksum: 10/c233aaa41ebc4f4bed36c1304c399c424b9e5abca9cb8fe54ce73d4162ec7acd66f294b90c85ed7a5df774400e44f0a10364bdd41f49e72cb519a48b5948939f
+  languageName: node
+  linkType: hard
+
 "@fast-csv/format@npm:4.3.5":
   version: 4.3.5
   resolution: "@fast-csv/format@npm:4.3.5"
@@ -10414,8 +10421,8 @@ __metadata:
   linkType: hard
 
 "cucumber-html-reporter@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "cucumber-html-reporter@npm:7.1.1"
+  version: 7.2.0
+  resolution: "cucumber-html-reporter@npm:7.2.0"
   dependencies:
     "@cucumber/cucumber": "npm:9.1.2"
     chalk: "npm:^2.4.2"
@@ -10427,7 +10434,7 @@ __metadata:
     node-emoji: "npm:^1.10.0"
     open: "npm:^6.4.0"
     uuid: "npm:^3.3.3"
-  checksum: 10/667d66f49d0e51d8f46f279190c255ae9cb9be0772b1c2306dbc79256e7fda2b1201606c7efc69c85a760611342cf144f3be4db82bae3ba946fac4610105ff5b
+  checksum: 10/dcbbe84247b3604489dc071c6c6e145fe3ded3736d1eae9ff550bb7ae4b3ed10040fdb74f34327c6bef2d47b49ae62365a11ec2302d49eb7b5dab09c24670daf
   languageName: node
   linkType: hard
 
@@ -12886,13 +12893,6 @@ __metadata:
   version: 0.1.8
   resolution: "eyes@npm:0.1.8"
   checksum: 10/58480c1f4c8e80ae9d4147afa0e0cc3403e5a3d1fa9e0c17dd8418f87273762c40ab035919ed407f6ed0992086495b93ff7163eb2a1027f58ae70e3c847d6c08
-  languageName: node
-  linkType: hard
-
-"faker@npm:^5.1.0":
-  version: 5.5.3
-  resolution: "faker@npm:5.5.3"
-  checksum: 10/fc46449712aa0971a106dc84ae988bd3f08ba0f0862ed107cd2e5dc2df39424efb0687634f5a6c2d8d24a9b59a5474b5b003b9bc142ecebcea2d42af116b3966
   languageName: node
   linkType: hard
 
@@ -22187,6 +22187,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.0.75-exui-1717-rc1"
+    "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.8"
@@ -22259,7 +22260,6 @@ __metadata:
     eslint: "npm:^8.37.0"
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:1.0.7"
-    faker: "npm:^5.1.0"
     file-saver: "npm:^2.0.2"
     form-data: "npm:^2.5.1"
     get-port: "npm:^5.1.1"

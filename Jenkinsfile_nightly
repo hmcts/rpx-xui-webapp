@@ -20,15 +20,38 @@ def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def secrets = [
+  'rpx-${env}': [
+    secret('mc-s2s-client-secret', 'S2S_SECRET'),
+    secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
+    secret('test-email', 'TEST_EMAIL'),
+    secret('test-password', 'TEST_PASSWORD'),
+    secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('system-user-name', 'SYSTEM_USER_NAME'),
+    secret('system-user-password', 'SYSTEM_USER_PASSWORD')
+  ],
+  ]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
+
 withNightlyPipeline(type, product, component) {
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
     enableSlackNotifications(channel)
+    loadVaultSecrets(secrets)
     enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(120)
-    //enableSecurityScan()
+    // enableSecurityScan()
     //enableMutationTest()
     enableCrossBrowserTest()
 
-    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
   
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')

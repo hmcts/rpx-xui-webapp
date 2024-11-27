@@ -10091,9 +10091,9 @@ __metadata:
   linkType: hard
 
 "core-js@npm:^3.19.3, core-js@npm:^3.6.5":
-  version: 3.32.1
-  resolution: "core-js@npm:3.32.1"
-  checksum: 10/8d76615ef67f2cf8d2af05e4ec8e5663c941a461c97ff3f53eca6b4ab6fb765ef1b88509827b510963044aa122153f25c3073f3de7fcad06cc1b3f6c06a725c3
+  version: 3.39.0
+  resolution: "core-js@npm:3.39.0"
+  checksum: 10/a3d34e669783dfc878e545f1983f60d9ff48a3867cd1d7ff8839b849e053002a208c7c14a5ca354b8e0b54982901e2f83dc87c3d9b95de0a94b4071d1c74e5f6
   languageName: node
   linkType: hard
 
@@ -10421,8 +10421,8 @@ __metadata:
   linkType: hard
 
 "cucumber-html-reporter@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "cucumber-html-reporter@npm:7.1.1"
+  version: 7.2.0
+  resolution: "cucumber-html-reporter@npm:7.2.0"
   dependencies:
     "@cucumber/cucumber": "npm:9.1.2"
     chalk: "npm:^2.4.2"
@@ -10434,7 +10434,7 @@ __metadata:
     node-emoji: "npm:^1.10.0"
     open: "npm:^6.4.0"
     uuid: "npm:^3.3.3"
-  checksum: 10/667d66f49d0e51d8f46f279190c255ae9cb9be0772b1c2306dbc79256e7fda2b1201606c7efc69c85a760611342cf144f3be4db82bae3ba946fac4610105ff5b
+  checksum: 10/dcbbe84247b3604489dc071c6c6e145fe3ded3736d1eae9ff550bb7ae4b3ed10040fdb74f34327c6bef2d47b49ae62365a11ec2302d49eb7b5dab09c24670daf
   languageName: node
   linkType: hard
 

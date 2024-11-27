@@ -2,15 +2,15 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { RouterModule } from '@angular/router';
 import {
   AbstractAppConfig,
   AlertModule,
   AlertService,
   AuthService as CCDAuthService,
-  CaseEditorModule,
   CaseEditWizardGuard,
+  CaseEditorModule,
   CaseFileViewService,
   CaseHeaderModule,
   CaseListFiltersModule,
@@ -18,8 +18,8 @@ import {
   CaseNotifier,
   CaseReferencePipe,
   CaseResolver,
-  CasesService,
   CaseViewerModule,
+  CasesService,
   CcdCYAPageLabelFilterPipe,
   CreateCaseFiltersModule,
   DocumentManagementService,
@@ -39,11 +39,11 @@ import {
   PipesModule,
   PlaceholderService,
   RequestOptionsBuilder,
+  RetryUtil,
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule,
-  RetryUtil
+  WorkbasketFiltersModule
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -55,7 +55,6 @@ import { HearingsModule } from '../hearings/hearings.module';
 import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
 import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
-import { PriorityFieldModule } from '../work-allocation/components/priority-field/priority-field.module';
 import { WASupportedJurisdictionsService } from '../work-allocation/services';
 import { casesRouting } from './case-feature.routes';
 // from components
@@ -67,8 +66,10 @@ import * as fromDirectives from './directives';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 // from services
+import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
+import { WorkAllocationComponentsModule } from 'src/work-allocation/components/work-allocation.components.module';
 
 @NgModule({
   imports: [
@@ -89,7 +90,6 @@ import { effects, reducers } from './store';
     ExuiCommonLibModule,
     LoadingModule,
     ReactiveFormsModule,
-    PriorityFieldModule,
     HearingsModule,
     HearingsPipesModule,
     CaseHeaderModule,
@@ -97,7 +97,8 @@ import { effects, reducers } from './store';
     CaseListModule,
     PaletteModule,
     CaseViewerModule,
-    PipesModule
+    PipesModule,
+    WorkAllocationComponentsModule
   ],
   declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
   providers: [
@@ -134,7 +135,8 @@ import { effects, reducers } from './store';
     IsCompoundPipe,
     CcdCYAPageLabelFilterPipe,
     CaseFileViewService,
-    JurisdictionService
+    JurisdictionService,
+    RestrictedCaseAccessGuard
   ]
 })
 /**

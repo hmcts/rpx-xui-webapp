@@ -548,11 +548,15 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
     } else {
+      console.log('Checking cache, timestamp exists: ' + timestampExists());
+      console.log('cache length: ' + FullUserDetailCache.getAllUserDetails()?.length);
       if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
         // if already ran just use the cache to avoid loading issues
         firstEntry = false;
         cachedUsers = FullUserDetailCache.getAllUserDetails();
+
         cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+        console.log('Sending users ' + JSON.stringify(cachedUsers));
         res.send(cachedUsers).status(200);
       }
       // always update the cache after getting the cache if needed

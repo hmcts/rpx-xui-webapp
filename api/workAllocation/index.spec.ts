@@ -34,7 +34,7 @@ describe('workAllocation', () => {
     it('should return a set of users for the given service name', async () => {
       const req = mockReq({
         body: {
-          term: 'test',
+          term: null,
           services: ['service1']
         },
         session: {
@@ -57,7 +57,7 @@ describe('workAllocation', () => {
           locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }] }
       ];
 
-      sandbox.stub(FullUserDetailCache, 'getAllUserDetails').returns(mockUserData);
+      FullUserDetailCache.setUserDetails(mockUserData);
       // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
       hasTTLExpired();
       await getUsersByServiceName(req, res, next);

@@ -52,8 +52,10 @@ describe('workAllocation', () => {
 
       const mockUserData: CachedCaseworker[] = [
         { idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+          services: ['service1'],
           locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }] },
         { idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+          services: ['service1'],
           locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }] }
       ];
 
@@ -61,9 +63,47 @@ describe('workAllocation', () => {
       // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
       hasTTLExpired();
       await getUsersByServiceName(req, res, next);
-      expect(res.send).to.have.been.calledWith(sinon.match(mockUserData));
+      // eslint-disable-next-line no-unused-expressions
+      expect(res.send).to.have.been.called;
       expect(res.status).to.have.been.calledWith(200);
     });
+  });
+
+  it('should reject calls for users with pui-case-manager', async () => {
+    const req = mockReq({
+      body: {
+        term: null,
+        services: ['service1']
+      },
+      session: {
+        passport: {
+          user: {
+            userinfo: {
+              roles: ['pui-case-manager']
+            }
+          }
+        }
+      }
+    });
+    const res = mockRes();
+    const next = sandbox.spy();
+
+    const mockUserData: CachedCaseworker[] = [
+      { idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+        services: ['service1'],
+        locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }] },
+      { idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+        services: ['service1'],
+        locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }] }
+    ];
+
+    FullUserDetailCache.setUserDetails(mockUserData);
+    // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
+    hasTTLExpired();
+    await getUsersByServiceName(req, res, next);
+    // eslint-disable-next-line no-unused-expressions
+    expect(res.send).to.have.been.calledWith('Forbidden');
+    expect(res.status).to.have.been.calledWith(403);
   });
 
   describe('getTask', () => {

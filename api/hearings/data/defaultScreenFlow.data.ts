@@ -53,6 +53,22 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
     screenName: 'hearing-welsh',
     navigation: [
       {
+        resultValue: 'hearing-panel-required'
+      }
+    ]
+  },
+  {
+    screenName: 'hearing-panel-required',
+    conditionKey: 'isAPanelFlag',
+    navigation: [
+      {
+        conditionOperator: 'INCLUDE',
+        conditionValue: 'true',
+        resultValue: 'hearing-panel'
+      },
+      {
+        conditionOperator: 'NOT INCLUDE',
+        conditionValue: 'false',
         resultValue: 'hearing-judge'
       }
     ]
@@ -61,7 +77,7 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
     screenName: 'hearing-judge',
     navigation: [
       {
-        resultValue: 'hearing-panel'
+        resultValue: 'hearing-timing'
       }
     ]
   },

@@ -14,7 +14,7 @@ class IdamLogin{
         this.conf = {
             xuiBaseUrl: 'http://localhost:3000',
             idamBaseUrl: 'https://idam-web-public.aat.platform.hmcts.net',
-            idamClientId: 'xuiwebapp',
+            idamClientId: 'xuiwebapp_passport_0_7',
         }
 
         this.authToken = '';

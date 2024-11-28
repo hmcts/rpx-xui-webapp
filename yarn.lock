@@ -22309,7 +22309,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: "npm:1.8.1"
     protractor-screenshot-utils: "npm:^1.0.5"
     puppeteer: "npm:^22.4.1"
-    rpx-xui-translation: "npm:1.0.4"
+    rpx-xui-translation: "npm:1.0.7-welsh-translation-enhancements"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -22338,9 +22338,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.4":
-  version: 1.0.4
-  resolution: "rpx-xui-translation@npm:1.0.4"
+"rpx-xui-translation@npm:1.0.7-welsh-translation-enhancements":
+  version: 1.0.7-welsh-translation-enhancements
+  resolution: "rpx-xui-translation@npm:1.0.7-welsh-translation-enhancements"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -22348,7 +22348,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^15.2.9
     "@angular/core": ^15.2.9
-  checksum: 10/ed4330ec4ed49e1e5a76bcdf0bfc1689721104e03c9db1011643a54cfbf6cf8de931bf8d5805a345ddc65fb0e10a23cb1701328447711c3013559eaf8caad23f
+  checksum: 10/a6d71c9b7f33de0cf3cd560ff18ac364a57f45daf52164659e29858c7769f84f5f51cf526e5532f47ca215db95f3239475a7ef6b36f2c78ed8c961b72692a3a3
   languageName: node
   linkType: hard
 

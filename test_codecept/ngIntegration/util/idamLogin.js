@@ -277,10 +277,6 @@ class IdamLogin{
       }
     }
 
-    if (attempts >= maxAttempts) {
-      console.log('Max retry attempts reached. Exiting...');
-    }
-  }
 
     async getUserDetails(){
 

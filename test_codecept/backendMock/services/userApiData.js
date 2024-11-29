@@ -26,7 +26,7 @@ class UserApiData{
 
     setUserData(token, apiMethod, response) {
         // apiMethod = apiMethod.toUpperCase();
-        if (apiMethod === 'AddMockRoleAssignments'){
+        if (apiMethod === 'AddMockRoleAssignments' || apiMethod === 'OnUserRoleAssignments'){
             roleAssignmentsService.addRoleAssigmemntsToSession(token,response.data)
             return;
         }
@@ -108,15 +108,10 @@ class UserApiData{
 
     }
 
-
-
-    getUserSessionData(token) {
-      if (token) {
-        let userSession = this.sessionUsers.find((sess) => sess.token === token.replace('Bearer ', ''))
-        return userSession
-      }
-      return null;
-    }
+  getUserSessionData(token) {
+    const userSession = this.sessionUsers.find((sess) => sess.token === token ? token.replace('Bearer ', '') : '');
+    return userSession;
+  }
 
     logSessionRequest(token, req){
         let userSession = this.sessionUsers.find(sess => sess.token === token)

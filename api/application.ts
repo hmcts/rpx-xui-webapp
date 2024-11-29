@@ -1,3 +1,4 @@
+import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
@@ -24,7 +25,6 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { getNewUsersByServiceName } from './workAllocation';
-import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 
 export const app = express();
 

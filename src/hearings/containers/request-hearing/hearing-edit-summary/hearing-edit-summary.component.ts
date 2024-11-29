@@ -120,6 +120,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
+  testFunction(key: any, value: any) {
+    if (key === 'partyName' || key === 'isPaperHearing' || value === null || (Array.isArray(value) && value.length < 1)) {
+      return undefined;
+    }
+
+    return value;
+  }
+
   public ngAfterViewInit(): void {
     this.fragmentFocus();
   }
@@ -205,10 +213,46 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     };
 
     return !_.isEqual(
-      JSON.parse(JSON.stringify(hearingRequestMainModel, this.replacer)),
-      JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.replacer))
+      JSON.parse(JSON.stringify(hearingRequestMainModel, this.testFunction)),
+      JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.testFunction))
     );
+
+    // console.log("this should be FALSE ==", returnValue);
+
+    // return false;
   }
+
+  // deepEqual(obj1: any, obj2: any): boolean {
+  //   if (obj1 === obj2) return true;
+
+  //   if (obj1 == null || obj2 == null) return obj1 === obj2;
+
+  //   if (typeof obj1 !== 'object' || typeof obj2 !== 'object') return false;
+
+  //   if (Array.isArray(obj1) || Array.isArray(obj2)) {
+  //       if (obj1 == null || obj2 == null) return obj1 === obj2;
+  //       if (Array.isArray(obj1) && Array.isArray(obj2)) {
+  //           if (obj1.length !== obj2.length) return false;
+  //           for (let i = 0; i < obj1.length; i++) {
+  //               if (!this.deepEqual(obj1[i], obj2[i])) return false;
+  //           }
+  //           return true;
+  //       }
+  //       return false;
+  //   }
+
+  //   // const keys1 = Object.keys(obj1);
+  //   // const keys2 = Object.keys(obj2);
+
+  //   // if (keys1.length !== keys2.length) return false;
+
+  //   // for (const key of keys1) {
+  //   //     if (!keys2.includes(key)) return false;
+  //   //     if (!this.deepEqual(obj1[key], obj2[key])) return false;
+  //   // }
+
+  //   return true;
+  // }
 
   hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
     let SHVUnavailabilityDates: UnavailabilityRangeModel[];
@@ -245,8 +289,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // Party name is not present in HMC so ignoring it.
     // Is paper hearing flag is transient to indicate whether it is paper hearing
     // As well as, ignoring keys which are initialised with null value
-    // Also ignores empty array values
-    if (key === 'partyName' || key === 'isPaperHearing' || value === null || (Array.isArray(value) && value.length < 1)) {
+    if (key === 'partyName' || key === 'isPaperHearing' || value === null) {
       return undefined;
     }
 

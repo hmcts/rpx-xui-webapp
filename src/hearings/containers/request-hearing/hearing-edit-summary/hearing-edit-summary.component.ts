@@ -172,9 +172,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private isEmptyObj = (obj) => {
-    return Object.values(obj).every(val => !val); 
-  }
-  
+    return Object.values(obj).every((val) => !val);
+  };
+
   // The below function acts as a comparitor between 2 objects
   // It allows for slight variance where Object Keys differ
   // Allowing for :-
@@ -198,7 +198,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         if (value !== object2[key]) {
           // If the value is an object, it sends it round again
           if (value === typeof Object) {
-            this.equalityAllowanceFunction(value, object2[key])
+            this.equalityAllowanceFunction(value, object2[key]);
           }
           // If the value is an Array, check that its not empty
           if (Array.isArray(value)) {
@@ -206,7 +206,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
               return true;
             }
             // compares the 2 array values for equality
-            return _.isEqual(JSON.stringify(value),JSON.stringify(object2[key]));
+            return _.isEqual(JSON.stringify(value), JSON.stringify(object2[key]));
           }
           if ((value !== null || undefined || '') && (object2[key] !== null || undefined || '')) {
             return false;

@@ -413,6 +413,7 @@ export enum HearingScreensEnum {
   REGION_ID = 'regionId',
   HEARING_VENUE = 'hearing-venue',
   HEARING_WELSH = 'hearing-welsh',
+  HEARING_PANEL_REQUIRED = 'hearing-panel-required',
   HEARING_JUDGE = 'hearing-judge',
   HEARING_TIMING = 'hearing-timing',
   HEARING_LINK = 'hearing-link',

@@ -120,14 +120,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  testFunction(key: any, value: any) {
-    if (key === 'partyName' || key === 'isPaperHearing' || value === null || (Array.isArray(value) && value.length < 1)) {
-      return undefined;
-    }
-
-    return value;
-  }
-
   public ngAfterViewInit(): void {
     this.fragmentFocus();
   }
@@ -179,6 +171,52 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
+  private isEmptyObj = (obj) => {
+    return Object.values(obj).every(val => !val); 
+  }
+  
+  // The below function acts as a comparitor between 2 objects
+  // It allows for slight variance where Object Keys differ
+  // Allowing for :-
+  // - Different types of empty
+  // - New Keys with new empty values
+  // - Values that are Objects or Arrays to have extra empty values
+  private equalityAllowanceFunction(object1: any, object2: any): boolean {
+    if (Object.keys(object1).length !== Object.keys(object2).length) {
+      const newObjectValuesObject = {};
+      const keys = Object.keys(object1);
+      // Checks for new key value pairs and adds them to an object
+      for (const key in object2) {
+        if (!keys.includes(key)) {
+          newObjectValuesObject[key] = object2[key];
+        }
+      }
+      // Returns true or false depending on whether object's values are empty or not
+      return this.isEmptyObj(newObjectValuesObject);
+    } else if (Object.keys(object1).length === Object.keys(object2).length) {
+      for (const [key, value] of Object.entries(object1)) {
+        if (value !== object2[key]) {
+          // If the value is an object, it sends it round again
+          if (value === typeof Object) {
+            this.equalityAllowanceFunction(value, object2[key])
+          }
+          // If the value is an Array, check that its not empty
+          if (Array.isArray(value)) {
+            if ((value.length === 0) && (object2[key].length === 0)) {
+              return true;
+            }
+            // compares the 2 array values for equality
+            return _.isEqual(JSON.stringify(value),JSON.stringify(object2[key]));
+          }
+          if ((value !== null || undefined || '') && (object2[key] !== null || undefined || '')) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+  }
+
   private hasHearingRequestObjectChanged(): boolean {
     let partyDetailsModels: PartyDetailsModel[] = [];
     let partyDetailsCompareModels: PartyDetailsModel[] = [];
@@ -212,47 +250,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       partyDetails: [...partyDetailsCompareModels]
     };
 
-    return !_.isEqual(
-      JSON.parse(JSON.stringify(hearingRequestMainModel, this.testFunction)),
-      JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.testFunction))
-    );
+    // return !_.isEqual(
+    //   JSON.parse(JSON.stringify(hearingRequestMainModel, this.testFunction)),
+    //   JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.testFunction))
+    // );
 
-    // console.log("this should be FALSE ==", returnValue);
-
-    // return false;
+    return this.equalityAllowanceFunction(hearingRequestMainModel, hearingRequestToCompareMainModel);
   }
-
-  // deepEqual(obj1: any, obj2: any): boolean {
-  //   if (obj1 === obj2) return true;
-
-  //   if (obj1 == null || obj2 == null) return obj1 === obj2;
-
-  //   if (typeof obj1 !== 'object' || typeof obj2 !== 'object') return false;
-
-  //   if (Array.isArray(obj1) || Array.isArray(obj2)) {
-  //       if (obj1 == null || obj2 == null) return obj1 === obj2;
-  //       if (Array.isArray(obj1) && Array.isArray(obj2)) {
-  //           if (obj1.length !== obj2.length) return false;
-  //           for (let i = 0; i < obj1.length; i++) {
-  //               if (!this.deepEqual(obj1[i], obj2[i])) return false;
-  //           }
-  //           return true;
-  //       }
-  //       return false;
-  //   }
-
-  //   // const keys1 = Object.keys(obj1);
-  //   // const keys2 = Object.keys(obj2);
-
-  //   // if (keys1.length !== keys2.length) return false;
-
-  //   // for (const key of keys1) {
-  //   //     if (!keys2.includes(key)) return false;
-  //   //     if (!this.deepEqual(obj1[key], obj2[key])) return false;
-  //   // }
-
-  //   return true;
-  // }
 
   hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
     let SHVUnavailabilityDates: UnavailabilityRangeModel[];

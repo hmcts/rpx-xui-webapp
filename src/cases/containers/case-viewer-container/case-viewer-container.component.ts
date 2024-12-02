@@ -14,8 +14,7 @@ import { WAFeatureConfig } from '../../../work-allocation/models/common/service-
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
-import { isEmpty } from 'lodash';
-import { LoggerService } from '../../../app/services/logger/logger.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -27,7 +26,6 @@ export class CaseViewerContainerComponent implements OnInit {
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
-  private waDefaultSupportedJurisdictions: string[] = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC'];
   private waDefaultServiceConfig: any = {
     'configurations': [
       {
@@ -123,7 +121,6 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
-    private readonly loggerService: LoggerService,
     private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
@@ -133,31 +130,25 @@ export class CaseViewerContainerComponent implements OnInit {
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
+    let currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
     let requiredFeature = false;
-
-    if (isEmpty(features)){
-      this.launchDarklyError('WAFeatureConfig');
-      features = this.waDefaultServiceConfig;
-    }
-    if (isEmpty(supportedServices)){
-      this.launchDarklyError('WASupportedJurisdictions');
-      supportedServices = this.waDefaultSupportedJurisdictions;
-    }
-
+    console.log('################## ', currentDate, ' --> features: ', features);
+    console.log('################## ', currentDate, ' --> userRoles: ', userRoles);
+    console.log('################## ', currentDate, ' --> supportedServices: ', supportedServices);
+    console.log('################## ', currentDate, ' --> excludedRoles: ', excludedRoles);
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
         // EUI-724 - Needed as separator between WA and non-WA services/case types
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
-
-    return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
-  }
-
-  private launchDarklyError(missingConfig: string): void {
-    const logMessage = 'Error in LaunchDarkly configuration. ' + missingConfig + ' is empty.';
-    console.log(logMessage);
-    this.loggerService.log(logMessage);
+    currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
+    console.log('################## ', currentDate, ' --> requiredFeature: ', requiredFeature);
+    console.log('################## ', currentDate, ' --> userRoles: ', !!AppUtils.getUserRole(userRoles));
+    console.log('################## ', currentDate, ' --> showWATabs: ', !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles));
+    const returnValue = requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
+    console.log('################## ', currentDate, ' --> returnValue from enablePrependedTabs: ', returnValue);
+    return returnValue;
   }
 
   public ngOnInit(): void {
@@ -168,7 +159,9 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
-    return combineLatest([
+    let currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
+    console.log(`################## ${currentDate} prependedCaseViewTabs`, this.prependedTabs$);
+    const prependedTabsVariable= combineLatest([
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, this.waDefaultServiceConfig),
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
@@ -177,8 +170,17 @@ export class CaseViewerContainerComponent implements OnInit {
       // @ts-ignore
       map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[]]) =>
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
-      catchError(() => this.prependedTabs$ = of([]))
+      catchError((error) => {
+        const currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
+        console.log('Error in prependedCaseViewTabs', error);
+        console.log('################## ', currentDate, ' Returning prependedTabs$', this.prependedTabs$);
+        return this.prependedTabs$ = of([]);
+      })
     );
+    currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
+    console.log(`################## ${currentDate} --> returning the prepended tabs`);
+    console.log(`################## ${currentDate} --> prependedTabsVariable: `, prependedTabsVariable.forEach((tab) => console.log(tab)));
+    return prependedTabsVariable;
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {

@@ -45,7 +45,7 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
       {
         conditionOperator: 'NOT INCLUDE',
         conditionValue: '7',
-        resultValue: 'hearing-judge'
+        resultValue: 'hearing-panel-required'
       }
     ]
   },

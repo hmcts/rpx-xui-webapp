@@ -18,6 +18,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingPanelRequiredComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingPanelRequiredForm: FormGroup;
   public hearingPanelRequired: boolean = false;
+  public validationErrors: { id: string, message: string }[] = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,

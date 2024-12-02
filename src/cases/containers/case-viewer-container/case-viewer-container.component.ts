@@ -132,10 +132,10 @@ export class CaseViewerContainerComponent implements OnInit {
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
     let requiredFeature = false;
-    console.log('################## ', currentDate, ' --> features: ', features);
-    console.log('################## ', currentDate, ' --> userRoles: ', userRoles);
-    console.log('################## ', currentDate, ' --> supportedServices: ', supportedServices);
-    console.log('################## ', currentDate, ' --> excludedRoles: ', excludedRoles);
+    console.log('################## ', currentDate, ' --> features: ', JSON.stringify(features));
+    console.log('################## ', currentDate, ' --> userRoles: ', userRoles.forEach((role) => console.log(role)));
+    console.log('################## ', currentDate, ' --> supportedServices: ', supportedServices.forEach((service) => console.log(service)));
+    console.log('################## ', currentDate, ' --> excludedRoles: ', excludedRoles.forEach((role) => console.log(role)));
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
         // EUI-724 - Needed as separator between WA and non-WA services/case types

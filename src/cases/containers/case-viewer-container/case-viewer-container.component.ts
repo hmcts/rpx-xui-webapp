@@ -198,7 +198,14 @@ export class CaseViewerContainerComponent implements OnInit {
     );
     currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
     console.log(`################## ${currentDate} --> returning the prepended tabs`);
-    console.log(`################## ${currentDate} --> prependedTabsVariable: `, prependedTabsVariable.forEach((tab) => console.log(tab)));
+    console.log(`################## ${currentDate} --> prependedTabsVariable: `, prependedTabsVariable.forEach((tab) => {
+      if (tab.length > 0) {
+        tab.forEach((tab) => console.log('#### tab label --> ', tab.label));
+      } else {
+        console.log('#### tab length is 0');
+      }
+    }
+    ));
     return prependedTabsVariable;
   }
 

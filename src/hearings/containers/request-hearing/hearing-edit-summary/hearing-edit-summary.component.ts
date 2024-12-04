@@ -206,7 +206,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
               return true;
             }
             // compares the 2 array values for equality
-            return _.isEqual(JSON.stringify(value), JSON.stringify(object2[key]));
+            const filteredArr1 = value.filter(function(e){ return e === 0 || e });
+            const filteredArr2 = object2[key].filter(function(e){ return e === 0 || e });
+            return _.isEqual(filteredArr1, filteredArr2);
           }
           if ((value !== null || undefined || '') && (object2[key] !== null || undefined || '')) {
             return false;

@@ -250,11 +250,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       partyDetails: [...partyDetailsCompareModels]
     };
 
-    // return !_.isEqual(
-    //   JSON.parse(JSON.stringify(hearingRequestMainModel, this.testFunction)),
-    //   JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.testFunction))
-    // );
-
     return this.equalityAllowanceFunction(hearingRequestMainModel, hearingRequestToCompareMainModel);
   }
 

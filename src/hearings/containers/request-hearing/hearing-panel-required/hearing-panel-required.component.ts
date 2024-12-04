@@ -30,18 +30,18 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
-    this.hearingPanelRequired = this.hearingRequestMainModel.hearingDetails ?
-      this.hearingRequestMainModel.hearingDetails.isAPanelFlag : false;
+    this.hearingPanelRequired = this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag ?? false;
     this.initForm();
-  }
+ }
 
   public ngAfterViewInit(): void {
     this.hearingPanelRequiredForm.controls.hearingPanelRequired.setValue(this.hearingPanelRequired);
+    this.fragmentFocus();
   }
 
   public initForm(): void {
     this.hearingPanelRequiredForm = this.formBuilder.group({
-      hearingPanelRequired: [false, Validators.required]
+        hearingPanelRequired: [this.hearingPanelRequired, Validators.required]
     });
   }
 

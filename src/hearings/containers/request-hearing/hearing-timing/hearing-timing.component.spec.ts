@@ -247,7 +247,10 @@ describe('HearingTimingComponent', () => {
 
   it('should check date selection invalid', () => {
     component.firstDateOfHearingError = null;
-    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('12');
+    // component.firstHearingFormGroup.get('firstHearingDate_day').setValue('12');
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue(null);
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue(null);
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2024');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });

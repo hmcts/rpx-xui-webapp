@@ -26,6 +26,7 @@ export class CaseViewerContainerComponent implements OnInit {
   public prependedTabs$: Observable<CaseTab[]>;
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
+  private retryCount: number;
   private waDefaultServiceConfig: any = {
     'configurations': [
       {
@@ -154,6 +155,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
+    this.retryCount = 0;
     this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
     let noOfUserRoles = 0;
     this.userRoles$.subscribe((userRoles) => {
@@ -165,14 +167,15 @@ export class CaseViewerContainerComponent implements OnInit {
       }
       console.log('################## --> userRoles length in nbOnInit ', noOfUserRoles);
       if (noOfUserRoles > 0) {
-        // userRoles.map((role) => console.log('################## --> userRole in ngOnInit: ', role));
         console.log('################## --> userRoles in ngOnInit: ', userRoles.join(',').toString());
       }
+      if (noOfUserRoles === 0 && this.retryCount < 3) {
+        this.retryCount++;
+        console.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
+        this.store.dispatch(new fromRoot.LoadUserDetails(true));
+      }
     });
-    if (noOfUserRoles === 0) {
-      console.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.');
-      this.store.dispatch(new fromRoot.LoadUserDetails(true));
-    }
+
     this.prependedTabs$ = this.prependedCaseViewTabs();
     this.appendedTabs$ = this.appendedCaseViewTabs();
   }

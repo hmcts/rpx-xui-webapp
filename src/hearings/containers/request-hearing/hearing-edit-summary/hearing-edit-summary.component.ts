@@ -171,8 +171,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  private isEmptyObj = (obj) => {
-    return Object.values(obj).every((val) => !val);
+  private isEmptyObj(obj): boolean {
+    return Object.values(obj).every((val) => val === null || val === '');
   };
 
   // The below function acts as a comparitor between 2 objects
@@ -181,7 +181,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   // - Different types of empty
   // - New Keys with new empty values
   // - Values that are Objects or Arrays to have extra empty values
-  private equalityAllowanceFunction(object1: any, object2: any): boolean {
+  equalityAllowanceFunction(object1: any, object2: any): boolean {
+    if (_.isEqual(object1, object2)) { return false;}
     if (Object.keys(object1).length !== Object.keys(object2).length) {
       const newObjectValuesObject = {};
       const keys = Object.keys(object1);
@@ -192,29 +193,31 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         }
       }
       // Returns true or false depending on whether object's values are empty or not
-      return this.isEmptyObj(newObjectValuesObject);
+      return !this.isEmptyObj(newObjectValuesObject);
     } else if (Object.keys(object1).length === Object.keys(object2).length) {
       for (const [key, value] of Object.entries(object1)) {
-        if (value !== object2[key]) {
-          // If the value is an object, it sends it round again
-          if (value === typeof Object) {
-            this.equalityAllowanceFunction(value, object2[key]);
-          }
-          // If the value is an Array, check that its not empty
-          if (Array.isArray(value)) {
-            if ((value.length === 0) && (object2[key].length === 0)) {
-              return true;
-            }
-            // compares the 2 array values for equality
-            const filteredArr1 = value.filter(function(e){ return e === 0 || e });
-            const filteredArr2 = object2[key].filter(function(e){ return e === 0 || e });
-            return _.isEqual(filteredArr1, filteredArr2);
-          }
-          if ((value !== null || undefined || '') && (object2[key] !== null || undefined || '')) {
+        // If the value is an object, it sends it round again
+        if (value === typeof Object) {
+          this.equalityAllowanceFunction(value, object2[key]);
+        }
+        // If the value is an Array, check that its not empty
+        if (Array.isArray(value)) {
+          if ((value.length === 0) && (object2[key].length === 0)) {
             return false;
           }
+          // compares the 2 array values for equality
+          const filteredArr1 = value.filter(function(e){ return e === 0 || e });
+          const filteredArr2 = object2[key].filter(function(e){ return e === 0 || e });
+          return !_.isEqual(filteredArr1, filteredArr2);
         }
-        return true;
+        if (value !== object2[key]) {
+          // If different type of null
+          if ((value === null || value === undefined || value === '') && (object2[key] === null || object2[key] === undefined || object2[key] ==='')) {
+            return false;
+          } else {
+            return true;
+          }
+        }
       }
     }
   }

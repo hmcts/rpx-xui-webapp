@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -124,6 +124,7 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly loggerService: LoggerService,
+    private readonly cd: ChangeDetectorRef,
     private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
@@ -178,6 +179,10 @@ export class CaseViewerContainerComponent implements OnInit {
         console.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.loggerService.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
+        this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
+          map((userDetails) => userDetails?.userInfo?.roles)
+        );
+        this.cd.detectChanges();
       }
     });
 

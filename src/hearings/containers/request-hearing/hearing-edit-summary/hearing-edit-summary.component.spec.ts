@@ -1451,78 +1451,61 @@ describe('HearingEditSummaryComponent', () => {
     expect(isDifference).toEqual(true);
   });
 
-  it('should return false from equalityAllowanceFunction, when objects are the same', () => {
+  it('should return false from areObjectsfunctionallyDifferentCheck, when objects are the same', () => {
     const obj1 = { a: 1, b: 2, c: 3 };
     const obj2 = { a: 1, b: 2, c: 3 };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(false);
   });
 
-  it('should return true from equalityAllowanceFunction, when objects are the same length but with value changes', () => {
+  it('should return true from areObjectsfunctionallyDifferentCheck, when objects are the same length but with value changes', () => {
     const obj1 = { a: 1, b: 2 };
     const obj2 = { a: 1, b: 3 };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(true);
   });
 
-  it('should return false from equalityAllowanceFunction, when object1 has new keys not in object2 but no values', () => {
+  it('should return false from areObjectsfunctionallyDifferentCheck, when object1 has new keys not in object2 but no values', () => {
     const obj1 = { a: 1, b: null };
     const obj2 = { a: 1 };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(false);
   });
 
-  it('should handle nested objects correctly in the equalityAllowanceFunction', () => {
+  it('should handle nested objects correctly in the areObjectsfunctionallyDifferentCheck', () => {
     const obj1 = { a: { x: 1, y: 2 }, b: 3 };
     const obj2 = { a: { x: 1, y: 2 }, b: 3 };
-      
-     const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(false);
   });
 
-  it('should return true from equalityAllowanceFunction, for arrays with new values', () => {
+  it('should return true from areObjectsfunctionallyDifferentCheck, for arrays with new values', () => {
     const obj1 = { a: [1, 2, 3] };
     const obj2 = { a: [1, 2] };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(true);
   });
 
-  it('should return false form equalityAllowanceFunction, when arrays contain empty values', () => {
+  it('should return false form areObjectsfunctionallyDifferentCheck, when arrays contain empty values', () => {
     const obj1 = { a: [null, 1, 2] };
     const obj2 = { a: [null, 1, 2] };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(false);
   });
 
-  it('should handle objects with deeply nested values in the equalityAllowanceFunction', () => {
+  it('should handle objects with deeply nested values in the areObjectsfunctionallyDifferentCheck', () => {
     const obj1 = { a: { b: { c: 1 } } };
     const obj2 = { a: { b: { c: 1 } } };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(false);
   });
 
-  it('should return true for deeply nested unequal objects in the equalityAllowanceFunction', () => {
+  it('should return true for deeply nested unequal objects in the areObjectsfunctionallyDifferentCheck', () => {
     const obj1 = { a: { b: { c: 1 } } };
     const obj2 = { a: { b: { c: 2 } } };
-      
-    const result = component.equalityAllowanceFunction(obj1, obj2);
-      
-      expect(result).toBe(true);
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
   });
-
 
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [

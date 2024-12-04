@@ -133,9 +133,10 @@ export class CaseViewerContainerComponent implements OnInit {
     let currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
     let requiredFeature = false;
     console.log('################## ', currentDate, ' --> features: ', JSON.stringify(features));
-    userRoles.map((role) => console.log('################## ', currentDate, ' --> userRole map: ', role));
-    supportedServices.map((service) => console.log('################## ', currentDate, ' --> supportedServices map: ', service));
-    excludedRoles.map((role) => console.log('################## ', currentDate, ' --> excludedRoles map: ', role));
+    console.log('################## ', currentDate, ' --> userRoles: ', userRoles.join(',').toString());
+    console.log('################## ', currentDate, ' --> supportedServices: ', supportedServices.join(',').toString());
+    console.log('################## ', currentDate, ' --> excludedRoles: ', excludedRoles.join(',').toString());
+
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
         // EUI-724 - Needed as separator between WA and non-WA services/case types
@@ -164,7 +165,8 @@ export class CaseViewerContainerComponent implements OnInit {
       }
       console.log('################## --> userRoles length in nbOnInit ', noOfUserRoles);
       if (noOfUserRoles > 0) {
-        userRoles.map((role) => console.log('################## --> userRole in ngOnInit: ', role));
+        // userRoles.map((role) => console.log('################## --> userRole in ngOnInit: ', role));
+        console.log('################## --> userRoles in ngOnInit: ', userRoles.join(',').toString());
       }
     });
     if (noOfUserRoles === 0) {

@@ -15,6 +15,7 @@ import { WASupportedJurisdictionsService } from '../../../work-allocation/servic
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
 import { formatDate } from '@angular/common';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -122,6 +123,7 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
+    private readonly loggerService: LoggerService,
     private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
@@ -163,15 +165,18 @@ export class CaseViewerContainerComponent implements OnInit {
         noOfUserRoles = userRoles.length;
       } else {
         console.log('userRoles is null or undefined');
+        this.loggerService.log('################## userRoles is null or undefined');
         noOfUserRoles = 0;
       }
-      console.log('################## --> userRoles length in nbOnInit ', noOfUserRoles);
+      console.log('################## --> userRoles length in ngOnInit ', noOfUserRoles);
+      this.loggerService.log('################## --> userRoles length in ngOnInit ', noOfUserRoles);
       if (noOfUserRoles > 0) {
         console.log('################## --> userRoles in ngOnInit: ', userRoles.join(',').toString());
       }
       if (noOfUserRoles === 0 && this.retryCount < 3) {
         this.retryCount++;
         console.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
+        this.loggerService.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
       }
     });
@@ -194,8 +199,9 @@ export class CaseViewerContainerComponent implements OnInit {
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
       catchError((error) => {
         const currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
-        console.log('Error in prependedCaseViewTabs', error);
+        console.log('################## Error in prependedCaseViewTabs', error);
         console.log('################## ', currentDate, ' Returning prependedTabs$', this.prependedTabs$);
+        this.loggerService.log('################## Error in prependedCaseViewTabs', error);
         return this.prependedTabs$ = of([]);
       })
     );

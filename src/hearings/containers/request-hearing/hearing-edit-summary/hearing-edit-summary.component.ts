@@ -181,7 +181,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   // - Different types of empty
   // - New Keys with new empty values
   // - Values that are Objects or Arrays to have extra empty values
-  areObjectsfunctionallyDifferentCheck(object1: any, object2: any): boolean {
+  public areObjectsfunctionallyDifferentCheck(object1: any, object2: any): boolean {
     if (typeof object1 !== typeof object2) {
       return true;
     }
@@ -207,6 +207,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
       // If the value is an Array, check that its not empty
       if (Array.isArray(value)) {
+        if (value[0] === typeof Object) {
+          this.areObjectsfunctionallyDifferentCheck(value, object2[key]);
+        }
         if ((value.length !== 0) && (object2[key].length !== 0)) {
           // compares the 2 array values for equality
           const filteredArr1 = value.filter(function(e){

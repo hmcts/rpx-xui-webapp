@@ -179,15 +179,11 @@ export class CaseViewerContainerComponent implements OnInit {
         console.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.loggerService.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
-        this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-          map((userDetails) => userDetails?.userInfo?.roles)
-        );
-        this.cd.detectChanges();
+      } else {
+        this.prependedTabs$ = this.prependedCaseViewTabs();
+        this.appendedTabs$ = this.appendedCaseViewTabs();
       }
     });
-
-    this.prependedTabs$ = this.prependedCaseViewTabs();
-    this.appendedTabs$ = this.appendedCaseViewTabs();
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {

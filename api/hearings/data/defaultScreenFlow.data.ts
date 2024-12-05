@@ -62,13 +62,13 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
     conditionKey: 'isAPanelFlag',
     navigation: [
       {
-        conditionOperator: 'INCLUDE',
-        conditionValue: 'true',
+        conditionOperator: 'EQUALS',
+        conditionValue: true,
         resultValue: 'hearing-panel'
       },
       {
-        conditionOperator: 'NOT INCLUDE',
-        conditionValue: 'false',
+        conditionOperator: 'EQUALS',
+        conditionValue: false,
         resultValue: 'hearing-judge'
       }
     ]

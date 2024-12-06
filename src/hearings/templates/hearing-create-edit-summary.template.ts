@@ -124,6 +124,18 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     isHiddenSource: IsHiddenSource.WELSH_LOCATION
   },
   {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing panel required</h2>',
+    screenName: 'hearing-panel-required',
+    answers: [
+      {
+        id: 'needPanel',
+        answerTitle: 'Do you require a panel for this hearing?',
+        answerSource: AnswerSource.NEED_PANEL,
+        changeLink: '/hearings/request/hearing-panel-required#hearingPanelRequired'
+      }
+    ]
+  },
+  {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
     screenName: 'hearing-judge',
     answers: [

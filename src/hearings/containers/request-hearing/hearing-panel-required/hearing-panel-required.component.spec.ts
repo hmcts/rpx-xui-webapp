@@ -56,7 +56,7 @@ describe('HearingPanelRequiredComponent', () => {
   });
 
   it('should load default value', (): void => {
-    expect(component.hearingPanelRequiredForm.value.hearingPanelRequired).toBeTruthy();
+    expect(component.hearingPanelRequiredForm.value.hearingPanelRequired).toEqual(false);
   });
 
   it('should execute a continue action', (): void => {

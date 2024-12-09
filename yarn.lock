@@ -3437,12 +3437,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.75-user-task-missing-2":
-  version: 7.0.75-user-task-missing-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.75-user-task-missing-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.0.75-user-task-missing-release":
+  version: 7.0.75-user-task-missing-release
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.75-user-task-missing-release"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/451fd4fdf1575cb3fb21e36b1227a94b68e6395e2100ba83624f6580ff2cec341bcb80cee624ea3d3161a6ea705e071b4f3bc3ec1d103018a93daac354160f9e
+  checksum: 10/b180df13dec5384343a13d5fc464f3130ba70447f82464c4c440d25e228874f0d654841784b8d9bd728e039e8efe23f4b3d494ea4756230f46e4ad7a14f3224d
   languageName: node
   linkType: hard
 
@@ -22179,7 +22179,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.75-user-task-missing-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.0.75-user-task-missing-release"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.8"

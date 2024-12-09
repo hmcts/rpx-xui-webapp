@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import * as _ from 'lodash';
 import {
   ACTION
 } from '../../../models/hearings.enum';
@@ -40,7 +39,7 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
 
   public initForm(): void {
     this.hearingPanelRequiredForm = this.formBuilder.group({
-        hearingPanelRequired: [this.hearingPanelRequired, Validators.required]
+      hearingPanelRequired: [this.hearingPanelRequired, Validators.required]
     });
   }
 

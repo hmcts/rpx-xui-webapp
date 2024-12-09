@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -14,7 +14,6 @@ import { WAFeatureConfig } from '../../../work-allocation/models/common/service-
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
-import { formatDate } from '@angular/common';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
@@ -124,7 +123,6 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly loggerService: LoggerService,
-    private readonly cd: ChangeDetectorRef,
     private readonly waService: WASupportedJurisdictionsService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
@@ -134,26 +132,14 @@ export class CaseViewerContainerComponent implements OnInit {
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
-    let currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
     let requiredFeature = false;
-    console.log('################## ', currentDate, ' --> features: ', JSON.stringify(features));
-    console.log('################## ', currentDate, ' --> userRoles: ', userRoles.join(',').toString());
-    console.log('################## ', currentDate, ' --> supportedServices: ', supportedServices.join(',').toString());
-    console.log('################## ', currentDate, ' --> excludedRoles: ', excludedRoles.join(',').toString());
-
     features.configurations.forEach((serviceConfig) => {
       if (serviceConfig.serviceName === caseJurisdiction && serviceConfig.caseTypes.includes(caseType)) {
         // EUI-724 - Needed as separator between WA and non-WA services/case types
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
-    currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
-    console.log('################## ', currentDate, ' --> requiredFeature: ', requiredFeature);
-    console.log('################## ', currentDate, ' --> userRoles: ', !!AppUtils.getUserRole(userRoles));
-    console.log('################## ', currentDate, ' --> showWATabs: ', !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles));
-    const returnValue = requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
-    console.log('################## ', currentDate, ' --> returnValue from enablePrependedTabs: ', returnValue);
-    return returnValue;
+    return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
   }
 
   public ngOnInit(): void {
@@ -162,22 +148,10 @@ export class CaseViewerContainerComponent implements OnInit {
     this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
     let noOfUserRoles = 0;
     this.userRoles$.subscribe((userRoles) => {
-      if (userRoles) {
-        noOfUserRoles = userRoles.length;
-      } else {
-        console.log('userRoles is null or undefined');
-        this.loggerService.log('################## userRoles is null or undefined');
-        noOfUserRoles = 0;
-      }
-      console.log('################## --> userRoles length in ngOnInit ', noOfUserRoles);
-      this.loggerService.log('################## --> userRoles length in ngOnInit ', noOfUserRoles);
-      if (noOfUserRoles > 0) {
-        console.log('################## --> userRoles in ngOnInit: ', userRoles.join(',').toString());
-      }
+      noOfUserRoles = userRoles?.length ?? 0;
       if (noOfUserRoles === 0 && this.retryCount < 3) {
         this.retryCount++;
-        console.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
-        this.loggerService.log('################## --> userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
+        this.loggerService.log('case-viewer-container - userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
       } else {
         this.prependedTabs$ = this.prependedCaseViewTabs();
@@ -187,9 +161,7 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private prependedCaseViewTabs(): Observable<CaseTab[]> {
-    let currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
-    console.log(`################## ${currentDate} prependedCaseViewTabs`, this.prependedTabs$);
-    const prependedTabsVariable= combineLatest([
+    return combineLatest([
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, this.waDefaultServiceConfig),
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
@@ -199,24 +171,10 @@ export class CaseViewerContainerComponent implements OnInit {
       map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[]]) =>
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
       catchError((error) => {
-        const currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
-        console.log('################## Error in prependedCaseViewTabs', error);
-        console.log('################## ', currentDate, ' Returning prependedTabs$', this.prependedTabs$);
-        this.loggerService.log('################## Error in prependedCaseViewTabs', error);
+        this.loggerService.log('case-viewer-container - Error in prependedCaseViewTabs', error);
         return this.prependedTabs$ = of([]);
       })
     );
-    currentDate = formatDate(Date.now(), 'HH:mm:ss.SSS', 'en');
-    console.log(`################## ${currentDate} --> returning the prepended tabs`);
-    console.log(`################## ${currentDate} --> prependedTabsVariable: `, prependedTabsVariable.forEach((tab) => {
-      if (tab.length > 0) {
-        tab.forEach((tab) => console.log('#### tab label --> ', tab.label));
-      } else {
-        console.log('#### tab length is 0');
-      }
-    }
-    ));
-    return prependedTabsVariable;
   }
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {

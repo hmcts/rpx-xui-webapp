@@ -167,18 +167,6 @@ class MockFeatureToggleService implements FeatureToggleService {
   }
 }
 
-class MockFeatureToggleServiceEmpty extends MockFeatureToggleService{
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
-    if (_key === 'wa-service-config') {
-      // @ts-ignore
-      return of([]);
-    }
-    // @ts-ignore
-    return of([]);
-  }
-}
-
 class MockAllocateRoleService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
@@ -390,86 +378,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
   });
 });
 
-describe('CaseViewerContainerComponent - Hearings tab visible with missing launch darkly info', () => {
-  let component: CaseViewerContainerComponent;
-  let fixture: ComponentFixture<CaseViewerContainerComponent>;
-  let store: MockStore;
-
-  const initialState: State = {
-    routerReducer: null,
-    appConfig: {
-      config: {},
-      termsAndCondition: null,
-      loaded: true,
-      loading: true,
-      termsAndConditions: null,
-      isTermsAndConditionsFeatureEnabled: null,
-      useIdleSessionTimeout: null,
-      userDetails: {
-        sessionTimeout: {
-          idleModalDisplayTime: 0,
-          totalIdleTime: 0
-        },
-        canShareCases: true,
-        userInfo: {
-          id: '',
-          active: true,
-          email: 'juser4@mailinator.com',
-          forename: 'XUI test',
-          roles: rolesWithHearingRoles,
-          uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
-        },
-        roleAssignmentInfo: []
-      },
-      decorate16digitCaseReferenceSearchBoxInHeader: false
-    }
-  };
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
-      providers: [
-        provideMockStore({ initialState }),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                case: CASE_VIEW
-              }
-            }
-          }
-        },
-        { provide: LoggerService, useValue: loggerServiceMock },
-        { provide: FeatureToggleService, useClass: MockFeatureToggleServiceEmpty },
-        { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
-      ],
-      declarations: [CaseViewerContainerComponent, CaseViewerComponent]
-    })
-      .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CaseViewerContainerComponent);
-    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    component = fixture.componentInstance;
-    store = TestBed.inject(MockStore);
-    store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
-    fixture.detectChanges();
-  });
-
-  it('should display Hearings tab', () => {
-    component.appendedTabs$.subscribe((tabs) =>
-      expect(tabs[0].id).toEqual('hearings')
-    );
-  });
-});
-
-//**************************************************************************
-//**************************************************************************
-describe('CaseViewerContainerComponent - Hearings tab visible with missing launch darkly info', () => {
+describe('CaseViewerContainerComponent - retrieving user info when no roles are present', () => {
   let component: CaseViewerContainerComponent;
   let fixture: ComponentFixture<CaseViewerContainerComponent>;
   let store = jasmine.createSpyObj('store', ['dispatch']);
@@ -521,7 +430,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible with missing launc
           }
         },
         { provide: LoggerService, useValue: loggerServiceMock },
-        { provide: FeatureToggleService, useClass: MockFeatureToggleServiceEmpty },
+        { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
       ],
@@ -546,8 +455,6 @@ describe('CaseViewerContainerComponent - Hearings tab visible with missing launc
     expect(store.dispatch).toHaveBeenCalled();
   });
 });
-//**************************************************************************
-// **************************************************************************
 
 describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
   let component: CaseViewerContainerComponent;

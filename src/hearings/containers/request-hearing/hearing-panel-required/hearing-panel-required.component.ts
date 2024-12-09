@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import * as _ from 'lodash';
 import {
   ACTION
 } from '../../../models/hearings.enum';
@@ -32,23 +31,22 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
   public ngOnInit(): void {
     this.hearingPanelRequired = this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag ?? false;
     this.initForm();
- }
+  }
 
   public ngAfterViewInit(): void {
-    this.hearingPanelRequiredForm.controls.hearingPanelRequired.setValue(this.hearingPanelRequired);
     this.fragmentFocus();
   }
 
   public initForm(): void {
     this.hearingPanelRequiredForm = this.formBuilder.group({
-        hearingPanelRequired: [this.hearingPanelRequired, Validators.required]
+      hearingPanelRequired: [this.hearingPanelRequired, Validators.required]
     });
   }
 
   public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
-      this.prepareHearingRequestData();
       this.updateHearingConditions();
+      this.prepareHearingRequestData();
     }
     super.navigateAction(action);
   }

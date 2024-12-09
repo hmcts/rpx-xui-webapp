@@ -2,7 +2,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
-import * as _ from 'lodash';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
@@ -20,11 +21,12 @@ describe('HearingPanelRequiredComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingPanelRequiredComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: ActivatedRoute, useValue: { fragment: of('point-to-me') } }
       ]
     }).compileComponents();
 

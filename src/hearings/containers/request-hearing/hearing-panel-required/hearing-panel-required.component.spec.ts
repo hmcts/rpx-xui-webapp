@@ -26,9 +26,7 @@ describe('HearingPanelRequiredComponent', () => {
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
-        {
-          provide: ActivatedRoute
-        }
+        { provide: ActivatedRoute, useValue: { fragment: of('point-to-me') } }
       ]
     }).compileComponents();
 

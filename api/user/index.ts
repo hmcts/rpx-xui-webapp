@@ -94,7 +94,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     } catch (error) {
       if (error.status === 304) {
         // as user role assignments are not returned use session to send expected results
-        trackTrace(`user ${id} details from session:- ${req?.session?.userRoleAssignments}`, { functionCall: 'refreshRoleAssignmentForUser' });
+        trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, { functionCall: 'refreshRoleAssignmentForUser' });
         return req?.session?.userRoleAssignments;
       }
       let err = error;

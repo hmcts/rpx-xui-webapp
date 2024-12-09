@@ -1507,6 +1507,27 @@ describe('HearingEditSummaryComponent', () => {
     expect(result).toBe(true);
   });
 
+  it('should return false for deeply nested unequal length objects with array and null values in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = { a: [{ b: 1, c: null, d: null }], b: null };
+    const obj2 = { a: [{ b: 1 }] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should return false in this instance', () => {
+    const obj1 = { a: [{ c: null, d: null, b: 1 }] };
+    const obj2 = { a: [{ b: 1 }] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should return true in this instance', () => {
+    const obj1 = { a: [{ a: 1, b: 1}] };
+    const obj2 = { a: [{ a: 1 }] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
+  });
+
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [
       {

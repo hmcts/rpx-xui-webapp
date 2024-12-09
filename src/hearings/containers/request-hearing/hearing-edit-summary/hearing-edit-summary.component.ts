@@ -202,14 +202,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
     for (const [key, value] of Object.entries(object1)) {
       // If the value is an object, it sends it round again
-      if (value === typeof Object) {
+      if (typeof value === "object") {
         this.areObjectsfunctionallyDifferentCheck(value, object2[key]);
       }
       // If the value is an Array, check that its not empty
-      if (Array.isArray(value)) {
-        if (value[0] === typeof Object) {
-          this.areObjectsfunctionallyDifferentCheck(value, object2[key]);
-        }
+      if (Array.isArray(value)) { 
         if ((value.length !== 0) && (object2[key].length !== 0)) {
           // compares the 2 array values for equality
           const filteredArr1 = value.filter(function(e){

@@ -32,10 +32,9 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
   public ngOnInit(): void {
     this.hearingPanelRequired = this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag ?? false;
     this.initForm();
- }
+  }
 
   public ngAfterViewInit(): void {
-    this.hearingPanelRequiredForm.controls.hearingPanelRequired.setValue(this.hearingPanelRequired);
     this.fragmentFocus();
   }
 
@@ -47,8 +46,8 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
 
   public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
-      this.prepareHearingRequestData();
       this.updateHearingConditions();
+      this.prepareHearingRequestData();
     }
     super.navigateAction(action);
   }

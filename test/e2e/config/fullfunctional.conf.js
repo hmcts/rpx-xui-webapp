@@ -72,6 +72,7 @@ const config = {
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
+    console.log('Initialised tests');
 
     global.screenShotUtils = new screenShotUtils({
       browserInstance: browser

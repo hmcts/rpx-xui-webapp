@@ -1,4 +1,4 @@
-@fullfunctional @functional_enabled
+@fullfunctional @functional_enabled @crossbrowser
 Feature: Login
 
   Background:
@@ -17,12 +17,12 @@ Feature: Login
     When I select the sign out link
     Then I should be redirected to the Idam login page
 
-# @all @crossbrowser @aat
-#   Scenario: login and log out from EUI as Probate user
-#     Given I am logged into Expert UI with Probate user details
-#     Then I should be redirected to EUI dashboard page
-#     When I select the sign out link
-#     Then I should be redirected to the Idam login page
+  @all @crossbrowser @aat
+  Scenario: login and log out from EUI as Probate user
+    Given I am logged into Expert UI with Probate user details
+    Then I should be redirected to EUI dashboard page
+    When I select the sign out link
+    Then I should be redirected to the Idam login page
 
 
 

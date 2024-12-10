@@ -3,30 +3,14 @@ export const previewDifferences = {
     {
       'roles': [
         'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-st_cic'
+        'caseworker-sscs-panelmember'
       ],
       'text': 'My work'
     },
-
     {
       'roles': [
-        'caseworker-st_cic'
-      ],
-      'text': 'Case list'
-    },
-    {
-      'roles': [
-        'caseworker-st_cic'
-      ],
-      'text': 'Find case'
-    },
-    {
-      'roles': [
-        'caseworker-employment-etjudge',
         'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-st_cic'
+        'caseworker-sscs-panelmember'
       ],
       'text': 'Search'
     }
@@ -45,8 +29,7 @@ export const previewDifferences = {
     {
       'roles': [
         'caseworker-sscs-clerk',
-        'caseworker-sscs-registrar',
-        'caseworker-st_cic'
+        'caseworker-sscs-registrar'
       ],
       'text': 'My work'
     },

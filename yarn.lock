@@ -14581,16 +14581,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:1.1.x":
-  version: 1.1.2
-  resolution: "http-proxy-middleware@npm:1.1.2"
+"http-proxy-middleware@npm:1.3.x":
+  version: 1.3.1
+  resolution: "http-proxy-middleware@npm:1.3.1"
   dependencies:
     "@types/http-proxy": "npm:^1.17.5"
     http-proxy: "npm:^1.18.1"
     is-glob: "npm:^4.0.1"
     is-plain-obj: "npm:^3.0.0"
     micromatch: "npm:^4.0.2"
-  checksum: 10/cd960ebb27dadae6e3895103a26c8393b79c75fa95b2ce8885145ce8ba2b0b109e5bf72da5a8a38d593f7f30f40532c8ee1cefe65f5d6b554b49e340b7e31955
+  checksum: 10/322a166996972804877fd3786b7259c52679660b4231c3c3358d71b7deea8560dd41271ea99d0100faf93bc2018890ba78d67ced56442aa49a160a9d09ead617
   languageName: node
   linkType: hard
 
@@ -22261,7 +22261,7 @@ __metadata:
     govuk-frontend: "npm:^3.12.0"
     govuk_frontend_toolkit: "npm:^9.0.0"
     helmet: "npm:^3.21.3"
-    http-proxy-middleware: "npm:1.1.x"
+    http-proxy-middleware: "npm:1.3.x"
     isomorphic-fetch: "npm:^3.0.0"
     jasmine-core: "npm:~3.99.0"
     jasmine-marbles: "npm:^0.9.1"

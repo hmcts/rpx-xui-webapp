@@ -154,31 +154,33 @@ export class CaseViewerContainerComponent implements OnInit {
         this.loggerService.log('case-viewer-container - userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
       } else {
-        this.prependedTabs$ = this.prependedCaseViewTabs();
-        this.appendedTabs$ = this.appendedCaseViewTabs();
+        this.setPrependedCaseViewTabs();
+        this.setAppendedCaseViewTabs();
       }
     });
   }
 
-  private prependedCaseViewTabs(): Observable<CaseTab[]> {
-    return combineLatest([
+  private setPrependedCaseViewTabs(): void {
+    combineLatest([
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, this.waDefaultServiceConfig),
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
       this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.excludedRolesForCaseTabs, [])
     ]).pipe(
-      // @ts-ignore
-      map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[]]) =>
-        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []),
+      map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[], string[], string[]]) =>
+        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []
+      ),
       catchError((error) => {
-        this.loggerService.log('case-viewer-container - Error in prependedCaseViewTabs', error);
-        return this.prependedTabs$ = of([]);
+        this.loggerService.log('case-viewer-container - Error in setPrependedCaseViewTabs', error);
+        return of([]);
       })
-    );
+    ).subscribe((tabs) => {
+      this.prependedTabs$ = of(tabs);
+    });
   }
 
-  private appendedCaseViewTabs(): Observable<CaseTab[]> {
-    return combineLatest([
+  private setAppendedCaseViewTabs(): void {
+    combineLatest([
       this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
       this.userRoles$
     ]).pipe(
@@ -193,6 +195,8 @@ export class CaseViewerContainerComponent implements OnInit {
           userRoles.includes(UserRole.HearingManager);
         return (hasMatchedPermissions && hasHearingRole) ? this.appendedTabs : [];
       })
-    );
+    ).subscribe((tabs) => {
+      this.appendedTabs$ = of(tabs);
+    });
   }
 }

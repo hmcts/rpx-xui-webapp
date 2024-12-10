@@ -55,9 +55,9 @@ function loginLogoutObjects() {
     }, LONG_DELAY);
   };
 
-  this.defaultTime = function () {
-    this.setDefaultTimeout(60 * 1000);
-  };
+  // this.defaultTime = function () {
+  //   this.setDefaultTimeout(60 * 1000);
+  // };
 
   this.getEmailFieldValue = async function () {
     return await this.emailAddress.getAttribute('value');

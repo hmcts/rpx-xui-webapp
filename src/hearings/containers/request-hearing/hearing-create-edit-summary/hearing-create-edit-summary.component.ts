@@ -42,11 +42,17 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
     this.getScreenFlowFromStore().subscribe((storeData: any) => {
       if (storeData && storeData.hearings) {
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
+        const isAPanelFlag = storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag;
         this.template = this.template.filter((tp: Section) => {
           return this.screenFlow.some((sr: ScreenNavigationModel) => {
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers');
           });
         });
+        if (!isAPanelFlag) {
+          this.template = this.template.filter((tp: Section) => tp.screenName !== 'hearing-panel');
+        } else {
+          this.template = this.template.filter((tp: Section) => tp.screenName !== 'hearing-judge');
+        }
       }
     });
     return this.template;

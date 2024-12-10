@@ -32,7 +32,7 @@ console.log(`headless : ${!head}`)
 let pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? "preview" : "master"
 let local = process.env.LOCAL && process.env.LOCAL.includes('true')
 let features = ''
-if (testType === 'e2e' || testType === 'smoke'){
+if (testType === 'e2e' || testType === 'smoke' || testType === 'crossbrowser'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
   features = pipelineBranch === 'master' && !local ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
@@ -54,7 +54,7 @@ const tags = process.env.DEBUG ? 'functional_debug' : bddTags
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`
 console.log(grepTags)
 
-exports.config = {
+let config = {
   timeout: 600,
   "gherkin": {
     "features": features,
@@ -230,35 +230,32 @@ exports.config = {
 
   }
 }
+console.log(config)
 
+exports.config = config;
 
 function exitWithStatus() {
   // const status = await mochawesomeGenerateReport()
   console.log(`*************** executionResult: ${executionResult}  *************** `)
   process.exit(executionResult === 'passed' ? 0 : 1)
-
-
-
 }
 
 async function setup(){
-
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
+    console.log('Starting backend mock server');
     await backendMockApp.startServer(debugMode);
-    await applicationServer.start()
+    await applicationServer.start();
   }
-
 }
 
 async function teardown(){
-  console.log('Tests execution completed')
+  console.log('Tests execution completed');
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
-    await applicationServer.stop()
+    await applicationServer.stop();
   }
   statsReporter.run();
   await generateCucumberReport();
-
 
   // process.exit(1);
 }
@@ -294,7 +291,7 @@ async function generateCucumberReport(){
       // durationInMS: true,
       metadata: {
         browser: {
-          name: "chrome",
+          name: process.env.BROWSER_GROUP ? process.env.BROWSER_GROUP : "chrome",
           version: "60",
         },
         device: "Local test machine",

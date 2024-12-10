@@ -14,7 +14,7 @@ describe('NeedPanelAnswerConverter', () => {
   it('should transform need panel answer', () => {
     const STATE: State = initialState.hearings;
     const result$ = needPanelAnswerConverter.transformAnswer(of(STATE));
-    const needPanel = 'Yes';
+    const needPanel = 'No';
     const expected = cold('(b|)', { b: needPanel });
     expect(result$).toBeObservable(expected);
   });

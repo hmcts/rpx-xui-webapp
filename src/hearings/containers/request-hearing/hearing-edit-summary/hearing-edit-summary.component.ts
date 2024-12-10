@@ -175,6 +175,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return Object.values(obj).every((val) => val === null || val === '');
   }
 
+  private removeNullUndefinedWithReduce(obj) {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+        if (value !== null && value !== undefined) {
+            acc[key] = typeof value === 'object' ? this.removeNullUndefinedWithReduce(value) : value;
+        }
+        return acc;
+    }, {});
+  }
+
   // The below function acts as a comparitor between 2 objects
   // It allows for slight variance where Object Keys differ
   // Allowing for :-
@@ -207,19 +216,20 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
       // If the value is an Array, check that its not empty
       if (Array.isArray(value)) { 
-        if ((value.length !== 0) && (object2[key].length !== 0)) {
-          // compares the 2 array values for equality
-          const filteredArr1 = value.filter(function(e){
-            return e === 0 || e;
-          });
-          const filteredArr2 = object2[key].filter(function(e){
-            return e === 0 || e;
-          });
-          return !_.isEqual(filteredArr1, filteredArr2);
+        if(value.length !== object2[key].length) {
+          return true;
         }
+
+        let reducedArr1 = value;
+        let reducedArr2 = object2[key];
+
+        reducedArr1.forEach((element) => this.removeNullUndefinedWithReduce(element));
+        reducedArr2.forEach((element) => this.removeNullUndefinedWithReduce(element));
+
+        return !_.isEqual(reducedArr1, reducedArr2);
       }
       if (value !== object2[key]) {
-        // If different type of null
+        // If not a comparitive type of null
         if ((value !== null || value !== undefined || value !== '') && (object2[key] !== null || object2[key] !== undefined || object2[key] !=='')) {
           return true;
         }

@@ -1,6 +1,6 @@
 
 const helper = require('codeceptjs').helper;
-
+const { actor } = require('codeceptjs');
 
 function getActor(){
     return actor().retry({ retries: 3, minTimeout: 30 });

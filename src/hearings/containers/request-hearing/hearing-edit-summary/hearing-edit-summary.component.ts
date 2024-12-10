@@ -7,14 +7,24 @@ import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../../app/app.constants';
-import { CaseCategoryModel } from '../../../../hearings/models/caseCategory.model';
-import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../../hearings/models/hearingsUpdateMode.enum';
-import { ServiceHearingValuesModel } from '../../../../hearings/models/serviceHearingValues.model';
+import { CaseCategoryModel } from '../../../models/caseCategory.model';
+import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../models/hearingsUpdateMode.enum';
+import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseFlagReferenceModel } from '../../../models/caseFlagReference.model';
 import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig.model';
 import { HearingConditions } from '../../../models/hearingConditions';
 import { hearingStatusMappings } from '../../../models/hearingStatusMappings';
-import { ACTION, CategoryType, HearingDateEnum, HearingTemplate, LaCaseStatus, Mode, PartyType } from '../../../models/hearings.enum';
+import {
+  ACTION,
+  CategoryType,
+  HearingDateEnum,
+  HearingScreensEnum,
+  HearingTemplate,
+  LaCaseStatus,
+  Mode,
+  PartyType
+} from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -22,13 +32,18 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
   templateUrl: './hearing-edit-summary.component.html'
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
+  private readonly notUpdatedMessage = 'The request has not been updated';
+
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
   public caseReference: string;
@@ -37,7 +52,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public responseReceivedDate: string;
   public caseStatus: string;
   public isHearingListed: boolean;
-  public showPanelDetailsSection: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
   public hearingValuesSubscription: Subscription;
   public featureToggleServiceSubscription: Subscription;
@@ -54,11 +68,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public panelRolesRefData: LovRefDataModel[];
   public isHearingAmendmentsEnabled: boolean;
   public hearingTemplate = HearingTemplate;
-  public isPagelessAttributeChanged: boolean = false;
+  public isPagelessAttributeChanged: boolean;
+  public isWithinPageAttributeChanged: boolean;
+  public pageVisitChangeExists: boolean;
   public afterPageVisit: AfterPageVisitProperties;
-  public isWithinPageAttributeChanged: boolean = false;
-  public pageVisitChangeExists: boolean = false;
-  private readonly notUpdatedMessage = 'The request has not been updated';
+  public sectionsToDisplay: string[];
+  public hearingScreenEnum = HearingScreensEnum;
 
   constructor(private readonly router: Router,
     private readonly locationsDataService: LocationsDataService,
@@ -87,12 +102,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
-    this.showPanelDetailsSection = this.serviceHearingValuesModel?.screenFlow?.findIndex((screen) => screen.screenName === 'hearing-panel') > -1;
-
+    this.hearingsService.hearingRequestForSubmitValid = false;
+    this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
     this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
       map((locations) => {
-        return !locations.some((location) => location.region_id === this.REGION_ID);
+        return locations.some((location) => location.region_id === this.REGION_ID);
       })
     );
 
@@ -116,18 +131,24 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public executeAction(action: ACTION): void {
-    if (action === ACTION.VIEW_EDIT_REASON) {
-      const objA = JSON.parse(JSON.stringify(this.hearingRequestMainModel));
-      const objB = JSON.parse(JSON.stringify(this.hearingRequestToCompareMainModel));
-      if (_.isEqual(objA, objB)) {
-        this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
-        window.scrollTo({ top: 0, left: 0 });
-        return;
-      } else if (this.hearingsService.displayValidationError) {
-        return;
+    if (action === ACTION.BACK) {
+      this.router.navigate(['/', 'hearings', 'request', 'hearing-view-summary']);
+    } else {
+      if (action === ACTION.VIEW_EDIT_REASON) {
+        this.hearingsService.displayValidationError = false;
+        this.validationErrors = [];
+        if (!this.hasHearingRequestObjectChanged()) {
+          this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+          window.scrollTo({ top: 0, left: 0 });
+          return;
+        }
+        if (this.pageVisitChangesNotConfirmed()) {
+          this.hearingsService.displayValidationError = true;
+          return;
+        }
+        super.navigateAction(action);
       }
     }
-    super.navigateAction(action);
   }
 
   public onChange(event: EditHearingChangeConfig): void {
@@ -150,12 +171,96 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
+  private hasHearingRequestObjectChanged(): boolean {
+    let partyDetailsModels: PartyDetailsModel[] = [];
+    let partyDetailsCompareModels: PartyDetailsModel[] = [];
+
+    if (!!this.hearingRequestMainModel?.partyDetails) {
+      partyDetailsModels = [...this.hearingRequestMainModel.partyDetails];
+      partyDetailsModels.sort(this.compareParties);
+    }
+
+    if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
+      partyDetailsCompareModels = [...this.hearingRequestToCompareMainModel.partyDetails];
+      partyDetailsCompareModels.sort(this.compareParties);
+    }
+
+    const hearingRequestMainModel = {
+      requestDetails: { ...this.hearingRequestMainModel.requestDetails },
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        hearingChannels: [...this.hearingsService.getHearingChannels(this.hearingRequestMainModel)]
+      },
+      caseDetails: { ...this.hearingRequestMainModel.caseDetails },
+      hearingResponse: { ...this.hearingRequestMainModel.hearingResponse },
+      partyDetails: [...partyDetailsModels]
+    };
+
+    const hearingRequestToCompareMainModel = {
+      requestDetails: { ...this.hearingRequestToCompareMainModel.requestDetails },
+      hearingDetails: { ...this.hearingRequestToCompareMainModel.hearingDetails },
+      caseDetails: { ...this.hearingRequestToCompareMainModel.caseDetails },
+      hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
+      partyDetails: [...partyDetailsCompareModels]
+    };
+
+    return !_.isEqual(
+      JSON.parse(JSON.stringify(hearingRequestMainModel, this.replacer)),
+      JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.replacer))
+    );
+  }
+
+  hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
+    let SHVUnavailabilityDates: UnavailabilityRangeModel[];
+    let CompareUnavailabilityDates: UnavailabilityRangeModel[];
+
+    if (!!this.serviceHearingValuesModel.parties) {
+      SHVUnavailabilityDates = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges)
+        .filter((SHVUnavailabilityDates) => SHVUnavailabilityDates!== null && SHVUnavailabilityDates !== undefined)
+        .sort((currentDate, previousDate) => {
+          return new Date(currentDate.unavailableFromDate).getTime() - new Date(previousDate.unavailableFromDate).getTime()
+         || new Date(currentDate.unavailableToDate).getDate() - new Date(previousDate.unavailableToDate).getDate();
+        });
+    }
+
+    if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
+      CompareUnavailabilityDates = this.hearingRequestToCompareMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges)
+        .filter((CompareUnavailabilityDates) => CompareUnavailabilityDates!== null && CompareUnavailabilityDates!== undefined)
+        .sort((currentDate, previousDate) => {
+          return new Date(currentDate.unavailableFromDate).getTime() - new Date(previousDate.unavailableFromDate).getTime()
+           || new Date(currentDate.unavailableToDate).getDate() - new Date(previousDate.unavailableToDate).getDate();
+        });
+    }
+    return !_.isEqual(
+      JSON.parse(JSON.stringify(CompareUnavailabilityDates, this.replacer)),
+      JSON.parse(JSON.stringify(SHVUnavailabilityDates, this.replacer))
+    );
+  }
+
+  private compareParties(firstParty: PartyDetailsModel, secondParty: PartyDetailsModel) {
+    return firstParty.partyID.localeCompare(secondParty.partyID);
+  }
+
+  private replacer (key: any, value: any) {
+    // Party name is not present in HMC so ignoring it.
+    // Is paper hearing flag is transient to indicate whether it is paper hearing
+    // As well as, ignoring keys which are initialised with null value
+    if (key === 'partyName' || key === 'isPaperHearing' || value === null) {
+      return undefined;
+    }
+    return value;
+  }
+
   private setPropertiesUpdatedAutomatically(): void {
+    // Set properties updated on page visit
+    this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
+
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {
         ...this.hearingRequestMainModel?.caseDetails,
         caseManagementLocationCode: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseManagementLocationCode, this.serviceHearingValuesModel.caseManagementLocationCode, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.CASE_MANAGEMENT_LOCATIONCODE),
+        caseInterpreterRequiredFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caseInterpreterRequiredFlag, this.serviceHearingValuesModel.caseInterpreterRequiredFlag, AutoUpdateMode.PAGELESS, PagelessPropertiesEnum.CASE_INTERPRETER_REQUIRED_FLAG),
         hmctsInternalCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.hmctsInternalCaseName, this.serviceHearingValuesModel.hmctsInternalCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.HMCTS_INTERNAL_CASENAME),
         publicCaseName: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.publicCaseName, this.serviceHearingValuesModel.publicCaseName, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PUBLIC_CASE_NAME),
         caserestrictedFlag: this.compareAndUpdateServiceHearingValues(this.hearingRequestMainModel?.caseDetails.caserestrictedFlag, this.serviceHearingValuesModel.caserestrictedFlag, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.CASE_RESTRICTED_FLAG),
@@ -170,9 +275,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       ]
     };
 
-    // Set properties updated on page visit
-    this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
-
     // Set banner
     this.setBanner();
 
@@ -181,33 +283,24 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private setPropertiesUpdatedOnPageVisit(serviceHearingValues: ServiceHearingValuesModel): void {
     if (serviceHearingValues) {
-      const afterPageVisitProperties = this.getAfterPageVisitProperties();
-      this.pageVisitChangeExists =
-        (afterPageVisitProperties.reasonableAdjustmentChangesRequired && !afterPageVisitProperties.reasonableAdjustmentChangesConfirmed) ||
-        (afterPageVisitProperties.nonReasonableAdjustmentChangesRequired && !afterPageVisitProperties.nonReasonableAdjustmentChangesConfirmed) ||
-        (afterPageVisitProperties.partyDetailsChangesRequired && !afterPageVisitProperties.partyDetailsChangesConfirmed) ||
-        (afterPageVisitProperties.hearingWindowChangesRequired && !afterPageVisitProperties.hearingWindowChangesConfirmed);
-      if (this.pageVisitChangeExists) {
+      if (!_.isEqual(this.hearingsService.propertiesUpdatedOnPageVisit?.hearingId, this.hearingRequestMainModel.requestDetails.hearingRequestID)) {
         this.hearingsService.propertiesUpdatedOnPageVisit = {
+          hearingId: this.hearingRequestMainModel.requestDetails.hearingRequestID,
           caseFlags: serviceHearingValues.caseFlags,
           parties: serviceHearingValues.parties,
           hearingWindow: serviceHearingValues.hearingWindow,
-          afterPageVisit: afterPageVisitProperties
+          afterPageVisit: {
+            reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
+            nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
+            partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
+            hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
+            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
+            partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
+            hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
+          }
         };
       }
     }
-  }
-
-  private getAfterPageVisitProperties(): AfterPageVisitProperties {
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit) {
-      return this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit;
-    }
-    return {
-      reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
-      nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
-      partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
-      hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists()
-    };
   }
 
   private compareAndUpdateCaseCategories(hmcCaseCategories: CaseCategoryModel[], shvCaseCategories: CaseCategoryModel[]): CaseCategoryModel[] {
@@ -282,77 +375,146 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.hearingRequestMainModel.partyDetails.forEach((party) => {
         const serviceParty = parties.find((serviceParty) => serviceParty.partyID === party.partyID);
         if (serviceParty) {
-          const individualDetails = {
-            ...party.individualDetails,
-            relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
-            custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
-            vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
-            vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
-            hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
-            hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
-          };
-          const organisationDetails = {
-            ...party.organisationDetails,
-            name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
-            organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
-            cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
-          };
-          newParty.push({
-            ...party,
-            partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
-            ...party.individualDetails && ({ individualDetails }),
-            ...party.organisationDetails && ({ organisationDetails }),
-            unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES),
-            unavailabilityRanges: this.compareAndUpdateServiceHearingValues(party?.unavailabilityRanges, serviceParty?.unavailabilityRanges, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
-          });
-        } else {
-          newParty.push(party);
+          if (serviceParty.partyType === PartyType.IND) {
+            newParty.push({
+              ...party,
+              partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
+              individualDetails: {
+                ...party.individualDetails,
+                relatedParties: this.compareAndUpdateServiceHearingValues(party.individualDetails?.relatedParties, serviceParty.individualDetails?.relatedParties, AutoUpdateMode.PARTY),
+                custodyStatus: this.compareAndUpdateServiceHearingValues(party.individualDetails?.custodyStatus, serviceParty.individualDetails?.custodyStatus, AutoUpdateMode.PARTY),
+                vulnerableFlag: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerableFlag, serviceParty.individualDetails?.vulnerableFlag, AutoUpdateMode.PARTY),
+                vulnerabilityDetails: this.compareAndUpdateServiceHearingValues(party.individualDetails?.vulnerabilityDetails, serviceParty.individualDetails?.vulnerabilityDetails, AutoUpdateMode.PARTY),
+                hearingChannelEmail: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelEmail, serviceParty.individualDetails?.hearingChannelEmail, AutoUpdateMode.PARTY),
+                hearingChannelPhone: this.compareAndUpdateServiceHearingValues(party.individualDetails?.hearingChannelPhone, serviceParty.individualDetails?.hearingChannelPhone, AutoUpdateMode.PARTY)
+              },
+              unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
+            });
+          } else {
+            newParty.push({
+              ...party,
+              partyRole: this.compareAndUpdateServiceHearingValues(party.partyRole, serviceParty.partyRole, AutoUpdateMode.PARTY),
+              organisationDetails: {
+                ...party.organisationDetails,
+                name: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.name, serviceParty.organisationDetails?.name),
+                organisationType: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.organisationType, serviceParty.organisationDetails?.organisationType, AutoUpdateMode.PARTY),
+                cftOrganisationID: this.compareAndUpdateServiceHearingValues(party.organisationDetails?.cftOrganisationID, serviceParty.organisationDetails?.cftOrganisationID, AutoUpdateMode.PARTY)
+              },
+              unavailabilityDOW: this.compareAndUpdateServiceHearingValues(party?.unavailabilityDOW, serviceParty?.unavailabilityDOW, AutoUpdateMode.WITHIN_PAGE, WithinPagePropertiesEnum.PARTIES)
+            });
+          }
         }
       });
     }
+
+    parties.filter((svcParty) => !newParty.find((y) => y.partyID === svcParty.partyID))
+      .forEach((svcParty) => {
+        newParty.push(svcParty);
+      });
+
     return newParty;
   }
 
   private setBanner(): void {
     // check pageless automatic update
     this.isPagelessAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.pageless).some((prop) => prop);
-
     // check automatic update within page
     this.isWithinPageAttributeChanged = Object.entries(this.hearingsService.propertiesUpdatedAutomatically.withinPage).some((prop) => prop);
-
-    // Display Validation
-    this.hearingsService.displayValidationError = this.pageVisitChangeExists;
+    // page visit change exists
+    this.pageVisitChangeExists = this.pageVisitReasonableAdjustmentChangeExists() ||
+      this.pageVisitNonReasonableAdjustmentChangeExists() ||
+      this.pageVisitPartiesChangeExists() ||
+      this.pageVisitHearingWindowChangeExists() ||
+      this.pageVisitHearingFacilitiesChanged();
+    // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
-  private pageVisitReasonableAdjustmentChangeExists(): boolean {
-    const caseFlagsSHV = this.serviceHearingValuesModel.caseFlags.flags;
-    const individualParties = this.hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
-    // HMC stores only reasonable adjustment flag ids and language interpreter flag ids under parties
-    // Get only the reasonable adjustment and language interpreter flag ids from SHV and sort them for easy comparison
-    const flagIdsSHV = caseFlagsSHV.map((flag) => flag.flagId)?.filter((flagId) => flagId.startsWith('RA') || flagId === this.LANGUAGE_INTERPRETER_FLAG_ID)?.sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    // Get individual parties reasonable adjustment flags and sort the result
-    const partyFlagIds = individualParties.map((party) => party.individualDetails?.reasonableAdjustments)?.join(',').split(',').sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    // Convert to string for easy comparison as the partyFlagIds can be an array of empty strings;
-    const partyFlagIdsString = partyFlagIds?.length > 0
-      ? partyFlagIds?.filter((flagId) => flagId !== '').join()
-      : '';
+  private pageVisitChangesNotConfirmed(): boolean {
+    return this.pageVisitReasonableAdjustmentChangeExists() ||
+      this.pageVisitNonReasonableAdjustmentChangeExists() ||
+      this.pageVisitPartiesChangeExists() ||
+      this.pageVisitHearingWindowChangeExists();
+  }
 
-    // Return true if there are changes in reasonable adjustments and/or language interpreter flags
-    if (flagIdsSHV.join() !== partyFlagIdsString) {
+  pageVisitReasonableAdjustmentChangeExists(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_REQUIREMENTS)) {
+      // Do not consider reasonable adjustments as hearing requirements is not part of the screen flow
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
+    const HRMIndividualParties = this.extractAndSortParties(this.hearingRequestMainModel.partyDetails);
+    const SHVIndividualParties = this.extractAndSortParties(this.serviceHearingValuesModel.parties);
+
+    const HRMIndiviualAdjustments = this.extractReasonableAdjustments(HRMIndividualParties);
+    const SHVIndiviualAdjustments = this.extractReasonableAdjustments(SHVIndividualParties);
+
+    if (!_.isEqual(HRMIndiviualAdjustments, SHVIndiviualAdjustments)){
       return true;
     }
-    // There are no changes for reasonable adjustments and language interpreter flags when compared SHV with HMC
+
+    const interpreterLanguagesSHV = this.extractInterpreterLanguages(SHVIndividualParties);
+    const interpreterLanguagesHMC = this.extractInterpreterLanguages(HRMIndividualParties);
+
+    if (!_.isEqual(interpreterLanguagesSHV, interpreterLanguagesHMC)){
+      return true;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed;
+    }
+    // There are no changes for reasonable adjustments and language interpreter flags when SHV compared with HMC
     return false;
   }
 
+  private extractReasonableAdjustments(partyDetails: PartyDetailsModel[]) {
+    // Return a string of party id and reasonable adjustments.
+    return partyDetails.map((parties) => parties.partyID + ',' + parties.individualDetails?.reasonableAdjustments?.
+      filter((adjustments) => adjustments.startsWith('RA'))).
+      filter((adjustments) => !adjustments.includes(',undefined', null)).
+      filter((adjustments) => !adjustments.endsWith(','));
+  }
+
+  private extractInterpreterLanguages(partyDetails: PartyDetailsModel[]) {
+    // Return true if there are changes to the interpreter languages
+    return partyDetails.map(
+      (party) => party.individualDetails?.interpreterLanguage
+    )?.filter(
+      (interpreterLanguage) => interpreterLanguage !== null && interpreterLanguage !== undefined
+    ).sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+  }
+
+  private extractAndSortParties(partyDetails: PartyDetailsModel[]){
+    // Get the individual parties and sort reasonable adjustments into order.
+    let individualParties = cloneDeep(partyDetails);
+    individualParties = individualParties.filter(
+      (party) => party.partyType === PartyType.IND).sort((a, b) => {
+      return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
+    });
+    individualParties.forEach(
+      (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
+        return a.localeCompare(b);
+      })
+    );
+    return individualParties;
+  }
+
   private pageVisitNonReasonableAdjustmentChangeExists(): boolean {
-    const caseFlagsModifiedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeModified);
-    const caseFlagsCreatedDate = this.serviceHearingValuesModel.caseFlags.flags.map((flags) => flags.dateTimeCreated);
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_FACILITIES)) {
+      // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
+    const nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData, this.serviceHearingValuesModel.caseFlags?.flags, this.serviceHearingValuesModel.parties);
+    const caseFlagsModifiedDate = nonReasonableAdjustmentFlags?.map((flags) => flags.dateTimeModified);
+    const caseFlagsCreatedDate = nonReasonableAdjustmentFlags?.map((flags) => flags.dateTimeCreated);
     const caseFlagsWithModifiedDate = caseFlagsModifiedDate.filter((date) => date !== null).filter((date) => date !== undefined);
     const caseFlagsWithCreatedDate = caseFlagsCreatedDate.filter((date) => date !== null).filter((date) => date !== undefined);
 
@@ -364,7 +526,28 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return false;
   }
 
+  private pageVisitHearingFacilitiesChanged(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_FACILITIES)) {
+      // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
+      return false;
+    }
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+
+    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+  }
+
   private pageVisitPartiesChangeExists(): boolean {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
     const partiesSHV = this.serviceHearingValuesModel.parties;
     const partiesHMC = this.hearingRequestMainModel.partyDetails;
     // Return true if the number of parties in SHV and HMC are different
@@ -376,13 +559,18 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // and return true if there are any changes in the party name of party type
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if ((party.partyName !== partySHV.partyName) ||
-        (party.individualDetails?.title !== partySHV.individualDetails?.title) ||
-        (party.individualDetails?.firstName !== partySHV.individualDetails?.firstName) ||
-        (party.individualDetails?.lastName !== partySHV.individualDetails?.lastName) ||
-        (party.partyType !== partySHV.partyType)) {
+      if (!party || party.partyType !== partySHV.partyType ||
+        HearingsUtils.hasPartyNameChanged(party, partySHV)) {
         return true;
       }
+    }
+
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
+    }
+
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesConfirmed;
     }
 
     // There are no changes for parties when compared SHV with HMC
@@ -390,18 +578,20 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {
-    const hearingWindowSHV = this.serviceHearingValuesModel.hearingWindow;
-    const hearingWindowHMC = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-    // Return true if the first date time must be value in SHV and HMC are different
-    if (hearingWindowSHV?.firstDateTimeMustBe) {
-      if (!hearingWindowHMC?.firstDateTimeMustBe) {
-        return true;
-      }
-      if (!_.isEqual(new Date(hearingWindowSHV.firstDateTimeMustBe), new Date(hearingWindowHMC.firstDateTimeMustBe))) {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_TIMING)) {
+      // Do not consider hearing window changes as hearing timing is not part of the screen flow
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
+
+    if (this.hearingRequestMainModel.partyDetails) {
+      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
         return true;
       }
     }
-    // There is no change in first date time must be when compared SHV with HMC
     return false;
   }
 }

@@ -96,7 +96,9 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
         }
       });
     }
-    return res.status(response.status).send(finalRoles);
+    // filter out any users with role professional
+    const filteredRoles = finalRoles.filter((role) => role.roleCategory !== 'PROFESSIONAL');
+    return res.status(response.status).send(filteredRoles);
   } catch (error) {
     next(error);
   }
@@ -134,10 +136,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
 
 export async function getMyAccessNewCount(req, resp, next) {
   try {
-    if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(401).send();
-    }
-
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
     const cases = await getMyAccessMappedCaseList(roleAssignments, req);
     const newAssignments = cases.filter((item) => item.isNew);
@@ -150,9 +149,7 @@ export async function getMyAccessNewCount(req, resp, next) {
 
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
-    if (!req.session || !req.session.roleAssignmentResponse) {
-      return resp.status(500).send();
-    }
+    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
     const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
     const challengedAccessRequest = currentUserAssignments.find((roleAssignment) => roleAssignment.attributes
       && roleAssignment.attributes.caseId === req.params.caseId

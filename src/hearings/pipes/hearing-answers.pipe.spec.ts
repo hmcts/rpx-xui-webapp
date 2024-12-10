@@ -127,14 +127,21 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform case flag', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_FLAGS, of(STATE), 0);
-    const caseFlags = '<strong class=\'bold\'>Jane and Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li><li>Language Interpreter</li></ul><br><strong class=\'bold\'>DWP</strong>\n<ul><li>Physical access and facilities</li></ul><br>';
+    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>';
+    const expected = cold('(b|)', { b: caseFlags });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform reasonable adjustment flags', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.REASONABLE_ADJUSTMENT_FLAGS, of(STATE), 0);
+    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>';
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform how party attend', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.HOW_ATTENDANT, of(STATE), 0);
-    const partyFlags = '<ul><li>Jane and Smith - In person</li></ul>';
+    const partyFlags = '<ul><li>Jane Smith - In person</li></ul>';
     const expected = cold('(b|)', { b: partyFlags });
     expect(result$).toBeObservable(expected);
   });
@@ -208,8 +215,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform type from request', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.TYPE_FROM_REQUEST, of(STATE), 0);
-    const typeName = `PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) 
-<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>`;
+    const typeName = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', { b: typeName });
     expect(result$).toBeObservable(expected);
   });

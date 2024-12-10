@@ -25,12 +25,25 @@ describe('LanguageRequirementsSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xit('should verify onChange', () => {
+  it('should set showAmmended as true', () => {
+    component.hearingInWelshFlagToCompare = true;
+    component.hearingInWelshFlag = false;
+    component.ngOnInit();
+    expect(component.showAmmended).toEqual(true);
+  });
+
+  it('should set showAmmended as false', () => {
+    component.hearingInWelshFlagToCompare = true;
+    component.hearingInWelshFlag = true;
+    component.ngOnInit();
+    expect(component.showAmmended).toEqual(false);
+  });
+
+  it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('needWelsh');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
       fragmentId: 'needWelsh', changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes'
     });
-    expect(component.showAmmended).toEqual(true);
   });
 });

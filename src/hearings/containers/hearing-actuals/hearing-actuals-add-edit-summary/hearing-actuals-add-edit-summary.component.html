@@ -70,7 +70,7 @@
           <summary class="govuk-details__summary"
             (click)="$event.preventDefault(); hearingDatesAccordion[actualHearingDay.hearingDate] = !hearingDatesAccordion[actualHearingDay.hearingDate]">
             <div class="govuk-details__summary-text govuk-!-padding-bottom-1">
-              {{actualHearingDay.hearingDate | date: "dd MMMM yyyy"}}
+              {{actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: "dd MMMM yyyy"}}
             </div>
             <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
               <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">
@@ -148,7 +148,7 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)"
+                          <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)" *ngIf="!haveParticipantsBeenAdded((actualHearingDay))"
                             id="hearing-parties-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</a>&nbsp;
                           <a *ngIf="!isPaperHearing" href="javascript:void(0)"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"

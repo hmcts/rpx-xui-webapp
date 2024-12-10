@@ -35,30 +35,20 @@ let features = ''
 if (testType === 'e2e' || testType === 'smoke' || testType === 'crossbrowser'){
   features = `../e2e/features/app/**/*.feature`
 } else if (testType === 'ngIntegration'){
-  
   features = pipelineBranch === 'master' && !local ? `../ngIntegration/tests/features/**/notests.feature` : `../ngIntegration/tests/features/**/*.feature`
-
-} else{
+} else {
   throw new Error(`Unrecognized test type ${testType}`);
 }
-console.log(testType)
 
-let functional_output_dir = '';
-let cucumber_functional_output_dir = '';
-if (process.env.BROWSER_GROUP) {
-  functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}-${process.env.BROWSER_GROUP}`)
-  cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}-${process.env.BROWSER_GROUP}`)
-} else {
-  functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
-  cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
-}
+const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`)
+const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
 
 let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctional'
 
 if (pipelineBranch === 'master' && testType === 'ngIntegration'){
   bddTags = 'AAT_only'
   process.env.LAUNCH_DARKLY_CLIENT_ID = '645baeea2787d812993d9d70'
-} 
+}
 
 const tags = process.env.DEBUG ? 'functional_debug' : bddTags
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`
@@ -121,7 +111,7 @@ let config = {
       // disableScreenshots: false,
       fullPageScreenshots: true,
       uniqueScreenshotNames: true,
-      video: true,
+      video: false,
       screenshot: true,
       windowSize: "1600x900"
     }
@@ -240,54 +230,6 @@ let config = {
 
   }
 }
-
-if (process.env.BROWSER_GROUP) {
-  config.sauceSeleniumAddress = 'ondemand.eu-central-1.saucelabs.com:443/wd/hub';
-  config.host = 'ondemand.eu-central-1.saucelabs.com';
-  config.sauceRegion = 'eu';
-  config.port = 80;
-  config.processes = 23;
-  config.sauceConnect = true;
-  config.sauceUser = process.env.SAUCE_USERNAME;
-  config.sauceKey = process.env.SAUCE_ACCESS_KEY;
-  config.SAUCE_REST_ENDPOINT = 'https://eu-central-1.saucelabs.com/rest/v1/';
-  config.multiCapabilities = [
-    {
-      browserName: 'chrome',
-      version: 'latest',
-      platform: 'macOS 10.15',
-      name: 'MC-chrome-mac-test',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      capturePerformance: true,
-      maxInstances: 1,
-    },
-    {
-      browserName: 'firefox',
-      version: 'latest',
-      platform: 'Windows 10',
-      name: 'MC-firefox-windows-test',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      capturePerformance: true,
-      maxInstances: 1
-    },
-    {
-      browserName: 'MicrosoftEdge',
-      version: 'latest',
-      platform: 'Windows 10',
-      name: 'MC-microsoft-edge-windows-test',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      capturePerformance: true,
-      maxInstances: 1
-    }
-  ];
-}
-
 console.log(config)
 
 exports.config = config;

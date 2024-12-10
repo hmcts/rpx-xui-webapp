@@ -9,13 +9,15 @@ import { Observable, of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
-import { ACTION, HearingResult } from '../../../models/hearings.enum';
+import { ACTION, HearingResult, PartyType } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
 import { HearingsService } from '../../../services/hearings.service';
 import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { HearingActualsAddEditSummaryComponent } from './hearing-actuals-add-edit-summary.component';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from 'src/app/services';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 
 @Pipe({ name: 'transformAnswer' })
 export class MockHearingAnswersPipe implements PipeTransform {
@@ -287,7 +289,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     const mainModel = _.cloneDeep(hearingActualsMainModel);
     const actualHearingDays = [mainModel.hearingActuals.actualHearingDays[0]];
     const s = component.calculateEarliestHearingDate(actualHearingDays);
-    expect(s).toBe('12 March 2021');
+    expect(s).toBe('12 Mar 2021');
   });
 
   it('should calculate return first and last hearing date as string', () => {
@@ -299,7 +301,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     hearingDays.push(obj1);
     hearingDays.push(obj2);
     const s = component.calculateEarliestHearingDate(hearingDays);
-    expect(s).toBe('12 March 2021 - 15 March 2021');
+    expect(s).toBe('12 Mar 2021 - 14 Mar 2021');
   });
 
   it('should return hearing date(s) text as string', () => {
@@ -394,6 +396,45 @@ describe('HearingActualsAddEditSummaryComponent', () => {
       const result = component.hearingIsInFuture(currentDate);
       expect(result).toBe(false);
     });
+  });
+
+  describe('disable confirm button where participant changes have been made', () => {
+    it('There is no difference in number of participants, return true', () => {
+      const participantChange = component.haveParticipantsBeenAdded(component.actualHearingDays[0]);
+      expect(participantChange).toBe(true);
+    });
+  });
+  it('There are no changes in the number of participants, return false', () => {
+    const newIndividual1 : IndividualDetailsModel ={
+      title: 'Mr',
+      firstName: 'John',
+      lastName: 'Doe',
+      preferredHearingChannel: 'inPerson'
+    };
+    const newIndividual2 : IndividualDetailsModel ={
+      title: 'Mr',
+      firstName: 'John',
+      lastName: 'Doe',
+      preferredHearingChannel: 'inPerson'
+    };
+    const newParty1 : PartyDetailsModel ={
+      partyID: 'P2',
+      partyType: PartyType.IND,
+      partyRole: 'appellant',
+      partyName: 'John Doe',
+      individualDetails: newIndividual1
+    };
+    const newParty2 : PartyDetailsModel ={
+      partyID: 'P2',
+      partyType: PartyType.IND,
+      partyRole: 'appellant',
+      partyName: 'John Doe',
+      individualDetails: newIndividual2
+    };
+    component.individualParties.push(newParty1);
+    component.individualParties.push(newParty2);
+    const participantChange = component.haveParticipantsBeenAdded(component.actualHearingDays[0]);
+    expect(participantChange).toBe(false);
   });
 
   afterEach(() => {

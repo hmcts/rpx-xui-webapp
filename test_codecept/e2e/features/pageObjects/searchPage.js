@@ -35,7 +35,7 @@ class SearchPage {
     this.searchResultComponent = $('.search-block');
 
     this.firstResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a");
-    this.secondResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a"); 
+    this.secondResultCaseLink = $("ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a");
   }
 
 
@@ -56,7 +56,7 @@ class SearchPage {
     const option = options.find(opt => opt.includes(jurisdiction))
     await this.jurisdiction.select(option);
 
-    // const options = jurisdiction.split('|'); 
+    // const options = jurisdiction.split('|');
     // // let locatorString = "//option[";
     // let i = 0;
     // for (const option of options) {
@@ -73,7 +73,7 @@ class SearchPage {
 
     // var optionElement = this.jurisdiction.element(elementLocator);
     // await BrowserWaits.waitForElement(optionElement);
- 
+
     // await optionElement.click();
 
     CucumberReportLogger.LogTestDataInput('Search  page Jurisdiction : ');
@@ -103,8 +103,8 @@ class SearchPage {
   async clickApplyButton() {
 
     // await browser.executeScript('arguments[0].scrollIntoView()',
-      // this.applyButton); 
-    // expect(await this.applyButton.isEnabled(),"Apply buttin is not enabled").to.be.true 
+      // this.applyButton);
+    // expect(await this.applyButton.isEnabled(),"Apply buttin is not enabled").to.be.true
     await this.applyButton.click();
   }
 
@@ -117,11 +117,11 @@ class SearchPage {
         // this.resetButton);
       await this.resetButton.click();
     });
-    
+
   }
 
   async openFirstCaseInResults(){
-    
+
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
@@ -132,13 +132,13 @@ class SearchPage {
       //   this.firstResultCaseLink);
       await this.firstResultCaseLink.click();
     });
-   
+
 
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }
 
   async openSecondCaseInResults(){
-    
+
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.secondResultCaseLink);
     var thisPageUrl = await browser.getCurrentUrl();
@@ -147,7 +147,7 @@ class SearchPage {
       await BrowserWaits.waitForSpinnerToDissappear();
       await this.secondResultCaseLink.click();
     });
-   
+
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }
 

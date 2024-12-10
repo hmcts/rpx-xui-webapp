@@ -11,6 +11,8 @@
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret';
 export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string';
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc';
+export const APP_INSIGHTS_CONNECTION_STRING = 'secrets.rpx.appinsights-connection-string-mc';
+
 export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id';
 
 export const COOKIES_TOKEN = 'cookies.token';
@@ -30,6 +32,7 @@ export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmen
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
 export const SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH = 'services.role_assignment.roleMappingApi';
+export const SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH = 'services.lau.specificChallengedAccessApi';
 
 export const SERVICES_CASE_CASEWORKER_REF_PATH = 'services.case.caseworkerApi';
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialworkerApi';
@@ -84,6 +87,8 @@ export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
 
+export const CASEWORKER_PAGE_SIZE = 'caseworkerPageSize';
+
 export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
@@ -122,6 +127,8 @@ export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 
 export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
+
+export const FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED = 'lauSpecificChallengedEnabled';
 
 export const HELMET = 'helmet';
 

@@ -79,8 +79,8 @@ export class AppEffects {
 
   public loadUserDetails$ = createEffect(() => this.actions$.pipe(
     ofType(fromActions.LOAD_USER_DETAILS),
-    switchMap(() => {
-      return this.userService.getUserDetails().pipe(
+    switchMap((action? : {payload: boolean, type: string}) => {
+      return this.userService.getUserDetails(action.payload).pipe(
         tap((userDetails) => this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails.userInfo))),
         tap((userDetails) => this.roleService.roles = userDetails?.userInfo?.roles),
         map((userDetails) => new fromActions.LoadUserDetailsSuccess(userDetails)),

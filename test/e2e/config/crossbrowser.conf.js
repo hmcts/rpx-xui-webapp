@@ -17,7 +17,7 @@ const config = {
   sauceRegion: 'eu',
   port: 80,
   sauceConnect: true,
-  specs: ['../features/app/loginLogout.feature'],
+  specs: ['../features/**/*.feature', '../features/app/loginLogout.feature'],
 
   baseUrl: 'https://manage-case.aat.platform.hmcts.net',
 
@@ -36,27 +36,16 @@ const config = {
 
   useAllAngular2AppRoots: true,
   multiCapabilities: [
-    // {
-    //   browserName: 'chrome',
-    //   version: 'latest',
-    //   platform: 'Windows 10',
-    //   name: 'chrome-win-tests',
-    //   tunnelIdentifier: 'reformtunnel',
-    //   extendedDebugging: true,
-    //   sharedTestFiles: false,
-    //   maxInstances: 1
-    // },
-
-    // {
-    //   browserName: 'firefox',
-    //   version: 'latest',
-    //   platform: 'Windows 10',
-    //   name: 'firefox-win-tests',
-    //   tunnelIdentifier: 'reformtunnel',
-    //   extendedDebugging: true,
-    //   sharedTestFiles: false,
-    //   maxInstances: 1
-    // },
+    {
+      browserName: 'chrome',
+      version: 'latest',
+      platform: 'Windows 10',
+      name: 'chrome-win-tests',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      maxInstances: 1
+    },
 
     // {
     //   browserName: 'firefox',
@@ -89,17 +78,6 @@ const config = {
       extendedDebugging: true,
       sharedTestFiles: false,
       maxInstances: 1
-    },
-
-    {
-      browserName: 'firefox',
-      version: 'latest',
-      platform: 'macOS 10.15',
-      name: 'ff-mac-tests',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      maxInstances: 1
     }
   ],
 
@@ -108,9 +86,9 @@ const config = {
   cucumberOpts: {
     format: ['json:cb_reports/saucelab_results.json'],
     require: [
-       '../features/step_definitions/loginLogout.steps.js'
-      // '../features/step_definitions/**/*.steps.js',
-      // '../support/timeout.js'
+      '../features/step_definitions/loginLogout.steps.js',
+      '../features/step_definitions/**/*.steps.js',
+      '../support/timeout.js'
     ],
     tags: ['@crossbrowser']
   },

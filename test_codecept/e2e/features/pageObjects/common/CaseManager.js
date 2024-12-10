@@ -139,7 +139,7 @@ class CaseManager {
                     throw Error(`Contnue to next page not success, retrying`)
                 }
             });
-            
+
             await BrowserWaits.waitForSeconds(2)
             isCheckYourAnswersPage = await checkYouranswers.isDisplayed();
             pageCounter++;
@@ -150,24 +150,24 @@ class CaseManager {
 
     async createCaseWithInvalidDate(caseData, isAccessibilityTest, tcTypeStatus) {
         this.caseData = caseData;
-    
+
         let page = tcTypeStatus ? 0 : "null";
-    
+
         for(let i=0; i<2; i++) {
             page = tcTypeStatus ? i : "null";
-    
+
             await BrowserWaits.retryWithActionCallback(async () => {
                 let isNextPageDisplayed = await this._formFillPage(page);
                 if (!isNextPageDisplayed) {
                     return;
                 }
             });
-    
+
             await BrowserWaits.waitForSeconds(2);
         }
-    
+
         this.caseEditPage.caseEventApiResponse = null;
-    }     
+    }
 
     async submitCase(isAccessibilityTest){
         var checkYouranswers = $(".check-your-answers");
@@ -193,18 +193,17 @@ class CaseManager {
         await BrowserWaits.waitForElement(this.exuiCaseHomeComp);
         await BrowserWaits.waitForElement(this.caseNextStepSelect);
 
-
         var nextStepSelect = element(by.xpath("//*[@id='next-step']"));
         var nextStepSelectoption = null;
         if (stepName) {
-            await nextStepSelect.select(stepName)
+          cucumberReporter.AddMessage('About to select ' + stepName, LOG_LEVELS.Debug);
+          await nextStepSelect.select(stepName)
         } else {
             nextStepSelectoption = element(by.xpath("//option[text() = \'' + stepName + '\']"));
             const someStepEventName = await nextStepSelectoption.getText();
+            cucumberReporter.AddMessage('Using logic to select ' + someStepEventName, LOG_LEVELS.Debug);
             await nextStepSelect.select(someStepEventName)
-
         }
-        await browser.sleep(2)
         const currentPageUrl = await browser.getCurrentUrl()
         reportLogger.AddMessage(`on page with URL: ${currentPageUrl}`)
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -212,9 +211,7 @@ class CaseManager {
             // await BrowserWaits.waitForElement($('exui-case-details-home'));
             await BrowserWaits.waitForPageNavigation(currentPageUrl)
         })
-
     }
-
 
     async AmOnCaseDetailsPage(){
         await BrowserWaits.retryWithActionCallback(async () => {
@@ -327,7 +324,7 @@ class CaseManager {
                 }else{
                     fieldName = "nolabel"
                 }
-                
+
             }
         }
         catch (err) {
@@ -400,8 +397,8 @@ class CaseManager {
                     // const optionText = await addressToSelectOption.getText()
                     await addressSelectionField.selectOptionAtIndex(2);
                     cucumberReporter.AddMessage(fieldName + " : 2nd option selected", LOG_LEVELS.Debug);
-                }); 
-                
+                });
+
                 break;
             case "ccd-write-email-field":
                 await ccdField.$('input.form-control').sendKeys("test@autotest.com ");
@@ -488,7 +485,7 @@ class CaseManager {
                     if (!isAlreadyChecked){
                         await checkBoxElement.click();
                     }
-                    
+
                 }
                 cucumberReporter.AddMessage(fieldName + " : all options selected", LOG_LEVELS.Debug);
                 break;
@@ -535,7 +532,7 @@ class CaseManager {
 
                     cucumberReporter.AddMessage(fieldName + " : complex write collection values", LOG_LEVELS.Debug);
                 }
-                
+
                 break;
             default:
                 console.log("Unknown field type : " + ccdFileTagName);

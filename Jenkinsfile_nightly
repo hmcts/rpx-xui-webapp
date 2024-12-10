@@ -46,7 +46,7 @@ withNightlyPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    // enableFortifyScan('rpx-aat')
+    enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(120)
     // enableSecurityScan()
     //enableMutationTest()

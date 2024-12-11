@@ -114,8 +114,8 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "caseworkerPageSize": "30000",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,SSCS",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "staffSupportedJurisdictions": "ST_CIC,CIVIL,EMPLOYMENT,PRIVATELAW,PUBLICLAW,IA,SSCS",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [

@@ -8,8 +8,8 @@ export class NeedPanelAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map((state) => {
         const isAPanelFlag = state.hearingConditions?.isHearingAmendmentsEnabled
-          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.isAPanelFlag
-          : state.hearingRequest.hearingRequestMainModel.hearingDetails.isAPanelFlag;
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails?.isAPanelFlag
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails?.isAPanelFlag;
         return isAPanelFlag ? 'Yes' : 'No';
       })
     );

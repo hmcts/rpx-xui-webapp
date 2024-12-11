@@ -47,6 +47,12 @@ export class PageFlow implements AbstractPageFlow {
                   case ConditionOperator.NOT_INCLUDE:
                     nextPage = !conditionValue.includes(navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
                     break;
+                  case ConditionOperator.EQUALS:
+                    nextPage = (conditionValue === navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
+                    break;
+                  case ConditionOperator.NOT_EQUALS:
+                    nextPage = conditionValue !== (navigationModel.conditionValue) ? navigationModel.resultValue : nextPage;
+                    break;
                   default:
                     nextPage = '';
                 }

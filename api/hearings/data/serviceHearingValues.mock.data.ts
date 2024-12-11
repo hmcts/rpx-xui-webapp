@@ -160,7 +160,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         {
           conditionOperator: 'NOT INCLUDE',
           conditionValue: '7',
-          resultValue: 'hearing-judge'
+          resultValue: 'hearing-panel-required'
         }
       ]
     },
@@ -168,6 +168,22 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-welsh',
       navigation: [
         {
+          resultValue: 'hearing-panel-required'
+        }
+      ]
+    },
+    {
+      screenName: 'hearing-panel-required',
+      conditionKey: 'isAPanelFlag',
+      navigation: [
+        {
+          conditionOperator: 'INCLUDE',
+          conditionValue: 'true',
+          resultValue: 'hearing-panel'
+        },
+        {
+          conditionOperator: 'NOT INCLUDE',
+          conditionValue: 'false',
           resultValue: 'hearing-judge'
         }
       ]
@@ -176,7 +192,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       screenName: 'hearing-judge',
       navigation: [
         {
-          resultValue: 'hearing-panel'
+          resultValue: 'hearing-timing'
         }
       ]
     },

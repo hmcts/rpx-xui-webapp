@@ -51,5 +51,4 @@ export * from './case-share-complete/case-share-complete.component';
 export * from './case-share-confirm/case-share-confirm.component';
 export * from './case-share/case-share.component';
 export * from './case-viewer-container/case-viewer-container.component';
-export * from './case-hearings/case-hearings.component';
 export * from './query-management-container/query-management-container.component';

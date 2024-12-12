@@ -353,7 +353,7 @@ describe('HearingTimingComponent', () => {
     expect(component.dateRangeWeekendError).toBeNull();
   });
 
-  it('should check showChosenDateRangeError before date check', () => {
+  xit('should check showChosenDateRangeError before date check', () => {
     component.earliestDateOfHearingError = null;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('13');
     component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');

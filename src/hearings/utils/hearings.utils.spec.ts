@@ -8,6 +8,7 @@ import { HearingsUtils } from './hearings.utils';
 import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { Section } from '../models/section';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -503,6 +504,52 @@ describe('HearingsUtils', () => {
       expect(
         HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
       ).toBeFalsy();
+    });
+  });
+  describe('HearingsUtils', () => {
+    describe('checkTemplateForHearingRequiremnts', () => {
+      it('should filter out "hearing-judge" screen when isAPanelFlag is true', () => {
+        const template: Section[] = [
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'hearing-judge' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'hearing-panel' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'hearing-details' }
+        ];
+        const isAPanelFlag = true;
+        const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
+        expect(result).toEqual([
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'hearing-panel' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'hearing-details' }
+        ]);
+      });
+
+      it('should filter out "hearing-panel" screen when isAPanelFlag is false', () => {
+        const template: Section[] = [
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'hearing-judge' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'hearing-panel' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'hearing-details' }
+        ];
+        const isAPanelFlag = false;
+        const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
+        expect(result).toEqual([
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'hearing-judge' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'hearing-details' }
+        ]);
+      });
+
+      it('should return the same template when no screens to filter', () => {
+        const template: Section[] = [
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'hearing-judge' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'hearing-panel' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'hearing-details' }
+        ];
+        const isAPanelFlag = undefined;
+        const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
+        expect(result).toEqual([
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'hearing-judge' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'hearing-panel' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'hearing-details' }
+        ]);
+      });
     });
   });
 });

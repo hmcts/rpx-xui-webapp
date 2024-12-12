@@ -10,6 +10,7 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { PartyType } from 'api/hearings/models/hearings.enum';
+import { Section } from '../models/section';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -230,5 +231,14 @@ export class HearingsUtils {
     const individualSHVPartyIds = individualPartiesInSHV.map((party) => party.partyID);
     const contains = individualHMCPartyIds.some((hmcParty) => individualSHVPartyIds.includes(hmcParty));
     return contains;
+  }
+
+  public static checkTemplateForHearingRequiremnts(template: Section[], isAPanelFlag: boolean): Section[] {
+    if (isAPanelFlag === null || isAPanelFlag === undefined) {
+      return template;
+    } else if (isAPanelFlag) {
+      return template.filter((tp: Section) => tp.screenName !== 'hearing-judge');
+    }
+    return template.filter((tp: Section) => tp.screenName !== 'hearing-panel');
   }
 }

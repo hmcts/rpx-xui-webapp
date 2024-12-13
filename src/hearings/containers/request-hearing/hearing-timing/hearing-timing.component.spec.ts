@@ -365,7 +365,7 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.isInvalid).toBeTruthy();
   });
 
   it('should check showChosenDateRangeError valid earliest date check', () => {

@@ -1,3 +1,4 @@
+import { UserInfo } from '../auth/interfaces/UserInfo';
 import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
 import { RoleAssignment } from './interfaces/roleAssignment';
 
@@ -76,6 +77,50 @@ export function getUserRoleCategory(roles: string[]): string {
   }
 
   return LEGAL_OPERATIONS_ROLE_NAME;
+}
+
+export function userDetailsValid(userInfo: UserInfo): boolean {
+  if (!userInfo) {
+    // user info not present does not mean not valid
+    return true;
+  }
+  const userInfoKeys = Object.keys(userInfo);
+  const userInfoValues: string[] = [];
+
+  for (const key of userInfoKeys) {
+    if (typeof userInfo[key] === 'string' && key !== 'iss') {
+      userInfoValues.push(userInfo[key]);
+    }
+  }
+  // check all user details - Fortify safety check
+  // if contains special characters, return false
+  if (!allDoNotContainDangerousCharacters(userInfoValues) || !allDoNotContainDangerousCharacters(userInfo.roles)
+  || !urlHasNoDangerousCharacters(userInfo.iss)) {
+    return false;
+  }
+  return true;
+}
+
+export function allDoNotContainDangerousCharacters(values: string[]) {
+  for (const value of values) {
+    if (!hasNoDangerousCharacters(value)) {
+      // if one value contains dangerous characters, return false
+      return false;
+    }
+  }
+  return true;
+}
+
+export function hasNoDangerousCharacters(value: string): boolean {
+  // the below only checks for the characters in the string
+  // return /^[^%<>^$//]+$/.test(value);
+  // substring approach below preferred
+  return /^(?!.*\/\*|.*\/\/|.*;|.*&|.*\?|.*<|.*\^|.*>).+$/.test(value);
+}
+
+// url may have special characters but should guard against other dangerous characters
+export function urlHasNoDangerousCharacters(value: string): boolean {
+  return /^(?!.*\/\*|.*;|.*<|.*\^|.*>).+$/.test(value);
 }
 
 export function hasRoleCategory(roles: string[], roleName: string): boolean {

@@ -10,7 +10,8 @@ import { exists } from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import {
   getOrganisationRoles, getRoleCategoryFromRoleAssignments,
-  getUserRoleCategory, isCurrentUserCaseAllocator
+  getUserRoleCategory, hasNoDangerousCharacters, isCurrentUserCaseAllocator,
+  userDetailsValid
 } from './utils';
 import { trackTrace } from '../lib/appInsights';
 
@@ -19,13 +20,21 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     return res.send({}).status(200);
   }
   try {
-    const { roles } = req.session.passport.user.userinfo;
+    const rawUserInfo = req.session.passport.user.userinfo;
+    if (!userDetailsValid(rawUserInfo)) {
+      return res.send('User details are invalid. This needs to be investigated').status(400);
+    }
+    const { roles } = rawUserInfo;
     const permissions = CASE_SHARE_PERMISSIONS.split(',');
     const canShareCases = roles.some((role) => permissions.includes(role));
     const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
-    const roleAssignmentInfo = await getUserRoleAssignments(req.session.passport.user.userinfo, req);
-    const userInfo = { ...req.session.passport.user.userinfo, token: `Bearer ${req.session.passport.user.tokenset.accessToken}` };
+    const roleAssignmentInfo = await getUserRoleAssignments(rawUserInfo, req);
+    const bearerToken = req.session.passport.user.tokenset.accessToken;
+    if (!hasNoDangerousCharacters(bearerToken)) {
+      return res.send('Invalid bearer token').status(400);
+    }
+    const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
     userInfo.roles = allRoles;

@@ -360,12 +360,12 @@ describe('HearingTimingComponent', () => {
     component.earliestDateOfHearingError = null;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('13');
     component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2024');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2025');
     component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2025');
     component.showChosenDateRangeError();
-    expect(component.latestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
   });
 
   it('should check showChosenDateRangeError valid earliest date check', () => {

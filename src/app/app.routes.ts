@@ -216,6 +216,12 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'query-management',
+    canActivate: [AuthGuard, AcceptTermsGuard],
+    loadChildren: () => import('../cases/cases.module').then((m) => m.CasesModule)
+    // TODO Define feature toggle
+  },
+  {
     path: '**',
     redirectTo: '/cases',
     pathMatch: 'full'

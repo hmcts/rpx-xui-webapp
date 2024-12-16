@@ -20,7 +20,7 @@ def channel   = '#xui-pipeline'
 
 class yarnBuilderNightly extends uk.gov.hmcts.contino.YarnBuilder {
 
-  @override
+  @Override
   def crossBrowserTest() {
       try {
           yarn("test:crossbrowser")

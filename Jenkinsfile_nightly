@@ -18,7 +18,21 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+class yarnBuilderNightly extends uk.gov.hmcts.contino.YarnBuilder {
+
+  @override
+  def crossBrowserTest() {
+      try {
+          yarn("test:crossbrowser")
+      }
+      finally {
+          steps.junit allowEmptyResults: true, testResults: 'functional-output/crossbrowser/reports/**/*'
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
+      }
+  }
+}
+
+def yarnBuilder = new yarnBuilderNightly(this)
 
 def secrets = [
   'rpx-${env}': [

@@ -10,10 +10,11 @@ import { exists } from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import {
   getOrganisationRoles, getRoleCategoryFromRoleAssignments,
-  getUserRoleCategory, hasNoDangerousCharacters, isCurrentUserCaseAllocator,
+  getUserRoleCategory, isCurrentUserCaseAllocator,
   userDetailsValid
 } from './utils';
 import { trackTrace } from '../lib/appInsights';
+import { hasNoDangerousCharacters } from '../utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!exists(req, 'session.passport.user')) {

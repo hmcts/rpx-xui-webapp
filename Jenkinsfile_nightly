@@ -33,6 +33,16 @@ def secrets = [
   ],
   ]
 
+  def crossBrowserTest() {
+      try {
+         yarn("test:crossbrowser")
+      }
+      finally {
+        steps.junit allowEmptyResults: true, testResults: 'functional-output/crossbrowser/reports/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
+      }
+    }
+
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
       secretType: 'Secret',
@@ -52,14 +62,14 @@ withNightlyPipeline(type, product, component) {
     //enableMutationTest()
     enableCrossBrowserTest()
 
-  
+
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')
     }
-  
+
     afterSuccess('build') {
         yarnBuilder.yarn('build')
-      
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

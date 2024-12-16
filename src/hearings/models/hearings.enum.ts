@@ -421,5 +421,6 @@ export enum HearingScreensEnum {
   HEARING_TIMING = 'hearing-timing',
   HEARING_LINK = 'hearing-link',
   HEARING_PANEL = 'hearing-panel',
+  HEARING_PANEL_SELECTOR = 'hearing-panel-selector',
   HEARING_ADDITIONAL_INSTRUCTIONS = 'hearing-additional-instructions'
 }

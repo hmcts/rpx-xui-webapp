@@ -6,9 +6,9 @@ properties([
         displayName  : 'Expert UI Webapp',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
-    pipelineTriggers([
-    cron('H 07 * * *')
-    ])
+       pipelineTriggers([
+            [$class: 'GitHubPushTrigger']
+        ])
 ])
 
 @Library("Infrastructure")

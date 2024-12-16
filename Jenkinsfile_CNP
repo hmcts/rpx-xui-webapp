@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
     pipelineTriggers([
-         cron('H 07 * * *')
+        [$class: 'GitHubPushTrigger']
     ])
 ])
 
@@ -23,7 +23,7 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)class
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 

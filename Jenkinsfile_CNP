@@ -23,21 +23,7 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
-class yarnBuilderNightly extends uk.gov.hmcts.contino.YarnBuilder {
-
-    @override
-    def crossBrowserTest() {
-        try {
-            yarn("test:crossbrowser")
-        }
-        finally {
-            steps.junit allowEmptyResults: true, testResults: 'functional-output/crossbrowser/reports/**/*'
-            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-        }
-    }
- }
-
- def yarnBuilder = new yarnBuilderNightly(this)
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)class
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 

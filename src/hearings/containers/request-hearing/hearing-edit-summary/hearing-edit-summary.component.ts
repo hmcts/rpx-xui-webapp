@@ -171,13 +171,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  private removeEmpty(obj) {
-    for (var propName in obj) {
-      if (obj[propName] === null || obj[propName] === undefined) {
-        delete obj[propName];
+  private removeEmpty(object) {
+    for (const item in object) {
+      if (object[item] === null || object[item] === undefined) {
+        delete object[item];
       }
     }
-    return obj
+    return object;
   }
 
   // The below function acts as a comparitor between 2 objects
@@ -187,7 +187,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   // - New Keys with new empty values
   // - Values that are Objects or Arrays to have extra empty values
   public areObjectsfunctionallyDifferentCheck(object1: any, object2: any): boolean {
-
     if (typeof object1 !== typeof object2) {
       return true;
     }
@@ -195,7 +194,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
     for (const [key, value] of Object.entries(object1)) {
-      if (typeof value === "object") {
+      if (typeof value === 'object') {
         this.removeEmpty(value);
         this.removeEmpty(object2[key]);
       }
@@ -205,13 +204,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
         valueObject.forEach((element) => {
           if (Array.isArray(element)) {
-            element.forEach((item) => this.removeEmpty(item))
+            element.forEach((item) => this.removeEmpty(item));
           }
           this.removeEmpty(element);
         });
         objectInCompareObject.forEach((element) => {
           if (Array.isArray(element)) {
-            element.forEach((item) => this.removeEmpty(item))
+            element.forEach((item) => this.removeEmpty(item));
           }
           this.removeEmpty(element);
         });

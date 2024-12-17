@@ -130,6 +130,24 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
+
+        stage('Cross Browser Test') {
+            try {
+              yarnBuilder.yarn('test:crossbrowser')
+            } catch (Error) {
+              unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "reports/tests/crossbrowser/",
+              reportFiles          : 'index.html',
+              reportName           : 'XUI Manage Cases Cross Browser Tests'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
+            }
+          }
     }
 
     afterSuccess('functionalTest:preview') {
@@ -199,24 +217,6 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'AAT NG Integration Test'
         ])
-
-         stage('Cross Browser Test') {
-                try {
-                  yarnBuilder.yarn('test:crossbrowser')
-                } catch (Error) {
-                  unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-                } finally {
-                  publishHTML([
-                  allowMissing         : true,
-                  alwaysLinkToLastBuild: true,
-                  keepAll              : true,
-                  reportDir            : "reports/tests/crossbrowser/",
-                  reportFiles          : 'index.html',
-                  reportName           : 'XUI Manage Cases Cross Browser Tests'
-                  ])
-                  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
-                }
-              }
     }
 }
 

@@ -28,8 +28,10 @@ def secrets = [
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('appinsights-connection-string-mc', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('system-user-name', 'SYSTEM_USER_NAME'),
-    secret('system-user-password', 'SYSTEM_USER_PASSWORD')
+    secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
   ],
   ]
 
@@ -43,9 +45,10 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
-    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net/'
+
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(120)
     // enableSecurityScan()

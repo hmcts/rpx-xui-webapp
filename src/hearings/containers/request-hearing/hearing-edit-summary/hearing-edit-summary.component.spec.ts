@@ -1522,17 +1522,17 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should return true for nested differencee in the areObjectsfunctionallyDifferentCheck', () => {
-    const obj1 = { 
-      a: { a1: "test 1", a2: "test 2", a3: ["a string", "another string", null]},
-      b: { b1: "testing 1", b2: "testing 2" },
+    const obj1 = {
+      a: { a1: 'test 1', a2: 'test 2', a3: ['a string', 'another string', null] },
+      b: { b1: 'testing 1', b2: 'testing 2' },
       c: { c1: 'just this' },
-      d: [{d1: null, d2: "test string", d3: undefined, d4: "another test string"}]
+      d: [{ d1: null, d2: 'test string', d3: undefined, d4: 'another test string' }]
     };
-    const obj2  = { 
-      a: { a1: "test 1", a2: "test 2", a3: ["a string", "another string"]},
-      b: { b1: "testing 1", b2: "testing 2" },
-      c: { c1: 'just this'},
-      d: [{ d4: "another test string", d2: "test string"}]
+    const obj2 = {
+      a: { a1: 'test 1', a2: 'test 2', a3: ['a string', 'another string'] },
+      b: { b1: 'testing 1', b2: 'testing 2' },
+      c: { c1: 'just this' },
+      d: [{ d4: 'another test string', d2: 'test string' }]
     };
     const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(true);

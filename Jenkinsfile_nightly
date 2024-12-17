@@ -6,9 +6,9 @@ properties([
         displayName  : 'Expert UI Webapp',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
-       pipelineTriggers([
-            [$class: 'GitHubPushTrigger']
-        ])
+    pipelineTriggers([
+    cron('H 07 * * *')
+    ])
 ])
 
 @Library("Infrastructure")
@@ -18,21 +18,7 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 
-class yarnBuilderNightly extends uk.gov.hmcts.contino.YarnBuilder {
-
-  @Override
-  def crossBrowserTest() {
-      try {
-          yarn("test:crossbrowser")
-      }
-      finally {
-          steps.junit allowEmptyResults: true, testResults: 'functional-output/crossbrowser/reports/**/*'
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-      }
-  }
-}
-
-def yarnBuilder = new yarnBuilderNightly(this)
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def secrets = [
   'rpx-${env}': [
@@ -46,16 +32,6 @@ def secrets = [
     secret('system-user-password', 'SYSTEM_USER_PASSWORD')
   ],
   ]
-
-  def crossBrowserTest() {
-      try {
-         yarn("test:crossbrowser")
-      }
-      finally {
-        steps.junit allowEmptyResults: true, testResults: 'functional-output/crossbrowser/reports/**/*'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-      }
-    }
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
@@ -74,7 +50,7 @@ withNightlyPipeline(type, product, component) {
     enableFullFunctionalTest(120)
     // enableSecurityScan()
     //enableMutationTest()
-    enableCrossBrowserTest()
+    //enableCrossBrowserTest()
 
 
       afterSuccess('checkout') {
@@ -100,7 +76,23 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
-
+          stage('Cross Browser Test') {
+              try {
+                yarnBuilder.yarn('test:crossbrowser')
+              } catch (Error) {
+                unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+              } finally {
+                publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "reports/tests/crossbrowser/",
+                reportFiles          : 'index.html',
+                reportName           : 'XUI Manage Cases Cross Browser Tests'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
+              }
+            }
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([
         //     allowMissing         : true,

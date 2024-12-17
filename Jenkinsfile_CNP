@@ -16,7 +16,6 @@ properties([
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
-import java.time.LocalDate
 
 def type      = "nodejs"
 def product   = "xui"
@@ -24,37 +23,7 @@ def component = "webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
-// def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-
-class yarnBuilderNightly extends uk.gov.hmcts.contino.YarnBuilder {
-   private static final String INSTALL_CHECK_FILE = '.yarn_dependencies_installed'
-   private static final String NVMRC = '.nvmrc'
-   private static final Float DESIRED_MIN_VERSION = 18.16
-   private final LocalDate NODEJS_EXPIRATION = LocalDate.of(2023, 8, 31)
-   private static final String CVE_KNOWN_ISSUES_FILE_PATH = 'yarn-audit-known-issues-result'
-
-   def securitytest
-
-   def localSteps
-
-  yarnBuilderNightly(def jenkinsfile) {
-      super(jenkinsfile)
-  }
-
-  @Override
-  def crossBrowserTest() {
-      try {
-          yarn("test:crossbrowser")
-      }
-      finally {
-          steps.junit allowEmptyResults: true, testResults: 'functional-output/crossbrowser/reports/**/*'
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**'
-      }
-  }
-}
-
-def yarnBuilder = new yarnBuilderNightly(this)
-
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
@@ -138,6 +107,8 @@ withPipeline(type, product, component) {
         ])
 
     }
+
+
 
     afterSuccess('smoketest:demo') {
         publishHTML([
@@ -228,6 +199,24 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'AAT NG Integration Test'
         ])
+
+         stage('Cross Browser Test') {
+                try {
+                  yarnBuilder.yarn('test:crossbrowser')
+                } catch (Error) {
+                  unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+                } finally {
+                  publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : "reports/tests/crossbrowser/",
+                  reportFiles          : 'index.html',
+                  reportName           : 'XUI Manage Cases Cross Browser Tests'
+                  ])
+                  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
+                }
+              }
     }
 }
 

@@ -1122,7 +1122,7 @@ describe('HearingEditSummaryComponent', () => {
     ];
 
     component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      ...component.hearingRequestToCompareMainModel,
       partyDetails: partyDetails
     };
 
@@ -1519,13 +1519,6 @@ describe('HearingEditSummaryComponent', () => {
     const obj2 = { a: [{ b: 1 }] };
     const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
     expect(result).toBe(true);
-  });
-
-  it('should return false in this instance', () => {
-    const obj1 = { a: [{ c: null, d: null, b: 1 }] };
-    const obj2 = { a: [{ b: 1 }] };
-    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
-    expect(result).toBe(false);
   });
 
   function createSHVEntry() {

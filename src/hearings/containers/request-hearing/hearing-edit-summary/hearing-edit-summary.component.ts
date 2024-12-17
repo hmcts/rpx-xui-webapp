@@ -171,17 +171,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  private isEmptyObj(obj): boolean {
-    return Object.values(obj).every((val) => val === null || val === '');
-  }
-
-  private removeNullUndefinedWithReduce(obj) {
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-        if (value !== null && value !== undefined) {
-            acc[key] = typeof value === 'object' ? this.removeNullUndefinedWithReduce(value) : value;
-        }
-        return acc;
-    }, {});
+  private removeEmpty(obj) {
+    for (var propName in obj) {
+      if (obj[propName] === null || obj[propName] === undefined) {
+        delete obj[propName];
+      }
+    }
+    return obj
   }
 
   // The below function acts as a comparitor between 2 objects
@@ -191,51 +187,40 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   // - New Keys with new empty values
   // - Values that are Objects or Arrays to have extra empty values
   public areObjectsfunctionallyDifferentCheck(object1: any, object2: any): boolean {
+
     if (typeof object1 !== typeof object2) {
       return true;
     }
     if (_.isEqual(object1, object2)) {
       return false;
     }
-    if (Object.keys(object1).length !== Object.keys(object2).length) {
-      const newObjectValuesObject = {};
-      const keys = Object.keys(object2);
-      // Checks for new key value pairs and adds them to an object
-      for (const key in object1) {
-        if (!keys.includes(key)) {
-          newObjectValuesObject[key] = object1[key];
-        }
-      }
-      // Returns true or false depending on whether object's values are empty or not
-      return !this.isEmptyObj(newObjectValuesObject);
-    }
     for (const [key, value] of Object.entries(object1)) {
-      // If the value is an object, it sends it round again
       if (typeof value === "object") {
-        this.areObjectsfunctionallyDifferentCheck(value, object2[key]);
+        this.removeEmpty(value);
+        this.removeEmpty(object2[key]);
       }
-      // If the value is an Array, check that its not empty
-      if (Array.isArray(value)) { 
-        if(value.length !== object2[key].length) {
-          return true;
-        }
+      if (Array.isArray(value)) {
+        const valueObject = value;
+        const objectInCompareObject = object2[key];
 
-        let reducedArr1 = value;
-        let reducedArr2 = object2[key];
-
-        reducedArr1.forEach((element) => this.removeNullUndefinedWithReduce(element));
-        reducedArr2.forEach((element) => this.removeNullUndefinedWithReduce(element));
-
-        return !_.isEqual(reducedArr1, reducedArr2);
-      }
-      if (value !== object2[key]) {
-        // If not a comparitive type of null
-        if ((value !== null || value !== undefined || value !== '') && (object2[key] !== null || object2[key] !== undefined || object2[key] !=='')) {
-          return true;
-        }
+        valueObject.forEach((element) => {
+          if (Array.isArray(element)) {
+            element.forEach((item) => this.removeEmpty(item))
+          }
+          this.removeEmpty(element);
+        });
+        objectInCompareObject.forEach((element) => {
+          if (Array.isArray(element)) {
+            element.forEach((item) => this.removeEmpty(item))
+          }
+          this.removeEmpty(element);
+        });
       }
     }
-    return false;
+    return !_.isEqual(
+      JSON.parse(JSON.stringify(object1, this.replacer)),
+      JSON.parse(JSON.stringify(object2, this.replacer))
+    );
   }
 
   private hasHearingRequestObjectChanged(): boolean {

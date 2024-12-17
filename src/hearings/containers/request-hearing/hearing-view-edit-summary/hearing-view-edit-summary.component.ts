@@ -94,17 +94,6 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
     return this.template;
   }
 
-  private replacer (key: any, value: any) {
-    // Party name is not present in HMC so ignoring it.
-    // Is paper hearing flag is transient to indicate whether it is paper hearing
-    // As well as, ignoring keys which are initialised with null value
-    if (key === 'partyName' || key === 'isPaperHearing' || value === null) {
-      return undefined;
-    }
-
-    return value;
-  }
-
   public ngOnDestroy(): void {
     super.unsubscribe();
     this.initialAndCurrentStatesSubscription?.unsubscribe();

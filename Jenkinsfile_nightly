@@ -51,9 +51,6 @@ withNightlyPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(120)
-    // enableSecurityScan()
-    //enableMutationTest()
-    //enableCrossBrowserTest()
 
 
       afterSuccess('checkout') {
@@ -79,23 +76,23 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
-          stage('Cross Browser Test') {
-              try {
-                yarnBuilder.yarn('test:crossbrowser')
-              } catch (Error) {
-                unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-              } finally {
-                publishHTML([
-                allowMissing         : true,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "reports/tests/crossbrowser/",
-                reportFiles          : 'index.html',
-                reportName           : 'XUI Manage Cases Cross Browser Tests'
-                ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
-              }
-            }
+       // stage('Cross Browser Test') {
+       //     try {
+       //       yarnBuilder.yarn('test:crossbrowser')
+       //     } catch (Error) {
+       //       unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+       //     } finally {
+       //       publishHTML([
+       //       allowMissing         : true,
+       //       alwaysLinkToLastBuild: true,
+       //       keepAll              : true,
+       //       reportDir            : "reports/tests/crossbrowser/",
+       //       reportFiles          : 'index.html',
+       //       reportName           : 'XUI Manage Cases Cross Browser Tests'
+       //       ])
+       //       steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
+       //     }
+       //   }
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([
         //     allowMissing         : true,
@@ -109,6 +106,26 @@ withNightlyPipeline(type, product, component) {
 
     afterSuccess('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
+
+    before('fullFunctionalTest'){
+      stage('Cross Browser Test') {
+          try {
+            yarnBuilder.yarn('test:crossbrowser')
+          } catch (Error) {
+            unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+          } finally {
+            publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/crossbrowser/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Cross Browser Tests'
+            ])
+            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
+          }
+        }
     }
 
     afterSuccess('fullFunctionalTest') {
@@ -150,17 +167,6 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
     }
-
-  afterSuccess('crossBrowserTest') {
-    publishHTML([
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "reports/tests/crossbrowser/",
-      reportFiles          : 'index.html',
-      reportName           : 'XUI Manage Cases Cross Browser Tests'
-    ])
-  }
 
   afterSuccess('securityScan') {
     publishHTML([

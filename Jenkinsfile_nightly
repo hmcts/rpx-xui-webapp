@@ -76,20 +76,6 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
-        // yarnBuilder.yarn('test:a11y')
-        // publishHTML([
-        //     allowMissing         : true,
-        //     alwaysLinkToLastBuild: true,
-        //     keepAll              : true,
-        //     reportDir            : "reports/tests/a11y/",
-        //     reportFiles          : 'Report.html',
-        //     reportName           : 'Manage Cases a11y Test Report'
-        // ])
-    }
-
-    afterSuccess('fortify-scan') {
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-
         stage('Cross Browser Test') {
             try {
               yarnBuilder.yarn('test:crossbrowser')
@@ -107,6 +93,19 @@ withNightlyPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
             }
         }
+        // yarnBuilder.yarn('test:a11y')
+        // publishHTML([
+        //     allowMissing         : true,
+        //     alwaysLinkToLastBuild: true,
+        //     keepAll              : true,
+        //     reportDir            : "reports/tests/a11y/",
+        //     reportFiles          : 'Report.html',
+        //     reportName           : 'Manage Cases a11y Test Report'
+        // ])
+    }
+
+    afterSuccess('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
     afterSuccess('fullFunctionalTest') {

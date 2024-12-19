@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 import { UserDetails } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import * as fromAppStore from '../../../../app/store';
-import { ACTION } from '../../../../hearings/models/hearings.enum';
+import { ACTION } from '../../../models/hearings.enum';
 import { caseFlagsRefData, initialState } from '../../../hearing.test.data';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsService } from '../../../services/hearings.service';

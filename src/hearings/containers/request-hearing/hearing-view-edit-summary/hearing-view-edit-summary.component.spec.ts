@@ -9,7 +9,7 @@ import { initialState } from '../../../hearing.test.data';
 import { ACTION, AnswerSource, IsHiddenSource } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingViewEditSummaryComponent } from './hearing-view-edit-summary.component';
-import { Section } from '../../../../hearings/models/section';
+import { Section } from '../../../models/section';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
 import * as fromHearingStore from '../../../../hearings/store';
 

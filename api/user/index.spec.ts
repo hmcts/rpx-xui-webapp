@@ -34,7 +34,7 @@ describe('Index', () => {
       roleName: 'test role',
       roleType: 'ORGANISATION',
       attributes: {
-        isCaseAllocator: false,
+        isCaseAllocator: false
       }
     },
     {
@@ -43,7 +43,7 @@ describe('Index', () => {
       roleName: 'test role 2',
       roleType: 'ORGANISATION',
       attributes: {
-        isCaseAllocator: false,
+        isCaseAllocator: false
       }
     },
     {
@@ -122,7 +122,6 @@ describe('Index', () => {
   });
 
   describe('setUserRoles', () => {
-
     it('should set user roles correctly', async () => {
       const mockUserRoles = [{
         roleName: 'test role',
@@ -148,7 +147,7 @@ describe('Index', () => {
         isCaseAllocator: false,
         beginTime: undefined,
         endTime: undefined
-      }]
+      }];
       expect(setUserRoles(mockUserInfo, mockReq, mockUserId)).to.deep.equal(mockUserRoles);
       expect(mockUserInfo.roleCategory).to.equal('ADMIN');
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2', 'test role', 'test role 2']);
@@ -156,7 +155,6 @@ describe('Index', () => {
   });
 
   describe('addUserRolesIfUnique', () => {
-
     it('should handle an empty list', async () => {
       addUserRolesIfUnique(mockUserInfo, []);
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2']);

@@ -105,13 +105,13 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
 }
 
 export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[] {
-  trackTrace(`user ${userId} prior roles ${JSON.stringify(userInfo.roles)} before addition`)
+  trackTrace(`user ${userId} prior roles ${JSON.stringify(userInfo.roles)} before addition`);
   const activeRoleAssignments = req.session.roleAssignmentResponse;
-  let userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
+  const userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
   const amRoles = getOrganisationRoles(activeRoleAssignments);
   trackTrace(`user ${userId} roles: ${JSON.stringify(amRoles)}`, { functionCall: 'refreshRoleAssignmentForUser' });
   addUserRolesIfUnique(userInfo, amRoles);
-  trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles)} added to userInfo`)
+  trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles)} added to userInfo`);
   const roleCategories = extractRoleCategories(userRoleAssignments);
   // We check for the roleCategories to determine the roleCategory. If not we try IDAM roles
   userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleCategories) || getUserRoleCategory(userInfo.roles);

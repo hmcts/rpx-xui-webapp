@@ -237,8 +237,17 @@ export class HearingsUtils {
     if (isAPanelFlag === null || isAPanelFlag === undefined) {
       return template;
     } else if (isAPanelFlag) {
-      return template.filter((tp: Section) => tp.screenName !== 'hearing-judge');
+      return template.filter((tp: Section) => !tp.sectionHTMLTitle.includes('Judge details'));
     }
-    return template.filter((tp: Section) => tp.screenName !== 'hearing-panel');
+    return template.filter((tp: Section) => !tp.sectionHTMLTitle.includes('Panel details'));
+  }
+
+  public static checkScreensForHearingRequiremnts(screens: string[], isAPanelFlag: boolean): string[] {
+    if (isAPanelFlag === null || isAPanelFlag === undefined) {
+      return screens;
+    } else if (isAPanelFlag) {
+      return screens.filter((screen: string) => screen !== 'hearing-judge');
+    }
+    return screens.filter((screen: string) => screen !== 'hearing-panel');
   }
 }

@@ -42,7 +42,7 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.locator('#last_name').click();
   await page.locator('#last_name').fill('LastName1');
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-  
+
   console.log("Adding new user with missing fields");
   await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
   await page.locator('#first_name').click();
@@ -95,7 +95,7 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('link', { name: 'Add primary location' }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
-  
+
   console.log("Check summary page, update name and email, then cancel");
   await page.getByRole('link', { name: 'Change name' }).click();
   await page.locator('#first_name').fill('FirstName2');

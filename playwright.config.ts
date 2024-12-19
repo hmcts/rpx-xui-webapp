@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const headlessMode = process.env.HEAD !== 'true';
-export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+//export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
   testDir: "./playwright_tests/E2E",
@@ -22,8 +22,8 @@ module.exports = defineConfig({
   workers: process.env.FUNCTIONAL_TESTS_WORKERS ? parseInt(process.env.FUNCTIONAL_TESTS_WORKERS, 10) : 1,
 
   reporter: [[process.env.CI ? 'html' : 'list'],
-    ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-e2e' }]],
-
+             ['html', { outputFolder: 'functional-output/tests/playwright-e2e' }]
+  ],
   projects: [
     {
       name: "chromium",

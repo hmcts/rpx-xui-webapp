@@ -32,7 +32,7 @@ test('My work tabs', async ({ page }) => {
   await assertTableColumnNames(page, false, true);
   await expect(page.getByRole('link', { name: 'My cases' })).toBeVisible();
   await axeTest(page);
-  
+
   console.log("My cases Columns");
   await page.getByRole('link', { name: 'My cases' }).click();
   await expect(page.getByText('Showing 0 results')).toBeVisible();
@@ -54,7 +54,7 @@ test('View tasks, E2E journey of Caseworker-ia-officer user', async ({ page }) =
   await page.getByRole('link', { name: 'My work' }).click();
   await expect(page.getByText('Use the work filter to show')).toBeVisible();
   await checkAllHeadersTabMenu(page);
-  
+
   console.log("All works tabs");
   await page.getByRole('link', { name: 'All work' }).click();
   await expect(page.getByRole('heading', { name: 'All work' })).toBeVisible();

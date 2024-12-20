@@ -125,6 +125,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public ngOnDestroy(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+    this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+    this.hearingsService.propertiesUpdatedOnPageVisit = null;
     super.unsubscribe();
     this.hearingValuesSubscription?.unsubscribe();
     this.featureToggleServiceSubscription?.unsubscribe();

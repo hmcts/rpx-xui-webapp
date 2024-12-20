@@ -82,14 +82,12 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       const activeRoleAssignments = getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date());
       req.session.roleAssignmentResponse = activeRoleAssignments;
       userRoleAssignments = setUserRoles(userInfo, req, id);
-      req.session.userRoleAssignments = userRoleAssignments;
       req.session.roleRequestEtag = response?.headers?.etag;
     } catch (error) {
       if (error.status === 304) {
         // as user role assignments are not returned use session to send expected results
         trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, { functionCall: 'refreshRoleAssignmentForUser' });
         userRoleAssignments = setUserRoles(userInfo, req, id);
-        req.session.userRoleAssignments = userRoleAssignments;
         return userRoleAssignments;
       }
       let err = error;
@@ -105,16 +103,21 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
 }
 
 export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[] {
-  trackTrace(`user ${userId} prior roles ${JSON.stringify(userInfo.roles)} before addition`);
+  userInfo.roles = userInfo.roles ? userInfo.roles : [];
+  trackTrace(`user ${userId} prior roles ${JSON.stringify(userInfo.roles.slice(0, 50))} before addition`);
   const activeRoleAssignments = req.session.roleAssignmentResponse;
   const userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
   const amRoles = getOrganisationRoles(activeRoleAssignments);
-  trackTrace(`user ${userId} roles: ${JSON.stringify(amRoles)}`, { functionCall: 'refreshRoleAssignmentForUser' });
+  trackTrace(`user ${userId} roles: ${JSON.stringify(amRoles.slice(0, 50))}`, { functionCall: 'refreshRoleAssignmentForUser' });
   addUserRolesIfUnique(userInfo, amRoles);
-  trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles)} added to userInfo`);
-  const roleCategories = extractRoleCategories(userRoleAssignments);
-  // We check for the roleCategories to determine the roleCategory. If not we try IDAM roles
-  userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleCategories) || getUserRoleCategory(userInfo.roles);
+  trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles.slice(0, 50))} added to userInfo`);
+  if (!userInfo.roleCategory) {
+    // only set the role category if not already set
+    // this means user will not have to log out and log in to be assigned it properly
+    const roleCategories = extractRoleCategories(userRoleAssignments);
+    // We assign the role category via the role assignments assigned to user. If not we try IDAM roles
+    userInfo.roleCategory = getRoleCategoryFromRoleAssignments(roleCategories) || getUserRoleCategory(userInfo.roles);
+  }
   return userRoleAssignments;
 }
 

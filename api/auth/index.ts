@@ -114,7 +114,8 @@ export const getXuiNodeMiddleware = () => {
     sessionKey: 'xui-webapp',
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
-    useRoutes: true
+    useRoutes: true,
+    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
   };
 
   const baseStoreOptions = {

@@ -24,6 +24,7 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
 
 const jsonUtil = require('../.././../e2e/utils/jsonUtil')
 const path = require('path')
+const { HearingsUtils } = require('../../../../src/hearings/utils/hearings.utils');
 
 function getHearingsMockJsonFromFile(fileName){
   return jsonUtil.getJsonFromFile(path.resolve(__dirname,`../features/hearings/mockData/${fileName}.json`,))
@@ -49,12 +50,14 @@ Given('I set mock case hearings from file {string}', async function (filename) {
 });
 
 Given('I set mock hearing HMC response from file {string}', async function (fileName) {
-  const response = getHearingsMockJsonFromFile(fileName)
+  const response = getHearingsMockJsonFromFile(fileName);
+  HearingsUtils.resetHearingWindow(response);
   await mockClient.setOnGetHearing(response, 200);
 });
 
 Given('I set mock hearing SHV response from file {string}', async function (fileName) {
-  const response = getHearingsMockJsonFromFile(fileName)
+  const response = getHearingsMockJsonFromFile(fileName);
+  HearingsUtils.resetHearingWindow(response);
   await mockClient.setHearingServiceHearingValues(response, 200);
 });
 

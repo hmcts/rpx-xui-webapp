@@ -8,6 +8,8 @@ import { HearingDateEnum } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
+import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { PartyType } from 'api/hearings/models/hearings.enum';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -171,23 +173,33 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasHearingDatesChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
-    if (hearingWindow?.dateRangeStart || hearingWindow?.dateRangeEnd) {
-      if (hearingWindow?.dateRangeStart) {
-        if (this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart)){
-          return true;
-        }
-      }
-      if (hearingWindow?.dateRangeEnd) {
-        if (HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd)){
-          return true;
-        }
-      }
+    if (this.isDateRangeChanged(hearingWindow, hearingWindowToCompare)) {
+      return true;
     }
+    if (this.isFirstDateTimeChanged(hearingWindow, hearingWindowToCompare)) {
+      return true;
+    }
+    return false;
+  }
 
+  private static isDateRangeChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
+    const hasStartDateChanged = hearingWindow?.dateRangeStart && this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart);
+    const hasEndDateChanged = hearingWindow?.dateRangeEnd && HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd);
+    if (hasStartDateChanged || hasEndDateChanged) {
+      return true;
+    }
+    if (!hearingWindow?.dateRangeStart && !hearingWindow?.dateRangeEnd &&
+      (hearingWindowToCompare?.dateRangeStart || hearingWindowToCompare?.dateRangeEnd)) {
+      return true;
+    }
+    return false;
+  }
+
+  private static isFirstDateTimeChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
     if (hearingWindow?.firstDateTimeMustBe) {
       return HearingsUtils.hasDateChanged(hearingWindowToCompare?.firstDateTimeMustBe, hearingWindow?.firstDateTimeMustBe);
     }
-    return false;
+    return hearingWindowToCompare?.firstDateTimeMustBe ? true : false;
   }
 
   /**
@@ -201,13 +213,22 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = HearingsUtils.convertStringToDate(inputDateString);
-    const dateToCompare = HearingsUtils.convertStringToDate(dateToCompareString);
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }
 
   static convertStringToDate(date: string): number {
     return new Date(date).setHours(0, 0, 0, 0);
+  }
+
+  public static checkHearingPartiesConsistency(hearingRequestMainModel: HearingRequestMainModel, serviceHearingValuesModel: ServiceHearingValuesModel): boolean {
+    const individualPartiesInHMC = hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
+    const individualHMCPartyIds = individualPartiesInHMC.map((party) => party.partyID);
+    const individualPartiesInSHV = serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
+    const individualSHVPartyIds = individualPartiesInSHV.map((party) => party.partyID);
+    const contains = individualHMCPartyIds.some((hmcParty) => individualSHVPartyIds.includes(hmcParty));
+    return contains;
   }
 }

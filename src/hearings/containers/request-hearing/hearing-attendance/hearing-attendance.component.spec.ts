@@ -167,7 +167,6 @@ describe('HearingAttendanceComponent', () => {
 
     fixture = TestBed.createComponent(HearingAttendanceComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'initialiseFromHearingValues').and.callThrough();
     spyOn(component, 'prepareHearingRequestData').and.callThrough();
     spyOn(component, 'isFormValid').and.callThrough();
     lovRefDataService.getListOfValues.and.returnValue(of([]));
@@ -194,6 +193,12 @@ describe('HearingAttendanceComponent', () => {
     component.attendanceFormGroup.controls.hearingLevelChannels.setErrors({ incoreect: true });
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).not.toHaveBeenCalled();
+  });
+
+  it('should update hearingRequestMainModel when executeAction and forms paperHearing is YES', () => {
+    component.attendanceFormGroup.controls.paperHearing.setValue('Yes');
+    component.executeAction(ACTION.CONTINUE);
+    expect(component.hearingRequestMainModel.hearingDetails.hearingChannels).toEqual([HearingChannelEnum.ONPPR]);
   });
 
   it('should NOT call prepareHearingRequestData when executeAction action is BACK', () => {
@@ -235,6 +240,13 @@ describe('HearingAttendanceComponent', () => {
     };
     const organisationParties = component.getOrganisationParties();
     expect(organisationParties[0].organisationDetails).toEqual(organisationDetails);
+  });
+
+  it('should get hearing channels', () => {
+    component.attendanceFormGroup.controls.paperHearing.setValue('No');
+    expect(component.getHearingChannels()).toEqual(['TEL']);
+    component.attendanceFormGroup.controls.paperHearing.setValue('Yes');
+    expect(component.getHearingChannels()).toEqual(['ONPPRS']);
   });
 
   describe('The forms paperHearing', () => {
@@ -279,16 +291,6 @@ describe('HearingAttendanceComponent', () => {
     expect(formValid).toEqual(false);
   });
 
-  it('should render parties from the hearingvaluemodel', () => {
-    const store = jasmine.createSpyObj('store', ['pipe', 'dispatch', 'select']);
-    store.select.and.returnValue(of(initialState));
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    component.initialiseFromHearingValues();
-    expect(component.initialiseFromHearingValues).toHaveBeenCalled();
-    expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
-  });
-
   it('should not consider the party details from in-memory object for create new hearing request journey', () => {
     component.hearingCondition = {
       mode: 'create'
@@ -308,7 +310,6 @@ describe('HearingAttendanceComponent', () => {
       }
     };
     component.ngOnInit();
-    expect(component.initialiseFromHearingValues).not.toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
   });
 
@@ -316,20 +317,6 @@ describe('HearingAttendanceComponent', () => {
     component.attendanceFormGroup.controls.parties = new FormArray([]);
     component.hearingCondition = {
       mode: 'view-edit'
-    };
-    hearingsService.propertiesUpdatedOnPageVisit = {
-      hearingId: 'h000001',
-      caseFlags: null,
-      parties: partyDetailsFromLatestSHV,
-      hearingWindow: null,
-      afterPageVisit: {
-        reasonableAdjustmentChangesRequired: true,
-        nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: true,
-        hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
     };
     component.ngOnInit();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);

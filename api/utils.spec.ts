@@ -1,42 +1,42 @@
 import { expect } from 'chai';
-import { allDoNotContainDangerousCharacters, hasNoDangerousCharacters, urlHasNoDangerousCharacters } from './utils';
+import { allContainOnlySafeCharacters, hasUnacceptableCharacters, urlHasUnacceptableCharacters } from './utils';
 
 describe('api utils', () => {
-  describe('hasNoDangerousCharacters', () => {
-    it('should match strings that do not contain dangerous characters', () => {
-      expect(hasNoDangerousCharacters(null)).to.equal(true);
+  describe('hasUnacceptableCharacters', () => {
+    it('should match strings that contain dangerous characters', () => {
+      expect(hasUnacceptableCharacters(null)).to.equal(false);
       const testString = '<script>alert("hello")</script>';
-      expect(hasNoDangerousCharacters(testString)).to.equal(false);
+      expect(hasUnacceptableCharacters(testString)).to.equal(true);
       const testString2 = 'email@test.com';
-      expect(hasNoDangerousCharacters(testString2)).to.equal(true);
+      expect(hasUnacceptableCharacters(testString2)).to.equal(false);
       const testString3 = '&//?';
-      expect(hasNoDangerousCharacters(testString3)).to.equal(false);
+      expect(hasUnacceptableCharacters(testString3)).to.equal(true);
       const testString4 = '//https://www.google.com';
-      expect(hasNoDangerousCharacters(testString4)).to.equal(false);
+      expect(hasUnacceptableCharacters(testString4)).to.equal(true);
     });
   });
 
-  describe('urlHasNoDangerousCharacters', () => {
+  describe('urlHasUnacceptableCharacters', () => {
     it('should match urls that do not contain dangerous characters', () => {
-      expect(urlHasNoDangerousCharacters(null)).to.equal(true);
+      expect(urlHasUnacceptableCharacters(null)).to.equal(false);
       const testString = '<script>alert("hello")</script>';
-      expect(urlHasNoDangerousCharacters(testString)).to.equal(false);
+      expect(urlHasUnacceptableCharacters(testString)).to.equal(true);
       const testString2 = 'email@test.com';
-      expect(urlHasNoDangerousCharacters(testString2)).to.equal(true);
+      expect(urlHasUnacceptableCharacters(testString2)).to.equal(false);
       const testString3 = '&//?';
-      expect(urlHasNoDangerousCharacters(testString3)).to.equal(true);
+      expect(urlHasUnacceptableCharacters(testString3)).to.equal(false);
       const testString4 = '//https://www.google.com';
-      expect(urlHasNoDangerousCharacters(testString4)).to.equal(true);
+      expect(urlHasUnacceptableCharacters(testString4)).to.equal(false);
     });
   });
 
-  describe('allDoNotContainDangerousCharacters', () => {
+  describe('allContainOnlySafeCharacters', () => {
     it('should match lists with strings that do not contain dangerous characters', () => {
-      expect(allDoNotContainDangerousCharacters([])).to.equal(true);
+      expect(allContainOnlySafeCharacters([])).to.equal(true);
       const testList = ['ab', 'cd=ef', 'gh.jk'];
-      expect(allDoNotContainDangerousCharacters(testList)).to.equal(true);
+      expect(allContainOnlySafeCharacters(testList)).to.equal(true);
       testList.push('lm<n');
-      expect(allDoNotContainDangerousCharacters(testList)).to.equal(false);
+      expect(allContainOnlySafeCharacters(testList)).to.equal(false);
     });
   });
 });

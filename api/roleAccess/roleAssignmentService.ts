@@ -5,14 +5,14 @@ import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { allDoNotContainDangerousCharacters } from '../utils';
+import { allContainOnlySafeCharacters } from '../utils';
 import { Role, RolesByService } from './models/roleType';
 import { substantiveRolesValid } from './utils';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
     const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;
-    if (!allDoNotContainDangerousCharacters(req.body.serviceIds)) {
+    if (!allContainOnlySafeCharacters(req.body.serviceIds)) {
       return res.send('Invalid service id').status(400);
     }
     const roles = await getSubstantiveRoles(req);

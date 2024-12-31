@@ -1,4 +1,4 @@
-import { allDoNotContainDangerousCharacters } from '../utils';
+import { allContainOnlySafeCharacters } from '../utils';
 import { RefinedRole } from './models/roleType';
 
 // confirm no dangerous characters in substantive roles
@@ -9,9 +9,9 @@ export function substantiveRolesValid(substantiveRoles: RefinedRole[]): boolean 
   }
   for (const role of substantiveRoles) {
     const roleStrings = [role.roleCategory, role.roleId, role.roleName];
-    if (!allDoNotContainDangerousCharacters(roleStrings)) {
+    if (!allContainOnlySafeCharacters(roleStrings)) {
       return false;
-    } else if (role.roleJurisdiction && !allDoNotContainDangerousCharacters(role.roleJurisdiction.values)) {
+    } else if (role.roleJurisdiction && !allContainOnlySafeCharacters(role.roleJurisdiction.values)) {
       return false;
     }
   }

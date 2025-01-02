@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -23,7 +23,10 @@ class MockConfigService {
       access_management_mode: true,
       location_ref_api_url: 'dummy',
       cam_role_assignments_api_url: 'dummy',
-      notification_url: 'dummy'
+      notification_url: 'dummy',
+      events_to_hide: [
+        'queryManagementRespondQuery'
+      ]
     };
   }
 
@@ -31,6 +34,7 @@ class MockConfigService {
 }
 
 const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
+
 const mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get', 'getDeploymentEnv']);
 mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
 mockEnvironmentService.get.and.returnValue('someUrl');
@@ -41,7 +45,9 @@ const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
 describe('AppConfiguration', () => {
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-
+  mockFeatureToggleService.getValue.and.callFake((featureMame: string, defVal: any) => {
+    return of(defVal);
+  });
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -51,7 +57,6 @@ describe('AppConfiguration', () => {
       providers: [
         { provide: Window, useValue: mockWindow },
         AppConfig,
-        AppConfigService,
         InitialisationSyncService,
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
@@ -59,7 +64,8 @@ describe('AppConfiguration', () => {
         { provide: LoggerService, useValue: mockLoggerService }
       ]
     });
-    mockFeatureToggleService.getValue.and.returnValue(of(true));
+    const iss = TestBed.inject(InitialisationSyncService);
+    iss.initialisationComplete(true);
   });
 
   it('should be created ', inject([AppConfig, Window], (service: AppConfig) => {
@@ -156,7 +162,7 @@ describe('AppConfiguration', () => {
   }));
 
   it('should have getDocumentSecureMode return value', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getDocumentSecureMode()).toBe(true);
+    expect(service.getDocumentSecureMode()).toBe(false);
   }));
 
   it('should have getAccessManagementMode return value', inject([AppConfig], (service: AppConfig) => {
@@ -172,8 +178,28 @@ describe('AppConfiguration', () => {
     expect(service.getCamRoleAssignmentsApiUrl()).toBe('dummy');
   }));
 
+  it('should have getEventsToHide return value', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getEventsToHide()).toEqual(['queryManagementRespondQuery']);
+  }));
+
   it('should have called LogService log method', inject([AppConfig, Window], (service: AppConfig) => {
     service.logMessage('hello world');
     expect(mockLoggerService.log).toHaveBeenCalledWith('hello world');
   }));
+
+  it('should add attributes to an object retaining original attributes', inject([AppConfig], (service: AppConfig) => {
+    const testObj = { foo: 'bar', thud: 1 };
+    const expectedObj = {
+      ...testObj,
+      'wibble': 'wassock'
+    };
+    const result = service.addAttribute(testObj, 'wibble', 'wassock');
+    expect(result).toEqual(expectedObj);
+    expect(typeof result).toEqual(typeof(expectedObj));
+  }));
+
+  it('should be initialised after all LD observables complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
+    tick(5000);
+    expect(service.initialisationComplete).toBeTruthy();
+  })));
 });

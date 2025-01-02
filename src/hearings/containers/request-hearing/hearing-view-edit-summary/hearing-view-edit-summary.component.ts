@@ -97,8 +97,6 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
-    this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
-    this.hearingsService.propertiesUpdatedOnPageVisit = null;
     super.unsubscribe();
     this.initialAndCurrentStatesSubscription?.unsubscribe();
     this.unsubscribe$.next();

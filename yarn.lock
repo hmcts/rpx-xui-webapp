@@ -3436,13 +3436,13 @@ __metadata:
   checksum: 10/084bfa647015f4fd3fdd51fadb2747d09ef2f5e1443d6cbada2988b0c88494f85edf257ec606c790db146ac4e34ff57f3fcb22e3299b8e06ed5c87ba7583495c
   languageName: node
   linkType: hard
-  
-"@hmcts/ccd-case-ui-toolkit@npm:7.0.75-accesibility-beta2":
-  version: 7.0.75-accesibility-beta2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.0.75-accesibility-beta2"
+
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.29-accessible-checkbox-labels":
+  version: 7.1.29-accessible-checkbox-labels
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.29-accessible-checkbox-labels"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/adbef7e8bf21df6df12afe58dbe5ade0c0ece3270eb39ef11cbc68c20c7fde98135148977a3c26e0e7b8d601a66996f0471a630a68bf3cb7aef088ce8983de0
+  checksum: 10/21b2c4de3d403552b146b417f2bbe88323d217114fe7f4354f1c4ec7d663782845a2f9c8aa982351b93012515a839b286c7dc8972a448e9cd9f7a4d70dd767df
   languageName: node
   linkType: hard
 
@@ -22117,7 +22117,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit":  "npm:7.0.75-accesibility-beta2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.29-accessible-checkbox-labels"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.9"

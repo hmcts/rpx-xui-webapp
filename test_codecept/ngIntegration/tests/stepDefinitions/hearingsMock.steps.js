@@ -24,7 +24,6 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
 
 const jsonUtil = require('../.././../e2e/utils/jsonUtil')
 const path = require('path')
-const { HearingsUtils } = require('../../../../src/hearings/utils/hearings.utils');
 
 function getHearingsMockJsonFromFile(fileName){
   return jsonUtil.getJsonFromFile(path.resolve(__dirname,`../features/hearings/mockData/${fileName}.json`,))
@@ -42,6 +41,26 @@ function updateObjectValues(object, key, value){
   }
 }
 
+function modifyHearingDetailsYear(hearingDetails) {
+  if (hearingDetails?.dateRangeStart) {
+    hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart).year(moment().year() + 1).toISOString();
+  }
+  if (hearingDetails?.dateRangeEnd) {
+    hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd).year(moment().year() + 1).toISOString();
+  }
+  if (hearingDetails?.firstDateTimeMustBe) {
+    hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe).year(moment().year() + 1).toISOString();
+  }
+}
+
+function resetHearingWindow(input) {
+  if (input?.hearingWindow) {
+    modifyHearingDetailsYear(input.hearingWindow);
+  }
+  if (input?.hearingDetails?.hearingWindow) {
+    modifyHearingDetailsYear(input?.hearingDetails?.hearingWindow);
+  }
+}
 
 Given('I set mock case hearings from file {string}', async function (filename) {
   const response = getHearingsMockJsonFromFile(filename)
@@ -51,13 +70,13 @@ Given('I set mock case hearings from file {string}', async function (filename) {
 
 Given('I set mock hearing HMC response from file {string}', async function (fileName) {
   const response = getHearingsMockJsonFromFile(fileName);
-  HearingsUtils.resetHearingWindow(response);
+  resetHearingWindow(response);
   await mockClient.setOnGetHearing(response, 200);
 });
 
 Given('I set mock hearing SHV response from file {string}', async function (fileName) {
   const response = getHearingsMockJsonFromFile(fileName);
-  HearingsUtils.resetHearingWindow(response);
+  resetHearingWindow(response);
   await mockClient.setHearingServiceHearingValues(response, 200);
 });
 

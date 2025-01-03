@@ -112,7 +112,7 @@ export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[
   addUserRolesIfUnique(userInfo, amRoles);
   trackTrace(`user ${userId} roles ${JSON.stringify(userInfo.roles.slice(0, 50))} added to userInfo`);
   if (!userInfo.roleCategory) {
-    // only set the role category if not already set 
+    // only set the role category if not already set
     // this means user will not have to log out and log in to be assigned it properly
     const roleCategories = extractRoleCategories(userRoleAssignments);
     // We assign the role category via the role assignments assigned to user. If not we try IDAM roles

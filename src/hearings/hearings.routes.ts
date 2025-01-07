@@ -340,12 +340,12 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-panel',
+        path: 'hearing-panel-selector',
         resolve: {
           otherPanelRoles: RefDataResolver,
           judicialUsers: JudicialUserSearchResolver
         },
-        component: HearingPanelComponent,
+        component: HearingPanelSelectorComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
           category: HearingCategory.PanelMemberType,
@@ -354,12 +354,12 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'hearing-panel-selector',
+        path: 'hearing-panel',
         resolve: {
           otherPanelRoles: RefDataResolver,
           judicialUsers: JudicialUserSearchResolver
         },
-        component: HearingPanelSelectorComponent,
+        component: HearingPanelComponent,
         data: {
           title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
           category: HearingCategory.PanelMemberType,

@@ -3437,12 +3437,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.27-sonarCloud-gitub-config-update":
-  version: 7.1.27-sonarCloud-gitub-config-update
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.27-sonarCloud-gitub-config-update"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.31-sonarCloud-gitub-config-update":
+  version: 7.1.31-sonarCloud-gitub-config-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.31-sonarCloud-gitub-config-update"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9f342ef044ddfa5820fa8f97fbbb395662b62ff62881cef1bb6bd79aca19061a008b9550970968925b2fc9080000387333e92bcd83dec3f2f784c731f007f9b3
+  checksum: 10/769f77e88314ae049a099ad0bc362576228d7895260ed1ea77e4a1c4bea5b412f51ae7f084a0506c10dea427071a7848d37c150a81e25fd0481d7e19be5b68cf
   languageName: node
   linkType: hard
 
@@ -22117,7 +22117,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.27-sonarCloud-gitub-config-update"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.31-sonarCloud-gitub-config-update"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.9"

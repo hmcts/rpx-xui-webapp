@@ -12,7 +12,7 @@ import { substantiveRolesValid } from './utils';
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
     const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;
-    if (!allContainOnlySafeCharacters(req.body.serviceIds)) {
+    if (!allContainOnlySafeCharacters(serviceIds)) {
       return res.send('Invalid service id').status(400);
     }
     const roles = await getSubstantiveRoles(req);

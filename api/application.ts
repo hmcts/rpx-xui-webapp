@@ -1,4 +1,3 @@
-import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
@@ -6,6 +5,7 @@ import * as express from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import amRoutes from './accessManagement/routes';
+import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {

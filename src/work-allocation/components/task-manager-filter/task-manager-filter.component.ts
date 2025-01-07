@@ -35,6 +35,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
     showCancelFilterButton: true,
+    submitOnCancel: true,
     cancelSetting: {
       id: TaskManagerFilterComponent.FILTER_NAME,
       fields: [

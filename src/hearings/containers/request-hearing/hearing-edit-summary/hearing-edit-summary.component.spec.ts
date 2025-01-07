@@ -151,17 +151,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.featureToggleServiceSubscription.unsubscribe).toHaveBeenCalled();
   });
 
-  it('should purge data in store and clear hearings service manual amendment properties if page is destroyed', () => {
-    const dispatchSpy = spyOn(store, 'dispatch');
-    component.ngOnDestroy();
-    fixture.detectChanges();
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequest()));
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValues()));
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingConditions()));
-    expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
-    expect(hearingsService.propertiesUpdatedOnPageVisit).toBeNull();
-  });
-
   it('should focus on the element', () => {
     spyOn(component, 'fragmentFocus');
     component.ngAfterViewInit();

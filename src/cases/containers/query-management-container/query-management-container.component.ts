@@ -70,7 +70,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
   public showContinueButton: boolean = true;
-  private routerEventsSubscription!: Subscription;
+  private routerEventsSubscription: Subscription;
   private targetRoutePrefix = '/query-management/query/';
 
   constructor(

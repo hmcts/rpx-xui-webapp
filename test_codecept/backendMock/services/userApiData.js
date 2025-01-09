@@ -54,7 +54,7 @@ class UserApiData{
     }
 
     getUserData(token, apiMethod) {
-        let userSession = this.getUserSessionData(token)
+        let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
         if (!userSession) {
             return null;
         }
@@ -64,8 +64,8 @@ class UserApiData{
 
     captureRequestDetails(apiMethod, requestObj) {
         // apiMethod = apiMethod.toUpperCase();
-        const token = requestObj.headers?.authorization?.replace('Bearer ','')
-        let userSession = this.sessionUsers.find(token && ((sess) => sess.token === token))
+        const token = requestObj.headers.authorization.replace('Bearer ','')
+        let userSession = this.sessionUsers.find(sess => sess.token === token)
         if (!userSession) {
             userSession = {
                 requests: [],
@@ -98,7 +98,7 @@ class UserApiData{
             })
             return allSessionsRequests;
         }else{
-            let userSession = this.getUserSessionData(token)
+            let userSession = this.sessionUsers.find(sess => sess.token === token.replace('Bearer ', ''))
             if (!userSession) {
                 return null;
             }

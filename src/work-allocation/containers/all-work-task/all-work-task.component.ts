@@ -67,8 +67,12 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) =>
-      userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) => {
+      if (!userDetails.roleAssignmentInfo) {
+        // if no role assignment info, do not allow page to disappear
+        return [];
+      }
+      return userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)}
     ));
 
     // get detailed services for the all work services list

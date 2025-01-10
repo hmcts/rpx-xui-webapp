@@ -72,7 +72,8 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
         // if no role assignment info, do not allow page to disappear
         return [];
       }
-      return userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)}
+      return userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null);
+    }
     ));
 
     // get detailed services for the all work services list

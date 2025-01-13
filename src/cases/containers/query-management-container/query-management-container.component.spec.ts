@@ -808,28 +808,28 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
-  describe('Extra Qualifying questions Option', () => {
-    it('should retrieve and process qualifying questions', () => {
-      const qualifyingQuestions = [
-        { name: 'Question 1', markdown: 'Details 1', url: 'http://example.com/1' },
-        { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' }
-      ];
+    describe('Extra Qualifying questions Option', () => {
+      it('should retrieve and process qualifying questions', () => {
+        const qualifyingQuestions = [
+          { name: 'Question 1', markdown: 'Details 1', url: 'http://example.com/1' },
+          { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' }
+        ];
 
-      // eslint-disable-next-line dot-notation
-      component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Follow-up on an existing query', '/cases/case-details/123#Queries');
-      // eslint-disable-next-line dot-notation
-      component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Raise a new query', `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+        // eslint-disable-next-line dot-notation
+        component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Follow-up on an existing query', '/cases/case-details/123#Queries');
+        // eslint-disable-next-line dot-notation
+        component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Raise a new query', `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
-      expect(qualifyingQuestions).toContain(
-        jasmine.objectContaining({ name: 'Follow-up on an existing query', url: '/cases/case-details/123#Queries' })
-      );
+        expect(qualifyingQuestions).toContain(
+          jasmine.objectContaining({ name: 'Follow-up on an existing query', url: '/cases/case-details/123#Queries' })
+        );
 
-      expect(qualifyingQuestions).toContain(
-        jasmine.objectContaining({ name: 'Raise a new query', url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}` })
-      );
+        expect(qualifyingQuestions).toContain(
+          jasmine.objectContaining({ name: 'Raise a new query', url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}` })
+        );
 
-      expect(qualifyingQuestions.length).toBe(4);
+        expect(qualifyingQuestions.length).toBe(4);
+      });
     });
   });
 });
-

@@ -754,7 +754,9 @@ describe('QueryManagementContainerComponent', () => {
         { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' }
       ];
 
+      // eslint-disable-next-line dot-notation
       component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Follow-up on an existing query', '/cases/case-details/123#Queries');
+      // eslint-disable-next-line dot-notation
       component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Raise a new query', `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
       expect(qualifyingQuestions).toContain(

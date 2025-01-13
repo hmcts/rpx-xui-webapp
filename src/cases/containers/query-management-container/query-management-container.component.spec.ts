@@ -257,6 +257,17 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
   });
 
+  it('should set showContinueButton to true when navigating back from qualifying question detail if showContinueButton was previously set to false', () => {
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
+    component.showContinueButton = false;
+
+    component.previous();
+
+    expect(component.showContinueButton).toBeTruthy();
+    expect(qualifyingQuestionService.clearQualifyingQuestionSelection).toHaveBeenCalled();
+    expect(component.queryCreateContext).toBe(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+  });
+
   describe('when it does not have a query id', () => {
     it('should set the query create context', () => {
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
@@ -364,6 +375,56 @@ describe('QueryManagementContainerComponent', () => {
       expect(isHearingRelatedControl.hasError('required')).toBe(false);
     });
   });
+
+  describe('when it has not a query id', () => {
+    it('should log an error, set eventDataError to true', () => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: '4',
+          dataid: 'id-00EEE7'
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+
+      expect(component.eventDataError).toBe(true);
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: '',
+        description: 'This case is not configured for query management.',
+        fieldId: 'caseNotFoundError'
+      });
+    });
+
+    it('should log an error, set eventDataError to true', () => {
+      const modifiedMockData = {
+        ...eventMockData,
+        case_fields: eventMockData.case_fields.map((field) => ({
+          ...field,
+          value: null
+        }))
+      };
+      casesService.getEventTrigger.and.returnValue(of(modifiedMockData));
+
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: '4',
+          dataid: 'id-00EEE7'
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+
+      expect(component.eventDataError).toBe(true);
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: '',
+        description: 'This case is not configured for query management.',
+        fieldId: 'caseNotFoundError'
+      });
+    });
 
   describe('onDocumentCollectionUpdate', () => {
     beforeEach(() => {

@@ -435,6 +435,14 @@ describe('QueryManagementContainerComponent', () => {
       spyOn(component, 'validateForm');
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;
       component.submitForm();
+      expect(component.validateForm).toHaveBeenCalled();
+    });
+
+    it('should show error message for new query submission', () => {
+      spyOn(component, 'validateForm');
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+      component.eventDataError = true;
+      component.submitForm();
       expect(component.submitted).toEqual(true);
       expect(component.validateForm).toHaveBeenCalled();
     });
@@ -485,6 +493,21 @@ describe('QueryManagementContainerComponent', () => {
           spyOn(component, 'validateQualifyingQuestion').and.returnValue(false);
           component.submitForm();
           expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+        });
+
+        it('should not show continue button if url is empty', () => {
+          const qualifyingQuestion = {
+            name: 'Raise a new query',
+            markdown: '<p>Test markdown</p>',
+            url: ''
+          };
+
+          component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
+
+          spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
+          component.submitForm();
+          expect(component.showContinueButton).toBe(false);
+          expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
         });
       });
 
@@ -654,6 +677,15 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
+  describe('goToQueryList', () => {
+    it('should navigate to case Queries tab', () => {
+      component.goToQueryList();
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+        { fragment: 'Queries' }
+      );
+    });
+  });
+
   describe('getQueryCreateContext', () => {
     it('should return query item type respond as the query context', () => {
       activatedRoute.snapshot = {
@@ -712,6 +744,28 @@ describe('QueryManagementContainerComponent', () => {
         description: 'Something unexpected happened. please try again later.',
         fieldId: 'evenDataError'
       });
+    });
+  });
+
+  describe('Extra Qualifying questions Option', () => {
+    it('should retrieve and process qualifying questions', () => {
+      const qualifyingQuestions = [
+        { name: 'Question 1', markdown: 'Details 1', url: 'http://example.com/1' },
+        { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' }
+      ];
+
+      component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Follow-up on an existing query', '/cases/case-details/123#Queries');
+      component['addExtraOptionsToQualifyingQuestion'](qualifyingQuestions, 'Raise a new query', `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+
+      expect(qualifyingQuestions).toContain(
+        jasmine.objectContaining({ name: 'Follow-up on an existing query', url: '/cases/case-details/123#Queries' })
+      );
+
+      expect(qualifyingQuestions).toContain(
+        jasmine.objectContaining({ name: 'Raise a new query', url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}` })
+      );
+
+      expect(qualifyingQuestions.length).toBe(4);
     });
   });
 });

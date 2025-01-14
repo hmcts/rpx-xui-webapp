@@ -40,23 +40,23 @@ describe('HearingPanelRequiredComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check hearingInWelshFlag', (): void => {
+  it('should check isAPanelFlag', (): void => {
     let errors;
-    const hearingPanelChoice = component.hearingPanelRequiredForm.controls.hearingPanelChoice;
+    const hearingPanelRequired = component.hearingPanelRequiredForm.controls.hearingPanelRequired;
 
-    hearingPanelChoice.setValue(true);
-    errors = hearingPanelChoice.errors;
+    hearingPanelRequired.setValue(true);
+    errors = hearingPanelRequired.errors;
     fixture.detectChanges();
     expect(errors).toBeNull();
 
-    hearingPanelChoice.setValue(null);
-    errors = hearingPanelChoice.errors;
+    hearingPanelRequired.setValue(null);
+    errors = hearingPanelRequired.errors;
     fixture.detectChanges();
     expect(errors).toBeTruthy();
   });
 
   it('should load default value', (): void => {
-    expect(component.hearingPanelRequiredForm.value.hearingPanelRequired).toBeTruthy();
+    expect(component.hearingPanelRequiredForm.value.hearingPanelRequired).toEqual(false);
   });
 
   it('should execute a continue action', (): void => {

@@ -233,6 +233,28 @@ export class HearingsUtils {
     return contains;
   }
 
+  public static modifyHearingDetailsYear(hearingDetails: HearingWindowModel): void {
+    if (hearingDetails?.dateRangeStart) {
+      hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart).year(moment().year() + 1).toISOString();
+    }
+    if (hearingDetails?.dateRangeEnd) {
+      hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd).year(moment().year() + 1).toISOString();
+    }
+    if (hearingDetails?.firstDateTimeMustBe) {
+      hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe).year(moment().year() + 1).toISOString();
+    }
+    // return modifiedHearingDetails;
+  }
+
+  public static resetHearingWindow(input: any): void {
+    if (input?.hearingWindow) {
+      HearingsUtils.modifyHearingDetailsYear(input.hearingWindow);
+    }
+    if (input?.hearingDetails?.hearingWindow) {
+      HearingsUtils.modifyHearingDetailsYear(input?.hearingDetails?.hearingWindow);
+    }
+  }
+
   public static checkTemplateForHearingRequiremnts(template: Section[], isAPanelFlag: boolean): Section[] {
     if (isAPanelFlag === null || isAPanelFlag === undefined) {
       return template;

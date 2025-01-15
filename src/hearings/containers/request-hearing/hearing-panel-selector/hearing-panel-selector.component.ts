@@ -78,7 +78,7 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
     this.serviceId = this.serviceHearingValuesModel.hmctsServiceID;
   }
 
-  private buildModelFromValues(): LovRefDataModel[] {
+  public buildModelFromValues(): LovRefDataModel[] {
     // Create a copy of panelSpecialisms to track unprocessed child IDs
     let panelSpecialismsClone = [...this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms];
     // Loop through each item in roleType
@@ -105,7 +105,7 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
       .filter(item => item !== null) as LovRefDataModel[];
   }
 
-  private extractValuesFromModel(model: LovRefDataModel[]): { roleType: string[], panelSpecialisms: (string | null)[] } {
+  public extractValuesFromModel(model: LovRefDataModel[]): { roleType: string[], panelSpecialisms: (string | null)[] } {
     const roleType: string[] = [];
     const panelSpecialisms: (string | null)[] = [];
   

@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
+import { ACTION, MemberType, RequirementType } from '../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -311,27 +311,15 @@ describe('HearingPanelSelectorComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check specificPanel selection', () => {
-    component.showSpecificPanel(RadioOptions.YES);
-    expect(component.panelSelection).toBe(RadioOptions.YES);
-  });
-
   it('should fail the form validation when no panel member/roles are selected', () => {
-    component.panelJudgeForm.controls.multiLevelSelect.value.forEach((node) => {
-      node.selected = false;
-    });
+    component.panelListCollection = []
     component.includedJudge.judgeList = [];
     component.excludedJudge.judgeList = [];
-    component.panelJudgeForm.controls.specificPanel.setValue(RadioOptions.YES);
     component.isFormValid();
     expect(component.validationErrors.length).toBeGreaterThan(0);
   });
 
-  xit('should check form valid', () => {
-    component.panelJudgeForm.controls.specificPanel.setValue('');
-    expect(component.isFormValid()).toBeFalsy();
-    component.showSpecificPanel(RadioOptions.YES);
-    expect(component.panelSelection).toBe(RadioOptions.YES);
+  it('should check form valid', () => {
     expect(component.isFormValid()).toBeTruthy();
   });
 
@@ -353,7 +341,6 @@ describe('HearingPanelSelectorComponent', () => {
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
     expect(component.getPanelMemberList(RequirementType.MUSTINC).length).toBe(1);
-    expect(component.panelSelection).toBe(RadioOptions.YES);
     expect(component.getPanelMemberList(RequirementType.EXCLUDE).length).toBe(0);
   });
 
@@ -379,52 +366,118 @@ describe('HearingPanelSelectorComponent', () => {
     expect(component.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences.length).toBe(2);
   });
 
-  it('should load panel and return true when matching panelSpecialism is found', () => {
-    const panelSpecialism = 'BBA3-MQPM2-001';
-    const result = component.loadPanel(MEDICALLY_QUALIFIED_PANEL_MEMBERS, panelSpecialism);
-    expect(result).toBe(true);
-    expect(MEDICALLY_QUALIFIED_PANEL_MEMBERS.selected).toBe(true);
-    expect(MEDICALLY_QUALIFIED_PANEL_MEMBERS.child_nodes[2].selected).toBe(true);
+  it('Should populate panelListCollection', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-MQPM2'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003'];
+
+    const expectedResult = [
+      {
+        category_key: 'PanelMemberType',
+        key: 'BBA3-MQPM2',
+        value_en: 'Medically Qualified Panel Member',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: '',
+        parent_key: '',
+        active_flag: 'Y',
+        child_nodes: [
+          {
+            category_key: 'PanelMemberSpecialism',
+            key: 'BBA3-MQPM2-003',
+            value_en: 'Eye Surgeon',
+            value_cy: '',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: null,
+            parent_category: 'PanelMemberType',
+            parent_key: 'BBA3-MQPM2',
+            active_flag: 'Y',
+            child_nodes: null
+          }
+        ]
+      }
+    ];
+    const result = component.buildModelFromValues();
+
+    expect(result).toEqual(expectedResult);
   });
 
-  it('should return false when matching panelSpecialism is not found', () => {
-    const panelSpecialism = 'NonExistentSpecialism';
-    const panelMembers = {
-      category_key: 'PanelMemberType',
-      key: 'BBA3-MQPM2',
-      value_en: 'Medically Qualified Panel Member',
-      value_cy: '',
-      hint_text_en: '',
-      hint_text_cy: '',
-      lov_order: null,
-      parent_category: '',
-      parent_key: '',
-      active_flag: 'Y',
-      selected: false
-    };
-    const result = component.loadPanel(panelMembers, panelSpecialism);
-    expect(result).toBe(false);
-    expect(panelMembers.selected).toBe(false);
+  it('Should convert model into roleType and panelSpecialisms', () => {
+
+    const modelData = [
+      {
+        category_key: 'PanelMemberType',
+        key: 'BBA3-MQPM2',
+        value_en: 'Medically Qualified Panel Member',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: '',
+        parent_key: '',
+        active_flag: 'Y',
+        child_nodes: [
+          {
+            category_key: 'PanelMemberSpecialism',
+            key: 'BBA3-MQPM2-003',
+            value_en: 'Eye Surgeon',
+            value_cy: '',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: null,
+            parent_category: 'PanelMemberType',
+            parent_key: 'BBA3-MQPM2',
+            active_flag: 'Y',
+            child_nodes: null
+          }
+        ]
+      }
+    ];
+
+    const { roleType, panelSpecialisms } = component.extractValuesFromModel(modelData);
+
+    expect(roleType).toEqual(['BBA3-MQPM2']);
+    expect(panelSpecialisms).toEqual(['BBA3-MQPM2-003']);
   });
 
-  it('should return false when child_nodes is empty', () => {
-    const panelSpecialism = 'BBA3-MQPM2';
-    const panelMembers = {
-      category_key: 'PanelMemberType',
-      key: 'BBA3-MQPM2',
-      value_en: 'Medically Qualified Panel Member',
-      value_cy: '',
-      hint_text_en: '',
-      hint_text_cy: '',
-      lov_order: null,
-      parent_category: '',
-      parent_key: '',
-      active_flag: 'Y',
-      selected: false
-    };
-    const result = component.loadPanel(panelMembers, panelSpecialism);
-    expect(result).toBe(true);
-    expect(panelMembers.selected).toBe(true);
+  it('should update model when onchange is triggered', () => {
+    component.panelListCollection = []
+
+    const modelData = [
+      {
+        category_key: 'PanelMemberType',
+        key: 'BBA3-MQPM2',
+        value_en: 'Medically Qualified Panel Member',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: null,
+        parent_category: '',
+        parent_key: '',
+        active_flag: 'Y',
+        child_nodes: [
+          {
+            category_key: 'PanelMemberSpecialism',
+            key: 'BBA3-MQPM2-003',
+            value_en: 'Eye Surgeon',
+            value_cy: '',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: null,
+            parent_category: 'PanelMemberType',
+            parent_key: 'BBA3-MQPM2',
+            active_flag: 'Y',
+            child_nodes: null
+          }
+        ]
+      }
+    ];
+
+    component.onModelChange(modelData);
+
+    expect(component.panelListCollection).toEqual(modelData);
   });
 
   afterEach(() => {

@@ -5,7 +5,7 @@
     <h1 class="govuk-heading-l">{{ 'Select panel members for the hearing' | rpxTranslate }}</h1>
 
     <form class="form" [formGroup]="panelJudgeForm">
-      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!panelSelectionError || !!childNodesValidationError}">
+      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': !!panelSelectionError }">
         <fieldset class="govuk-fieldset" id="specific-panel-selection">
           <exui-hearing-judge-names-list #includedJudge [subTitle]="'Include specific panel members (optional)'"
                                         [judgeList]="includedJudgeList"
@@ -14,20 +14,17 @@
                                         [idValue]="'Include'"
                                         [serviceId]="serviceId"
                                         [isColumnView]="false"></exui-hearing-judge-names-list>
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                <h1 class="govuk-fieldset__heading">
-                    {{ 'Or select any other panel roles required' | rpxTranslate }}
-                </h1>
-            </legend>
-            <span class="govuk-error-message" *ngIf="childNodesValidationError">
-              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ childNodesValidationError | rpxTranslate }}
+
+                
+            <span>
+                {{ 'Or select any other panel roles required' | rpxTranslate }}
             </span>
-            
-            <exui-multi-level-selector *ngIf="configLevels" id="panel-role-selector"
-              [multiLevelSelect]="panelJudgeForm.controls.multiLevelSelect"
-              [hasValidationRequested]="hasValidationRequested"
-              [configLevels]="configLevels"
-            ></exui-multi-level-selector>
+
+            <exui-radio-list-builder id="panel-role-selector"
+              [data]="otherPanelRoles"
+              [model]="panelListCollection"
+              (modelChange)="onModelChange($event)">
+            </exui-radio-list-builder>
 
             <div class="govuk-!-padding-top-8">
               <exui-hearing-judge-names-list #excludedJudge [subTitle]="'Exclude specific panel members (optional)'"

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DetailedService } from 'src/app/models/detailed-service.model';
+import { DetailedService } from '../../app/models';
 
 @Injectable()
 export class WASupportedJurisdictionsService {

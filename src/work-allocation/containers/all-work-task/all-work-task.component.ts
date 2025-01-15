@@ -150,7 +150,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       supportedJurisdictions.push(jurisdiction.serviceId);
     });
     this.supportedJurisdictions = supportedJurisdictions;
-    if (!roleServiceIds.includes(null)) {
+    if (!roleServiceIds.includes(null) && roleServiceIds.length > 0) {
       const roleJurisdictions = [];
       // get set of serviceIds from jurisdictions within user roles
       const initialRoleJurisdictions = [...new Set(roleServiceIds)];

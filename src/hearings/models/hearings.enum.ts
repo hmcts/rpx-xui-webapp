@@ -250,8 +250,7 @@ export enum ACTION {
 export enum ConditionOperator {
   INCLUDE = 'INCLUDE',
   NOT_INCLUDE = 'NOT INCLUDE',
-  EQUALS = 'EQUALS',
-  NOT_EQUALS = 'NOT EQUALS',
+  EQUALS = 'EQUALS'
 }
 
 export enum CaseFlagType {

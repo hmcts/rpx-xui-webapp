@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DetailedService } from '../../app/models/detailed-service.model';
+import { HMCTSDetailsService } from '../../app/models/hmcts-details-service.model';
 import { SearchStatePersistenceKey } from '../enums';
 import { SearchParameters, SearchRequest, SearchRequestCriteria, SearchResult } from '../models';
 import { SearchRequestParty } from '../models/search-request-party.model';
@@ -12,8 +12,8 @@ export class SearchService {
 
   constructor(private readonly http: HttpClient) {}
 
-  public getServices(): Observable<DetailedService[]> {
-    return this.http.get<DetailedService[]>('/api/globalSearch/services');
+  public getServices(): Observable<HMCTSDetailsService[]> {
+    return this.http.get<HMCTSDetailsService[]>('/api/globalSearch/services');
   }
 
   public getResults(): Observable<SearchResult> {

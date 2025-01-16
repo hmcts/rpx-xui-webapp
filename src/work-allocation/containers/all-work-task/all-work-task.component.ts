@@ -4,7 +4,7 @@ import { select } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { DetailedService, UserInfo, UserRole } from '../../../app/models';
+import { HMCTSDetailsService, UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder, TaskContext } from '../../enums';
@@ -143,7 +143,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.loadBasedOnFilter();
   }
 
-  private setServiceList(roleServiceIds: string[], detailedWAServices: DetailedService[]): DetailedService[] {
+  private setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSDetailsService[]): HMCTSDetailsService[] {
     const supportedJurisdictions = [];
     detailedWAServices.forEach((jurisdiction) => {
       // get the serviceIds from the detailed service

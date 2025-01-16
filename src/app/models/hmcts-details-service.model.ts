@@ -1,4 +1,4 @@
-export interface DetailedService {
+export interface HMCTSDetailsService {
   serviceId: string;
   serviceName: string;
 }

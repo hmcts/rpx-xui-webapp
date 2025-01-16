@@ -1,7 +1,7 @@
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_REF_API_URL, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
-import { DetailedService } from '../interfaces/detailedService';
+import { HMCTSDetailsService } from '../interfaces/hmctsDetailsService';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -47,14 +47,14 @@ export function getWASupportedJurisdictionsList(): any {
 
 // Note: separate from global search services currently
 // This is to allow more customisation - general generate services within utils
-export function generateServices(refDataHMCTS: RefDataHMCTSService[]): DetailedService[] {
+export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSDetailsService[] {
   const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
   const jurisdictionsArray = jurisdictions.split(',');
-  const waSupportedServices: DetailedService[] = [];
+  const waSupportedServices: HMCTSDetailsService[] = [];
   jurisdictionsArray.forEach((serviceId) => {
     // search for the service name based on the supported jursdiction
     const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
-    if (jurisdiction) {
+    if (jurisdiction?.length > 0) {
       // handle Civil service which has different service_short_description
       if (jurisdiction.length > 1) {
         waSupportedServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });

@@ -6,7 +6,7 @@ import {
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_LOCATION_REF_API_URL
 } from '../configuration/references';
-import { DetailedService } from '../interfaces/detailedService';
+import { HMCTSDetailsService } from '../interfaces/hmctsDetailsService';
 import { EnhancedRequest } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { http } from '../lib/http';
@@ -61,17 +61,17 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  * @param jurisdictions
  * @returns
  */
-export function generateServices(refDataHMCTS: RefDataHMCTSService[]): DetailedService[] {
+export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSDetailsService[] {
   // Retrieve global search services id from config
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
   // Generate global search services
-  const globalSearchServices: DetailedService[] = [];
+  const globalSearchServices: HMCTSDetailsService[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
     // search for the service name based on the globalSearchServiceId
     const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
-    if (jurisdiction) {
+    if (jurisdiction?.length > 0) {
       // handle Civil service which has different service_short_description
       if (jurisdiction.length > 1) {
         globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });

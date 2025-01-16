@@ -202,6 +202,7 @@ describe('HearingPanelSelectorComponent', () => {
     requirementType: RequirementType.MUSTINC
   }];
 
+  /* eslint-disable */
   const MEDICALLY_QUALIFIED_PANEL_MEMBERS: LovRefDataModel = {
     category_key: 'PanelMemberType',
     key: 'BBA3-MQPM2',
@@ -269,6 +270,7 @@ describe('HearingPanelSelectorComponent', () => {
     ],
     selected: false
   };
+  /* eslint-enable */
 
   beforeEach(() => {
     const STATE = _.cloneDeep(initialState);
@@ -312,7 +314,7 @@ describe('HearingPanelSelectorComponent', () => {
   });
 
   it('should fail the form validation when no panel member/roles are selected', () => {
-    component.panelListCollection = []
+    component.panelListCollection = [];
     component.includedJudge.judgeList = [];
     component.excludedJudge.judgeList = [];
     component.isFormValid();
@@ -405,7 +407,6 @@ describe('HearingPanelSelectorComponent', () => {
   });
 
   it('Should convert model into roleType and panelSpecialisms', () => {
-
     const modelData = [
       {
         category_key: 'PanelMemberType',
@@ -443,7 +444,7 @@ describe('HearingPanelSelectorComponent', () => {
   });
 
   it('should update model when onchange is triggered', () => {
-    component.panelListCollection = []
+    component.panelListCollection = [];
 
     const modelData = [
       {

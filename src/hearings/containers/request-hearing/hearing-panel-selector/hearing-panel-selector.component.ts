@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import * as _ from 'lodash';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import {
   ACTION,
@@ -38,7 +37,6 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
 
   public panelListCollection: LovRefDataModel[] = [];
   public otherPanelRoles: LovRefDataModel[] = [];
-  
   @ViewChild('includedJudge', { static: false }) public includedJudge: HearingJudgeNamesListComponent;
   @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
@@ -80,17 +78,18 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
 
   public buildModelFromValues(): LovRefDataModel[] {
     // Create a copy of panelSpecialisms to track unprocessed child IDs
-    let panelSpecialismsClone = [...this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms];
+    const panelSpecialismsClone = [...this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms];
     // Loop through each item in roleType
     return this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType
-      .map(id => {
+      .map((id) => {
         // Find the corresponding node
-        const node = this.otherPanelRoles.find(item => item.key === id);
+        const node = this.otherPanelRoles.find((item) => item.key === id);
         // If node is not found, return null
-        if (!node) return null;
-  
+        if (!node) {
+          return null;
+        }
         // Filter out child nodes belonging to this main node
-        const childNodes = node.child_nodes?.filter(child => {
+        const childNodes = node.child_nodes?.filter((child) => {
           const index = panelSpecialismsClone.indexOf(child.key);
           if (index !== -1) {
             panelSpecialismsClone[index] = null; // Mark as processed
@@ -98,18 +97,16 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
           }
           return false;
         }) || [];
-  
         // Return the rebuilt LovRefDataModel with filtered child nodes
         return { ...node, child_nodes: childNodes.length ? childNodes : null };
       })
-      .filter(item => item !== null) as LovRefDataModel[];
+      .filter((item) => item !== null) as LovRefDataModel[];
   }
 
   public extractValuesFromModel(model: LovRefDataModel[]): { roleType: string[], panelSpecialisms: (string | null)[] } {
     const roleType: string[] = [];
     const panelSpecialisms: (string | null)[] = [];
-  
-    model.forEach(item => {
+    model.forEach((item) => {
       roleType.push(item.key);
       if (item.child_nodes && item.child_nodes.length > 0) {
         panelSpecialisms.push(item.child_nodes[0].key);
@@ -117,10 +114,9 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
         panelSpecialisms.push(null);
       }
     });
-  
     return { roleType, panelSpecialisms };
   }
-  
+
   public getPanelMemberList(panelRequirementType: string): JudicialUserModel[] {
     const selectedPanelList: JudicialUserModel[] = [];
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
@@ -155,11 +151,11 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
       };
       selectedPanelMembers.push(panelPreference);
     });
-    
+
     const panelRequirements = this.hearingRequestMainModel.hearingDetails.panelRequirements;
 
     const selectedPanelJudges: PanelPreferenceModel[] = panelRequirements?.panelPreferences?.filter((preferences) => preferences.memberType === MemberType.JUDGE) || [];
-    
+
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
@@ -193,18 +189,18 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
     this.validationErrors = [];
     this.panelSelectionError = null;
 
-      const validIncludeOrExcludeSelection = this.includedJudge.judgeList.length > 0 || this.excludedJudge.judgeList.length > 0;
+    const validIncludeOrExcludeSelection = this.includedJudge.judgeList.length > 0 || this.excludedJudge.judgeList.length > 0;
 
-      if (!this.panelListCollection.length) {
-        if (!validIncludeOrExcludeSelection) {
-          this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-          this.validationErrors.push({
-            id: 'specific-panel-selection',
-            message: HearingPanelSelectionEnum.SelectionError
-          });
-          return false;
-        }
+    if (!this.panelListCollection.length) {
+      if (!validIncludeOrExcludeSelection) {
+        this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
+        this.validationErrors.push({
+          id: 'specific-panel-selection',
+          message: HearingPanelSelectionEnum.SelectionError
+        });
+        return false;
       }
+    }
 
     return this.panelJudgeForm.valid;
   }

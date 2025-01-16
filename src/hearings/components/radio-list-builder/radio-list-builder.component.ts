@@ -24,11 +24,11 @@ export class RadioListBuilderComponent {
     this.formGroup = new FormGroup({
       selectedKey: new FormControl(null),
       selectedChildKey: new FormControl(null),
-      selectedItems: new FormArray(this.model.map(item => new FormControl(item)))
+      selectedItems: new FormArray(this.model.map((item) => new FormControl(item)))
     });
 
     // Emit changes to the model array
-    this.formGroup.get('selectedItems')?.valueChanges.subscribe(value => {
+    this.formGroup.get('selectedItems')?.valueChanges.subscribe((value) => {
       this.modelChange.emit(value);
     });
   }
@@ -50,11 +50,11 @@ export class RadioListBuilderComponent {
     const selectedKey = this.formGroup.get('selectedKey')?.value;
     const selectedChildKey = this.formGroup.get('selectedChildKey')?.value;
     if (selectedKey) {
-      const selectedNode = this.data.find(item => item.key === selectedKey);
+      const selectedNode = this.data.find((item) => item.key === selectedKey);
       if (selectedNode) {
         const nodeToAdd = { ...selectedNode, child_nodes: null };
         if (selectedChildKey) {
-          const selectedChildNode = selectedNode.child_nodes?.find(child => child.key === selectedChildKey);
+          const selectedChildNode = selectedNode.child_nodes?.find((child) => child.key === selectedChildKey);
           if (selectedChildNode) {
             nodeToAdd.child_nodes = [selectedChildNode];
           }
@@ -72,7 +72,7 @@ export class RadioListBuilderComponent {
 
   public get childNodes(): any[] | null {
     const selectedKey = this.formGroup.get('selectedKey')?.value;
-    const parentNode = this.data.find(item => item.key === selectedKey);
+    const parentNode = this.data.find((item) => item.key === selectedKey);
     return parentNode?.child_nodes || null;
   }
 
@@ -82,5 +82,4 @@ export class RadioListBuilderComponent {
     }
     return option.value_en;
   }
-
 }

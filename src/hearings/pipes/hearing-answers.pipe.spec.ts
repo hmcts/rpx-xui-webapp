@@ -181,7 +181,7 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform need panel', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.NEED_PANEL, of(STATE), 0);
-    const needPanel = 'Yes';
+    const needPanel = 'No';
     const expected = cold('(b|)', { b: needPanel });
     expect(result$).toBeObservable(expected);
   });

@@ -48,7 +48,6 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
     protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
 
-    //this.multiLevelSelections = this.route.snapshot.data.otherPanelRoles;
     this.otherPanelRoles = this.route.snapshot.data.otherPanelRoles;
 
     this.personalCodejudgeList = this.route.snapshot.data.judicialUsers;

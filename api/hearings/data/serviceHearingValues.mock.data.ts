@@ -179,7 +179,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         {
           conditionOperator: 'INCLUDE',
           conditionValue: 'true',
-          resultValue: 'hearing-panel'
+          resultValue: 'hearing-panel-selector'
         },
         {
           conditionOperator: 'NOT INCLUDE',
@@ -197,7 +197,7 @@ export const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
       ]
     },
     {
-      screenName: 'hearing-panel',
+      screenName: 'hearing-panel-selector',
       navigation: [
         {
           resultValue: 'hearing-timing'

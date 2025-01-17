@@ -629,6 +629,7 @@ describe('HearingsUtils', () => {
 
       it('should return the same template when no screens to filter', () => {
         const template: Section[] = [
+          { screenName: 'hearing-panel-required', insetInfo: 'hearing-panel-required', sectionHTMLTitle: 'Hearing panel required' },
           { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
           { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
@@ -658,7 +659,7 @@ describe('HearingsUtils', () => {
       });
 
       it('should return the same template when no screens to filter', () => {
-        const sectionsToDisplay: string[] = ['hearing-judge', 'hearing-panel', 'hearing-details'];
+        const sectionsToDisplay: string[] = ['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details'];
         const isAPanelFlag = undefined;
         const result = HearingsUtils.checkScreensForHearingRequiremnts(sectionsToDisplay, isAPanelFlag);
         expect(result).toEqual(['hearing-judge', 'hearing-panel', 'hearing-details']);

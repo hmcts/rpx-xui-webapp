@@ -31,6 +31,7 @@ import { HearingVenueComponent } from './containers/request-hearing/hearing-venu
 import { HearingViewEditSummaryComponent } from './containers/request-hearing/hearing-view-edit-summary/hearing-view-edit-summary.component';
 import { HearingWelshComponent } from './containers/request-hearing/hearing-welsh/hearing-welsh.component';
 import { HearingPanelRequiredComponent } from './containers/request-hearing/hearing-panel-required/hearing-panel-required.component';
+import { HearingPanelSelectorComponent } from './containers/request-hearing/hearing-panel-selector/hearing-panel-selector.component';
 import { RequestHearingComponent } from './containers/request-hearing/request-hearing.component';
 import { HearingAdjournedSummaryComponent } from './containers/view-hearing/hearing-adjourned-summary/hearing-adjourned-summary.component';
 import { HearingCancellationSummaryComponent } from './containers/view-hearing/hearing-cancellation-summary/hearing-cancellation-summary.component';
@@ -336,6 +337,20 @@ export const ROUTES: Routes = [
           title: 'HMCTS Hearings | Request Hearing | Specify Judge',
           category: HearingCategory.JudgeType,
           memberType: MemberType.JUDGE
+        }
+      },
+      {
+        path: 'hearing-panel-selector',
+        resolve: {
+          otherPanelRoles: RefDataResolver,
+          judicialUsers: JudicialUserSearchResolver
+        },
+        component: HearingPanelSelectorComponent,
+        data: {
+          title: 'HMCTS Hearings | Request Hearing | Require Panel Or Not',
+          category: HearingCategory.PanelMemberType,
+          memberType: MemberType.PANEL_MEMBER,
+          isChildRequired: [HearingCategory.PanelMemberType]
         }
       },
       {

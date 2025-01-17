@@ -64,7 +64,7 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
       {
         conditionOperator: 'EQUALS',
         conditionValue: true,
-        resultValue: 'hearing-panel'
+        resultValue: 'hearing-panel-selector'
       },
       {
         conditionOperator: 'EQUALS',
@@ -82,7 +82,7 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
     ]
   },
   {
-    screenName: 'hearing-panel',
+    screenName: 'hearing-panel-selector',
     navigation: [
       {
         resultValue: 'hearing-timing'

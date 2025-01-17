@@ -250,8 +250,7 @@ export enum ACTION {
 export enum ConditionOperator {
   INCLUDE = 'INCLUDE',
   NOT_INCLUDE = 'NOT INCLUDE',
-  EQUALS = 'EQUALS',
-  NOT_EQUALS = 'NOT EQUALS',
+  EQUALS = 'EQUALS'
 }
 
 export enum CaseFlagType {
@@ -421,5 +420,6 @@ export enum HearingScreensEnum {
   HEARING_TIMING = 'hearing-timing',
   HEARING_LINK = 'hearing-link',
   HEARING_PANEL = 'hearing-panel',
+  HEARING_PANEL_SELECTOR = 'hearing-panel-selector',
   HEARING_ADDITIONAL_INSTRUCTIONS = 'hearing-additional-instructions'
 }

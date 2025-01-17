@@ -5,7 +5,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { HMCTSDetailsService } from '../interfaces/hmctsDetailsService';
+import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
@@ -137,7 +137,7 @@ describe('Jurisdiction', () => {
       ]
     }
   ];
-  const serviceList: HMCTSDetailsService[] = [
+  const serviceList: HMCTSServiceDetails[] = [
 
     { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
     { serviceId: 'Civil', serviceName: 'Civil' },

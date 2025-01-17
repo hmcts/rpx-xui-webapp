@@ -1,7 +1,7 @@
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_REF_API_URL, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
-import { HMCTSDetailsService } from '../interfaces/hmctsDetailsService';
+import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -47,10 +47,10 @@ export function getWASupportedJurisdictionsList(): any {
 
 // Note: separate from global search services currently
 // This is to allow more customisation - general generate services within utils
-export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSDetailsService[] {
+export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSServiceDetails[] {
   const jurisdictions = getConfigValue(WA_SUPPORTED_JURISDICTIONS);
   const jurisdictionsArray = jurisdictions.split(',');
-  const waSupportedServices: HMCTSDetailsService[] = [];
+  const waSupportedServices: HMCTSServiceDetails[] = [];
   jurisdictionsArray.forEach((serviceId) => {
     // search for the service name based on the supported jursdiction
     const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;

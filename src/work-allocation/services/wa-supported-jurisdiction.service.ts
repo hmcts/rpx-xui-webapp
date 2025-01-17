@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HMCTSDetailsService } from '../../app/models';
+import { HMCTSServiceDetails } from '../../app/models';
 
 @Injectable()
 export class WASupportedJurisdictionsService {
@@ -9,8 +9,8 @@ export class WASupportedJurisdictionsService {
   public constructor(private readonly http: HttpClient) {}
 
   // Note: this will include service name
-  public getDetailedWASupportedJurisdictions(): Observable<HMCTSDetailsService[]> {
-    return this.http.get<HMCTSDetailsService[]>(`${WASupportedJurisdictionsService.jurisdictionUrl}/detail`);
+  public getDetailedWASupportedJurisdictions(): Observable<HMCTSServiceDetails[]> {
+    return this.http.get<HMCTSServiceDetails[]>(`${WASupportedJurisdictionsService.jurisdictionUrl}/detail`);
   }
 
   public getWASupportedJurisdictions(): Observable<string[]> {

@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { HMCTSDetailsService, UserRole } from '../../../app/models';
+import { HMCTSServiceDetails, UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 import { getRoleCategory } from '../../utils';
 
@@ -18,7 +18,7 @@ import { getRoleCategory } from '../../utils';
 })
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
-  @Input() public jurisdictions: HMCTSDetailsService[] = [];
+  @Input() public jurisdictions: HMCTSServiceDetails[] = [];
   @Input() public waSupportedJurisdictions: string[];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
@@ -62,7 +62,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
               private featureToggleService: FeatureToggleService,
               private readonly appStore: Store<fromAppStore.State>) {}
 
-  private static initServiceFilter(jurisdictions: HMCTSDetailsService[]): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: HMCTSServiceDetails[]): FilterFieldConfig {
     return {
       name: 'service',
       options: jurisdictions.map((service) => ({ key: service.serviceId, label: service.serviceName })),

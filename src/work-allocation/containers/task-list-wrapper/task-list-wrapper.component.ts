@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
-import { HMCTSDetailsService, UserInfo } from '../../../app/models';
+import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -39,7 +39,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public showSpinner$: Observable<boolean>;
   public waSupportedJurisdictions$: Observable<string[]>;
   // details only used for all work
-  public waSupportedDetailedServices$: Observable<HMCTSDetailsService[]>;
+  public waSupportedDetailedServices$: Observable<HMCTSServiceDetails[]>;
   public sortedBy: SortField;
   public pagination: PaginationParameter;
   public selectedLocations: string[] = [];

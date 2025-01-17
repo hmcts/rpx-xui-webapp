@@ -6,7 +6,7 @@ import {
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_LOCATION_REF_API_URL
 } from '../configuration/references';
-import { HMCTSDetailsService } from '../interfaces/hmctsDetailsService';
+import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { EnhancedRequest } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { http } from '../lib/http';
@@ -61,13 +61,13 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  * @param jurisdictions
  * @returns
  */
-export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSDetailsService[] {
+export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSServiceDetails[] {
   // Retrieve global search services id from config
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
   // Generate global search services
-  const globalSearchServices: HMCTSDetailsService[] = [];
+  const globalSearchServices: HMCTSServiceDetails[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
     // search for the service name based on the globalSearchServiceId
     const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;

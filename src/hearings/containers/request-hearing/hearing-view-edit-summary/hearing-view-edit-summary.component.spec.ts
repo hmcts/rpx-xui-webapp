@@ -346,7 +346,7 @@ describe('HearingViewEditSummaryComponent', () => {
       expect(component.template[3].screenName).toEqual('hearing-welsh');
       expect(component.template[4].screenName).toEqual('hearing-panel-required');
       expect(component.template[5].screenName).toEqual('hearing-panel');
-      expect(component.template[6].screenName).toEqual('hearing-timing');
+      expect(component.template[6].screenName).toEqual('hearing-panel-selector');
       const scrFl = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(screenFlow));
       component.getScreenFlowFromStore().subscribe((scr) => {
         expect(scr.length).toEqual(6);

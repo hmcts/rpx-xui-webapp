@@ -257,7 +257,7 @@ export class HearingsUtils {
 
   public static checkTemplateForHearingRequiremnts(template: Section[], isAPanelFlag: boolean): Section[] {
     if (isAPanelFlag === null || isAPanelFlag === undefined) {
-      return template;
+      return template.filter((tp: Section) => !tp.sectionHTMLTitle.includes('Hearing panel required'));
     } else if (isAPanelFlag) {
       return template.filter((tp: Section) => !tp.sectionHTMLTitle.includes('Judge details'));
     }
@@ -266,7 +266,7 @@ export class HearingsUtils {
 
   public static checkScreensForHearingRequiremnts(screens: string[], isAPanelFlag: boolean): string[] {
     if (isAPanelFlag === null || isAPanelFlag === undefined) {
-      return screens;
+      return screens.filter((screen: string) => screen !== 'hearing-panel-required');
     } else if (isAPanelFlag) {
       return screens.filter((screen: string) => screen !== 'hearing-judge');
     }

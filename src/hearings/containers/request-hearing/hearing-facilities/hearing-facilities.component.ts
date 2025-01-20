@@ -178,3 +178,4 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     }
   }
 }
+

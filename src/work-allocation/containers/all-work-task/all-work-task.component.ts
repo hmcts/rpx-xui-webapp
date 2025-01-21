@@ -11,6 +11,7 @@ import { SortOrder, TaskContext } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
+import { setServiceList } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -82,7 +83,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       [userRoles$,
         waJurisdictions$]
     ).pipe(map((jurisdictions) => {
-      return this.setServiceList(jurisdictions[0], jurisdictions[1]);
+      const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
+      this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
+      return fullServiceDetails.detailedWAServices;
     }));
   }
 

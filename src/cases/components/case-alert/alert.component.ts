@@ -36,6 +36,8 @@ export class AlertComponent implements OnInit, OnDestroy {
         this.errorMessage = this.hyphenate(alert.message);
       } else {
         this.successMessage = '';
+        this.warningMessage = '';
+        this.errorMessage = '';
       }
     });
   }

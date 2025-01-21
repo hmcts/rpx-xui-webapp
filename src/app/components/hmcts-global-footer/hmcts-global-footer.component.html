@@ -26,6 +26,7 @@
         <hr class="govuk-section-break govuk-section-break--l">
         <ul class="hmcts-footer__list hmcts-footer__list--inline">
           <li class="hmcts-footer__list-item" *ngFor="let item of navigation.items">
+            <span class="visuallyhidden">(Opens in a new window)</span>
             <a class="govuk-footer__link" [routerLink]="item.href" [target]="item.target">{{item.text | rpxTranslate}}</a>
           </li>
           <li> <ng-container *xuilibFeatureToggle="'welsh-language'">

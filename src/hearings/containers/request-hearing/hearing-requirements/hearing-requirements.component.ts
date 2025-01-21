@@ -101,7 +101,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const combinedParties: PartyDetailsModel[] = this.combinePartiesWithIndOrOrg(this.serviceHearingValuesModel.parties);
     const caseSLAStartDate = this.serviceHearingValuesModel.caseSLAStartDate && this.serviceHearingValuesModel.caseSLAStartDate.trim().length > 0 ?
       this.serviceHearingValuesModel.caseSLAStartDate : moment(new Date()).format('YYYY-MM-DD');
-    
+
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,

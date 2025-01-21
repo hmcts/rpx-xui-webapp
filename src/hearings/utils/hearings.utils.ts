@@ -268,7 +268,13 @@ export class HearingsUtils {
     if (isAPanelFlag === null || isAPanelFlag === undefined) {
       return screens.filter((screen: string) => screen !== 'hearing-panel-required');
     } else if (isAPanelFlag) {
+      if (!screens.includes('hearing-panel')) {
+        screens.push('hearing-panel');
+      }
       return screens.filter((screen: string) => screen !== 'hearing-judge');
+    }
+    if (!screens.includes('hearing-judge')) {
+      screens.push('hearing-judge');
     }
     return screens.filter((screen: string) => screen !== 'hearing-panel');
   }

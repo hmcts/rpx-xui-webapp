@@ -8,6 +8,7 @@ export function allContainOnlySafeCharacters(values: string[]) {
   return true;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function hasUnacceptableCharacters(value: string): boolean {
   // ensures no characters that could be used for security attacks are present
   // the below only checks for the characters in the string

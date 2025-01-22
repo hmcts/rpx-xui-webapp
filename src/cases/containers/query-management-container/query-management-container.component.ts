@@ -16,7 +16,6 @@ import {
   QualifyingQuestionService,
   ErrorNotifierService,
   AlertService,
-  CaseEditPageComponent,
   CallbackErrorsContext
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';

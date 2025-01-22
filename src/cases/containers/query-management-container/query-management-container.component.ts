@@ -16,7 +16,8 @@ import {
   QualifyingQuestionService,
   ErrorNotifierService,
   AlertService,
-  CallbackErrorsContext
+  CallbackErrorsContext,
+  HttpError
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
@@ -379,7 +380,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             this.processFilteredMessages();
           }
         },
-        error: (err) => {
+        error: (err: HttpError) => {
           if (err.status !== 401 && err.status !== 403) {
             this.errorNotifierService.announceError(err);
             this.alertService.error({ phrase: err.message });
@@ -388,6 +389,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             this.showContinueButton = false;
             this.callbackErrorsSubject.next(err);
           } else {
+            this.eventDataError = true;
             this.addError('Something unexpected happened. please try again later.', 'evenDataError');
           }
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });

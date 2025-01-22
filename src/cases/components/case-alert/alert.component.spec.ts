@@ -133,3 +133,92 @@ describe('AlertComponent warning message', () => {
     expect(alertElement).toBe(' warning message ');
   });
 });
+describe('AlertComponent error message', () => {
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
+
+  const alertServiceMock = {
+    alerts: of({ message: 'error message', level: 'error' })
+  };
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule.withRoutes([])
+      ],
+      declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
+      providers: [{
+        provide: AlertService,
+        useValue: alertServiceMock
+      }]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AlertComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
+    fixture.destroy();
+  });
+
+  it('should have updated the value to error message and level in ngOnInit', async () => {
+    component.ngOnInit();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const alertElement = fixture.debugElement.query(By.css('.alert-message')).nativeElement.textContent;
+    expect(component.errorMessage).toEqual('error message');
+    expect(component.level).toEqual('error');
+    expect(alertElement).toBe(' error message ');
+  });
+});
+
+describe('AlertComponent no message', () => {
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
+
+  const alertServiceMock = {
+    alerts: of({ message: '', level: '' })
+  };
+
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule.withRoutes([])
+      ],
+      declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
+      providers: [{
+        provide: AlertService,
+        useValue: alertServiceMock
+      }]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AlertComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
+    fixture.destroy();
+  });
+
+  it('should have empty messages and level in ngOnInit', async () => {
+    component.ngOnInit();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(component.successMessage).toEqual('');
+    expect(component.warningMessage).toEqual('');
+    expect(component.errorMessage).toEqual('');
+    expect(component.level).toEqual('');
+  });
+});

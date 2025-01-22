@@ -232,7 +232,7 @@ export class HearingsUtils {
       const contains = individualHMCPartyIds.some((hmcParty) => individualSHVPartyIds.includes(hmcParty));
       return contains;
     }
-    else true;
+    return true;
   }
 
   public static modifyHearingDetailsYear(hearingDetails: HearingWindowModel): void {

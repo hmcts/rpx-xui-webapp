@@ -133,7 +133,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
     this.ignoreWarning = errorContext.ignoreWarning;
-    console.log('callbackErrorsNotify---', errorContext);
   }
 
   ngOnDestroy(): void {

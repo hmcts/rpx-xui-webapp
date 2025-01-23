@@ -27,7 +27,7 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
-import { combineLatest, Observable, Subject} from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'exui-query-management-container',

@@ -19,7 +19,7 @@ import {
   CallbackErrorsContext,
   HttpError
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
@@ -27,7 +27,7 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject} from 'rxjs';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -85,6 +85,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public ignoreWarning: boolean;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
+  public showSpinner$: Observable<boolean>;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -96,7 +97,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromRoot.State>,
     private readonly qualifyingQuestionService: QualifyingQuestionService,
     private readonly errorNotifierService: ErrorNotifierService,
-    private readonly alertService: AlertService
+    private readonly alertService: AlertService,
+    private readonly loadingService: LoadingService
   ) {}
 
   public ngOnInit(): void {
@@ -105,6 +107,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
+    this.showSpinner$ = this.loadingService.isLoading as any;
 
     this.formGroup = new FormGroup({
       subject: new FormControl(null),
@@ -130,6 +133,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
     this.ignoreWarning = errorContext.ignoreWarning;
+    console.log('callbackErrorsNotify---', errorContext);
   }
 
   ngOnDestroy(): void {
@@ -358,6 +362,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   private getEventTrigger():void {
+    const loadingToken = this.loadingService.register();
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
 
@@ -371,6 +376,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         next: (eventTrigger) => {
           this.eventTrigger = eventTrigger;
           this.showForm = true;
+          this.loadingService.unregister(loadingToken);
 
           if (this.queryCreateContext === QueryCreateContext.NEW_QUERY){
             this.caseQueriesCollectionsCount();
@@ -381,13 +387,17 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           }
         },
         error: (err: HttpError) => {
+          this.loadingService.unregister(loadingToken);
           if (err.status !== 401 && err.status !== 403) {
             this.errorNotifierService.announceError(err);
             this.alertService.error({ phrase: err.message });
             console.error('Error occurred while fetching event data:', err);
-            this.showForm = false;
-            this.showContinueButton = false;
             this.callbackErrorsSubject.next(err);
+            if (!this.ignoreWarning) {
+              this.showContinueButton = false;
+            } else {
+              this.showForm = true;
+            }
           } else {
             this.eventDataError = true;
             this.addError('Something unexpected happened. please try again later.', 'evenDataError');

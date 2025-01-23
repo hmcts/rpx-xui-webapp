@@ -18,7 +18,7 @@ import {
   AlertService,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
@@ -222,7 +222,8 @@ describe('QueryManagementContainerComponent', () => {
         { provide: CaseNotifier, useValue: mockCaseNotifier },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
-        { provide: AlertService, useValue: mockAlertService }
+        { provide: AlertService, useValue: mockAlertService },
+        LoadingService
       ]
     }).compileComponents();
   }));

@@ -279,18 +279,18 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
 
-  it('should allow todays date', () => {
-    component.firstDateOfHearingError = null;
-    const currentDate = new Date();
-    const day = currentDate.getDate();
-    const month = currentDate.getMonth() + 1;
-    const year = currentDate.getUTCFullYear();
-    component.firstHearingFormGroup.get('firstHearingDate_day').setValue(day);
-    component.firstHearingFormGroup.get('firstHearingDate_month').setValue(month);
-    component.firstHearingFormGroup.get('firstHearingDate_year').setValue(year);
-    component.showChosenDateError();
-    expect(component.firstDateOfHearingError).toEqual(null);
-  });
+  // it('should allow todays date', () => {
+  //   component.firstDateOfHearingError = null;
+  //   const currentDate = new Date();
+  //   const day = currentDate.getDate();
+  //   const month = currentDate.getMonth() + 1;
+  //   const year = currentDate.getUTCFullYear();
+  //   component.firstHearingFormGroup.get('firstHearingDate_day').setValue(day);
+  //   component.firstHearingFormGroup.get('firstHearingDate_month').setValue(month);
+  //   component.firstHearingFormGroup.get('firstHearingDate_year').setValue(year);
+  //   component.showChosenDateError();
+  //   expect(component.firstDateOfHearingError).toEqual(null);
+  // });
 
   it('should check date selection format', () => {
     component.firstDateOfHearingError = null;

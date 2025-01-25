@@ -3554,9 +3554,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.1-exui-2656-rc6":
-  version: 2.30.1-exui-2656-rc6
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.1-exui-2656-rc6"
+"@hmcts/rpx-xui-node-lib@npm:2.30.1-exui-2656-rc7":
+  version: 2.30.1-exui-2656-rc7
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.1-exui-2656-rc7"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3578,7 +3578,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     ts-auto-mock: "npm:^3.5.0"
     ttypescript: "npm:^1.5.13"
-  checksum: 10/f334994b6ef3b4aaf119be0fc6fa8b166c83995a92b00f225c7535248d4a583f77ac87caddd593bb8e522b312e5010d76c0975c2bcb477119390a2df4c783142
+  checksum: 10/9a3b2173ce377ba07465a426620daebb24e0bef1e9dbbb57a66aff17852313b1998311dc45df25622a78a6f9d4003e52b9df047d27016dcebf86b846bf106664
   languageName: node
   linkType: hard
 
@@ -22278,7 +22278,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.33"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.1-exui-2656-rc6"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.1-exui-2656-rc7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^14.0.0"
     "@ng-idle/keepalive": "npm:^14.0.0"

@@ -50,13 +50,10 @@ test('Validate tabs are visible', async ({ page }) => {
     await createCase(page);
     firstCaseRef = await getCaseReferenceFromFirstRow(page);
   }
-  console.log('caseId:', firstCaseRef);
   await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData?.tabs;
   const tabsMatch = await confirmTabsVisible(page, expectedData);
-  console.log('expectedData:-',expectedData);
-  console.log('tabsMatch:-',tabsMatch);
   expect(tabsMatch).toBeTruthy();
   await signOut(page);
 });
@@ -79,7 +76,6 @@ test('Validate tabs details', async ({ page }) => {
     await createCase(page);
     firstCaseRef = await getCaseReferenceFromFirstRow(page);
   }
-  console.log('updated caseId:', firstCaseRef);
   await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData;

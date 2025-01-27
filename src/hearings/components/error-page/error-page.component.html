@@ -1,9 +1,9 @@
 <exui-app-header></exui-app-header>
 <div class="govuk-width-container">
-  <ng-template *ngIf="caseId;else noCaseId">
+  <ng-template *ngIf="caseId; else otherBackLink">
     <a class="govuk-back-link" [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" href="javascript:void(0)">{{ 'Back' | rpxTranslate }}</a>
   </ng-template>
-  <ng-template #noCaseId>
+  <ng-template #otherBackLink>
     <a class="govuk-back-link" [routerLink]="['/', 'cases']" href="javascript:void(0)">{{ 'Back' | rpxTranslate }}</a>
   </ng-template>
   <main class="govuk-main-wrapper govuk-main-wrapper--l" id="content" role="main">

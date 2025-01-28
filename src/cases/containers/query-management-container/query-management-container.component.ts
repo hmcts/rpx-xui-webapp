@@ -326,6 +326,10 @@ export class QueryManagementContainerComponent implements OnInit {
     );
   }
 
+  public hasRespondedToQueryTask(value: boolean): void {
+    this.showContinueButton = !value;
+  }
+
   private getEventTrigger():void {
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;

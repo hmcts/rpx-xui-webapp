@@ -3455,12 +3455,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.31":
-  version: 7.1.31
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.31"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.31-event-spinner":
+  version: 7.1.31-event-spinner
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.31-event-spinner"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/38b65a737dcc1daeb04baf9eed8667810be40b766907557b6c0a067255b1752b274e6e94da2ededf15e1b89a25e0790c53f49a32b119df342ddb8b1283b678a8
+  checksum: 10/6c658bc2d8ffb1e4c9db885937043794bed47c034ce1349c8eed2d82e74c46d54f618b2f7d1ac71d37de52919f4ed9bed141422c63f255d24b49fb1377d76ffc
   languageName: node
   linkType: hard
 
@@ -22308,7 +22308,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.31"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.31-event-spinner"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"

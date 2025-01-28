@@ -20,7 +20,6 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
     const headers = setHeaders(req);
     return await http.get(path, { headers });
   } catch (e) {
-    console.error('handleGet: ' + path, e.statusText, e.statusText, JSON.stringify(e.data));
     next(e);
   }
 }

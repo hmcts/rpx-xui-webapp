@@ -49,7 +49,7 @@ const JURISDICTIONS = [{
 }];
 
 describe('WorkCaseListWrapperComponent', () => {
-  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions', 'getDetailedWASupportedJurisdictions']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
 
   const mockJurisdictionService = jasmine.createSpyObj('mockJurisdictionService', ['getJurisdictions']);

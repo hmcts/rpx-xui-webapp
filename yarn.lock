@@ -3455,12 +3455,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.30":
-  version: 7.1.30
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.30"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.32-return-application-task-not-completing":
+  version: 7.1.32-return-application-task-not-completing
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.32-return-application-task-not-completing"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/52a732fbdb66cdc8f579bc31f1890f772a08a604338b641fd1a59e6daca1da2e888a15a023c35270f792cce3c1bc00cdd4d6367d82028eccc3a8fd2aa36b8d7e
+  checksum: 10/b2404bb9ad88caed1e0d0e0189b0afa8082e5295e671bf416e9491cce0f2c5406c42de95287cf8edd70ff3e9e5c035fd9c7d6db391a30e1656c6983b34f699d3
   languageName: node
   linkType: hard
 
@@ -22271,7 +22271,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.30"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.32-return-application-task-not-completing"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"

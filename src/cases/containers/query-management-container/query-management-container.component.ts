@@ -17,7 +17,8 @@ import {
   ErrorNotifierService,
   AlertService,
   CallbackErrorsContext,
-  HttpError
+  HttpError,
+  CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
@@ -86,6 +87,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   public showSpinner$: Observable<boolean>;
+
+  public caseQueriesCollections: CaseQueriesCollection[];
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -360,6 +363,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     );
   }
 
+  public hasRespondedToQueryTask(value: boolean): void {
+    this.showContinueButton = !value;
+    this.showForm = !value;
+  }
+
   private getEventTrigger():void {
     const loadingToken = this.loadingService.register();
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
@@ -394,12 +402,13 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             this.callbackErrorsSubject.next(err);
             if (!this.ignoreWarning) {
               this.showContinueButton = false;
+              this.showForm = false;
             } else {
               this.showForm = true;
             }
           } else {
             this.eventDataError = true;
-            this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+            this.addError('Something unexpected happened. Please try again later.', 'evenDataError');
           }
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
@@ -450,10 +459,23 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         return acc;
       }, []);
     }
-    const filteredMessages = caseQueriesCollections
+
+    this.caseQueriesCollections = caseQueriesCollections;
+    const allMessages = caseQueriesCollections
       .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
-      .flat() // Flatten into a single array of messages
-      .filter((message) => message.value.id === messageId); // Filter by message id
+      .flat();// Flatten into a single array of messages
+
+    let filteredMessages = [];
+
+    // Work Allocation uses the id of the query, we require the parentId to filter the messages
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
+      const parentId = allMessages.find((message) => message.value.id === messageId)?.value.parentId;
+      // Use parentId as the filter
+      filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+    } else {
+      // Use messageId as the filter
+      filteredMessages = allMessages.filter((message) => message.value.id === messageId);
+    }
 
     if (filteredMessages.length > 0) {
       // Access matching message

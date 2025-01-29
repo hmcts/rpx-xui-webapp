@@ -713,7 +713,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages.length).toBe(1);
       expect(component.errorMessages[0]).toEqual({
         title: '',
-        description: 'Something unexpected happened. please try again later.',
+        description: 'Something unexpected happened. Please try again later.',
         fieldId: 'evenDataError'
       });
     });

@@ -51,14 +51,14 @@
             [queryItem]="queryItem" [formGroup]="formGroup"
             (hasRespondedToQueryTask)="hasRespondedToQueryTask($event)"
             [caseQueriesCollections]="caseQueriesCollections"
-            [showform]="showform"
+            [showForm]="showForm"
             [submitted]="submitted" [queryCreateContext]="queryCreateContext">
           </ccd-query-write-respond-to-query>
         </div>
       </ng-container>
 
       <div class="query-form-container"
-        *ngIf="showform && queryCreateContext !== queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS && queryCreateContext !== queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_DETAIL">
+        *ngIf="showForm && queryCreateContext !== queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS && queryCreateContext !== queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_DETAIL">
         <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
           <ccd-query-write-add-documents [formGroup]="formGroup"
             [label]="'Add document to this query' | rpxTranslate"

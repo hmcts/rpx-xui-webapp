@@ -89,7 +89,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public showSpinner$: Observable<boolean>;
 
   public caseQueriesCollections: CaseQueriesCollection[];
-  public showform: boolean = true;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -366,7 +365,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public hasRespondedToQueryTask(value: boolean): void {
     this.showContinueButton = !value;
-    this.showform = !value;
+    this.showForm = !value;
   }
 
   private getEventTrigger():void {
@@ -403,6 +402,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             this.callbackErrorsSubject.next(err);
             if (!this.ignoreWarning) {
               this.showContinueButton = false;
+              this.showForm = false;
             } else {
               this.showForm = true;
             }

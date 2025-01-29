@@ -13,7 +13,8 @@ import {
   CasesService,
   CaseEventTrigger,
   CaseField,
-  QualifyingQuestionService
+  QualifyingQuestionService,
+  CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
@@ -70,6 +71,9 @@ export class QueryManagementContainerComponent implements OnInit {
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
   public showContinueButton: boolean = true;
+
+  public caseQueriesCollections: CaseQueriesCollection[];
+  public showform: boolean = true;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -328,6 +332,7 @@ export class QueryManagementContainerComponent implements OnInit {
 
   public hasRespondedToQueryTask(value: boolean): void {
     this.showContinueButton = !value;
+    this.showform = !value;
   }
 
   private getEventTrigger():void {
@@ -405,10 +410,23 @@ export class QueryManagementContainerComponent implements OnInit {
         return acc;
       }, []);
     }
-    const filteredMessages = caseQueriesCollections
+
+    this.caseQueriesCollections = caseQueriesCollections;
+    const allMessages = caseQueriesCollections
       .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
-      .flat() // Flatten into a single array of messages
-      .filter((message) => message.value.id === messageId); // Filter by message id
+      .flat();// Flatten into a single array of messages
+
+    let filteredMessages = [];
+
+    // Work Allocation uses uses the id of the query, we require the parentId to filter the messages
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
+      const parentId = allMessages.find((message) => message.value.id === messageId)?.value.parentId;
+      // Use parentId as the filter
+      filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+    } else {
+      // Use messageId as the filter
+      filteredMessages = allMessages.filter((message) => message.value.id === messageId);
+    }
 
     if (filteredMessages.length > 0) {
       // Access matching message

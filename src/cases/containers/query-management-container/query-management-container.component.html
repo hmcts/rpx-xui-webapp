@@ -1,6 +1,6 @@
 <exui-app-header></exui-app-header>
-
-<div class="govuk-width-container">
+<xuilib-loading-spinner  *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+<div class="govuk-width-container query-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <!-- Error message summary -->
     <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"
@@ -20,6 +20,15 @@
       </div>
     </div>
 
+  <exui-alert></exui-alert>
+
+  <ccd-callback-errors
+    [triggerTextContinue]="triggerTextStart"
+    [triggerTextIgnore]="triggerTextIgnoreWarnings"
+    [callbackErrorsSubject]="callbackErrorsSubject"
+    (callbackErrorsContext)="callbackErrorsNotify($event)">
+  </ccd-callback-errors>
+
     <!-- Query management workflow pages -->
     <ng-container *ngIf="!showSummary && !showConfirmation" [formGroup]="formGroup">
       <ng-container [ngSwitch]="queryCreateContext">
@@ -34,6 +43,7 @@
           <ccd-query-write-raise-query *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"
             [formGroup]="formGroup"
             [caseDetails]="caseDetails"
+            [showForm]="showForm"
             [queryCreateContext]="queryCreateContext" [submitted]="submitted">
           </ccd-query-write-raise-query>
           <ccd-query-write-respond-to-query

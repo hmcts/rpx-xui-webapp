@@ -360,7 +360,7 @@ export class QueryManagementContainerComponent implements OnInit {
         error: (err) => {
           console.error('Error occurred while fetching event data:', err);
           this.eventDataError = true;
-          this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+          this.addError('Something unexpected happened. Please try again later.', 'evenDataError');
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
       });

@@ -3471,12 +3471,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.32-rc1":
-  version: 7.1.32-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.32-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:v7.1.32-srt-fix-task-completion":
+  version: 7.1.32-srt-fix-task-completion
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.32-srt-fix-task-completion"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/1a6dbd6269fd4cb8e0057df11108d9643c1d4e7308f1a5af893382852b7f58692be2599d1746ad03c43111e6d78585c4323819f84c1d8838414d383195c8ba17
+  checksum: 10/710a1b9dc775d736e995cc28f3687bed4c9458fe7536283b20b3814612ff87b789b6093afd6b0b3caa25c736e9019fbdcdad40258b7d01e7f2e26e378aaa6877
   languageName: node
   linkType: hard
 
@@ -21727,7 +21727,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.32-rc1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:v7.1.32-srt-fix-task-completion"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"

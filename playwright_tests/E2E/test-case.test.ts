@@ -5,6 +5,8 @@ import { getCaseReferenceFromFirstRow, dealWithShortenedCaseRefLabel } from './s
 import { confirmNextSteps, confirmTabsVisible, caseDetailsCheck, validateWorkBasketComplexValues, validateWorkbasketInputs } from './steps/test-case';
 import { waitForSpecificResponse } from './helpers/responseListenerHelper';
 import { createCase } from './steps/create-xui-case-poc-steps';
+import { submitEvent } from './steps/submit-update-case-event-steps';
+import { createTestCaseErrorValidation } from './steps/create-xui-case-test-case-type-dev-steps';
 
 test('Validate next steps drop down', async ({ page }) => {
   const response = waitForSpecificResponse(
@@ -29,6 +31,33 @@ test('Validate next steps drop down', async ({ page }) => {
   const expectedData = responseData?.triggers;
   const nextStepsMatch = await confirmNextSteps(page, expectedData);
   expect(nextStepsMatch).toBeTruthy();
+  await signOut(page);
+});
+
+test('Submit event from next step drop down', async ({ page }) => {
+  const response = waitForSpecificResponse(
+    page,
+    'data/internal/cases/',
+    'GET'
+  );
+
+  await signIn(page, 'SOLICITOR');
+  await expect(page.getByLabel('Manage Cases')).toBeVisible();
+  await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
+  await page.getByLabel('Apply filter').click();
+  await waitForSpinner(page);
+  await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
+  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  if (firstCaseRef.trim().length === 0) {
+    await createCase(page);
+    firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  }
+  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
+  const responseData = await response;
+  const expectedData = responseData?.triggers;
+  const nextStepsMatch = await confirmNextSteps(page, expectedData);
+  expect(nextStepsMatch).toBeTruthy();
+  await submitEvent(page);
   await signOut(page);
 });
 
@@ -121,6 +150,19 @@ test('Validate workbasket complex values against the API response', async ({ pag
   const responseData = await response;
   const workBasketData = responseData.workbasketInputs;
   validateWorkBasketComplexValues(page, workBasketData);
+  await signOut(page);
+});
+
+test('Validate invalid date error message', async ({ page }) => {
+  const response = waitForSpecificResponse(
+    page,
+    'data/internal/case-types/xuiTestCaseType_dev/',
+    'GET'
+  );
+
+  await signIn(page, 'SOLICITOR');
+  await expect(page.getByLabel('Manage Cases')).toBeVisible();
+  await createTestCaseErrorValidation(page);
   await signOut(page);
 });
 

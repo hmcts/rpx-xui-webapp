@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -825,6 +825,63 @@ describe('HearingTimingComponent', () => {
     expect(component.priorityChanged).toBe(true);
   });
 
+  describe('HearingTimingComponent', () => {
+    describe('isDateValidFormat', () => {
+      beforeEach(() => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').addValidators([Validators.required, Validators.pattern('\\d*$')]);
+        component.firstHearingFormGroup.get('firstHearingDate_month').addValidators([Validators.required, Validators.pattern('\\d*$')]);
+        component.firstHearingFormGroup.get('firstHearingDate_year').addValidators([Validators.required, Validators.pattern('\\d*$')]);
+      });
+
+      it('should return true for valid date format', () => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').setValue('1');
+        component.firstHearingFormGroup.get('firstHearingDate_month').setValue('1');
+        component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2024');
+        const result = (component as any).isDateValidFormat(component.firstHearingFormGroup, 'firstHearingDate');
+        expect(result).toBe(true);
+      });
+
+      it('should return false for invalid day format', () => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').setValue('3.');
+        component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+        component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2024');
+        const result = (component as any).isDateValidFormat(component.firstHearingFormGroup, 'firstHearingDate');
+        expect(result).toBe(false);
+      });
+
+      it('should return false for invalid month format', () => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').setValue('03');
+        component.firstHearingFormGroup.get('firstHearingDate_month').setValue('1.');
+        component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2024');
+        const result = (component as any).isDateValidFormat(component.firstHearingFormGroup, 'firstHearingDate');
+        expect(result).toBe(false);
+      });
+
+      it('should return false for invalid year format', () => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').setValue('30');
+        component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+        component.firstHearingFormGroup.get('firstHearingDate_year').setValue('202.');
+        const result = (component as any).isDateValidFormat(component.firstHearingFormGroup, 'firstHearingDate');
+        expect(result).toBe(false);
+      });
+
+      it('should return false for invalid year format', () => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').setValue('12');
+        component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+        component.firstHearingFormGroup.get('firstHearingDate_year').setValue('abcd');
+        const result = (component as any).isDateValidFormat(component.firstHearingFormGroup, 'firstHearingDate');
+        expect(result).toBe(false);
+      });
+
+      it('should return false for empty date fields', () => {
+        component.firstHearingFormGroup.get('firstHearingDate_day').setValue('');
+        component.firstHearingFormGroup.get('firstHearingDate_month').setValue('');
+        component.firstHearingFormGroup.get('firstHearingDate_year').setValue('');
+        const result = (component as any).isDateValidFormat(component.firstHearingFormGroup, 'firstHearingDate');
+        expect(result).toBe(false);
+      });
+    });
+  });
   function createSHV() {
     const HMCUnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
       unavailableFromDate: '2024-11-15T09:00:00.000Z',

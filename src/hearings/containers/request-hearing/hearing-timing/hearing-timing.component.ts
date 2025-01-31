@@ -293,7 +293,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public showChosenDateError(): void {
     const firstHearingDateEntered = this.isDatePopulated(this.firstHearingFormGroup, this.firstHearingDate.id);
     const chosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id), HearingDateEnum.DefaultFormat);
-    const isFirstHearingDateValid = chosenDate.isValid();
+    const isFirstHearingDateValid = (this.isDateValidFormat(this.firstHearingFormGroup, this.firstHearingDate.id) && chosenDate.isValid());
     const isPastDate = chosenDate.isBefore(moment().startOf('day'));
     const isWeekday = this.isWeekDay(chosenDate);
     if ((firstHearingDateEntered && !isFirstHearingDateValid) || !firstHearingDateEntered) {
@@ -314,13 +314,40 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     }
   }
 
+  private isDateValidFormat(formGroup: FormGroup, id: string): boolean {
+    const dayControl = formGroup.get(`${id}_day`);
+    const monthControl = formGroup.get(`${id}_month`);
+    const yearControl = formGroup.get(`${id}_year`);
+
+    if (!dayControl || !monthControl || !yearControl) {
+      console.log('One or more form controls are missing.');
+      return false;
+    }
+
+    // Mark as touched and trigger validation updates
+    dayControl.markAsTouched();
+    monthControl.markAsTouched();
+    yearControl.markAsTouched();
+
+    dayControl.updateValueAndValidity();
+    monthControl.updateValueAndValidity();
+    yearControl.updateValueAndValidity();
+
+    // Get updated validation status
+    const validDay = dayControl.valid;
+    const validMonth = monthControl.valid;
+    const validYear = yearControl.valid;
+
+    return validDay && validMonth && validYear;
+  }
+
   public showChosenDateRangeError(): void {
     const EarliestDateEntered= this.isDatePopulated(this.earliestHearingFormGroup, this.earliestHearingDate.id);
     const LatestDateEntered = this.isDatePopulated(this.latestHearingFormGroup, this.latestHearingDate.id);
     const chosenEarliestDate = moment(this.getDateFormatted(this.earliestHearingFormGroup, this.earliestHearingDate.id), HearingDateEnum.DefaultFormat);
     const chosenLatestDate = moment(this.getDateFormatted(this.latestHearingFormGroup, this.latestHearingDate.id), HearingDateEnum.DefaultFormat);
-    const isEarliestDateValid = chosenEarliestDate.isValid();
-    const isLatestHearingDateValid = chosenLatestDate.isValid();
+    const isEarliestDateValid = (this.isDateValidFormat(this.earliestHearingFormGroup, this.earliestHearingDate.id) && chosenEarliestDate.isValid());
+    const isLatestHearingDateValid = (this.isDateValidFormat(this.latestHearingFormGroup, this.latestHearingDate.id) && chosenLatestDate.isValid());
     const isLatestBeforeEarliest = chosenEarliestDate > chosenLatestDate;
     const isPastEarliestDate = chosenEarliestDate.isBefore(moment().startOf('day'));
     const isPastLatestDate = chosenLatestDate.isBefore(moment().startOf('day'));

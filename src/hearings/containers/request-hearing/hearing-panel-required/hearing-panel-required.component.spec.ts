@@ -75,41 +75,41 @@ describe('HearingPanelRequiredComponent', () => {
   });
 
   it('should fallback correctly to panelRequiredDefault when isAPanelFlag is null or undefined', () => {
-    component['hearingRequestMainModel'] = { 
+    component.hearingRequestMainModel = {
       hearingDetails: { isAPanelFlag: null } as Partial<HearingDetailModel>
     } as HearingRequestMainModel;
-  
-    component['serviceHearingValuesModel'] = { panelRequiredDefault: true } as unknown as ServiceHearingValuesModel;
-  
+
+    component.serviceHearingValuesModel = { panelRequiredDefault: true } as unknown as ServiceHearingValuesModel;
+
     component.ngOnInit(); // Re-run initialization logic
-  
+
     expect(component.hearingPanelRequired).toBe(true); // Should use panelRequiredDefault
   });
-  
+
   it('should fallback to false when both isAPanelFlag and panelRequiredDefault are undefined', () => {
-    component['hearingRequestMainModel'] = { 
+    component.hearingRequestMainModel = {
       hearingDetails: { isAPanelFlag: undefined } as Partial<HearingDetailModel>
     } as HearingRequestMainModel;
-  
-    component['serviceHearingValuesModel'] = { panelRequiredDefault: undefined } as unknown as ServiceHearingValuesModel;
-  
+
+    component.serviceHearingValuesModel = { panelRequiredDefault: undefined } as unknown as ServiceHearingValuesModel;
+
     component.ngOnInit(); // Re-run initialization logic
-  
+
     expect(component.hearingPanelRequired).toBe(false); // Should default to false
   });
-  
+
   it('should prioritize isAPanelFlag when it has a value', () => {
-    component['hearingRequestMainModel'] = { 
+    component.hearingRequestMainModel = {
       hearingDetails: { isAPanelFlag: false } as Partial<HearingDetailModel>
     } as HearingRequestMainModel;
-  
-    component['serviceHearingValuesModel'] = { panelRequiredDefault: true } as unknown as ServiceHearingValuesModel;
-  
+
+    component.serviceHearingValuesModel = { panelRequiredDefault: true } as unknown as ServiceHearingValuesModel;
+
     component.ngOnInit(); // Re-run initialization logic
-  
+
     expect(component.hearingPanelRequired).toBe(false); // Should use isAPanelFlag
   });
-  
+
   afterEach(() => {
     fixture.destroy();
   });

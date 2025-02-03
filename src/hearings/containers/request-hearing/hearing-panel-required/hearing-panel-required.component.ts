@@ -29,10 +29,10 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
-    this.hearingPanelRequired = 
-      this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag 
-      ?? this.serviceHearingValuesModel?.panelRequiredDefault 
-      ?? false;
+    this.hearingPanelRequired =
+    this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag
+    ?? this.serviceHearingValuesModel?.panelRequiredDefault
+    ?? false;
     this.initForm();
   }
 

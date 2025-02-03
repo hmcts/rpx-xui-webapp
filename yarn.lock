@@ -3455,12 +3455,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.34-date-label-fix-v2":
-  version: 7.1.34-date-label-fix-v2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.34-date-label-fix-v2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.34-date-label-fix-v3":
+  version: 7.1.34-date-label-fix-v3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.34-date-label-fix-v3"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/734e70012df4ec45978ce3d3026c03d724bca5a70e0dd71cf638a05a5498f4642bf52b8cfe87bccf05f453e1029a430f92e1d713e96d43dbe40dab469d2e1919
+  checksum: 10/5459091d6136340a94dcadfc477095f05543deb13ed6b0a15648c2f6259dd2f6951aeb9d8b21b1f1b35652fd0d2eb21052cd501a8ed0f1b8fa21d1e13b48291e
   languageName: node
   linkType: hard
 
@@ -22308,7 +22308,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.34-date-label-fix-v2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.34-date-label-fix-v3"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"

@@ -98,10 +98,8 @@ export class LoggerService implements ILoggerService {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      if (userInfo?.uid) {
-        const userId = userInfo.uid;
-        return `User - ${userId.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
-      }
+      const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      return `User - ${userId.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
     }
     return `Message - ${message}, Timestamp - ${Date.now()}`;
   }

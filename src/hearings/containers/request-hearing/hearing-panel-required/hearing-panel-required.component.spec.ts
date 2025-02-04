@@ -11,6 +11,9 @@ import { ACTION } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingPanelRequiredComponent } from './hearing-panel-required.component';
+import { HearingDetailModel } from 'api/hearings/models/linkHearings.model';
+import { HearingRequestMainModel } from 'src/hearings/models/hearingRequestMain.model';
+import { ServiceHearingValuesModel } from 'src/hearings/models/serviceHearingValues.model';
 
 describe('HearingPanelRequiredComponent', () => {
   let component: HearingPanelRequiredComponent;
@@ -69,6 +72,42 @@ describe('HearingPanelRequiredComponent', () => {
     spyOn(RequestHearingPageFlow.prototype, 'navigateAction');
     component.executeAction(ACTION.BACK);
     expect(RequestHearingPageFlow.prototype.navigateAction).toHaveBeenCalledWith(ACTION.BACK);
+  });
+
+  it('should fallback correctly to panelRequiredDefault when isAPanelFlag is null or undefined', () => {
+    component.hearingRequestMainModel = {
+      hearingDetails: { isAPanelFlag: null } as Partial<HearingDetailModel>
+    } as HearingRequestMainModel;
+
+    component.serviceHearingValuesModel = { panelRequiredDefault: true } as unknown as ServiceHearingValuesModel;
+
+    component.ngOnInit(); // Re-run initialization logic
+
+    expect(component.hearingPanelRequired).toBe(true); // Should use panelRequiredDefault
+  });
+
+  it('should fallback to false when both isAPanelFlag and panelRequiredDefault are undefined', () => {
+    component.hearingRequestMainModel = {
+      hearingDetails: { isAPanelFlag: undefined } as Partial<HearingDetailModel>
+    } as HearingRequestMainModel;
+
+    component.serviceHearingValuesModel = { panelRequiredDefault: undefined } as unknown as ServiceHearingValuesModel;
+
+    component.ngOnInit(); // Re-run initialization logic
+
+    expect(component.hearingPanelRequired).toBe(false); // Should default to false
+  });
+
+  it('should prioritize isAPanelFlag when it has a value', () => {
+    component.hearingRequestMainModel = {
+      hearingDetails: { isAPanelFlag: false } as Partial<HearingDetailModel>
+    } as HearingRequestMainModel;
+
+    component.serviceHearingValuesModel = { panelRequiredDefault: true } as unknown as ServiceHearingValuesModel;
+
+    component.ngOnInit(); // Re-run initialization logic
+
+    expect(component.hearingPanelRequired).toBe(false); // Should use isAPanelFlag
   });
 
   afterEach(() => {

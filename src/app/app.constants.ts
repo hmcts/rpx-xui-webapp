@@ -81,97 +81,97 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_BLUE,
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
-    openingTimes: 'Monday to Friday, 9am to 1pm (Closed on bank holidays)',
+    openingTimes: 'Monday to Friday, 9am to 1pm (Closed on bank holidays)'
   },
   {
     title: 'Divorce',
     badgeColour: BadgeColour.BADGE_BLUE,
     email: 'divorcecase@justice.gov.uk',
     phone: '0300 303 0642',
-    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)',
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Financial Remedy',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfinancialremedy@justice.gov.uk',
     phone: '0300 303 0642',
-    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)',
+    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Immigration and Asylum',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   },
   {
     title: 'Family Public Law',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
-    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)',
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },
   {
     title: 'Employment Tribunal',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'etreform@justice.gov.uk',
     phone: 'England and Wales: 0300 123 1024, Scotland: 0300 790 6234',
-    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)',
+    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },
   {
     title: 'SSCS (England and Wales)',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactsscs@justice.gov.uk',
     phone: '0300 123 1142',
-    openingTimes: 'Monday to Friday, 9am to 4pm',
+    openingTimes: 'Monday to Friday, 9am to 4pm'
   },
   {
     title: 'SSCS (Scotland)',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'SSCSA-Glasgow@justice.gov.uk',
     phone: '0300 790 6234',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
   },
   {
     title: 'SSCS Infected Blood (England, Wales, Northern Ireland & Overseas)',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactsscs@justice.gov.uk',
     phone: '0300 123 1142',
-    openingTimes: 'Monday to Friday, 9am to 4pm',
+    openingTimes: 'Monday to Friday, 9am to 4pm'
   },
   {
     title: 'SSCS Benefits & Infected Blood Compensation (Scotland)',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactsscs@justice.gov.uk',
     phone: '0300 790 6234',
-    openingTimes: 'Last Thursday of every month, closed 10:30am-11:30am',
+    openingTimes: 'Last Thursday of every month, closed 10:30am-11:30am'
   },
   {
     title: 'SSCS Benefits & Infected Blood Compensation (Welsh speakers)',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'ymholiadaucymraeg@justice.gov.uk',
     phone: '0300 303 5170',
-    openingTimes: 'Monday to Friday, 9am to 4pm',
+    openingTimes: 'Monday to Friday, 9am to 4pm'
   },
   {
     title: 'For damages general enquires is:',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'DamagesClaims@justice.gov.uk',
     phone: '0300 123 1056',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
   },
   {
     title: 'For damages tech support:',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'DCPTechSupport@justice.gov.uk',
+    email: 'DCPTechSupport@justice.gov.uk'
   },
   {
     title: 'OCMC',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactocmc@justice.gov.uk',
     phone: '0300 123 7050',
-    openingTimes: 'Monday to Friday, 8:30am to 5pm',
-  },
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  }
 ];
 
 

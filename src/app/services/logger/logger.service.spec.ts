@@ -89,7 +89,7 @@ describe('Logger service', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
       mockEnvironmentService);
     // slice off the last two characters of string to ensure no accidental discrepancies
-    const expectedMessage = `User - 123, Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
+    const expectedMessage = `User - 1, Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
     const returnedMessage = service.getMessage('message');
     expect(returnedMessage).not.toBeNull();
     expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);

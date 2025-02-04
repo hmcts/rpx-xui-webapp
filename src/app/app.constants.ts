@@ -174,7 +174,6 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   }
 ];
 
-
 const environmentNames = {
   aat: 'aat',
   localhost: 'localhost',

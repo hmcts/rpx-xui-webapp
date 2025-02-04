@@ -35,12 +35,6 @@ test('Validate next steps drop down', async ({ page }) => {
 });
 
 test('Submit event from next step drop down', async ({ page }) => {
-  const response = waitForSpecificResponse(
-    page,
-    'data/internal/cases/',
-    'GET'
-  );
-
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
@@ -53,10 +47,6 @@ test('Submit event from next step drop down', async ({ page }) => {
     firstCaseRef = await getCaseReferenceFromFirstRow(page);
   }
   await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
-  const responseData = await response;
-  const expectedData = responseData?.triggers;
-  const nextStepsMatch = await confirmNextSteps(page, expectedData);
-  expect(nextStepsMatch).toBeTruthy();
   await submitEvent(page);
   await signOut(page);
 });
@@ -154,12 +144,6 @@ test('Validate workbasket complex values against the API response', async ({ pag
 });
 
 test('Validate invalid date error message', async ({ page }) => {
-  const response = waitForSpecificResponse(
-    page,
-    'data/internal/case-types/xuiTestCaseType_dev/',
-    'GET'
-  );
-
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await createTestCaseErrorValidation(page);

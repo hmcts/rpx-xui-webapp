@@ -391,9 +391,9 @@ describe('HearingTimingComponent', () => {
       component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
       component.showChosenDateRangeError();
       expect(component?.earliestDateOfHearingError.isInvalid).toBeTruthy();
-      expect(component?.earliestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component?.earliestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
       expect(component?.latestDateOfHearingError.isInvalid).toBeTruthy();
-      expect(component?.latestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component?.latestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
       expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.EitherDateRangeError);
     });
     it('should check ValidHearingDateError for earliestHearingDate invalid date', () => {
@@ -406,9 +406,9 @@ describe('HearingTimingComponent', () => {
       component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
       component.showChosenDateRangeError();
       expect(component?.earliestDateOfHearingError.isInvalid).toBeTruthy();
-      expect(component?.earliestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component?.earliestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
       expect(component?.latestDateOfHearingError === null).toBeTruthy();
-      expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
     });
     it('should check ValidHearingDateError for earliestHearingDate invalid date with null', () => {
       component.earliestDateOfHearingError = null;
@@ -420,9 +420,9 @@ describe('HearingTimingComponent', () => {
       component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
       component.showChosenDateRangeError();
       expect(component?.earliestDateOfHearingError.isInvalid).toBeTruthy();
-      expect(component?.earliestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component?.earliestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
       expect(component?.latestDateOfHearingError === null).toBeTruthy();
-      expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
     });
     it('should check ValidHearingDateError for latestHearingDate invalid date', () => {
       component.earliestDateOfHearingError = null;
@@ -434,9 +434,9 @@ describe('HearingTimingComponent', () => {
       component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2024');
       component.showChosenDateRangeError();
       expect(component?.latestDateOfHearingError.isInvalid).toBeTruthy();
-      expect(component?.latestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component?.latestDateOfHearingError.messages[0]).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
       expect(component?.earliestDateOfHearingError === null).toBeTruthy();
-      expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.InValidHearingDateError);
+      expect(component.validationErrors[0].message).toBe(HearingDatePriorityEnum.InvalidHearingDateError);
     });
   });
 

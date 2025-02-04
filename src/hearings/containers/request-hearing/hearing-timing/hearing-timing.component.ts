@@ -299,9 +299,9 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     if ((firstHearingDateEntered && !isFirstHearingDateValid) || !firstHearingDateEntered) {
       this.validationErrors.push({
         id: this.firstHearingDate.id,
-        message: HearingDatePriorityEnum.InValidHearingDateError
+        message: HearingDatePriorityEnum.InvalidHearingDateError
       });
-      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InValidHearingDateError] };
+      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InvalidHearingDateError] };
     } else if (!isFirstHearingDateValid) {
       this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
       this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
@@ -320,7 +320,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const yearControl = formGroup.get(`${id}_year`);
 
     if (!dayControl || !monthControl || !yearControl) {
-      console.log('One or more form controls are missing.');
       return false;
     }
 
@@ -359,15 +358,15 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     // First check if dates are entered, are they valid, real dates.
 
     if (EarliestDateEntered && !isEarliestDateValid){
-      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InValidHearingDateError] };
+      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InvalidHearingDateError] };
       invalidDate = true;
     }
     if (LatestDateEntered && !isLatestHearingDateValid){
-      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InValidHearingDateError] };
+      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InvalidHearingDateError] };
       invalidDate = true;
     }
     if (invalidDate) {
-      if ((this?.earliestDateOfHearingError && this?.earliestDateOfHearingError.isInvalid) && (this?.latestDateOfHearingError && this?.latestDateOfHearingError.isInvalid)) {
+      if ((this.earliestDateOfHearingError && this.earliestDateOfHearingError.isInvalid) && (this.latestDateOfHearingError && this.latestDateOfHearingError.isInvalid)) {
         this.validationErrors.push({
           id: this.earliestHearingDate.id,
           message: HearingDatePriorityEnum.EitherDateRangeError
@@ -375,7 +374,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       } else {
         this.validationErrors.push({
           id: this.earliestHearingDate.id,
-          message: HearingDatePriorityEnum.InValidHearingDateError
+          message: HearingDatePriorityEnum.InvalidHearingDateError
         });
       }
       return;

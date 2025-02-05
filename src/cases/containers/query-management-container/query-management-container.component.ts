@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { combineLatest, Observable, Subscription, Subject } from 'rxjs';
 import {
   CaseNotifier,
   CaseView,
@@ -13,9 +14,13 @@ import {
   CasesService,
   CaseEventTrigger,
   CaseField,
-  QualifyingQuestionService
+  QualifyingQuestionService,
+  ErrorNotifierService,
+  AlertService,
+  CallbackErrorsContext,
+  HttpError
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
@@ -23,14 +28,13 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
-import { combineLatest, Observable } from 'rxjs';
 
 @Component({
   selector: 'exui-query-management-container',
   templateUrl: './query-management-container.component.html',
   styleUrls: ['./query-management-container.component.scss']
 })
-export class QueryManagementContainerComponent implements OnInit {
+export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
   private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
@@ -45,6 +49,9 @@ export class QueryManagementContainerComponent implements OnInit {
   private static readonly caseLevelCaseFieldId = 'CaseQueriesCollection';
   public static readonly FIELD_TYPE_COLLECTION = 'Collection';
   public static readonly FIELD_TYPE_COMPLEX = 'Complex';
+
+  public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
+  public static readonly TRIGGER_TEXT_START = 'Continue';
 
   private queryItemId: string;
   public caseId: string;
@@ -70,6 +77,17 @@ export class QueryManagementContainerComponent implements OnInit {
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
   public showContinueButton: boolean = true;
+  private routerEventsSubscription: Subscription;
+  private targetRoutePrefix = '/query-management/query/';
+  public showForm: boolean;
+
+  public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
+  public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
+  public triggerText: string;
+  public ignoreWarning: boolean;
+
+  public callbackErrorsSubject: Subject<any> = new Subject();
+  public showSpinner$: Observable<boolean>;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -79,7 +97,10 @@ export class QueryManagementContainerComponent implements OnInit {
     private readonly featureToggleService: FeatureToggleService,
     private readonly casesService: CasesService,
     private readonly store: Store<fromRoot.State>,
-    private readonly qualifyingQuestionService: QualifyingQuestionService
+    private readonly qualifyingQuestionService: QualifyingQuestionService,
+    private readonly errorNotifierService: ErrorNotifierService,
+    private readonly alertService: AlertService,
+    private readonly loadingService: LoadingService
   ) {}
 
   public ngOnInit(): void {
@@ -88,6 +109,7 @@ export class QueryManagementContainerComponent implements OnInit {
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
+    this.showSpinner$ = this.loadingService.isLoading as any;
 
     this.formGroup = new FormGroup({
       subject: new FormControl(null),
@@ -108,6 +130,25 @@ export class QueryManagementContainerComponent implements OnInit {
       if (this.queryItemId && this.queryItemId === QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
         this.getEventTrigger();
       }
+    }
+
+    this.clearSelectionOnRouteChange();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe(this.callbackErrorsSubject);
+    if (this.routerEventsSubscription) {
+      this.routerEventsSubscription.unsubscribe();
+    }
+  }
+
+  public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
+    this.ignoreWarning = errorContext.ignoreWarning;
+  }
+
+  public unsubscribe(subscription: any) {
+    if (subscription) {
+      subscription.unsubscribe();
     }
   }
 
@@ -294,23 +335,32 @@ export class QueryManagementContainerComponent implements OnInit {
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         this.caseId = caseView.case_id;
-        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions[caseView.case_type.id];
-        if (!qualifyingQuestions.map((question) => question.name).includes(this.RAISE_A_QUERY_NAME)) {
-          // Add the default qualifying question to the list if not present
-          qualifyingQuestions.push({
-            name: this.RAISE_A_QUERY_NAME,
-            markdown: '',
-            url: `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
-          });
-        }
+
+        // Safely access the qualifying questions for the current case type
+        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
+
+        // Add Extra options to qualifying question
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+
         return qualifyingQuestions;
       })
     );
   }
 
+  private addExtraOptionsToQualifyingQuestion(qualifyingQuestions: QualifyingQuestion[], name: string, url: string): void {
+    if (!qualifyingQuestions.some((q) => q.name === name)) {
+      qualifyingQuestions.push({
+        name,
+        markdown: '',
+        url
+      });
+    }
+  }
+
   public async goToQueryList(): Promise<void> {
     await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'Query Management' }
+      { fragment: 'Queries' }
     );
   }
 
@@ -327,6 +377,7 @@ export class QueryManagementContainerComponent implements OnInit {
   }
 
   private getEventTrigger():void {
+    const loadingToken = this.loadingService.register();
     this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
       this.caseDetails = caseDetails;
 
@@ -339,6 +390,8 @@ export class QueryManagementContainerComponent implements OnInit {
       this.eventTrigger$.subscribe({
         next: (eventTrigger) => {
           this.eventTrigger = eventTrigger;
+          this.showForm = true;
+          this.loadingService.unregister(loadingToken);
 
           if (this.queryCreateContext === QueryCreateContext.NEW_QUERY){
             this.caseQueriesCollectionsCount();
@@ -348,10 +401,22 @@ export class QueryManagementContainerComponent implements OnInit {
             this.processFilteredMessages();
           }
         },
-        error: (err) => {
-          console.error('Error occurred while fetching event data:', err);
-          this.eventDataError = true;
-          this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+        error: (err: HttpError) => {
+          this.loadingService.unregister(loadingToken);
+          if (err.status !== 401 && err.status !== 403) {
+            this.errorNotifierService.announceError(err);
+            this.alertService.error({ phrase: err.message });
+            console.error('Error occurred while fetching event data:', err);
+            this.callbackErrorsSubject.next(err);
+            if (!this.ignoreWarning) {
+              this.showContinueButton = false;
+            } else {
+              this.showForm = true;
+            }
+          } else {
+            this.eventDataError = true;
+            this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+          }
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
       });
@@ -442,5 +507,16 @@ export class QueryManagementContainerComponent implements OnInit {
 
   private isNonEmptyObject(elem: any): boolean {
     return this.isObject(elem) && Object.keys(elem).length !== 0;
+  }
+
+  private clearSelectionOnRouteChange(): void {
+    this.routerEventsSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // Check if we navigated off the target route
+        if (!event.url.startsWith(this.targetRoutePrefix)) {
+          this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+        }
+      }
+    });
   }
 }

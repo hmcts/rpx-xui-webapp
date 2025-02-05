@@ -49,6 +49,8 @@
           <ccd-query-write-respond-to-query
             *ngSwitchCase="[queryCreateContextEnum.RESPOND, queryCreateContextEnum.FOLLOWUP].includes(queryCreateContext) ? queryCreateContext : !queryCreateContext"
             [queryItem]="queryItem" [formGroup]="formGroup"
+            (hasRespondedToQueryTask)="hasRespondedToQueryTask($event)"
+            [caseQueriesCollections]="caseQueriesCollections"
             [showForm]="showForm"
             [submitted]="submitted" [queryCreateContext]="queryCreateContext">
           </ccd-query-write-respond-to-query>

@@ -1,6 +1,6 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <div class="cases-container"
-     *ngIf="(waSupportedJurisdictions$ | async) as jurisdictions">
+     *ngIf="(waSupportedDetailedServices$ | async) as jurisdictions">
   <ng-container *ngIf="(locations$ | async) as locations">
     <exui-case-manager-filter
       [jurisdictions]="jurisdictions"

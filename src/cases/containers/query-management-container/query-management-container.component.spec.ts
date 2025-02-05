@@ -275,6 +275,15 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.queryCreateContext).toBe(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
   });
 
+  it('should return true on check', () => {
+    const errorContext = {
+      ignoreWarning: true,
+      triggerText: 'Some error!'
+    };
+    component.callbackErrorsNotify(errorContext);
+    expect(component.ignoreWarning).toBeTruthy();
+  });
+
   describe('when it does not have a query id', () => {
     it('should set the query create context', () => {
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
@@ -790,6 +799,16 @@ describe('QueryManagementContainerComponent', () => {
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+    });
+
+    it('should set showContinueButton and showForm based on if user has responded to a query', () => {
+      component.hasRespondedToQueryTask(true);
+      expect(component.showContinueButton).toBe(false);
+      expect(component.showForm).toBe(false);
+
+      component.hasRespondedToQueryTask(false);
+      expect(component.showContinueButton).toBe(true);
+      expect(component.showForm).toBe(true);
     });
   });
 

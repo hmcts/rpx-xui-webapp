@@ -29,6 +29,9 @@
         "documentsv2": {
             "api": "http://localhost:8080/"
         },
+        "locationref": {
+            "api": "http://localhost:8080"
+        },
         "prd": {
             "api": "http://localhost:8080",
             "commondataApi": "http://localhost:8080",

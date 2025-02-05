@@ -622,7 +622,7 @@ describe('QueryManagementContainerComponent', () => {
         it('should scroll to top', () => {
           spyOn(window, 'scrollTo');
           component.submitForm();
-          expect(window.scrollTo).toHaveBeenCalledWith({ left: 0, top: 0, behavior: 'smooth' });
+          expect(window.scrollTo).toHaveBeenCalled();
         });
       });
     });

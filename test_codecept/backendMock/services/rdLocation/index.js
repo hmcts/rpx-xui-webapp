@@ -16,6 +16,24 @@ class RDLocationService{
 
     constructor(){
         this.caseManagementLocations = [];
+        this.supportedServices = [
+            {
+                ccd_service_name: 'IA',
+                service_short_description: 'IA'
+            },
+            {
+                ccd_service_name: 'CIVIL',
+                service_short_description: 'CIVIL'
+            },
+            {
+                ccd_service_name: 'PUBLICLAW',
+                service_short_description: 'PUBLICLAW'
+            },
+            {
+                ccd_service_name: 'PRIVATELAW',
+                service_short_description: 'PRIVATELAW'
+            }
+        ]
         this.locationsConfig = [
             {
                 service:'IA',
@@ -132,6 +150,10 @@ class RDLocationService{
             "welsh_court_type": "N",
             "court_venues": serviceWithCode.locations
         };
+    }
+
+    getSupportedServices(){
+        return this.supportedServices;
     }
 
 

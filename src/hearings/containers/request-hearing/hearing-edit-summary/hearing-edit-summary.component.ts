@@ -171,55 +171,40 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  private removeEmpty(object) {
-    for (const item in object) {
-      if (object[item] === null || object[item] === undefined) {
-        delete object[item];
-      }
-    }
-    return object;
-  }
-
   // The below function acts as a comparitor between 2 objects
   // It allows for slight variance where Object Keys differ
   // Allowing for :-
   // - Different types of empty
   // - New Keys with new empty values
   // - Values that are Objects or Arrays to have extra empty values
-  public areObjectsfunctionallyDifferentCheck(object1: any, object2: any): boolean {
-    if (typeof object1 !== typeof object2) {
-      return true;
-    }
-    if (_.isEqual(object1, object2)) {
-      return false;
-    }
-    for (const [key, value] of Object.entries(object1)) {
-      if (typeof value === 'object') {
-        this.removeEmpty(value);
-        this.removeEmpty(object2[key]);
-      }
-      if (Array.isArray(value)) {
-        const valueObject = value;
-        const objectInCompareObject = object2[key];
+  public areObjectsfunctionallyDifferentCheck(object1Input: any, object2Input: any): boolean {
+    const object1 = this.cleanJson(object1Input);
+    const object2 = this.cleanJson(object2Input);
+    return !_.isEqual(JSON.stringify(object1, this.replacer), JSON.stringify(object2, this.replacer));
+  }
 
-        valueObject.forEach((element) => {
-          if (Array.isArray(element)) {
-            element.forEach((item) => this.removeEmpty(item));
+  public cleanJson(data: any): any {
+    if (Array.isArray(data)) {
+      // If the data is an array, clean each item and remove empty arrays
+      const cleanedArray = data.map(function (item) {
+        return this.cleanJson(item); // Use regular function to ensure 'this' is correct
+      }, this).filter((item) => item !== null && item !== undefined && (Array.isArray(item) ? item.length > 0 : true));
+      return cleanedArray.length > 0 ? cleanedArray : undefined;
+    } else if (typeof data === 'object' && data !== null) {
+      // If the data is an object, iterate through the keys and clean each value
+      const cleanedObject: any = {};
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          const cleanedValue = this.cleanJson(data[key]);
+          if (cleanedValue !== null && cleanedValue !== undefined && cleanedValue !== '' && !(Array.isArray(cleanedValue) && cleanedValue.length === 0)) {
+            cleanedObject[key] = cleanedValue;
           }
-          this.removeEmpty(element);
-        });
-        objectInCompareObject.forEach((element) => {
-          if (Array.isArray(element)) {
-            element.forEach((item) => this.removeEmpty(item));
-          }
-          this.removeEmpty(element);
-        });
+        }
       }
+      return Object.keys(cleanedObject).length > 0 ? cleanedObject : undefined;
     }
-    return !_.isEqual(
-      JSON.parse(JSON.stringify(object1, this.replacer)),
-      JSON.parse(JSON.stringify(object2, this.replacer))
-    );
+    // Return the data if it's neither null, undefined, nor an empty array
+    return data;
   }
 
   private hasHearingRequestObjectChanged(): boolean {

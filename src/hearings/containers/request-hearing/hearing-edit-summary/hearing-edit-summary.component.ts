@@ -171,12 +171,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     });
   }
 
-  // The below function acts as a comparitor between 2 objects
-  // It allows for slight variance where Object Keys differ
-  // Allowing for :-
-  // - Different types of empty
-  // - New Keys with new empty values
-  // - Values that are Objects or Arrays to have extra empty values
+  // Both sets of input will be processed through method cleanJson. This will remove any null, undefined or empty elemtents from the object
+  // allowing the comparison to ignore insignificant changes.
   public areObjectsfunctionallyDifferentCheck(object1Input: any, object2Input: any): boolean {
     const object1 = this.cleanJson(object1Input);
     const object2 = this.cleanJson(object2Input);

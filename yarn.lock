@@ -6915,10 +6915,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/shortid@npm:0.0.29":
-  version: 0.0.29
-  resolution: "@types/shortid@npm:0.0.29"
-  checksum: 10/f0ba8dcc3ba0da60a16fe11edb745b0cc6b1d1acbe26f33d4193ad23a5a86a05220b4637619673dee0009f7e6ba80bd5bb72e6346bb49e1e4477d52a9653630d
+"@types/shortid@npm:0.0.30":
+  version: 0.0.30
+  resolution: "@types/shortid@npm:0.0.30"
+  checksum: 10/f088aed7bf13da556e141f572de483be750beb18b1a605de93a0535a1178c02817e4dc929868a13f6e5aa311a17c10b4b78019246e933c414e9b00ce39da5299
   languageName: node
   linkType: hard
 
@@ -22384,7 +22384,7 @@ __metadata:
     "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^8.0.3"
     "@types/node": "npm:^18.17.0"
-    "@types/shortid": "npm:0.0.29"
+    "@types/shortid": "npm:0.0.30"
     "@types/sinon": "npm:^7.0.13"
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
     "@typescript-eslint/parser": "npm:^7.2.0"

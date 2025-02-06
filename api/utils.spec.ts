@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { allContainOnlySafeCharacters, hasUnacceptableCharacters, toTitleCase, urlHasUnacceptableCharacters } from './utils';
+import { allContainOnlySafeCharacters, containsDangerousCode, hasUnacceptableCharacters, toTitleCase, urlHasUnacceptableCharacters } from './utils';
 
 const validRoleList = [
   '[PETSOLICITOR]',
@@ -241,6 +241,71 @@ describe('api utils', () => {
       expect(urlHasUnacceptableCharacters(testString3)).to.equal(false);
       const testString4 = '//https://www.google.com';
       expect(urlHasUnacceptableCharacters(testString4)).to.equal(false);
+    });
+  });
+
+  describe('containsDangerousCode', () => {
+    it('should return true for strings containing <script> tags', () => {
+      const input = '<script>alert("XSS")</script>';
+      expect(containsDangerousCode(input)).to.equal(true);
+
+      const secondInput = 'This is random text <script>alert("XSS")</script> with script within';
+      expect(containsDangerousCode(secondInput)).to.equal(true);
+    });
+  
+    it('should return true for strings containing javascript: URLs', () => {
+      const input = 'javascript:alert("XSS")';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing event handlers', () => {
+      const input = '<div onmouseover="alert(\'XSS\')">Hover me</div>';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing eval function', () => {
+      const input = 'eval("alert(\'XSS\')")';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing new Function constructor', () => {
+      const input = 'new Function("alert(\'XSS\')")';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+
+    it('should return true for strings containing <style> tags', () => {
+      const input = '<style>body { background-color: red; }</style>';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing CSS expressions', () => {
+      const input = 'div { width: expression(alert("XSS")); }';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing dangerous URL schemes', () => {
+      const input = 'data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4=';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing JSONP callback', () => {
+      const input = 'https://example.com/api?callback=alert';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return true for strings containing JSONP jsonp parameter', () => {
+      const input = 'https://example.com/api?jsonp=alert';
+      expect(containsDangerousCode(input)).to.equal(true);
+    });
+  
+    it('should return false for safe strings', () => {
+      const input = 'This is a safe string.';
+      expect(containsDangerousCode(input)).to.equal(false);
+    });
+  
+    it('should return false for strings with HTML but no JavaScript', () => {
+      const input = '<div>This is a div</div>';
+      expect(containsDangerousCode(input)).to.equal(false);
     });
   });
 

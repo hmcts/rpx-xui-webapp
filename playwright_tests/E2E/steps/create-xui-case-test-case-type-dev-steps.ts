@@ -1,0 +1,36 @@
+import { test, expect } from '@playwright/test';
+
+export async function createTestCaseErrorValidation(page) {
+  await page.getByRole('link', { name: 'Create case' }).click();
+  await expect(page.getByRole('heading', { name: 'Create Case' })).toBeVisible();
+  await page.getByText('Create Case Jurisdiction--').click();
+  await page.getByLabel('Jurisdiction').selectOption('DIVORCE');
+  await page.getByLabel('Case type').selectOption('xuiTestCaseType_dev');
+  await page.getByRole('button', { name: 'Start' }).click();
+  await expect(page.getByText('Page 1 header')).toBeVisible();
+  await page.getByRole('textbox', { name: 'Text Field' }).click();
+  await page.getByRole('textbox', { name: 'Text Field' }).fill('Field');
+  await page.getByRole('radio', { name: 'Item 1' }).check();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('heading', { name: 'Page 3' })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Email' }).click();
+  await page.getByRole('textbox', { name: 'Email' }).fill('test@mail.com');  
+  await page.getByRole('textbox', { name: 'Phone UK' }).click();
+  await page.getByRole('textbox', { name: 'Phone UK' }).fill('07584758478');
+  await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Day').click();
+  await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Day').fill('01');
+  await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Day').press('Tab');
+  await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Month').fill('01');
+  await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Month').press('Tab');
+  await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Year').fill('0000');
+  await page.getByRole('group', { name: 'Date Time' }).getByLabel('Day').click();
+  await page.getByRole('group', { name: 'Date Time' }).getByLabel('Day').fill('10');
+  await page.getByRole('group', { name: 'Date Time' }).getByLabel('Day').press('Tab');
+  await page.getByRole('group', { name: 'Date Time' }).getByLabel('Month').fill('10');
+  await page.getByRole('group', { name: 'Date Time' }).getByLabel('Month').press('Tab');
+  await page.getByRole('group', { name: 'Date Time' }).getByLabel('Year').fill('2024');
+  await page.getByRole('textbox', { name: 'Money GBP' }).click();
+  await page.getByRole('textbox', { name: 'Money GBP' }).fill('1000');
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByText('Date is not valid')).toBeVisible();
+};

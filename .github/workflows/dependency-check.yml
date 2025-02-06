@@ -10,12 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: tibdex/github-app-token@v1
+      - uses: tibdex/github-app-token@v2
         id: generate-token
         with:
           app_id: ${{ secrets.HMCTS_GITHUB_EXUI_APP_ID }}
           private_key: ${{ secrets.HMCTS_GITHUB_EXUI_PRIVATE_KEY }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ steps.generate-token.outputs.token }}
           ref: master
@@ -26,7 +26,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues
       - name: Commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           skip_dirty_check: false
           commit_message: "Automated update of known-issue suppression"

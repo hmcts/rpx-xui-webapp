@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationStart, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   CaseField,
@@ -36,6 +36,8 @@ describe('QueryManagementContainerComponent', () => {
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
   const mockRouter = {
+
+    events: of(new NavigationStart(1, '/some-other-route')),
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
   };
@@ -262,6 +264,26 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
   });
 
+  it('should set showContinueButton to true when navigating back from qualifying question detail if showContinueButton was previously set to false', () => {
+    component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
+    component.showContinueButton = false;
+
+    component.previous();
+
+    expect(component.showContinueButton).toBeTruthy();
+    expect(qualifyingQuestionService.clearQualifyingQuestionSelection).toHaveBeenCalled();
+    expect(component.queryCreateContext).toBe(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+  });
+
+  it('should return true on check', () => {
+    const errorContext = {
+      ignoreWarning: true,
+      triggerText: 'Some error!'
+    };
+    component.callbackErrorsNotify(errorContext);
+    expect(component.ignoreWarning).toBeTruthy();
+  });
+
   describe('when it does not have a query id', () => {
     it('should set the query create context', () => {
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
@@ -370,6 +392,56 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
+  describe('when it has not a query id', () => {
+    it('should log an error, set eventDataError to true', () => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: '4',
+          dataid: 'id-00EEE7'
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+
+      expect(component.eventDataError).toBe(true);
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: '',
+        description: 'This case is not configured for query management.',
+        fieldId: 'caseNotFoundError'
+      });
+    });
+
+    it('should log an error, set eventDataError to true', () => {
+      const modifiedMockData = {
+        ...eventMockData,
+        case_fields: eventMockData.case_fields.map((field) => ({
+          ...field,
+          value: null
+        }))
+      };
+      casesService.getEventTrigger.and.returnValue(of(modifiedMockData));
+
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: '4',
+          dataid: 'id-00EEE7'
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+
+      expect(component.eventDataError).toBe(true);
+      expect(component.errorMessages.length).toBe(1);
+      expect(component.errorMessages[0]).toEqual({
+        title: '',
+        description: 'This case is not configured for query management.',
+        fieldId: 'caseNotFoundError'
+      });
+    });
+  });
   describe('onDocumentCollectionUpdate', () => {
     beforeEach(() => {
       activatedRoute.snapshot = {
@@ -440,6 +512,14 @@ describe('QueryManagementContainerComponent', () => {
       spyOn(component, 'validateForm');
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;
       component.submitForm();
+      expect(component.validateForm).toHaveBeenCalled();
+    });
+
+    it('should show error message for new query submission', () => {
+      spyOn(component, 'validateForm');
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY;
+      component.eventDataError = true;
+      component.submitForm();
       expect(component.submitted).toEqual(true);
       expect(component.validateForm).toHaveBeenCalled();
     });
@@ -490,6 +570,21 @@ describe('QueryManagementContainerComponent', () => {
           spyOn(component, 'validateQualifyingQuestion').and.returnValue(false);
           component.submitForm();
           expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
+        });
+
+        it('should not show continue button if url is empty', () => {
+          const qualifyingQuestion = {
+            name: 'Raise a new query',
+            markdown: '<p>Test markdown</p>',
+            url: ''
+          };
+
+          component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
+
+          spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
+          component.submitForm();
+          expect(component.showContinueButton).toBe(false);
+          expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
         });
       });
 
@@ -659,6 +754,15 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
+  describe('goToQueryList', () => {
+    it('should navigate to case Queries tab', () => {
+      component.goToQueryList();
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+        { fragment: 'Queries' }
+      );
+    });
+  });
+
   describe('getQueryCreateContext', () => {
     it('should return query item type respond as the query context', () => {
       activatedRoute.snapshot = {
@@ -696,6 +800,16 @@ describe('QueryManagementContainerComponent', () => {
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
+
+    it('should set showContinueButton and showForm based on if user has responded to a query', () => {
+      component.hasRespondedToQueryTask(true);
+      expect(component.showContinueButton).toBe(false);
+      expect(component.showForm).toBe(false);
+
+      component.hasRespondedToQueryTask(false);
+      expect(component.showContinueButton).toBe(true);
+      expect(component.showForm).toBe(true);
+    });
   });
 
   describe('getEventTrigger', () => {
@@ -713,7 +827,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages.length).toBe(1);
       expect(component.errorMessages[0]).toEqual({
         title: '',
-        description: 'Something unexpected happened. please try again later.',
+        description: 'Something unexpected happened. Please try again later.',
         fieldId: 'evenDataError'
       });
     });
@@ -731,5 +845,25 @@ describe('QueryManagementContainerComponent', () => {
       expect(mockAlertService.error).toHaveBeenCalledWith({ phrase: error.message });
     });
   });
-});
 
+  describe('Extra Qualifying questions Option', () => {
+    const qualifyingQuestions = [
+      { name: 'Question 1', markdown: 'Details 1', url: 'http://example.com/1' },
+      { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' }
+    ];
+
+    beforeEach(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of(qualifyingQuestions));
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+
+    it('should retrieve and process qualifying questions', () => {
+      component.qualifyingQuestions$.subscribe((qualifyingQuestions) => {
+        expect(qualifyingQuestions[0].name).toBe('Follow-up on an existing query');
+        expect(qualifyingQuestions[0].url).toContain('/cases/case-details/123#Queries');
+        expect(qualifyingQuestions[1].name).toBe('Raise a new query');
+      });
+    });
+  });
+});

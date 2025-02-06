@@ -7,10 +7,7 @@
     "roles": "COOKIES_ROLES"
   },
   "logging": "LOGGING",
-  "now": {
-    "__name": "NOW",
-    "__format": "json"
-  },
+  "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
   "stub": {
     "__name": "STUB",
@@ -89,6 +86,10 @@
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
+      "serviceOverride": {
+        "__name": "SERVICES_IDAM_SERVICE_OVERRIDE",
+        "__format": "json"
+      },
       "iss": "SERVICES_IDAM_ISS_URL"
     },
     "location_api": "SERVICES_LOCATION_API",
@@ -113,7 +114,10 @@
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
     "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
     "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH",
-    "translation": "SERVICES_TRANSLATION_API_URL"
+    "translation": "SERVICES_TRANSLATION_API_URL",
+    "lau": {
+      "specificChallengedAccessApi": "SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH"
+    } 
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -176,6 +180,10 @@
     },
     "jrdELinksV2Enabled": {
       "__name": "FEATURE_JRD_E_LINKS_V2_ENABLED",
+      "__format": "json"
+    },
+    "lauSpecificChallengedEnabled": {
+      "__name": "FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED",
       "__format": "json"
     },
     "substantiveRoleEnabled": {

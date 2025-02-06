@@ -6361,18 +6361,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/component-emitter@npm:^1.2.10":
-  version: 1.2.12
-  resolution: "@types/component-emitter@npm:1.2.12"
-  checksum: 10/8a4a5f88c5d2a772c6a365bce2e6941b5e91c0e79754b14e1c2a85af3bc3cb0feaa6362180fcd74428d6b7caba219e90434747af3a1783df6836477a0d1ea9c3
-  languageName: node
-  linkType: hard
-
 "@types/config@npm:^0.0.41":
   version: 0.0.41
   resolution: "@types/config@npm:0.0.41"
   checksum: 10/528eb5e5d60c48cf82a2b0988ee1e5e088472698ad25944131b0ba87b2e3bb0989f3b4d45edb9d49eefcc8bf158c267905c386aaec15857b9fb24be449c3f27c
-
   languageName: node
   linkType: hard
 

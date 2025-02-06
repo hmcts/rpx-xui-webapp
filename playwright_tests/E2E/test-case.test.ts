@@ -4,6 +4,9 @@ import { waitForSpinner } from './steps/spinner-steps';
 import { getCaseReferenceFromFirstRow, dealWithShortenedCaseRefLabel } from './steps/table-steps';
 import { confirmNextSteps, confirmTabsVisible, caseDetailsCheck, validateWorkBasketComplexValues, validateWorkbasketInputs } from './steps/test-case';
 import { waitForSpecificResponse } from './helpers/responseListenerHelper';
+import { createCase } from './steps/create-xui-case-poc-steps';
+import { submitEvent } from './steps/submit-update-case-event-steps';
+import { createTestCaseErrorValidation } from './steps/create-xui-case-test-case-type-dev-steps';
 
 test('Validate next steps drop down', async ({ page }) => {
   const response = waitForSpecificResponse(
@@ -18,12 +21,33 @@ test('Validate next steps drop down', async ({ page }) => {
   await page.getByLabel('Apply filter').click();
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  const firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  if (firstCaseRef.trim().length === 0) {
+    await createCase(page);
+    firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  }
   await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData?.triggers;
   const nextStepsMatch = await confirmNextSteps(page, expectedData);
   expect(nextStepsMatch).toBeTruthy();
+  await signOut(page);
+});
+
+test('Submit event from next step drop down', async ({ page }) => {
+  await signIn(page, 'SOLICITOR');
+  await expect(page.getByLabel('Manage Cases')).toBeVisible();
+  await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
+  await page.getByLabel('Apply filter').click();
+  await waitForSpinner(page);
+  await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
+  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  if (firstCaseRef.trim().length === 0) {
+    await createCase(page);
+    firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  }
+  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
+  await submitEvent(page);
   await signOut(page);
 });
 
@@ -40,7 +64,11 @@ test('Validate tabs are visible', async ({ page }) => {
   await page.getByLabel('Apply filter').click();
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  const firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  if (firstCaseRef.trim().length === 0) {
+    await createCase(page);
+    firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  }
   await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData?.tabs;
@@ -62,7 +90,11 @@ test('Validate tabs details', async ({ page }) => {
   await page.getByLabel('Apply filter').click();
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  const firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  if (firstCaseRef.trim().length === 0) {
+    await createCase(page);
+    firstCaseRef = await getCaseReferenceFromFirstRow(page);
+  }
   await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
   const responseData = await response;
   const expectedData = responseData;
@@ -150,3 +182,12 @@ test('check form validations are functioning ', async ({ page }) => {
   await expect(page.getByLabel('The event could not be created').getByText('The data entered is not valid')).toBeVisible();
   await signOut(page);
 });
+
+test('Validate invalid date error message', async ({ page }) => {
+  await signIn(page, 'SOLICITOR');
+  await expect(page.getByLabel('Manage Cases')).toBeVisible();
+  await createTestCaseErrorValidation(page);
+  await signOut(page);
+});
+
+

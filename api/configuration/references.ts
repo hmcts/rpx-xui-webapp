@@ -32,6 +32,7 @@ export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmen
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
 export const SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH = 'services.role_assignment.roleMappingApi';
+export const SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH = 'services.lau.specificChallengedAccessApi';
 
 export const SERVICES_CASE_CASEWORKER_REF_PATH = 'services.case.caseworkerApi';
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialworkerApi';
@@ -58,6 +59,7 @@ export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID';
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl';
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss';
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl';
+export const SERVICES_IDAM_SERVICE_OVERRIDE = 'services.idam.serviceOverride';
 
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
@@ -127,6 +129,8 @@ export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 
 export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
+
+export const FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED = 'lauSpecificChallengedEnabled';
 
 export const HELMET = 'helmet';
 

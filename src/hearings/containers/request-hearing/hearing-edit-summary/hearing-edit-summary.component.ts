@@ -103,6 +103,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
     this.hearingsService.hearingRequestForSubmitValid = false;
+    this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
+
+    if (this.serviceHearingValuesModel?.panelRequiredDefault !== undefined) {
+      this.sectionsToDisplay = HearingsUtils.checkScreensForHearingRequiremnts(
+        this.sectionsToDisplay, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+    }
     this.sectionsToDisplay = HearingsUtils.checkScreensForHearingRequiremnts(
       this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName),
       this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);

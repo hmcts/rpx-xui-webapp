@@ -89,7 +89,9 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info');
           });
         });
-        this.template = HearingsUtils.checkTemplateForHearingRequiremnts(this.template, storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        if (storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.panelRequiredDefault !== undefined) {
+          this.template = HearingsUtils.checkTemplateForHearingRequiremnts(this.template, storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        }
       }
     });
     return this.template;

@@ -637,6 +637,7 @@ describe('HearingsUtils', () => {
         const isAPanelFlag = undefined;
         const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
         expect(result).toEqual([
+          { screenName: 'hearing-panel-required', insetInfo: 'hearing-panel-required', sectionHTMLTitle: 'Hearing panel required' },
           { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
           { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
@@ -662,7 +663,7 @@ describe('HearingsUtils', () => {
         const sectionsToDisplay: string[] = ['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details'];
         const isAPanelFlag = undefined;
         const result = HearingsUtils.checkScreensForHearingRequiremnts(sectionsToDisplay, isAPanelFlag);
-        expect(result).toEqual(['hearing-judge', 'hearing-panel', 'hearing-details']);
+        expect(result).toEqual(['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details']);
       });
     });
   });

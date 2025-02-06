@@ -278,6 +278,8 @@ describe('HearingViewEditSummaryComponent', () => {
   describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
     beforeEach(() => {
       const state = JSON.parse(JSON.stringify(initialState));
+
+      state.hearings.hearingValues.serviceHearingValuesModel.panelRequiredDefault = true;
       state.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
       state.hearings.hearingValues.serviceHearingValuesModel.screenFlow = screenFlow;
       TestBed.configureTestingModule({
@@ -416,6 +418,7 @@ describe('HearingViewEditSummaryComponent', () => {
   describe('getHearingRequestToCompare and getHearingRequest are holding different state', () => {
     beforeEach(() => {
       const state = JSON.parse(JSON.stringify(initialState));
+      state.hearings.hearingValues.serviceHearingValuesModel.panelRequiredDefault = true;
       state.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
       state.hearings.hearingValues.serviceHearingValuesModel.screenFlow = screenFlow;
       TestBed.configureTestingModule({

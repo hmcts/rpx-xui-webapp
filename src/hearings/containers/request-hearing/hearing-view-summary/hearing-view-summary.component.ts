@@ -49,7 +49,9 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
     combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$])
       .subscribe(([isHearingAmendmentsEnabled, isHearingManager]) => {
         let template = isHearingAmendmentsEnabled && isHearingManager ? HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE : HEARING_VIEW_ONLY_SUMMARY_TEMPLATE;
-        template = HearingsUtils.checkTemplateForHearingRequiremnts(template, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        if (this.serviceHearingValuesModel?.panelRequiredDefault !== undefined) {
+          template = HearingsUtils.checkTemplateForHearingRequiremnts(template, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        }
         this.template = template;
       });
   }

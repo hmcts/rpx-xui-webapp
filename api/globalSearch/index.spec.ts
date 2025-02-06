@@ -5,7 +5,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
@@ -137,13 +137,14 @@ describe('Jurisdiction', () => {
       ]
     }
   ];
-  const serviceList: GlobalSearchService[] = [
+  const serviceList: HMCTSServiceDetails[] = [
 
     { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
     { serviceId: 'Civil', serviceName: 'Civil' },
     { serviceId: 'PRIVATELAW', serviceName: 'Family Private Law' },
     { serviceId: 'PUBLICLAW', serviceName: 'Family Public Law' },
-    { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' }
+    { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' },
+    { serviceId: 'ST_CIC', serviceName: 'Criminal Injuries Compensation' }
   ];
 
   beforeEach(() => {
@@ -177,15 +178,15 @@ describe('Jurisdiction', () => {
     expect(response).to.deep.equal(res);
   });
 
-  it('should return global search services1', async() => {
+  it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(5);
+    expect(services.length).to.equal(6);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(5);
+    expect(services.length).to.equal(6);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(5);
+    expect(services.length).to.equal(6);
   });
 
   it('should return global search services2', async() => {

@@ -3455,12 +3455,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.32":
-  version: 7.1.32
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.32"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.35":
+  version: 7.1.35
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.35"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/14449020dca2e95758fd9f742f4d8151be50388c65ea5df66b7664423421f019ffe8dd151232c0fce7cb68a23096bec6e5e11370c33fe2e85d8ebd38ff479270
+  checksum: 10/c75a2ba72df068300b1486d26c83bc6c5a4897710faa8d0a664dd62d8b17848e6730bc18fadadc08028cece8964f43538ce105fba6e3f12831eea1820b406406
   languageName: node
   linkType: hard
 
@@ -5628,13 +5628,13 @@ __metadata:
   linkType: hard
 
 "@playwright/test@npm:^1.42.0":
-  version: 1.49.1
-  resolution: "@playwright/test@npm:1.49.1"
+  version: 1.50.1
+  resolution: "@playwright/test@npm:1.50.1"
   dependencies:
-    playwright: "npm:1.49.1"
+    playwright: "npm:1.50.1"
   bin:
     playwright: cli.js
-  checksum: 10/bb0d5eda58ee0b5bbca732d2aa57782fadf420d101e08e16d5760179459c667907bd8d224ee3d6f43f3088378e377ef63d32ed605fec37605debf217c3efe8da
+  checksum: 10/0d8d2291d6554c492cb163b4d463e1e9cc6d3ae50680d790473f693f36a243c16c3620406849dd40115046c47a6ad5cc36a24511caec6d054dc1a1d9fffb4138
   languageName: node
   linkType: hard
 
@@ -6760,11 +6760,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0":
-  version: 22.10.1
-  resolution: "@types/node@npm:22.10.1"
+  version: 22.13.1
+  resolution: "@types/node@npm:22.13.1"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10/c802a526da2f3fa3ccefd00a71244e7cb825329951719e79e8fec62b1dbc2855388c830489770611584665ce10be23c05ed585982038b24924e1ba2c2cce03fd
+  checksum: 10/d8ba7068b0445643c0fa6e4917cdb7a90e8756a9daff8c8a332689cd5b2eaa01e4cd07de42e3cd7e6a6f465eeda803d5a1363d00b5ab3f6cea7950350a159497
   languageName: node
   linkType: hard
 
@@ -6776,11 +6776,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^18.17.0":
-  version: 18.19.67
-  resolution: "@types/node@npm:18.19.67"
+  version: 18.19.75
+  resolution: "@types/node@npm:18.19.75"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10/7bb1d06cd1483dd02462a3dd2894790e5c27ba0fa4cdd4a3da1062d66ed47b66affaab314aa72b346ff3e5538a74d5c3cb14bb1a634547504a1643679738f494
+  checksum: 10/641dc5fa408f1cec66cfa5eef015baf3051a5509ad7ab4b843023ca8b41530d3ef2e798479020d6da20cbe36b3cf150051af2f1786b40bcd2e8dfed1b2fdab9e
   languageName: node
   linkType: hard
 
@@ -16941,12 +16941,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-chrome-launcher@npm:3.1.1":
-  version: 3.1.1
-  resolution: "karma-chrome-launcher@npm:3.1.1"
+"karma-chrome-launcher@npm:3.2.0":
+  version: 3.2.0
+  resolution: "karma-chrome-launcher@npm:3.2.0"
   dependencies:
     which: "npm:^1.2.1"
-  checksum: 10/527c33a27d251355693d2a27f7ab7a5c0fc0ef156d5e82261f7d9a02d09cfa7f6d09979e73d3ecbbce43fe5a8e1ee69ca634783e0d40255bc7e1e53af376a12c
+  checksum: 10/2124684172ef04f6fa3a957d72214adcd780e440adf61d191f1e6faa648b6b509056952910d6d0517d118250d347d8b30f77ccac195ea53dcdf3d7ed71651506
   languageName: node
   linkType: hard
 
@@ -18843,11 +18843,11 @@ __metadata:
   linkType: hard
 
 "moment-timezone@npm:^0.5.28":
-  version: 0.5.46
-  resolution: "moment-timezone@npm:0.5.46"
+  version: 0.5.47
+  resolution: "moment-timezone@npm:0.5.47"
   dependencies:
     moment: "npm:^2.29.4"
-  checksum: 10/7613ba388fa6004af62675fb9945cb0d37758b559d07470a5e188419ffe1ac03eb2ed16fe80aa34d1e7dd39fc5bd67dc02cd59e8dcdab95504cface2c78e4b3d
+  checksum: 10/b2ad32e6b7ea4ce99756c9f571f8eb1bdd6592ecdc2bf3f7fb988ae980a49a7e87b986776090571b9608c8576205f839b736dc7589c180ce36c82fad4b8416c6
   languageName: node
   linkType: hard
 
@@ -20844,27 +20844,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.49.1":
-  version: 1.49.1
-  resolution: "playwright-core@npm:1.49.1"
+"playwright-core@npm:1.50.1":
+  version: 1.50.1
+  resolution: "playwright-core@npm:1.50.1"
   bin:
     playwright-core: cli.js
-  checksum: 10/baa39a53024ec7744708410f2b952ac3aa2e1a6d311dabfa303523712848eba142fce5c20f1b2ed2a66fbd9a415d22ea8642b0f70423360aaebd4b41c47d364e
+  checksum: 10/9a310b8a66bf7fd926e620c1c8e27be29bdbdce91640e5f975b2fd4dc706d0307faec2bb0456cc8e7dedb1e71c0b5eb35c6a58acd5cedc7d8fd849a9067e637b
   languageName: node
   linkType: hard
 
-"playwright@npm:1.49.1, playwright@npm:^1.42":
-  version: 1.49.1
-  resolution: "playwright@npm:1.49.1"
+"playwright@npm:1.50.1, playwright@npm:^1.42":
+  version: 1.50.1
+  resolution: "playwright@npm:1.50.1"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.49.1"
+    playwright-core: "npm:1.50.1"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/49fb063f4a107b8090f66d2d351ebd51fbb66843a8f95a161fa0c0e0b5156515961e75cc10f4249f61b9d2af51f762dda505c62b096d8f61cd47d1ff73ab39d2
+  checksum: 10/a3687614ac3238a81cbe3018e4f4a2ae92c71f3f65110cc6087068c020f6134f0628308da33177b9b08102644706e835d4053f6890beeb4a935f433bc4ac107a
   languageName: node
   linkType: hard
 
@@ -22345,7 +22345,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^10.8.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.32"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.35"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"
@@ -22435,7 +22435,7 @@ __metadata:
     jsonpath: "npm:^1.1.1"
     jsonwebtoken: "npm:^9.0.2"
     karma: "npm:~6.4.2"
-    karma-chrome-launcher: "npm:3.1.1"
+    karma-chrome-launcher: "npm:3.2.0"
     karma-coverage: "npm:~2.2.0"
     karma-coverage-istanbul-reporter: "npm:~2.0.1"
     karma-jasmine: "npm:5.1.0"

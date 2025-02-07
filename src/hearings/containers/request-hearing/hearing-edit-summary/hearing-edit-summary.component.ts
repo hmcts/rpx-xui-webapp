@@ -174,24 +174,36 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   // Both sets of input will be processed through method cleanJson. This will remove any null, undefined or empty elemtents from the object
   // allowing the comparison to ignore insignificant changes.
   public areObjectsfunctionallyDifferentCheck(object1Input: any, object2Input: any): boolean {
-    const object1 = this.cleanJson(object1Input);
-    const object2 = this.cleanJson(object2Input);
+    const object1 = this.cleanObectsForComparison(object1Input);
+    const object2 = this.cleanObectsForComparison(object2Input);
     return !_.isEqual(JSON.stringify(object1, this.replacer), JSON.stringify(object2, this.replacer));
   }
 
-  public cleanJson(data: any): any {
+  public cleanObectsForComparison(data: any, visited = new Set()): any {
+    // If data is a primitive (null, undefined, number, string, etc.), return it as is
+    if (data === null || typeof data !== 'object') {
+      return data;
+    }
+
+    // If the object is already in the visited set, it's a circular reference
+    if (visited.has(data)) {
+      return undefined;
+    }
+
+    // Mark the object as visited
+    visited.add(data);
+
     if (Array.isArray(data)) {
-      // If the data is an array, clean each item and remove empty arrays
-      const cleanedArray = data.map(function (item) {
-        return this.cleanJson(item); // Use regular function to ensure 'this' is correct
-      }, this).filter((item) => item !== null && item !== undefined && (Array.isArray(item) ? item.length > 0 : true));
+      // Clean each item in the array and remove empty or invalid items
+      const cleanedArray = data.map((item) => this.cleanObectsForComparison(item, visited))
+        .filter((item) => item !== null && item !== undefined && item !== '' && (Array.isArray(item) ? item.length > 0 : true));
       return cleanedArray.length > 0 ? cleanedArray : undefined;
-    } else if (typeof data === 'object' && data !== null) {
-      // If the data is an object, iterate through the keys and clean each value
+    } else if (typeof data === 'object') {
+      // If the data is an object, iterate through each key and clean its value
       const cleanedObject: any = {};
       for (const key in data) {
         if (data.hasOwnProperty(key)) {
-          const cleanedValue = this.cleanJson(data[key]);
+          const cleanedValue = this.cleanObectsForComparison(data[key], visited);
           if (cleanedValue !== null && cleanedValue !== undefined && cleanedValue !== '' && !(Array.isArray(cleanedValue) && cleanedValue.length === 0)) {
             cleanedObject[key] = cleanedValue;
           }
@@ -199,8 +211,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
       return Object.keys(cleanedObject).length > 0 ? cleanedObject : undefined;
     }
-    // Return the data if it's neither null, undefined, nor an empty array
-    return data;
+    return undefined;
   }
 
   private hasHearingRequestObjectChanged(): boolean {

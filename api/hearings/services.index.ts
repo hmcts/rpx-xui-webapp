@@ -27,8 +27,10 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   try {
     const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
     let dataByDefault = mapDataByDefault(data);
-    // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {
+      if (jurisdictionId === 'SSCS') {
+        data.panelRequiredDefault = true;
+      }
       dataByDefault = {
         ...data,
         screenFlow: DEFAULT_SCREEN_FLOW

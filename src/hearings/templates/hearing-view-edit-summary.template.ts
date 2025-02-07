@@ -282,8 +282,8 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
         isHiddenSource: IsHiddenSource.PANEL_ROLES,
         isAmendedSource: AnswerSource.PANEL_ROLES
       }
-    ],
-    isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
+    ] //,
+    // isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',

@@ -1,6 +1,6 @@
 {
   "name": "rpx-exui",
-  "version": "7.0.15",
+  "version": "7.1.35-exui-2747-rc1",
   "engines": {
     "node": ">=18.17.0"
   },

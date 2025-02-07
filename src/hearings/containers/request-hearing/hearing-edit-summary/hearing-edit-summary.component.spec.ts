@@ -1538,6 +1538,42 @@ describe('HearingEditSummaryComponent', () => {
     expect(result).toBe(true);
   });
 
+  it('should return true when cleanObectsForComparison is called with range of types', () => {
+    const data = {
+      a: 42,
+      b: 'hello',
+      c: true,
+      d: false,
+      e: null,
+      f: '',
+      g: 0,
+      h: 3.14,
+      i: [],
+      j: [1, 2, 3],
+      k: ['a', '', 'b'],
+      l: {},
+      m: { 'key1': 'value1', 'key2': '' },
+      n: { 'nested': { 'innerKey': 'innerValue', 'emptyArray': [] } },
+      o: undefined
+    };
+
+    const expectedResult = {
+      a: 42,
+      b: 'hello',
+      c: true,
+      d: false,
+      g: 0,
+      h: 3.14,
+      j: [1, 2, 3],
+      k: ['a', 'b'],
+      m: { 'key1': 'value1' },
+      n: { 'nested': { 'innerKey': 'innerValue' } }
+    };
+
+    const result = component.cleanObectsForComparison(data);
+    expect(result).toEqual(expectedResult);
+  });
+
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [
       {

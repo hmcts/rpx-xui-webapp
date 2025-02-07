@@ -61,6 +61,30 @@ describe('NocCaseRefComponent', () => {
     });
   });
 
+  describe('ngAfterViewChecked', () => {
+
+    beforeEach(() => {
+      component.errorContainer = jasmine.createSpyObj('errorContainer', ['nativeElement']);
+      component.errorContainer.nativeElement = jasmine.createSpyObj('nativeElement', ['scrollIntoView', 'focus']);
+    })
+
+    it('should do nothing if there is no scrollToError set', () => {
+      component.scrollToError = false;
+      component.ngAfterViewChecked();
+      expect(component.scrollToError).toBe(false);
+      expect(component.errorContainer.nativeElement.scrollIntoView).not.toHaveBeenCalled();
+      expect(component.errorContainer.nativeElement.focus).not.toHaveBeenCalled();
+    });
+
+    it('should set the component focus on the error messages when relevant', () => {
+      component.scrollToError = true;
+      component.ngAfterViewChecked();
+      expect(component.scrollToError).toBe(false);
+      expect(component.errorContainer.nativeElement.scrollIntoView).toHaveBeenCalled();
+      expect(component.errorContainer.nativeElement.focus).toHaveBeenCalled();
+    });
+  });
+
   describe('navigationHandler', () => {
     it('should dispatch an action', () => {
       const storeDispatchMock = spyOn(store, 'dispatch');

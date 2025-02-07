@@ -22,10 +22,10 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
 
   public caseRefForm: FormGroup;
 
+  public scrollToError = false;
+
   public nocNavigationCurrentState: NocState;
   private nocNavigationCurrentStateSub: Subscription;
-
-  private scrollToError = false;
 
   constructor(
     private readonly store: Store<fromFeature.State>,

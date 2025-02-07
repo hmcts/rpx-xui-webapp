@@ -62,11 +62,10 @@ describe('NocCaseRefComponent', () => {
   });
 
   describe('ngAfterViewChecked', () => {
-
     beforeEach(() => {
       component.errorContainer = jasmine.createSpyObj('errorContainer', ['nativeElement']);
       component.errorContainer.nativeElement = jasmine.createSpyObj('nativeElement', ['scrollIntoView', 'focus']);
-    })
+    });
 
     it('should do nothing if there is no scrollToError set', () => {
       component.scrollToError = false;

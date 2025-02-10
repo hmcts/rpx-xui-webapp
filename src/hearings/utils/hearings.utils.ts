@@ -228,7 +228,32 @@ export class HearingsUtils {
     const individualHMCPartyIds = individualPartiesInHMC.map((party) => party.partyID);
     const individualPartiesInSHV = serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
     const individualSHVPartyIds = individualPartiesInSHV.map((party) => party.partyID);
-    const contains = individualHMCPartyIds.some((hmcParty) => individualSHVPartyIds.includes(hmcParty));
-    return contains;
+    if (individualHMCPartyIds.length !== 0 && individualSHVPartyIds.length !== 0) {
+      const contains = individualHMCPartyIds.some((hmcParty) => individualSHVPartyIds.includes(hmcParty));
+      return contains;
+    }
+    return true;
+  }
+
+  public static modifyHearingDetailsYear(hearingDetails: HearingWindowModel): void {
+    if (hearingDetails?.dateRangeStart) {
+      hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart).year(moment().year() + 1).toISOString();
+    }
+    if (hearingDetails?.dateRangeEnd) {
+      hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd).year(moment().year() + 1).toISOString();
+    }
+    if (hearingDetails?.firstDateTimeMustBe) {
+      hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe).year(moment().year() + 1).toISOString();
+    }
+    // return modifiedHearingDetails;
+  }
+
+  public static resetHearingWindow(input: any): void {
+    if (input?.hearingWindow) {
+      HearingsUtils.modifyHearingDetailsYear(input.hearingWindow);
+    }
+    if (input?.hearingDetails?.hearingWindow) {
+      HearingsUtils.modifyHearingDetailsYear(input?.hearingDetails?.hearingWindow);
+    }
   }
 }

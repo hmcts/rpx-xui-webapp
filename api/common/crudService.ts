@@ -18,6 +18,7 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
   try {
     logger.info('handle get:', path);
     const headers = setHeaders(req);
+    logger.info('headers:', JSON.stringify(headers));
     return await http.get(path, { headers });
   } catch (e) {
     next(e);
@@ -31,6 +32,7 @@ export async function sendGet(path: string, req: EnhancedRequest, customHeaders:
       ...setHeaders(req),
       ...customHeaders
     };
+    logger.info('headers:', JSON.stringify(headers));
     return await http.get(path, { headers });
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));
@@ -49,6 +51,7 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest,
   try {
     logger.info('handle post:', path);
     const headers = setHeaders(req);
+    logger.info('headers:', JSON.stringify(headers));
     return await http.post(path, body, { headers });
   } catch (e) {
     next(e);

@@ -250,7 +250,6 @@ const template: Section[] = [
 describe('WHERE a panel is requested ensure the judge screen is removed.', () => {
   beforeEach(() => {
     const state = JSON.parse(JSON.stringify(initialState));
-    state.hearings.hearingValues.serviceHearingValuesModel.panelRequiredDefault = true;
     state.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     state.hearings.hearingValues.serviceHearingValuesModel.screenFlow = screenFlow;
 
@@ -320,7 +319,6 @@ describe('WHERE a panel is requested ensure the judge screen is removed.', () =>
 describe('WHERE a panel is not requested ensure the panel screen is removed.', () => {
   beforeEach(() => {
     const state = JSON.parse(JSON.stringify(initialState));
-    state.hearings.hearingValues.serviceHearingValuesModel.panelRequiredDefault = false;
     state.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
     state.hearings.hearingValues.serviceHearingValuesModel.screenFlow = screenFlow;
 

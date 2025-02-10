@@ -126,7 +126,15 @@ describe('HearingViewSummaryComponent', () => {
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
-    component.serviceHearingValuesModel.panelRequiredDefault = true;
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);
@@ -140,7 +148,15 @@ describe('HearingViewSummaryComponent', () => {
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
-    component.serviceHearingValuesModel.panelRequiredDefault = false;
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);
@@ -154,7 +170,15 @@ describe('HearingViewSummaryComponent', () => {
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
-    component.serviceHearingValuesModel.panelRequiredDefault = true;
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);
@@ -168,7 +192,15 @@ describe('HearingViewSummaryComponent', () => {
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
-    component.serviceHearingValuesModel.panelRequiredDefault = false;
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);

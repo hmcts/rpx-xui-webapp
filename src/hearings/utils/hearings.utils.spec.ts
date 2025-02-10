@@ -606,7 +606,7 @@ describe('HearingsUtils', () => {
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
         ];
         const isAPanelFlag = true;
-        const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
+        const result = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, isAPanelFlag);
         expect(result).toEqual([
           { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
@@ -620,7 +620,7 @@ describe('HearingsUtils', () => {
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
         ];
         const isAPanelFlag = false;
-        const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
+        const result = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, isAPanelFlag);
         expect(result).toEqual([
           { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
@@ -635,7 +635,7 @@ describe('HearingsUtils', () => {
           { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
         ];
         const isAPanelFlag = undefined;
-        const result = HearingsUtils.checkTemplateForHearingRequiremnts(template, isAPanelFlag);
+        const result = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, isAPanelFlag);
         expect(result).toEqual([
           { screenName: 'hearing-panel-required', insetInfo: 'hearing-panel-required', sectionHTMLTitle: 'Hearing panel required' },
           { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },

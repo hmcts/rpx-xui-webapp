@@ -48,8 +48,8 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers');
           });
         });
-        if (storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.panelRequiredDefault !== undefined) {
-          this.template = HearingsUtils.checkTemplateForHearingRequiremnts(this.template, storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        if (this.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
+          this.template = HearingsUtils.checkTemplateForHearingPanelRequiremnts(this.template, storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
         }
       }
     });

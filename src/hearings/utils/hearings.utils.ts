@@ -258,7 +258,7 @@ export class HearingsUtils {
     }
   }
 
-  public static checkTemplateForHearingRequiremnts(template: Section[], isAPanelFlag: boolean): Section[] {
+  public static checkTemplateForHearingPanelRequiremnts(template: Section[], isAPanelFlag: boolean): Section[] {
     if (isAPanelFlag === undefined || isAPanelFlag === null) {
       return template;
     }

@@ -28,9 +28,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
     let dataByDefault = mapDataByDefault(data);
     if (!data.screenFlow) {
-      if (jurisdictionId === 'SSCS') {
-        data.panelRequiredDefault = true;
-      }
       dataByDefault = {
         ...data,
         screenFlow: DEFAULT_SCREEN_FLOW

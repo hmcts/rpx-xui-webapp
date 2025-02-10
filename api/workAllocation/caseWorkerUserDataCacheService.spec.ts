@@ -162,7 +162,7 @@ describe('Caseworker Cache Service', () => {
       ];
       const mockRoleAssignments = [{
         id: '123',
-        // Test specifies jursidiction is not needed
+        // Test specifies jurisidiction is not needed
         attributes: {},
         roleCategory: 'ADMIN',
         actorId: '1'

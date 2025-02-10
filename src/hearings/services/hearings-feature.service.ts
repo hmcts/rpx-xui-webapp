@@ -31,7 +31,10 @@ export class HearingsFeatureService {
         if (!jurisdiction || !caseType) {
           return false;
         }
-        return featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
+        console.log(featureVariations);
+        console.log(jurisdiction, caseType);
+        return true;
+        // return featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
       })
     );
   }

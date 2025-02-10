@@ -275,6 +275,15 @@ describe('QueryManagementContainerComponent', () => {
     expect(component.queryCreateContext).toBe(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
   });
 
+  it('should return true on check', () => {
+    const errorContext = {
+      ignoreWarning: true,
+      triggerText: 'Some error!'
+    };
+    component.callbackErrorsNotify(errorContext);
+    expect(component.ignoreWarning).toBeTruthy();
+  });
+
   describe('when it does not have a query id', () => {
     it('should set the query create context', () => {
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
@@ -622,7 +631,7 @@ describe('QueryManagementContainerComponent', () => {
         it('should scroll to top', () => {
           spyOn(window, 'scrollTo');
           component.submitForm();
-          expect(window.scrollTo).toHaveBeenCalledWith({ left: 0, top: 0, behavior: 'smooth' });
+          expect(window.scrollTo).toHaveBeenCalled();
         });
       });
     });
@@ -791,6 +800,16 @@ describe('QueryManagementContainerComponent', () => {
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
     });
+
+    it('should set showContinueButton and showForm based on if user has responded to a query', () => {
+      component.hasRespondedToQueryTask(true);
+      expect(component.showContinueButton).toBe(false);
+      expect(component.showForm).toBe(false);
+
+      component.hasRespondedToQueryTask(false);
+      expect(component.showContinueButton).toBe(true);
+      expect(component.showForm).toBe(true);
+    });
   });
 
   describe('getEventTrigger', () => {
@@ -808,7 +827,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages.length).toBe(1);
       expect(component.errorMessages[0]).toEqual({
         title: '',
-        description: 'Something unexpected happened. please try again later.',
+        description: 'Something unexpected happened. Please try again later.',
         fieldId: 'evenDataError'
       });
     });

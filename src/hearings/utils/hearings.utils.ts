@@ -266,7 +266,7 @@ export class HearingsUtils {
     return template.filter((tp: Section) => !tp.sectionHTMLTitle.includes(excludedTitle));
   }
 
-  public static checkScreensForHearingRequiremnts(screens: string[], isAPanelFlag: boolean): string[] {
+  public static checkScreensForHearingPanelRequiremnts(screens: string[], isAPanelFlag: boolean): string[] {
     if (isAPanelFlag === undefined || isAPanelFlag === null) {
       return screens;
     }

@@ -107,7 +107,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
 
     if (this.serviceHearingValuesModel?.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
-      this.sectionsToDisplay = HearingsUtils.checkScreensForHearingRequiremnts(
+      this.sectionsToDisplay = HearingsUtils.checkScreensForHearingPanelRequiremnts(
         this.sectionsToDisplay, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
     }
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');

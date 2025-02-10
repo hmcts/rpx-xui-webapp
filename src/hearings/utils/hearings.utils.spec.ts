@@ -648,21 +648,21 @@ describe('HearingsUtils', () => {
       it('should filter out "hearing-judge" screen when isAPanelFlag is true', () => {
         const sectionsToDisplay: string[] = ['hearing-judge', 'hearing-panel', 'hearing-details'];
         const isAPanelFlag = true;
-        const result = HearingsUtils.checkScreensForHearingRequiremnts(sectionsToDisplay, isAPanelFlag);
+        const result = HearingsUtils.checkScreensForHearingPanelRequiremnts(sectionsToDisplay, isAPanelFlag);
         expect(result).toEqual(['hearing-panel', 'hearing-details']);
       });
 
       it('should filter out "hearing-panel" screen when isAPanelFlag is false', () => {
         const sectionsToDisplay: string[] = ['hearing-judge', 'hearing-panel', 'hearing-details'];
         const isAPanelFlag = false;
-        const result = HearingsUtils.checkScreensForHearingRequiremnts(sectionsToDisplay, isAPanelFlag);
+        const result = HearingsUtils.checkScreensForHearingPanelRequiremnts(sectionsToDisplay, isAPanelFlag);
         expect(result).toEqual(['hearing-judge', 'hearing-details']);
       });
 
       it('should return the same template when no screens to filter', () => {
         const sectionsToDisplay: string[] = ['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details'];
         const isAPanelFlag = undefined;
-        const result = HearingsUtils.checkScreensForHearingRequiremnts(sectionsToDisplay, isAPanelFlag);
+        const result = HearingsUtils.checkScreensForHearingPanelRequiremnts(sectionsToDisplay, isAPanelFlag);
         expect(result).toEqual(['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details']);
       });
     });

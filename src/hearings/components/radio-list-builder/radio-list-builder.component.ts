@@ -16,7 +16,7 @@ interface RadioListItem {
 export class RadioListBuilderComponent {
   @Input() public data: RadioListItem[] = [];
   @Input() public model: RadioListItem[] = [];
-  @Output() public modelChange = new EventEmitter<RadioListItem[][]>();
+  @Output() public modelChange = new EventEmitter<RadioListItem[]>();
 
   public formGroup: FormGroup;
 

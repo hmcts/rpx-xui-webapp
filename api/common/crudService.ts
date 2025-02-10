@@ -59,6 +59,7 @@ export async function sendPost<T>(path: string, body: T, req: EnhancedRequest): 
   try {
     logger.info('send post request to:', path);
     const headers = setHeaders(req);
+    logger.info('headers:', JSON.stringify(headers));
     return await http.post(path, body, { headers });
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));

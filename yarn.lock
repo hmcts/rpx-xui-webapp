@@ -22022,7 +22022,7 @@ __metadata:
     tslib: "npm:^2.6.1"
     typescript: "npm:~5.4.5"
     underscore: "npm:^1.13.6"
-    uuid: "npm:^8.3.1"
+    uuid: "npm:^11.0.0"
     web-animations-js: "npm:^2.3.2"
     webpack: "npm:^5.94.0"
     webpack-cli: "npm:^4.10.0"
@@ -24850,6 +24850,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:^11.0.0":
+  version: 11.0.5
+  resolution: "uuid@npm:11.0.5"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10/0594ecdff3051e15d4a2c614b4c72e73af373bde0a5d156512353c01156975295d024ae8d7151846d7bd4d22ccd251b16ed51b4318fa71505fb20ad984102dc1
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^11.0.3":
   version: 11.0.3
   resolution: "uuid@npm:11.0.3"
@@ -24868,7 +24877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^8.3.0, uuid@npm:^8.3.1, uuid@npm:^8.3.2":
+"uuid@npm:^8.3.0, uuid@npm:^8.3.2":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:

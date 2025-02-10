@@ -1,5 +1,5 @@
 import { UserInfo } from '../auth/interfaces/UserInfo';
-import { allContainOnlySafeCharacters, urlHasUnacceptableCharacters } from '../utils';
+import { allContainOnlySafeCharacters, containsDangerousCode } from '../utils';
 import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
 import { RoleAssignment } from './interfaces/roleAssignment';
 
@@ -96,7 +96,7 @@ export function userDetailsValid(userInfo: UserInfo): boolean {
   // check all user details - Fortify safety check
   // if contains special characters, return false
   if (!allContainOnlySafeCharacters(userInfoValues) || !allContainOnlySafeCharacters(userInfo.roles)
-  || urlHasUnacceptableCharacters(userInfo.iss)) {
+  || containsDangerousCode(userInfo.iss)) {
     return false;
   }
   return true;

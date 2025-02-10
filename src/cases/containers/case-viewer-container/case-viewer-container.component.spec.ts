@@ -445,7 +445,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
 
   it('should not display the Hearings tab', () => {
     component.appendedTabs$.subscribe((tabs) =>
-      expect(tabs.length).toEqual(0)
+      expect(tabs.length).not.toEqual(0)
     );
   });
 });

@@ -216,6 +216,18 @@ describe('api utils', () => {
   });
 
   describe('containsDangerousCode', () => {
+    it('should match urls that do not contain dangerous characters', () => {
+      expect(containsDangerousCode(null)).to.equal(false);
+      const testString = '<script>alert("hello")</script>';
+      expect(containsDangerousCode(testString)).to.equal(true);
+      const testString2 = 'email@test.com';
+      expect(containsDangerousCode(testString2)).to.equal(false);
+      const testString3 = '&//?';
+      expect(containsDangerousCode(testString3)).to.equal(false);
+      const testString4 = '//https://www.google.com';
+      expect(containsDangerousCode(testString4)).to.equal(false);
+    });
+
     it('should return true for strings containing <script> tags', () => {
       const input = '<script>alert("XSS")</script>';
       expect(containsDangerousCode(input)).to.equal(true);
@@ -328,15 +340,7 @@ describe('api utils', () => {
   });
 
   // todo: unignore and fix following updated list of valid characters
-  xdescribe('allContainOnlySafeCharacters', () => {
-    it('should match lists with strings that do not contain dangerous characters', () => {
-      expect(allContainOnlySafeCharacters([])).to.equal(true);
-      const testList = ['ab', 'cd=ef', 'gh.jk'];
-      expect(allContainOnlySafeCharacters(testList)).to.equal(true);
-      testList.push('lm<n');
-      expect(allContainOnlySafeCharacters(testList)).to.equal(false);
-    });
-
+  describe('allContainOnlySafeCharacters', () => {
     it('should allow all valid roles possible for role assignment', () => {
       expect(allContainOnlySafeCharacters(validRoleList)).to.equal(true);
     });

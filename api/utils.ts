@@ -21,10 +21,9 @@ export function allContainOnlySafeCharacters(values: string[]) {
  */
 export function containsDangerousCode(input: string): boolean {
   // Regular expressions to detect common dangerous patterns
-  const jsPattern = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>|javascript:|on\w+=|eval\(|new Function\(/i;
+  const jsPattern = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>|javascript:|on\w+=|eval\(|new Function\(|document\.cookie|<\s*iframe.*?>.*?<\s*\//i;
   const cssPattern = /<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>|expression\(|url\(/i;
   const urlSchemePattern = /data:|vbscript:/i;
   const jsonPattern = /callback=|jsonp=/i;
-
   return jsPattern.test(input) || cssPattern.test(input) || urlSchemePattern.test(input) || jsonPattern.test(input);
 }

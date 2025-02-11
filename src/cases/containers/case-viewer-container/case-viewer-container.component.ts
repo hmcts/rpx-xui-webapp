@@ -12,8 +12,8 @@ import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
+import { HearingJuristictionConfigService } from '../../../app/services/hearing-juristiction-config/hearing-juristiction-config.service';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -120,7 +120,8 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
-    private readonly waService: WASupportedJurisdictionsService) {
+    private readonly waService: WASupportedJurisdictionsService,
+    protected readonly hearingJuristictionConfigService: HearingJuristictionConfigService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
     );
@@ -162,7 +163,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
+      this.hearingJuristictionConfigService.getConfig(),
       this.userRoles$
     ]).pipe(
       map(([featureVariations, userRoles]) => {

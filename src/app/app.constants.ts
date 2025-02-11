@@ -8,7 +8,6 @@ const featureNames = {
   waAccess: 'wa-access',
   noticeOfChange: 'MC_Notice_of_Change',
   booking: 'mc-booking-active',
-  mcHearingsFeature: 'mc-hearings-jurisdictions',
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',
   icpEnabled: 'icp-enabled',

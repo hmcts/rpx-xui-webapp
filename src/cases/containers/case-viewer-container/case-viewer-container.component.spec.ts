@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -30,6 +31,7 @@ class CaseViewerComponent {
   @Input() public prependedTabs: CaseTab[] = [];
   @Input() public appendedTabs: CaseTab[] = [];
 }
+const dummyWindowAat = { location: new URL('https://manage-case.aat.platform.hmcts.net') };
 
 const CASE_VIEW: CaseView = {
   events: [],
@@ -247,7 +249,7 @@ describe('CaseViewerContainerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule, HttpClientTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -262,7 +264,8 @@ describe('CaseViewerContainerComponent', () => {
         },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: Window, useValue: dummyWindowAat }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -336,7 +339,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule, HttpClientTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -351,7 +354,8 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
         },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: Window, useValue: dummyWindowAat }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -412,7 +416,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule, HttpClientTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -427,7 +431,8 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
         },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: Window, useValue: dummyWindowAat }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })

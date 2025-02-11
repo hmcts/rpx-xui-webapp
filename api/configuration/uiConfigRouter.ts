@@ -15,26 +15,38 @@ import {
   SERVICES_PAYMENT_RETURN_URL,
   SERVICES_WA_WORKFLOW_API_URL
 } from './references';
+import { setupHearingConfigs } from './hearingConfigs/configs';
 
 export const router = express.Router({ mergeParams: true });
 
+const AAT_CONFIG_ENVS = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
 router.get('/', uiConfigurationRouter);
 
-// as this value will only ever change from a server restart cache it so we dont have to run all the logic
-// to build the config everytime a user does something to call this endpoint
 let menuConfigCache;
-function getHeaderConfig() {
-  if (menuConfigCache){
-    return menuConfigCache;
-  }
+let hearingJuristictionsConfigCache;
+
+function getEnvironment() {
   const previewID = process.env.PREVIEW_DEPLOYMENT_ID;
   const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
-  const aatConfigEnvs = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
-  const environment = previewID ? 'preview' :
-    aatConfigEnvs.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
-  const menuConfig = setupMenuConfig(environment);
-  menuConfigCache = menuConfig;
-  return menuConfig;
+  return previewID ? 'preview' : AAT_CONFIG_ENVS.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
+}
+
+function getHeaderConfig() {
+  if (!menuConfigCache) {
+    const environment = getEnvironment();
+    menuConfigCache = setupMenuConfig(environment);
+  }
+  return menuConfigCache;
+}
+
+function getHearingJuristictions() {
+  if (!hearingJuristictionsConfigCache) {
+    const environment = getEnvironment();
+    console.log(environment);
+    hearingJuristictionsConfigCache = setupHearingConfigs(environment);
+  }
+  console.log(hearingJuristictionsConfigCache);
+  return hearingJuristictionsConfigCache;
 }
 
 /**
@@ -59,7 +71,8 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
-    headerConfig: getHeaderConfig()
+    headerConfig: getHeaderConfig(),
+    hearingJuristictionConfig: getHearingJuristictions()
   });
 }
 

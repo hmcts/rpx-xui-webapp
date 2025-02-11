@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { allContainOnlySafeCharacters, containsDangerousCode, hasUnacceptableCharacters, toTitleCase, urlHasUnacceptableCharacters } from './utils';
+import { allContainOnlySafeCharacters, containsDangerousCode, toTitleCase } from './utils';
 
 const validRoleList = [
   '[PETSOLICITOR]',
@@ -212,35 +212,6 @@ describe('api utils', () => {
       expect(toTitleCase('iA')).to.equal('Ia');
       expect(toTitleCase(' iA ')).to.equal(' Ia ');
       expect(toTitleCase('4 cIvIL 14')).to.equal('4 Civil 14');
-    });
-  });
-
-  // todo: unignore and fix following updated list of valid characters
-  xdescribe('hasUnacceptableCharacters', () => {
-    it('should match strings that contain dangerous characters', () => {
-      expect(hasUnacceptableCharacters(null)).to.equal(false);
-      const testString = '<script>alert("hello")</script>';
-      expect(hasUnacceptableCharacters(testString)).to.equal(true);
-      const testString2 = 'email@test.com';
-      expect(hasUnacceptableCharacters(testString2)).to.equal(false);
-      const testString3 = '&//?';
-      expect(hasUnacceptableCharacters(testString3)).to.equal(true);
-      const testString4 = '//https://www.google.com';
-      expect(hasUnacceptableCharacters(testString4)).to.equal(true);
-    });
-  });
-
-  xdescribe('urlHasUnacceptableCharacters', () => {
-    it('should match urls that do not contain dangerous characters', () => {
-      expect(urlHasUnacceptableCharacters(null)).to.equal(false);
-      const testString = '<script>alert("hello")</script>';
-      expect(urlHasUnacceptableCharacters(testString)).to.equal(true);
-      const testString2 = 'email@test.com';
-      expect(urlHasUnacceptableCharacters(testString2)).to.equal(false);
-      const testString3 = '&//?';
-      expect(urlHasUnacceptableCharacters(testString3)).to.equal(false);
-      const testString4 = '//https://www.google.com';
-      expect(urlHasUnacceptableCharacters(testString4)).to.equal(false);
     });
   });
 

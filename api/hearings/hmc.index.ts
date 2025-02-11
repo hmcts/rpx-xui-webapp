@@ -197,9 +197,11 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
 }
 
 export function injectHearingsHeaders(req: EnhancedRequest, res: Response, next: NextFunction) {
+  console.log('injectHearingsHeaders');
   if (getConfigValue(SERVICES_HEARINGS_ENABLE_PREVIEW_CCD) === 'true') {
     req.headers['Role-Assignment-Url'] = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     req.headers['Data-Store-Url'] = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
+    console.log('injectHearingsHeaders', req.headers);
   }
 
   next();

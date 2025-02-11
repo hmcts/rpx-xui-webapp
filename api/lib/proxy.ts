@@ -48,11 +48,11 @@ export function setHeaders(req: express.Request, contentType?: string) {
     }
 
     if (hearingsPreviewCcdEnabled && exists(req, 'headers.Data-Store-Url')) {
-      headers.CCD_URL = req.headers['Data-Store-Url'];
+      headers['Data-Store-Url'] = req.headers['Data-Store-Url'];
     }
 
     if (hearingsPreviewCcdEnabled && exists(req, 'headers.Role-Assignment-Url')) {
-      headers.RAS_URL = req.headers['Role-Assignment-Url'];
+      headers['Role-Assignment-Url'] = req.headers['Role-Assignment-Url'];
     }
   }
 

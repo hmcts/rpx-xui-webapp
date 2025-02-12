@@ -112,7 +112,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
 
     // Enable hearings manual amendments journey only if the feature is toggled on
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmmendmentsEnabled().subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();

@@ -110,12 +110,12 @@ describe('HearingsViewGuard', () => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-    hearingJuristictionConfigMock = jasmine.createSpyObj<HearingJuristictionConfigService>('hearingJuristictionConfigService', ['getConfig']);
+    hearingJuristictionConfigMock = jasmine.createSpyObj<HearingJuristictionConfigService>('hearingJuristictionConfigService', ['getHearingJuristictionsConfig']);
   });
 
   it('should view hearings be enabled for user with hearing manager role', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
@@ -126,7 +126,7 @@ describe('HearingsViewGuard', () => {
 
   it('should view hearings be enabled for user with hearing viewer role', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
@@ -137,7 +137,7 @@ describe('HearingsViewGuard', () => {
 
   it('should view hearings be enabled for user with listed hearing viewer role', () => {
     storeMock.pipe.and.returnValue(of(USER_3));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
@@ -148,7 +148,7 @@ describe('HearingsViewGuard', () => {
 
   it('should view hearings be disabled for user with no hearing related roles', () => {
     storeMock.pipe.and.returnValue(of(USER_4));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();

@@ -43,7 +43,7 @@ describe('HearingEditSummaryComponent', () => {
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmmendmentsEnabled']);
 
   const locations: LocationByEPIMMSModel[] = [{
     epimms_id: '196538',
@@ -128,6 +128,7 @@ describe('HearingEditSummaryComponent', () => {
     store = TestBed.inject(Store);
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(true));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
     fixture = TestBed.createComponent(HearingEditSummaryComponent);
     component = fixture.componentInstance;

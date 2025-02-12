@@ -27,7 +27,7 @@ export class HearingsGuard {
   public hasMatchedPermissions(): Observable<boolean> {
     let jurisdiction: string;
     let caseType: string;
-    return this.hearingJuristictionConfigService.getConfig().pipe(
+    return this.hearingJuristictionConfigService.getHearingJuristictionsConfig().pipe(
       map((juristictionsConfig) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         if (caseInfo?.hasOwnProperty(HearingsGuard.JURISDICTION)) {

@@ -44,7 +44,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmmendmentsEnabled().subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
     });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {

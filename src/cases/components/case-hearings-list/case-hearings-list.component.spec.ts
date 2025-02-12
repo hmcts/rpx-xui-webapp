@@ -610,7 +610,7 @@ describe('CaseHearingsListComponent', () => {
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   let mockStore: Store<fromHearingStore.State>;
   const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmmendmentsEnabled']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(mockedHttpClient);
 
@@ -665,6 +665,7 @@ describe('CaseHearingsListComponent', () => {
     component.actions = [Actions.DELETE];
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -857,6 +858,7 @@ describe('CaseHearingsListComponent', () => {
   it('should show view details actions if feature toggle is on', () => {
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(true));
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();

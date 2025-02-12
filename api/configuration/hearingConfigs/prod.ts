@@ -1,3 +1,14 @@
+export const prodEnableHearingAmmendment = {
+  '.+': [
+    {
+      includeCaseTypes: [
+        'CIVIL'
+      ],
+      jurisdiction: 'CIVIL'
+    }
+  ]
+};
+
 export const prodHearingJuristictions = {
   '.+': [
     {

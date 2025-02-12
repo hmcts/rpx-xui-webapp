@@ -163,7 +163,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.hearingJuristictionConfigService.getConfig(),
+      this.hearingJuristictionConfigService.getHearingJuristictionsConfig(),
       this.userRoles$
     ]).pipe(
       map(([featureVariations, userRoles]) => {

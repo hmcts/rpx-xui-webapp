@@ -1,21 +1,27 @@
-import { aatHearingJuristictions } from './aat';
-import { prodHearingJuristictions } from './prod';
-import { testHearingJuristictions } from './test';
+import { testHearingJuristictions, testEnableHearingAmmendments } from './test';
+import { aatHearingJuristictions, aatEnableHearingAmmendments } from './aat';
+import { prodHearingJuristictions, prodEnableHearingAmmendment } from './prod';
 
 export function setupHearingConfigs(environment){
   let config;
   switch (environment){
-    case 'prod':
-      config = prodHearingJuristictions;
-      break;
     case 'aat':
-      config = aatHearingJuristictions;
+      config = {
+        hearingJuristictions: aatHearingJuristictions,
+        hearingAmmendment: aatEnableHearingAmmendments
+      };
       break;
     case 'preview':
-      config = testHearingJuristictions;
+      config = {
+        hearingJuristictions: testHearingJuristictions,
+        hearingAmmendment: testEnableHearingAmmendments
+      };
       break;
     default:
-      config = prodHearingJuristictions;
+      config = {
+        hearingJuristictions: prodHearingJuristictions,
+        hearingAmmendment: prodEnableHearingAmmendment
+      };
       break;
   }
   return config;

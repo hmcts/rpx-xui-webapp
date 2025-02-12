@@ -47,7 +47,7 @@ describe('HearingsGuard', () => {
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
-    hearingJuristictionConfigMock = jasmine.createSpyObj<HearingJuristictionConfigService>('hearingJuristictionConfigService', ['getConfig']);
+    hearingJuristictionConfigMock = jasmine.createSpyObj<HearingJuristictionConfigService>('hearingJuristictionConfigService', ['getHearingJuristictionsConfig']);
   });
 
   it('guard truthy', () => {
@@ -58,7 +58,7 @@ describe('HearingsGuard', () => {
 
   it('should return false if feature is toggled off', () => {
     storeMock.pipe.and.returnValue(of(USER));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of([]));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of([]));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock);
     const result$ = hearingsGuard.hasMatchedPermissions();
@@ -69,7 +69,7 @@ describe('HearingsGuard', () => {
 
   it('should return false if case info is null', () => {
     storeMock.pipe.and.returnValue(of(USER));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify([]));
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock);
     const result$ = hearingsGuard.hasMatchedPermissions();
@@ -80,7 +80,7 @@ describe('HearingsGuard', () => {
 
   it('should return false if case jurisdiction do not match', () => {
     storeMock.pipe.and.returnValue(of(USER));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'IA' }));
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock);
     const result$ = hearingsGuard.hasMatchedPermissions();
@@ -91,7 +91,7 @@ describe('HearingsGuard', () => {
 
   it('should return false if case type do not match', () => {
     storeMock.pipe.and.returnValue(of(USER));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify({ cid: '1546518523959179', caseType: 'PRLAPPS', jurisdiction: 'SSCS' }));
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock);
     const result$ = hearingsGuard.hasMatchedPermissions();
@@ -102,7 +102,7 @@ describe('HearingsGuard', () => {
 
   it('should return true if feature is toggled on and jurisdiction matches', () => {
     storeMock.pipe.and.returnValue(of(USER));
-    hearingJuristictionConfigMock.getConfig.and.returnValue(of(FEATURE_FLAG));
+    hearingJuristictionConfigMock.getHearingJuristictionsConfig.and.returnValue(of(FEATURE_FLAG));
     sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
     hearingsGuard = new HearingsGuard(storeMock, sessionStorageMock, hearingJuristictionConfigMock);
     const result$ = hearingsGuard.hasMatchedPermissions();

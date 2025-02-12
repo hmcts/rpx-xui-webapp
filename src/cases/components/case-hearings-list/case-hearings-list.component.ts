@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AppConstants } from '../../../app/app.constants';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
 import { Actions, EXUIDisplayStatusEnum, EXUISectionStatusEnum, Mode } from '../../../hearings/models/hearings.enum';
@@ -60,7 +59,7 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
 
-    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmmendmentsEnabled();
     isHearingAmendmentsEnabled$.subscribe((enabled) => {
       this.isHearingAmendmentsEnabled = enabled;
     });

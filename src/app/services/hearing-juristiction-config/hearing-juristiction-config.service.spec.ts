@@ -38,7 +38,10 @@ describe('HearingJuristictionConfigService', () => {
     const mockUserDetails = JSON.stringify({ id: '123' });
 
     environmentServiceSpy.config$ = of({
-      hearingJuristictionConfig: mockConfig,
+      hearingJuristictionConfig: {
+        hearingJuristictions: mockConfig,
+        hearingAmmendment: {}
+      },
       idamWeb: '',
       clientId: '',
       oAuthCallback: '',
@@ -49,7 +52,7 @@ describe('HearingJuristictionConfigService', () => {
     });
     sessionStorageServiceSpy.getItem.and.returnValue(mockUserDetails);
 
-    service.getConfig().subscribe((config) => {
+    service.getHearingJuristictionsConfig().subscribe((config) => {
       expect(config).toEqual([{ id: 'userConfig' }]);
       done();
     });
@@ -63,7 +66,10 @@ describe('HearingJuristictionConfigService', () => {
     const mockUserDetails = JSON.stringify({ id: '123' });
 
     environmentServiceSpy.config$ = of({
-      hearingJuristictionConfig: mockConfig,
+      hearingJuristictionConfig: {
+        hearingJuristictions: mockConfig,
+        hearingAmmendment: {}
+      },
       idamWeb: '',
       clientId: '',
       oAuthCallback: '',
@@ -74,7 +80,7 @@ describe('HearingJuristictionConfigService', () => {
     });
     sessionStorageServiceSpy.getItem.and.returnValue(mockUserDetails);
 
-    service.getConfig().subscribe((config) => {
+    service.getHearingJuristictionsConfig().subscribe((config) => {
       expect(config).toEqual([{ id: 'defaultConfig' }]);
       done();
     });

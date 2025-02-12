@@ -10,9 +10,16 @@ export class HearingJuristictionConfigService {
               protected readonly sessionStorageService: SessionStorageService,
   ) {}
 
-  public getConfig(): Observable<Array<any>> {
+  public getHearingJuristictionsConfig(): Observable<Array<any>> {
     return this.environmentService.config$.pipe(
-      map((config) => config.hearingJuristictionConfig),
+      map((config) => config.hearingJuristictionConfig.hearingJuristictions),
+      switchMap((config) => this.filterConfigs(config))
+    );
+  }
+
+  public getHearingAmmendmentConfig(): Observable<Array<any>> {
+    return this.environmentService.config$.pipe(
+      map((config) => config.hearingJuristictionConfig.hearingAmmendment),
       switchMap((config) => this.filterConfigs(config))
     );
   }
@@ -27,6 +34,8 @@ export class HearingJuristictionConfigService {
       const userIdRegex = new RegExp(config);
       return userIdRegex.test(userId);
     });
+    console.log('using config', selectedConfig || defaultKey);
+    console.log(selectedConfig ? configs[selectedConfig] : configs[defaultKey]);
     return of(selectedConfig ? configs[selectedConfig] : configs[defaultKey]);
   }
 }

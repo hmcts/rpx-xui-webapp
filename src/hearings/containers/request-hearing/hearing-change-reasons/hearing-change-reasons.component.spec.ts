@@ -23,7 +23,7 @@ describe('HearingChangeReasonsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmmendmentsEnabled']);
 
   const reasons: LovRefDataModel[] = [
     {
@@ -118,6 +118,7 @@ describe('HearingChangeReasonsComponent', () => {
     mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(true));
     fixture.detectChanges();
   });
 

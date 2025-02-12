@@ -13,7 +13,6 @@ const featureNames = {
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  enableHearingAmendments: 'mc-enable-hearings-amendments-service',
   enableRestrictedCaseAccess: 'enable-restricted-case-access',
   accessManagementMode: 'access-management-mode'
 };

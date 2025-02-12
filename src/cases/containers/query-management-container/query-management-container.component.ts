@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { combineLatest, Observable, Subscription, Subject } from 'rxjs';
 import {
   CaseNotifier,
   CaseView,
@@ -17,7 +18,8 @@ import {
   ErrorNotifierService,
   AlertService,
   CallbackErrorsContext,
-  HttpError
+  HttpError,
+  CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
@@ -27,7 +29,6 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
-import { combineLatest, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -77,6 +78,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
   public showContinueButton: boolean = true;
+  private routerEventsSubscription: Subscription;
+  private targetRoutePrefix = '/query-management/query/';
   public showForm: boolean;
 
   public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
@@ -86,6 +89,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   public showSpinner$: Observable<boolean>;
+
+  public caseQueriesCollections: CaseQueriesCollection[];
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -129,14 +134,19 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         this.getEventTrigger();
       }
     }
-  }
 
-  public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
-    this.ignoreWarning = errorContext.ignoreWarning;
+    this.clearSelectionOnRouteChange();
   }
 
   ngOnDestroy(): void {
     this.unsubscribe(this.callbackErrorsSubject);
+    if (this.routerEventsSubscription) {
+      this.routerEventsSubscription.unsubscribe();
+    }
+  }
+
+  public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
+    this.ignoreWarning = errorContext.ignoreWarning;
   }
 
   public unsubscribe(subscription: any) {
@@ -328,23 +338,32 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         this.caseId = caseView.case_id;
-        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions[caseView.case_type.id];
-        if (!qualifyingQuestions.map((question) => question.name).includes(this.RAISE_A_QUERY_NAME)) {
-          // Add the default qualifying question to the list if not present
-          qualifyingQuestions.push({
-            name: this.RAISE_A_QUERY_NAME,
-            markdown: '',
-            url: `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
-          });
-        }
+
+        // Safely access the qualifying questions for the current case type
+        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
+
+        // Add Extra options to qualifying question
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+
         return qualifyingQuestions;
       })
     );
   }
 
+  private addExtraOptionsToQualifyingQuestion(qualifyingQuestions: QualifyingQuestion[], name: string, url: string): void {
+    if (!qualifyingQuestions.some((q) => q.name === name)) {
+      qualifyingQuestions.push({
+        name,
+        markdown: '',
+        url
+      });
+    }
+  }
+
   public async goToQueryList(): Promise<void> {
     await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'Query Management' }
+      { fragment: 'Queries' }
     );
   }
 
@@ -358,6 +377,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     await this.router.navigate(['cases', 'case-details', this.caseId],
       { fragment: 'tasks' }
     );
+  }
+
+  public hasRespondedToQueryTask(value: boolean): void {
+    this.showContinueButton = !value;
+    this.showForm = !value;
   }
 
   private getEventTrigger():void {
@@ -394,12 +418,13 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             this.callbackErrorsSubject.next(err);
             if (!this.ignoreWarning) {
               this.showContinueButton = false;
+              this.showForm = false;
             } else {
               this.showForm = true;
             }
           } else {
             this.eventDataError = true;
-            this.addError('Something unexpected happened. please try again later.', 'evenDataError');
+            this.addError('Something unexpected happened. Please try again later.', 'evenDataError');
           }
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
@@ -450,10 +475,29 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         return acc;
       }, []);
     }
-    const filteredMessages = caseQueriesCollections
+
+    this.caseQueriesCollections = caseQueriesCollections;
+    const allMessages = caseQueriesCollections
       .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
-      .flat() // Flatten into a single array of messages
-      .filter((message) => message.value.id === messageId); // Filter by message id
+      .flat();// Flatten into a single array of messages
+
+    let filteredMessages = [];
+
+    // Work Allocation uses the id of the query, we require the parentId to filter the messages
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
+      const parentId = allMessages.find((message) => message.value.id === messageId)?.value.parentId;
+
+      if (parentId) {
+        // If parentId exists, filter messages using it
+        filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+      } else {
+        // If parentId doesn't exist, fallback to messageId
+        filteredMessages = allMessages.filter((message) => message.value.id === messageId);
+      }
+    } else {
+      // Default case: filter messages by messageId
+      filteredMessages = allMessages.filter((message) => message.value.id === messageId);
+    }
 
     if (filteredMessages.length > 0) {
       // Access matching message
@@ -491,5 +535,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   private isNonEmptyObject(elem: any): boolean {
     return this.isObject(elem) && Object.keys(elem).length !== 0;
+  }
+
+  private clearSelectionOnRouteChange(): void {
+    this.routerEventsSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // Check if we navigated off the target route
+        if (!event.url.startsWith(this.targetRoutePrefix)) {
+          this.qualifyingQuestionService.clearQualifyingQuestionSelection();
+        }
+      }
+    });
   }
 }

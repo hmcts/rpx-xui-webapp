@@ -13562,6 +13562,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^11.3.0":
+  version: 11.3.0
+  resolution: "fs-extra@npm:11.3.0"
+  dependencies:
+    graceful-fs: "npm:^4.2.0"
+    jsonfile: "npm:^6.0.1"
+    universalify: "npm:^2.0.0"
+  checksum: 10/c9fe7b23dded1efe7bbae528d685c3206477e20cc60e9aaceb3f024f9b9ff2ee1f62413c161cb88546cc564009ab516dec99e9781ba782d869bb37e4fe04a97f
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^3.0.1":
   version: 3.0.1
   resolution: "fs-extra@npm:3.0.1"
@@ -13570,17 +13581,6 @@ __metadata:
     jsonfile: "npm:^3.0.0"
     universalify: "npm:^0.1.0"
   checksum: 10/8e233f6200b8a5e215b4f937353a5ccada2f4b247453f1229917ba46f93190e9f559f255cd3cb9f1f612d855911e7fdc52e5fe9c94f3294ef2b6131ef321250c
-  languageName: node
-  linkType: hard
-
-"fs-extra@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "fs-extra@npm:7.0.1"
-  dependencies:
-    graceful-fs: "npm:^4.1.2"
-    jsonfile: "npm:^4.0.0"
-    universalify: "npm:^0.1.0"
-  checksum: 10/3fc6e56ba2f07c00d452163f27f21a7076b72ef7da8a50fef004336d59ef4c34deda11d10ecd73fd8fbcf20e4f575f52857293090b3c9f8741d4e0598be30fea
   languageName: node
   linkType: hard
 
@@ -13964,6 +13964,22 @@ __metadata:
   bin:
     glob: dist/esm/bin.mjs
   checksum: 10/698dfe11828b7efd0514cd11e573eaed26b2dff611f0400907281ce3eab0c1e56143ef9b35adc7c77ecc71fba74717b510c7c223d34ca8a98ec81777b293d4ac
+  languageName: node
+  linkType: hard
+
+"glob@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "glob@npm:11.0.1"
+  dependencies:
+    foreground-child: "npm:^3.1.0"
+    jackspeak: "npm:^4.0.1"
+    minimatch: "npm:^10.0.0"
+    minipass: "npm:^7.1.2"
+    package-json-from-dist: "npm:^1.0.0"
+    path-scurry: "npm:^2.0.0"
+  bin:
+    glob: dist/esm/bin.mjs
+  checksum: 10/57b12a05cc25f1c38f3b24cf6ea7a8bacef11e782c4b9a8c5b0bef3e6c5bcb8c4548cb31eb4115592e0490a024c1bde7359c470565608dd061d3b21179740457
   languageName: node
   linkType: hard
 
@@ -15638,6 +15654,15 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: 10/96f8786eaab98e4bf5b2a5d6d9588ea46c4d06bbc4f2eb861fdd7b6b182b16f71d8a70e79820f335d52653b16d4843b29dd9cdcf38ae80406756db9199497cf3
+  languageName: node
+  linkType: hard
+
+"jackspeak@npm:^4.0.1":
+  version: 4.0.2
+  resolution: "jackspeak@npm:4.0.2"
+  dependencies:
+    "@isaacs/cliui": "npm:^8.0.2"
+  checksum: 10/d9722f0e55f6c322c57aedf094c405f4201b834204629817187953988075521cfddb23df83e2a7b845723ca7eb0555068c5ce1556732e9c275d32a531881efa8
   languageName: node
   linkType: hard
 
@@ -17442,7 +17467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:11.0.2":
+"lru-cache@npm:11.0.2, lru-cache@npm:^11.0.0":
   version: 11.0.2
   resolution: "lru-cache@npm:11.0.2"
   checksum: 10/25fcb66e9d91eaf17227c6abfe526a7bed5903de74f93bfde380eb8a13410c5e8d3f14fe447293f3f322a7493adf6f9f015c6f1df7a235ff24ec30f366e1c058
@@ -18204,6 +18229,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^10.0.0":
+  version: 10.0.1
+  resolution: "minimatch@npm:10.0.1"
+  dependencies:
+    brace-expansion: "npm:^2.0.1"
+  checksum: 10/082e7ccbc090d5f8c4e4e029255d5a1d1e3af37bda837da2b8b0085b1503a1210c91ac90d9ebfe741d8a5f286ece820a1abb4f61dc1f82ce602a055d461d93f3
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^5.0.1, minimatch@npm:^5.1.0, minimatch@npm:^5.1.6":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
@@ -18463,16 +18497,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mochawesome-merge@npm:^4.3.0":
-  version: 4.4.1
-  resolution: "mochawesome-merge@npm:4.4.1"
+"mochawesome-merge@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "mochawesome-merge@npm:5.0.0"
   dependencies:
-    fs-extra: "npm:^7.0.1"
-    glob: "npm:^7.1.6"
-    yargs: "npm:^15.3.1"
+    fs-extra: "npm:^11.3.0"
+    glob: "npm:^11.0.1"
+    yargs: "npm:^17.7.2"
   bin:
     mochawesome-merge: bin/mochawesome-merge.js
-  checksum: 10/fa4eb01a381084200456d3b5f6b92b0a410ac84a7c58b15d2346a2f56aeee818f829b24d9411fa29d2ff3859666d8ec45d2baddedcef5d792e65536eee9e15bf
+  checksum: 10/3ca25ba2d5eaef9269f94cc22c2d89ee877e7a43ed0d3dc514326e7a2e14ecabda1b66231cc5d2bed5bf44c0f65c4c9418e514352d4cfedbcebaa3b7d56c474e
   languageName: node
   linkType: hard
 
@@ -20243,6 +20277,16 @@ __metadata:
     lru-cache: "npm:^10.2.0"
     minipass: "npm:^5.0.0 || ^6.0.2 || ^7.0.0"
   checksum: 10/5e8845c159261adda6f09814d7725683257fcc85a18f329880ab4d7cc1d12830967eae5d5894e453f341710d5484b8fdbbd4d75181b4d6e1eb2f4dc7aeadc434
+  languageName: node
+  linkType: hard
+
+"path-scurry@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "path-scurry@npm:2.0.0"
+  dependencies:
+    lru-cache: "npm:^11.0.0"
+    minipass: "npm:^7.1.2"
+  checksum: 10/285ae0c2d6c34ae91dc1d5378ede21981c9a2f6de1ea9ca5a88b5a270ce9763b83dbadc7a324d512211d8d36b0c540427d3d0817030849d97a60fa840a2c59ec
   languageName: node
   linkType: hard
 
@@ -22085,7 +22129,7 @@ __metadata:
     material-design-icons: "npm:^3.0.1"
     mocha: "npm:^10.0.0"
     mochawesome: "npm:^7.0.0"
-    mochawesome-merge: "npm:^4.3.0"
+    mochawesome-merge: "npm:^5.0.0"
     mochawesome-report-generator: "npm:^6.0.0"
     moment-timezone: "npm:^0.5.28"
     ngrx-store-freeze: "npm:^0.2.4"

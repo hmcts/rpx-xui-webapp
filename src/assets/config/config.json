@@ -15,7 +15,7 @@
     "oauth2_client_id": "ccd_gateway",
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
     "remote_document_management_url": ".*(\/documents)",
-    "documentSecureModeCaseTypeExclusions": "",
+    "documentSecureModeCaseTypeExclusions": "FinancialRemedyMVP2",
     "payments_url": "/payments",
     "pay_bulk_scan_url": "/pay-bulkscan",
     "activity_batch_collection_delay_ms": 1,

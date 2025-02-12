@@ -3507,12 +3507,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.36-docstore-v2-exclusion":
-  version: 7.1.36-docstore-v2-exclusion
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.36-docstore-v2-exclusion"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.37-docstore-v2-exclusion-2":
+  version: 7.1.37-docstore-v2-exclusion-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.37-docstore-v2-exclusion-2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b64496790b06e229683dcae4784ae308d6d4c9b05c365af56f0e940748771bc89134f64f789f8f1c018b2f2ee5ec536da166b106104d76500430eee623ad3689
+  checksum: 10/5cef98baa690454801a09c16dc5d826a32d340ede509b1529abd8c22764bd1ab5abcce466fbd5b492888fce38aa760956f8f143f2eea91c808460f9a86f563e8
   languageName: node
   linkType: hard
 
@@ -21937,7 +21937,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.36-docstore-v2-exclusion"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.37-docstore-v2-exclusion-2"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"

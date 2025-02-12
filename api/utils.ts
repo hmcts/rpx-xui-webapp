@@ -4,7 +4,7 @@ export function toTitleCase(serviceName: string): string {
   });
 }
 
-export function allContainOnlySafeCharacters(values: string[]) {
+export function allContainOnlySafeCharacters(values: string[]): boolean {
   for (const value of values) {
     if (containsDangerousCode(value)) {
       // if one value contains dangerous characters, return false

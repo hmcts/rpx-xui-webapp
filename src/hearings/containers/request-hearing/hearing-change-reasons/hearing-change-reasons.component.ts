@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { AppConstants } from '../../../../app/app.constants';
 import {
   ACTION,
   HearingChangeReasonMessages,

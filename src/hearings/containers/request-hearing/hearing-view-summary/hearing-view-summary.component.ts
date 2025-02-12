@@ -4,7 +4,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../../app/app.constants';
 import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
 import { ACTION, Mode } from '../../../models/hearings.enum';

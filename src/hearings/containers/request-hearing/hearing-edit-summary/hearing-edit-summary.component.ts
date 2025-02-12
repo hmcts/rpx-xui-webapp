@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../models/caseCategory.model';
 import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';

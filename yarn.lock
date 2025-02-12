@@ -15730,10 +15730,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:~5.4.0":
-  version: 5.4.0
-  resolution: "jasmine-core@npm:5.4.0"
-  checksum: 10/4d67d20890e3b75ff5bfe46e9acc66b752b562b3573279ef2afa5db37645b6cbf28c9c58c1143eb14f0e8150fc207b8a107ccaeefb752895eabb1acfd8138962
+"jasmine-core@npm:~5.6.0":
+  version: 5.6.0
+  resolution: "jasmine-core@npm:5.6.0"
+  checksum: 10/0171a28634c6d9667278a628483bc9c6a075512078e74d208ae9172525e108d386621915449b30abe008d1bd86568a7f057cfc170be2286da5e21c4d5f2eba8e
   languageName: node
   linkType: hard
 
@@ -22165,7 +22165,7 @@ __metadata:
     helmet: "npm:^3.21.3"
     http-proxy-middleware: "npm:3.0.3"
     isomorphic-fetch: "npm:^3.0.0"
-    jasmine-core: "npm:~5.4.0"
+    jasmine-core: "npm:~5.6.0"
     jasmine-marbles: "npm:^0.9.1"
     jasmine-spec-reporter: "npm:~7.0.0"
     jsonpath: "npm:^1.1.1"

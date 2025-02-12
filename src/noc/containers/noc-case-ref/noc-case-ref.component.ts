@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { select, Store } from '@ngrx/store';
@@ -13,6 +13,7 @@ import * as fromFeature from '../../store';
 })
 export class NocCaseRefComponent implements OnInit, OnDestroy {
   @Input() public navEvent: NocNavigation;
+  @ViewChild('errorContainer') errorContainer: ElementRef;
 
   public caseRefConfig: GovUiConfigModel;
 
@@ -21,12 +22,15 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
 
   public caseRefForm: FormGroup;
 
+  public scrollToError = false;
+
   public nocNavigationCurrentState: NocState;
   private nocNavigationCurrentStateSub: Subscription;
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.caseRefConfig = {
       id: 'caseRef',
@@ -50,6 +54,19 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
       (state) => this.nocNavigationCurrentState = state);
+
+    this.validationErrors$.subscribe(() => {
+      // if error present scroll to error
+      this.scrollToError = true;
+    });
+  }
+
+  public ngAfterViewChecked(): void {
+    if (this.scrollToError && this.errorContainer) {
+      this.errorContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.errorContainer.nativeElement.focus();
+      this.scrollToError = false;
+    }
   }
 
   public onSubmit() {
@@ -72,6 +89,10 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
       }
       default:
         throw new Error('Invalid option');
+    }
+    // Addded this to set scroll to error constantly on continue if error present
+    if (this.errorContainer) {
+      this.scrollToError = true;
     }
   }
 

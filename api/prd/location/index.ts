@@ -5,7 +5,7 @@ import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
 import { EnhancedRequest } from '../../lib/models';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
-import { LocationModel, toEpimmsLocation } from './models/location.model';
+import { LocationByEPIMMSModel, LocationModel, toEpimmsLocation } from './models/location.model';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 
@@ -46,18 +46,26 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
+  const serviceCode = req.query.serviceCode ? req.query.serviceCode as string : null;
+  delete req.query.serviceCode;
+  const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
     const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req, next);
-    const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(data);
+    const courtLocations = serviceCode ? getLocationsByCourtType(data, courtTypeIdsArray) : data;
+    const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {
     next(error);
   }
 }
 
-function getIdenticalLocationByEpimmsId(data: LocationModel[]) {
+function getIdenticalLocationByEpimmsId(data: LocationModel[]): LocationByEPIMMSModel[] {
   return data.map((locationModel) => toEpimmsLocation(locationModel))
     .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
       locationByEPIMSModelArray.findIndex((location) => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+}
+
+function getLocationsByCourtType(locations: LocationModel[], courtTypeIdsArray: string[]): LocationModel[] {
+  return locations.filter((location) => courtTypeIdsArray.includes(location.court_type_id));
 }

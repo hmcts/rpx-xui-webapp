@@ -52,7 +52,8 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
       this.hearingRequestMainModel.hearingDetails.hearingLocations &&
       this.hearingRequestMainModel.hearingDetails.hearingLocations.length) {
       const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations.map((location) => location.locationId).join(',');
-      this.locationSub = this.locationsDataService.getLocationById(locationIds).subscribe((locations) => {
+      const serviceCode = this.hearingRequestMainModel.caseDetails?.hmctsServiceCode;
+      this.locationSub = this.locationsDataService.getLocationById(locationIds, serviceCode).subscribe((locations) => {
         this.selectedLocations = locations;
       });
     }

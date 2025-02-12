@@ -16,7 +16,8 @@ export class WelshHiddenConverter implements HiddenConverter {
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingLocations
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
         const locationIds = hearingLocations.map((location) => location.locationId).join(',');
-        const locations$: Observable<LocationByEPIMMSModel[]> = this.locationsDataService.getLocationById(locationIds);
+        const serviceCode = state.hearingRequest?.hearingRequestMainModel?.caseDetails?.hmctsServiceCode;
+        const locations$: Observable<LocationByEPIMMSModel[]> = this.locationsDataService.getLocationById(locationIds, serviceCode);
         return locations$.pipe(map(
           (locations) => {
             return !locations.some((location) => location.region_id === '7');

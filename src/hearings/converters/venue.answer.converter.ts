@@ -16,8 +16,9 @@ export class VenueAnswerConverter implements AnswerConverter {
         const hearingLocations = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingLocations
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
+        const serviceCode = state.hearingRequest.hearingRequestMainModel.caseDetails.hmctsServiceCode;
         const locationIds = hearingLocations.map((hearingLocationModel: HearingLocationModel) => hearingLocationModel.locationId).join(',');
-        return this.locationsDataService.getLocationById(locationIds).pipe(
+        return this.locationsDataService.getLocationById(locationIds, serviceCode).pipe(
           map((locationByEPIMMSModels: LocationByEPIMMSModel[]) => {
             let result = '<ul>';
             locationByEPIMMSModels.forEach((locationByEPIMMSModel: LocationByEPIMMSModel) =>

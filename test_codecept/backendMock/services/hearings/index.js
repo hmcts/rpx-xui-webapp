@@ -76,7 +76,7 @@ class HearingsApi{
             return {
                 "caseRef": caseId,
                 "caseHearings": this.hearings,
-                "hmctsServiceCode": null
+                "hmctsServiceCode": "ABA5"
         }
     }
 

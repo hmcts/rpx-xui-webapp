@@ -96,7 +96,7 @@ Given('I set mock case hearings', async function (hearingsDatatable) {
   const res = {
     "caseRef": "1690807693531270",
     "caseHearings": hearingsList,
-    "hmctsServiceCode": null
+    "hmctsServiceCode": "ABA5"
   };
   reportLogger.AddJson(res)
   mockClient.setCaseHearings(res, 200);

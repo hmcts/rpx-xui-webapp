@@ -70,7 +70,7 @@ class RDLocationService{
                 "service": "PRIVATELAW",
                 startIndex: 60000,
                 "serviceCode": [
-                    "ABA5"
+                    "BFA1"
                 ],
                 locations: []
             }
@@ -103,7 +103,7 @@ class RDLocationService{
             temp.court_name = `${service} Court Center Wales`;
             temp.venue_name = `${service} Court Center Wales`;
             temp.site_name = `${service} Court Center Wales`;
-            temp.court_type_id = typeIds[0];
+            temp.court_type_id = '18';
             temp.court_type = `${service} Court`;
             temp.region = 'Wales';
             temp.region_id = "7";

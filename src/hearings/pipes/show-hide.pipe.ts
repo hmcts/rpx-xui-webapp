@@ -2,14 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../app/store';
-import {
-  AdditionalInstructionsExclusionHiddenConverter
-} from '../converters/additional-instructions-exclusion.hidden.converter';
+import { AdditionalInstructionsExclusionHiddenConverter } from '../converters/additional-instructions-exclusion.hidden.converter';
 import { DefaultHiddenConverter } from '../converters/default.hidden.converter';
 import { HearingFacilitiesExclusionHiddenConverter } from '../converters/hearing-facilities-exclusion.hidden.converter';
-import {
-  HearingRequirementsExclusionHiddenConverter
-} from '../converters/hearing-requirements-exclusion.hidden.converter';
+import { HearingRequirementsExclusionHiddenConverter } from '../converters/hearing-requirements-exclusion.hidden.converter';
 import { HearingStageExclusionHiddenConverter } from '../converters/hearing-stage-exclusion.hidden.converter';
 import { HearingTimingExclusionHiddenConverter } from '../converters/hearing-timing-exclusion.hidden.converter';
 import { HearingVenueExclusionHiddenConverter } from '../converters/hearing-venue-exclusion.hidden.converter';
@@ -27,9 +23,7 @@ import { PanelExclusionHiddenConverter } from '../converters/panel-exclusion.hid
 import { PanelInclusionHiddenConverter } from '../converters/panel-inclusion.hidden.converter';
 import { PanelRolesHiddenConverter } from '../converters/panel-roles.hidden.converter';
 import { PaperHearingHiddenConverter } from '../converters/paper-hearing.hidden.converter';
-import {
-  ParticipantAttendanceExclusionHiddenConverter
-} from '../converters/participant-attendance-exclusion.hidden.converter';
+import { ParticipantAttendanceExclusionHiddenConverter } from '../converters/participant-attendance-exclusion.hidden.converter';
 import { WelshHiddenConverter } from '../converters/welsh.hidden.converter';
 import { IsHiddenSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';

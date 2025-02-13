@@ -34,7 +34,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
         screenFlow: DEFAULT_SCREEN_FLOW
       };
     }
-    console.log('screen flow -> ', dataByDefault.screenFlow);
     res.status(status).send(dataByDefault);
   } catch (error) {
     next(error);

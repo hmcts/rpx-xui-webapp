@@ -4,7 +4,7 @@ import { getConfigValue } from '../configuration';
 import { HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { DEFAULT_SCREEN_FLOW } from './data/defaultScreenFlow.data';
+import { DEFAULT_SCREEN_FLOW, DEFAULT_SCREEN_FLOW_NEW } from './data/defaultScreenFlow.data';
 import { hmcHearingsUrl } from './hmc.index';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
@@ -31,7 +31,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     if (!data.screenFlow) {
       dataByDefault = {
         ...data,
-        screenFlow: DEFAULT_SCREEN_FLOW
+        screenFlow: data.panelRequiredDefault !== undefined ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
       };
     }
     res.status(status).send(dataByDefault);

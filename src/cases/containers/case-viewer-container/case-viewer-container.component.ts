@@ -174,7 +174,6 @@ export class CaseViewerContainerComponent implements OnInit {
         const hasHearingRole = userRoles.includes(UserRole.HearingViewer) ||
           userRoles.includes(UserRole.ListedHearingViewer) ||
           userRoles.includes(UserRole.HearingManager);
-
         return (hasMatchedPermissions && hasHearingRole) ? this.appendedTabs : [];
       })
     );

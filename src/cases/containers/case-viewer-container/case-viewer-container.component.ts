@@ -175,10 +175,7 @@ export class CaseViewerContainerComponent implements OnInit {
           userRoles.includes(UserRole.ListedHearingViewer) ||
           userRoles.includes(UserRole.HearingManager);
 
-        console.log('hasMatchedPermissions', hasMatchedPermissions);
-        console.log('hasHearingRole', hasHearingRole);
         return this.appendedTabs;
-        //return (hasMatchedPermissions && hasHearingRole) ? this.appendedTabs : [];
       })
     );
   }

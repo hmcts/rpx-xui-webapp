@@ -296,6 +296,20 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set the pagesToDispaly and exlude hearing judge', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel.screenFlow,
+        {
+          screenName: 'hearing-panel-required',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ]
+    };
     const sectionsToDisplay = [
       'hearing-requirements',
       'hearing-facilities',
@@ -306,7 +320,8 @@ describe('HearingEditSummaryComponent', () => {
       'hearing-panel',
       'hearing-timing',
       'hearing-link',
-      'hearing-additional-instructions'
+      'hearing-additional-instructions',
+      'hearing-panel-required'
     ];
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     component.ngOnInit();
@@ -314,6 +329,20 @@ describe('HearingEditSummaryComponent', () => {
   });
 
   it('should set the pagesToDispaly and exlude hearing panel', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel.screenFlow,
+        {
+          screenName: 'hearing-panel-required',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ]
+    };
     const sectionsToDisplay = [
       'hearing-requirements',
       'hearing-facilities',
@@ -324,7 +353,8 @@ describe('HearingEditSummaryComponent', () => {
       'hearing-judge',
       'hearing-timing',
       'hearing-link',
-      'hearing-additional-instructions'
+      'hearing-additional-instructions',
+      'hearing-panel-required'
     ];
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
     component.ngOnInit();

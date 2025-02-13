@@ -24,8 +24,6 @@ describe('HearingViewSummaryComponent', () => {
   let featureToggleServiceMock: any;
   let hearingsFeatureServiceMock: any;
   let routerMock: any;
-  const noPanelRequirementsViewOnlyTemplate = HEARING_VIEW_ONLY_SUMMARY_TEMPLATE.filter((section) => section.sectionHTMLTitle !== '<h2 class="govuk-heading-m">Hearing panel required</h2>');
-  const noPanelRequirementsRequestViewTemplate = HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE.filter((section) => section.sectionHTMLTitle !== '<h2 class="govuk-heading-m">Hearing panel required</h2>');
 
   const USER: UserDetails = {
     canShareCases: true,
@@ -108,7 +106,7 @@ describe('HearingViewSummaryComponent', () => {
 
   it('should set new template if the feature toggle is off and user is not hearing manager', () => {
     component.ngOnInit();
-    expect(component.template).toEqual(noPanelRequirementsViewOnlyTemplate);
+    expect(component.template).toEqual(HEARING_VIEW_ONLY_SUMMARY_TEMPLATE);
   });
 
   it('should set new template if the feature toggle is on and user is hearing manager', () => {
@@ -117,7 +115,7 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     fixture.detectChanges();
     component.ngOnInit();
-    expect(component.template).toEqual(noPanelRequirementsRequestViewTemplate);
+    expect(component.template).toEqual(HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE);
   });
 
   it('should remove the Judge Details where isPanelRequired is set to true', () => {
@@ -127,6 +125,16 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
+    component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);
@@ -139,6 +147,16 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
+    component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);
@@ -151,6 +169,16 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
+    component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);
@@ -163,6 +191,16 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
+    component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    const hearingPanelRequiredScreen = {
+      screenName: 'hearing-panel-required',
+      navigation: [
+        {
+          resultValue: 'hearing-attendance'
+        }
+      ]
+    };
+    component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();
     expect(component.template).toEqual(testTemplate);

@@ -16,6 +16,7 @@ import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../templates/hearin
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingsUtils } from '../../../utils/hearings.utils';
+import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
 
 @Component({
   selector: 'exui-hearing-viewsummary',
@@ -49,7 +50,9 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
     combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$])
       .subscribe(([isHearingAmendmentsEnabled, isHearingManager]) => {
         let template = isHearingAmendmentsEnabled && isHearingManager ? HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE : HEARING_VIEW_ONLY_SUMMARY_TEMPLATE;
-        template = HearingsUtils.checkTemplateForHearingRequiremnts(template, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        if (this.serviceHearingValuesModel?.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
+          template = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        }
         this.template = template;
       });
   }

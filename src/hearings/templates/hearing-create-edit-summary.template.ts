@@ -133,7 +133,8 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         answerSource: AnswerSource.NEED_PANEL,
         changeLink: '/hearings/request/hearing-panel-required#hearingPanelRequired'
       }
-    ]
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
@@ -234,7 +235,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         isHiddenSource: IsHiddenSource.PANEL_ROLES
       }
     ],
-    isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
+    isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',

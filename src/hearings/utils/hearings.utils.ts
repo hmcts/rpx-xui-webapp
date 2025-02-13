@@ -214,8 +214,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
-    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString) : null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString) : null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }
@@ -262,21 +262,18 @@ export class HearingsUtils {
     if (isAPanelFlag === undefined || isAPanelFlag === null) {
       return template;
     }
-    const excludedTitle = isAPanelFlag ? 'Judge details' : 'Panel details';
-    return template.filter((tp: Section) => !tp.sectionHTMLTitle.includes(excludedTitle));
+    if (isAPanelFlag) {
+      return template.filter((tp: Section) => tp.screenName !== 'hearing-judge');
+    }
+    return template.filter((tp: Section) => tp.screenName !== 'hearing-panel' && tp.screenName !== 'hearing-panel-selector');
   }
 
   public static checkScreensForHearingPanelRequiremnts(screens: string[], isAPanelFlag: boolean): string[] {
     if (isAPanelFlag === undefined || isAPanelFlag === null) {
       return screens;
     }
-    const requiredScreen = isAPanelFlag ? 'hearing-panel' : 'hearing-judge';
-    const excludedScreen = isAPanelFlag ? 'hearing-judge' : 'hearing-panel';
+    const excludedScreen = isAPanelFlag ? ['hearing-judge'] : ['hearing-panel-selector', 'hearing-panel'];
 
-    if (!screens.includes(requiredScreen)) {
-      screens.push(requiredScreen);
-    }
-
-    return screens.filter((screen) => screen !== excludedScreen);
+    return screens.filter((screen) => !excludedScreen.includes(screen));
   }
 }

@@ -15,7 +15,7 @@ import { http } from './http';
 import { EnhancedRequest } from './models';
 import { exists } from './util';
 
-const hearingsPreviewCcdEnabled = getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true';
+const enableHearingDataSourceHeaders = getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true';
 
 export function setHeaders(req: express.Request, contentType?: string) {
   const headers: any = {};
@@ -47,11 +47,11 @@ export function setHeaders(req: express.Request, contentType?: string) {
       headers.ServiceAuthorization = req.headers.ServiceAuthorization;
     }
 
-    if (hearingsPreviewCcdEnabled && exists(req, 'headers.Data-Store-Url')) {
+    if (enableHearingDataSourceHeaders && exists(req, 'headers.Data-Store-Url')) {
       headers['Data-Store-Url'] = req.headers['Data-Store-Url'];
     }
 
-    if (hearingsPreviewCcdEnabled && exists(req, 'headers.Role-Assignment-Url')) {
+    if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
       headers['Role-Assignment-Url'] = req.headers['Role-Assignment-Url'];
     }
   }

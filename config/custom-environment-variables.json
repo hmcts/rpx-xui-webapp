@@ -57,7 +57,7 @@
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
-      "enablePreviewCcd": "ENABLE_HMC_PREVIEW_CCD"
+      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
@@ -117,7 +117,7 @@
     "translation": "SERVICES_TRANSLATION_API_URL",
     "lau": {
       "specificChallengedAccessApi": "SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH"
-    } 
+    }
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",

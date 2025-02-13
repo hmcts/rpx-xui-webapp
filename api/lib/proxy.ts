@@ -8,14 +8,14 @@ import * as express from 'express';
 import * as striptags from 'striptags';
 import { getConfigValue } from '../configuration';
 import {
-  SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_PREVIEW_CCD
+  SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS
 } from '../configuration/references';
 
 import { http } from './http';
 import { EnhancedRequest } from './models';
 import { exists } from './util';
 
-const hearingsPreviewCcdEnabled = getConfigValue(SERVICES_HEARINGS_ENABLE_PREVIEW_CCD) === 'true';
+const hearingsPreviewCcdEnabled = getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true';
 
 export function setHeaders(req: express.Request, contentType?: string) {
   const headers: any = {};

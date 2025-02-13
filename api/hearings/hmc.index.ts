@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_HEARINGS_ENABLE_PREVIEW_CCD, SERVICES_HMC_HEARINGS_COMPONENT_API, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS, SERVICES_HMC_HEARINGS_COMPONENT_API, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
@@ -197,7 +197,7 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
 }
 
 export function injectHearingsHeaders(req: EnhancedRequest, res: Response, next: NextFunction) {
-  if (getConfigValue(SERVICES_HEARINGS_ENABLE_PREVIEW_CCD) === 'true') {
+  if (getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true') {
     req.headers['Role-Assignment-Url'] = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     req.headers['Data-Store-Url'] = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
   }

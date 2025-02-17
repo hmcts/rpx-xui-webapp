@@ -5704,14 +5704,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.42.0":
-  version: 1.49.0
-  resolution: "@playwright/test@npm:1.49.0"
+"@playwright/test@npm:^1.50.1":
+  version: 1.50.1
+  resolution: "@playwright/test@npm:1.50.1"
   dependencies:
-    playwright: "npm:1.49.0"
+    playwright: "npm:1.50.1"
   bin:
     playwright: cli.js
-  checksum: 10/e87485ab4c02b6dc0bc20a43ea3965c949c45caa4e7f5beea4a0abd29be0a318662931e887072db0d165f8dde93709b97ea1b2c6f4c833b403aa13427d76dd22
+  checksum: 10/0d8d2291d6554c492cb163b4d463e1e9cc6d3ae50680d790473f693f36a243c16c3620406849dd40115046c47a6ad5cc36a24511caec6d054dc1a1d9fffb4138
   languageName: node
   linkType: hard
 
@@ -20609,15 +20609,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.49.0":
-  version: 1.49.0
-  resolution: "playwright-core@npm:1.49.0"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/ef9c708293adab100337ed7fd8e61660be381707fc2b84f07b5f40d1ead44feb6a8e52fef98075e594522229d15a9ad56dd1471689cfa59409bec6447c22944d
-  languageName: node
-  linkType: hard
-
 "playwright-core@npm:1.50.1":
   version: 1.50.1
   resolution: "playwright-core@npm:1.50.1"
@@ -20627,22 +20618,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.49.0":
-  version: 1.49.0
-  resolution: "playwright@npm:1.49.0"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.49.0"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 10/1fb198d09d388ec46cc2f0fc6b889a8bde8a75066ded82d35f08ba333091ebf3fc4ddf11263a86058a7078c7238ec4f23a86a9f1dc3ebd4f610c9eb07841fb32
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.42":
+"playwright@npm:1.50.1, playwright@npm:^1.42":
   version: 1.50.1
   resolution: "playwright@npm:1.50.1"
   dependencies:
@@ -22120,7 +22096,7 @@ __metadata:
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^9.11.1"
     "@pact-foundation/pact-node": "npm:^10.9.7"
-    "@playwright/test": "npm:^1.42.0"
+    "@playwright/test": "npm:^1.50.1"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^8.0.0"
     "@stryker-mutator/html-reporter": "npm:^3.1.0"

@@ -28,7 +28,7 @@ export class HearingsGuard {
     let jurisdiction: string;
     let caseType: string;
     return this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig().pipe(
-      map((JurisdictionsConfig) => {
+      map((jurisdictionsConfig) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         if (caseInfo?.hasOwnProperty(HearingsGuard.JURISDICTION)) {
           jurisdiction = caseInfo[HearingsGuard.JURISDICTION];
@@ -39,7 +39,7 @@ export class HearingsGuard {
         if (!jurisdiction || !caseType) {
           return false;
         }
-        return JurisdictionsConfig.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
+        return jurisdictionsConfig.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
       })
     );
   }

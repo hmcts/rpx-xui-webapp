@@ -3500,12 +3500,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.35-exui-2678-rc1":
-  version: 7.1.35-exui-2678-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.35-exui-2678-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.35-exui-2678-rc2":
+  version: 7.1.35-exui-2678-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.35-exui-2678-rc2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/2d699d660cd4a7ee64fd94eae1f1b9f3de1371fbb904697d13733476b9963b7398f986ca71882d061ddca7622a74efab55b3d0e33c0272c375356ad90646c5e8
+  checksum: 10/984a839f8f564f822e85f9b3b947e71f0c85b85a37250a7d58f99775d99b0e2ee952c90ed2dfe47b29aaf87b2bc9786da76a600c02dc0628a7e642a089f91df0
   languageName: node
   linkType: hard
 
@@ -22061,7 +22061,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.35-exui-2678-rc1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.35-exui-2678-rc2"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10-exui-2678-rc1"

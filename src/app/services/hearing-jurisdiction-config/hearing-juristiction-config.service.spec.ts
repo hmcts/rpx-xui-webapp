@@ -35,7 +35,7 @@ describe('HearingJurisdictionConfigService', () => {
       '.+': [{ jurisdiction: 'defaultConfig' }],
       '123': [{ jurisdiction: 'userConfig' }]
     };
-    const mockUserDetails = JSON.stringify({ jurisdiction: '123' });
+    const mockUserDetails = JSON.stringify({ id: '123' });
 
     environmentServiceSpy.config$ = of({
       hearingJurisdictionConfig: {
@@ -63,7 +63,7 @@ describe('HearingJurisdictionConfigService', () => {
       '.+': [{ jurisdiction: 'defaultConfig' }],
       '456': [{ jurisdiction: 'otherUserConfig' }]
     };
-    const mockUserDetails = JSON.stringify({ jurisdiction: '123' });
+    const mockUserDetails = JSON.stringify({ id: '123' });
 
     environmentServiceSpy.config$ = of({
       hearingJurisdictionConfig: {

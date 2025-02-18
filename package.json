@@ -90,7 +90,7 @@
     "@hmcts/ccd-case-ui-toolkit": "7.1.37",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.11-hide-hidden-attributes",
+    "@hmcts/media-viewer": "4.0.11-hide-hidden-attributes-v2",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.0.34",

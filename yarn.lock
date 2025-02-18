@@ -3555,9 +3555,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.11-hide-hidden-attributes":
-  version: 4.0.11-hide-hidden-attributes
-  resolution: "@hmcts/media-viewer@npm:4.0.11-hide-hidden-attributes"
+"@hmcts/media-viewer@npm:4.0.11-hide-hidden-attributes-v2":
+  version: 4.0.11-hide-hidden-attributes-v2
+  resolution: "@hmcts/media-viewer@npm:4.0.11-hide-hidden-attributes-v2"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3576,7 +3576,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/309052d58f5b14be29c97480d18a098054f5faac08fe1a75c0fc7ffdad5f8e630b4ab848951002826a2e49bc658080ae9bc37aa2c06592346958aee40261df47
+  checksum: 10/548951f2c25044e5d938cbdefe19cd8160686e4b75801f9a25ddfaaf0e0f552635a9d4a7f81a4bda91165d2928d10543f9aa9e002497ad7243840e067a7b122a
   languageName: node
   linkType: hard
 
@@ -22083,7 +22083,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.1.37"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.11-hide-hidden-attributes"
+    "@hmcts/media-viewer": "npm:4.0.11-hide-hidden-attributes-v2"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.34"

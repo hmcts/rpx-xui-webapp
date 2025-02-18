@@ -18,7 +18,7 @@ describe('HearingPartiesTitleComponent', () => {
 
   beforeEach(() => {
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
-    hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmmendmentsEnabled']);
+    hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
     TestBed.configureTestingModule({
       declarations: [HearingPartiesTitleComponent, MockRpxTranslatePipe],
       providers: [
@@ -38,7 +38,7 @@ describe('HearingPartiesTitleComponent', () => {
     storeMock = TestBed.inject(Store);
     spyOn(storeMock, 'pipe').and.returnValue(of(initialState.hearings.hearingValues.serviceHearingValuesModel));
     component = fixture.componentInstance;
-    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 

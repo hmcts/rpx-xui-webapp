@@ -5,14 +5,14 @@ import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
 
 import { Observable } from 'rxjs';
-import { HearingJuristictionConfigService } from 'src/app/services/hearing-juristiction-config/hearing-juristiction-config.service';
+import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Injectable()
 export class HearingAmendmentsGuard extends HearingsGuard {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
     protected readonly sessionStorageService: SessionStorageService,
-    protected readonly hearingJuristictionConfigService: HearingJuristictionConfigService) {
-    super(appStore, sessionStorageService, hearingJuristictionConfigService);
+    protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService) {
+    super(appStore, sessionStorageService, hearingJurisdictionConfigService);
   }
 
   canActivate(): Observable<boolean> {

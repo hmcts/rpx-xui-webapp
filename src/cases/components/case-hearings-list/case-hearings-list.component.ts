@@ -59,7 +59,7 @@ export class CaseHearingsListComponent implements OnInit {
       }
     }
 
-    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmmendmentsEnabled();
+    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
     isHearingAmendmentsEnabled$.subscribe((enabled) => {
       this.isHearingAmendmentsEnabled = enabled;
     });

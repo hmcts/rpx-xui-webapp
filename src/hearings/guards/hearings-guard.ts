@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { Utils } from '../../cases/utils/utils';
-import { HearingJuristictionConfigService } from 'src/app/services/hearing-juristiction-config/hearing-juristiction-config.service';
+import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Injectable()
 export class HearingsGuard {
@@ -17,7 +17,7 @@ export class HearingsGuard {
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
-              protected readonly hearingJuristictionConfigService: HearingJuristictionConfigService
+              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService
   ){
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
@@ -27,8 +27,8 @@ export class HearingsGuard {
   public hasMatchedPermissions(): Observable<boolean> {
     let jurisdiction: string;
     let caseType: string;
-    return this.hearingJuristictionConfigService.getHearingJuristictionsConfig().pipe(
-      map((juristictionsConfig) => {
+    return this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig().pipe(
+      map((JurisdictionsConfig) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         if (caseInfo?.hasOwnProperty(HearingsGuard.JURISDICTION)) {
           jurisdiction = caseInfo[HearingsGuard.JURISDICTION];
@@ -39,7 +39,7 @@ export class HearingsGuard {
         if (!jurisdiction || !caseType) {
           return false;
         }
-        return juristictionsConfig.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
+        return JurisdictionsConfig.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
       })
     );
   }

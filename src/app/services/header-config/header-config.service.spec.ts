@@ -86,9 +86,9 @@ describe('HeaderConfigService', () => {
         oidcEnabled: '',
         paymentReturnUrl: '',
         headerConfig: mockHeaderConfig,
-        hearingJuristictionConfig: {
-          hearingAmmendment: {},
-          hearingJuristictions: {}
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
         }
       };
 
@@ -110,9 +110,9 @@ describe('HeaderConfigService', () => {
         oidcEnabled: '',
         paymentReturnUrl: '',
         headerConfig: mockHeaderConfig,
-        hearingJuristictionConfig: {
-          hearingAmmendment: {},
-          hearingJuristictions: {}
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
         }
       };
 
@@ -134,9 +134,9 @@ describe('HeaderConfigService', () => {
         oidcEnabled: '',
         paymentReturnUrl: '',
         headerConfig: mockHeaderConfig,
-        hearingJuristictionConfig: {
-          hearingAmmendment: {},
-          hearingJuristictions: {}
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
         }
       };
 
@@ -158,9 +158,9 @@ describe('HeaderConfigService', () => {
         oidcEnabled: '',
         paymentReturnUrl: '',
         headerConfig: mockHeaderConfig,
-        hearingJuristictionConfig: {
-          hearingAmmendment: {},
-          hearingJuristictions: {}
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
         }
       };
 

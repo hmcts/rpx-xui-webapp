@@ -17,7 +17,7 @@ export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
     private readonly hearingsFeatureService: HearingsFeatureService) {}
 
   public ngOnInit(): void {
-    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmmendmentsEnabled();
+    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
     const hearingValues$ = this.hearingStore.pipe<ServiceHearingValuesModel>(select(fromHearingStore.getHearingValuesModel));
 
     this.serviceValueSub = combineLatest([isHearingAmendmentsEnabled$, hearingValues$]).subscribe(([isHearingAmendmentsEnabled, hearingValues]) => {

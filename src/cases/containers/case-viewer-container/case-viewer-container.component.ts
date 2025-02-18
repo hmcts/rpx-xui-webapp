@@ -13,7 +13,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { Utils } from '../../utils/utils';
-import { HearingJuristictionConfigService } from '../../../app/services/hearing-juristiction-config/hearing-juristiction-config.service';
+import { HearingJurisdictionConfigService } from '../../../app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -121,7 +121,7 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly waService: WASupportedJurisdictionsService,
-    protected readonly hearingJuristictionConfigService: HearingJuristictionConfigService) {
+    protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService) {
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
     );
@@ -163,7 +163,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private appendedCaseViewTabs(): Observable<CaseTab[]> {
     return combineLatest([
-      this.hearingJuristictionConfigService.getHearingJuristictionsConfig(),
+      this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig(),
       this.userRoles$
     ]).pipe(
       map(([featureVariations, userRoles]) => {

@@ -50,7 +50,7 @@ describe('HearingViewSummaryComponent', () => {
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
-    hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmmendmentsEnabled']);
+    hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
     routerMock = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
@@ -95,7 +95,7 @@ describe('HearingViewSummaryComponent', () => {
     storeMock.pipe.and.returnValue(of(USER));
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
-    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     fixture = TestBed.createComponent(HearingViewSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -113,7 +113,7 @@ describe('HearingViewSummaryComponent', () => {
   it('should set new template if the feature toggle is on and user is hearing manager', () => {
     USER.userInfo.roles.push('hearing-manager');
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
-    hearingsFeatureServiceMock.hearingAmmendmentsEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     fixture.detectChanges();
     component.ngOnInit();

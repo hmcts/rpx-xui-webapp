@@ -3,39 +3,36 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
+import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 
 @Injectable({ providedIn: 'root' })
-export class HearingJuristictionConfigService {
+export class HearingJurisdictionConfigService {
   constructor(private readonly environmentService: EnvironmentService,
               protected readonly sessionStorageService: SessionStorageService,
   ) {}
 
-  public getHearingJuristictionsConfig(): Observable<Array<any>> {
+  public getHearingJurisdictionsConfig(): Observable<Array<FeatureVariation>> {
     return this.environmentService.config$.pipe(
-      map((config) => config.hearingJuristictionConfig.hearingJuristictions),
+      map((config) => config.hearingJurisdictionConfig.hearingJurisdictions),
       switchMap((config) => this.filterConfigs(config))
     );
   }
 
-  public getHearingAmmendmentConfig(): Observable<Array<any>> {
+  public getHearingAmendmentConfig(): Observable<Array<FeatureVariation>> {
     return this.environmentService.config$.pipe(
-      map((config) => config.hearingJuristictionConfig.hearingAmmendment),
+      map((config) => config.hearingJurisdictionConfig.hearingAmendment),
       switchMap((config) => this.filterConfigs(config))
     );
   }
 
-  private filterConfigs(configs){
-    const defaultKey = '.+';
+  private filterConfigs(configs): Observable<Array<FeatureVariation>>{
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
     const userId = userDetails?.id ? userDetails.id : userDetails.uid;
-    const keys = Object.keys(configs);
-    const otherConfigKeys = keys.filter((config) => config !== defaultKey);
-    const selectedConfig = otherConfigKeys.find((config) => {
+    const configKeys = Object.keys(configs);
+    const selectedConfig = configKeys.find((config) => {
       const userIdRegex = new RegExp(config);
       return userIdRegex.test(userId);
     });
-    console.log('using config', selectedConfig || defaultKey);
-    console.log(selectedConfig ? configs[selectedConfig] : configs[defaultKey]);
-    return of(selectedConfig ? configs[selectedConfig] : configs[defaultKey]);
+    return of(configs[selectedConfig]);
   }
 }

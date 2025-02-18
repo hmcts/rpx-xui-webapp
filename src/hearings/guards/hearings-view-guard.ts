@@ -7,15 +7,15 @@ import { UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
-import { HearingJuristictionConfigService } from 'src/app/services/hearing-juristiction-config/hearing-juristiction-config.service';
+import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Injectable()
 export class HearingsViewGuard extends HearingsGuard {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
-              protected readonly hearingJuristictionConfigService: HearingJuristictionConfigService,
+              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
               protected readonly router: Router) {
-    super(appStore, sessionStorageService, hearingJuristictionConfigService);
+    super(appStore, sessionStorageService, hearingJurisdictionConfigService);
   }
 
   public canActivate(): Observable<boolean> {

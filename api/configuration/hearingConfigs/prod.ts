@@ -1,4 +1,4 @@
-export const prodEnableHearingAmmendment = {
+export const prodEnableHearingAmendment = {
   '.+': [
     {
       includeCaseTypes: [
@@ -9,7 +9,7 @@ export const prodEnableHearingAmmendment = {
   ]
 };
 
-export const prodHearingJuristictions = {
+export const prodHearingJurisdictions = {
   '.+': [
     {
       includeCaseTypes: [

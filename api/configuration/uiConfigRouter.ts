@@ -23,30 +23,28 @@ const AAT_CONFIG_ENVS = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
 router.get('/', uiConfigurationRouter);
 
 let menuConfigCache;
-let hearingJuristictionsConfigCache;
+let hearingJurisdictionsConfigCache;
 
-function getEnvironment() {
-  const previewID = process.env.PREVIEW_DEPLOYMENT_ID;
+function getBackendEnvironment() {
+  const hasPreviewID = process.env.PREVIEW_DEPLOYMENT_ID;
   const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
-  return previewID ? 'preview' : AAT_CONFIG_ENVS.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
+  return hasPreviewID ? 'preview' : AAT_CONFIG_ENVS.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
 }
 
 function getHeaderConfig() {
   if (!menuConfigCache) {
-    const environment = getEnvironment();
+    const environment = getBackendEnvironment();
     menuConfigCache = setupMenuConfig(environment);
   }
   return menuConfigCache;
 }
 
-function getHearingJuristictions() {
-  if (!hearingJuristictionsConfigCache) {
-    const environment = getEnvironment();
-    console.log(environment);
-    hearingJuristictionsConfigCache = setupHearingConfigs(environment);
+function getHearingJurisdictions() {
+  if (!hearingJurisdictionsConfigCache) {
+    const environment = getBackendEnvironment();
+    hearingJurisdictionsConfigCache = setupHearingConfigs(environment);
   }
-  console.log(hearingJuristictionsConfigCache);
-  return hearingJuristictionsConfigCache;
+  return hearingJurisdictionsConfigCache;
 }
 
 /**
@@ -72,7 +70,7 @@ async function uiConfigurationRouter(req, res) {
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     headerConfig: getHeaderConfig(),
-    hearingJuristictionConfig: getHearingJuristictions()
+    hearingJurisdictionConfig: getHearingJurisdictions()
   });
 }
 

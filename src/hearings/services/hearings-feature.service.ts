@@ -5,7 +5,7 @@ import { SessionStorageService } from '../../app/services';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { Utils } from '../../cases/utils/utils';
-import { HearingJuristictionConfigService } from 'src/app/services/hearing-juristiction-config/hearing-juristiction-config.service';
+import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Injectable()
 export class HearingsFeatureService {
@@ -15,7 +15,7 @@ export class HearingsFeatureService {
 
   constructor(protected readonly sessionStorageService: SessionStorageService,
     protected readonly featureToggleService: FeatureToggleService,
-    private readonly hearingJuristictionConfigService: HearingJuristictionConfigService) {}
+    private readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService) {}
 
   public isFeatureEnabled(featureName: string): Observable<boolean> {
     let jurisdiction: string;
@@ -38,10 +38,10 @@ export class HearingsFeatureService {
     );
   }
 
-  public hearingAmmendmentsEnabled(): Observable<boolean> {
+  public hearingAmendmentsEnabled(): Observable<boolean> {
     let jurisdiction: string;
     let caseType: string;
-    return this.hearingJuristictionConfigService.getHearingAmmendmentConfig().pipe(
+    return this.hearingJurisdictionConfigService.getHearingAmendmentConfig().pipe(
       map((featureVariations: FeatureVariation[]) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsFeatureService.CASE_INFO));
         if (caseInfo?.hasOwnProperty(HearingsFeatureService.JURISDICTION)) {
@@ -53,8 +53,6 @@ export class HearingsFeatureService {
         if (!jurisdiction || !caseType) {
           return false;
         }
-        console.log(featureVariations);
-        console.log(featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType)));
         return featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
       })
     );

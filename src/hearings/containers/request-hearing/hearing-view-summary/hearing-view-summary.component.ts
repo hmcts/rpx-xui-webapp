@@ -38,7 +38,7 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public ngOnInit(): void {
-    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmmendmentsEnabled();
+    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
 
     this.isHearingManager$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager))

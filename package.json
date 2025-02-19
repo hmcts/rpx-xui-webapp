@@ -93,7 +93,7 @@
     "@hmcts/media-viewer": "4.0.10",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.34",
+    "@hmcts/rpx-xui-common-lib": "2.0.35-user-buttons",
     "@hmcts/rpx-xui-node-lib": "2.30.2",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",

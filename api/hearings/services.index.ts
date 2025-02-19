@@ -34,13 +34,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
       dataByDefault = {
         ...data,
         screenFlow:
-        (forceNewDefaultScreenFlow === 'true')
-            ? DEFAULT_SCREEN_FLOW_NEW
-            : (forceNewDefaultScreenFlow === 'false')
-              ? DEFAULT_SCREEN_FLOW
-              : (data.panelRequiredDefault !== undefined)
-                ? DEFAULT_SCREEN_FLOW_NEW
-                : DEFAULT_SCREEN_FLOW
+        (forceNewDefaultScreenFlow === 'true') ? DEFAULT_SCREEN_FLOW_NEW : (forceNewDefaultScreenFlow === 'false') ? DEFAULT_SCREEN_FLOW : (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
       };
     }
     res.status(status).send(dataByDefault);

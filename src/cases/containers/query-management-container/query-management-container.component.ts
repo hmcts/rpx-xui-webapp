@@ -305,9 +305,10 @@ export class QueryManagementContainerComponent implements OnInit {
         }
 
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+        const placeholder = '${[CASE_REFERENCE]}';
         qualifyingQuestions.forEach((question) => {
-          if (question.url.includes('${[CASE_REFERENCE}]')) {
-            question.url = question.url.replace('${[CASE_REFERENCE]}', this.caseId);
+          if (question.url.includes(placeholder) {
+            question.url = question.url.replace(placeholder, this.caseId);
           }
         });
         return qualifyingQuestions;

@@ -3507,12 +3507,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.37-doc-upload-clear-message":
-  version: 7.1.37-doc-upload-clear-message
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.37-doc-upload-clear-message"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.38-doc-upload-clear-message-2":
+  version: 7.1.38-doc-upload-clear-message-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.38-doc-upload-clear-message-2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/04cb1652932e803174f3b2e17cad9bfbd4f98bdb643eade161ff15e3307c0423dff8e92ff18a6553a6e6ed1c5529860365c46f8034a2116ebf9b9de34422c05f
+  checksum: 10/cff60be12e20b4cf62dddcf2d3ba5298d6e8b365715a744beaa31e0f2fb3c399ea7fd29137e382288935bbcd8b65d43ccef03b9e9791cfdc9b02c7345f3c0201
   languageName: node
   linkType: hard
 
@@ -21937,7 +21937,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.37-doc-upload-clear-message"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.38-doc-upload-clear-message-2"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.10"

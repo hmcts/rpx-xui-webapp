@@ -31,7 +31,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {
       const forceNewDefaultScreenFlow = config.get('forceNewDefaultScreenFlow') || null;
-      console.log('forceNewDefaultScreenFlow', forceNewDefaultScreenFlow);
       dataByDefault = {
         ...data,
         screenFlow:

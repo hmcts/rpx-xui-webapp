@@ -217,5 +217,6 @@
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"
   },
-  "headerConfig": "HEADER_CONFIG"
+  "headerConfig": "HEADER_CONFIG",
+  "forceNewDefaultScreenFlow": "FORCE_NEW_DEFAULT_SCREEN_FLOW"
 }

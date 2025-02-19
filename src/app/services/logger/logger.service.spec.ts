@@ -7,7 +7,6 @@ describe('Logger service', () => {
   const mockedNgxLogger = jasmine.createSpyObj('mockedNgxLogger', ['trace', 'debug', 'info',
     'log', 'warn', 'error', 'fatal']);
   const mockedSessionStorageService = jasmine.createSpyObj('mockedSessionStorageService', ['getItem']);
-  const mockedCryptoWrapper = jasmine.createSpyObj('mockedCryptoWrapper', ['encrypt', 'decrypt']);
   const mockedConsoleObject = jasmine.createSpyObj('mockedConsoleObject', ['log', 'trace', 'debug', 'info', 'warn', 'error']);
   const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['config$', 'getDeploymentEnv']);
   const mockConfig = jasmine.createSpyObj('mockConfig', ['subscribe']);
@@ -15,13 +14,13 @@ describe('Logger service', () => {
 
   it('should be Truthy', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     expect(service).toBeTruthy();
   });
 
   it('should be able to call info', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.info('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.info).toHaveBeenCalled();
@@ -29,7 +28,7 @@ describe('Logger service', () => {
 
   it('should be able to call log', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.log('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.log).toHaveBeenCalled();
@@ -37,7 +36,7 @@ describe('Logger service', () => {
 
   it('should be able to call warn', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.warn('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.warn).toHaveBeenCalled();
@@ -45,7 +44,7 @@ describe('Logger service', () => {
 
   it('should be able to call error', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.error('message');
     expect(mockedMonitoringService.logException).toHaveBeenCalled();
     expect(mockedNgxLogger.error).toHaveBeenCalled();
@@ -53,7 +52,7 @@ describe('Logger service', () => {
 
   it('should be able to call fatal', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.fatal('message');
     expect(mockedMonitoringService.logException).toHaveBeenCalled();
     expect(mockedNgxLogger.fatal).toHaveBeenCalled();
@@ -61,14 +60,14 @@ describe('Logger service', () => {
 
   it('should be able to call debug', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.debug('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
   });
 
   it('should be able to call trace', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     service.trace('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.trace).toHaveBeenCalled();
@@ -76,7 +75,7 @@ describe('Logger service', () => {
 
   it('should be able to get a message', () => {
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     // slice off the last two characters of string to ensure no accidental discrepancies
     const expectedMessage = `Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
     const returnedMessage = service.getMessage('message');
@@ -84,15 +83,13 @@ describe('Logger service', () => {
     expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
   });
 
-  it('should be able to get a message with the user email encrypted', () => {
-    const userInfo = { id: '1', forename: 'Test', surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager'] };
+  it('should be able to get a message with the user id', () => {
+    const userInfo = { id: '1', forename: 'Test', surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager'], uid: '123' };
     mockedSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
-    // Return dummy encrypted email address
-    mockedCryptoWrapper.encrypt.and.returnValue('encrypted@example.com');
     const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     // slice off the last two characters of string to ensure no accidental discrepancies
-    const expectedMessage = `User - encrypted@example.com, Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
+    const expectedMessage = `User - 1, Message - message, Timestamp - ${Date.now()}`.slice(0, -2);
     const returnedMessage = service.getMessage('message');
     expect(returnedMessage).not.toBeNull();
     expect(returnedMessage.slice(0, -2)).toBe(expectedMessage);
@@ -103,18 +100,18 @@ describe('Logger service', () => {
     mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
     spyOn(console, 'info');
     new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     expect(console.info).toHaveBeenCalledWith('Environment is prod.');
     mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.AAT);
     new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-      mockedCryptoWrapper, mockEnvironmentService);
+      mockEnvironmentService);
     expect(console.info).toHaveBeenCalledWith('Environment is aat.');
   });
 
   describe('enableCookies()', () => {
     it('should make a call to monitoringService', () => {
       const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedSessionStorageService,
-        mockedCryptoWrapper, mockEnvironmentService);
+        mockEnvironmentService);
       service.enableCookies();
       expect(mockedMonitoringService.enableCookies).toHaveBeenCalled();
     });

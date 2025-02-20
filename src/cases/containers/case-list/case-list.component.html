@@ -2,12 +2,12 @@
   <div class="case-list-component">
     <div class="hmcts-action-bar">
       <div class="hmcts-action-bar__filter">
-        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button" aria-haspopup="true" [attr.aria-expanded]="showFilter ? 'true' : 'false'">
+        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button">
           {{toggleButtonName | rpxTranslate}}
         </button>
       </div>
       <div class="hmcts-action-bar__filter"  *ngIf="isCaseShareVisible$ | async">
-        <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"  aria-haspopup="true" aria-expanded="false"
+        <button id="btn-share-button" class="govuk-button hmcts-button--secondary" type="button"
                 [disabled]="checkIfButtonDisabled()" (click)="shareCaseSubmit()">
           {{'Share Case' | rpxTranslate}}
         </button>

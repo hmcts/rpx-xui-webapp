@@ -6,7 +6,7 @@ import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-x
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { UserInfo } from '../../../app/models';
+import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -27,7 +27,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeName, handleFatalErrors, servicesMap, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html'
@@ -39,6 +39,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
+  public waSupportedDetailedServices$: Observable<HMCTSServiceDetails[]>;
   public supportedJurisdictions: string[];
   public selectedServices: string[] = ['IA'];
   public pagination: PaginationParameter;
@@ -168,6 +169,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
     ));
 
+    // for all case lists other than all work
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
@@ -177,6 +179,18 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         const areasOfJurisdiction = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
         const uniqueJurisdictionsValue = [...new Set(areasOfJurisdiction)];
         return uniqueJurisdictionsValue;
+      }));
+
+    // for all work cases (need detailed service information)
+    const waDetailedJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
+    this.waSupportedDetailedServices$ = combineLatest(
+      [userRoles$,
+        waDetailedJurisdictions$]
+    ).pipe(
+      map((jurisdictions) => {
+        const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
+        this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
+        return fullServiceDetails.detailedWAServices;
       }));
   }
 

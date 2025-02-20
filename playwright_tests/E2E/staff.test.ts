@@ -1,40 +1,55 @@
-import { test, expect } from "@playwright/test";
-import { signIn, signOut } from "./steps/login-steps";
-import { clickToStaffPage } from "./steps/staff-steps";
+import { test, expect } from '@playwright/test';
+import { signIn, signOut } from './steps/login-steps';
+import { clickToStaffPage } from './steps/staff-steps';
 
-
-test("staff user details", async ({ page }) => {
-  await signIn(page, "STAFF_ADMIN");
+test('staff user details', async ({ page }) => {
+  await signIn(page, 'STAFF_ADMIN');
   await clickToStaffPage(page);
-
-  console.log("Using user simple search");
-  await page.locator("#main-content").getByRole("textbox").click();
-  await page.locator("#main-content").getByRole("textbox").fill("xui");
-  await page.getByRole("button", { name: "Search" }).click();
-  await expect(page.getByRole("columnheader", { name: "Name" })).toBeVisible();
+  console.log('Using user simple search');
+  await page.locator('#main-content').getByRole('textbox').click();
+  await page.locator('#main-content').getByRole('textbox').fill('xui');
+  await page.getByRole('button', { name: 'Search' }).click();
+  await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "xui caseworker all services" })
+    page.getByRole('link', { name: 'xui caseworker all services' })
   ).toBeVisible();
-  await page.getByRole("link", { name: "xui caseworker all services" }).click();
+  await page.getByRole('link', { name: 'xui caseworker all services' }).click();
   await expect(
-    page.getByRole("heading", { name: "User details" })
+    page.getByRole('heading', { name: 'User details' })
   ).toBeVisible();
-  await expect(page.getByText("Name")).toBeVisible();
-  await expect(page.getByText("Email address")).toBeVisible();
-  await expect(page.getByText("Service", { exact: true })).toBeVisible();
-  await expect(page.getByText("User type")).toBeVisible();
-  await expect(page.getByText("Status")).toBeVisible();
-  expect(page.locator("dl")).toContainText("xui caseworker all services");
-  await expect(page.locator("dl")).toContainText("Legal office");
+  await expect(page.getByText('Name')).toBeVisible();
+  await expect(page.getByText('Email address')).toBeVisible();
+  await expect(page.getByText('Service', { exact: true })).toBeVisible();
+  await expect(page.getByText('User type')).toBeVisible();
+  await expect(page.getByText('Status')).toBeVisible();
+  expect(page.locator('dl')).toContainText('xui caseworker all services');
+  await expect(page.locator('dl')).toContainText('Legal office');
+  await signOut(page);
+});
 
+test('staff user details advanced search', async ({ page }) => {
+  await signIn(page, 'STAFF_ADMIN');
+  await clickToStaffPage(page);
+  console.log('Using user advanced search');
+  await page.getByRole('link', { name: 'Advanced search' }).click();
+  await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'User type' }).first()).toBeVisible();
+  await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Job title' }).first()).toBeVisible();
+  await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Skills' }).first()).toBeVisible();
+  await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Role' }).first()).toBeVisible();
+  await page.locator('#inputServiceSearch').click();
+  await page.getByText('Criminal Injuries Compensation').click();
+  await page.locator('#select_user-type').selectOption('1');
+  await page.getByRole('checkbox', { name: 'Case allocator' }).check();
+  await page.getByRole('link', { name: 'Add location' }).click();
+  await page.getByRole('button', { name: 'Search' }).click();
+  await expect(page.getByText('Showing')).toBeVisible();
   await signOut(page);
 });
 
 test('Add new user work flow - back, cancel and change', async ({ page }) => {
-  await signIn(page, "STAFF_ADMIN");
+  await signIn(page, 'STAFF_ADMIN');
   await clickToStaffPage(page);
-
-  console.log("Adding new user then cancel");
+  console.log('Adding new user then cancel');
   await page.getByRole('button', { name: 'Add new user' }).click();
   await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
   await page.locator('#first_name').click();
@@ -42,8 +57,7 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.locator('#last_name').click();
   await page.locator('#last_name').fill('LastName1');
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
-  
-  console.log("Adding new user with missing fields");
+  console.log('Adding new user with missing fields');
   await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
   await page.locator('#first_name').click();
   await page.locator('#first_name').fill('firstName1');
@@ -62,7 +76,7 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByText('East London').click();
   await page.getByRole('link', { name: 'Add primary location' }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
-  console.log("Check for missing fields error messages, correct them, then cancel");
+  console.log('Check for missing fields error messages, correct them, then cancel');
   await expect(page.getByRole('link', { name: 'Select a user type' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Select at least one job title' })).toBeVisible();
   await page.locator('#user_type').selectOption('Legal office');
@@ -70,8 +84,7 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Cancel' }).click();
-
-  console.log("Adding new user");
+  console.log('Adding new user');
   await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
   await page.getByRole('button', { name: 'Add new user' }).click();
   await page.locator('#first_name').click();
@@ -95,8 +108,7 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('link', { name: 'Add primary location' }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
-  
-  console.log("Check summary page, update name and email, then cancel");
+  console.log('Check summary page, update name and email, then cancel');
   await page.getByRole('link', { name: 'Change name' }).click();
   await page.locator('#first_name').fill('FirstName2');
   await page.getByRole('button', { name: 'Continue' }).click();
@@ -105,6 +117,5 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByRole('button', { name: 'Cancel' }).click();
   await expect(page.getByRole('heading', { name: 'User search' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
-
   await signOut(page);
 });

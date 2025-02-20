@@ -1,4 +1,4 @@
-export interface GlobalSearchService {
+export interface HMCTSServiceDetails {
   serviceId: string;
   serviceName: string;
 }

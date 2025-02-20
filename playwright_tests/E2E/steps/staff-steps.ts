@@ -11,7 +11,7 @@ export async function clickToStaffPage(page) {
 export async function fillSearchBox(page) {
   console.log("Fill SearchBox");
   await retryAction(async () => {
-    await page.locator('#main-content').getByRole('textbox').click();
-    await page.locator('#main-content').getByRole('textbox').fill('xui');
+    await page.locator('#content').getByRole('textbox').click();
+    await page.locator('#content').getByRole('textbox').fill('xui');
   });
 }

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import {
@@ -24,34 +24,59 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     protected readonly featureToggleService: FeatureToggleService,
-    protected readonly route: ActivatedRoute) {
+    protected readonly route: ActivatedRoute,
+    protected readonly router: Router) {
     super(hearingStore, hearingsService, featureToggleService, route);
   }
 
   public ngOnInit(): void {
     this.hearingPanelRequired =
-    this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag
-    ?? this.serviceHearingValuesModel?.panelRequiredDefault
-    ?? false;
+      this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag
+      ?? this.serviceHearingValuesModel?.panelRequiredDefault
+      ?? false;
     this.initForm();
   }
 
-  public ngAfterViewInit(): void {
-    this.fragmentFocus();
-  }
-
-  public initForm(): void {
+  private initForm(): void {
     this.hearingPanelRequiredForm = this.formBuilder.group({
       hearingPanelRequired: [this.hearingPanelRequired, Validators.required]
     });
   }
 
-  public executeAction(action: ACTION): void {
+  private clearSpecificJudgeInformation(): void {
+    // clear judge information functionality goes here
+  }
+
+  private clearPanelMembersInformation(): void {
+    this.hearingRequestMainModel.hearingDetails.panelRequirements = null;
+  }
+
+  public changeSelection(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
-      this.updateHearingConditions();
-      this.prepareHearingRequestData();
+      const panelRequired = this.hearingPanelRequiredForm.value.hearingPanelRequired;
+      if (panelRequired !== this.hearingPanelRequired) {
+        this.updateHearingConditions();
+        this.prepareHearingRequestData();
+        if (panelRequired) {
+          this.clearSpecificJudgeInformation();
+        } else {
+          this.clearPanelMembersInformation();
+        }
+        this.navigateBasedOnPanelRequirement(panelRequired);
+      } else {
+        super.navigateAction(action);
+      }
+    } else {
+      super.navigateAction(action);
     }
-    super.navigateAction(action);
+  }
+
+  private navigateBasedOnPanelRequirement(panelRequired: boolean): void {
+    if (panelRequired) {
+      this.router.navigate(['../panel-members'], { relativeTo: this.route });
+    } else {
+      this.router.navigate(['../specific-judge'], { relativeTo: this.route });
+    }
   }
 
   public prepareHearingRequestData(): void {
@@ -66,6 +91,23 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
 
   public updateHearingConditions(): void {
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions({ isAPanelFlag: this.hearingPanelRequiredForm.value.hearingPanelRequired }));
+  }
+
+  public onChangePanelRequirement(): void {
+    const panelRequired = this.hearingRequestMainModel.hearingDetails.isAPanelFlag;
+    if (panelRequired) {
+      this.router.navigate(['../panel-requirement'], { relativeTo: this.route }).then(() => {
+        this.router.navigate(['../panel-members'], { relativeTo: this.route }).then(() => {
+          this.router.navigate(['../cya'], { relativeTo: this.route });
+        });
+      });
+    } else {
+      this.router.navigate(['../panel-requirement'], { relativeTo: this.route }).then(() => {
+        this.router.navigate(['../specific-judge'], { relativeTo: this.route }).then(() => {
+          this.router.navigate(['../cya'], { relativeTo: this.route });
+        });
+      });
+    }
   }
 
   public ngOnDestroy(): void {

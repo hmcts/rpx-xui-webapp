@@ -372,6 +372,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
     store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    component.appendedTabs$ = of([{ id: 'hearings', label: 'Hearings', fields: [], show_condition: null }]);
     fixture.detectChanges();
   });
 
@@ -420,7 +421,7 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule, HttpClientTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -436,7 +437,8 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
-        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService }
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
+        { provide: Window, useValue: dummyWindowAat }
       ],
       declarations: [CaseViewerContainerComponent, CaseViewerComponent]
     })
@@ -528,6 +530,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
     store.overrideSelector(fromRoot.getUserDetails, initialState.appConfig.userDetails);
+    component.appendedTabs$ = of([]);
     fixture.detectChanges();
   });
 

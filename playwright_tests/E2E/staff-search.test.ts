@@ -38,8 +38,8 @@ test('Toggle search', async ({ page }) => {
   await clickToStaffPage(page);
 
   console.log("Toggle between simple and advanced search");
-  await page.locator('#main-content').getByRole('textbox').click();
-  await page.locator('#main-content').getByRole('textbox').fill('xui');
+  await page.locator('#content').getByRole('textbox').click();
+  await page.locator('#content').getByRole('textbox').fill('xui');
   await page.getByRole('button', { name: 'Search' }).click();
   await page.getByRole('link', { name: 'Advanced search' }).click();
   await page.locator('#select_user-job-title').selectOption('2');
@@ -47,7 +47,7 @@ test('Toggle search', async ({ page }) => {
   await expect(page.getByText('Showing')).toBeVisible();
   await page.getByRole('link', { name: 'Hide advanced search' }).click();
   await expect(page.getByText('Showing')).toBeVisible();
-  await expect(page.locator('#main-content').getByRole('textbox')).toBeVisible();
+  await expect(page.locator('#content').getByRole('textbox')).toBeVisible();
   await page.getByText('User search Search for a user').click();
   await page.getByRole('link', { name: 'Advanced search' }).click();
   await expect(page.locator('#select_user-job-title')).toBeVisible();
@@ -61,8 +61,8 @@ test('Advanced search', async ({ page }) => {
     await clickToStaffPage(page);
   
     console.log("Using user simple search");
-    await page.locator('#main-content').getByRole('textbox').click();
-    await page.locator('#main-content').getByRole('textbox').fill('xui');
+    await page.locator('#content').getByRole('textbox').click();
+    await page.locator('#content').getByRole('textbox').fill('xui');
     await page.getByRole('button', { name: 'Search' }).click();
     await expect(page.locator('exui-staff-user-list')).toContainText('Showing 1');
   

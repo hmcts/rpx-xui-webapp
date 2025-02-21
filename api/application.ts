@@ -29,6 +29,14 @@ import { getNewUsersByServiceName } from './workAllocation';
 export const app = express();
 const logger: JUILogger = log4jui.getLogger('Application');
 
+// configure CORS headers
+const localhost = 'http://localhost:3001';
+const host = {
+  prefix: 'https://manage-case',
+  domain: 'platform.hmcts.net'
+};
+const platforms = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
+
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)));
   app.use(helmet.noSniff());
@@ -39,14 +47,17 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet.xssFilter());
   app.use(getContentSecurityPolicy(helmet));
   app.use((req, res, next) => {
-    const origin = app.get('env') === 'development' ? 'http://localhost:3001' : 'https://manage-case.aat.platform.hmcts.net';
-    logger.info(`Setting CORS policy to use: ${origin}`);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('X-Robots-Tag', 'noindex');
     res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+
+    platforms.map((item) => {
+      const origin = app.get('env') === 'development' ? localhost : `${host.prefix}${item}${host.domain}`;
+      logger.info(`Setting CORS headers for: ${origin}`);
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    });
     next();
   });
   app.get('/robots.txt', (req, res) => {

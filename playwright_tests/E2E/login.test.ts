@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from "./steps/login-steps"
+import axeTest from "../helpers/accessibilityTestHelper";
 import config from "../config"
 import axeTest from "./helpers/accessibilityTestHelper";
 
@@ -13,6 +14,7 @@ test('login and log out from EUI with valid user', async ({ page }) => {
 
 test('login Verify the direct link navigate to login page', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
+    await axeTest(page);
     await expect(page.getByRole('heading', { name: 'Sign in or create an account' })).toBeVisible();
     await expect(page.url()).toContain('idam-web-public');
     await axeTest(page);
@@ -20,6 +22,7 @@ test('login Verify the direct link navigate to login page', async ({ page }) => 
 
   test('login un-authenticated user login', async ({ page }) => {
     await page.goto(config.CaseBaseURL);
+    await axeTest(page);
     await page.getByLabel('Email address').fill('test_nonexisting_or_invalid@gmail.com');
     await page.getByLabel('Password').click();
     await page.getByLabel('Password').fill('123');

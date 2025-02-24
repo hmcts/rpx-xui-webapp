@@ -3,7 +3,6 @@ import { NGXLogger } from 'ngx-logger';
 import { environment as config } from '../../../environments/environment';
 import { UserInfo } from '../../models/user-details.model';
 import { SessionStorageService } from '../session-storage/session-storage.service';
-import { CryptoWrapper } from './cryptoWrapper';
 import { MonitoringService } from './monitoring.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 
@@ -29,7 +28,6 @@ export class LoggerService implements ILoggerService {
   constructor(private readonly monitoringService: MonitoringService,
               private readonly ngxLogger: NGXLogger,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly cryptoWrapper: CryptoWrapper,
               private readonly environmentService: EnvironmentService) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
@@ -100,10 +98,8 @@ export class LoggerService implements ILoggerService {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      if (userInfo && userInfo.email) {
-        const userIdEncrypted = this.cryptoWrapper.encrypt(userInfo.email);
-        return `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
-      }
+      const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      return `User - ${userId.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
     }
     return `Message - ${message}, Timestamp - ${Date.now()}`;
   }

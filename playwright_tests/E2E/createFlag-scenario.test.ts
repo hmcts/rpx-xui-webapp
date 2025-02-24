@@ -40,7 +40,7 @@ test('Create case flag Add/Update Reasonable adjustment', async ({ page }) => {
   await page.getByText('Support', { exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Support requested' })).toBeVisible();
   await expect(page.getByText('Test data', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'Test data' }).click();
+  await page.getByText('Test data', { exact: true }).click();
   await page.getByLabel('Next step').selectOption('1: Object');
   await page.getByRole('button', { name: 'Go' }).click();
   await expect(page.getByText(caseId)).toBeVisible();

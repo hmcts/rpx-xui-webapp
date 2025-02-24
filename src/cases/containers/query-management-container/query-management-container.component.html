@@ -1,7 +1,7 @@
 <exui-app-header></exui-app-header>
 <xuilib-loading-spinner  *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
 <div class="govuk-width-container query-container">
-  <main class="govuk-main-wrapper" id="main-content" role="main">
+  <main class="govuk-main-wrapper" id="content" role="main">
     <!-- Error message summary -->
     <div *ngIf="errorMessages.length > 0" class="govuk-error-summary"
          aria-labelledby="error-summary-title" role="alert" tabindex="-1"

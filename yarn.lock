@@ -3527,12 +3527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.41-exui-2792-task-completion":
-  version: 7.1.41-exui-2792-task-completion
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.41-exui-2792-task-completion"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.42-exui-2792-task-completion":
+  version: 7.1.42-exui-2792-task-completion
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.42-exui-2792-task-completion"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/500f9fdc5648fa684f1c08f90dfb6cab85cd458af8be943bca821e29355c1ee56ad30d186a12e053095e2c540d42c7a3f4f91959ab375ef7d08dce5ace45672d
+  checksum: 10/412c7080da46fbbb14bd4dc53b38136a717c96f8ec3fb37825667cbb10830daa614db65a6b4f115ae47707eb129da16acce7be95e14378a9c0e56afa2defd085
   languageName: node
   linkType: hard
 
@@ -22080,7 +22080,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.41-exui-2792-task-completion"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.42-exui-2792-task-completion"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.11"

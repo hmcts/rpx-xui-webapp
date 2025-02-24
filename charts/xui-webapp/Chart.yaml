@@ -8,7 +8,7 @@ maintainers:
 dependencies:
   - name: nodejs
     version: 3.2.0
-    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
+    repository: 'oci://hmctspublic.azurecr.io/helm'
   - name: redis
     version: 20.7.0
     repository: "oci://registry-1.docker.io/bitnamicharts"

@@ -6,8 +6,8 @@ test('staff user details', async ({ page }) => {
   await signIn(page, 'STAFF_ADMIN');
   await clickToStaffPage(page);
   console.log('Using user simple search');
-  await page.locator('#main-content').getByRole('textbox').click();
-  await page.locator('#main-content').getByRole('textbox').fill('xui');
+  await page.locator('#content').getByRole('textbox').click();
+  await page.locator('#content').getByRole('textbox').fill('xui');
   await page.getByRole('button', { name: 'Search' }).click();
   await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
   await expect(

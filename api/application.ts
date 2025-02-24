@@ -29,19 +29,12 @@ import { getNewUsersByServiceName } from './workAllocation';
 export const app = express();
 const logger: JUILogger = log4jui.getLogger('Application');
 
-// configure CORS headers
-const localhost = 'http://localhost:3001';
-const host = {
-  prefix: 'https://manage-case',
-  domain: 'platform.hmcts.net'
-};
-const platforms = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
-
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)));
   app.use(helmet.noSniff());
   app.use(helmet.frameguard({ action: 'deny' }));
   app.use(helmet.referrerPolicy({ policy: ['origin'] }));
+  app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
   app.use(helmet.hidePoweredBy());
   app.use(helmet.hsts({ maxAge: 28800000 }));
   app.use(helmet.xssFilter());
@@ -52,12 +45,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('X-Robots-Tag', 'noindex');
     res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
-
-    platforms.map((item) => {
-      const origin = app.get('env') === 'development' ? localhost : `${host.prefix}${item}${host.domain}`;
-      logger.info(`Setting CORS headers for: ${origin}`);
-      res.setHeader('Access-Control-Allow-Origin', origin);
-    });
     next();
   });
   app.get('/robots.txt', (req, res) => {

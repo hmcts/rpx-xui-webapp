@@ -1,4 +1,4 @@
-import { AUTH, AuthOptions, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import { AUTH, AuthOptions, SessionMetadata, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
@@ -20,16 +20,26 @@ import {
   SERVICES_IDAM_ISS_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
+  SERVICES_IDAM_SERVICE_OVERRIDE,
   SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
   SYSTEM_USER_PASSWORD
 } from '../configuration/references';
-import { client } from '../lib/appInsights';
+import { client, trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 
 const logger = log4jui.getLogger('auth');
+
+const totalReplicas = 24;
+const specialReplicasCount = 5;
+
+function shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount) {
+  const randomNumber = Math.floor(Math.random() * totalReplicas);
+  return randomNumber < specialReplicasCount;
+}
+const isSpecialPod = shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount);
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -104,20 +114,27 @@ export const getXuiNodeMiddleware = () => {
     sessionKey: 'xui-webapp',
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
-    useRoutes: true
+    useRoutes: true,
+    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
   };
 
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
-      maxAge: 28800000,
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',
     resave: false,
     saveUninitialized: false,
     secret: getConfigValue(SESSION_SECRET)
-  };
+  } as SessionMetadata;
+
+  if (!isSpecialPod){
+    baseStoreOptions.cookie.maxAge = 28800000;
+  } else {
+    trackTrace('Pod is serving session cookie');
+    logger.info('Pod is serving session cookie');
+  }
 
   const redisStoreOptions = {
     redisStore: {

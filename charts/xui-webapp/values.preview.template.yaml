@@ -17,8 +17,6 @@ nodejs:
      HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
      SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
-     GLOBAL_SEARCH_SERVICES: IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,SSCS,ST_CIC
-     WA_SUPPORTED_JURISDICTIONS: IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,SSCS,ST_CIC
      STUB: false
      DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
      FEATURE_WORKALLOCATION_ENABLED: true
@@ -28,6 +26,8 @@ nodejs:
      JURISDICTIONS: DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,CIVIL,PRIVATELAW,EMPLOYMENT,ST_CIC
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${CHANGE_ID}
      FEATURE_JRD_E_LINKS_V2_ENABLED: true
+     FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
+     SERVICES_IDAM_SERVICE_OVERRIDE: false
   keyVaults:
     rpx:
       secrets:

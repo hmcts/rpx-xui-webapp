@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
+import * as momentTimezone from 'moment-timezone';
 import { Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 import { isEqual } from 'underscore';
@@ -88,10 +89,20 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   }
 
   private static replaceTime(dateTime: string, time: moment.Moment): string {
-    return moment(dateTime, 'YYYY-MM-DDTHH:mm:ssZ').set({
-      hour: time.get('hour'),
-      minute: time.get('minute')
-    }).format('YYYY-MM-DDTHH:mm:ss');
+    const timezone = momentTimezone.tz.guess();
+
+    // Parse the local datetime string into a Moment object with timezone
+    let localMoment = momentTimezone.tz(dateTime, timezone);
+
+    // Replace the time part with the new time
+    localMoment = localMoment.set({
+      hour: time.hour(),
+      minute: time.minute(),
+      second: time.second()
+    });
+
+    // Convert the updated local time to UTC and return it as an ISO string
+    return localMoment.utc().toISOString();
   }
 
   // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe
@@ -183,7 +194,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
   private getHearingTime(value:string, actualIndex: number): string {
     const hearingDate = this.hearingActuals.hearingActuals?.actualHearingDays?.length > 0 ?
-      this.hearingActuals.hearingActuals.actualHearingDays[actualIndex].hearingDate : this.hearingDate;
+      this.hearingActuals?.hearingActuals?.actualHearingDays[actualIndex]?.hearingDate : this.hearingDate;
     return value ? HearingActualsTimingComponent.replaceTime(hearingDate, moment(value, 'HH:mm')) : null;
   }
 

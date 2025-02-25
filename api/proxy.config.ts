@@ -59,6 +59,15 @@ export const initProxy = (app: Express) => {
   }, false);
 
   applyProxy(app, {
+    middlewares: [bodyParser.json()],
+    onReq: searchCases.modifyRequest,
+    onRes: searchCases.handleElasticSearchResponse,
+    rewrite: false,
+    source: '/data/internal/searchCases',
+    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
+  });
+
+  applyProxy(app, {
     filter: [
       '!/data/internal/searchCases'
     ],
@@ -67,15 +76,6 @@ export const initProxy = (app: Express) => {
       '/print',
       '/data'
     ],
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
-  });
-
-  applyProxy(app, {
-    middlewares: [bodyParser.json()],
-    onReq: searchCases.modifyRequest,
-    onRes: searchCases.handleElasticSearchResponse,
-    rewrite: false,
-    source: '/data/internal/searchCases',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
   });
 
@@ -196,5 +196,11 @@ export const initProxy = (app: Express) => {
     // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
     source: '/refdata/commondata/caseflags/service-id=:sid',
     target: getConfigValue(SERVICES_PRD_COMMONDATA_API)
+  });
+
+  applyProxy(app, {
+    rewrite: false,
+    source: '/icp/sessions',
+    target: getConfigValue(SERVICES_ICP_API_URL)
   });
 };

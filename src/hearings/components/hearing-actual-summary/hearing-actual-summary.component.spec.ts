@@ -13,6 +13,7 @@ import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
@@ -398,7 +399,7 @@ describe('HearingActualSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingActualSummaryComponent,
-        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe
+        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe
       ],
       providers: [
         provideMockStore({ initialState }),
@@ -414,7 +415,8 @@ describe('HearingActualSummaryComponent', () => {
             },
             fragment: of('point-to-me')
           }
-        }
+        },
+        DatePipe, FormatTranslatorService
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -447,6 +449,18 @@ describe('HearingActualSummaryComponent', () => {
     };
     fixture.detectChanges();
     expect(component.hearingTypeDescription).toEqual('Substantive');
+  });
+
+  it('should return hearing start time', () => {
+    expect(component.actualHearingDate()).toEqual('2021-03-12T09:00:00.000Z');
+  });
+
+  it('should return true for multi days hearing', () => {
+    expect(component.isMultiDayHearing).toEqual(true);
+  });
+
+  it('should return multi day hearing days', () => {
+    expect(component.actualMultiDaysHearingDates()).toEqual('12 Mar 2021 - 14 Mar 2021');
   });
 
   it('should set empty hearing type description', () => {

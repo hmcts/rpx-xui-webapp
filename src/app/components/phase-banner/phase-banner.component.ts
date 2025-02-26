@@ -28,29 +28,17 @@ export class PhaseBannerComponent {
   public toggleLanguage(lang: RpxLanguage): void {
     this.noBanner = (lang === 'cy');
     this.langService.language = lang;
-    const clientContextObj = JSON.parse(this.sessionStorageService.getItem('clientContext'));
-    if (!clientContextObj) {
-      // creates client context for language if not already existing
-      const storeClientContext = {
-        client_context: {
-          user_language: {
-            language: lang
-          }
+    const clientContextObj = JSON.parse(this.sessionStorageService.getItem('clientContext')) || {};
+    const clientContextAddLanguage = {
+      ...clientContextObj,
+      client_context: {
+        ...clientContextObj.client_context,
+        user_language: {
+          language: lang
         }
-      };
-      this.sessionStorageService.setItem('clientContext', JSON.stringify(storeClientContext));
-    } else {
-      const clientContextAddLanguage = {
-        ...clientContextObj,
-        client_context: {
-          ...clientContextObj.client_context,
-          user_language: {
-            language: lang
-          }
-        }
-      };
-      this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContextAddLanguage));
-    }
+      }
+    };
+    this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContextAddLanguage));
   }
 
   public closeBanner() {

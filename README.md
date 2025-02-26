@@ -1,4 +1,4 @@
-# Manage Cases 
+# Manage Cases  
 
 To run the application locally please make sure you follow the prerequisite task of
 Setting up Secrets locally as documented below.

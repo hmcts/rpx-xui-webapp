@@ -6,11 +6,12 @@ import {
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_LOCATION_REF_API_URL
 } from '../configuration/references';
-import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { EnhancedRequest } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
+import { toTitleCase } from '../utils';
 
 /**
  * Get global search services
@@ -60,17 +61,17 @@ export async function getSearchResults(req: EnhancedRequest, res: Response, next
  * @param jurisdictions
  * @returns
  */
-export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSearchService[] {
+export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSServiceDetails[] {
   // Retrieve global search services id from config
   const globalSearchServiceIds = getConfigValue(GLOBAL_SEARCH_SERVICES);
   const globalSearchServiceIdsArray = globalSearchServiceIds.split(',');
 
   // Generate global search services
-  const globalSearchServices: GlobalSearchService[] = [];
+  const globalSearchServices: HMCTSServiceDetails[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
     // search for the service name based on the globalSearchServiceId
     const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
-    if (jurisdiction) {
+    if (jurisdiction?.length > 0) {
       // handle Civil service which has different service_short_description
       if (jurisdiction.length > 1) {
         globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });
@@ -84,10 +85,4 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): GlobalSea
 
   // Return generated global search services
   return globalSearchServices;
-}
-
-function toTitleCase(serviceName: string): string {
-  return serviceName.replace(/([a-zA-Z])([a-zA-Z]*)/g, (match, firstLetter, rest) => {
-    return firstLetter.toUpperCase() + rest.toLowerCase();
-  });
 }

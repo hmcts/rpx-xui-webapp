@@ -19,13 +19,13 @@ if [ $status3 -ne 0 ]; then
 fi
 
 if [ -n "$failed" ]; then
-  echo "============================================================="
-  echo "The following commands failed:$failed"
+  printf "============================================================="
+  printf "The following commands failed:$failed"
   if [ $status1 -ne 0 ]; then
-    echo ""
-    echo "There are unsupressed vulnerabilities, you can run ( yarn cve:fix ) to auto fix this"
-    echo ""
+    printf ""
+    printf "There are unsupressed vulnerabilities, you can run ( yarn cve:fix ) to auto fix this"
+    printf ""
   fi
-  echo "============================================================="
+  printf "============================================================="
   exit 1
 fi

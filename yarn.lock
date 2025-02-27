@@ -3527,12 +3527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.43-data-loss-cya":
-  version: 7.1.43-data-loss-cya
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.43-data-loss-cya"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.45-data-loss-cya":
+  version: 7.1.45-data-loss-cya
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.45-data-loss-cya"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/f9b3c66856aeff975ce07babe03df6411785cdec57c8ad1433df3f5aad3fe192cd3069c11cba922b7a900791fd42794ad019e9d7021780bbd4423f1596d37331
+  checksum: 10/9dcec0e4be6f280f6881ea5a497e12483a8489cb74ee29a53fdf194b5912e83ed56144cf4d01279f6c10a36ab037eb40f62b8945d205530aa43dd70c3620a4c1
   languageName: node
   linkType: hard
 
@@ -22102,7 +22102,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.43-data-loss-cya"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.45-data-loss-cya"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.11"

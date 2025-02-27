@@ -36,6 +36,7 @@ import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { cloneDeep } from 'lodash';
+import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
@@ -104,6 +105,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
     this.hearingsService.hearingRequestForSubmitValid = false;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
+
+    if (this.serviceHearingValuesModel?.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
+      this.sectionsToDisplay = HearingsUtils.checkScreensForHearingPanelRequiremnts(
+        this.sectionsToDisplay, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+    }
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
     this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
       map((locations) => {

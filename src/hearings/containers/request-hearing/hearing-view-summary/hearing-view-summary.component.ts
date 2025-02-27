@@ -4,7 +4,6 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../../app/app.constants';
 import { UserRole } from '../../../../app/models';
 import * as fromAppStore from '../../../../app/store';
 import { ACTION, Mode } from '../../../models/hearings.enum';
@@ -39,7 +38,7 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   public ngOnInit(): void {
-    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
 
     this.isHearingManager$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager))

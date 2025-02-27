@@ -142,9 +142,9 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'SSCS Benefits & Infected Blood Compensation (Scotland)',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'contactsscs@justice.gov.uk',
+    email: 'SSCSA-Glasgow@justice.gov.uk',
     phone: '0300 790 6234',
-    openingTimes: 'Last Thursday of every month, closed 10:30am-11:30am'
+    openingTimes: 'Monday to Friday, 8:30am to 5pm, Last Thursday of every month, closed 10:30am-11:30am'
   },
   {
     title: 'SSCS Benefits & Infected Blood Compensation (Welsh speakers)',

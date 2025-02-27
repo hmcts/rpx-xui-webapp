@@ -134,7 +134,7 @@ describe('CCD casefields, retain_hidden_field setting', function () {
       let complexField = caseConfig.addCCDFieldToPage(page1, scenario.fieldType, 'complexField', 'Complex field');
 
       complexField.retain_hidden_value = scenario.retainHiddenField;
-      complexField.show_condition = `${testFieldShowYesNo.id}=\"Yes\"`;
+      complexField.show_condition = `${testFieldShowYesNo.id}="Yes"`;
       switch (scenario.fieldType){
         case 'AddressUK':
         case 'AddressGlobalUK':

@@ -77,4 +77,11 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(changeLink);
   }
+
+  public getDisplayChangeString(string: string): string {
+    const strArray = string.split(/(?=[A-Z])/);
+    let newString = strArray.join(" ");
+    newString = newString.toLowerCase();
+    return newString;
+  }
 }

@@ -45,7 +45,7 @@
                *ngIf="answer.changeLink"
                class="change-link"
                href="javascript:void(0)"
-               (click)="changeAnswer($event, answer.id, answer.changeLink)">{{ 'Change' | rpxTranslate }}</a>
+               (click)="changeAnswer($event, answer.id, answer.changeLink)">{{ 'Change ' + getDisplayChangeString(answer.id) | rpxTranslate }}</a>
           </div>
         </div>
       </ng-container>

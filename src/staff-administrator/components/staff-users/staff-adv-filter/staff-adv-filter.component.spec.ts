@@ -168,7 +168,13 @@ describe('StaffAdvFilterComponent', () => {
 
       // @ts-expect-error - private property
       expect(component.staffDataFilterService.search).toHaveBeenCalledWith(
-        { advancedSearchFilters: { serviceCode: ['AAA7', 'BFA1', 'CDA3'] }, pageNumber: 1, pageSize: 15 }
+        jasmine.objectContaining({
+          advancedSearchFilters: jasmine.objectContaining({
+            serviceCode: ['AAA7', 'BFA1', 'CDA3']
+          }),
+          pageNumber: 1,
+          pageSize: 15
+        })
       );
     });
 

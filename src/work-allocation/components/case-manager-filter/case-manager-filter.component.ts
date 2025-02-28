@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
+import { HMCTSServiceDetails } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 
 @Component({
@@ -17,7 +18,7 @@ import * as fromAppStore from '../../../app/store';
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';
-  @Input() public jurisdictions: string[] = [];
+  @Input() public jurisdictions: HMCTSServiceDetails[] = [];
   @Output() public selectChanged: EventEmitter<any> = new EventEmitter<any>();
   public filterConfig: FilterConfig = {
     persistence: 'local',
@@ -52,10 +53,10 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   constructor(private readonly filterService: FilterService,
               private readonly appStore: Store<fromAppStore.State>) {}
 
-  private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: HMCTSServiceDetails[]): FilterFieldConfig {
     return {
       name: 'jurisdiction',
-      options: jurisdictions.map((service) => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service.serviceId, label: service.serviceName })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -158,7 +159,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
         const roleType = AppUtils.convertDomainToLabel(isLegalOpsOrJudicialRole);
         this.filterConfig.cancelSetting.fields.push({
           name: 'jurisdiction',
-          value: [this.jurisdictions[0]]
+          value: this.jurisdictions?.length > 0 ? [this.jurisdictions[0].serviceId]: []
         },
         {
           name: 'role',

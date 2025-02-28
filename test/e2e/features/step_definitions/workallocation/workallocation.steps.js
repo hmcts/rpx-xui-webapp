@@ -246,9 +246,6 @@ Then('I validate Task manager message banner not displayed', async function () {
 Then('I validate task one click action landing on {string} page and message displayed {string}', async function(landingPage, messageDisplayed){
   await BrowserWaits.waitForSeconds(2);
   landingPage = landingPage.toUpperCase();
-  if (landingPage.toUpperCase() == ' '){
-
-  }
 });
 
 Then('I validate task list columns for release {string} are links to case details', async function(release, datatable){

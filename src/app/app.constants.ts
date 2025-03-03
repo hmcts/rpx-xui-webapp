@@ -114,7 +114,10 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Employment Tribunal',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'etreform@justice.gov.uk',
+    contactDetails: {
+      name: 'Employment Tribunals Offices and Venues - GOV.UK',
+      contactLink: 'https://www.gov.uk/guidance/employment-tribunal-offices-and-venues'
+    },
     phone: 'England and Wales: 0300 123 1024, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
   },

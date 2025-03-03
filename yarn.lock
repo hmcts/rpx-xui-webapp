@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.45-ungrey-back-button-8-4":
-  version: 7.1.45-ungrey-back-button-8-4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.45-ungrey-back-button-8-4"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.45-ungrey-back-button-8-5":
+  version: 7.1.45-ungrey-back-button-8-5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.45-ungrey-back-button-8-5"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/620d236dd0fb85244edfd3de17a0b8c2cf5a8841c38ad54488215caf27ef50845dd6f3828e7b8d4f27ca50d1e886fc7ecdcd6681656beca5ac3d19b858f609b0
+  checksum: 10/bbcf0a3574e77ad64c273f1892b543e77c6b5d66209d56c4550844902e9c1fa7ac76c02cb51c6238e07ffe6837041143b7b8dc2e0259e050c35e2645c772ec92
   languageName: node
   linkType: hard
 
@@ -22077,7 +22077,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.45-ungrey-back-button-8-4"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.45-ungrey-back-button-8-5"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.12"

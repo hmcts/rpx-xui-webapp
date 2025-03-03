@@ -34,5 +34,10 @@ router.get('/court-venues/services', (req, res) => {
 
 });
 
+router.get('/orgServices', (req, res) => {
+    const orgServices = service.getSupportedServices();
+    userApiData.sendResponse(req, res, "onGetOrgServices", () => orgServices)
+});
+
 
 module.exports = router;

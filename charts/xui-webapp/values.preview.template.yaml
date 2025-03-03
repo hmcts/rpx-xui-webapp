@@ -47,6 +47,8 @@ nodejs:
   devcpuLimits: 2
 redis:
   enabled: true
+  master:
+    resourcesPreset: small
 idam-pr:
   enabled: true
   redirect_uris:

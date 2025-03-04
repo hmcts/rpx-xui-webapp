@@ -80,7 +80,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
 
   public getDisplayChangeString(string: string): string {
     const strArray = string.split(/(?=[A-Z])/);
-    let newString = strArray.join(" ");
+    let newString = strArray.join(' ');
     newString = newString.toLowerCase();
     return newString;
   }

@@ -12,7 +12,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'exui-hearing-facilities',
@@ -71,14 +70,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   private checkAdditionalFacilitiesChanged(): boolean {
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
-
-    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+    return CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
   }
 
   public ngAfterViewInit(): void {

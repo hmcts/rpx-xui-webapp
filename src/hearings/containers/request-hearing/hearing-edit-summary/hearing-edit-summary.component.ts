@@ -203,7 +203,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
       partyDetails: [...partyDetailsCompareModels]
     };
-
+    console.log('hearingRequestToCompareMainModel -> ', JSON.stringify(hearingRequestMainModel, this.replacer));
+    console.log('hearingRequestToCompareMainModelToCompare -> ', JSON.stringify(hearingRequestToCompareMainModel, this.replacer));
     return !_.isEqual(
       JSON.parse(JSON.stringify(hearingRequestMainModel, this.replacer)),
       JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.replacer))
@@ -538,14 +539,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
-
-    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+    return CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
   }
 
   private pageVisitPartiesChangeExists(): boolean {

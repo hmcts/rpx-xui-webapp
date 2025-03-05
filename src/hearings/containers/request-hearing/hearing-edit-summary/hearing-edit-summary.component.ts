@@ -203,8 +203,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
       partyDetails: [...partyDetailsCompareModels]
     };
-    console.log('hearingRequestToCompareMainModel -> ', JSON.stringify(hearingRequestMainModel, this.replacer));
-    console.log('hearingRequestToCompareMainModelToCompare -> ', JSON.stringify(hearingRequestToCompareMainModel, this.replacer));
+
     return !_.isEqual(
       JSON.parse(JSON.stringify(hearingRequestMainModel, this.replacer)),
       JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.replacer))

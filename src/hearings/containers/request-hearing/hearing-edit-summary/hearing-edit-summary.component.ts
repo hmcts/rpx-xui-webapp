@@ -43,6 +43,7 @@ import { cloneDeep } from 'lodash';
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private readonly notUpdatedMessage = 'The request has not been updated';
+  private readonly allActionsMustBeReviewed = 'Some actions have not been reviewed';
 
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
@@ -137,8 +138,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       if (action === ACTION.VIEW_EDIT_REASON) {
         this.hearingsService.displayValidationError = false;
         this.validationErrors = [];
-        if (!this.hasHearingRequestObjectChanged()) {
-          this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+        if (!this.hasHearingRequestObjectChanged() || !this.haveAllRequiredChangesBeenConfirmed()) {
+          if (!this.haveAllRequiredChangesBeenConfirmed()){
+            this.validationErrors = [{ id: 'missing-action', message: this.allActionsMustBeReviewed }];
+          } else {
+            this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
+          }
           window.scrollTo({ top: 0, left: 0 });
           return;
         }
@@ -169,6 +174,25 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         element.focus();
       }
     });
+  }
+
+  private haveAllRequiredChangesBeenConfirmed(): boolean {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed) {
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed) {
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed) {
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed) {
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingFacilitiesChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed) {
+      return false;
+    }
+    return true;
   }
 
   private hasHearingRequestObjectChanged(): boolean {

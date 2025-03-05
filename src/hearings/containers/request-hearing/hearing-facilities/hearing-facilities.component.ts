@@ -12,6 +12,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'exui-hearing-facilities',
@@ -29,6 +30,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public amendmentLabelEnum = AmendmentLabelStatus;
   public hearingFacilitiesChangesRequired: boolean;
   public hearingFacilitiesChangesConfirmed: boolean;
+  public additionalSecurityRequiredChanged: boolean;
+  public additionalFacilitiesChanged: boolean;
 
   constructor(private fb: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -44,6 +47,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       this.hearingFacilitiesChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
       this.hearingFacilitiesChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+      this.additionalSecurityRequiredChanged = this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+      this.additionalFacilitiesChanged = this.checkAdditionalFacilitiesChanged();
     }
 
     this.setNonReasonableAdjustmentFlags();
@@ -53,11 +58,27 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : []
     });
 
-    if (this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag) {
+    const caseAdditionalSecurityFlag = this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed?
+      this.serviceHearingValuesModel.caseAdditionalSecurityFlag: this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+
+    if (caseAdditionalSecurityFlag) {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
     } else {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
     }
+  }
+
+  private checkAdditionalFacilitiesChanged(): boolean {
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+
+    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
   }
 
   public ngAfterViewInit(): void {

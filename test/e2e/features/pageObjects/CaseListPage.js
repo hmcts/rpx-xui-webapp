@@ -149,18 +149,18 @@ class CaseListPage{
   }
 
   async clickFirstCaseLink(){
-    let currentPageUrl = await browser.getCurrentUrl();
+    const currentPageUrl = await browser.getCurrentUrl();
     CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
 
     await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
     let isNavigationSuccess = false;
     let retryAttemptsCounter = 0;
     while (retryAttemptsCounter <= 3 && !isNavigationSuccess){
-      try{
+      try {
         await this.caseListRows.get(0).$('td a').click();
         await BrowserWaits.waitForPageNavigation(currentPageUrl);
         isNavigationSuccess = true;
-      }catch(err){
+      } catch (err){
         retryAttemptsCounter++;
         CucumberReportLogger.AddMessage(`Error opening first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`);
       }
@@ -177,8 +177,8 @@ class CaseListPage{
   }
 
   async isSelectCheckboxDisplayedForAllCases(){
-    let casesInPage = await this.getCountOfCasesListedInPage();
-    let countOfSelectCheckboxes = await this.caseSelectionCheckboxes.count();
+    const casesInPage = await this.getCountOfCasesListedInPage();
+    const countOfSelectCheckboxes = await this.caseSelectionCheckboxes.count();
     return casesInPage === countOfSelectCheckboxes;
   }
 
@@ -191,21 +191,21 @@ class CaseListPage{
   }
 
   async isCaseSelectCheckboxSelected(rowNum){
-    let checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
+    const checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
     // await BrowserWaits.waitForElement(checkBoxAtRowNum);
     return await checkBoxAtRowNum.isSelected();
   }
 
   async clickCaseSelectCheckBoxAtRow(rowNum){
-    let checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
+    const checkBoxAtRowNum = await this.caseSelectionCheckboxes.get(rowNum - 1);
     await checkBoxAtRowNum.click();
   }
 
   async getCountOfCasesSelectedInPage() {
-    let totalCasesInPage = await this.caseSelectionCheckboxes.count();
+    const totalCasesInPage = await this.caseSelectionCheckboxes.count();
     let seledtedCaseCount = 0;
     for (let counter = 0; counter < totalCasesInPage; counter++){
-      let checkBox = await this.caseSelectionCheckboxes.get(counter);
+      const checkBox = await this.caseSelectionCheckboxes.get(counter);
       if (await checkBox.isSelected()){
         seledtedCaseCount++;
       }
@@ -214,35 +214,35 @@ class CaseListPage{
   }
 
   async clickPaginationNextPage(){
-    let paginationInfobefore = await this.paginationInfotext.getText();
+    const paginationInfobefore = await this.paginationInfotext.getText();
     expect(await this.nextPageLink.isPresent(), 'Case list next page not present. current page info : ' + paginationInfobefore).to.be.true;
 
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.nextPageLink);
     await this.nextPageLink.click();
     await BrowserWaits.waitForCondition(async () => {
-      let paginationInfoCurrent = await this.paginationInfotext.getText();
+      const paginationInfoCurrent = await this.paginationInfotext.getText();
       return paginationInfobefore === paginationInfoCurrent;
     });
     await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, 'Data load taking too long on pagination');
   }
 
   async clickPaginationPreviousPage() {
-    let paginationInfobefore = await this.paginationInfotext.getText();
+    const paginationInfobefore = await this.paginationInfotext.getText();
     expect(await this.previousPageLink.isPresent(), 'Case list previous page not present. current page info : ' + paginationInfobefore).to.be.true;
 
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.previousPageLink);
     await this.previousPageLink.click();
     await BrowserWaits.waitForCondition(async () => {
-      let paginationInfoCurrent = await this.paginationInfotext.getText();
+      const paginationInfoCurrent = await this.paginationInfotext.getText();
       return paginationInfobefore === paginationInfoCurrent;
     });
     await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, 'Data load taking too long on pagination');
   }
 
   async clickCaseLinkAtRow(rowNum){
-    let caseRow = await this.caseListRows.get(rowNum - 1);
+    const caseRow = await this.caseListRows.get(rowNum - 1);
     await caseRow.$('.search-result-column-cell a').click();
     await BrowserWaits.waitForElement(this.ccdCaseViewer, undefined, 'Case view page is not displayed');
   }

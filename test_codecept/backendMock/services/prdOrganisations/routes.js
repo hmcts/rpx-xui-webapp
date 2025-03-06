@@ -1,16 +1,13 @@
-const express = require('express')
+const express = require('express');
 
 const router = express.Router({ mergeParams: true });
-const service = require('./index')
+const service = require('./index');
 
-const userApiData = require('../userApiData')
-
-
+const userApiData = require('../userApiData');
 
 router.get('/users', (req, res) => {
-    res.send(service.getUsers())
-    // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
-
+  res.send(service.getUsers());
+  // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
 });
 
 module.exports = router;

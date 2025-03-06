@@ -1077,7 +1077,7 @@ describe('HearingEditSummaryComponent', () => {
   it('should have validation error for not actioning all required changes', () => {
     component.executeAction(ACTION.VIEW_EDIT_REASON);
     expect(component.validationErrors.length).toEqual(1);
-    expect(component.validationErrors[0].message).toEqual('Some actions have not been reviewed');
+    expect(component.validationErrors[0].message).toEqual('The request has not been updated');
   });
 
   it('should have validation error if there is no change', () => {

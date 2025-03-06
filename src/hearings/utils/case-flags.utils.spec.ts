@@ -604,4 +604,26 @@ describe('CaseFlagsUtils', () => {
       expect(activeFlags.length).toBe(0);
     });
   });
+  describe('areFacilitiesChanged', () => {
+    it('should return true if facilities have changed', () => {
+      const facilitiesInHMC = ['Facility1', 'Facility2'];
+      const facilitiesInSHV = ['Facility2', 'Facility3'];
+      const result = CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
+      expect(result).toBe(true);
+    });
+
+    it('should return false if facilities have not changed', () => {
+      const facilitiesInHMC = ['Facility1', 'Facility2'];
+      const facilitiesInSHV = ['Facility2', 'Facility1'];
+      const result = CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
+      expect(result).toBe(false);
+    });
+
+    it('should return false if both facilities arrays are empty', () => {
+      const facilitiesInHMC = [];
+      const facilitiesInSHV = [];
+      const result = CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
+      expect(result).toBe(false);
+    });
+  });
 });

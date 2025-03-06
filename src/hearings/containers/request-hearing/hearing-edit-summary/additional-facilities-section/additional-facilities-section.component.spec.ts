@@ -175,7 +175,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('additionalSecurityRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'additionalSecurityRequired', changeLink: '/hearings/request/hearing-facilities'
+      fragmentId: 'additionalSecurityRequired', changeLink: '/hearings/request/hearing-facilities#addition-security-confirmation'
     });
     component.onChange('additionalFacilitiesRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({

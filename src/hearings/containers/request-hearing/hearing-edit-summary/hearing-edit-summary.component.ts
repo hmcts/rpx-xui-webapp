@@ -137,7 +137,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       if (action === ACTION.VIEW_EDIT_REASON) {
         this.hearingsService.displayValidationError = false;
         this.validationErrors = [];
-        if (!this.hasHearingRequestObjectChanged() || !this.haveAllRequiredChangesBeenConfirmed()) {
+        if (!this.hasHearingRequestObjectChanged()) {
           this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
           window.scrollTo({ top: 0, left: 0 });
           return;
@@ -169,25 +169,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         element.focus();
       }
     });
-  }
-
-  private haveAllRequiredChangesBeenConfirmed(): boolean {
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed) {
-      return false;
-    }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed) {
-      return false;
-    }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed) {
-      return false;
-    }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed) {
-      return false;
-    }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingFacilitiesChangesRequired && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed) {
-      return false;
-    }
-    return true;
   }
 
   private hasHearingRequestObjectChanged(): boolean {
@@ -313,7 +294,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
             partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
-            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
+            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesExists(),
             partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
@@ -444,7 +425,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
       this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesChanged();
+      this.pageVisitHearingFacilitiesExists();
     // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
@@ -453,7 +434,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
-      this.pageVisitHearingWindowChangeExists();
+      this.pageVisitHearingWindowChangeExists() ||
+      this.pageVisitHearingFacilitiesExists();
   }
 
   pageVisitReasonableAdjustmentChangeExists(): boolean {
@@ -545,7 +527,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return false;
   }
 
-  private pageVisitHearingFacilitiesChanged(): boolean {
+  private pageVisitHearingFacilitiesExists(): boolean {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed) {
+      // hearing facilities changes already confirmed
+      return false;
+    }
     if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_FACILITIES)) {
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
@@ -559,7 +545,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
       return a > b ? 1 : (a === b ? 0 : -1);
     });
-    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+    if (!_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV)) {
+      return true;
+    }
+
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingFacilitiesChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+    }
   }
 
   private pageVisitPartiesChangeExists(): boolean {

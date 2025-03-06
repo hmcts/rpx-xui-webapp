@@ -7,7 +7,7 @@ import { LocationByEPIMMSModel } from '../models/location.model';
 export class LocationsDataService {
   public constructor(private readonly http: HttpClient) {}
 
-  public getLocationById(locationIds: string): Observable<LocationByEPIMMSModel[]> {
-    return this.http.get<LocationByEPIMMSModel[]>(`api/prd/location/getLocationById?epimms_id=${locationIds}`);
+  public getLocationById(locationIds: string, serviceCode: string): Observable<LocationByEPIMMSModel[]> {
+    return this.http.get<LocationByEPIMMSModel[]>(`api/prd/location/getLocationById?epimms_id=${locationIds}&serviceCode=${serviceCode}`);
   }
 }

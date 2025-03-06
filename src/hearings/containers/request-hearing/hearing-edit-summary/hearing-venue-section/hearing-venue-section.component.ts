@@ -29,7 +29,8 @@ export class HearingVenueSectionComponent implements OnInit {
     hearingLocationIds.sort((a: any, b: any) => a - b);
     this.hearingLocationIdsToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
     this.hearingLocationIdsToCompare.sort((a: any, b: any) => a - b);
-    this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','));
+    const serviceCode = this.hearingRequestMainModel.caseDetails.hmctsServiceCode;
+    this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','), serviceCode);
 
     this.showAmmendedForHeading = !_.isEqual(
       hearingLocationIds,

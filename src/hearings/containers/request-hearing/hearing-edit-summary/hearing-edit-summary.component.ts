@@ -43,7 +43,6 @@ import { cloneDeep } from 'lodash';
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private readonly notUpdatedMessage = 'The request has not been updated';
-  private readonly allActionsMustBeReviewed = 'Some actions have not been reviewed';
 
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
@@ -139,11 +138,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         this.hearingsService.displayValidationError = false;
         this.validationErrors = [];
         if (!this.hasHearingRequestObjectChanged() || !this.haveAllRequiredChangesBeenConfirmed()) {
-          if (!this.haveAllRequiredChangesBeenConfirmed()){
-            this.validationErrors = [{ id: 'missing-action', message: this.allActionsMustBeReviewed }];
-          } else {
-            this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
-          }
+          this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
           window.scrollTo({ top: 0, left: 0 });
           return;
         }

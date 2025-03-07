@@ -1541,7 +1541,7 @@ describe('HearingEditSummaryComponent', () => {
     expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
   });
 
-  it('should return false if hearing facilities do not exist', () => {
+  it('should return true if hearing facilities do not exist, but a change has been requested and not confirmed', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       hearingDetails: {

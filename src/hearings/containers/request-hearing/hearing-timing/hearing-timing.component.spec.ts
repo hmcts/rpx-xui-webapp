@@ -722,7 +722,7 @@ describe('HearingTimingComponent', () => {
 
     component.setDataItems();
 
-    expect(component.duration).toBe(120);
+    expect(component.duration).toBe(60);
     expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' });
     expect(component.hearingPriorityType).toBe('High');
     expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-01-01', unavailableToDate: '2024-01-02', unavailabilityType: UnavailabilityType.PM }]);

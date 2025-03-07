@@ -75,16 +75,20 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     });
   }
 
+  private setFacilitiesRequired(facilitiesRequired: string[] | null | undefined): string[] | undefined {
+    return facilitiesRequired && facilitiesRequired.length > 0 ? facilitiesRequired : undefined;
+  }
+
   private setAmendmentLabels(): void {
     this.caseAdditionalSecurityFlagChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag,
       this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
     );
 
-    this.facilitiesChanged = !_.isEqual(
-      this.hearingRequestMainModel.hearingDetails?.facilitiesRequired,
-      this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired
-    );
+    const facilitiesRequiredMainModel = this.setFacilitiesRequired(this.hearingRequestMainModel.hearingDetails?.facilitiesRequired);
+    const facilitiesRequiredToCompareMainModel = this.setFacilitiesRequired(this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired);
+
+    this.facilitiesChanged = !_.isEqual(facilitiesRequiredMainModel, facilitiesRequiredToCompareMainModel);
 
     if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
       (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)) {

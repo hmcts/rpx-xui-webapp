@@ -337,4 +337,12 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
     });
   });
+
+  it('should set facilities required correctly', () => {
+    const facilities = ['facility1', 'facility2'];
+    expect((component as any).setFacilitiesRequired(facilities)).toEqual(facilities);
+    expect((component as any).setFacilitiesRequired([])).toBeUndefined();
+    expect((component as any).setFacilitiesRequired(null)).toBeUndefined();
+    expect((component as any).setFacilitiesRequired(undefined)).toBeUndefined();
+  });
 });

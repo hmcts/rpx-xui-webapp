@@ -20599,13 +20599,13 @@ __metadata:
   linkType: hard
 
 "portfinder@npm:^1.0.28":
-  version: 1.0.32
-  resolution: "portfinder@npm:1.0.32"
+  version: 1.0.33
+  resolution: "portfinder@npm:1.0.33"
   dependencies:
     async: "npm:^2.6.4"
     debug: "npm:^3.2.7"
     mkdirp: "npm:^0.5.6"
-  checksum: 10/842058052fb3c3da829589f3f44b13369cf504b16f6ab72fedec78a9438ac3fc53047f5c88a771511b17d6a94f50f83a94cef5fa625027b675d8f7241f7f2185
+  checksum: 10/d76c1b331e72edd7c55760d179591094a98ab782689b9349d6c15891e18f8f1feb62c77d3e11fdee04543502fc47af9f938f111b2eb1eace2ea4658b3069b4ec
   languageName: node
   linkType: hard
 

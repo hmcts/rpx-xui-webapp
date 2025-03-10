@@ -1016,22 +1016,6 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
-  it('should pageVisitHearingFacilitiesChanged return true if additional security changed', () => {
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['12', '23']
-      }
-    };
-    component.serviceHearingValuesModel = {
-      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      facilitiesRequired: ['12', '23']
-    };
-    component.ngOnInit();
-    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
-  });
-
   describe('Display of warning and error message', () => {
     it('should display banner message', () => {
       component.serviceHearingValuesModel.caseManagementLocationCode = 'New Management location code';
@@ -1630,6 +1614,103 @@ describe('HearingEditSummaryComponent', () => {
     expect(result).toEqual(expectedResult);
   });
 
+  it('should return true if hearing facilities exist', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['11', '22']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['11', '22']
+    };
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
+  });
+
+  it('should return true if hearing facilities do not exist, but a change has been requested and not confirmed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: []
+    };
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
+  });
+
+  it('should return false if hearing facilities changes are confirmed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: []
+    };
+
+    (component as any).hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
+
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(false);
+  });
+
+  it('should return true if hearing facilities required but not confirmed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: []
+    };
+
+    (component as any).hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = false;
+    (component as any).hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired = true;
+
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
+  });
+
+  it('should return false if hearing facilities screen does not exist', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: [],
+      screenFlow: [
+        {
+          screenName: 'hearing-judge',
+          navigation: [
+            {
+              resultValue: 'hearing-stage'
+            }
+          ]
+        }
+      ]
+    };
+
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(false);
+  });
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [
       {

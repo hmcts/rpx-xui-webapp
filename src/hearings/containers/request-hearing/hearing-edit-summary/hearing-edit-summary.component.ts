@@ -531,16 +531,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
+
+    if (this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag) {
+      return true;
+    }
+
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
-
-    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+    return CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
   }
 
   private pageVisitPartiesChangeExists(): boolean {

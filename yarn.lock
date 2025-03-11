@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.50":
-  version: 7.1.50
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.50-exui-2748-rc1":
+  version: 7.1.50-exui-2748-rc1
   resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.50-exui-2748-rc1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7a0d178848c43bb4a4c948dbc66622c0c12a7be08a1e92af255f85986037027cec18465469b837f0a86aa8b350ccef22318d139386ebfa82c71f12e0846f15ec
+  checksum: 10/f98e2db76de877a5e21139ede1a56f52da95151ab701e81eecdfb55beae538cfbc4f234cffc289323d1dcfe7c2f03f25e8474cc90dc3b1002046d544d7b4a2a3
   languageName: node
   linkType: hard
 

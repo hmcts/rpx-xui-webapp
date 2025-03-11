@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.46":
-  version: 7.1.46
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.46"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.50":
+  version: 7.1.50
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.50"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/de14c0d91ce819e82fbdd2ff7265e74b614caf9dce58bbcef7838c010c8fee0c8b7b80961f10fa4c58095baba7d2decca2d7c1af62b9c89ac5e6d19279894f59
+  checksum: 10/7a0d178848c43bb4a4c948dbc66622c0c12a7be08a1e92af255f85986037027cec18465469b837f0a86aa8b350ccef22318d139386ebfa82c71f12e0846f15ec
   languageName: node
   linkType: hard
 
@@ -3567,9 +3567,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.12":
-  version: 4.0.12
-  resolution: "@hmcts/media-viewer@npm:4.0.12"
+"@hmcts/media-viewer@npm:4.0.13":
+  version: 4.0.13
+  resolution: "@hmcts/media-viewer@npm:4.0.13"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3588,7 +3588,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/a62ecf16bab8dd34515e872180b6460bae7854f7fc68f5d2e59ba918e473aebcd85c6c3bdc34fe3d6d91381f1559c3a485c29f4052eafa2d45b6ee8a12f7c424
+  checksum: 10/6c273363123f4f18dc67043b499661b9a9f0f85ef588c3df55dc20c264d45c6242991e8d3cc7155d4718b971798bd2441f2f65cfae4e32bf55fa5e81372acfc6
   languageName: node
   linkType: hard
 
@@ -3636,16 +3636,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.37":
-  version: 2.0.37
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.37"
+"@hmcts/rpx-xui-common-lib@npm:2.0.38":
+  version: 2.0.38
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.38"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/a7397e4d645d036569499c3cb06c3d5e7caac611a74111967d87c8e296e75fa0f35878659a06f984e95831cb940689e2fbc294d785490a2e56c32273e280a4f5
+  checksum: 10/c1bf43949b29286295901963fe03e1f129de9a0c6f96cf7f56c31db62fbc4f0ed666c87c8952fc02bc1cad06f4473f9aa39d15c6c03f53c32aff561c14c6d782
   languageName: node
   linkType: hard
 
@@ -22085,13 +22085,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.46"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.50"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.12"
+    "@hmcts/media-viewer": "npm:4.0.13"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.37"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.38"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

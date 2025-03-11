@@ -273,5 +273,5 @@
     "axios": "1.7.9",
     "webpack": "^5.94.0"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.7.0"
 }

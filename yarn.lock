@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.50":
-  version: 7.1.50
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.50"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.51-ongoing-accessibility-v1":
+  version: 7.1.51-ongoing-accessibility-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.51-ongoing-accessibility-v1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7a0d178848c43bb4a4c948dbc66622c0c12a7be08a1e92af255f85986037027cec18465469b837f0a86aa8b350ccef22318d139386ebfa82c71f12e0846f15ec
+  checksum: 10/569c7e6e78f13720ea9bc1e89769c238ff4e60878a4dd7ab8351e8a49978f1baf9d9c9aa61a6d7f6b111068e2f6ca36e46229c2f269e496a0a04aad7d24504dd
   languageName: node
   linkType: hard
 
@@ -3567,9 +3567,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.13":
-  version: 4.0.13
-  resolution: "@hmcts/media-viewer@npm:4.0.13"
+"@hmcts/media-viewer@npm:4.0.14-ongoing-accessibility-v1":
+  version: 4.0.14-ongoing-accessibility-v1
+  resolution: "@hmcts/media-viewer@npm:4.0.14-ongoing-accessibility-v1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3588,7 +3588,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/6c273363123f4f18dc67043b499661b9a9f0f85ef588c3df55dc20c264d45c6242991e8d3cc7155d4718b971798bd2441f2f65cfae4e32bf55fa5e81372acfc6
+  checksum: 10/b8b2d5dc061cd93eef43318dfed24cc1bc2654919f43bb53c4698588ccabe6aaedb6a83510bff6ac18776cdfaabd17b98bd9f73d2631a8f4a19bc4525308a31c
   languageName: node
   linkType: hard
 
@@ -22085,10 +22085,10 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.50"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.51-ongoing-accessibility-v1"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.13"
+    "@hmcts/media-viewer": "npm:4.0.14-ongoing-accessibility-v1"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.38"

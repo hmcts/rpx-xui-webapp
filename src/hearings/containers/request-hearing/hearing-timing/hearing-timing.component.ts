@@ -53,7 +53,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public dateRangeStartChanged: boolean;
   public dateRangeEndChanged: boolean;
   public firstDateTimeMustBeChanged: boolean;
-  public durationChanged: boolean;
   public priorityChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public duration: number;
@@ -117,7 +116,15 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public setDataItems() {
-    this.duration = this.hearingRequestMainModel.hearingDetails.duration;
+    // it is not a requirement to tell the user if the default value of the hearing duration has been updated.
+    if (this.hearingRequestMainModel.hearingDetails.duration && this.hearingRequestMainModel.hearingDetails.duration > 0) {
+      this.duration = this.hearingRequestMainModel.hearingDetails.duration;
+    } else {
+      if (this.serviceHearingValuesModel.duration) {
+        this.duration = this.serviceHearingValuesModel.duration;
+      }
+    }
+
     if (this.sourceOfData === SourceOfData.SERVICE_HEARING_VALUES) {
       this.hearingWindow = this.serviceHearingValuesModel.hearingWindow;
       this.hearingPriorityType = this.serviceHearingValuesModel.hearingPriorityType;

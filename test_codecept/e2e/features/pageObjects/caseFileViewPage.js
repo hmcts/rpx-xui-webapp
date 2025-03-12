@@ -13,7 +13,7 @@ class CaseFileViewPage{
         this.folderViewSortBtn = $('ccd-case-file-view-folder-sort button')
 
         this.sortDocumentsIcon = $('ccd-case-file-view-folder-sort button')
-        this.sortDocumentsMenuContainer = element(by.xpath(`//div[contains(@class,'cdk-overlay-pane')]//div[contains(text(),'Sort documents by name')]`))
+        this.sortDocumentsMenuContainer = element(by.xpath(`//div[contains(@class,'cdk-overlay-pane')]//li[contains(text(),'Sort documents by name')]`))
     }
 
 

@@ -68,7 +68,11 @@
     "test:codeceptE2E": "PARALLEL=true TEST_TYPE=e2e npx codeceptjs run-workers --suites 4 --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep  functional_enabled",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration npx codeceptjs run -p pauseOnFail --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
     "test:xuiIntegration": "yarn build && node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true npx codeceptjs run-workers --suites 8 --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep '(?=.*@functional_enabled)^(?!.*@ignore)' ",
-    "parallel": "npm-run-all -l -p test:api test:xuiIntegration"
+    "parallel": "npm-run-all -l -p test:api test:xuiIntegration",
+    "cve:fix": "bash -c 'yarn npm audit --recursive --environment production --json > yarn-audit-known-issues; git add yarn-audit-known-issues; if [ -n \"$(git diff --cached --name-only | grep yarn-audit-known-issues)\" ]; then git commit -m \"Update yarn-audit-known-issues\"; else echo \"No changes to commit\"; fi'",
+    "cve:check": "bash -c 'if diff <(yarn npm audit --recursive --environment production --json) yarn-audit-known-issues > /dev/null; then true; else exit 1; fi'",
+    "test:coverage:ng:prepush": "ng test --code-coverage --source-map",
+    "prepush": "bash ./bin/prepush.sh"
   },
   "private": true,
   "dependencies": {
@@ -214,6 +218,7 @@
     "cucumber-pretty": "^6.0.1",
     "cucumberjs-allure-reporter": "1.0.3",
     "eslint": "^8.37.0",
+    "husky": "^9.1.7",
     "jasmine-core": "~5.6.0",
     "jasmine-marbles": "^0.9.1",
     "jasmine-spec-reporter": "~7.0.0",
@@ -270,7 +275,7 @@
     "lodash": "^4.17.21",
     "braces": "^3.0.3",
     "ws": "^8.18.0",
-    "axios": "1.7.9",
+    "axios": "1.8.3",
     "webpack": "^5.94.0"
   },
   "packageManager": "yarn@4.7.0"

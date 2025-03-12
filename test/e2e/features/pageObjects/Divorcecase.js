@@ -1,5 +1,5 @@
 
-var CaseManager = require('./common/CaseManager');
+const CaseManager = require('./common/CaseManager');
 
 class DivorceCase {
   constructor() {
@@ -7,7 +7,7 @@ class DivorceCase {
   }
 
   async createCase(isAccessibilityTest) {
-    var caseData = {
+    const caseData = {
       'Petitioner Solicitor Phone number': '0987654321',
       'Marriage date': '01-01-2005',
       'Fact': '5-year separation',

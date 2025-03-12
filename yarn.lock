@@ -6782,7 +6782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
+"@types/json-schema@npm:^7.0.9":
   version: 7.0.12
   resolution: "@types/json-schema@npm:7.0.12"
   checksum: 10/7a72ba9cb7d2b45d7bb032e063c9eeb1ce4102d62551761e84c91f99f8273ba5aaffd34be835869456ec7c40761b4389009d9e777c0020a7227ca0f5e3238e94
@@ -7735,15 +7735,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv-keywords@npm:^3.5.2":
-  version: 3.5.2
-  resolution: "ajv-keywords@npm:3.5.2"
-  peerDependencies:
-    ajv: ^6.9.1
-  checksum: 10/d57c9d5bf8849bddcbd801b79bc3d2ddc736c2adb6b93a6a365429589dd7993ddbd5d37c6025ed6a7f89c27506b80131d5345c5b1fa6a97e40cd10a96bcd228c
-  languageName: node
-  linkType: hard
-
 "ajv-keywords@npm:^5.1.0":
   version: 5.1.0
   resolution: "ajv-keywords@npm:5.1.0"
@@ -7767,7 +7758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^6.12.3, ajv@npm:^6.12.4, ajv@npm:^6.12.5":
+"ajv@npm:^6.12.3, ajv@npm:^6.12.4":
   version: 6.12.6
   resolution: "ajv@npm:6.12.6"
   dependencies:
@@ -22452,17 +22443,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^3.2.0":
-  version: 3.3.0
-  resolution: "schema-utils@npm:3.3.0"
-  dependencies:
-    "@types/json-schema": "npm:^7.0.8"
-    ajv: "npm:^6.12.5"
-    ajv-keywords: "npm:^3.5.2"
-  checksum: 10/2c7bbb1da967fdfd320e6cea538949006ec6e8c13ea560a4f94ff2c56809a8486fa5ec419e023452501a6befe1ca381e409c2798c24f4993c7c4094d97fdb258
-  languageName: node
-  linkType: hard
-
 "schema-utils@npm:^4.0.0":
   version: 4.2.0
   resolution: "schema-utils@npm:4.2.0"
@@ -24020,7 +24000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^5.3.10, terser-webpack-plugin@npm:^5.3.3":
+"terser-webpack-plugin@npm:^5.3.11, terser-webpack-plugin@npm:^5.3.3":
   version: 5.3.14
   resolution: "terser-webpack-plugin@npm:5.3.14"
   dependencies:
@@ -25093,21 +25073,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.0.0":
-  version: 11.0.5
-  resolution: "uuid@npm:11.0.5"
+"uuid@npm:^11.0.0, uuid@npm:^11.0.3":
+  version: 11.1.0
+  resolution: "uuid@npm:11.1.0"
   bin:
     uuid: dist/esm/bin/uuid
-  checksum: 10/0594ecdff3051e15d4a2c614b4c72e73af373bde0a5d156512353c01156975295d024ae8d7151846d7bd4d22ccd251b16ed51b4318fa71505fb20ad984102dc1
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "uuid@npm:11.0.3"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 10/251385563195709eb0697c74a834764eef28e1656d61174e35edbd129288acb4d95a43f4ce8a77b8c2fc128e2b55924296a0945f964b05b9173469d045625ff2
+  checksum: 10/d2da43b49b154d154574891ced66d0c83fc70caaad87e043400cf644423b067542d6f3eb641b7c819224a7cd3b4c2f21906acbedd6ec9c6a05887aa9115a9cf5
   languageName: node
   linkType: hard
 
@@ -25582,8 +25553,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.94.0":
-  version: 5.97.1
-  resolution: "webpack@npm:5.97.1"
+  version: 5.98.0
+  resolution: "webpack@npm:5.98.0"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.6"
@@ -25603,9 +25574,9 @@ __metadata:
     loader-runner: "npm:^4.2.0"
     mime-types: "npm:^2.1.27"
     neo-async: "npm:^2.6.2"
-    schema-utils: "npm:^3.2.0"
+    schema-utils: "npm:^4.3.0"
     tapable: "npm:^2.1.1"
-    terser-webpack-plugin: "npm:^5.3.10"
+    terser-webpack-plugin: "npm:^5.3.11"
     watchpack: "npm:^2.4.1"
     webpack-sources: "npm:^3.2.3"
   peerDependenciesMeta:
@@ -25613,7 +25584,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/665bd3b8c84b20f0b1f250159865e4d3e9b76c682030313d49124d5f8e96357ccdcc799dd9fe0ebf010fdb33dbc59d9863d79676a308e868e360ac98f7c09987
+  checksum: 10/eb16a58b3eb02bfb538c7716e28d7f601a03922e975c74007b41ba5926071ae70302d9acae9800fbd7ddd0c66a675b1069fc6ebb88123b87895a52882e2dc06a
   languageName: node
   linkType: hard
 

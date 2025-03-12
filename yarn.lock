@@ -8288,6 +8288,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async@npm:^3.2.6":
+  version: 3.2.6
+  resolution: "async@npm:3.2.6"
+  checksum: 10/cb6e0561a3c01c4b56a799cc8bab6ea5fef45f069ab32500b6e19508db270ef2dffa55e5aed5865c5526e9907b1f8be61b27530823b411ffafb5e1538c86c368
+  languageName: node
+  linkType: hard
+
 "asynckit@npm:^0.4.0":
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
@@ -20622,13 +20629,13 @@ __metadata:
   linkType: hard
 
 "portfinder@npm:^1.0.28":
-  version: 1.0.33
-  resolution: "portfinder@npm:1.0.33"
+  version: 1.0.34
+  resolution: "portfinder@npm:1.0.34"
   dependencies:
-    async: "npm:^2.6.4"
-    debug: "npm:^3.2.7"
+    async: "npm:^3.2.6"
+    debug: "npm:^4.3.6"
     mkdirp: "npm:^0.5.6"
-  checksum: 10/d76c1b331e72edd7c55760d179591094a98ab782689b9349d6c15891e18f8f1feb62c77d3e11fdee04543502fc47af9f938f111b2eb1eace2ea4658b3069b4ec
+  checksum: 10/938aa180eab80b988268010b97b2f67437800889639816619c461af0e0e8c28f55ff5c7bed409082bd14cf06cc4e1e7ac583c5fb49ac7fb05a43e67ae3cb6936
   languageName: node
   linkType: hard
 

@@ -15,10 +15,10 @@ class FindPersonComponent{
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.findPersonContainer);
       return true;
-    } catch(err){
+    } catch (err){
       CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
       return false;
     }
@@ -52,10 +52,10 @@ class FindPersonComponent{
   }
 
   async isSearchResultSelectionContainerDisplayed(){
-    try{
+    try {
       await BrowserWaits.waitForConditionAsync(async () => await this.searchResultsContainer.isDisplayed(), 5000);
       return true;
-    } catch(err){
+    } catch (err){
       CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
       return false;
     }

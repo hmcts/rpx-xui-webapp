@@ -55,7 +55,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public onChange(fragmentId: string): void {
     let changeLink = '';
     if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#addition-security-confirmation';
+      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
     } else {
       changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
     }

@@ -7785,16 +7785,16 @@ __metadata:
   linkType: hard
 
 "allure-js-commons@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "allure-js-commons@npm:3.1.0"
+  version: 3.2.0
+  resolution: "allure-js-commons@npm:3.2.0"
   dependencies:
     md5: "npm:^2.3.0"
   peerDependencies:
-    allure-playwright: 3.1.0
+    allure-playwright: 3.2.0
   peerDependenciesMeta:
     allure-playwright:
       optional: true
-  checksum: 10/0d66c344bc070edc1463f8348dfc5fcf828c513564c2d4a491608364fb8dd0146321c4032cafceb3f2e7a067c5c88d1438390b1b742fbc42a1d0bd45d01d3f5d
+  checksum: 10/f4143338b7d31733efcca83c1690cfc32008d4c887f03f6d148b7ca16aa3ca5ef9e6d29715ff9c9ad1e0d8f1e3e06be2fa118b599ef341aed6592219e2c7b018
   languageName: node
   linkType: hard
 

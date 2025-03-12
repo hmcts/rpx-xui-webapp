@@ -91,14 +91,14 @@
     "@cucumber/cucumber": "^11.0.0",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.1.42",
+    "@hmcts/ccd-case-ui-toolkit": "7.1.50",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.11",
+    "@hmcts/media-viewer": "4.0.13",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.36",
-    "@hmcts/rpx-xui-node-lib": "2.30.2",
+    "@hmcts/rpx-xui-common-lib": "2.0.38",
+    "@hmcts/rpx-xui-node-lib": "2.30.3",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -152,7 +152,7 @@
     "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
-    "rpx-xui-translation": "1.0.10",
+    "rpx-xui-translation": "1.0.11",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "shortid": "^2.2.14",
@@ -234,7 +234,7 @@
     "karma-sonarqube-unit-reporter": "^0.0.23",
     "karma-spec-reporter": "0.0.36",
     "mocha": "^10.0.0",
-    "mochawesome": "^6.2.1",
+    "mochawesome": "^7.0.0",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.0.0",
     "ngrx-store-freeze": "^0.2.4",
@@ -278,5 +278,5 @@
     "axios": "1.7.9",
     "webpack": "^5.94.0"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.7.0"
 }

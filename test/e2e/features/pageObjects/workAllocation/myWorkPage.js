@@ -1,8 +1,8 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-var cucumberReporter = require('../../../support/reportLogger');
+const cucumberReporter = require('../../../support/reportLogger');
 
-var TaskMessageBanner = require('../messageBanner');
+const TaskMessageBanner = require('../messageBanner');
 const { LOG_LEVELS } = require('../../../support/constants');
 
 class MyWorkPage extends TaskList {
@@ -105,7 +105,7 @@ class MyWorkPage extends TaskList {
     }
 
     const locInput = await this.workFilterLocationContainers.get(locationAtPos - 1);
-    if(!(await locInput.isSelected())){
+    if (!(await locInput.isSelected())){
       await locInput.click();
     }
   }
@@ -137,14 +137,14 @@ class MyWorkPage extends TaskList {
   }
 
   async amOnPage() {
-    try{
+    try {
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForConditionAsync(async () => {
         const pageHeaderTitle = await this.pageHeader.getText();
         return pageHeaderTitle.includes('My work');
       });
       return true;
-    }catch(err){
+    } catch (err){
       cucumberReporter.AddMessage('My work page not displayed '+err.stack, LOG_LEVELS.Error);
       return false;
     }
@@ -258,7 +258,7 @@ class MyWorkPage extends TaskList {
   async getWorkFilterLocationSearchResults(){
     const count = await this.workFilterLocationSearchResults.count();
     const locations = [];
-    for(let i = 0; i < count; i++){
+    for (let i = 0; i < count; i++){
       const loc = await await this.workFilterLocationSearchResults.get(i);
       locations.push(await loc.getText());
     }
@@ -273,7 +273,7 @@ class MyWorkPage extends TaskList {
   async getWorkFilterSelectedLocations(){
     const count = await this.selectedLocations.count();
     const returnValue = [];
-    for(let i = 0; i < count; i++){
+    for (let i = 0; i < count; i++){
       const e = await this.selectedLocations.get(i);
       returnValue.push(await e.getText());
     }
@@ -283,7 +283,7 @@ class MyWorkPage extends TaskList {
   async clickSelectedLocationFromWorkFilter(location){
     const count = await this.selectedLocations.count();
     const actualLocations = [];
-    for(let i = 0; i < count; i++){
+    for (let i = 0; i < count; i++){
       const e = await this.selectedLocations.get(i);
       const locationName = await e.getText();
       actualLocations.push(locationName);
@@ -298,7 +298,7 @@ class MyWorkPage extends TaskList {
   async clearAllSelectedLocations() {
     let count = await this.selectedLocations.count();
 
-    while(count > 0){
+    while (count > 0){
       const e = await this.selectedLocations.get(0);
       await e.click();
       count = await this.selectedLocations.count();
@@ -315,7 +315,7 @@ class MyWorkPage extends TaskList {
       filterContainer = this.workFiltersLocationsContainer;
     } else if (filterTypeNormalized.includes('worktype')) {
       filterContainer = this.workFilterWorkTypesContainer;
-    }else {
+    } else {
       throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
     }
 
@@ -332,7 +332,7 @@ class MyWorkPage extends TaskList {
       filterContainer = this.workFiltersLocationsContainer;
     } else if (filterTypeNormalized.includes('worktype')) {
       filterContainer = this.workFilterWorkTypesContainer;
-    }else {
+    } else {
       throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
     }
 

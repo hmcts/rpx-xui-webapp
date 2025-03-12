@@ -1,6 +1,6 @@
 Dropdown = require('./webdriver-components/dropdown.js');
 Button = require('./webdriver-components/button.js');
-var BrowserWaits = require('../../support/customWaits');
+const BrowserWaits = require('../../support/customWaits');
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../support/reportLogger');
 const headerPage = require('./headerPage');
@@ -61,7 +61,7 @@ class SearchPage {
     }
     const elementLocator = by.xpath(locatorString + ']');
 
-    var optionElement = this.jurisdiction.element(elementLocator);
+    const optionElement = this.jurisdiction.element(elementLocator);
     await BrowserWaits.waitForElement(optionElement);
 
     await optionElement.click();
@@ -83,7 +83,7 @@ class SearchPage {
     await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.caseType);
 
-    var optionElement = this.caseType.element(by.xpath('//*[text() = \'' + option + '\']'));
+    const optionElement = this.caseType.element(by.xpath('//*[text() = \'' + option + '\']'));
     await BrowserWaits.waitForElement(optionElement);
 
     await optionElement.click();
@@ -118,7 +118,7 @@ class SearchPage {
   async openFirstCaseInResults(){
     await this.searchResultsTopPagination.isPresent();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
-    var thisPageUrl = await browser.getCurrentUrl();
+    const thisPageUrl = await browser.getCurrentUrl();
 
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();
@@ -136,7 +136,7 @@ class SearchPage {
 
   async amOnPage(){
     await this._waitForSearchComponent();
-    let header = await this.getPageHeader();
+    const header = await this.getPageHeader();
     console.log('Header test : '+header);
     return header === 'Search';
   }

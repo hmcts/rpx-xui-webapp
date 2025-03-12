@@ -1,6 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-var cucumberReporter = require('../../../support/reportLogger');
+const cucumberReporter = require('../../../support/reportLogger');
 const { LOG_LEVELS } = require('../../../support/constants');
 
 class TaskActionPage extends TaskList {
@@ -77,7 +77,7 @@ class TaskActionPage extends TaskList {
   }
 
   async clickSubmitBtn(action) {
-    let verb = this.getSubmitBtnText(action);
+    const verb = this.getSubmitBtnText(action);
     expect(await this.amOnPage(), 'Not on task action page').to.be.true;
     this.unassignBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
     await this.unassignBtn.click();
@@ -139,14 +139,14 @@ class TaskActionPage extends TaskList {
   }
 
   async validatePageContentForAction(action, softAssert) {
-    let verb = this.getSubmitBtnText(action);
+    const verb = this.getSubmitBtnText(action);
     const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
     if (softAssert){
       await BrowserWaits.waitForElement(this.pageHeaderTitle);
 
       await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
       await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true);
-    }else{
+    } else {
       expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
       expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true;
     }

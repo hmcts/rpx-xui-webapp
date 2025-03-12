@@ -1,8 +1,7 @@
 
-
 function datatableHashes(datatable){
-    
+
 }
 
-module.exports = { datatableHashes }
+module.exports = { datatableHashes };
 

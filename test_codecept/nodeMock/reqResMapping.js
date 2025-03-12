@@ -1,23 +1,21 @@
 
 const requestMapping = {
-    mockServiceResetCallbacks: [ ],
-    get:{
-        
-    },
-    post:{
-      
+  mockServiceResetCallbacks: [],
+  get: {
 
-    },
-    put:{
+  },
+  post: {
 
-    },
-    delete:{
+  },
+  put: {
 
-    }
+  },
+  delete: {
 
-}
-module.exports = { requestMapping};
+  }
 
+};
+module.exports = { requestMapping };
 
 // function getOrganisation(){
 //     return {"organisationIdentifier":"VRSFNPV","name":"Test sreekanth org","status":"ACTIVE","sraId":null,"sraRegulated":false,"companyNumber":null,"companyUrl":null,"superUser":{"firstName":"test","lastName":"test","email":"sreekanth_su1@mailinator.com"},"paymentAccount":[],"contactInformation":[{"addressLine1":"Flat 39","addressLine2":"Sheraton House","addressLine3":null,"townCity":"London","county":"Essex","country":null,"postCode":"SW1V 3BZ","dxAddress":[]}]}
@@ -31,8 +29,6 @@ module.exports = { requestMapping};
 // function getJurisdictions(){
 //     return [{"id":"SSCS"},{"id":"AUTOTEST1"},{"id":"DIVORCE"},{"id":"PROBATE"},{"id":"PUBLICLAW"},{"id":"bulkscan"},{"id":"BULKSCAN"},{"id":"IA"},{"id":"EMPLOYMENT"},{"id":"CMC"}]
 // }
-
-
 
 // function getShareCases(){
 //     return [

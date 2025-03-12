@@ -51,7 +51,7 @@
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
     "test:smoke": "yarn playwright install chromium && TEST_TYPE=smoke npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @smoke --reporter mochawesome",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
-    "test:crossbrowser": "yarn playwright install && npx playwright test -c playwright-nightly.config.ts",
+    "test:crossbrowser": "yarn playwright install && yarn playwright install-deps && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration",
     "test:playwrightE2E": "yarn playwright install && npx playwright test --project chromium",
     "test:functional1": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",
@@ -87,14 +87,14 @@
     "@cucumber/cucumber": "^11.0.0",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.1.38-widget-label-v2",
+    "@hmcts/ccd-case-ui-toolkit": "7.1.38-widget-label-v2"
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.10",
+    "@hmcts/media-viewer": "4.0.13",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.35",
-    "@hmcts/rpx-xui-node-lib": "2.30.2",
+    "@hmcts/rpx-xui-common-lib": "2.0.38",
+    "@hmcts/rpx-xui-node-lib": "2.30.3",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -148,7 +148,7 @@
     "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",
     "protractor-screenshot-utils": "^1.0.5",
-    "rpx-xui-translation": "1.0.10",
+    "rpx-xui-translation": "1.0.11",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "shortid": "^2.2.14",
@@ -229,7 +229,7 @@
     "karma-sonarqube-unit-reporter": "^0.0.23",
     "karma-spec-reporter": "0.0.36",
     "mocha": "^10.0.0",
-    "mochawesome": "^6.2.1",
+    "mochawesome": "^7.0.0",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.0.0",
     "ngrx-store-freeze": "^0.2.4",
@@ -273,5 +273,5 @@
     "axios": "1.7.9",
     "webpack": "^5.94.0"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.7.0"
 }

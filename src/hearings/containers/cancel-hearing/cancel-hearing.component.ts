@@ -104,10 +104,13 @@ export class CancelHearingComponent implements OnInit {
             .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));
         },
         () => {
+          this.cancelActioned = false;
           this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];
         }
       );
-      this.cancelActioned = true;
+      if (!this.validationErrors) {
+        this.cancelActioned = true;
+      }
     }
   }
 

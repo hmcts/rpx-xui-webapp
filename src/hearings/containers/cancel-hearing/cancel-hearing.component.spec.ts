@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgZone } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -133,11 +133,14 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should call cancelHearingRequest when executeAction is called with a valid form', () => {
-    (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
-    component.executeContinue();
-    expect(mockHearingService.cancelHearingRequest).toHaveBeenCalled();
-    expect(component.getChosenReasons).toHaveBeenCalled();
+    const ngZone = TestBed.inject(NgZone);
+    ngZone.run(() => {
+      (component.hearingCancelForm.controls.reasons as FormArray).controls
+        .forEach((reason) => reason.value.selected = true);
+      component.executeContinue();
+      expect(mockHearingService.cancelHearingRequest).toHaveBeenCalled();
+      expect(component.getChosenReasons).toHaveBeenCalled();
+    });
   });
 
   it('should be true when calling isFormValid reasons selected', () => {
@@ -183,15 +186,26 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should disable the button when form is valid and submitted', () => {
-    const fb = new FormBuilder();
-    const reasonsArray = component.hearingCancelForm.controls.reasons as FormArray;
-    reasonsArray.clear();
-    reasons.forEach(() => {
-      reasonsArray.push(fb.group({ selected: true }));
+    const ngZone = TestBed.inject(NgZone);
+    ngZone.run(() => {
+      const fb = new FormBuilder();
+      const reasonsArray = component.hearingCancelForm.controls.reasons as FormArray;
+      reasonsArray.clear();
+      reasons.forEach(() => {
+        reasonsArray.push(fb.group({ selected: true }));
+      });
+      fixture.detectChanges();
+      component.executeContinue();
+      expect(component.buttonDisabled()).toBe(true);
     });
-    fixture.detectChanges();
+  });
+
+  it('should reset cancelActioned to false when cancelHearingRequest fails', () => {
+    (component.hearingCancelForm.controls.reasons as FormArray).controls
+      .forEach((reason) => reason.value.selected = true);
+    hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
-    expect(component.buttonDisabled()).toBe(true);
+    expect(component.cancelActioned).toBe(false);
   });
 
   it('should call executeContinue on form submit', () => {

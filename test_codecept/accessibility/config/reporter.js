@@ -1,13 +1,8 @@
 
-let { reportObj} = require('../helpers/accessibilityAuditor');
-const { generateReport} = require('../reporter/customReporter');
+const { reportObj } = require('../helpers/accessibilityAuditor');
+const { generateReport } = require('../reporter/customReporter');
 
-module.exports = function report(){;
-    generateReport(reportObj.pass, reportObj.fail, reportObj.tests);
-
-}
-
-
-
-
+module.exports = function report(){
+  generateReport(reportObj.pass, reportObj.fail, reportObj.tests);
+};
 

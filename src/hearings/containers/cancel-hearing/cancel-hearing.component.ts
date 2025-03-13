@@ -25,6 +25,7 @@ export class CancelHearingComponent implements OnInit {
   public caseId: string;
   public caseHearing: HearingListModel;
   public showSpinner$: Observable<boolean>;
+  public cancelActioned: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -106,7 +107,12 @@ export class CancelHearingComponent implements OnInit {
           this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];
         }
       );
+      this.cancelActioned = true;
     }
+  }
+
+  public buttonDisabled(): boolean {
+    return this.cancelActioned;
   }
 
   public getChosenReasons(): LovRefDataModel[] {

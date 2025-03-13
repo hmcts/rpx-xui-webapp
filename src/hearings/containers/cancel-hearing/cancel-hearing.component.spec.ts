@@ -160,4 +160,59 @@ describe('CancelHearingComponent', () => {
     component.executeContinue();
     expect(component.validationErrors).not.toBeNull();
   });
+  it('should enable the button when form is valid', () => {
+    const fb = new FormBuilder();
+    const reasonsArray = component.hearingCancelForm.controls.reasons as FormArray;
+    reasonsArray.clear();
+    reasons.forEach(() => {
+      reasonsArray.push(fb.group({ selected: true }));
+    });
+    fixture.detectChanges();
+    expect(component.buttonDisabled()).toBe(false);
+  });
+
+  it('should enable the button when form is invalid', () => {
+    const fb = new FormBuilder();
+    const reasonsArray = component.hearingCancelForm.controls.reasons as FormArray;
+    reasonsArray.clear();
+    reasons.forEach(() => {
+      reasonsArray.push(fb.group({ selected: false }));
+    });
+    fixture.detectChanges();
+    expect(component.buttonDisabled()).toBe(false);
+  });
+
+  it('should disable the button when form is valid and submitted', () => {
+    const fb = new FormBuilder();
+    const reasonsArray = component.hearingCancelForm.controls.reasons as FormArray;
+    reasonsArray.clear();
+    reasons.forEach(() => {
+      reasonsArray.push(fb.group({ selected: true }));
+    });
+    fixture.detectChanges();
+    component.executeContinue();
+    expect(component.buttonDisabled()).toBe(true);
+  });
+
+  it('should call executeContinue on form submit', () => {
+    spyOn(component, 'executeContinue');
+    const button = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
+    button.click();
+    expect(component.executeContinue).toHaveBeenCalled();
+  });
+
+  it('should display error message when no reason is selected', () => {
+    component.selectionValid = false;
+    fixture.detectChanges();
+    const errorMessage = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessage).toBeTruthy();
+    expect(errorMessage.textContent).toContain('Select at least one valid reason');
+  });
+
+  it('should not display error message when a reason is selected', () => {
+    component.selectionValid = true;
+    fixture.detectChanges();
+    const errorMessage = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
+    expect(errorMessage).toBeFalsy();
+  });
 });

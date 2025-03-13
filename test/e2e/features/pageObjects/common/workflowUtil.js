@@ -26,9 +26,9 @@ class workFlowUtil{
 
   async waitForWorkflowPage(workflow){
     const workFlowPageObject = this.getWorlflowPageObject(workflow);
-    try{
+    try {
       await workFlowPageObject.workFlowContainer.waitForPage();
-    }catch(e){
+    } catch (e){
       reportLogger.AddMessage(e);
     }
     expect(await workFlowPageObject.workFlowContainer.isDisplayed(), `${workflow} workflow container not displayed`).to.be.true;

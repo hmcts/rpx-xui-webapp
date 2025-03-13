@@ -1,6 +1,6 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-var TaskMessageBanner = require('../messageBanner');
+const TaskMessageBanner = require('../messageBanner');
 
 class TaskManagerPage extends TaskList{
   constructor(){
@@ -14,11 +14,11 @@ class TaskManagerPage extends TaskList{
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.taskManagerlist);
       return true;
-    }catch(err){
+    } catch (err){
       console.log('Task manager page not displayed : '+err);
       return false;
     }

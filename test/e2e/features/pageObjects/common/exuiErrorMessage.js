@@ -10,10 +10,10 @@ class EXUIErrorMessageComponent{
   }
 
   async isDisplayed(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.component);
       return true;
-    }catch(err){
+    } catch (err){
       return false;
     }
   }

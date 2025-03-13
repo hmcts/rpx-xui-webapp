@@ -110,7 +110,7 @@ defineSupportCode(({ Before, After }) => {
     CucumberReportLog.AddMessage('scenario completed with status : ' + scenario.result.status);
     // await BrowserWaits.waitForSeconds(600);
     const world = this;
-    try{
+    try {
       await CucumberReportLog.AddScreenshot(global.screenShotUtils);
       if (scenario.result.status === 'failed') {
         // await BrowserWaits.waitForSeconds(600);
@@ -123,10 +123,10 @@ defineSupportCode(({ Before, After }) => {
       }
 
       await CucumberReportLog.AddMessage('Cleared browser logs after successful scenario.');
-      if (global.scenarioData['featureToggles']) {
+      if (global.scenarioData.featureToggles) {
         //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
       }
-    }catch(err) {
+    } catch (err) {
       CucumberReportLog.AddMessage('Error in hooks with browserlogs or screenshots. See error details : ' + err);
     }
     await clearSession();

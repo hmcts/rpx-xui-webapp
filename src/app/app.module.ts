@@ -54,7 +54,6 @@ import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
 import { JurisdictionService } from './services/jurisdiction/jurisdiction.service';
-import { CryptoWrapper } from './services/logger/cryptoWrapper';
 import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
@@ -122,7 +121,6 @@ export function launchDarklyClientIdFactory(
       deps: [Store, ENVIRONMENT_CONFIG],
       multi: true
     },
-    CryptoWrapper,
     MonitoringService,
     LoggerService,
     {

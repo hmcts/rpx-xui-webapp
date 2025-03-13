@@ -2,7 +2,7 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
-var screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
+const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
 
 const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 const argv = minimist(process.argv.slice(2));
 const apptTestConfig = require('./appTestConfig');
 
-const isParallelExecution = argv.parallel ? argv.parallel === 'true' : true; ;
+const isParallelExecution = argv.parallel ? argv.parallel === 'true' : true;
 const chromeOptArgs = ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'];
 
 if (!argv.head) {
@@ -129,7 +129,7 @@ function getBDDTags(){
   }
   if (apptTestConfig.testEnv === 'demo') {
     tags.push('~@aat');
-  }else{
+  } else {
     tags.push('~@demo');
   }
   return tags;

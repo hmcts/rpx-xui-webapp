@@ -1,10 +1,10 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-var cucumberReporter = require('../../../support/reportLogger');
+const cucumberReporter = require('../../../support/reportLogger');
 
 const { Select, GovUKRadios } = require('../../../utils/domElements');
 
-var TaskMessageBanner = require('../messageBanner');
+const TaskMessageBanner = require('../messageBanner');
 const { LOG_LEVELS } = require('../../../support/constants');
 
 class AllWork extends TaskList {
@@ -58,9 +58,8 @@ class AllWork extends TaskList {
 
     if (this.selectOrRadioFilterItems.includes(filterItem)){
       return await this.FILTER_ITEMS[filterItem].isDisplayed();
-    }else{
-      return await this.FILTER_ITEMS[filterItem].isPresent();
     }
+    return await this.FILTER_ITEMS[filterItem].isPresent();
   }
 
   async isFilterItemEnbled(filterItem) {
@@ -81,9 +80,8 @@ class AllWork extends TaskList {
       let options = await this.FILTER_ITEMS[filterItem].getOptions();
       options = options.filter((opt) => opt !== '');
       return options;
-    } else {
-      throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
     }
+    throw new Error(`filter item ${filterItem} is not a select or a Radio item.`);
   }
 
   async setFilterSelectOrRadioOptions(filterItem, option) {
@@ -93,9 +91,8 @@ class AllWork extends TaskList {
     }
     if (this.selectOrRadioFilterItems.includes(filterItem)) {
       return await this.FILTER_ITEMS[filterItem].selectOption(option);
-    } else {
-      throw new Error(`filter item ${filterItem} is not a select or a Radio item..${filtersItems}`);
     }
+    throw new Error(`filter item ${filterItem} is not a select or a Radio item..${filtersItems}`);
   }
 
   async inputFilterItem(filterItem, inputText){
@@ -167,7 +164,7 @@ class AllWork extends TaskList {
   async getSearchResults(){
     const count = await this.filterSearchResults.count();
     const results = [];
-    for(let i = 0; i < count; i ++){
+    for (let i = 0; i < count; i ++){
       const e = await this.filterSearchResults.get(i);
       results.push(await e.getText());
     }

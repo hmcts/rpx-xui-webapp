@@ -1,22 +1,17 @@
 
-var CaseManager = require("./common/CaseManager");
+const CaseManager = require('./common/CaseManager');
 
 class FPLCase {
+  constructor() {
+    this.caseManager = new CaseManager();
+  }
 
-    constructor() {
-        this.caseManager = new CaseManager();
-    }
+  async createCase(isAccessibilityTest) {
+    const caseData = {
+    };
 
-    async createCase(isAccessibilityTest) {
-        var caseData = {
-        };
-
-
-        await this.caseManager.createCase(caseData, isAccessibilityTest);
-    }
-
-
-
+    await this.caseManager.createCase(caseData, isAccessibilityTest);
+  }
 }
 
 module.exports = FPLCase;

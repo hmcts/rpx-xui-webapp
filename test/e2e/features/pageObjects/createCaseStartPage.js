@@ -2,7 +2,7 @@ Dropdown = require('./webdriver-components/dropdown.js');
 Button = require('./webdriver-components/button.js');
 
 const { LOG_LEVELS } = require('../../support/constants.js');
-var BrowserWaits = require('../../support/customWaits');
+const BrowserWaits = require('../../support/customWaits');
 const CucumberRepprter = require('../../support/reportLogger');
 
 class CreateCaseStartPage {
@@ -34,7 +34,7 @@ class CreateCaseStartPage {
     }
     locatorString = locatorString + ']';
 
-    var e = element(by.xpath(locatorString));
+    const e = element(by.xpath(locatorString));
     await BrowserWaits.waitForElement(e);
     await e.click();
   }
@@ -53,7 +53,7 @@ class CreateCaseStartPage {
     }
     locatorString = locatorString + ']';
 
-    var e = element(by.xpath(locatorString));
+    const e = element(by.xpath(locatorString));
     await BrowserWaits.waitForElement(e);
     await e.click();
 
@@ -61,7 +61,7 @@ class CreateCaseStartPage {
   }
 
   async selectEvent(option){
-    var e = element(by.xpath('//*[@id = "cc-event"]/option[text() = "' + option + '"]'));
+    const e = element(by.xpath('//*[@id = "cc-event"]/option[text() = "' + option + '"]'));
     await BrowserWaits.waitForElement(e);
     await e.click();
 
@@ -91,10 +91,10 @@ class CreateCaseStartPage {
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.caseCaseFilterContainer);
       return true;
-    }catch(err){
+    } catch (err){
       await CucumberRepprter.AddMessage('Create case page not displayed ' + err.message + ' : ' + err.stack), LOG_LEVELS.Error;
       return false;
     }

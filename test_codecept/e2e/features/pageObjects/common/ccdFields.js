@@ -1,10 +1,9 @@
 
-var CaseManager = require("./CaseManager");
-var BrowserWaits = require('../../../support/customWaits');
-var path = require('path');
+const CaseManager = require('./CaseManager');
+const BrowserWaits = require('../../../support/customWaits');
+const path = require('path');
 
 class CcdFields {
-
   constructor() {
     this.caseManager = new CaseManager();
 
@@ -13,22 +12,20 @@ class CcdFields {
     this.selectAddressField = element(by.xpath('//select[@name=\'address\']'));
     this.firstOption = element(by.xpath('//option[@value=\'1: Object\']'));
 
-
     this.addNewBtn = element(by.xpath('//button[contains(text(),\'Add new\')]'));
     this.docUploadField = element(by.xpath('//input[@class=\'form-control bottom-30\']'));
-    this.describeDocField = $("#uploadTheNoticeOfDecisionDocs_0_description");
+    this.describeDocField = $('#uploadTheNoticeOfDecisionDocs_0_description');
 
     this.uploadDone = element(by.xpath('//ccd-write-document-field//span[contains(text(),"Uploading")]'));
-
   }
 
   async docUpload(){
-    var fileToUpload = path.resolve(__dirname, "../../../documents/dummy.pdf");
+    const fileToUpload = path.resolve(__dirname, '../../../documents/dummy.pdf');
     await this.docUploadField.sendKeys(fileToUpload);
     await browser.sleep(1);
     await BrowserWaits.waitForCondition(async () => {
-      let isUploadDone = await this.uploadDone.isPresent();
-      console.log("file upload status : " + isUploadDone);
+      const isUploadDone = await this.uploadDone.isPresent();
+      console.log('file upload status : ' + isUploadDone);
       await browser.sleep(5);
       return !isUploadDone;
     });

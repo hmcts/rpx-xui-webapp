@@ -60,7 +60,7 @@ class InputSearchField{
 
   async inputText(inputVal){
     await this.input.clear();
-    if(inputVal !== ''){
+    if (inputVal !== ''){
       await this.input.sendKeys(inputVal);
     }
   }
@@ -107,10 +107,10 @@ class GlobalSearchCasesPage{
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.pageHeader);
       return true;
-    }catch(err){
+    } catch (err){
       return false;
     }
   }

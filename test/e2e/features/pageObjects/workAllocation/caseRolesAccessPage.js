@@ -25,10 +25,10 @@ class CaseRolesAccessPage{
   }
 
   async isPageDisplayed(){
-    try{
+    try {
       await this.waitForPage();
       return true;
-    }catch(err){
+    } catch (err){
       return false;
     }
   }

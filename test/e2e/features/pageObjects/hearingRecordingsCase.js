@@ -1,8 +1,8 @@
 
-var BrowserWaits = require('../../support/customWaits');
+const BrowserWaits = require('../../support/customWaits');
 
-var BrowserUtil = require('../../../ngIntegration/util/browserUtil');
-var CcdFields = require('./common/ccdFields');
+const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
+const CcdFields = require('./common/ccdFields');
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 class HearingRecordingsCase {
   constructor() {

@@ -1,17 +1,13 @@
 
-
-const express = require('express')
+const express = require('express');
 
 const router = express.Router({ mergeParams: true });
-const service = require('./index')
+const service = require('./index');
 
-const userApiData = require('../userApiData')
-
+const userApiData = require('../userApiData');
 
 router.post('/message', (req, res) => {
-    
-    res.status(204).send({})
-   
+  res.status(204).send({});
 });
 
 module.exports = router;

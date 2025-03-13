@@ -11,12 +11,12 @@ class CucumberReportLog{
     const keys = Object.keys(jsonObj);
 
     let maxSize = 0;
-    for(let key of keys){
+    for (const key of keys){
       maxSize = key.length > maxSize ? key.length : maxSize;
     }
 
-    let startPadding = basePad + maxSize + 1;
-    for (let key of keys) {
+    const startPadding = basePad + maxSize + 1;
+    for (const key of keys) {
       if (!this.scenarioWorld) {
         return;
       }
@@ -41,9 +41,9 @@ class CucumberReportLog{
     if (!this.scenarioWorld){
       return;
     }
-    try{
+    try {
       this.scenarioWorld.attach(new Date().toTimeString() + ' : ' + message);
-    } catch(err){
+    } catch (err){
       console.log('Error occured adding message to report. '+err.stack);
     }
     console.log(new Date().toTimeString() + ' : ' + message);
@@ -70,7 +70,7 @@ class CucumberReportLog{
     }
     try {
       this.scenarioWorld.attach(JSON.stringify(json, null, 2));
-    } catch(err) {
+    } catch (err) {
       console.log('Error occured adding message to report. ' + err.stack);
     }
     console.log(JSON.stringify(json, null, 2));

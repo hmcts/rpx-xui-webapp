@@ -1,7 +1,6 @@
 const BrowserWaits = require('../../support/customWaits');
 
 class RefundsPage {
-
   constructor(){
     this.header = $('#content h1');
     this.refundsToBeApproved = element(by.xpath('//h2[contains(text(),"Refunds to be approved")]'));
@@ -17,7 +16,7 @@ class RefundsPage {
       whatDoYouWantToDoWithThisRefundInfo: {
         refundActionsLables: $$('#main-content .process-refund__panel label'),
         refundActionsLinks: $$('#sign-in-item-hint'),
-        returnToCaseWorkerRadioButton:  $('#refundAction-2')
+        returnToCaseWorkerRadioButton: $('#refundAction-2')
       }
     };
     this.reviewRefundPage = {
@@ -29,10 +28,10 @@ class RefundsPage {
   }
 
   async _gettAllText(ptorDomElements){
-    let  elementsTextArr = await ptorDomElements.map( element => {
+    const elementsTextArr = await ptorDomElements.map((element) => {
       return element.getText();
-   });
-   return elementsTextArr;
+    });
+    return elementsTextArr;
   }
 
   async getPageHeader(){
@@ -41,30 +40,31 @@ class RefundsPage {
 
   async amOnPage(){
     await BrowserWaits.waitForElement(this.header);
-    let header = await this.header.getText();
+    const header = await this.header.getText();
     await BrowserWaits.waitForElement(this.refundsToBeApproved);
-    let subHeader1 = await this.refundsToBeApproved.getText();
+    const subHeader1 = await this.refundsToBeApproved.getText();
     await BrowserWaits.waitForElement(this.refundsReturnedToCaseworker);
-    let subHeader2 = await this.refundsReturnedToCaseworker.getText();
+    const subHeader2 = await this.refundsReturnedToCaseworker.getText();
     return [header, subHeader1, subHeader2];
   }
 
   async amOnReviewCasePage(){
     await BrowserWaits.waitForElementClickable($('#wb-jurisdiction'));
-    let subHeader1 = await this.header.getText()
+    const subHeader1 = await this.header.getText();
     return subHeader1;
   }
-    async amOnProcessRefundPage(){
+
+  async amOnProcessRefundPage(){
     await BrowserWaits.waitForElement(this.processRefundPage.whatDoYouWantToDoWithThisRefundHeading);
-    let subHeader1 = await this.processRefundPage.reviewRefundDetailsHeading.getText();
-    let subHeader2 = await this.processRefundPage.whatDoYouWantToDoWithThisRefundHeading.getText();
+    const subHeader1 = await this.processRefundPage.reviewRefundDetailsHeading.getText();
+    const subHeader2 = await this.processRefundPage.whatDoYouWantToDoWithThisRefundHeading.getText();
     return [subHeader1, subHeader2];
   }
 
   async amOnReviewRefundPage(){
     await BrowserWaits.waitForElement(this.reviewRefundPage.refundStatusHistoryHeading);
-    let subHeader1 = await this.reviewRefundPage.refundDetailsHeading.getText();
-    let subHeader2 = await this.reviewRefundPage.refundStatusHistoryHeading.getText();
+    const subHeader1 = await this.reviewRefundPage.refundDetailsHeading.getText();
+    const subHeader2 = await this.reviewRefundPage.refundStatusHistoryHeading.getText();
     return [subHeader1, subHeader2];
   }
 
@@ -74,20 +74,20 @@ class RefundsPage {
 
   async getProcessRefundsInfo(){
     await BrowserWaits.waitForElementClickable(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.returnToCaseWorkerRadioButton);
-    let  reviewRefundDetailsTableColumns = await this._gettAllText(this.processRefundPage.reviewRefundDetailsTableColumns);
-    let  refundActionsLabels = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLables);    
-    let  refundActionsHints =  await  this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLinks);
+    const reviewRefundDetailsTableColumns = await this._gettAllText(this.processRefundPage.reviewRefundDetailsTableColumns);
+    const refundActionsLabels = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLables);
+    const refundActionsHints = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLinks);
     return {
       reviewRefundDetailsTableColumns: reviewRefundDetailsTableColumns,
       refundActionsLabels: refundActionsLabels,
       refundActionsHints: refundActionsHints
-    }    
+    };
   }
 
   async getReviewRefundsInfo(){
     await BrowserWaits.waitForElement(this.reviewRefundPage.refundStatusHistoryColumns.first());
-    let refundDetailsTableColumns = await this._gettAllText(this.reviewRefundPage.refundDetailsTableColumns);
-    let refundStatusHistoryColumns = await this._gettAllText(this.reviewRefundPage.refundStatusHistoryColumns);
+    const refundDetailsTableColumns = await this._gettAllText(this.reviewRefundPage.refundDetailsTableColumns);
+    const refundStatusHistoryColumns = await this._gettAllText(this.reviewRefundPage.refundStatusHistoryColumns);
     return {
       refundDetailsTableColumns: refundDetailsTableColumns,
       refundStatusHistoryColumns: refundStatusHistoryColumns
@@ -108,7 +108,6 @@ class RefundsPage {
     await BrowserWaits.waitForElementClickable(this.reviewRefundLink);
     await this.reviewRefundLink.click();
   }
-
 }
 
 module.exports = RefundsPage;

@@ -19,20 +19,20 @@ class GlobalSearchResultsPage{
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.pageHeader);
       return true;
-    }catch(err){
+    } catch (err){
       console.log(err);
       return false;
     }
   }
 
   async isNoResultsPageDisplayed(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.noResultsPageHeader, null, 120);
       return true;
-    }catch(err){
+    } catch (err){
       cucumberReporter.AddMessage(err);
       return false;
     }
@@ -53,7 +53,7 @@ class GlobalSearchResultsPage{
 
       if (columnName === ''){
         colNames.push('ACTION_LINK_COLUMN');
-      }else{
+      } else {
         colNames.push(columnName);
       }
     }

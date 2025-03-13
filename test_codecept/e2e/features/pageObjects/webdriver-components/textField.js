@@ -3,13 +3,12 @@
  */
 const DEFAULT_TIMEOUT = 5000;
 class TextField{
-
   /**
    * This css should be an <input> tag
    * @param css
    */
   constructor(css){
-      this.css = css;
+    this.css = css;
   }
 
   /**
@@ -19,6 +18,7 @@ class TextField{
   async enterText(text){
     await $(this.css).sendKeys(text);
   }
+
   /**
    * Check the input tag is present
    * @returns {Promise<boolean|*>}
@@ -50,7 +50,7 @@ class TextField{
       await browser.wait(EC.invisibilityOf(await element(by.css(this.css))), DEFAULT_TIMEOUT);
       return true;
     } catch (e) {
-      let message = `timed out after ${DEFAULT_TIMEOUT} waiting for text element ${element} to be invisible`;
+      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for text element ${element} to be invisible`;
       throw new CustomError(message, e);
     }
   }
@@ -62,7 +62,7 @@ class TextField{
       await browser.wait(EC.visibilityOf(await element(by.css(this.css))), DEFAULT_TIMEOUT);
       return true;
     } catch (e) {
-      let message = `timed out after ${DEFAULT_TIMEOUT} waiting for text element ${element} to be visible`;
+      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for text element ${element} to be visible`;
       throw new CustomError(message, e);
     }
   }
@@ -81,7 +81,6 @@ class TextField{
   async getText(){
     return await $(this.css).getAttribute('value');
   }
-
 }
 
 module.exports = TextField;

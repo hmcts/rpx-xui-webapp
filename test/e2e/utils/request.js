@@ -28,7 +28,7 @@ class Request {
   async getCookieString(){
     let cookieString = '';
     await browser.manage().getCookies().then(function(cookiesArray){
-      for(let i=0; i<cookiesArray.length; i++){
+      for (let i=0; i<cookiesArray.length; i++){
         cookieString = `${cookieString}${cookiesArray[i].name}=${cookiesArray[i].value};`;
       }
     });
@@ -38,8 +38,8 @@ class Request {
   async getCookievalue(name){
     const cookies = await browser.manage().getCookies();
     let retval = null;
-    for(const cookie of cookies){
-      if(cookie.name === name){
+    for (const cookie of cookies){
+      if (cookie.name === name){
         retval = cookie.value;
         break;
       }
@@ -61,8 +61,8 @@ class Request {
       reqheaders = { ...headers };
     }
     if (this.cookieString !== '') {
-      reqheaders['cookie'] = await this.getCookieString();
-      reqheaders['Authorization'] = 'Bearer '+await this.getCookievalue('__auth__');
+      reqheaders.cookie = await this.getCookieString();
+      reqheaders.Authorization = 'Bearer '+await this.getCookievalue('__auth__');
     }
 
     return { headers: reqheaders };
@@ -74,9 +74,8 @@ class Request {
       return error.response;
     } else if (error.request) {
       return error.request;
-    } else {
-      return error;
     }
+    return error;
   }
 
   async get(reqpath, headers){
@@ -110,7 +109,7 @@ class Request {
     try {
       const requestConfig = await this.getRequestConfig(moreHeaders);
       if (payload){
-        requestConfig['data'] = payload;
+        requestConfig.data = payload;
       }
       return await http.delete(reqpath, requestConfig);
     } catch (error) {

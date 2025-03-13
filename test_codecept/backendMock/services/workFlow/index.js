@@ -1,19 +1,12 @@
 
 const { v4 } = require('uuid');
-const userApiData = require('../userApiData')
-
+const userApiData = require('../userApiData');
 
 class Workflow{
-    
+  constructor(){
 
-    constructor(){
-
-    }
-
-
+  }
 }
 
-module.exports = new Workflow()
-
-
+module.exports = new Workflow();
 

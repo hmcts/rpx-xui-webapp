@@ -1,2 +1,2 @@
-export {getAuthCode} from './getToken';
-export {http} from './http';
+export { getAuthCode } from './getToken';
+export { http } from './http';

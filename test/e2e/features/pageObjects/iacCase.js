@@ -1,7 +1,7 @@
 
-var CaseManager = require('./common/CaseManager');
-var CcdFields = require('./common/ccdFields');
-var BrowserWaits = require('../../support/customWaits');
+const CaseManager = require('./common/CaseManager');
+const CcdFields = require('./common/ccdFields');
+const BrowserWaits = require('../../support/customWaits');
 
 class IACCase {
   constructor() {
@@ -54,7 +54,7 @@ class IACCase {
   }
 
   async createCase(isAccessibilityTest) {
-    var caseData = {
+    const caseData = {
       'Home Office Reference/Case ID': '012345678',
       'Appeal number[0].': 'IA123451234',
       'Other appeals': 'No',

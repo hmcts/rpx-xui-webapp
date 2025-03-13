@@ -99,7 +99,7 @@ class TaskAssignmentPage extends TaskList {
   }
 
   async clickSubmitBtn(action) {
-    let verb = this.getSubmitBtnText(action);
+    const verb = this.getSubmitBtnText(action);
 
     expect(await this.amOnPage(), 'Not on task assignment page').to.be.true;
     const submitBtn = element(by.xpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`));
@@ -157,7 +157,7 @@ class TaskAssignmentPage extends TaskList {
   }
 
   async validatePageContentForAction(action, softAssert){
-    let verb = this.getSubmitBtnText(action);
+    const verb = this.getSubmitBtnText(action);
 
     const submitBtn = element(by.xpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`));
     await BrowserWaits.waitForElement(this.caseWorkerSelect);
@@ -170,7 +170,7 @@ class TaskAssignmentPage extends TaskList {
 
       await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
       await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true);
-    }else{
+    } else {
       expect(await this.chooseColleageHeader.isDisplayed(), 'h2 header with text choose a colleague is not displayed').to.be.true;
 
       expect(await this.caseWorkerSelect.isDisplayed(), 'Caseworker select is not displayed').to.be.true;

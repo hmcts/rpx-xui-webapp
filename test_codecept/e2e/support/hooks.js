@@ -18,10 +18,10 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 const { Given, When, Then } = require('cucumber');
 
 const BrowserWaits = require('./customWaits');
-const CucumberReportLog = require("./reportLogger");
+const CucumberReportLog = require('./reportLogger');
 const BrowserLogs = require('./browserLogs');
-const browserUtil = require("../../ngIntegration/util/browserUtil");
-const RuntimetestData = require("./runtimeTestData");
+const browserUtil = require('../../ngIntegration/util/browserUtil');
+const RuntimetestData = require('./runtimeTestData');
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature"], function() {
 //         var origFn = browser.driver.controlFlow().execute;
@@ -97,49 +97,44 @@ const RuntimetestData = require("./runtimeTestData");
 
 // });
 
+defineSupportCode(({ Before, After }) => {
+  Before(function (scenario) {
+    RuntimetestData.init();
+    // global.scenarioData = {};
+    const world = this;
 
-defineSupportCode(({ Before,After }) => {
-    Before(function (scenario) {
-        RuntimetestData.init();
-        // global.scenarioData = {};
-        const world = this
-        
-        CucumberReportLog.setScenarioWorld(this);
-    });
+    CucumberReportLog.setScenarioWorld(this);
+  });
 
-    After(async function(scenario) {
-        CucumberReportLog.AddMessage("scenario completed with status : " + scenario.result.status);
+  After(async function(scenario) {
+    CucumberReportLog.AddMessage('scenario completed with status : ' + scenario.result.status);
+    // await BrowserWaits.waitForSeconds(600);
+    const world = this;
+    try {
+      await CucumberReportLog.AddScreenshot(global.screenShotUtils);
+      if (scenario.result.status === 'failed') {
         // await BrowserWaits.waitForSeconds(600);
-        const world = this;
-        try{
-            await CucumberReportLog.AddScreenshot(global.screenShotUtils);
-            if (scenario.result.status === 'failed') {
-                        // await BrowserWaits.waitForSeconds(600);
 
-                CucumberReportLog.AddMessage("****************** User details ******************"); 
-                CucumberReportLog.AddJson(JSON.parse(await browserUtil.getFromSessionStorage('userDetails')))
-                CucumberReportLog.AddMessage("****************** User details ******************"); 
+        CucumberReportLog.AddMessage('****************** User details ******************');
+        CucumberReportLog.AddJson(JSON.parse(await browserUtil.getFromSessionStorage('userDetails')));
+        CucumberReportLog.AddMessage('****************** User details ******************');
 
-                await BrowserLogs.printAllBrowserLogs();
-            } 
-            
-            await CucumberReportLog.AddMessage("Cleared browser logs after successful scenario.");
-            if (global.scenarioData['featureToggles']) {
-                //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
-            }
-           
+        await BrowserLogs.printAllBrowserLogs();
+      }
 
-
-        }catch(err) {
-            CucumberReportLog.AddMessage("Error in hooks with browserlogs or screenshots. See error details : " + err);
-        }     
-        await clearSession();
-       
-    });
-
-    async function clearSession(){
-        await browser.executeScript('window.sessionStorage.clear();');
-        await browser.executeScript('window.localStorage.clear();');
-        await browser.manage().deleteAllCookies();
+      await CucumberReportLog.AddMessage('Cleared browser logs after successful scenario.');
+      if (global.scenarioData.featureToggles) {
+        //CucumberReportLog.AddJson(global.scenarioData['featureToggles'])
+      }
+    } catch (err) {
+      CucumberReportLog.AddMessage('Error in hooks with browserlogs or screenshots. See error details : ' + err);
     }
+    await clearSession();
+  });
+
+  async function clearSession(){
+    await browser.executeScript('window.sessionStorage.clear();');
+    await browser.executeScript('window.localStorage.clear();');
+    await browser.manage().deleteAllCookies();
+  }
 });

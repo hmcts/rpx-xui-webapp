@@ -74,7 +74,7 @@ class ActualHearingDate{
 
   async clickAction(field, action) {
     const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//dt//span[contains(text(),'${field}')]` :
+      `${this.hearingDateDetailsContainer}//dt//h2[contains(text(),'${field}')]` :
       `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
     const actionEleXpath = this.headingRows.includes(field) ?
       `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]/a[contains(text(),'${action}')]` :

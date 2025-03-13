@@ -484,12 +484,18 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     let filteredMessages = [];
 
     // Work Allocation uses the id of the query, we require the parentId to filter the messages
-    if (this.queryCreateContext === QueryCreateContext.RESPOND && allMessages.length > 1) {
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       const parentId = allMessages.find((message) => message.value.id === messageId)?.value.parentId;
-      // Use parentId as the filter
-      filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+
+      if (parentId) {
+        // If parentId exists, filter messages using it
+        filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+      } else {
+        // If parentId doesn't exist, fallback to messageId
+        filteredMessages = allMessages.filter((message) => message.value.id === messageId);
+      }
     } else {
-      // Use messageId as the filter
+      // Default case: filter messages by messageId
       filteredMessages = allMessages.filter((message) => message.value.id === messageId);
     }
 

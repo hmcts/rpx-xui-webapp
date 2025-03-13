@@ -13,10 +13,10 @@ class SelectRoleTypePage{
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.container);
       return true;
-    }catch(err){
+    } catch (err){
       await CucucmberReporter.AddMessage(err, LOG_LEVELS.Error);
       return false;
     }
@@ -27,7 +27,7 @@ class SelectRoleTypePage{
     const rolesElements = {};
     for (let i = 0; i < countOfRoles; i++){
       const roleElement = await this.rolesRadios.get(i);
-      let label = await roleElement.$('label').getText(); ;
+      let label = await roleElement.$('label').getText();
       label = label.trim();
       rolesElements[label] = roleElement.$('input');
     }

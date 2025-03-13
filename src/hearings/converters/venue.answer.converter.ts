@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { HearingLocationModel } from '../models/hearingLocation.model';
-import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationByEpimmsModel } from '../models/location.model';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
@@ -19,10 +19,10 @@ export class VenueAnswerConverter implements AnswerConverter {
         const serviceCode = state.hearingRequest.hearingRequestMainModel.caseDetails.hmctsServiceCode;
         const locationIds = hearingLocations.map((hearingLocationModel: HearingLocationModel) => hearingLocationModel.locationId).join(',');
         return this.locationsDataService.getLocationById(locationIds, serviceCode).pipe(
-          map((locationByEPIMMSModels: LocationByEPIMMSModel[]) => {
+          map((LocationByEpimmsModels: LocationByEpimmsModel[]) => {
             let result = '<ul>';
-            locationByEPIMMSModels.forEach((locationByEPIMMSModel: LocationByEPIMMSModel) =>
-              result += `<li>${locationByEPIMMSModel.court_name}</li>`);
+            LocationByEpimmsModels.forEach((LocationByEpimmsModel: LocationByEpimmsModel) =>
+              result += `<li>${LocationByEpimmsModel.court_name}</li>`);
             result += '</ul>';
             return result;
           }));

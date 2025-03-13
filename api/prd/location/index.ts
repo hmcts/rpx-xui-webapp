@@ -5,7 +5,7 @@ import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
 import { EnhancedRequest } from '../../lib/models';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
-import { LocationByEPIMMSModel, LocationModel, toEpimmsLocation } from './models/location.model';
+import { LocationByEpimmsModel, LocationModel, toEpimmsLocation } from './models/location.model';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 
@@ -60,7 +60,7 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   }
 }
 
-function getIdenticalLocationByEpimmsId(data: LocationModel[]): LocationByEPIMMSModel[] {
+function getIdenticalLocationByEpimmsId(data: LocationModel[]): LocationByEpimmsModel[] {
   return data.map((locationModel) => toEpimmsLocation(locationModel))
     .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
       locationByEPIMSModelArray.findIndex((location) => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);

@@ -10,12 +10,12 @@ class ErrorPage{
   }
 
   async isErrorPageDisplayed(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.title);
       const headermessage = await this.title.getText();
       console.log('Error messge displayed : ' + headermessage);
       return headermessage.includes('Sorry');
-    }catch(err){
+    } catch (err){
       reportLogger.AddMessage('error page not displayed : '+err, LOG_LEVELS.Error);
       return false;
     }
@@ -31,10 +31,10 @@ class ErrorPage{
     expect(await this.isErrorPageDisplayed(), 'Not on error page').to.be.true;
 
     await BrowserWaits.waitForElement(this.title);
-    try{
+    try {
       await BrowserWaits.waitForElement(this.tryAgainMessage);
       return true;
-    } catch(err){
+    } catch (err){
       return false;
     }
   }

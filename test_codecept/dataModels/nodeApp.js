@@ -1,19 +1,17 @@
 const { v4 } = require('uuid');
 
 class NodeApp{
-
   getUserDetails_oidc(){
-
     return {
       'canShareCases': false,
       'roleAssignmentInfo': [
         {
           ...this.getUserDetailsLocationInfo(),
-          caseId:'',
-          caseType:'',
-          roleType:'ORGANISATION'
+          caseId: '',
+          caseType: '',
+          roleType: 'ORGANISATION'
         }
-                
+
       ],
       'sessionTimeout': {
         'idleModalDisplayTime': 10,
@@ -32,13 +30,13 @@ class NodeApp{
           'caseworker-ia-iacjudge'
         ],
         'token': 'Bearer eyJ0eXAiOiJKV1Q',
-        'roleCategory':'LEGAL_OPS',
+        'roleCategory': 'LEGAL_OPS',
         'email': '',
         'identity': '',
         'iss': '',
-        'subname': '',
+        'subname': ''
       }
-    }
+    };
   }
 
   getUserDetails_oauth(){
@@ -67,9 +65,8 @@ class NodeApp{
         'roleCategory': 'LEGAL_OPS'
 
       }
-    }
+    };
   }
-
 
   getUserDetailsLocationInfo(){
     const location = Math.floor((Math.random() * 100009) + 10001);
@@ -78,10 +75,9 @@ class NodeApp{
       // "primaryLocation": location,
       'jurisdiction': 'IA',
       'isCaseAllocator': true,
-      'substantive' : true
-    }
+      'substantive': true
+    };
   }
-
 }
 
 module.exports = new NodeApp();

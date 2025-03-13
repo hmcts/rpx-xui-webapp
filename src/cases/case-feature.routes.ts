@@ -99,7 +99,7 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'case-details/:cid',
+        path: 'case-details/:jurisdiction/:caseType/:cid',
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },
         runGuardsAndResolvers: 'always',

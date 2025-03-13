@@ -41,12 +41,12 @@
     <exui-case-reference-field [caseReference]="workField[config.name]"></exui-case-reference-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.CASE_NAME">
-    <exui-case-name-field [caseName]="workField[config.name]" [caseId]="workField.case_id" [hasAccess]="workField.hasAccess"
+    <exui-case-name-field [caseName]="workField[config.name]" [jurisdiction]="workField.jurisdiction" [caseType]="workField.case_type_id" [caseId]="workField.case_id" [hasAccess]="workField.hasAccess"
       (click)="onClick()">
     </exui-case-name-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.TASK_NAME">
-    <exui-task-name-field [taskName]="workField[config.name]" [caseId]="workField.case_id"></exui-task-name-field>
+    <exui-task-name-field [taskName]="workField[config.name]" [jurisdiction]="workField.jurisdiction" [caseType]="workField.case_type_id" [caseId]="workField.case_id"></exui-task-name-field>
   </ng-container>
   <ng-container *ngSwitchCase="fieldType.DERIVED_ICON">
     <exui-derived-icon-field [workField]="workField" [sourceColumn]="config.sourceColumn" [matchValue]="config.matchValue"></exui-derived-icon-field>

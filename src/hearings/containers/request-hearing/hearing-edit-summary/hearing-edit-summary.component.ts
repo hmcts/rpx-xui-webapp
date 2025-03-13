@@ -473,8 +473,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
-      this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesExists();
+      this.pageVisitHearingWindowChangeExists();
   }
 
   pageVisitReasonableAdjustmentChangeExists(): boolean {
@@ -575,11 +574,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
-
-    if (this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag) {
-      return true;
-    }
-
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
 

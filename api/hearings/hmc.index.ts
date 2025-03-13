@@ -61,7 +61,8 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    if (error.status >= 400 && error.status < 500) {
+    // check for all error statuses and log them
+    if (error.status >= 400 && error.status <= 500) {
       trackTrace(`${error.status} ${error.message}`);
     }
     next(error);

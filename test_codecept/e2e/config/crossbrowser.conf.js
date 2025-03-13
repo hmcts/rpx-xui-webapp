@@ -3,16 +3,15 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
-var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
-
+const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
 
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
 
- sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+  sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
 
- // sauceSeleniumAddress: 'https://vmuniganti:ed5cdbf5-4d8f-47e4-ab72-1757ee05e15f@eu-central-1.saucelabs.com:443/wd/hub',
+  // sauceSeleniumAddress: 'https://vmuniganti:ed5cdbf5-4d8f-47e4-ab72-1757ee05e15f@eu-central-1.saucelabs.com:443/wd/hub',
 
   host: 'ondemand.eu-central-1.saucelabs.com',
   sauceRegion: 'eu',
@@ -24,18 +23,16 @@ const config = {
 
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
-    targetEnv: argv.env || 'local',
+    targetEnv: argv.env || 'local'
     //username: process.env.TEST_EMAIL,
     //password: process.env.TEST_PASSWORD,
   },
 
-
- // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
+  // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
   SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
   allScriptsTimeout: 111000,
-
 
   useAllAngular2AppRoots: true,
   multiCapabilities: [
@@ -114,7 +111,7 @@ const config = {
       extendedDebugging: true,
       sharedTestFiles: false,
       maxInstances: 1
-    },
+    }
   ],
 
   exclude: [],
@@ -125,7 +122,6 @@ const config = {
     require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js', '../features/step_definitions/**/*.steps.js'],
     tags: ['@crossbrowser']
   },
-
 
   plugins: [
     {
@@ -156,6 +152,5 @@ const config = {
     });
   }
 };
-
 
 exports.config = config;

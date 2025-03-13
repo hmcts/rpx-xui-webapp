@@ -27,21 +27,21 @@ class ShareCaseCheckAndConfirmPage {
   }
 
   async getCaseIdOfCaseContainer(containerIndex){
-    let caseContainer = await this.selectedCaseConfirmList.get(containerIndex);
+    const caseContainer = await this.selectedCaseConfirmList.get(containerIndex);
     if (!caseContainer){
       throw Error('no Case at position ' + containerIndex);
     }
     await BrowserWaits.waitForElement(caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + containerIndex);
-    let caseId = await caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption').getText();
+    const caseId = await caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption').getText();
     return caseId;
   }
 
   async getcaseContainerWithId(caseid){
-    let casesCount = await this.selectedCaseConfirmList.count();
+    const casesCount = await this.selectedCaseConfirmList.count();
     for (let caseCounter = 0; caseCounter < casesCount; caseCounter++){
-      let caseContainer = await this.selectedCaseConfirmList.get(caseCounter);
+      const caseContainer = await this.selectedCaseConfirmList.get(caseCounter);
       await BrowserWaits.waitForElement(caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + caseCounter);
-      let caseId = await caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption').getText();
+      const caseId = await caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption').getText();
       if (caseId.includes(caseid)){
         return caseContainer;
       }
@@ -50,12 +50,12 @@ class ShareCaseCheckAndConfirmPage {
   }
 
   async getUserActionForCaseId(caseId, email){
-    let caseContainer = await this.getcaseContainerWithId(caseId);
-    let userRows = caseContainer.$$('tbody tr');
-    let usersCount = await userRows.count();
-    for(let userCounter = 0; userCounter < usersCount; userCounter++){
-      let userRow = await userRows.get(userCounter);
-      let userEmail = await userRow.$('td:nth-of-type(2)').getText();
+    const caseContainer = await this.getcaseContainerWithId(caseId);
+    const userRows = caseContainer.$$('tbody tr');
+    const usersCount = await userRows.count();
+    for (let userCounter = 0; userCounter < usersCount; userCounter++){
+      const userRow = await userRows.get(userCounter);
+      const userEmail = await userRow.$('td:nth-of-type(2)').getText();
       if (userEmail.includes(email)){
         return await userRow.$('td:nth-of-type(3)').getText();
       }
@@ -64,31 +64,31 @@ class ShareCaseCheckAndConfirmPage {
   }
 
   async isUserMarkedToBeRemovedIncase(caseId, email){
-    let userActionStatus = await this.getUserActionForCaseId(caseId, email);
+    const userActionStatus = await this.getUserActionForCaseId(caseId, email);
     return userActionStatus ? userActionStatus.toLowerCase().includes('remove') : false;
   }
 
   async isUserMarkedToBeAddedIncase(caseId, email) {
-    let userActionStatus = await this.getUserActionForCaseId(caseId, email);
+    const userActionStatus = await this.getUserActionForCaseId(caseId, email);
     return userActionStatus ? userActionStatus.toLowerCase().includes('added'): false;
   }
 
   async validateShareCaseChangesForListedCases(){
-    let casesCount = await this.selectedCaseConfirmList.count();
-    let issuesList = [];
-    for(let caseCounter = 0; caseCounter < casesCount; caseCounter++){
-      let caseid = await this.getCaseIdOfCaseContainer(caseCounter);
-      let caseShareData = ShareCaseData.getCaseWithId(caseid);
+    const casesCount = await this.selectedCaseConfirmList.count();
+    const issuesList = [];
+    for (let caseCounter = 0; caseCounter < casesCount; caseCounter++){
+      const caseid = await this.getCaseIdOfCaseContainer(caseCounter);
+      const caseShareData = ShareCaseData.getCaseWithId(caseid);
 
       for (let shareWithCounter = 0; shareWithCounter < caseShareData.markedForShare.length; shareWithCounter++) {
-        let email = caseShareData.markedForShare[shareWithCounter];
+        const email = caseShareData.markedForShare[shareWithCounter];
         if (!(await this.isUserMarkedToBeAddedIncase(caseid, email))) {
           issuesList.push(email + 'marked for added in not persisted ' + caseId);
         }
       }
 
       for (let shareWithCounter = 0; shareWithCounter < caseShareData.markedForUnShare.length; shareWithCounter++) {
-        let email = caseShareData.markedForUnShare[shareWithCounter];
+        const email = caseShareData.markedForUnShare[shareWithCounter];
         if (!(await this.isUserMarkedToBeRemovedIncase(caseid, email))) {
           issuesList.push(email + 'marked to remove in not persisted ' + caseId);
         }
@@ -103,7 +103,7 @@ class ShareCaseCheckAndConfirmPage {
   }
 
   async clickChangeLinkForCase(caseNum){
-    let caseContainer = await this.getcaseContainerWithId(caseNum);
+    const caseContainer = await this.getcaseContainerWithId(caseNum);
     await caseContainer.$('a').click();
   }
 

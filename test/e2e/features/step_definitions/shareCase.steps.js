@@ -1,15 +1,14 @@
 
-var ShareCasePage = require('../pageObjects/shareCasePage');
-var ShareCaseCheckAndConfirmPage = require('../pageObjects/shareCaseCheckAndConfirmPage');
+const ShareCasePage = require('../pageObjects/shareCasePage');
+const ShareCaseCheckAndConfirmPage = require('../pageObjects/shareCaseCheckAndConfirmPage');
 
 const BrowserWaits = require('../../support/customWaits');
 
-var { Then, When, Given } = require('@cucumber/cucumber');
+const { Then, When, Given } = require('@cucumber/cucumber');
 const { browser } = require('protractor');
 
-
-var shareCasePage = new ShareCasePage();
-var shareCaseCheckAndConfirmPage = new ShareCaseCheckAndConfirmPage();
+const shareCasePage = new ShareCasePage();
+const shareCaseCheckAndConfirmPage = new ShareCaseCheckAndConfirmPage();
 
 Then('I see Share Case page is displayed', async function () {
   expect(await shareCasePage.amOnPage()).to.be.true;
@@ -63,8 +62,8 @@ When('I enter text {string} in user email in share case page', async function (t
 });
 
 Then('I see users list filtered with containing text {string}', async function (text) {
-  let useremailsArr = await shareCasePage.getFilteredUserNameEmails();
-  for(let i = 0; i < useremailsArr.length; i++){
+  const useremailsArr = await shareCasePage.getFilteredUserNameEmails();
+  for (let i = 0; i < useremailsArr.length; i++){
     expect(useremailsArr[i]).to.include(text);
   }
 });
@@ -103,7 +102,7 @@ Then('I see a user is marked to be removed in a listed case', async function () 
 });
 
 Then('I see share case changes persisted in displayed in Share Case page', async function () {
-  let issuesList = await shareCasePage.validateShareCaseChangesPersisted();
+  const issuesList = await shareCasePage.validateShareCaseChangesPersisted();
   expect(issuesList.length, 'issues with changes persist : ' + JSON.stringify(issuesList)).to.equal(0);
 });
 

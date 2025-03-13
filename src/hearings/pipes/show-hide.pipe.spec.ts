@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { UserService } from '../../app/services/user/user.service';
 import { initialState } from '../hearing.test.data';
 import { HearingChannelEnum, IsHiddenSource, MemberType, RequirementType } from '../models/hearings.enum';
-import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationByEpimmsModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { ShowHidePipe } from './show-hide.pipe';
 
@@ -14,7 +14,7 @@ const storeMock = jasmine.createSpyObj('Store', [
 ]);
 
 describe('ShowHidePipe', () => {
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '234850',
     site_name: 'Cardiff Civil and Family Justice Centre',
     court_name: 'CARDIFF CIVIL AND FAMILY JUSTICE CENTRE',

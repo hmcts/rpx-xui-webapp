@@ -75,7 +75,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     });
   }
 
-  private setFacilitiesRequired(facilitiesRequired: string[] | null | undefined): string[] | undefined {
+  private getFacilitiesRequired(facilitiesRequired: string[] | null | undefined): string[] | undefined {
     return facilitiesRequired && facilitiesRequired.length > 0 ? facilitiesRequired : undefined;
   }
 
@@ -85,8 +85,8 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
     );
 
-    const facilitiesRequiredMainModel = this.setFacilitiesRequired(this.hearingRequestMainModel.hearingDetails?.facilitiesRequired);
-    const facilitiesRequiredToCompareMainModel = this.setFacilitiesRequired(this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired);
+    const facilitiesRequiredMainModel = this.getFacilitiesRequired(this.hearingRequestMainModel.hearingDetails?.facilitiesRequired);
+    const facilitiesRequiredToCompareMainModel = this.getFacilitiesRequired(this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired);
 
     this.facilitiesChanged = !_.isEqual(facilitiesRequiredMainModel, facilitiesRequiredToCompareMainModel);
 

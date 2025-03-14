@@ -67,12 +67,11 @@ export class SearchFilterService {
     if (parentPrefix && parentPrefix.length > 0) {
       prefix = `${parentPrefix}.`;
     }
-    for (let attributeName of Object.keys(formGroupValue)) {
+    for (const attributeName of Object.keys(formGroupValue)) {
       let value = formGroupValue[attributeName];
       if (Utils.isStringOrNumber(value)) {
         const filterType = Utils.getFilterType(attributeName, this.metadataFields);
-        attributeName = Utils.sanitiseMetadataFieldName(filterType, attributeName);
-        target[filterType][prefix + attributeName] = value;
+        target[filterType][prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName)] = value;
       } else if (value) {
         if (Array.isArray(value) && value.length > 0) { // is array and has index zero populated
           value = Utils.isStringOrNumber(value[0]) ? value : value[0]; // determine if it is a collection or a plain array

@@ -192,11 +192,12 @@ describe('HearingFacilitiesComponent', () => {
   ];
 
   beforeEach(() => {
+    const initialStateCopy = JSON.parse(JSON.stringify(initialState));
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingFacilitiesComponent, MockRpxTranslatePipe],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialStateCopy }),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
@@ -344,6 +345,72 @@ describe('HearingFacilitiesComponent', () => {
     };
     component.ngOnInit();
     expect(component.nonReasonableAdjustmentFlags.length).toEqual(2);
+  });
+
+  it('should set the additionalSecurityRequiredChanged to true where differing in SHV', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: partiesInHMC
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: partiesInSHV,
+      caseAdditionalSecurityFlag: true,
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+    };
+    component.ngOnInit();
+    expect(component.additionalSecurityRequiredChanged).toEqual(true);
+    expect(component.additionalFacilitiesChanged).toEqual(false);
+  });
+
+  it('should set the additionalFacilitiesChanged to true where differing in SHV', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: partiesInHMC
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: partiesInSHV,
+      caseAdditionalSecurityFlag: false,
+      facilitiesRequired: ['immigrationDetentionCentre']
+    };
+    component.ngOnInit();
+    expect(component.additionalSecurityRequiredChanged).toEqual(false);
+    expect(component.additionalFacilitiesChanged).toEqual(true);
   });
 
   it('should prepareHearingRequestData set nonReasonableAdjustmentChangesConfirmed property to true', () => {

@@ -880,7 +880,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(googleTagManagerService.event).toHaveBeenCalledWith(
         'QM_QualifyingQuestion_Selection', {
           caseTypeId: '123',
-          CaseJurisdiction: 'TEST',
+          caseJurisdiction: 'TEST',
           name: 'Test Question',
           url: 'https://example.com/123/details'
         });

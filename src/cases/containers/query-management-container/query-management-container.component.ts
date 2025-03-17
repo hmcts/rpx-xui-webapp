@@ -388,10 +388,9 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public logSelection(qualifyingQuestion: QualifyingQuestion) {
-    console.log('Selected qualifying question:', qualifyingQuestion);
     const eventParams = {
       caseTypeId: this.caseId,
-      CaseJurisdiction: this.jurisdictionId,
+      caseJurisdiction: this.jurisdictionId,
       name: qualifyingQuestion.name,
       url: qualifyingQuestion.url.replace('${CCD_REFERENCE}', this.caseId)
     };

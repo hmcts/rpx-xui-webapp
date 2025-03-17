@@ -108,7 +108,7 @@ export class CancelHearingComponent implements OnInit {
           this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];
         }
       );
-      if (!this.validationErrors) {
+      if (!this.validationErrors || (this.validationErrors && this.validationErrors.length === 0)) {
         this.cancelActioned = true;
       }
     }

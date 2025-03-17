@@ -1,6 +1,6 @@
 {
   "name": "rpx-exui",
-  "version": "7.0.15",
+  "version": "7.1.36-exui-2483-rc1",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -91,7 +91,7 @@
     "@cucumber/cucumber": "^11.0.0",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.1.50",
+    "@hmcts/ccd-case-ui-toolkit": "7.1.54",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.13",
@@ -195,7 +195,7 @@
     "@types/express": "^4.16.1",
     "@types/express-session": "^1.17.0",
     "@types/faker": "^6.0.0",
-    "@types/global-agent": "^2.1.0",
+    "@types/global-agent": "^3.0.0",
     "@types/jasmine": "~3.10.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/mocha": "^10.0.0",

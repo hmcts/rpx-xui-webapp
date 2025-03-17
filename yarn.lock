@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.50":
-  version: 7.1.50
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.50"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.54":
+  version: 7.1.54
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.54"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7a0d178848c43bb4a4c948dbc66622c0c12a7be08a1e92af255f85986037027cec18465469b837f0a86aa8b350ccef22318d139386ebfa82c71f12e0846f15ec
+  checksum: 10/0c9b2ce747fee7fe00f8b387c401ae45a86e8be0c7a767f7859bb298f8e30282525626f30914ec5ca6be7e1f35cc5842d7bfc35e6ce430b195e678dd1fa65ce1
   languageName: node
   linkType: hard
 
@@ -6664,10 +6664,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/global-agent@npm:^2.1.0":
-  version: 2.1.3
-  resolution: "@types/global-agent@npm:2.1.3"
-  checksum: 10/6129b6d5ba871b9d111ddf91e6f9a1725d3f28bf2aa6869ec83bebd14c688cde4275ebea6fa45b0b1c00d78109d022c935f952e9e4876d76289d4706484776c3
+"@types/global-agent@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/global-agent@npm:3.0.0"
+  checksum: 10/f961aaf493176e651dcb1bdb8f31b3f933f7ba86a74901c40399622e7f09621d84e0c12cca62ddee12bd8d783656359d25ec88aa57bba3fbcbd58f60f8cbdb18
   languageName: node
   linkType: hard
 
@@ -18446,7 +18446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:0.5.x, mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.5, mkdirp@npm:^0.5.6":
+"mkdirp@npm:0.5.x, mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.5":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -20636,13 +20636,12 @@ __metadata:
   linkType: hard
 
 "portfinder@npm:^1.0.28":
-  version: 1.0.34
-  resolution: "portfinder@npm:1.0.34"
+  version: 1.0.35
+  resolution: "portfinder@npm:1.0.35"
   dependencies:
     async: "npm:^3.2.6"
     debug: "npm:^4.3.6"
-    mkdirp: "npm:^0.5.6"
-  checksum: 10/938aa180eab80b988268010b97b2f67437800889639816619c461af0e0e8c28f55ff5c7bed409082bd14cf06cc4e1e7ac583c5fb49ac7fb05a43e67ae3cb6936
+  checksum: 10/16457d54f66e6794807cf10821e440d33cb3d688ed0de7f5d365cd5b7c6902fe91f42f530c2899b1c7660346cd16e636df3240d7737510fd0a9a6e1deb70b38d
   languageName: node
   linkType: hard
 
@@ -22099,7 +22098,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.50"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.54"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.13"
@@ -22134,7 +22133,7 @@ __metadata:
     "@types/express": "npm:^4.16.1"
     "@types/express-session": "npm:^1.17.0"
     "@types/faker": "npm:^6.0.0"
-    "@types/global-agent": "npm:^2.1.0"
+    "@types/global-agent": "npm:^3.0.0"
     "@types/jasmine": "npm:~3.10.0"
     "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^10.0.0"

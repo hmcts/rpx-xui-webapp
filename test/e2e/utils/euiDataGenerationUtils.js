@@ -4,7 +4,7 @@ class EuiDataGenerationUtils {
      * @returns string
      */
   static async generateRandomString(){
-    let string = await Math.random().toString(36).substring(7);
+    const string = await Math.random().toString(36).substring(7);
     return string;
   }
 
@@ -15,7 +15,7 @@ class EuiDataGenerationUtils {
      * @returns Integer
      */
   static async generateRandomInt(min, max){
-    let trueMin = ((max - min) +1);
+    const trueMin = ((max - min) +1);
     return await Math.floor(Math.random() * trueMin) + min;
   }
 

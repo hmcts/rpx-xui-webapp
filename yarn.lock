@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.52":
-  version: 7.1.52
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.52"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.53-google-analytics":
+  version: 7.1.53-google-analytics
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.53-google-analytics"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7f4ebdf7ba014ec9e975d13902aefb8e510e19896784ebb061ae1395de305aafcf43c06ac072008ed690cab7ccf56f7e4ba77baf59fd20471beead8a4ca4a2ed
+  checksum: 10/77e5abb82c6fee1c4f7a60aa2824014e3f902ea5e03d7fa8adac56b560d9af0dcecceb5f5ad5c73cb515cf1a8e24de61f32c3e6b14121fc7f1346d08b705e7e5
   languageName: node
   linkType: hard
 
@@ -3636,16 +3636,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.38":
-  version: 2.0.38
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.38"
+"@hmcts/rpx-xui-common-lib@npm:2.0.39-google-analytics":
+  version: 2.0.39-google-analytics
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.39-google-analytics"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/c1bf43949b29286295901963fe03e1f129de9a0c6f96cf7f56c31db62fbc4f0ed666c87c8952fc02bc1cad06f4473f9aa39d15c6c03f53c32aff561c14c6d782
+  checksum: 10/a130809de86ac0d6b978adde42c5a42c9114bf26c87f7b6751db2162341a5e193040988657356c369983ce428613d65e41afda12f934f4e19b6bb99c3acaa069
   languageName: node
   linkType: hard
 
@@ -22099,13 +22099,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.52"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.53-google-analytics"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.13"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.38"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.39-google-analytics"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

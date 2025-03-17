@@ -18,7 +18,7 @@ import {
   AlertService,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
@@ -35,8 +35,9 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
-  const mockRouter = {
+  const googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['event']);
 
+  const mockRouter = {
     events: of(new NavigationStart(1, '/some-other-route')),
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
@@ -225,6 +226,7 @@ describe('QueryManagementContainerComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: AlertService, useValue: mockAlertService },
+        { provide: GoogleTagManagerService, useValue: googleTagManagerService },
         LoadingService
       ]
     }).compileComponents();
@@ -864,6 +866,24 @@ describe('QueryManagementContainerComponent', () => {
         expect(qualifyingQuestions[0].url).toContain('/cases/case-details/123#Queries');
         expect(qualifyingQuestions[1].name).toBe('Raise a new query');
       });
+    });
+
+    it('should call googleTagManagerService.event with the correct parameters', () => {
+      const qualifyingQuestion = {
+        name: 'Test Question',
+        markdown: '### Details<br><p>To find out more about updating …ation using MyHMCTS',
+        url: 'https://example.com/${CCD_REFERENCE}/details'
+      };
+
+      component.logSelection(qualifyingQuestion);
+
+      expect(googleTagManagerService.event).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection', {
+          caseTypeId: '123',
+          CaseJurisdiction: 'TEST',
+          name: 'Test Question',
+          url: 'https://example.com/123/details'
+        });
     });
   });
 });

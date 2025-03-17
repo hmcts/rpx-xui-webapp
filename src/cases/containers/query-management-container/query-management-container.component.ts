@@ -3,7 +3,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { combineLatest, Observable, Subscription, Subject } from 'rxjs';
-import { environment as config } from '../../../environments/environment';
 import {
   CaseNotifier,
   CaseView,

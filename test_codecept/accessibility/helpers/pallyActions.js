@@ -1,55 +1,43 @@
 class Actions{
-   
+  waitForurl(url){
+    return ['wait for url to be '+url];
+  }
 
-    waitForurl(url){
-        return ['wait for url to be '+url];
+  navigateTourl(url) {
+    return ['navigate to '+url, 'wait for url to be ' + url];
+  }
 
-    }
+  waitForPageWithCssLocator(cssLocator) {
+    return ['wait for element ' + cssLocator+' to be visible'];
+  }
 
-    navigateTourl(url) {
-        return ['navigate to '+url,'wait for url to be ' + url];
+  waitForPageWithCssLocatorPresent(cssLocator) {
+    return ['wait for element ' + cssLocator + ' to be hidden'];
+  }
 
-    }
+  inputField(cssLocator, inputText) {
+    return ['wait for element ' + cssLocator + ' to be visible', 'click element ' + cssLocator, 'set field ' + cssLocator+' to ' + inputText];
+  }
 
-    waitForPageWithCssLocator(cssLocator) {
-        return ['wait for element ' + cssLocator+' to be visible'];
+  clickElement(cssLocator) {
+    return ['wait for element ' + cssLocator + ' to be visible', 'click element ' + cssLocator];
+  }
 
-    }
+  selectOptionClick(cssLocator) {
+    return ['click element ' + cssLocator];
+  }
 
-    waitForPageWithCssLocatorPresent(cssLocator) {
-        return ['wait for element ' + cssLocator + ' to be hidden'];
+  checkOption(cssLocator){
+    return [...this.clickElement(cssLocator), 'check field ' + cssLocator];
+  }
 
-    }
+  unCheckOption(cssLocator) {
+    return ['uncheck field ' + cssLocator];
+  }
 
-    inputField(cssLocator,inputText) {
-        return ['wait for element ' + cssLocator + ' to be visible', 'click element ' + cssLocator ,'set field ' + cssLocator+' to ' + inputText];
-
-    }
-
-    clickElement(cssLocator) {
-        return ['wait for element ' + cssLocator + ' to be visible' , 'click element ' + cssLocator ];
-
-    }
-
-    selectOptionClick(cssLocator) {
-        return [ 'click element ' + cssLocator];
-
-    }
-
-    checkOption(cssLocator){
-        return [...this.clickElement(cssLocator),'check field ' + cssLocator];
-    }
-
-    unCheckOption(cssLocator) {
-        return ['uncheck field ' + cssLocator];
-    }
-
-
-    waitForUrlNotTobe(url){
-        return ['wait for url to not be ' + url];
-
-    }
-
+  waitForUrlNotTobe(url){
+    return ['wait for url to not be ' + url];
+  }
 }
 
 module.exports = new Actions();

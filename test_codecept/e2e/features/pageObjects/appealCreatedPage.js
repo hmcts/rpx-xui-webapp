@@ -2,16 +2,15 @@ Button = require('./webdriver-components/button.js');
 TextField = require('./webdriver-components/textField.js');
 
 class AppealCreatedPage{
-
   constructor() {
     this.header = '.page .heading-h1';
     this.submitButton = new Button('button[type=submit]');
     this.previousButton = new Button('button[type=button]');
     this.cancelButton = new Button('.cancel a');
-    this.eventSummary = element(by.css("#field-trigger-summary"));
-    this.eventDescription = element(by.css("#field-trigger-description"));
-
+    this.eventSummary = element(by.css('#field-trigger-summary'));
+    this.eventDescription = element(by.css('#field-trigger-description'));
   }
+
   /**
    * Enter random text into the Text field
    * @returns EUIStringField Object
@@ -45,7 +44,6 @@ class AppealCreatedPage{
     await this.previousButton.click();
   }
 
-
   async getPageHeader(){
     return await $(this.header).getText();
   }
@@ -55,10 +53,9 @@ class AppealCreatedPage{
   }
 
   async amOnPage(){
-    let header = await this.getPageHeader();
-    return header === 'Appeal created'
+    const header = await this.getPageHeader();
+    return header === 'Appeal created';
   }
-
 }
 
 module.exports = AppealCreatedPage;

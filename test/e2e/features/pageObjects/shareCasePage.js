@@ -44,35 +44,35 @@ class ShareCasePage {
   }
 
   async testData_markUserWithEmailTobeAdded(email){
-    let casesCount = await this.casesCount();
+    const casesCount = await this.casesCount();
     for (let caseCounter = 1; caseCounter <= casesCount; caseCounter++) {
-      let caseId = await this.getCaseSubtitle(caseCounter);
+      const caseId = await this.getCaseSubtitle(caseCounter);
       ShareCaseData.MarkUserToShare(caseId, email);
     }
   }
 
   async testData_storeCaseShareDataOnPage(){
-    let casesCount = await this.casesCount();
+    const casesCount = await this.casesCount();
     for (let caseCounter = 1; caseCounter <= casesCount; caseCounter++){
-      let caseId = await this.getCaseSubtitle(caseCounter);
-      let sharedWith = [];
-      let tobeAdded = [];
-      let tobeRemoved= [];
+      const caseId = await this.getCaseSubtitle(caseCounter);
+      const sharedWith = [];
+      const tobeAdded = [];
+      const tobeRemoved= [];
 
-      let usersCountInCase = await this.getUsersCount(caseCounter);
+      const usersCountInCase = await this.getUsersCount(caseCounter);
       for (let userCounter = 1; userCounter <= usersCountInCase; userCounter++){
-        let email = await this.getEmailForUserIncase(caseCounter, userCounter);
-        let actionLinktext = await this.getActionLinkTextForUser(caseCounter, userCounter);
+        const email = await this.getEmailForUserIncase(caseCounter, userCounter);
+        const actionLinktext = await this.getActionLinkTextForUser(caseCounter, userCounter);
         if (actionLinktext === 'Cancel'){
-          let actionStatusLabel = await this.getActionLabelForUserWithEmail(caseCounter, email);
+          const actionStatusLabel = await this.getActionLabelForUserWithEmail(caseCounter, email);
 
           if (actionStatusLabel.includes('added')){
             tobeAdded.push(email);
-          }else{
+          } else {
             sharedWith.push(email);
             tobeRemoved.push(email);
           }
-        }else{
+        } else {
           sharedWith.push(email);
         }
       }
@@ -108,22 +108,22 @@ class ShareCasePage {
   }
 
   async getFilteredUserEmails() {
-    let userEmails = [];
-    let usernameEmails = await this.getFilteredUserNameEmails();
+    const userEmails = [];
+    const usernameEmails = await this.getFilteredUserNameEmails();
     for (let userCounter = 0; userCounter < usernameEmails.length; userCounter++){
-      let usernameEmailText = usernameEmails[userCounter];
-      let userEmail = usernameEmailText.split('-')[1].trim();
+      const usernameEmailText = usernameEmails[userCounter];
+      const userEmail = usernameEmailText.split('-')[1].trim();
       userEmails.push(userEmail);
     }
-    return userEmails; s;
+    return userEmails;
   }
 
   async getFilteredUserNameEmails() {
-    let userNameEmails = [];
-    let usersCount = await this.getFilteredUsersCount();
+    const userNameEmails = [];
+    const usersCount = await this.getFilteredUsersCount();
     for (let userCounter = 0; userCounter < usersCount; userCounter++) {
-      let user = await this.userFilterList.get(userCounter);
-      let usernameEmailText = await user.getText();
+      const user = await this.userFilterList.get(userCounter);
+      const usernameEmailText = await user.getText();
       userNameEmails.push(usernameEmailText);
     }
     CucumberReportLog.AddMessage('Filtered Users : ' + JSON.stringify(userNameEmails), LOG_LEVELS.Debug);
@@ -131,7 +131,7 @@ class ShareCasePage {
   }
 
   async selectUserFromFilteredList(userNum){
-    let userToSelect = await this.userFilterList.get(userNum - 1);
+    const userToSelect = await this.userFilterList.get(userNum - 1);
     CucumberReportLog.AddMessage('Selected User : '+await userToSelect.getText(), LOG_LEVELS.Debug);
     await userToSelect.click();
   }
@@ -149,17 +149,17 @@ class ShareCasePage {
   }
 
   async getCaseTitle(caseNum){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
     return await selectedCase.$('.govuk-case-title').getText();
   }
 
   async getCaseSubtitle(caseNum) {
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
     return await selectedCase.$('.govuk-case-sub-title').getText();
   }
 
   async clickDeselectCase(caseNum){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
     CucumberReportLog.AddMessage('Deselecting Case ' + await selectedCase.getText(), LOG_LEVELS.Debug);
     await selectedCase.$('#btn-deselect-case').click();
 
@@ -169,8 +169,8 @@ class ShareCasePage {
   }
 
   async clickCaseDetailsExpandCollapseBtn(caseNum){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
-    let button = await selectedCase.$('.govuk-accordion__section-button');
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
+    const button = await selectedCase.$('.govuk-accordion__section-button');
     await BrowserWaits.waitForElement(button, 'Expand/collapse icon not present');
     await browser.sleep(1000);
     await browser.executeScript('arguments[0].scrollIntoView()',
@@ -179,35 +179,35 @@ class ShareCasePage {
   }
 
   async isCaseContentDisplayed(caseNum){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
     return await selectedCase.$('.govuk-accordion__section--expanded').isPresent();
   }
 
   async getUsersCount(caseNum){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
     return await selectedCase.$$('tbody tr').count();
   }
 
   async getActionLinkForUser(caseNum, userNum){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
-    let user = await selectedCase.$$('tbody tr').get(userNum - 1);
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
+    const user = await selectedCase.$$('tbody tr').get(userNum - 1);
     return user.$('a');
   }
 
   async getActionLinkTextForUser(caseNum, userNum){
-    let actionLink = await this.getActionLinkForUser(caseNum, userNum);
-    let linkText = await browser.executeScript('return arguments[0].textContent',
+    const actionLink = await this.getActionLinkForUser(caseNum, userNum);
+    const linkText = await browser.executeScript('return arguments[0].textContent',
       actionLink);
     return linkText;
   }
 
   async clickActionLinkForUser(caseNum, userNum){
-    let actionLink = await this.getActionLinkForUser(caseNum, userNum);
+    const actionLink = await this.getActionLinkForUser(caseNum, userNum);
 
-    let actionLinktext = await actionLink.getText();
-    let caseid = await this.getCaseSubtitle(caseNum);
-    let userEmail = await this.getEmailForUserIncase(caseNum, userNum);
-    let actionLinkLabel = await this.getActionLabelForUserWithEmail(caseNum, userEmail);
+    const actionLinktext = await actionLink.getText();
+    const caseid = await this.getCaseSubtitle(caseNum);
+    const userEmail = await this.getEmailForUserIncase(caseNum, userNum);
+    const actionLinkLabel = await this.getActionLabelForUserWithEmail(caseNum, userEmail);
 
     await actionLink.click();
 
@@ -219,7 +219,7 @@ class ShareCasePage {
       ShareCaseData.CancelMarkedForShare(caseid, userEmail);
       CucumberReportLog.AddMessage(caseid + ' Case user uis marked for Share ' + userEmail);
       console.log('*********** Cancel to be Added ' + caseId + ' : email ' + userEmail);
-    }else{
+    } else {
       ShareCaseData.CancelMarkedForUnShare(caseid, userEmail);
       CucumberReportLog.AddMessage(caseid + ' canceled Marked or Unshare ' + userEmail);
       console.log('*********** Cancel to be removed ' + caseId + ' : email ' + userEmail);
@@ -227,30 +227,30 @@ class ShareCasePage {
   }
 
   async getEmailForUserIncase(caseNum, userNum) {
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
-    let userRow = await selectedCase.$$('tbody tr').get(userNum - 1);
-    let email = await browser.executeScript('return arguments[0].textContent',
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
+    const userRow = await selectedCase.$$('tbody tr').get(userNum - 1);
+    const email = await browser.executeScript('return arguments[0].textContent',
       userRow.$('td:nth-of-type(2)'));
     return email;
   }
 
   async getActionStatusLabelForUser(caseNum, userNum) {
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
-    let user = await selectedCase.$$('tbody tr').get(userNum - 1);
-    let actionLabelCol = user.$('td:nth-of-type(4)');
-    let actionLabel = await browser.executeScript('return arguments[0].textContent',
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
+    const user = await selectedCase.$$('tbody tr').get(userNum - 1);
+    const actionLabelCol = user.$('td:nth-of-type(4)');
+    const actionLabel = await browser.executeScript('return arguments[0].textContent',
       actionLabelCol);
     return actionLabel;
   }
 
   async getUserRowInCase(caseNum, email){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
-    let users = selectedCase.$$('tbody tr');
-    let userCount = await users.count();
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
+    const users = selectedCase.$$('tbody tr');
+    const userCount = await users.count();
     for (let user = 0; user < userCount; user++) {
-      let userRow = await users.get(user);
+      const userRow = await users.get(user);
 
-      let userEmail = await browser.executeScript('return arguments[0].textContent',
+      const userEmail = await browser.executeScript('return arguments[0].textContent',
         userRow.$('td:nth-of-type(2)'));
 
       if (userEmail === email) {
@@ -261,34 +261,34 @@ class ShareCasePage {
   }
 
   async isUserWithEmailListedInCase(caseNum, email){
-    let userRow = await this.getUserRowInCase(caseNum, email);
+    const userRow = await this.getUserRowInCase(caseNum, email);
     return userRow !== null;
   }
 
   async isUserWithEmailMarkedToBeAdded(caseNum, email) {
-    let userRow = await this.getUserRowInCase(caseNum, email);
-    let actionLabel = await browser.executeScript('return arguments[0].textContent',
+    const userRow = await this.getUserRowInCase(caseNum, email);
+    const actionLabel = await browser.executeScript('return arguments[0].textContent',
       userRow.$('td:nth-of-type(4)'));
     return actionLabel.toLowerCase().includes('added');
   }
 
   async isUserWithEmailMarkedToBeRemoved(caseNum, email) {
-    let userRow = await this.getUserRowInCase(caseNum, email);
-    let actionLabel = await browser.executeScript('return arguments[0].textContent',
+    const userRow = await this.getUserRowInCase(caseNum, email);
+    const actionLabel = await browser.executeScript('return arguments[0].textContent',
       userRow.$('td:nth-of-type(4)'));
     return actionLabel.toLowerCase().includes('removed');
   }
 
   async getActionLabelForUserWithEmail(caseNum, email){
-    let selectedCase = await this.selectedCases.get(caseNum - 1);
-    let users = selectedCase.$$('tbody tr');
-    let userCount = await users.count();
+    const selectedCase = await this.selectedCases.get(caseNum - 1);
+    const users = selectedCase.$$('tbody tr');
+    const userCount = await users.count();
     for (let user = 0; user < userCount; user++) {
-      let userRow = await users.get(user);
-      let userEmail = await browser.executeScript('return arguments[0].textContent',
+      const userRow = await users.get(user);
+      const userEmail = await browser.executeScript('return arguments[0].textContent',
         userRow.$('td:nth-of-type(2)'));
       if (userEmail === email) {
-        let actionLabel = await browser.executeScript('return arguments[0].textContent',
+        const actionLabel = await browser.executeScript('return arguments[0].textContent',
           userRow.$('td:nth-of-type(4)'));
         return actionLabel;
       }
@@ -311,9 +311,9 @@ class ShareCasePage {
   }
 
   async isUserWithEmailNotSharedWithAtleastOneCase(email){
-    let totalCases = await this.casesCount();
-    for(let i = 1; i <= totalCases; i++){
-      if(!(await this.isUserWithEmailListedInCase(i, email))){
+    const totalCases = await this.casesCount();
+    for (let i = 1; i <= totalCases; i++){
+      if (!(await this.isUserWithEmailListedInCase(i, email))){
         return i;
       }
     }
@@ -321,7 +321,7 @@ class ShareCasePage {
   }
 
   async isUserWithEmailSharedWithAtleastOneCase(email) {
-    let totalCases = await this.casesCount();
+    const totalCases = await this.casesCount();
     for (let i = 1; i <= totalCases; i++) {
       if ((await this.isUserWithEmailListedInCase(i, email))) {
         return i;
@@ -331,12 +331,12 @@ class ShareCasePage {
   }
 
   async selectUserWithEmail_Not_SharedWithAtLeastOneCase(){
-    let useremails = await this.getFilteredUserEmails();
+    const useremails = await this.getFilteredUserEmails();
     let userToSelect = 0;
     let email = '';
-    for(let i = 0; i < useremails.length; i++){
+    for (let i = 0; i < useremails.length; i++){
       email = useremails[i];
-      let caseNum = await this.isUserWithEmailNotSharedWithAtleastOneCase(email);
+      const caseNum = await this.isUserWithEmailNotSharedWithAtleastOneCase(email);
       if (caseNum > 0){
         userToSelect = i + 1;
         break;
@@ -346,18 +346,18 @@ class ShareCasePage {
       await this.selectUserFromFilteredList(userToSelect);
       this.testData_lastSelectedUser = email;
       CucumberReportLog.AddMessage('Selected a user not shared with any case : '+email);
-    }else{
+    } else {
       throw Error('AllUsers shared with all selected cases. cannot proceed with test step to select a user not shared with atleast one case');
     }
   }
 
   async selectUserWithEmail_SharedWithAtLeastOneCase() {
-    let useremails = await this.getFilteredUserEmails();
+    const useremails = await this.getFilteredUserEmails();
     let userToSelect = 0;
     let email = '';
     for (let i = 0; i < useremails.length; i++) {
       email = useremails[i];
-      let caseNum = await this.isUserWithEmailSharedWithAtleastOneCase(email);
+      const caseNum = await this.isUserWithEmailSharedWithAtleastOneCase(email);
       if (caseNum > 0) {
         userToSelect = i + 1;
         break;
@@ -373,9 +373,9 @@ class ShareCasePage {
   }
 
   async isLastAddedUserListedInAllCases(){
-    let casesCount = await this.casesCount();
-    for(let i = 1; i<= casesCount; i++){
-      if(!(await this.isUserWithEmailListedInCase(i, this.testData_lastAddedUser))){
+    const casesCount = await this.casesCount();
+    for (let i = 1; i<= casesCount; i++){
+      if (!(await this.isUserWithEmailListedInCase(i, this.testData_lastAddedUser))){
         return false;
       }
     }
@@ -383,9 +383,9 @@ class ShareCasePage {
   }
 
   async isLastAddedUserMarkedTobeAddedInAnyCase() {
-    let casesCount = await this.casesCount();
+    const casesCount = await this.casesCount();
     for (let i = 1; i <= casesCount; i++) {
-      if(await this.isUserWithEmailMarkedToBeAdded(i, this.testData_lastAddedUser)){
+      if (await this.isUserWithEmailMarkedToBeAdded(i, this.testData_lastAddedUser)){
         return true;
       }
     }
@@ -393,11 +393,11 @@ class ShareCasePage {
   }
 
   async isAnyUserMarkedToBeRemoved() {
-    let casesCount = await this.casesCount();
+    const casesCount = await this.casesCount();
     for (let i = 1; i <= casesCount; i++) {
-      let usersCountInCase = await this.getUsersCount(i);
+      const usersCountInCase = await this.getUsersCount(i);
       for (let userCounter = 1; userCounter <= usersCountInCase; userCounter++) {
-        let userActionLabel = await this.getActionStatusLabelForUser(i, userCounter);
+        const userActionLabel = await this.getActionStatusLabelForUser(i, userCounter);
         if (userActionLabel.toLowerCase().includes('remove')) {
           return true;
         }
@@ -407,13 +407,13 @@ class ShareCasePage {
   }
 
   async clickRemoveForAUserInListedCases(){
-    let casesCount = await this.casesCount();
+    const casesCount = await this.casesCount();
     for (let caseCounter = 1; caseCounter <= casesCount; caseCounter++) {
-      let usersCountInCase = await this.getUsersCount(caseCounter);
+      const usersCountInCase = await this.getUsersCount(caseCounter);
       for (let userCounter = 1; userCounter <= usersCountInCase; userCounter++){
-        let actionLinktext = await this.getActionLinkTextForUser(caseCounter, userCounter);
+        const actionLinktext = await this.getActionLinkTextForUser(caseCounter, userCounter);
         if (actionLinktext.toLowerCase().includes('remove')){
-          if(!(await this.isCaseContentDisplayed(caseCounter))){
+          if (!(await this.isCaseContentDisplayed(caseCounter))){
             CucumberReportLog.AddMessage('Expanding Case at pos ' + caseCounter);
             await this.clickCaseDetailsExpandCollapseBtn(caseCounter);
           }
@@ -427,29 +427,29 @@ class ShareCasePage {
   }
 
   async validateShareCaseChangesPersisted(){
-    let casesCount = await this.casesCount();
-    let issuesList = [];
+    const casesCount = await this.casesCount();
+    const issuesList = [];
     for (let caseCounter = 1; caseCounter <= casesCount; caseCounter++) {
-      let caseId = await this.getCaseSubtitle(caseCounter);
-      let caseShareData = ShareCaseData.getCaseWithId(caseId);
+      const caseId = await this.getCaseSubtitle(caseCounter);
+      const caseShareData = ShareCaseData.getCaseWithId(caseId);
       CucumberReportLog.AddJson(caseShareData);
 
       for (let shareWithCounter = 0; shareWithCounter < caseShareData.sharedWith.length; shareWithCounter++){
-        let email = caseShareData.sharedWith[shareWithCounter];
-        if(!(await this.isUserWithEmailListedInCase(caseCounter, email))){
+        const email = caseShareData.sharedWith[shareWithCounter];
+        if (!(await this.isUserWithEmailListedInCase(caseCounter, email))){
           issuesList.push(email + 'already shared user is not listed for in case ' + caseId);
         }
       }
 
       for (let shareWithCounter = 0; shareWithCounter < caseShareData.markedForShare.length; shareWithCounter++) {
-        let email = caseShareData.markedForShare[shareWithCounter];
+        const email = caseShareData.markedForShare[shareWithCounter];
         if (!(await this.isUserWithEmailMarkedToBeAdded(caseCounter, email))) {
           issuesList.push(email + 'marked for added in not persisted ' + caseId);
         }
       }
 
       for (let shareWithCounter = 0; shareWithCounter < caseShareData.markedForUnShare.length; shareWithCounter++) {
-        let email = caseShareData.markedForUnShare[shareWithCounter];
+        const email = caseShareData.markedForUnShare[shareWithCounter];
         if (!(await this.isUserWithEmailMarkedToBeRemoved(caseCounter, email))) {
           issuesList.push(email + 'marked to remove in not persisted ' + caseId);
         }

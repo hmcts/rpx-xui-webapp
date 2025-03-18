@@ -1,7 +1,7 @@
-import {s2s} from '@hmcts/rpx-xui-node-lib';
-import axios, {AxiosInstance} from 'axios';
+import { s2s } from '@hmcts/rpx-xui-node-lib';
+import axios, { AxiosInstance } from 'axios';
 import * as tunnel from 'tunnel';
-import {getConfigValue} from '../../../../api/configuration';
+import { getConfigValue } from '../../../../api/configuration';
 import {
   MAX_LOG_LINE,
   MICROSERVICE,
@@ -9,9 +9,9 @@ import {
   SERVICE_S2S_PATH
 } from '../../../../api/configuration/references';
 import * as log4jui from '../../../../api/lib/log4jui';
-import {shorten} from '../../../../api/lib/util';
-import {config} from '../config/config';
-import {getAuthToken} from './getToken';
+import { shorten } from '../../../../api/lib/util';
+import { config } from '../config/config';
+import { getAuthToken } from './getToken';
 
 const s2sSecret = getConfigValue(S2S_SECRET).trim();
 const microservice = getConfigValue(MICROSERVICE);
@@ -34,7 +34,7 @@ const httpsagent = tunnel.httpsOverHttp({
 
 const axiosOptions = {};
 if (!config.baseUrl.includes('manage-case.')) {
-  axiosOptions['httpsAgent'] = httpsagent;
+  axiosOptions.httpsAgent = httpsagent;
 }
 
 export const http: AxiosInstance = axios.create(axiosOptions);

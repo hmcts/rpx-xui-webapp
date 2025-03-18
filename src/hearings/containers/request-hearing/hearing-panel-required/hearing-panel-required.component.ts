@@ -9,6 +9,7 @@ import {
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { PanelRequirementsModel } from 'api/hearings/models/panelRequirements.model';
 
 @Component({
   selector: 'exui-hearing-panel-required',
@@ -55,13 +56,24 @@ export class HearingPanelRequiredComponent extends RequestHearingPageFlow implem
   }
 
   public prepareHearingRequestData(): void {
-    this.hearingRequestMainModel = {
-      ...this.hearingRequestMainModel,
-      hearingDetails: {
-        ...this.hearingRequestMainModel.hearingDetails,
-        isAPanelFlag: this.hearingPanelRequiredForm.value.hearingPanelRequired
-      }
-    };
+    if (this.hearingPanelRequired !== this.hearingPanelRequiredForm.value.hearingPanelRequired) {
+      this.hearingRequestMainModel = {
+        ...this.hearingRequestMainModel,
+        hearingDetails: {
+          ...this.hearingRequestMainModel.hearingDetails,
+          isAPanelFlag: this.hearingPanelRequiredForm.value.hearingPanelRequired,
+          panelRequirements: {} as PanelRequirementsModel
+        }
+      };
+    } else {
+      this.hearingRequestMainModel = {
+        ...this.hearingRequestMainModel,
+        hearingDetails: {
+          ...this.hearingRequestMainModel.hearingDetails,
+          isAPanelFlag: this.hearingPanelRequiredForm.value.hearingPanelRequired
+        }
+      };
+    }
   }
 
   public updateHearingConditions(): void {

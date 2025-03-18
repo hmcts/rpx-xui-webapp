@@ -3639,7 +3639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.54-exui-2816-rc2":
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.55-exui-2816-rc2":
   version: 7.1.55-exui-2816-rc2
   resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.55-exui-2816-rc2"
   dependencies:

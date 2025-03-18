@@ -77,8 +77,10 @@ export class RadioListBuilderComponent {
   }
 
   public getOptionLabel(option: RadioListItem): string {
-    if (option.child_nodes && option.child_nodes.length > 0) {
-      return `${option.value_en} - ${option.child_nodes[0].value_en}`;
+    if (option.child_nodes) {
+      if (option.child_nodes.length > 0) {
+        return `${option.value_en} - ${option.child_nodes[0].value_en}`;
+      }
     }
     return option.value_en;
   }

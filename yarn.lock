@@ -3640,8 +3640,8 @@ __metadata:
   linkType: hard
 
 "@hmcts/ccd-case-ui-toolkit@npm:7.1.54-exui-2816-rc2":
-  version: 7.1.51-exui-2816-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.51-exui-2816-rc2"
+  version: 7.1.55-exui-2816-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.55-exui-2816-rc2"
   dependencies:
     tslib: "npm:^2.3.0"
   checksum: 10/6c17b89f22d3ec90035f774eec2abc5be15c1596343b7cd7f29867a6669281fecb25f710b8765fb297d9064efc4c21828c90e550f3024ac75f4cdff8b558dc71

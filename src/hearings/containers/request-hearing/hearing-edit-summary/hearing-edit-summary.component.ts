@@ -635,7 +635,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         return true;
       }
     }
-
-    return this.hearingRequestMainModel.hearingDetails.hearingPriorityType !== this.serviceHearingValuesModel.hearingPriorityType;
+    return false;
   }
 }

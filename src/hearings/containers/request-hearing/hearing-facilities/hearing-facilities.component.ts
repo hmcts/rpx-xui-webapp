@@ -128,7 +128,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired
+        facilitiesRequired: facilitiesRequired
       }
     };
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;

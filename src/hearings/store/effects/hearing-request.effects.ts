@@ -89,7 +89,7 @@ export class HearingRequestEffects {
           let currentScreen: ScreenNavigationModel;
 
           this.screenNavigations$.subscribe((items) => {
-            currentScreen = items.find(item => item.screenName === currentPage);
+            currentScreen = items.find((item) => item.screenName === currentPage);
           });
 
           if (nextPage === HearingRequestEffects.WELSH_PAGE) {
@@ -98,17 +98,17 @@ export class HearingRequestEffects {
             break;
           }
 
-          if(currentScreen) {
-            if(currentScreen.conditionKey) {
+          if (currentScreen) {
+            if (currentScreen.conditionKey) {
               this.router.navigate(['hearings', 'request', nextPage])
                 .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
               break;
-            } 
+            }
           }
 
-        this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
-          .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
-        break;
+          this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
+            .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
+          break;
 
         case Mode.VIEW_EDIT:
           if (nextPage === HearingRequestEffects.WELSH_PAGE) {

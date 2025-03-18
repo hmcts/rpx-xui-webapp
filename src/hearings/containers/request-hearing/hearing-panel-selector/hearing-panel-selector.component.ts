@@ -77,7 +77,14 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
 
   public buildModelFromValues(): LovRefDataModel[] {
     // Create a copy of panelSpecialisms to track unprocessed child IDs
-    const panelSpecialismsClone = [...this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms];
+    const panelSpecialismsClone = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms ?
+      [...this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms] : [];
+
+    if (!this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType ||
+      this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length === 0) {
+      return [];
+    }
+
     // Loop through each item in roleType
     return this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType
       .map((id) => {

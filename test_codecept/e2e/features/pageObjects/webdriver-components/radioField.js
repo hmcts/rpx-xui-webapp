@@ -3,7 +3,6 @@
  */
 const DEFAULT_TIMEOUT = 5000;
 class RadioField{
-
   /**
    * This css should be an <input> tag
    * @param css
@@ -29,7 +28,7 @@ class RadioField{
       await browser.wait(EC.invisibilityOf(await element(by.xpath(this.wrapperXPath))), DEFAULT_TIMEOUT);
       return true;
     } catch (e) {
-      let message = `timed out after ${DEFAULT_TIMEOUT} waiting for radio element ${element} to be invisible`;
+      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for radio element ${element} to be invisible`;
       throw new CustomError(message, e);
     }
   }
@@ -41,7 +40,7 @@ class RadioField{
       await browser.wait(EC.visibilityOf(await element(by.xpath(this.wrapperXPath))), DEFAULT_TIMEOUT);
       return true;
     } catch (e) {
-      let message = `timed out after ${DEFAULT_TIMEOUT} waiting for radio element ${element} to be visible`;
+      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for radio element ${element} to be visible`;
       throw new CustomError(message, e);
     }
   }
@@ -61,8 +60,6 @@ class RadioField{
   async isEnabled(){
     return await $(this.css).isEnabled();
   }
-
-
 }
 
 module.exports = RadioField;

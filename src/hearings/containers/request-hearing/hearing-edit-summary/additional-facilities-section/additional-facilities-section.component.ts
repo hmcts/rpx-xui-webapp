@@ -96,7 +96,6 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     } else {
       if (this.caseAdditionalSecurityFlagChanged ||
         this.facilitiesChanged ||
-        (this.nonReasonableAdjustmentChangesRequired && this.nonReasonableAdjustmentChangesConfirmed) ||
         (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed)) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       }

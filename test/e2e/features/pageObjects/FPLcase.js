@@ -1,5 +1,5 @@
 
-var CaseManager = require('./common/CaseManager');
+const CaseManager = require('./common/CaseManager');
 
 class FPLCase {
   constructor() {
@@ -7,7 +7,7 @@ class FPLCase {
   }
 
   async createCase(isAccessibilityTest) {
-    var caseData = {
+    const caseData = {
     };
 
     await this.caseManager.createCase(caseData, isAccessibilityTest);

@@ -6616,10 +6616,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/crypto-js@npm:^3.1.43":
-  version: 3.1.47
-  resolution: "@types/crypto-js@npm:3.1.47"
-  checksum: 10/0947713ca7d70c509530bd960d5afa1e06b98af734975a976529b0a0c0dcced12598abe086e3b0c0b1b81b0d785e7d3059f75009fc839f861d787a9a69f74cf1
+"@types/crypto-js@npm:^4.0.0":
+  version: 4.2.2
+  resolution: "@types/crypto-js@npm:4.2.2"
+  checksum: 10/a40fc5a9219fd33f54ba3e094c5e5ab2904d3106681a76f1029bb038976591e9c8959099963bf4474fde21c2d8d00c1f896445206a3a58f85588f9cb1bd96a9a
   languageName: node
   linkType: hard
 
@@ -18753,11 +18753,11 @@ __metadata:
   linkType: hard
 
 "moment-timezone@npm:^0.5.28":
-  version: 0.5.46
-  resolution: "moment-timezone@npm:0.5.46"
+  version: 0.5.47
+  resolution: "moment-timezone@npm:0.5.47"
   dependencies:
     moment: "npm:^2.29.4"
-  checksum: 10/7613ba388fa6004af62675fb9945cb0d37758b559d07470a5e188419ffe1ac03eb2ed16fe80aa34d1e7dd39fc5bd67dc02cd59e8dcdab95504cface2c78e4b3d
+  checksum: 10/b2ad32e6b7ea4ce99756c9f571f8eb1bdd6592ecdc2bf3f7fb988ae980a49a7e87b986776090571b9608c8576205f839b736dc7589c180ce36c82fad4b8416c6
   languageName: node
   linkType: hard
 
@@ -22325,7 +22325,7 @@ __metadata:
     "@types/applicationinsights-js": "npm:^1.0.9"
     "@types/config": "npm:^3.0.0"
     "@types/cookie-parser": "npm:^1.4.2"
-    "@types/crypto-js": "npm:^3.1.43"
+    "@types/crypto-js": "npm:^4.0.0"
     "@types/csurf": "npm:^1.11.0"
     "@types/ejs": "npm:^3.0.0"
     "@types/express": "npm:^4.16.1"

@@ -27,7 +27,7 @@ import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 
 @Component({
@@ -69,7 +69,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
-  public roleName: string;
 
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -401,10 +400,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           this.showForm = true;
           this.loadingService.unregister(loadingToken);
 
-          if (this.queryCreateContext === QueryCreateContext.NEW_QUERY){
-            this.caseQueriesCollectionsCount();
-          }
-
           if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
             this.processFilteredMessages();
           }
@@ -429,33 +424,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
       });
-    });
-  }
-
-  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-  // When creating a New Query, if caseQueriesCollections is more than one, then  the method getUserDetailsRoleName()
-  private caseQueriesCollectionsCount() {
-    const numberOfCaseQueriesCollections = this.eventTrigger?.case_fields?.filter(
-      (caseField) =>
-        caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-        caseField.field_type.type === this.FIELD_TYPE_COMPLEX
-    )?.length || 0;
-    if (numberOfCaseQueriesCollections > 1) {
-      this.getUserDetailsRoleName();
-    }
-  }
-
-  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-  private getUserDetailsRoleName(): void {
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
-      const matchedRoleAssignment = user.roleAssignmentInfo?.find(
-        (m) => m.caseId === this.caseDetails.case_id
-      );
-      if (matchedRoleAssignment) {
-        this.roleName = matchedRoleAssignment.roleName;
-      } else {
-        this.roleName = '';
-      }
     });
   }
 
@@ -484,12 +452,18 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     let filteredMessages = [];
 
     // Work Allocation uses the id of the query, we require the parentId to filter the messages
-    if (this.queryCreateContext === QueryCreateContext.RESPOND && allMessages.length > 1) {
+    if (this.queryCreateContext === QueryCreateContext.RESPOND) {
       const parentId = allMessages.find((message) => message.value.id === messageId)?.value.parentId;
-      // Use parentId as the filter
-      filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+
+      if (parentId) {
+        // If parentId exists, filter messages using it
+        filteredMessages = allMessages.filter((message) => message.value.id === parentId);
+      } else {
+        // If parentId doesn't exist, fallback to messageId
+        filteredMessages = allMessages.filter((message) => message.value.id === messageId);
+      }
     } else {
-      // Use messageId as the filter
+      // Default case: filter messages by messageId
       filteredMessages = allMessages.filter((message) => message.value.id === messageId);
     }
 

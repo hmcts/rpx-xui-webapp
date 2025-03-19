@@ -49,6 +49,7 @@ export class AuthService {
   }
 
   private clearServiceMessageCookie() {
+    // set the expiry to some time in the past so the cookie is removed
     document.cookie = `${AppConstants.SERVICE_MESSAGE_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   }
 }

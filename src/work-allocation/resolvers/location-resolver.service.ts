@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
-import { catchError, first, map, mergeMap } from 'rxjs/operators';
+import { catchError, filter, first, map, mergeMap } from 'rxjs/operators';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import { UserService } from '../../app/services/user/user.service';
@@ -47,6 +47,7 @@ export class LocationResolver {
   public resolve(): Observable<LocationModel[]> {
     return this.userDetails()
       .pipe(
+        filter((userDetails: UserDetails) => !!userDetails.userInfo),
         first(),
         mergeMap((userDetails: UserDetails) => this.getRegionLocations(userDetails)
           .pipe(

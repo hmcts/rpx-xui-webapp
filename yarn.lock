@@ -3527,12 +3527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.51":
-  version: 7.1.51
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.51"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.55":
+  version: 7.1.55
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.55"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9dddb2d2597b97d83a15aa42e067ff74a6ea3e485137aaaf8077a0627dccf465be83d454fe1c0de07c97119cac54fa613236e03d5af4f8c67f0be068a934c965
+  checksum: 10/8f018f0f4fa21dbab6d0d41bb406198a33a90845625eb899b444b15bbaa03713572a9e73c78f4bb464586386a7be2df14a0566cc78d68b4286d09d3b20c0fbff
   languageName: node
   linkType: hard
 
@@ -6501,10 +6501,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/crypto-js@npm:^3.1.43":
-  version: 3.1.47
-  resolution: "@types/crypto-js@npm:3.1.47"
-  checksum: 10/0947713ca7d70c509530bd960d5afa1e06b98af734975a976529b0a0c0dcced12598abe086e3b0c0b1b81b0d785e7d3059f75009fc839f861d787a9a69f74cf1
+"@types/crypto-js@npm:^4.0.0":
+  version: 4.2.2
+  resolution: "@types/crypto-js@npm:4.2.2"
+  checksum: 10/a40fc5a9219fd33f54ba3e094c5e5ab2904d3106681a76f1029bb038976591e9c8959099963bf4474fde21c2d8d00c1f896445206a3a58f85588f9cb1bd96a9a
   languageName: node
   linkType: hard
 
@@ -6656,10 +6656,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/global-agent@npm:^2.1.0":
-  version: 2.1.3
-  resolution: "@types/global-agent@npm:2.1.3"
-  checksum: 10/6129b6d5ba871b9d111ddf91e6f9a1725d3f28bf2aa6869ec83bebd14c688cde4275ebea6fa45b0b1c00d78109d022c935f952e9e4876d76289d4706484776c3
+"@types/global-agent@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/global-agent@npm:3.0.0"
+  checksum: 10/f961aaf493176e651dcb1bdb8f31b3f933f7ba86a74901c40399622e7f09621d84e0c12cca62ddee12bd8d783656359d25ec88aa57bba3fbcbd58f60f8cbdb18
   languageName: node
   linkType: hard
 
@@ -22055,7 +22055,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.51"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.55"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.13"
@@ -22084,13 +22084,13 @@ __metadata:
     "@types/applicationinsights-js": "npm:^1.0.9"
     "@types/config": "npm:^3.0.0"
     "@types/cookie-parser": "npm:^1.4.2"
-    "@types/crypto-js": "npm:^3.1.43"
+    "@types/crypto-js": "npm:^4.0.0"
     "@types/csurf": "npm:^1.11.0"
     "@types/ejs": "npm:^3.0.0"
     "@types/express": "npm:^4.16.1"
     "@types/express-session": "npm:^1.17.0"
     "@types/faker": "npm:^6.0.0"
-    "@types/global-agent": "npm:^2.1.0"
+    "@types/global-agent": "npm:^3.0.0"
     "@types/jasmine": "npm:~3.10.0"
     "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^10.0.0"

@@ -42,9 +42,9 @@
           </span>
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-              <h1 class="govuk-fieldset__heading">
+              <h3 class="govuk-fieldset__heading">
                 {{ 'What will be the methods of attendance for this hearing?' | rpxTranslate }}
-              </h1>
+              </h3>
             </legend>
             <div class="govuk-form-group govuk-!-margin-bottom-3" id="hearingLevelChannelList">
               <fieldset class="govuk-fieldset">
@@ -60,48 +60,52 @@
             </div>
           </fieldset>
         </div>
-        <div  class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
-          <p class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--s" for="party-channel">{{ 'How will each participant attend the hearing?' | rpxTranslate }}</label>
-          </p>
-           <span *ngIf=" !selectionValid"
-              id="party-selection-error"
-              class="govuk-error-message">
-              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Select how each party will attend the hearing' | rpxTranslate }}
-            </span>
-          <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
-            <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel'+i">
-                {{ partyControl.value.partyName }}
-                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.partyAmendmentStatus !== 'NONE'"
-                  [displayLabel]="partyControl.value.partyAmendmentStatus">
-                </exui-amendment-label>
-            </label>
-            <ng-container formGroupName="individualDetails">
-              <select class="govuk-select" [id]="'partyChannel'+i" [name]="'partyChannel'+i" formControlName="preferredHearingChannel">
-                <option value="" selected>{{ 'Please select' | rpxTranslate }}</option>
-                <option *ngFor="let party of partyChannels" [ngValue]="party.key">{{party.value_en}}</option>
-              </select>
-            </ng-container>
-          </div>
-        </div>
-        <br>
-        <div class="govuk-form-group govuk-!-margin-top-2"
-          [ngClass]="{'govuk-form-group--error' : !attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty}">
-            <p class="govuk-label-wrapper">
-              <label class="govuk-label govuk-label--s" for="attendance-number">
-                {{ 'How many people will attend the hearing in person?' | rpxTranslate }}
-              </label>
-            </p>
-            <div id="attendance-number-hint" class="govuk-hint">
-                {{ 'Estimate how many people will attend in person, excluding judicial members. This number will determine the room size.' | rpxTranslate }}
-            </div>
-            <span *ngIf=" !attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty"
-                id="attendee-number-error"
+        <fieldset class="govuk-fieldset">
+          <div  class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}" formGroupName="parties">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              <h3 class="govuk-fieldset__heading">
+                {{ 'How will each participant attend the hearing?' | rpxTranslate }}
+              </h3>
+            </legend>
+            <span *ngIf=" !selectionValid"
+                id="party-selection-error"
                 class="govuk-error-message">
-              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a valid number of attendees' | rpxTranslate }}
-            </span>
-            <input formControlName="estimation" class="govuk-input" id="attendance-number" name="attendance-number" aria-describedby="attendance-number-hint">
-        </div>
+                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Select how each party will attend the hearing' | rpxTranslate }}
+              </span>
+            <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
+              <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel'+i">
+                  {{ partyControl.value.partyName }}
+                  <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.partyAmendmentStatus !== 'NONE'"
+                    [displayLabel]="partyControl.value.partyAmendmentStatus">
+                  </exui-amendment-label>
+              </label>
+              <ng-container formGroupName="individualDetails">
+                <select class="govuk-select" [id]="'partyChannel'+i" [name]="'partyChannel'+i" formControlName="preferredHearingChannel">
+                  <option value="" selected>{{ 'Please select' | rpxTranslate }}</option>
+                  <option *ngFor="let party of partyChannels" [ngValue]="party.key">{{party.value_en}}</option>
+                </select>
+              </ng-container>
+            </div>
+          </div>
+          <br>
+          <div class="govuk-form-group govuk-!-margin-top-2"
+            [ngClass]="{'govuk-form-group--error' : !attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty}">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+              <h3 class="govuk-fieldset__heading" id="attendance-number-header">
+                {{ 'How many people will attend the hearing in person?' | rpxTranslate }}
+              </h3>
+            </legend>
+              <div id="attendance-number-hint" class="govuk-hint">
+                  {{ 'Estimate how many people will attend in person, excluding judicial members. This number will determine the room size.' | rpxTranslate }}
+              </div>
+              <span *ngIf=" !attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty"
+                  id="attendee-number-error"
+                  class="govuk-error-message">
+                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a valid number of attendees' | rpxTranslate }}
+              </span>
+              <input formControlName="estimation" class="govuk-input" id="attendance-number" aria-labelledby="attendance-number-header" aria-describedby="attendance-number-hint">
+          </div>
+        </fieldset>
       </ng-container>
   </form>
   </div>

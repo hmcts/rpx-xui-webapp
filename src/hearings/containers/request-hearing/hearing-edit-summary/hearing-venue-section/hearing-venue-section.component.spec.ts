@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { initialState } from '../../../../../hearings/hearing.test.data';
 import { HearingLocationModel } from '../../../../models/hearingLocation.model';
 import { HMCLocationType } from '../../../../models/hearings.enum';
-import { LocationByEPIMMSModel } from '../../../../models/location.model';
+import { LocationByEpimmsModel } from '../../../../models/location.model';
 import { LocationsDataService } from '../../../../services/locations-data.service';
 import { HearingVenueSectionComponent } from './hearing-venue-section.component';
 
@@ -23,7 +23,7 @@ describe('HearingVenueSectionComponent', () => {
     }
   ];
 
-  const locationsReturnedByService: LocationByEPIMMSModel[] = [
+  const locationsReturnedByService: LocationByEpimmsModel[] = [
     {
       epimms_id: '196538',
       site_name: 'Liverpool Social Security and Child Support Tribunal',
@@ -102,7 +102,7 @@ describe('HearingVenueSectionComponent', () => {
 
   it('should set locations', () => {
     component.ngOnInit();
-    component.locations$.subscribe((result: LocationByEPIMMSModel[]) => {
+    component.locations$.subscribe((result: LocationByEpimmsModel[]) => {
       expect(result).toEqual(locationsReturnedByService);
     });
     expect(component.showAmmendedForHeading).toEqual(false);

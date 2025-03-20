@@ -105,7 +105,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.hearingsService.hearingRequestForSubmitValid = false;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
-    this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
+    const serviceCode = this.hearingRequestMainModel.caseDetails.hmctsServiceCode;
+    this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds, serviceCode).pipe(
       map((locations) => {
         return locations.some((location) => location.region_id === this.REGION_ID);
       })

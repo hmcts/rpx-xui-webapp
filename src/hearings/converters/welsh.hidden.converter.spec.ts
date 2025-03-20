@@ -1,12 +1,12 @@
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
-import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationByEpimmsModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { WelshHiddenConverter } from './welsh.hidden.converter';
 
 describe('WelshHiddenConverter', () => {
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '234850',
     site_name: 'Cardiff Civil and Family Justice Centre',
     court_name: 'CARDIFF CIVIL AND FAMILY JUSTICE CENTRE',

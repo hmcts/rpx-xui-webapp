@@ -1,7 +1,7 @@
 apiVersion: v2
 name: xui-webapp
 home: https://github.com/hmcts/rpx-xui-webapp
-version: 1.0.29
+version: 1.0.30
 description: Expert UI
 maintainers:
   - name: HMCTS RPX XUI
@@ -15,5 +15,5 @@ dependencies:
     condition: redis.enabled
   - name: idam-pr
     version: ~2.3.0
-    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
+    repository: 'oci://hmctspublic.azurecr.io/helm'
     condition: idam-pr.enabled

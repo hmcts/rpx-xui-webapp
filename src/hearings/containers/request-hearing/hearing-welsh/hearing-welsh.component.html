@@ -2,16 +2,17 @@
 
 <div>
   <form class="form" [formGroup]="welshForm" [ngClass]="{'govuk-form-group--error': error}">
-    <exui-hearing-parties-title></exui-hearing-parties-title>
-    <h1 class="govuk-heading-l">
-        {{ 'Does this hearing need to be in Welsh?' | rpxTranslate }}
-    </h1>
-    <div id="welsh-hint" class="govuk-hint">
-        {{ 'This means the entire hearing will be carried out in Welsh.' | rpxTranslate }}
-    </div>
-
     <div class="govuk-form-group">
         <fieldset class="govuk-fieldset">
+          <exui-hearing-parties-title></exui-hearing-parties-title>
+          <legend>
+            <h1 class="govuk-heading-l">
+                {{ 'Does this hearing need to be in Welsh?' | rpxTranslate }}
+            </h1>
+          </legend>
+          <div id="welsh-hint" class="govuk-hint">
+              {{ 'This means the entire hearing will be carried out in Welsh.' | rpxTranslate }}
+          </div>
             <span id="hearing-welsh-location" [ngClass]="{'govuk-error-message': error}" *ngIf="error">
               <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>{{ 'Select hearing need to be in Welsh or not' | rpxTranslate }}
             </span>

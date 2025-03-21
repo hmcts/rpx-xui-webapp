@@ -85,7 +85,11 @@ describe('HeaderConfigService', () => {
         protocol: '',
         oidcEnabled: '',
         paymentReturnUrl: '',
-        headerConfig: mockHeaderConfig
+        headerConfig: mockHeaderConfig,
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
+        }
       };
 
       environmentServiceSpy.config$ = of(mockConfig);
@@ -105,7 +109,11 @@ describe('HeaderConfigService', () => {
         protocol: '',
         oidcEnabled: '',
         paymentReturnUrl: '',
-        headerConfig: mockHeaderConfig
+        headerConfig: mockHeaderConfig,
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
+        }
       };
 
       environmentServiceSpy.config$ = of(mockConfig);
@@ -125,7 +133,11 @@ describe('HeaderConfigService', () => {
         protocol: '',
         oidcEnabled: '',
         paymentReturnUrl: '',
-        headerConfig: mockHeaderConfig
+        headerConfig: mockHeaderConfig,
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
+        }
       };
 
       environmentServiceSpy.config$ = of(mockConfig);
@@ -145,7 +157,11 @@ describe('HeaderConfigService', () => {
         protocol: '',
         oidcEnabled: '',
         paymentReturnUrl: '',
-        headerConfig: mockHeaderConfig
+        headerConfig: mockHeaderConfig,
+        hearingJurisdictionConfig: {
+          hearingAmendment: {},
+          hearingJurisdictions: {}
+        }
       };
 
       environmentServiceSpy.config$ = of(mockConfig);

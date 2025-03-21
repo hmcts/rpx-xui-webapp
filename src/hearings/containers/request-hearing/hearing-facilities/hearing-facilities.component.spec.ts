@@ -192,11 +192,12 @@ describe('HearingFacilitiesComponent', () => {
   ];
 
   beforeEach(() => {
+    const initialStateCopy = JSON.parse(JSON.stringify(initialState));
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingFacilitiesComponent, MockRpxTranslatePipe],
       providers: [
-        provideMockStore({ initialState }),
+        provideMockStore({ initialState: initialStateCopy }),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,

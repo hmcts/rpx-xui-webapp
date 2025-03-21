@@ -37,7 +37,7 @@
                 </div>
               </fieldset>
             </div>
-            <button type="submit" class="govuk-button" data-module="govuk-button">{{ 'Continue' | rpxTranslate }}</button>
+            <button type="submit" class="govuk-button" data-module="govuk-button" [disabled]="buttonDisabled()">{{ 'Continue' | rpxTranslate }}</button>
           </form>
           <p class="govuk-body">
              <a href="javascript:void(0)"

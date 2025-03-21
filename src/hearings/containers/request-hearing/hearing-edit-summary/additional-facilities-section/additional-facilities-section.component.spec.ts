@@ -175,7 +175,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('additionalSecurityRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'additionalSecurityRequired', changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes'
+      fragmentId: 'additionalSecurityRequired', changeLink: '/hearings/request/hearing-facilities#addition-security-confirmation'
     });
     component.onChange('additionalFacilitiesRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
@@ -336,5 +336,13 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
     });
+  });
+
+  it('should set facilities required correctly', () => {
+    const facilities = ['facility1', 'facility2'];
+    expect((component as any).getFacilitiesRequired(facilities)).toEqual(facilities);
+    expect((component as any).getFacilitiesRequired([])).toBeUndefined();
+    expect((component as any).getFacilitiesRequired(null)).toBeUndefined();
+    expect((component as any).getFacilitiesRequired(undefined)).toBeUndefined();
   });
 });

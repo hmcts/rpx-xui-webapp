@@ -4,7 +4,7 @@ import { getConfigValue } from '../configuration';
 import { HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { DEFAULT_SCREEN_FLOW } from './data/defaultScreenFlow.data';
+import { DEFAULT_SCREEN_FLOW, DEFAULT_SCREEN_FLOW_NEW } from './data/defaultScreenFlow.data';
 import { hmcHearingsUrl } from './hmc.index';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
@@ -13,6 +13,7 @@ import {
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import config = require('config');
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
 
@@ -29,9 +30,11 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     let dataByDefault = mapDataByDefault(data);
     // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {
+      const forceNewDefaultScreenFlow = config.get('forceNewDefaultScreenFlow') || null;
       dataByDefault = {
         ...data,
-        screenFlow: DEFAULT_SCREEN_FLOW
+        screenFlow:
+        (forceNewDefaultScreenFlow === 'true') ? DEFAULT_SCREEN_FLOW_NEW : (forceNewDefaultScreenFlow === 'false') ? DEFAULT_SCREEN_FLOW : (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
       };
     }
     res.status(status).send(dataByDefault);

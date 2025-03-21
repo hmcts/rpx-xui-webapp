@@ -29,7 +29,7 @@ class CaseFileViewPage{
     }
   
     async isSortMenuOptionDisplayed(option){
-      const ele = element(by.xpath(`//div[contains(@class,'cdk-overlay-pane')]//span[contains(@class,'overlay-menu__actionText')][contains(text(),'${option}')]`));
+      const ele = element(by.xpath(`//div[contains(@class,'cdk-overlay-pane')]//div[contains(@class,'overlay-menu__actionText')][contains(text(),'${option}')]`));
       return await ele.isDisplayed();
     }
   

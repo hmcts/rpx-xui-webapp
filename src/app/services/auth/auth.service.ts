@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
-
+import { AppConstants } from '../../app.constants';
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,12 +22,14 @@ export class AuthService {
   public signOut() {
     // Clear out the SessionStorage.
     this.clearSessionStorage();
+    this.clearServiceMessageCookie();
     const href = '/auth/logout';
     this.setWindowLocationHref(href);
   }
 
   public logOut(): Observable<any> {
     // Clear out the SessionStorage.
+    this.clearServiceMessageCookie();
     this.clearSessionStorage();
     return this.httpService.get('/auth/logout?noredirect=true');
   }
@@ -44,5 +46,10 @@ export class AuthService {
 
   private clearSessionStorage() {
     this.sessionStorageService.clear();
+  }
+
+  private clearServiceMessageCookie() {
+    // set the expiry to some time in the past so the cookie is removed
+    document.cookie = `${AppConstants.SERVICE_MESSAGE_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   }
 }

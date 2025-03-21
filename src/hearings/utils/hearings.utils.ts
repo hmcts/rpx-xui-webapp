@@ -262,7 +262,9 @@ export class HearingsUtils {
   }
 
   private static standardiseStringArray(array: string[] | null | undefined): string[] | undefined {
-    return array && array.length > 0 ? [...array].sort() : undefined;
+    return array && array.length > 0 ? [...array].sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    }) : undefined;
   }
 
   public static haveAdditionalFacilitiesChanged(

@@ -1,43 +1,40 @@
 const MockApp = require('../../nodeMock/app');
 
 class MockUtil{
-
-    async setMockResponse(method, endpoint, callback) {
-        await MockApp.stopServer();
-        if (method === 'GET') {
-            await MockApp.onGet(endpoint, callback);
-        }
-
-        if (method === 'POST') {
-            await MockApp.onPost(endpoint, callback);
-        }
-        if (method === 'PUT') {
-            await MockApp.onPut(endpoint, callback);
-        }
-        await MockApp.startServer();
-
+  async setMockResponse(method, endpoint, callback) {
+    await MockApp.stopServer();
+    if (method === 'GET') {
+      await MockApp.onGet(endpoint, callback);
     }
 
-    getMockApp(){
-        return MockApp; 
+    if (method === 'POST') {
+      await MockApp.onPost(endpoint, callback);
     }
-
-    async resetMock() {
-        //const scenarioId = await MockApp.browserScenarioCookieCallback();
-        //MockApp.initScenarioSession(scenarioId);
-        await MockApp.stopServer();
-        MockApp.init();
-        await MockApp.startServer();
-
+    if (method === 'PUT') {
+      await MockApp.onPut(endpoint, callback);
     }
+    await MockApp.startServer();
+  }
 
-    async start() {
-        await MockApp.startServer();
-    }
+  getMockApp(){
+    return MockApp;
+  }
 
-    async stop() {
-        await MockApp.stopServer();
-    }
+  async resetMock() {
+    //const scenarioId = await MockApp.browserScenarioCookieCallback();
+    //MockApp.initScenarioSession(scenarioId);
+    await MockApp.stopServer();
+    MockApp.init();
+    await MockApp.startServer();
+  }
+
+  async start() {
+    await MockApp.startServer();
+  }
+
+  async stop() {
+    await MockApp.stopServer();
+  }
 }
 
 module.exports = new MockUtil();

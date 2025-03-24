@@ -137,12 +137,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       if (action === ACTION.VIEW_EDIT_REASON) {
         this.hearingsService.displayValidationError = false;
         this.validationErrors = [];
-        if (!this.hasHearingRequestObjectChanged()) {
+        const hasHearingRequestObjectChanged = this.hasHearingRequestObjectChanged();
+        if (!hasHearingRequestObjectChanged) {
           this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
           window.scrollTo({ top: 0, left: 0 });
           return;
         }
-        if (this.pageVisitChangesNotConfirmed()) {
+        if (this.pageVisitChangesNotConfirmed(hasHearingRequestObjectChanged)) {
           this.hearingsService.displayValidationError = true;
           return;
         }
@@ -469,7 +470,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
-  private pageVisitChangesNotConfirmed(): boolean {
+  private pageVisitChangesNotConfirmed(hasHearingRequestObjectChanged: boolean): boolean {
+    const reasonableAdjustmentChangeExists = this.pageVisitReasonableAdjustmentChangeExists();
+    const partiesChangeExists = this.pageVisitPartiesChangeExists();
+    const hearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
+    const nonReasonableAdjustmentChangeExists = this.pageVisitNonReasonableAdjustmentChangeExists();
+
+    if (!(reasonableAdjustmentChangeExists || partiesChangeExists || hearingWindowChangeExists) && nonReasonableAdjustmentChangeExists && hasHearingRequestObjectChanged) {
+      return false;
+    }
+
     return this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||

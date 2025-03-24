@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-additional-facilities-section',
@@ -75,28 +75,23 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     });
   }
 
-  private getFacilitiesRequired(facilitiesRequired: string[] | null | undefined): string[] | undefined {
-    return facilitiesRequired && facilitiesRequired.length > 0 ? facilitiesRequired : undefined;
-  }
-
   private setAmendmentLabels(): void {
-    this.caseAdditionalSecurityFlagChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag,
-      this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
+    const { caseAdditionalSecurityFlagChanged, facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      this.hearingRequestMainModel,
+      this.hearingRequestToCompareMainModel
     );
 
-    const facilitiesRequiredMainModel = this.getFacilitiesRequired(this.hearingRequestMainModel.hearingDetails?.facilitiesRequired);
-    const facilitiesRequiredToCompareMainModel = this.getFacilitiesRequired(this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired);
+    this.caseAdditionalSecurityFlagChanged = caseAdditionalSecurityFlagChanged;
+    this.facilitiesChanged = facilitiesChanged;
+    const additionalFacilitiesChangesMade = caseAdditionalSecurityFlagChanged || facilitiesChanged;
 
-    this.facilitiesChanged = !_.isEqual(facilitiesRequiredMainModel, facilitiesRequiredToCompareMainModel);
+    const AmendedChanges = (additionalFacilitiesChangesMade || (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed));
 
     if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
       (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)) {
       this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
-      if (this.caseAdditionalSecurityFlagChanged ||
-        this.facilitiesChanged ||
-        (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed)) {
+      if (AmendedChanges) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       }
     }

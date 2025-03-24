@@ -418,6 +418,103 @@ describe('HearingFacilitiesComponent', () => {
     expect(component.additionalFacilities[0].showAmendedLabel).toBe(true);
   });
 
+  it('should return true if additional facilities have changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility', 'Some other facility']
+      }
+    };
+    // eslint-disable-next-line dot-notation
+    const result = component['haveUpdatesMadeToSelections']();
+    expect(result).toBe(true);
+  });
+
+  it('should return false if additional facilities have not changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+
+    // eslint-disable-next-line dot-notation
+    const result = component['haveUpdatesMadeToSelections']();
+    expect(result).toBe(false);
+  });
+
+  it('should return true if caseAdditionalSecurityFlag has changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: false },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+    // eslint-disable-next-line dot-notation
+    const result = component['haveUpdatesMadeToSelections']();
+    expect(result).toBe(true);
+  });
+
+  it('should return false if caseAdditionalSecurityFlag has not changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true },
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['Some facility']
+      }
+    };
+    // eslint-disable-next-line dot-notation
+    const result = component['haveUpdatesMadeToSelections']();
+    expect(result).toBe(false);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

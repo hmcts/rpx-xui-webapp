@@ -1,9 +1,9 @@
-const chai            = require('chai');
-const chaiAsPromised  = require('chai-as-promised');
-const minimist        = require('minimist');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const minimist = require('minimist');
 
 const dotenv = require('dotenv');
-var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
 
 dotenv.config({ path: __dirname +'/../../.local-test.env' });
 
@@ -26,7 +26,7 @@ const localConfig = [
 
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless','--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -49,7 +49,7 @@ const config = {
     targetEnv: argv.env || 'local',
     username: 'lukesuperuserxui_new@mailnesia.com',
     password: 'Monday01',
-    caseworkerUser:'mahesh_fr_courtadmn@mailinator.com',
+    caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
     caseworkerPassword: 'London01',
     probate_username: process.env.PROBATE_EMAIL || 'probaterequesteraat@mailnesia.com',
     probate_password: process.env.PROBATE_PASSWORD || 'LevelAt12',
@@ -58,7 +58,7 @@ const config = {
     sscs_username: process.env.SSCS_EMAIL,
     sscs_password: process.env.SSCS_PASSWORD,
 
-    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk' ,
+    caseworker_iac_off_username: process.env.CASEWORKER_IAC_OFF_USERNAME ? process.env.CASEWORKER_IAC_OFF_USERNAME :'xui_auto_co_r1@justice.gov.uk',
     caseworker_iac_off_password: process.env.CASEWORKER_IAC_OFF_PASSWORD ? process.env.CASEWORKER_IAC_OFF_PASSWORD :'Welcome01',
     hrsTesterUser: 'xui.hrs.tester@hmcts.net',
     hrsTesterPassword: 'Monday01',
@@ -66,7 +66,7 @@ const config = {
       case_officer: {
         username: process.env.TEST_CASEOFFICER_USERNAME || 'ia.caseofficer.ccd@gmail.com',
         password: process.env.TEST_CASEOFFICER_PASSWORD|| 'AldgateT0wer'
-      }, 
+      },
       legal_rep: {
         username: process.env.TEST_LAW_FIRM_A_USERNAME || 'ia.legalrep.b.ccd@gmail.com',
         password: process.env.TEST_LAW_FIRM_A_PASSWORD || 'AldgateT0wer'
@@ -119,7 +119,7 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports/tests/json/results.json'],
-    tags: ['@smoke or @test','not @ignore'],
+    tags: ['@smoke or @test', 'not @ignore'],
     require: [
       '../support/timeout.js',
       '../support/hooks.js',
@@ -143,8 +143,6 @@ const config = {
     }
   ]
 
-
 };
-
 
 exports.config = config;

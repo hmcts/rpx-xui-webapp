@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-additional-facilities-section',
@@ -55,7 +55,7 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public onChange(fragmentId: string): void {
     let changeLink = '';
     if (fragmentId === 'additionalSecurityRequired') {
-      changeLink = '/hearings/request/hearing-facilities#additionalSecurityYes';
+      changeLink = '/hearings/request/hearing-facilities#addition-security-confirmation';
     } else {
       changeLink = '/hearings/request/hearing-facilities#immigrationDetentionCentre';
     }
@@ -76,24 +76,22 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    this.caseAdditionalSecurityFlagChanged = !_.isEqual(
-      this.hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag,
-      this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
+    const { caseAdditionalSecurityFlagChanged, facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      this.hearingRequestMainModel,
+      this.hearingRequestToCompareMainModel
     );
 
-    this.facilitiesChanged = !_.isEqual(
-      this.hearingRequestMainModel.hearingDetails?.facilitiesRequired,
-      this.hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired
-    );
+    this.caseAdditionalSecurityFlagChanged = caseAdditionalSecurityFlagChanged;
+    this.facilitiesChanged = facilitiesChanged;
+    const additionalFacilitiesChangesMade = caseAdditionalSecurityFlagChanged || facilitiesChanged;
+
+    const AmendedChanges = (additionalFacilitiesChangesMade || (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed));
 
     if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
       (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)) {
       this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
-      if (this.caseAdditionalSecurityFlagChanged ||
-        this.facilitiesChanged ||
-        (this.nonReasonableAdjustmentChangesRequired && this.nonReasonableAdjustmentChangesConfirmed) ||
-        (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed)) {
+      if (AmendedChanges) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       }
     }

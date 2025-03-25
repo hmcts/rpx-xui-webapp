@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LocationByEPIMMSModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
@@ -53,7 +53,7 @@ describe('CourtLocationsData Resolver', () => {
   });
 
   it('resolves reference data', inject([CourtLocationsDataResolver], (service: CourtLocationsDataResolver) => {
-    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(dataRef as unknown as LocationByEPIMMSModel[]));
+    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(dataRef as unknown as LocationByEpimmsModel[]));
     spyOn(service, 'getLocationId$').and.returnValue(of('12345'));
     service.resolve().subscribe((refData: LocationModel) => {
       expect(service.getLocationId$).toHaveBeenCalled();

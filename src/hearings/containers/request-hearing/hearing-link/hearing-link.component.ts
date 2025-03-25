@@ -72,7 +72,9 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
         }
         this.showSpinner = false;
       },
-      error: () => this.router.navigate(['/hearings/error'])
+      error: () => {
+        this.router.navigate(['/hearings/error']);
+      }
     });
   }
 

@@ -62,7 +62,7 @@ class ActualHearingDate{
 
   async getValue(field){
     const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//dt//h2[contains(text(),'${field}')]` :
+      `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]` :
       `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
     const valueEleXpath = this.headingRows.includes(field) ?
       `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__value')]` :
@@ -74,7 +74,7 @@ class ActualHearingDate{
 
   async clickAction(field, action) {
     const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//dt//h2[contains(text(),'${field}')]` :
+      `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]` :
       `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
     const actionEleXpath = this.headingRows.includes(field) ?
       `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]/a[contains(text(),'${action}')]` :
@@ -86,7 +86,7 @@ class ActualHearingDate{
 
   async getActions(field) {
     const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//dt//h2[contains(text(),'${field}')]` :
+      `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]` :
       `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
     const actionEleXpath = this.headingRows.includes(field) ?
       `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]` :

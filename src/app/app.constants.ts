@@ -138,7 +138,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'SSCS Infected Blood (England, Wales, Northern Ireland & Overseas)',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'contactsscs@justice.gov.uk',
+    email: 'ContactIBCAppeals@justice.gov.uk',
     phone: '0300 123 1142',
     openingTimes: 'Monday to Friday, 9am to 4pm'
   },

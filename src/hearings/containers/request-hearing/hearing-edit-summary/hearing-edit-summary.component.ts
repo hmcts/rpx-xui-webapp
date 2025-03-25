@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../models/caseCategory.model';
 import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
@@ -112,7 +111,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
 
     // Enable hearings manual amendments journey only if the feature is toggled on
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmendmentsEnabled().subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();

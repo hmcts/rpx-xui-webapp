@@ -101,6 +101,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases',
             'case-details',
+            navigation.relativeTo.snapshot.params.jurisdiction,
+            navigation.relativeTo.snapshot.params.caseType,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid],
@@ -120,6 +122,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases',
             'case-details',
+            navigation.relativeTo.snapshot.params.jurisdiction,
+            navigation.relativeTo.snapshot.params.caseType,
             navigation.relativeTo.snapshot.params.cid
           ],
           errorHandler: (error) => this.handleCaseViewError(error)

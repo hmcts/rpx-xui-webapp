@@ -1,6 +1,6 @@
 {
   "name": "rpx-exui",
-  "version": "7.1.56-exui-673-rc1",
+  "version": "7.1.36",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -94,10 +94,10 @@
     "@hmcts/ccd-case-ui-toolkit": "7.1.56-exui-673-rc1",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.0.13",
+    "@hmcts/media-viewer": "4.0.14",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.38",
+    "@hmcts/rpx-xui-common-lib": "2.0.39",
     "@hmcts/rpx-xui-node-lib": "2.30.3",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
@@ -242,7 +242,7 @@
     "node-html-parser": "^7.0.0",
     "nodemon": "^2.0.19",
     "npm-run-all2": "^7.0.0",
-    "pa11y": "^5.3.0",
+    "pa11y": "^8.0.0",
     "playwright": "^1.42",
     "protractor": "~7.0.0",
     "protractor-cucumber-framework": "^9.7.0",

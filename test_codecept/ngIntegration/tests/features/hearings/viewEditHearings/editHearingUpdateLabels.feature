@@ -244,7 +244,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         # Accept Length, date and priority level of hearing
     When In view or edit hearing page, I click change link for field "Length of hearing"
     Then I am on hearings workflow page "Length, date and priority level of hearing"
-    Then In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be
+    Then In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for Does the hearing need to take place on a specific date?
 
     When I click continue in hearing workflow
     Then I validate Edit hearing page displayed
@@ -383,9 +383,8 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
       When In view or edit hearing page, I click change link for field "Length of hearing"
       Then I am on hearings workflow page "Length, date and priority level of hearing"
       # Then debug sleep minutes 4
-#      Then In Length, date and priority level of hearing page, I see AMENDED label displayed for Length of hearing
-      Then In Length, date and priority level of hearing page, I see AMENDED label displayed for the latest end date
-      Then In Length, date and priority level of hearing page, I see no label displayed for the earliest end date
+      Then In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for Does the hearing need to take place on a specific date?
+
       When I click continue in hearing workflow
       Then I validate Edit hearing page displayed
       Then I validate edit hearing section heading labels

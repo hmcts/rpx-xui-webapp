@@ -3,8 +3,8 @@
 <div>
   <form class="form" [formGroup]="welshForm" [ngClass]="{'govuk-form-group--error': error}">
     <div class="govuk-form-group">
+      <exui-hearing-parties-title></exui-hearing-parties-title>
         <fieldset class="govuk-fieldset">
-          <exui-hearing-parties-title></exui-hearing-parties-title>
           <legend>
             <h1 class="govuk-heading-l">
                 {{ 'Does this hearing need to be in Welsh?' | rpxTranslate }}

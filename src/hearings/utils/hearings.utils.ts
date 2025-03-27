@@ -276,4 +276,31 @@ export class HearingsUtils {
 
     return screens.filter((screen) => !excludedScreen.includes(screen));
   }
+
+  public static doArraysDiffer(array: string[], arrayToCompare: string[]): boolean {
+    return !_.isEqual(this.standardiseStringArray(array), this.standardiseStringArray(arrayToCompare));
+  }
+
+  private static standardiseStringArray(array: string[] | null | undefined): string[] | undefined {
+    return array && array.length > 0 ? [...array].sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    }) : undefined;
+  }
+
+  public static haveAdditionalFacilitiesChanged(
+    hearingRequestMainModel: HearingRequestMainModel,
+    hearingRequestToCompareMainModel: HearingRequestMainModel
+  ): { caseAdditionalSecurityFlagChanged: boolean; facilitiesChanged: boolean } {
+    const caseAdditionalSecurityFlagChanged = !_.isEqual(
+      hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag,
+      hearingRequestToCompareMainModel.caseDetails?.caseAdditionalSecurityFlag
+    );
+
+    const facilitiesChanged = this.doArraysDiffer(
+      hearingRequestMainModel.hearingDetails?.facilitiesRequired,
+      hearingRequestToCompareMainModel.hearingDetails?.facilitiesRequired
+    );
+
+    return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
+  }
 }

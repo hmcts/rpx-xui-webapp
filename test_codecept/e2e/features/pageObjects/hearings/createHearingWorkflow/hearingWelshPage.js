@@ -10,7 +10,8 @@ class HearingWelshPage {
   async inputValue(field, value) {
     switch (field) {
       case 'Does this hearing need to be in Welsh?':
-        const ele = element(by.xpath(`//exui-hearing-welsh//h1[contains(text(),'Does this hearing need to be in Welsh?')]/..//label[contains(text(),'${value}')]/../input`));
+        const div = value === 'Yes' ? 'div[1]' : 'div[2]';
+        const ele = element(by.xpath(`//exui-hearing-welsh/div/form/div/fieldset/div[2]/${div}/label[contains(text(),'${value}')]/../input`));
         await ele.click();
         break;
       default:

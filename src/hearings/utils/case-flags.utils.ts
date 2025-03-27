@@ -202,14 +202,14 @@ export class CaseFlagsUtils {
       if (flagPath) {
         return {
           ...flag,
-          partyName: partyInSHV ? partyInSHV.partyName : flag.partyName,
+          partyName: partyInSHV?.partyName ? partyInSHV.partyName : flag.partyName,
           displayName: flagPath.name,
           displayPath: flagPath.Path
         };
       }
       return {
         ...flag,
-        partyName: partyInSHV ? partyInSHV.partyName : flag.partyName,
+        partyName: partyInSHV?.partyName ? partyInSHV.partyName : flag.partyName,
         displayName: null,
         displayPath: null
       };

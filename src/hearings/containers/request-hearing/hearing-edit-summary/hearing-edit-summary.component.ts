@@ -143,12 +143,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       if (action === ACTION.VIEW_EDIT_REASON) {
         this.hearingsService.displayValidationError = false;
         this.validationErrors = [];
-        if (!this.hasHearingRequestObjectChanged()) {
+        const hasHearingRequestObjectChanged = this.hasHearingRequestObjectChanged();
+        if (!hasHearingRequestObjectChanged) {
           this.validationErrors = [{ id: 'no-update', message: this.notUpdatedMessage }];
           window.scrollTo({ top: 0, left: 0 });
           return;
         }
-        if (this.pageVisitChangesNotConfirmed()) {
+        if (this.pageVisitChangesNotConfirmed(hasHearingRequestObjectChanged)) {
           this.hearingsService.displayValidationError = true;
           return;
         }
@@ -175,6 +176,49 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         element.focus();
       }
     });
+  }
+
+  // Both sets of input will be processed through method cleanJson. This will remove any null, undefined or empty elemtents from the object
+  // allowing the comparison to ignore insignificant changes.
+  public areObjectsfunctionallyDifferentCheck(object1Input: any, object2Input: any): boolean {
+    const object1 = this.cleanObectsForComparison(object1Input);
+    const object2 = this.cleanObectsForComparison(object2Input);
+    return !_.isEqual(JSON.stringify(object1, this.replacer), JSON.stringify(object2, this.replacer));
+  }
+
+  public cleanObectsForComparison(data: any, visited = new Set()): any {
+    // If data is a primitive (null, undefined, number, string, etc.), return it as is
+    if (data === null || typeof data !== 'object') {
+      return data;
+    }
+
+    // If the object is already in the visited set, it's a circular reference
+    if (visited.has(data)) {
+      return undefined;
+    }
+
+    // Mark the object as visited
+    visited.add(data);
+
+    if (Array.isArray(data)) {
+      // Clean each item in the array and remove empty or invalid items
+      const cleanedArray = data.map((item) => this.cleanObectsForComparison(item, visited))
+        .filter((item) => item !== null && item !== undefined && item !== '' && (Array.isArray(item) ? item.length > 0 : true));
+      return cleanedArray.length > 0 ? cleanedArray : undefined;
+    } else if (typeof data === 'object') {
+      // If the data is an object, iterate through each key and clean its value
+      const cleanedObject: any = {};
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          const cleanedValue = this.cleanObectsForComparison(data[key], visited);
+          if (cleanedValue !== null && cleanedValue !== undefined && cleanedValue !== '' && !(Array.isArray(cleanedValue) && cleanedValue.length === 0)) {
+            cleanedObject[key] = cleanedValue;
+          }
+        }
+      }
+      return Object.keys(cleanedObject).length > 0 ? cleanedObject : undefined;
+    }
+    return undefined;
   }
 
   private hasHearingRequestObjectChanged(): boolean {
@@ -210,10 +254,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       partyDetails: [...partyDetailsCompareModels]
     };
 
-    return !_.isEqual(
-      JSON.parse(JSON.stringify(hearingRequestMainModel, this.replacer)),
-      JSON.parse(JSON.stringify(hearingRequestToCompareMainModel, this.replacer))
-    );
+    return this.areObjectsfunctionallyDifferentCheck(hearingRequestMainModel, hearingRequestToCompareMainModel);
   }
 
   hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
@@ -254,13 +295,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (key === 'partyName' || key === 'isPaperHearing' || value === null) {
       return undefined;
     }
+
     return value;
   }
 
   private setPropertiesUpdatedAutomatically(): void {
     // Set properties updated on page visit
     this.setPropertiesUpdatedOnPageVisit(this.serviceHearingValuesModel);
-
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       caseDetails: {
@@ -280,7 +321,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         ...this.updatePartyDetails(this.serviceHearingValuesModel.parties)
       ]
     };
-
     // Set banner
     this.setBanner();
 
@@ -300,7 +340,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
             partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
-            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesChanged(),
+            hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesExists(),
             partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
@@ -431,12 +471,21 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
       this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesChanged();
+      this.pageVisitHearingFacilitiesExists();
     // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
 
-  private pageVisitChangesNotConfirmed(): boolean {
+  private pageVisitChangesNotConfirmed(hasHearingRequestObjectChanged: boolean): boolean {
+    const reasonableAdjustmentChangeExists = this.pageVisitReasonableAdjustmentChangeExists();
+    const partiesChangeExists = this.pageVisitPartiesChangeExists();
+    const hearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
+    const nonReasonableAdjustmentChangeExists = this.pageVisitNonReasonableAdjustmentChangeExists();
+
+    if (!(reasonableAdjustmentChangeExists || partiesChangeExists || hearingWindowChangeExists) && nonReasonableAdjustmentChangeExists && hasHearingRequestObjectChanged) {
+      return false;
+    }
+
     return this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageVisitPartiesChangeExists() ||
@@ -532,7 +581,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return false;
   }
 
-  private pageVisitHearingFacilitiesChanged(): boolean {
+  private pageVisitHearingFacilitiesExists(): boolean {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed) {
+      // hearing facilities changes already confirmed
+      return false;
+    }
     if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_FACILITIES)) {
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
@@ -540,13 +593,13 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
 
-    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+    if (CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV)) {
+      return true;
+    }
+
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingFacilitiesChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+    }
   }
 
   private pageVisitPartiesChangeExists(): boolean {

@@ -1518,6 +1518,226 @@ describe('HearingEditSummaryComponent', () => {
     expect(isDifference).toEqual(true);
   });
 
+  it('should return false from areObjectsfunctionallyDifferentCheck, when objects are the same', () => {
+    const obj1 = { a: 1, b: 2, c: 3 };
+    const obj2 = { a: 1, b: 2, c: 3 };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should return true from areObjectsfunctionallyDifferentCheck, when objects are the same length but with value changes', () => {
+    const obj1 = { a: 1, b: 2 };
+    const obj2 = { a: 1, b: 3 };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
+  });
+
+  it('should return false from areObjectsfunctionallyDifferentCheck, when object1 has new keys not in object2 but no values', () => {
+    const obj1 = { a: 1, b: null };
+    const obj2 = { a: 1 };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should handle nested objects correctly in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = { a: { x: 1, y: 2 }, b: 3 };
+    const obj2 = { a: { x: 1, y: 2 }, b: 3 };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should return true from areObjectsfunctionallyDifferentCheck, for arrays with new values', () => {
+    const obj1 = { a: [1, 2, 3] };
+    const obj2 = { a: [1, 2] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
+  });
+
+  it('should return false form areObjectsfunctionallyDifferentCheck, when arrays contain empty values', () => {
+    const obj1 = { a: [null, 1, 2] };
+    const obj2 = { a: [null, 1, 2] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should handle objects with deeply nested values in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = { a: { b: { c: 1 } } };
+    const obj2 = { a: { b: { c: 1 } } };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should return true for deeply nested unequal objects in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = { a: { b: { c: 1 } } };
+    const obj2 = { a: { b: { c: 2 } } };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
+  });
+
+  it('should return false for deeply nested unequal length objects with array and null values in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = { a: [{ b: 1, c: null, d: null }], b: null };
+    const obj2 = { a: [{ b: 1 }] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(false);
+  });
+
+  it('should return true for nested differencee in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = { a: [{ b: 1 }, { c: 1 }] };
+    const obj2 = { a: [{ b: 1 }] };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
+  });
+
+  it('should return true for nested differencee in the areObjectsfunctionallyDifferentCheck', () => {
+    const obj1 = {
+      a: { a1: 'test 1', a2: 'test 2', a3: ['a string', 'another string', null] },
+      b: { b1: 'testing 1', b2: 'testing 2' },
+      c: { c1: 'just this' },
+      d: [{ d1: null, d2: 'test string', d3: undefined, d4: 'another test string' }]
+    };
+    const obj2 = {
+      a: { a1: 'test 1', a2: 'test 2', a3: ['a string', 'another string'] },
+      b: { b1: 'testing 1', b2: 'testing 2' },
+      c: { c1: 'just this' },
+      d: [{ d4: 'another test string', d2: 'test string' }]
+    };
+    const result = component.areObjectsfunctionallyDifferentCheck(obj1, obj2);
+    expect(result).toBe(true);
+  });
+
+  it('should return true when cleanObectsForComparison is called with range of types', () => {
+    const data = {
+      a: 42,
+      b: 'hello',
+      c: true,
+      d: false,
+      e: null,
+      f: '',
+      g: 0,
+      h: 3.14,
+      i: [],
+      j: [1, 2, 3],
+      k: ['a', '', 'b'],
+      l: {},
+      m: { 'key1': 'value1', 'key2': '' },
+      n: { 'nested': { 'innerKey': 'innerValue', 'emptyArray': [] } },
+      o: undefined
+    };
+
+    const expectedResult = {
+      a: 42,
+      b: 'hello',
+      c: true,
+      d: false,
+      g: 0,
+      h: 3.14,
+      j: [1, 2, 3],
+      k: ['a', 'b'],
+      m: { 'key1': 'value1' },
+      n: { 'nested': { 'innerKey': 'innerValue' } }
+    };
+
+    const result = component.cleanObectsForComparison(data);
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('should return true if hearing facilities exist', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['11', '22']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['11', '22']
+    };
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
+  });
+
+  it('should return true if hearing facilities do not exist, but a change has been requested and not confirmed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: []
+    };
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
+  });
+
+  it('should return false if hearing facilities changes are confirmed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: []
+    };
+
+    (component as any).hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
+
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(false);
+  });
+
+  it('should return true if hearing facilities required but not confirmed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: []
+    };
+
+    (component as any).hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = false;
+    (component as any).hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired = true;
+
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(true);
+  });
+
+  it('should return false if hearing facilities screen does not exist', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: []
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: [],
+      screenFlow: [
+        {
+          screenName: 'hearing-judge',
+          navigation: [
+            {
+              resultValue: 'hearing-stage'
+            }
+          ]
+        }
+      ]
+    };
+
+    component.ngOnInit();
+    expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(false);
+  });
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [
       {

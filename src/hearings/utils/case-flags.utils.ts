@@ -306,4 +306,14 @@ export class CaseFlagsUtils {
     }
     return AmendmentLabelStatus.NONE;
   }
+
+  public static areFacilitiesChanged(facilitiesInHMC: string[], facilitiesInSHV: string[]): boolean {
+    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
+  }
 }

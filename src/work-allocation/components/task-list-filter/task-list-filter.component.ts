@@ -18,7 +18,7 @@ import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
-import { Location, LocationByEPIMMSModel } from '../../models/dtos';
+import { Location, LocationByEpimmsModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
 import { LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { TaskTypesService } from '../../services/task-types.service';
@@ -158,7 +158,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.taskService.getUsersAssignedTasks(),
       this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices),
       this.featureToggleService.getValue('ServiceNames', servicesMap)
-    ]).subscribe(([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [any[], string[], Task[], LocationByEPIMMSModel[], any]) => {
+    ]).subscribe(([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [any[], string[], Task[], LocationByEpimmsModel[], any]) => {
       this.setUpServicesFilter(services, serviceNamesMap);
       this.setUpLocationFilter(locations);
       this.setUpTypesOfWorkFilter(typesOfWork);
@@ -294,7 +294,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setUpLocationFilter(locations: LocationByEPIMMSModel[]): void {
+  private setUpLocationFilter(locations: LocationByEpimmsModel[]): void {
     const field: FilterFieldConfig = {
       name: 'locations',
       options: [],

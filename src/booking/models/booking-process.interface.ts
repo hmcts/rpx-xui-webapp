@@ -1,8 +1,8 @@
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 
 export interface BookingProcess {
   selectedBookingOption: number;
-  location: LocationByEPIMMSModel;
+  location: LocationByEpimmsModel;
   selectedBookingLocationIds: [];
   selectedDateOption: number;
   startDate: Date;

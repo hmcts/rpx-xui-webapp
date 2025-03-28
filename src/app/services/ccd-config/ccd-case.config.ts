@@ -104,6 +104,10 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.remote_document_management_url;
   }
 
+  public getDocumentSecureModeCaseTypeExclusions() {
+    return this.config.documentSecureModeCaseTypeExclusions;
+  }
+
   public getPostcodeLookupUrl() {
     return this.config.postcode_lookup_url;
   }

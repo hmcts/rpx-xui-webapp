@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../app/app.constants';
 import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
-import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { Utils } from '../../cases/utils/utils';
+import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Injectable()
 export class HearingsGuard {
@@ -16,22 +14,21 @@ export class HearingsGuard {
   public static CASE_TYPE: string = 'caseType';
   public static DEFAULT_URL: string = '/cases';
   public userRoles$: Observable<string[]>;
-  protected featureName: string;
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
               protected readonly sessionStorageService: SessionStorageService,
-              protected readonly featureToggleService: FeatureToggleService) {
+              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService
+  ){
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );
-    this.featureName = AppConstants.FEATURE_NAMES.mcHearingsFeature;
   }
 
   public hasMatchedPermissions(): Observable<boolean> {
     let jurisdiction: string;
     let caseType: string;
-    return this.featureToggleService.getValueOnce<FeatureVariation[]>(this.featureName, []).pipe(
-      map((featureVariations: FeatureVariation[]) => {
+    return this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig().pipe(
+      map((jurisdictionsConfig) => {
         const caseInfo = JSON.parse(this.sessionStorageService.getItem(HearingsGuard.CASE_INFO));
         if (caseInfo?.hasOwnProperty(HearingsGuard.JURISDICTION)) {
           jurisdiction = caseInfo[HearingsGuard.JURISDICTION];
@@ -42,7 +39,7 @@ export class HearingsGuard {
         if (!jurisdiction || !caseType) {
           return false;
         }
-        return featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
+        return jurisdictionsConfig.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType));
       })
     );
   }

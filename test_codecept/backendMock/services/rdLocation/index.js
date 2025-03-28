@@ -102,7 +102,9 @@ class RDLocationService{
       temp.court_name = `${service} Court Center Wales`;
       temp.venue_name = `${service} Court Center Wales`;
       temp.site_name = `${service} Court Center Wales`;
-      temp.court_type_id = typeIds[0];
+      // EXUI-2768 - Below set to 18 as tests include different services on same test e.g. private law hearing/case data but IA locations
+      // Instead of refactoring all tests, have forced IA Wales location to match private law
+      temp.court_type_id = '18';
       temp.court_type = `${service} Court`;
       temp.region = 'Wales';
       temp.region_id = '7';

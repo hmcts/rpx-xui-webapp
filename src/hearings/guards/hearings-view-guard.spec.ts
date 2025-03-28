@@ -2,12 +2,13 @@ import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsViewGuard } from './hearings-view-guard';
+import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('HearingsViewGuard', () => {
   const USER_1: UserDetails = {
@@ -89,6 +90,26 @@ describe('HearingsViewGuard', () => {
     }
   };
 
+  const CASE_VIEW: CaseView = {
+    case_id: '1546518523959179',
+    case_type: {
+      id: 'Benefit',
+      name: 'Benefit',
+      jurisdiction: {
+        id: 'SSCS',
+        name: 'SSCS'
+      }
+    },
+    channels: [],
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created'
+    },
+    tabs: [],
+    triggers: [],
+    events: []
+  };
+
   const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',
@@ -103,21 +124,23 @@ describe('HearingsViewGuard', () => {
   let hearingsViewGuard: HearingsViewGuard;
   let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
-  let sessionStorageMock: jasmine.SpyObj<SessionStorageService>;
+  let caseNotifierMock: CaseNotifier;
   let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
 
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
-    sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
+    const caseNotifierMock = new CaseNotifier(casesService);
+    caseNotifierMock.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+
     featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
   });
 
   it('should view hearings be enabled for user with hearing manager role', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
+    hearingsViewGuard = new HearingsViewGuard(storeMock, caseNotifierMock, featureToggleMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = true;
     const expected = cold('(b|)', { b: canActive });
@@ -127,8 +150,7 @@ describe('HearingsViewGuard', () => {
   it('should view hearings be enabled for user with hearing viewer role', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
+    hearingsViewGuard = new HearingsViewGuard(storeMock, caseNotifierMock, featureToggleMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = true;
     const expected = cold('(b|)', { b: canActive });
@@ -138,8 +160,7 @@ describe('HearingsViewGuard', () => {
   it('should view hearings be enabled for user with listed hearing viewer role', () => {
     storeMock.pipe.and.returnValue(of(USER_3));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
+    hearingsViewGuard = new HearingsViewGuard(storeMock, caseNotifierMock, featureToggleMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = true;
     const expected = cold('(b|)', { b: canActive });
@@ -149,8 +170,7 @@ describe('HearingsViewGuard', () => {
   it('should view hearings be disabled for user with no hearing related roles', () => {
     storeMock.pipe.and.returnValue(of(USER_4));
     featureToggleMock.getValueOnce.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsViewGuard = new HearingsViewGuard(storeMock, sessionStorageMock, featureToggleMock, routerMock);
+    hearingsViewGuard = new HearingsViewGuard(storeMock, caseNotifierMock, featureToggleMock, routerMock);
     const result$ = hearingsViewGuard.canActivate();
     const canActive = false;
     const expected = cold('(b|)', { b: canActive });

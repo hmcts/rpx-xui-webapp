@@ -27,6 +27,7 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
 import * as _ from 'lodash';
+import { LoadServiceHearingDataPayload } from '../../../store';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -2281,7 +2282,8 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.referenceId));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(
+      new LoadServiceHearingDataPayload('JURISDCTION', component.referenceId)));
   });
 
   it('should window onblur', () => {

@@ -12,6 +12,7 @@ import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { LoadServiceLinkedCasesPayload } from '../../../store';
 
 @Component({
   selector: 'exui-hearing-link',
@@ -20,6 +21,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private caseLinkingReasons: LovRefDataByServiceModel;
   public caseId: string;
+  public jurisdictionId: string;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
@@ -35,6 +37,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
               protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.caseId = this.hearingListMainModel.caseRef || '';
+    this.jurisdictionId = '';
     this.caseName = this.serviceHearingValuesModel.hmctsInternalCaseName || '';
   }
 
@@ -43,10 +46,8 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       hearingLink: ['', Validators.required]
     });
     this.initialiseFromHearingValues();
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
-      caseReference: this.caseId,
-      hearingId: ''
-    }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases(
+      new LoadServiceLinkedCasesPayload(this.jurisdictionId, this.caseId, '')));
     this.generateLinkedCasesWithReasonDescription();
   }
 

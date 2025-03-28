@@ -10,6 +10,7 @@ import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.mod
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingValuesActions from '../actions/hearing-values.action';
 import { HearingValuesEffects } from './hearing-values.effects';
+import { LoadServiceHearingDataPayload } from '../actions/hearing-values.action';
 
 describe('Hearing Values Effects', () => {
   let actions$;
@@ -156,7 +157,8 @@ describe('Hearing Values Effects', () => {
 
     it('should return a response with service hearing values', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
-      const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
+      const action = new hearingValuesActions.LoadHearingValues(
+        new LoadServiceHearingDataPayload('JURISDICTION', '1111222233334444'));
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });

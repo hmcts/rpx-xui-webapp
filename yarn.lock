@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.46-qm-task-management":
-  version: 7.1.46-qm-task-management
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.46-qm-task-management"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.61-qm-task-management":
+  version: 7.1.61-qm-task-management
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.61-qm-task-management"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/392996a961ff57c479fdfb857ccaf2d26a691dbdcb8dffe1dc688132ab62dfea48bc64490c9fa91f6d011569e5db41a4a89971584252db088b3ecce25357bee4
+  checksum: 10/750a1419a518b19e9bd3a2aeb4dfa7a672e6ec4c03075a4256370209279ef853c695b92aa3ea463d45872b32c923f907bce48a75a706a6856e868677a1f7679f
   languageName: node
   linkType: hard
 
@@ -22032,7 +22032,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.46-qm-task-management"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.61-qm-task-management"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.14"

@@ -8,6 +8,7 @@ const jurisdictions = /aggregated\/.+jurisdictions\?/;
  * to make available jurisdiction in filters array only
  */
 export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
+  console.log('getJuri');
   if (!Array.isArray(data)
         || !jurisdictions.test(req.url)) {
     return data;
@@ -18,6 +19,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
 };
 
 export const checkCachedJurisdictions = (proxyReq, req, res) => {
+  console.log('checkCachedJurisdictions');
   if (jurisdictions.test(req.url)) {
     if (req.session.jurisdictions) {
       res.send(req.session.jurisdictions);

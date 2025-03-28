@@ -12,8 +12,7 @@ import {
 import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { refreshRoleAssignmentForUser } from '../user';
-import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { getUserRoleAssignments, refreshRoleAssignmentForUser } from '../user';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -410,10 +409,12 @@ export function getCaseListPromises(data: CaseDataType, req: EnhancedRequest): P
 }
 
 export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<Response> {
-  await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
+  const userInfo = req.session.passport.user.userinfo;
+  await refreshRoleAssignmentForUser(userInfo, req);
 
-  const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
-  const mappedCases = await getMyAccessMappedCaseList(roleAssignments, req);
+  const roleAssignments = getUserRoleAssignments(userInfo, req);
+  // const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
+  const mappedCases = await getMyAccessMappedCaseList(await roleAssignments, req);
 
   const result = {
     cases: mappedCases,
@@ -425,8 +426,11 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
 
 export async function getMyCases(req: EnhancedRequest, res: Response): Promise<Response> {
   try {
-    await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
-    const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
+    const userInfo = req.session.passport.user.userinfo;
+    // await refreshRoleAssignmentForUser(userInfo, req);
+
+    const roleAssignments = await getUserRoleAssignments(userInfo, req);
+    // const roleAssignments: RoleAssignment[] = req.session.roleAssignmentResponse;
 
     // get 'service' and 'location' filters from search_parameters on request
     const { search_parameters } = req.body.searchRequest;
@@ -452,7 +456,8 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+    let checkedRoles = getUserRoleAssignments(userInfo, req);
+    // let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
       checkedRoles = getSubstantiveRoles(roleAssignments as any) as any;
     }

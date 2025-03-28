@@ -8,14 +8,15 @@ import { UserRole } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
+import { CaseNotifier } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
 export class HearingsEditGuard extends HearingsGuard {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
-              protected readonly sessionStorageService: SessionStorageService,
+              protected readonly caseNotifier: CaseNotifier,
               protected readonly featureToggleService: FeatureToggleService,
               protected readonly router: Router) {
-    super(appStore, sessionStorageService, featureToggleService);
+    super(appStore, caseNotifier, featureToggleService);
   }
 
   public canActivate(): Observable<boolean> {

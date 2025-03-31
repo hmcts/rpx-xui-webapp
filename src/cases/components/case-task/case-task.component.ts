@@ -81,7 +81,7 @@ export class CaseTaskComponent implements OnInit {
     }, task.description);
   }
 
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
     this.manageOptions = this.task.actions;
   }
 

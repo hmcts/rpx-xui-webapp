@@ -373,9 +373,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public async navigateToCaseTaskTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'tasks' }
-    );
+    await this.router.navigate(['cases', 'case-details', this.caseId, 'tasks']);
   }
 
   public hasRespondedToQueryTask(value: boolean): void {

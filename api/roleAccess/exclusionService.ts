@@ -50,7 +50,7 @@ export async function confirmUserExclusion(req: EnhancedRequest, res: Response, 
 
     const roleAssignmentsBody = prepareExclusionBody(currentUserId, assigneeId, body, roleCategory);
     const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
-    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req);
+    const response: AxiosResponse = await sendPost(basePath, roleAssignmentsBody, req, next);
     const { status, data } = response;
     return res.status(status).send(data);
   } catch (error) {

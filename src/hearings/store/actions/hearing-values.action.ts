@@ -12,9 +12,13 @@ export class ResetHearingValues implements Action {
   public readonly type = RESET_HEARING_VALUES;
 }
 
+export class LoadServiceHearingDataPayload {
+  constructor(public jurisdictionId: string, public caseReference: string) {}
+}
+
 export class LoadHearingValues implements Action {
   public readonly type = LOAD_HEARING_VALUES;
-  constructor(public payload: string) {}
+  constructor(public payload: LoadServiceHearingDataPayload) {}
 }
 
 export class LoadHearingValuesSuccess implements Action {

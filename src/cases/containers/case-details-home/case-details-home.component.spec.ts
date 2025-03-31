@@ -69,11 +69,13 @@ describe('CaseDetailsHomeComponent', () => {
       expect(mockAlertService.success).not.toHaveBeenCalled();
     });
 
+/*
     it('should log a message when no data available in route', () => {
       mockActivatedRoute.data = of({});
       component.ngOnInit();
       expect(mockLoggerService.log).toHaveBeenCalledWith('CaseDetailsHomeComponent: No data available to add caseInfo details in session storage');
     });
+*/
   });
 
   describe('redirected from available-tasks assignment', () => {

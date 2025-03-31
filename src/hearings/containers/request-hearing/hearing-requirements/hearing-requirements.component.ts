@@ -22,6 +22,7 @@ import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import * as moment from 'moment';
+import { LoadServiceHearingDataPayload } from '../../../../hearings/store';
 
 @Component({
   selector: 'exui-hearing-requirements',
@@ -44,7 +45,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
     if (this.lostFocus) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(
+        new LoadServiceHearingDataPayload(this.jurisdictionId, this.referenceId)));
       if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE_EDIT)
         || HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.VIEW_EDIT)) {
         setTimeout(() => this.updatePartyFlagsFromHearingValues(), 500);

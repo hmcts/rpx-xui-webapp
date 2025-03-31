@@ -418,7 +418,8 @@ describe('CaseHearingsComponent', () => {
           useValue: {
             snapshot: {
               params: {
-                cid: '1234'
+                cid: '1234',
+                jid: 'JURISDICTION'
               }
             }
           }
@@ -452,7 +453,8 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1234')));
+    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore
+      .LoadHearingValues({ jurisdictionId: 'JURISDICTION', caseReference: '1234' })));
   });
 
   it('should unsubscribe', () => {

@@ -22,6 +22,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { SessionStorageService } from '../../../app/services';
+import { LoadServiceHearingDataPayload } from '../../../hearings/store';
 
 @Component({
   selector: 'exui-case-hearings',
@@ -45,6 +46,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public lastErrorSubscription: Subscription;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
+  public jurisdictionId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole: boolean;
   public showSpinner$: Observable<boolean>;
@@ -61,6 +63,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     private readonly loadingService: LoadingService,
     private readonly sessionSvc: SessionStorageService) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
+    this.jurisdictionId = this.activatedRoute.snapshot.params.jid;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
@@ -68,13 +71,15 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({ jurisdictionId: this.jurisdictionId,
+      caseReference: this.caseId }));
   }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(
+      new LoadServiceHearingDataPayload(this.jurisdictionId, this.caseId)));
     this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((serviceHearingValuesModel) => {
       if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
         this.refDataSubscription = this.lovRefDataService.getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false).subscribe((hearingStageOptions) => {

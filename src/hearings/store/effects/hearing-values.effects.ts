@@ -23,14 +23,12 @@ export class HearingValuesEffects {
     ofType(hearingValuesActions.LOAD_HEARING_VALUES),
     map((action: hearingValuesActions.LoadHearingValues) => action.payload),
     switchMap((payload) => {
-      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
-      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
-      return this.hearingsService.loadHearingValues(jurisdictionId, payload).pipe(
+      return this.hearingsService.loadHearingValues(payload.jurisdictionId, payload.caseReference).pipe(
         map(
           (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
         catchError((error) => {
           this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-          return HearingValuesEffects.handleError(error, payload);
+          return HearingValuesEffects.handleError(error, payload.caseReference);
         })
       );
     })

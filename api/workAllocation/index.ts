@@ -384,7 +384,7 @@ export async function showAllocateRoleLink(req: EnhancedRequest, res: Response, 
   const jurisdiction = req.params.jurisdiction;
   const caseLocationId = req.params.caseLocationId;
   try {
-    const result: boolean = checkIfCaseAllocator(jurisdiction, caseLocationId, req);
+    const result: boolean = await checkIfCaseAllocator(jurisdiction, caseLocationId, req);
     return res.send(result).status(200);
   } catch (e) {
     next(e);
@@ -477,7 +477,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
-      result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
+      result.cases = assignActionsToCases(sortedCaseList, await userIsCaseAllocator);
     }
     return res.send(result).status(200);
   } catch (e) {
@@ -525,7 +525,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
-    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    result.cases = assignActionsToCases(roleCaseList, await userIsCaseAllocator);
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);

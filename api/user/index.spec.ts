@@ -148,7 +148,7 @@ describe('Index', () => {
         beginTime: undefined,
         endTime: undefined
       }];
-      expect(setUserRoles(mockUserInfo, mockReq, mockUserId)).to.deep.equal(mockUserRoles);
+      expect(setUserRoles(mockUserInfo, mockReq, mockUserId, mockRoleAssignments)).to.deep.equal(mockUserRoles);
       expect(mockUserInfo.roleCategory).to.equal('ADMIN');
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2', 'test role', 'test role 2']);
     });

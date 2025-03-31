@@ -89,7 +89,7 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     delete headers.accept;
     try {
       const response: AxiosResponse = await http.get(path, { headers });
-      const roleAssignments = [...getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date())];;
+      const roleAssignments = [...getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date())];
       userRoleAssignments = setUserRoles(userInfo, req, id, roleAssignments);
       req.session.roleRequestEtag = response?.headers?.etag;
       console.log('roles got from AM');
@@ -173,7 +173,6 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
-  const refreshRoleAssignments = req?.query?.refreshRoleAssignments ? req.query.refreshRoleAssignments === 'true' : false;
   const roleAssignmentInfo = await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

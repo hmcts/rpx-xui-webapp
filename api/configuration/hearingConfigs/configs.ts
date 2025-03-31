@@ -1,4 +1,4 @@
-import { testHearingJurisdictions, testEnableHearingAmendments } from './test';
+import { previewHearingJurisdictions, previewEnableHearingAmendments } from './preview';
 import { aatHearingJurisdictions, aatEnableHearingAmendments } from './aat';
 import { prodHearingJurisdictions, prodEnableHearingAmendment } from './prod';
 
@@ -13,8 +13,8 @@ export function setupHearingConfigs(environment){
       break;
     case 'preview':
       config = {
-        hearingJurisdictions: testHearingJurisdictions,
-        hearingAmendment: testEnableHearingAmendments
+        hearingJurisdictions: previewHearingJurisdictions,
+        hearingAmendment: previewEnableHearingAmendments
       };
       break;
     default:

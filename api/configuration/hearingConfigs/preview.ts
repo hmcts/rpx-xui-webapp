@@ -1,4 +1,4 @@
-export const testEnableHearingAmendments = {
+export const previewEnableHearingAmendments = {
   '.+': [
     {
       includeCaseTypes: [
@@ -6,11 +6,18 @@ export const testEnableHearingAmendments = {
         '(Civil-|CIVIL-)\\d+'
       ],
       jurisdiction: 'CIVIL'
+    },
+    {
+      includeCaseTypes: [
+        'Asylum',
+        'Bail'
+      ],
+      jurisdiction: 'IA'
     }
   ]
 };
 
-export const testHearingJurisdictions = {
+export const previewHearingJurisdictions = {
   '.+': [
     {
       includeCaseTypes: [

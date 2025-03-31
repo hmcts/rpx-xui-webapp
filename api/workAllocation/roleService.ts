@@ -1,19 +1,14 @@
 import { getUserRoleAssignments } from '../user';
 import { EnhancedRequest } from '../lib/models';
 import { isCurrentUserCaseAllocator } from '../user/utils';
-import { RoleAssignment } from 'user/interfaces/roleAssignment';
 
-export function checkIfCaseAllocator(jurisdiction: string, caseLocationId: string, req: EnhancedRequest): boolean {
+export async function checkIfCaseAllocator(jurisdiction: string, caseLocationId: string, req: EnhancedRequest): Promise<boolean> {
   const userInfo = req.session.passport.user.userinfo;
-  let roleAssignments: RoleAssignment[];
-  getUserRoleAssignments(userInfo, req).then((assignments) => {
-    roleAssignments = assignments;
-  });
-  // const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
-  let isCaseAllocator = false;
-  if (roleAssignments) {
-    const roleAssignment = roleAssignments.find((role) => isCurrentUserCaseAllocator(role, jurisdiction, caseLocationId));
-    isCaseAllocator = !!roleAssignment;
-  }
+  const roleAssignments = await getUserRoleAssignments(userInfo, req);
+
+  const isCaseAllocator = roleAssignments.some((role) =>
+    isCurrentUserCaseAllocator(role, jurisdiction, caseLocationId)
+  );
+
   return isCaseAllocator;
 }

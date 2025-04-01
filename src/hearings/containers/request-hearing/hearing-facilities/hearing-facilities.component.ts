@@ -12,6 +12,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-facilities',
@@ -120,24 +121,22 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public prepareHearingRequestData() {
     const facilitiesRequired: string[] = (this.hearingFactilitiesForm.controls['addition-securities'] as FormArray).controls
       .filter((control) => control.value.selected).map((mapControl) => mapControl.value.key);
-    if (facilitiesRequired.length > 0) {
-      this.hearingRequestMainModel = {
-        ...this.hearingRequestMainModel,
-        caseDetails: {
-          ...this.hearingRequestMainModel.caseDetails,
-          caseAdditionalSecurityFlag: this.hearingFactilitiesForm.controls['addition-security-required'].value === 'Yes'
-        },
-        hearingDetails: {
-          ...this.hearingRequestMainModel.hearingDetails,
-          facilitiesRequired
-        }
-      };
-    }
+    this.hearingRequestMainModel = {
+      ...this.hearingRequestMainModel,
+      caseDetails: {
+        ...this.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: this.hearingFactilitiesForm.controls['addition-security-required'].value === 'Yes'
+      },
+      hearingDetails: {
+        ...this.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: facilitiesRequired
+      }
+    };
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = this.haveUpdatesMadeToSelections();
       }
       if (propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
@@ -178,5 +177,14 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
         this.caseFlagsRefData, this.caseFlagType);
     }
+  }
+
+  private haveUpdatesMadeToSelections() {
+    const { caseAdditionalSecurityFlagChanged, facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      this.hearingRequestMainModel,
+      this.hearingRequestToCompareMainModel
+    );
+
+    return caseAdditionalSecurityFlagChanged || facilitiesChanged;
   }
 }

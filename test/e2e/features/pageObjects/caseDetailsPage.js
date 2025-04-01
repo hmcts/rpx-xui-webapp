@@ -13,10 +13,10 @@ class CaseDetailsPage{
   }
 
   async amOnPage(){
-    try{
+    try {
       await BrowserWaits.waitForElement(this.caseDetailsContainer);
       return true;
-    }catch(err){
+    } catch (err){
       CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
       return false;
     }

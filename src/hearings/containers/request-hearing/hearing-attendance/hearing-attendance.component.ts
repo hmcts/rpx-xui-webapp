@@ -85,7 +85,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       }
     } else {
       // This will be triggered on a create request
-      this.initialiseFormValues(this.serviceHearingValuesModel.parties);
+      this.initialiseFormValues(this.hearingRequestMainModel.partyDetails);
     }
     this.attendanceFormGroup.controls.estimation.setValue(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees || 0);
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;

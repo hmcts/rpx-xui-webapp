@@ -2,12 +2,16 @@ const path = require('path');
 const fs = require('fs');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
-const tsNode = require('ts-node');
+const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
 
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
+
   sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+
+  // sauceSeleniumAddress: 'https://vmuniganti:ed5cdbf5-4d8f-47e4-ab72-1757ee05e15f@eu-central-1.saucelabs.com:443/wd/hub',
+
   host: 'ondemand.eu-central-1.saucelabs.com',
   sauceRegion: 'eu',
   port: 80,
@@ -19,19 +23,17 @@ const config = {
 
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
-    targetEnv: argv.env || 'local',
-    username: 'lukesuperuserxui@mailnesia.com', // Added username
-    password: 'Monday01', // Added password
-    caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com', // Added caseworkerUser
-    caseworkerPassword: 'London01', // Added caseworkerPassword
-    fr_judge_username: process.env.FR_EMAIL, // Added fr_judge_username
-    fr_judge_password: process.env.FR_PASSWORD, // Added fr_judge_password
-    sscs_username: process.env.SSCS_EMAIL, // Added sscs_username
-    sscs_password: process.env.SSCS_PASSWORD // Added sscs_password
+    targetEnv: argv.env || 'local'
+    //username: process.env.TEST_EMAIL,
+    //password: process.env.TEST_PASSWORD,
   },
-  specs: ['../crossbrowser/**/*.feature'],
-  baseUrl: 'https://manage-case.aat.platform.hmcts.net',
-  allScriptsTimeout: 240000,
+
+  // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
+  sauceUser: process.env.SAUCE_USERNAME,
+  sauceKey: process.env.SAUCE_ACCESS_KEY,
+  SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
+  allScriptsTimeout: 111000,
+
   useAllAngular2AppRoots: true,
   multiCapabilities: [
     {
@@ -65,6 +67,17 @@ const config = {
       extendedDebugging: true,
       sharedTestFiles: false,
       capturePerformance: true,
+      maxInstances: 1
+    },
+
+    {
+      browserName: 'firefox',
+      version: 'latest',
+      platform: 'macOS 10.15',
+      name: 'ff-mac-tests',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
       maxInstances: 1
     }
   ],
@@ -122,5 +135,4 @@ const config = {
     });
   }
 };
-config.defaultTimeout = 30000;
 exports.config = config;

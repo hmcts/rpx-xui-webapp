@@ -1,9 +1,9 @@
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
-var cucumberReporter = require('../../../support/reportLogger');
+const cucumberReporter = require('../../../support/reportLogger');
 const { $ } = require('protractor');
 
-var TaskMessageBanner = require('../messageBanner');
+const TaskMessageBanner = require('../messageBanner');
 const { LOG_LEVELS } = require('../../../support/constants');
 
 class TaskListPage extends TaskList {
@@ -26,11 +26,11 @@ class TaskListPage extends TaskList {
   }
 
   async amOnPage() {
-    try{
+    try {
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.myTasksTab);
       return true;
-    } catch(err){
+    } catch (err){
       cucumberReporter.AddMessage('Task list page not displayed: ' + err, LOG_LEVELS.Error);
       return false;
     }
@@ -67,10 +67,10 @@ class TaskListPage extends TaskList {
   async isAvailableTasksDisplayed(){
     expect(await this.amOnPage(), 'Not on Task list page ').to.be.true;
     await BrowserWaits.waitForSpinnerToDissappear();
-    try{
+    try {
       await BrowserWaits.waitForElement(this.availableTasksContainer);
       return true;
-    }catch(err){
+    } catch (err){
       cucumberReporter.AddMessage('Available Tasks list page not displayed: ' + err, LOG_LEVELS.Error);
       return false;
     }
@@ -89,7 +89,7 @@ class TaskListPage extends TaskList {
   async isBannermessageWithTextDisplayed(messageText) {
     const messages = await this.getBannerMessagesDisplayed();
 
-    for(const message of messages){
+    for (const message of messages){
       if (message.includes(messageText)){
         return true;
       }

@@ -33,7 +33,7 @@ export class MediaViewerWrapperComponent implements OnInit {
         private readonly titleService: Title
   ) {}
 
-  public async ngOnInit() {
+  public ngOnInit(): void {
     const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);
     let sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
 
@@ -46,13 +46,13 @@ export class MediaViewerWrapperComponent implements OnInit {
 
     if (sessionStorageMedia) {
       const media: {
-                document_binary_url: string
-                document_filename: string
-                content_type: string
-                annotation_api_url?: string
-                case_id?: string
-                case_jurisdiction?: string
-            } = JSON.parse(sessionStorageMedia);
+        document_binary_url: string;
+        document_filename: string;
+        content_type: string;
+        annotation_api_url?: string;
+        case_id?: string;
+        case_jurisdiction?: string;
+      } = JSON.parse(sessionStorageMedia);
       this.mediaURL = media.document_binary_url;
       this.mediaFilename = media.document_filename;
       this.mediaContentType = media.content_type;

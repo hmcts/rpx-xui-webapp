@@ -53,7 +53,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public dateRangeStartChanged: boolean;
   public dateRangeEndChanged: boolean;
   public firstDateTimeMustBeChanged: boolean;
-  public durationChanged: boolean;
   public priorityChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public duration: number;
@@ -117,13 +116,20 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public setDataItems() {
+    // it is not a requirement to tell the user if the default value of the hearing duration has been updated.
+    if (this.hearingRequestMainModel.hearingDetails.duration && this.hearingRequestMainModel.hearingDetails.duration > 0) {
+      this.duration = this.hearingRequestMainModel.hearingDetails.duration;
+    } else {
+      if (this.serviceHearingValuesModel.duration) {
+        this.duration = this.serviceHearingValuesModel.duration;
+      }
+    }
+
     if (this.sourceOfData === SourceOfData.SERVICE_HEARING_VALUES) {
-      this.duration = this.serviceHearingValuesModel.duration;
       this.hearingWindow = this.serviceHearingValuesModel.hearingWindow;
       this.hearingPriorityType = this.serviceHearingValuesModel.hearingPriorityType;
       this.unavailabilityDateList = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     } else {
-      this.duration = this.hearingRequestMainModel.hearingDetails.duration;
       this.hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
       this.hearingPriorityType = this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
       this.unavailabilityDateList = this.hearingRequestMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
@@ -136,7 +142,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart, this.serviceHearingValuesModel.hearingWindow?.dateRangeStart);
     this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeEnd, this.serviceHearingValuesModel.hearingWindow?.dateRangeEnd);
     this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe, this.serviceHearingValuesModel.hearingWindow?.firstDateTimeMustBe);
-    this.durationChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
     this.priorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType);
   }
 

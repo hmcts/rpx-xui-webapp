@@ -28,6 +28,17 @@ export class PhaseBannerComponent {
   public toggleLanguage(lang: RpxLanguage): void {
     this.noBanner = (lang === 'cy');
     this.langService.language = lang;
+    const clientContextObj = JSON.parse(this.sessionStorageService.getItem('clientContext')) || {};
+    const clientContextAddLanguage = {
+      ...clientContextObj,
+      client_context: {
+        ...clientContextObj.client_context,
+        user_language: {
+          language: lang
+        }
+      }
+    };
+    this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContextAddLanguage));
   }
 
   public closeBanner() {

@@ -1,18 +1,17 @@
 
 class SpecificAccessRequestPage {
-    constructor() {
-        this.container = $('ccd-case-specific-access-request');
-        this.header = $('h1.govuk-fieldset__heading');
+  constructor() {
+    this.container = $('ccd-case-specific-access-request');
+    this.header = $('h1.govuk-fieldset__heading');
 
-        this.provideReasonInput = $('#specific-reason');
+    this.provideReasonInput = $('#specific-reason');
 
-        this.submitBtn = $('ccd-case-specific-access-request div.govuk-button-group button');
-        this.cancelLink = $('ccd-case-specific-access-request div.govuk-button-group a');
+    this.submitBtn = $('ccd-case-specific-access-request div.govuk-button-group button');
+    this.cancelLink = $('ccd-case-specific-access-request div.govuk-button-group a');
 
-        this.requestSuccessPageContainer = $('ccd-case-specific-access-success')
-    }
-
+    this.requestSuccessPageContainer = $('ccd-case-specific-access-success');
+  }
 }
 
-module.exports = new SpecificAccessRequestPage()
+module.exports = new SpecificAccessRequestPage();
 

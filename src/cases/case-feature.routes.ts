@@ -99,6 +99,39 @@ export const ROUTES: Routes = [
         }
       },
       {
+        path: 'case-details/:cid',
+        component: CaseDetailsHomeComponent,
+        resolve: { case: CaseResolver },
+        runGuardsAndResolvers: 'always',
+        children: [
+          {
+            path: '',
+            component: CaseViewerContainerComponent,
+            children: [
+              {
+                path: '',
+                pathMatch: 'full'
+              },
+              {
+                path: 'tasks',
+                component: TasksContainerComponent
+              },
+              {
+                path: 'roles-and-access',
+                component: RolesAndAccessContainerComponent
+              },
+              {
+                path: 'hearings',
+                component: CaseHearingsComponent
+              }
+            ]
+          },
+          ...caseViewRouting],
+        data: {
+          title: 'Case Details'
+        }
+      },
+      {
         path: 'case-details/:jurisdiction/:caseType/:cid',
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },

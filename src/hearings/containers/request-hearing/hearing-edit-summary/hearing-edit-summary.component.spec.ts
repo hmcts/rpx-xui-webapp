@@ -429,11 +429,33 @@ describe('HearingEditSummaryComponent', () => {
             }
           ]
         }
-      ]
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
+  it('should set hearingFacilitiesChangesRequired to be true if caseAdditionalSecurityFlag differs', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      caseAdditionalSecurityFlag: true,
+      screenFlow: [
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
   it('should pageVisitNonReasonableAdjustmentChangeExists return false if non-reasonable adjustment changes already confirmed', () => {
@@ -982,6 +1004,22 @@ describe('HearingEditSummaryComponent', () => {
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
         facilitiesRequired: ['11', '22']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['12', '23']
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitHearingFacilitiesChanged return true if additional security changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['12', '23']
       }
     };
     component.serviceHearingValuesModel = {

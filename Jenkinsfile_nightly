@@ -78,12 +78,6 @@ withNightlyPipeline(type, product, component) {
         ])
         stage('Cross Browser Test') {
             try {
-              steps {
-                sh '''
-                  sudo apt-get update
-                  sudo apt-get install -y libgtk-4-1 libgraphene-1.0-0
-                '''
-              }
               yarnBuilder.yarn('test:crossbrowser')
             } catch (Error) {
               unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())

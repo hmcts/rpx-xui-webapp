@@ -5818,7 +5818,7 @@ __metadata:
     playwright: "npm:1.51.1"
   bin:
     playwright: cli.js
-  checksum: 10/0d8d2291d6554c492cb163b4d463e1e9cc6d3ae50680d790473f693f36a243c16c3620406849dd40115046c47a6ad5cc36a24511caec6d054dc1a1d9fffb4138
+  checksum: 10/ffb0c964d54f593897f05a2587d8e1e4f5f0e8c28f5f6260c1182ff938eb375d96c57594dd2f223ec45452a6af40695fd22f222930610c32f345e28ccf53141d
   languageName: node
   linkType: hard
 
@@ -13502,9 +13502,9 @@ __metadata:
   linkType: hard
 
 "find-up-simple@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "find-up-simple@npm:1.0.1"
-  checksum: 10/6e374bffda9f8425314eab47ef79752b6e77dcc95c0ad17d257aef48c32fe07bbc41bcafbd22941c25bb94fffaaaa8e178d928867d844c58100c7fe19ec82f72
+  version: 1.0.0
+  resolution: "find-up-simple@npm:1.0.0"
+  checksum: 10/91c3d51c1111b5eb4e6e6d71d21438f6571a37a69dc288d4222b98996756e2f472fa5393a4dddb5e1a84929405d87e86f4bdce798ba84ee513b79854960ec140
   languageName: node
   linkType: hard
 
@@ -15178,10 +15178,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"index-to-position@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "index-to-position@npm:1.0.0"
-  checksum: 10/4a24b8f0728da8ec6ffea85556acf809a71317d5291d31148db7c2dececa10432abf3c87a932481a2e326af66221bcf77d8dc1f0abfd11537e7f3cc21432a525
+"index-to-position@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "index-to-position@npm:0.1.2"
+  checksum: 10/ae8e2304ed7c959bc6d1121712e9f625634ed884e32ef93fc0795c6aab1131b10198929a50c7d16d470dab37be7438eccb0afe021d79f69116273d500898daee
   languageName: node
   linkType: hard
 
@@ -17765,9 +17765,9 @@ __metadata:
   linkType: hard
 
 "luxon@npm:^3.5.0":
-  version: 3.6.1
-  resolution: "luxon@npm:3.6.1"
-  checksum: 10/35aad425607708c87af110a52c949190bc35b987770079ec8007ef2365cd29639413db3360d2883777aa01cb3ca5bdb37f42ee3e8e5a0dd277fe22e90cc8a786
+  version: 3.5.0
+  resolution: "luxon@npm:3.5.0"
+  checksum: 10/48f86e6c1c96815139f8559456a3354a276ba79bcef0ae0d4f2172f7652f3ba2be2237b0e103b8ea0b79b47715354ac9fac04eb1db3485dcc72d5110491dd47f
   languageName: node
   linkType: hard
 
@@ -20288,13 +20288,13 @@ __metadata:
   linkType: hard
 
 "parse-json@npm:^8.0.0":
-  version: 8.2.0
-  resolution: "parse-json@npm:8.2.0"
+  version: 8.1.0
+  resolution: "parse-json@npm:8.1.0"
   dependencies:
-    "@babel/code-frame": "npm:^7.26.2"
-    index-to-position: "npm:^1.0.0"
-    type-fest: "npm:^4.37.0"
-  checksum: 10/7238fe443668b4e0c278b53d80863062c84a0ed326a79f40f2cdf6ba98a3f43f452ce4bae470cb8a859069daf457b2ae30f4e7560b61742442959157e22b5813
+    "@babel/code-frame": "npm:^7.22.13"
+    index-to-position: "npm:^0.1.2"
+    type-fest: "npm:^4.7.1"
+  checksum: 10/efc4256c91e835b1340e2b4f535272247f174fcba85eead15ff938be23b3ca2d521a04c76e564d1dc2f61c0c9ebcb6157d5433d459c7e736c81d014b49577b31
   languageName: node
   linkType: hard
 
@@ -24802,10 +24802,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.37.0, type-fest@npm:^4.6.0, type-fest@npm:^4.8.3":
-  version: 4.39.0
-  resolution: "type-fest@npm:4.39.0"
-  checksum: 10/4d471af4548c7467b611fa6b29a063566b736c1a67bafb807425bbd40a4a96d5c5992b65b62e2415ebaa275b69d6b4c030aa7665d27c934c10befae0b8b7ba76
+"type-fest@npm:^4.6.0, type-fest@npm:^4.7.1":
+  version: 4.34.1
+  resolution: "type-fest@npm:4.34.1"
+  checksum: 10/fd5e9741170ea1967e62b429f9c42eed5a20dbae97fc14e35a64047eda5677c8acf57e6d8fd03de649f14eb9d2e8c9e621b35e6a709e9c5a75e3ab5de74e1e0a
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^4.8.3":
+  version: 4.23.0
+  resolution: "type-fest@npm:4.23.0"
+  checksum: 10/c411dea83262f9a4453e09ff82e3ac729dd26afc2e68b7a9fe93dd633b1a2bf7bf2bf3e041676497ae8b8411266019b3add91d4fe34b926a82ba09eb41e9e52b
   languageName: node
   linkType: hard
 

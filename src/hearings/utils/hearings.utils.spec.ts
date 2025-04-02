@@ -8,6 +8,7 @@ import { HearingsUtils } from './hearings.utils';
 import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import * as moment from 'moment';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -504,5 +505,230 @@ describe('HearingsUtils', () => {
         HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
       ).toBeFalsy();
     });
+  });
+  describe('Update the hearing window static data to a future date\'', () => {
+    const mochSHVData = {
+      'hmctsServiceID': 'ABA5',
+      'hmctsInternalCaseName': '1234567812345678 update case internal name',
+      'publicCaseName': 'Case public name',
+      'caseAdditionalSecurityFlag': false,
+      'caseCategories': [
+        {
+          'categoryType': 'caseType',
+          'categoryValue': 'ABA5-PRL',
+          'categoryParent': null
+        },
+        {
+          'categoryType': 'caseSubType',
+          'categoryValue': 'ABA5-PRL',
+          'categoryParent': 'ABA5-PRL'
+        }
+      ],
+      'caseDeepLink': 'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/1690807693531270#Case File View',
+      'externalCaseReference': '',
+      'caseManagementLocationCode': '283922',
+      'autoListFlag': false,
+      'hearingType': '',
+      'hearingWindow': {
+        'dateRangeStart': '',
+        'dateRangeEnd': '',
+        'firstDateTimeMustBe': '2024-12-18T00:00:00'
+      },
+      'duration': 120,
+      'hearingPriorityType': 'Standard',
+      'numberOfPhysicalAttendees': 0
+    };
+    const mockHMCData = {
+      'requestDetails': {
+        'status': 'LISTED',
+        'timestamp': '2023-11-06T14:01:32.836316',
+        'versionNumber': 1,
+        'hearingRequestID': '2000007311'
+      },
+      'hearingDetails': {
+        'hearingType': 'ABA1-ABC',
+        'hearingWindow': {
+          'dateRangeStart': '2025-12-15T00:00:00',
+          'dateRangeEnd': '2025-12-17T00:00:00',
+          'firstDateTimeMustBe': ''
+        },
+        'duration': 125,
+        'hearingPriorityType': 'ABA1-HPR',
+        'numberOfPhysicalAttendees': 0,
+        'hearingInWelshFlag': false,
+        'hearingLocations': [
+          {
+            'locationType': 'court',
+            'locationId': '827534'
+          }
+        ],
+        'privateHearingRequiredFlag': false,
+        'panelRequirements': {
+          'roleType': [
+            '19',
+            '30'
+          ],
+          'authorisationTypes': [],
+          'authorisationSubType': [],
+          'panelPreferences': [],
+          'panelSpecialisms': []
+        },
+        'hearingIsLinkedFlag': false,
+        'hearingChannels': [
+          'INTER',
+          'VID'
+        ],
+        'autolistFlag': false
+      }
+    };
+    it('SHV static data updated with future dates', () => {
+      const response = mochSHVData;
+      HearingsUtils.resetHearingWindow(response);
+      const expectedYear = new Date().getFullYear();
+      expect(moment(response.hearingWindow.firstDateTimeMustBe).year()).toEqual(expectedYear + 1);
+    });
+
+    it('HMC static data updated with future dates', () => {
+      const response = mockHMCData;
+      HearingsUtils.resetHearingWindow(response);
+      const expectedYear = new Date().getFullYear();
+      expect(moment(response.hearingDetails.hearingWindow.dateRangeStart).year()).toEqual(expectedYear + 1);
+      expect(moment(response.hearingDetails.hearingWindow.dateRangeEnd).year()).toEqual(expectedYear + 1);
+    });
+  });
+  it('should return true if additional facilities have changed', () => {
+    const hearingRequestMainModel = {
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+    } as any;
+    const hearingRequestToCompareMainModel = {
+      hearingDetails: { facilitiesRequired: ['facility1'] }
+    } as any;
+
+    const { facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      hearingRequestMainModel,
+      hearingRequestToCompareMainModel
+    );
+    expect(facilitiesChanged).toBe(true);
+  });
+
+  it('should return false if additional facilities have not changed', () => {
+    const hearingRequestMainModel = {
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+    } as any;
+    const hearingRequestToCompareMainModel = {
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+    } as any;
+
+    const { facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      hearingRequestMainModel,
+      hearingRequestToCompareMainModel
+    );
+    expect(facilitiesChanged).toBe(false);
+  });
+
+  it('should return true if case additional security flag has changed', () => {
+    const hearingRequestMainModel = {
+      caseDetails: { caseAdditionalSecurityFlag: true }
+    } as any;
+    const hearingRequestToCompareMainModel = {
+      caseDetails: { caseAdditionalSecurityFlag: false }
+    } as any;
+
+    const { caseAdditionalSecurityFlagChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      hearingRequestMainModel,
+      hearingRequestToCompareMainModel
+    );
+    expect(caseAdditionalSecurityFlagChanged).toBe(true);
+  });
+
+  it('should return false if case additional security flag has not changed', () => {
+    const hearingRequestMainModel = {
+      caseDetails: { caseAdditionalSecurityFlag: true }
+    } as any;
+    const hearingRequestToCompareMainModel = {
+      caseDetails: { caseAdditionalSecurityFlag: true }
+    } as any;
+
+    const { caseAdditionalSecurityFlagChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
+      hearingRequestMainModel,
+      hearingRequestToCompareMainModel
+    );
+    expect(caseAdditionalSecurityFlagChanged).toBe(false);
+  });
+  it('should return true if arrays differ in elements', () => {
+    const array1 = ['a', 'b', 'c'];
+    const array2 = ['a', 'b', 'd'];
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(true);
+  });
+
+  it('should return false if arrays are identical', () => {
+    const array1 = ['a', 'b', 'c'];
+    const array2 = ['a', 'b', 'c'];
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(false);
+  });
+
+  it('should return true if one array is null and the other is not', () => {
+    const array1 = null;
+    const array2 = ['a', 'b', 'c'];
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(true);
+  });
+
+  it('should return false if both arrays are null', () => {
+    const array1 = null;
+    const array2 = null;
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(false);
+  });
+
+  it('should return true if one array is empty and the other is not', () => {
+    const array1 = [];
+    const array2 = ['a', 'b', 'c'];
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(true);
+  });
+
+  it('should return false if both arrays are empty', () => {
+    const array1 = [];
+    const array2 = [];
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(false);
+  });
+
+  it('should return true if arrays have same elements but in different order', () => {
+    const array1 = ['a', 'b', 'c'];
+    const array2 = ['c', 'b', 'a'];
+    expect(HearingsUtils.doArraysDiffer(array1, array2)).toBe(false);
+  });
+
+  it('should return sorted array when given an unsorted array', () => {
+    const array = ['b', 'a', 'c'];
+    // eslint-disable-next-line dot-notation
+    const result = HearingsUtils['standardiseStringArray'](array);
+    expect(result).toEqual(['a', 'b', 'c']);
+  });
+
+  it('should return undefined when given a null array', () => {
+    const array = null;
+    // eslint-disable-next-line dot-notation
+    const result = HearingsUtils['standardiseStringArray'](array);
+    expect(result).toBeUndefined();
+  });
+
+  it('should return undefined when given an undefined array', () => {
+    const array = undefined;
+    // eslint-disable-next-line dot-notation
+    const result = HearingsUtils['standardiseStringArray'](array);
+    expect(result).toBeUndefined();
+  });
+
+  it('should return undefined when given an empty array', () => {
+    const array: string[] = [];
+    // eslint-disable-next-line dot-notation
+    const result = HearingsUtils['standardiseStringArray'](array);
+    expect(result).toBeUndefined();
+  });
+
+  it('should return sorted array when given an already sorted array', () => {
+    const array = ['a', 'b', 'c'];
+    // eslint-disable-next-line dot-notation
+    const result = HearingsUtils['standardiseStringArray'](array);
+    expect(result).toEqual(['a', 'b', 'c']);
   });
 });

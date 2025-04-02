@@ -14,14 +14,14 @@ function mockTestDataRequestInterceptor(request) {
 }
 
 function mockTestDataResponseInterceptor(response) {
-  try{
+  try {
     if (response.config.url.includes('am-role-assignment-service')) {
       rolesAssignmentsMock.processResponse(response);
     }
     if (response.config.url.includes('rd-caseworker-ref-api')) {
       refDataCaseWorkers.processResponse(response);
     }
-  }catch(err){
+  } catch (err){
     console.log(err);
     throw err;
   }

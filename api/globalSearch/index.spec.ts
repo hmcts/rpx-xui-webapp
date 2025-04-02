@@ -5,7 +5,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { GlobalSearchService } from '../interfaces/globalSearchService';
+import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
@@ -14,7 +14,7 @@ chai.use(sinonChai);
 
 describe('Jurisdiction', () => {
   let sandbox: sinon.SinonSandbox;
-  const fefDataHMCTS: RefDataHMCTSService[] = [
+  const refDataHMCTS: RefDataHMCTSService[] = [
     {
       jurisdiction: 'Immigration and Asylum Chamber',
       service_id: 39,
@@ -137,7 +137,7 @@ describe('Jurisdiction', () => {
       ]
     }
   ];
-  const serviceList: GlobalSearchService[] = [
+  const serviceList: HMCTSServiceDetails[] = [
 
     { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
     { serviceId: 'Civil', serviceName: 'Civil' },
@@ -190,7 +190,8 @@ describe('Jurisdiction', () => {
   });
 
   it('should return global search services2', async() => {
-    const services = globalSearchServices.generateServices(fefDataHMCTS);
+    console.log('refDataHMCTS size: ' + refDataHMCTS.length);
+    const services = globalSearchServices.generateServices(refDataHMCTS);
     expect(services).to.deep.equal(serviceList);
   });
 

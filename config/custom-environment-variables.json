@@ -56,7 +56,8 @@
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
-      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
+      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
@@ -85,7 +86,10 @@
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
-      "serviceOverride": "SERVICES_IDAM_SERVICE_OVERRIDE",
+      "serviceOverride": {
+        "__name": "SERVICES_IDAM_SERVICE_OVERRIDE",
+        "__format": "json"
+      },
       "iss": "SERVICES_IDAM_ISS_URL"
     },
     "location_api": "SERVICES_LOCATION_API",
@@ -113,7 +117,7 @@
     "translation": "SERVICES_TRANSLATION_API_URL",
     "lau": {
       "specificChallengedAccessApi": "SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH"
-    } 
+    }
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",

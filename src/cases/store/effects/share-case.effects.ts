@@ -36,8 +36,8 @@ export class ShareCaseEffects {
     map((action: shareCaseActions.AddShareCaseGo) => action.payload),
     tap(({ path, query: queryParams, extras, sharedCases }) => {
       const thatSharedCases = sharedCases;
-      queryParams = { init: true };
-      return this.router.navigate(path, { queryParams, ...extras }).then(() => {
+      const modifiedQueryParams = { ...queryParams, init: true };
+      return this.router.navigate(path, { queryParams: modifiedQueryParams, ...extras }).then(() => {
         this.store.dispatch(new shareCaseActions.NavigateToShareCase(thatSharedCases));
       });
     })

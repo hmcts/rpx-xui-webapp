@@ -5811,14 +5811,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.50.1":
-  version: 1.50.1
-  resolution: "@playwright/test@npm:1.50.1"
+"@playwright/test@npm:^1.51.1":
+  version: 1.51.1
+  resolution: "@playwright/test@npm:1.51.1"
   dependencies:
     playwright: "npm:1.51.1"
   bin:
     playwright: cli.js
-  checksum: 10/0d8d2291d6554c492cb163b4d463e1e9cc6d3ae50680d790473f693f36a243c16c3620406849dd40115046c47a6ad5cc36a24511caec6d054dc1a1d9fffb4138
+  checksum: 10/ffb0c964d54f593897f05a2587d8e1e4f5f0e8c28f5f6260c1182ff938eb375d96c57594dd2f223ec45452a6af40695fd22f222930610c32f345e28ccf53141d
   languageName: node
   linkType: hard
 
@@ -20746,7 +20746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.51.1, playwright@npm:^1.42":
+"playwright@npm:1.51.1, playwright@npm:^1.51.1":
   version: 1.51.1
   resolution: "playwright@npm:1.51.1"
   dependencies:
@@ -22295,7 +22295,7 @@ __metadata:
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^9.11.1"
     "@pact-foundation/pact-node": "npm:^10.9.7"
-    "@playwright/test": "npm:^1.50.1"
+    "@playwright/test": "npm:^1.51.1"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^8.0.0"
     "@stryker-mutator/html-reporter": "npm:^3.1.0"
@@ -22401,7 +22401,7 @@ __metadata:
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
     pegjs: "npm:^0.10.0"
-    playwright: "npm:^1.42"
+    playwright: "npm:^1.51.1"
     portfinder: "npm:^1.0.28"
     protractor: "npm:~7.0.0"
     protractor-cucumber-framework: "npm:^9.7.0"

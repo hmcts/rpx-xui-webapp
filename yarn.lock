@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.52-exui-2825-scrollbar":
-  version: 7.1.52-exui-2825-scrollbar
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.52-exui-2825-scrollbar"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.61":
+  version: 7.1.61
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.61"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/0f786f6d893991654c76b18a979b91b52108de40ce7270ed77a6e3dcaf1a8b3eed76c7e818e9be07652646611469b32ca28ea1deb54f45431f9ec9ad5e37de47
+  checksum: 10/178dcac1e3bf1b9ea6428b0bcc529eed7e3f4b4a10b2843abc583a3cb54681ecc6afcc7db7fc5b4e4d0bfd09aa78eda536b11d1cb1cfdfad6ce513eb109e6d9a
   languageName: node
   linkType: hard
 
@@ -3667,9 +3667,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.13-exui-2825-scrollbar":
-  version: 4.0.13-exui-2825-scrollbar
-  resolution: "@hmcts/media-viewer@npm:4.0.13-exui-2825-scrollbar"
+"@hmcts/media-viewer@npm:4.0.15":
+  version: 4.0.15
+  resolution: "@hmcts/media-viewer@npm:4.0.15"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3688,7 +3688,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/751c3d911c3c3735b59724898ac5eb725f25fced95c3f9fe4336fbdf139897a20f071caeedb3c3ce119932e835fe27a24c7c8e168d61023c6e99dffe5f05d17b
+  checksum: 10/329d1a2add3302332b7809798fe3ffecc69e895f008c64543b17a6742d33129f63543ae4ed904dba61290b41aa69ccddddae180831a4381d8706f0586c8c929d
   languageName: node
   linkType: hard
 
@@ -22276,10 +22276,10 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.52-exui-2825-scrollbar"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.61"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.13-exui-2825-scrollbar"
+    "@hmcts/media-viewer": "npm:4.0.15"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.39"

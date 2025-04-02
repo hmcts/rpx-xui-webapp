@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -290,7 +290,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           if (field.name === 'location') {
-            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMMSModel).epimms_id : '';
+            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';
             return { ...acc, [field.name]: value };
           }
           return { ...acc, [field.name]: field.value[0] };

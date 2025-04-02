@@ -641,10 +641,20 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     if (this.hearingRequestMainModel.partyDetails) {
-      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
+      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
+        return true;
+      }
+      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow)){
+        return true;
+      }
+      if (this.hearingRequestMainModel.hearingDetails.duration !== this.serviceHearingValuesModel.duration) {
+        return true;
+      }
+      if (this.hearingRequestMainModel.hearingDetails.hearingPriorityType !== this.serviceHearingValuesModel.hearingPriorityType) {
         return true;
       }
     }
-    return false;
+
+    return this.hearingRequestMainModel.hearingDetails.hearingPriorityType !== this.serviceHearingValuesModel.hearingPriorityType;
   }
 }

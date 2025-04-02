@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { AppConstants } from '../../../../app/app.constants';
 import {
   ACTION,
   HearingChangeReasonMessages,
@@ -44,7 +43,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public ngOnInit(): void {
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmendmentsEnabled().subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
     });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {

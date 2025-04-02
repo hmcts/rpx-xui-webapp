@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
 
-
 const nodeAppDataModels = require('../../dataModels/nodeApp')
 const testUsers = require('../../e2e/config/appTestConfig');
 const config = require('./config/config').config;
@@ -20,7 +19,6 @@ describe('nodeApp endpoint', () => {
     setTestContext(this);
     Request.clearSession();
   });
-
 
   it('external/configuration-ui', async () => {
     const response = await Request.get('external/configuration-ui', null, 200);
@@ -42,7 +40,6 @@ describe('nodeApp endpoint', () => {
     expect(response.status).to.equal(200);
     expect(response.data).to.equal(false);
   });
-
 
   it('api/user/details', async () => {
     await Request.withSession(userName, password);
@@ -94,7 +91,6 @@ describe('nodeApp endpoint', () => {
     await Request.get('api/user/details', null, 401);
   });
 
-
   it('api/configuration?configurationKey=xxx', async () => {
     await Request.withSession(userName, password);
     const response = await Request.get('api/configuration?configurationKey=termsAndConditionsEnabled', null, 200);
@@ -102,6 +98,4 @@ describe('nodeApp endpoint', () => {
 
     expect(JSON.stringify(response.data)).to.have.lengthOf.below(6);
   });
-
-
 });

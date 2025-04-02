@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { BookingCheckType, FeatureToggleService, FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { UserRole } from '../../../app/models';
+import { HMCTSServiceDetails, UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 import { getRoleCategory } from '../../utils';
 
@@ -18,7 +18,7 @@ import { getRoleCategory } from '../../utils';
 })
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
-  @Input() public jurisdictions: string[] = [];
+  @Input() public jurisdictions: HMCTSServiceDetails[] = [];
   @Input() public waSupportedJurisdictions: string[];
   @Output() public selectionChanged: EventEmitter<any> = new EventEmitter<any>();
 
@@ -62,10 +62,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
               private featureToggleService: FeatureToggleService,
               private readonly appStore: Store<fromAppStore.State>) {}
 
-  private static initServiceFilter(jurisdictions: string[]): FilterFieldConfig {
+  private static initServiceFilter(jurisdictions: HMCTSServiceDetails[]): FilterFieldConfig {
     return {
       name: 'service',
-      options: jurisdictions.map((service) => ({ key: service, label: service })),
+      options: jurisdictions.map((service) => ({ key: service.serviceId, label: service.serviceName })),
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a service',
@@ -241,6 +241,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       (userDetails) => {
+        // get jurisdiction key from detailed service list
+        const jurisdiction = this.jurisdictions?.length > 0 ? this.jurisdictions[0].serviceId : '';
         this.userRole = AppUtils.getUserRole(userDetails?.userInfo?.roles || []);
         this.roleType = AppUtils.convertDomainToLabel(this.userRole);
         this.fieldsConfig.cancelSetting.fields.push({
@@ -253,7 +255,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           name: 'service',
-          value: [this.jurisdictions[0]]
+          value: [jurisdiction]
         }
         );
       }
@@ -288,7 +290,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           if (field.name === 'location') {
-            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMMSModel).epimms_id : '';
+            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';
             return { ...acc, [field.name]: value };
           }
           return { ...acc, [field.name]: field.value[0] };

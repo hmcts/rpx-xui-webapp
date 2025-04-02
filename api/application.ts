@@ -5,6 +5,7 @@ import * as express from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import amRoutes from './accessManagement/routes';
+import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
@@ -26,65 +27,22 @@ import { idamCheck } from './idamCheck';
 import { getNewUsersByServiceName } from './workAllocation';
 
 export const app = express();
+const logger: JUILogger = log4jui.getLogger('Application');
 
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)));
   app.use(helmet.noSniff());
   app.use(helmet.frameguard({ action: 'deny' }));
   app.use(helmet.referrerPolicy({ policy: ['origin'] }));
+  app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
   app.use(helmet.hidePoweredBy());
   app.use(helmet.hsts({ maxAge: 28800000 }));
   app.use(helmet.xssFilter());
-  app.use(helmet.contentSecurityPolicy({
-    directives: {
-      connectSrc: [
-        '\'self\' blob: data:',
-        '*.gov.uk',
-        'dc.services.visualstudio.com',
-        '*.launchdarkly.com',
-        'https://*.google-analytics.com',
-        'https://*.googletagmanager.com',
-        'https://*.analytics.google.com',
-        '*.hmcts.net',
-        'wss://*.webpubsub.azure.com',
-        'https://*.in.applicationinsights.azure.com'
-
-      ],
-      defaultSrc: ['\'self\''],
-      fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
-      formAction: ['\'none\''],
-      frameAncestors: ['\'self\''],
-      frameSrc: ['\'self\''],
-      imgSrc: [
-        '\'self\'',
-        'data:',
-        'https://*.google-analytics.com',
-        'https://*.googletagmanager.com',
-        'https://raw.githubusercontent.com/hmcts/',
-        'http://stats.g.doubleclick.net/',
-        'http://ssl.gstatic.com/',
-        'http://www.gstatic.com/',
-        'https://fonts.gstatic.com'
-      ],
-      mediaSrc: ['\'self\''],
-      scriptSrc: [
-        '\'self\'',
-        '\'unsafe-inline\'',
-        '\'unsafe-eval\'',
-        'https://*.google-analytics.com',
-        'https://*.googletagmanager.com',
-        'az416426.vo.msecnd.net'
-      ],
-      styleSrc: [
-        '\'self\'',
-        '\'unsafe-inline\'',
-        'https://fonts.googleapis.com',
-        'https://fonts.gstatic.com',
-        'http://tagmanager.google.com/'
-      ]
-    }
-  }));
+  app.use(getContentSecurityPolicy(helmet));
   app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('X-Robots-Tag', 'noindex');
     res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
     next();
@@ -128,7 +86,6 @@ app.use('/external', openRoutes);
 app.use('/workallocation', workAllocationRouter);
 app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
 
-const logger: JUILogger = log4jui.getLogger('Application');
 logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
 new Promise(idamCheck).then(() => 'IDAM is up and running');

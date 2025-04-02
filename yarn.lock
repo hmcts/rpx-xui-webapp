@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.60-subject-message-length":
-  version: 7.1.60-subject-message-length
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.60-subject-message-length"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.60":
+  version: 7.1.60
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.60"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7fe213923980f647b9f958ba346061b8a9f1877b2ca5378105f0fdfd0706a95a708c2d7b6d7a496a92e7cb0377235807a26862bb1bb4168c799e6feb044d0d07
+  checksum: 10/4aa5afa5952a24fe1378ce6d310994e63ab97daee6eee3b8197c75d7b0c0f74d76de0062467722615a12686bf1da11ec5089dad5dc2c6f70fa8d35bd1791e91e
   languageName: node
   linkType: hard
 
@@ -22276,7 +22276,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.60-subject-message-length"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.60"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.14"

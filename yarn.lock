@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.60":
-  version: 7.1.60
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.60"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.62-makdown-eventtrigger":
+  version: 7.1.62-makdown-eventtrigger
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.62-makdown-eventtrigger"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/4aa5afa5952a24fe1378ce6d310994e63ab97daee6eee3b8197c75d7b0c0f74d76de0062467722615a12686bf1da11ec5089dad5dc2c6f70fa8d35bd1791e91e
+  checksum: 10/f92e55d3710019f9566fa3dc427357b4e234884e74074c4629a778ea8d3709ad69221bfa5d7790fab033e32508896e8ceb05f8e3f0c9f9d4e0c6a5c4a8748d48
   languageName: node
   linkType: hard
 
@@ -22276,7 +22276,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.60"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.62-makdown-eventtrigger"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

@@ -810,6 +810,25 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
+
+  describe('callbackConfirmationBody', () => {
+    it('should set the custom text if provided', () => {
+      const customText = 'Our team will carefully read your query and respond as soon as possible.';
+      component.callbackConfirmationBody(customText);
+      expect(component.callbackConfirmationBodyText).toBe(customText);
+    });
+
+    it('should set the default text if no text is provided', () => {
+      component.callbackConfirmationBody('');
+      expect(component.callbackConfirmationBodyText).toBe('Our team will read your query and respond.');
+
+      component.callbackConfirmationBody(null as any);
+      expect(component.callbackConfirmationBodyText).toBe('Our team will read your query and respond.');
+
+      component.callbackConfirmationBody(undefined as any);
+      expect(component.callbackConfirmationBodyText).toBe('Our team will read your query and respond.');
+    });
+
   describe('getEventTrigger', () => {
     it('should handle error correctly when getEventTrigger fails', () => {
       // Mock the service to return an error

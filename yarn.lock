@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.58":
-  version: 7.1.58
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.58"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.59":
+  version: 7.1.59
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.59"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/2fd3bd22ebd987d1ada00de2696f44c3117ae81cd76c1f03f4ab18fddefe2ab16cf150233bd94f1483ef381684a862869076c81f37e6c32f28dcfbc8b1acfe49
+  checksum: 10/3d031267ae0bcc16607fb075c8b3c717bde41a052c1574c9fd5706a649b2e418905088577c18695a60b69bb4dfef59538657b662b09b12241f464d7193c8477f
   languageName: node
   linkType: hard
 
@@ -3749,9 +3749,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.3":
-  version: 2.30.3
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.3"
+"@hmcts/rpx-xui-node-lib@npm:2.30.4":
+  version: 2.30.4
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.4"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3773,7 +3773,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     ts-auto-mock: "npm:^3.5.0"
     ttypescript: "npm:^1.5.13"
-  checksum: 10/3a2230bdc033e6c65fcda25d2d39a39845fc6f5c9455a9ec248b93a7fa9f6ee5c04f88ee7579e8ee73c5d85966569cb1d6bd6fa3f500078963aee11891333484
+  checksum: 10/71bb2505602ae18bf4dbb9a3934c160eeddbe3ca81941f36c31b2bf49967183219a5c8254b4d5b1012c60675f6047f76012f53cefa56aef513ed9aaffcaca7ec
   languageName: node
   linkType: hard
 
@@ -22276,14 +22276,14 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.58"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.59"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.14"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.39"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.3"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.4"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

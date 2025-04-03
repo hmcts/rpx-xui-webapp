@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.54-hint-text-size":
-  version: 7.1.54-hint-text-size
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.54-hint-text-size"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.63":
+  version: 7.1.63
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.63"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d43111ebae53607d72d2b3adcb617be63755791b2060b963c995561217c3dfe89cd78f305ff77dc1c9d9d68b058b094d988c8f8ea7a1cad6a8f15dba6330e4a5
+  checksum: 10/f2a38bd444de83b5bbdb3c7d92951a927949f1003708e55fd3b5ac470ac19e61c4a880f2e4fd840f8c3b56862d640f62da185e6e0493fdd72dd9e3a0f7cb7431
   languageName: node
   linkType: hard
 
@@ -18624,7 +18624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:0.5.x, mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.5":
+"mkdirp@npm:0.5.x, mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.5, mkdirp@npm:^0.5.6":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -22277,7 +22277,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.54-hint-text-size"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.63"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

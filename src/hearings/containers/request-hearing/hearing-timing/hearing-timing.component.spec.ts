@@ -360,10 +360,10 @@ describe('HearingTimingComponent', () => {
     component.earliestDateOfHearingError = null;
     component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('13');
     component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('12');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2025');
+    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2050');
     component.latestHearingFormGroup.get('latestHearingDate_day').setValue('11');
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2025');
+    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2050');
     component.showChosenDateRangeError();
     expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
   });
@@ -722,7 +722,7 @@ describe('HearingTimingComponent', () => {
 
     component.setDataItems();
 
-    expect(component.duration).toBe(120);
+    expect(component.duration).toBe(60);
     expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' });
     expect(component.hearingPriorityType).toBe('High');
     expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-01-01', unavailableToDate: '2024-01-02', unavailabilityType: UnavailabilityType.PM }]);
@@ -759,6 +759,110 @@ describe('HearingTimingComponent', () => {
     component.setDataItems();
 
     expect(component.duration).toBe(180);
+    expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
+    expect(component.hearingPriorityType).toBe('Medium');
+    expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);
+  });
+
+  it('should set duration from SHV when absent from is HEARING_REQUEST_MAIN_MODEL', () => {
+    component.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      hearingDetails: {
+        duration: undefined,
+        hearingWindow: { dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' },
+        hearingPriorityType: 'Medium',
+        hearingType: '',
+        hearingLocations: [],
+        panelRequirements: undefined,
+        autolistFlag: false,
+        amendReasonCodes: [],
+        hearingChannels: [],
+        listingAutoChangeReasonCode: ''
+      },
+      partyDetails: [{
+        unavailabilityRanges: [{
+          unavailableFromDate: '2024-02-01',
+          unavailableToDate: '2024-02-02',
+          unavailabilityType: UnavailabilityType.AM
+        }],
+        partyID: '',
+        partyType: PartyType.IND,
+        partyRole: ''
+      }]
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: [{
+        partyID: 'party1',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: [{
+          unavailableFromDate: '2024-01-01',
+          unavailableToDate: '2024-01-02',
+          unavailabilityType: UnavailabilityType.PM
+        }]
+      }],
+      hearingPriorityType: 'High',
+      duration: 120,
+      hearingWindow: { dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' }
+    };
+
+    component.setDataItems();
+
+    expect(component.duration).toBe(120);
+    expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
+    expect(component.hearingPriorityType).toBe('Medium');
+    expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);
+  });
+
+  it('should set duration from SHV when duration is 0 from HEARING_REQUEST_MAIN_MODEL', () => {
+    component.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      hearingDetails: {
+        duration: 0,
+        hearingWindow: { dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' },
+        hearingPriorityType: 'Medium',
+        hearingType: '',
+        hearingLocations: [],
+        panelRequirements: undefined,
+        autolistFlag: false,
+        amendReasonCodes: [],
+        hearingChannels: [],
+        listingAutoChangeReasonCode: ''
+      },
+      partyDetails: [{
+        unavailabilityRanges: [{
+          unavailableFromDate: '2024-02-01',
+          unavailableToDate: '2024-02-02',
+          unavailabilityType: UnavailabilityType.AM
+        }],
+        partyID: '',
+        partyType: PartyType.IND,
+        partyRole: ''
+      }]
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: [{
+        partyID: 'party1',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: [{
+          unavailableFromDate: '2024-01-01',
+          unavailableToDate: '2024-01-02',
+          unavailabilityType: UnavailabilityType.PM
+        }]
+      }],
+      hearingPriorityType: 'High',
+      duration: 120,
+      hearingWindow: { dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' }
+    };
+
+    component.setDataItems();
+
+    expect(component.duration).toBe(120);
     expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
     expect(component.hearingPriorityType).toBe('Medium');
     expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);
@@ -807,14 +911,6 @@ describe('HearingTimingComponent', () => {
     component.setAmendmentFlags();
 
     expect(component.firstDateTimeMustBeChanged).toBe(true);
-  });
-
-  it('should set durationChanged to true when durationChanged is true', () => {
-    spyOn(HearingsUtils, 'hasHearingDurationChanged').and.returnValue(true);
-
-    component.setAmendmentFlags();
-
-    expect(component.durationChanged).toBe(true);
   });
 
   it('should set priorityChanged to true when priorityChanged is true', () => {

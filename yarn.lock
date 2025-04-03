@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.62-makdown-eventtrigger":
-  version: 7.1.62-makdown-eventtrigger
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.62-makdown-eventtrigger"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.64":
+  version: 7.1.64
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.64"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/f92e55d3710019f9566fa3dc427357b4e234884e74074c4629a778ea8d3709ad69221bfa5d7790fab033e32508896e8ceb05f8e3f0c9f9d4e0c6a5c4a8748d48
+  checksum: 10/d1287c80e1f33dc7f521fd50f44af69281777fb3bdd515ccda1037059c9a951d3653d44da36d4ea971385b8aaddf39f29e862734f64170c6cd28c4bb2bcc63c6
   languageName: node
   linkType: hard
 
@@ -3749,9 +3749,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.4":
-  version: 2.30.4
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.4"
+"@hmcts/rpx-xui-node-lib@npm:2.30.5":
+  version: 2.30.5
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.5"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3773,7 +3773,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     ts-auto-mock: "npm:^3.5.0"
     ttypescript: "npm:^1.5.13"
-  checksum: 10/71bb2505602ae18bf4dbb9a3934c160eeddbe3ca81941f36c31b2bf49967183219a5c8254b4d5b1012c60675f6047f76012f53cefa56aef513ed9aaffcaca7ec
+  checksum: 10/62252ef3359e462436c9dc67c997eb4de8e822441e9f2172f457de70f967d1428e4392887481e0000e8e50d3dc37cd86a336f53e0873d6fd399503df57cee779
   languageName: node
   linkType: hard
 
@@ -22276,14 +22276,14 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.62-makdown-eventtrigger"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.64"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.0.40"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.4"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.5"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

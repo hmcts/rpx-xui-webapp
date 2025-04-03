@@ -69,6 +69,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
+  public callbackConfirmationBodyText: string;
 
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -163,6 +164,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.showConfirmation = true;
   }
 
+  public callbackConfirmationBody(text: string): void {
+    if (text) {
+      this.callbackConfirmationBodyText = text;
+    } else {
+      this.callbackConfirmationBodyText = 'Our team will read your query and respond.';
+    }
+  }
+
   public submitForm(): void {
     if (this.queryCreateContext === QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS) {
       this.handleQualifyingQuestions();
@@ -201,7 +210,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.validateForm();
       return;
     }
-
+console.log('this.eventTrigger', this.eventTrigger);
     this.eventData = this.eventTrigger;
     this.showSummary = true;
     this.submitted = true;

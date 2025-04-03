@@ -210,7 +210,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.validateForm();
       return;
     }
-console.log('this.eventTrigger', this.eventTrigger);
+
     this.eventData = this.eventTrigger;
     this.showSummary = true;
     this.submitted = true;

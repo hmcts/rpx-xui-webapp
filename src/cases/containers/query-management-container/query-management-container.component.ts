@@ -21,7 +21,7 @@ import {
   HttpError,
   CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
@@ -80,6 +80,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private routerEventsSubscription: Subscription;
   private targetRoutePrefix = '/query-management/query/';
   public showForm: boolean;
+  public jurisdictionId: string;
 
   public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
@@ -102,12 +103,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     private readonly qualifyingQuestionService: QualifyingQuestionService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly alertService: AlertService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private googleTagManagerService: GoogleTagManagerService
   ) {}
 
   public ngOnInit(): void {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.jurisdictionId = this.activatedRoute.snapshot?.data?.case?.case_type?.jurisdiction?.id;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
@@ -379,6 +382,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public hasRespondedToQueryTask(value: boolean): void {
     this.showContinueButton = !value;
     this.showForm = !value;
+  }
+
+  public logSelection(qualifyingQuestion: QualifyingQuestion) {
+    const eventParams = {
+      caseTypeId: this.caseId,
+      caseJurisdiction: this.jurisdictionId,
+      name: qualifyingQuestion.name,
+      url: qualifyingQuestion.url.replace('${CCD_REFERENCE}', this.caseId)
+    };
+    this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
   }
 
   private getEventTrigger():void {

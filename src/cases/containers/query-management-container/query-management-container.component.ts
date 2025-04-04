@@ -366,26 +366,25 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         const messages = hintText?.attachment || [];
 
         const filteredMessages = messages.filter((msg) => {
+          if (!msg.jurisdiction && !msg.caseType) {
+            return false;
+          }
+
           if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
             return false;
           }
 
           const caseTypeMatches = msg.caseType === caseTypeId;
           const onlyJurisdictionMatches = !msg.caseType && msg.jurisdiction === jurisdictionId;
-          const isGeneric = !msg.caseType && !msg.jurisdiction;
 
-          return caseTypeMatches || onlyJurisdictionMatches || isGeneric;
+          return caseTypeMatches || onlyJurisdictionMatches;
         });
 
         if (filteredMessages.length === 0) {
           return null;
         }
 
-        const combinedMessages = filteredMessages
-          .map((msg) => msg.hintText)
-          .join('\n\n');
-
-        return combinedMessages;
+        return filteredMessages.map((msg) => msg.hintText).join('\n\n');
       })
     );
   }

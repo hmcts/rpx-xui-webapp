@@ -304,10 +304,11 @@ export class QueryManagementContainerComponent implements OnInit {
           });
         }
 
-        // Interpolate ${CCD_REFERENCE} in all qualifying questions
+        // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+        const placeholder = '${[CASE_REFERENCE]}';
         qualifyingQuestions.forEach((question) => {
-          if (question.url.includes('${CCD_REFERENCE}')) {
-            question.url = question.url.replace('${CCD_REFERENCE}', this.caseId);
+          if (question.url.includes(placeholder)) {
+            question.url = question.url.replace(placeholder, this.caseId);
           }
         });
         return qualifyingQuestions;

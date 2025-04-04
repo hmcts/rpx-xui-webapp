@@ -35,6 +35,7 @@ import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { cloneDeep } from 'lodash';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
@@ -229,10 +230,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       partyDetailsCompareModels.sort(this.compareParties);
     }
 
+    const hmcHearingDetails = this.standardiseHearingDates(this.hearingRequestMainModel.hearingDetails.hearingWindow);
+    const hmcToCompareHearingDetails = this.standardiseHearingDates(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow);
+
     const hearingRequestMainModel = {
       requestDetails: { ...this.hearingRequestMainModel.requestDetails },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
+        hearingWindow: {
+          ...hmcHearingDetails.hearingWindow
+        },
         hearingChannels: [...this.hearingsService.getHearingChannels(this.hearingRequestMainModel)]
       },
       caseDetails: { ...this.hearingRequestMainModel.caseDetails },
@@ -242,13 +249,43 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     const hearingRequestToCompareMainModel = {
       requestDetails: { ...this.hearingRequestToCompareMainModel.requestDetails },
-      hearingDetails: { ...this.hearingRequestToCompareMainModel.hearingDetails },
+      hearingDetails: {
+        ...this.hearingRequestToCompareMainModel.hearingDetails,
+        hearingWindow: {
+          ...hmcToCompareHearingDetails.hearingWindow
+        }
+      },
       caseDetails: { ...this.hearingRequestToCompareMainModel.caseDetails },
       hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
       partyDetails: [...partyDetailsCompareModels]
     };
-
     return this.areObjectsfunctionallyDifferentCheck(hearingRequestMainModel, hearingRequestToCompareMainModel);
+  }
+
+  private standardiseHearingDates(hearingWindow: HearingWindowModel) {
+    const standardisedHearingWindow: any = {};
+
+    if (hearingWindow.dateRangeStart) {
+      standardisedHearingWindow.dateRangeStart = moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DefaultFormat);
+    }
+
+    if (hearingWindow.dateRangeEnd) {
+      standardisedHearingWindow.dateRangeEnd = moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DefaultFormat);
+    }
+
+    if (hearingWindow.firstDateTimeMustBe) {
+      standardisedHearingWindow.firstDateTimeMustBe = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat);
+    }
+
+    for (const key of Object.keys(hearingWindow)) {
+      if (!(key in standardisedHearingWindow)) {
+        standardisedHearingWindow[key] = hearingWindow[key];
+      }
+    }
+
+    const standardisedHearingDetails = { hearingWindow: standardisedHearingWindow };
+
+    return standardisedHearingDetails;
   }
 
   hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
@@ -644,12 +681,14 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
         return true;
       }
-      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow)){
+      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow, this.serviceHearingValuesModel.hearingWindow)) {
         return true;
       }
+
       if (this.hearingRequestMainModel.hearingDetails.duration !== this.serviceHearingValuesModel.duration) {
         return true;
       }
+
       if (this.hearingRequestMainModel.hearingDetails.hearingPriorityType !== this.serviceHearingValuesModel.hearingPriorityType) {
         return true;
       }

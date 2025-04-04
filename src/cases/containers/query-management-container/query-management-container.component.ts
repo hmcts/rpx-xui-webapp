@@ -357,10 +357,13 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private getServiceMessage(): Observable<string | null> {
     const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, { messages: [] });
 
-    return serviceMessages$.pipe(
-      map((serviceMessages: ServiceMessagesResponse) => {
-        const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
-        const caseTypeId = this.caseDetails.case_type.id;
+    return combineLatest([
+      this.caseNotifier.caseView,
+      serviceMessages$
+    ]).pipe(
+      map(([caseView, serviceMessages]: [CaseView, ServiceMessagesResponse]) => {
+        const jurisdictionId = caseView.case_type.jurisdiction.id;
+        const caseTypeId = caseView.case_type.id;
         const messages = serviceMessages?.messages || [];
 
         const filteredMessages = messages.filter((msg) => {

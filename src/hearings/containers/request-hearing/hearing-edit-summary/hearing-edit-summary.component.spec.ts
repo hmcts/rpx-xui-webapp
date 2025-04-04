@@ -20,7 +20,7 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
-import { HearingEditSummaryComponent } from './hearing-edit-summary.component'
+import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 
@@ -189,7 +189,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -271,7 +271,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false

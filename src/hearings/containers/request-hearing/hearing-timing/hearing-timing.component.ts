@@ -117,15 +117,12 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public setDataItems() {
+    this.hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    this.duration = this.hearingRequestMainModel.hearingDetails.duration;
+    this.hearingPriorityType = this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
     if (this.sourceOfData === SourceOfData.SERVICE_HEARING_VALUES) {
-      this.duration = this.serviceHearingValuesModel.duration;
-      this.hearingWindow = this.serviceHearingValuesModel.hearingWindow;
-      this.hearingPriorityType = this.serviceHearingValuesModel.hearingPriorityType;
       this.unavailabilityDateList = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     } else {
-      this.duration = this.hearingRequestMainModel.hearingDetails.duration;
-      this.hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-      this.hearingPriorityType = this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
       this.unavailabilityDateList = this.hearingRequestMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
     }
   }

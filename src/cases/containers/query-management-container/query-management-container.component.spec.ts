@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationStart, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -863,5 +863,35 @@ describe('QueryManagementContainerComponent', () => {
         expect(qualifyingQuestions[1].name).toBe('Raise a new query');
       });
     });
+  });
+  describe('validateForm', () => {
+    beforeEach(() => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+    it('should return hintText markdown when case/jurisdiction', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Important notice!'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Important notice!');
+      });
+    }));
   });
 });

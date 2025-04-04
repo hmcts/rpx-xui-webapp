@@ -29,6 +29,7 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
+import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -37,6 +38,7 @@ import * as fromRoot from '../../../app/store';
 })
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
+  private readonly LD_SERVICE_MESSAGE = 'qm-service-messages';
   private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
@@ -69,6 +71,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
+  public attachmentHintText$: Observable<string | null>;
 
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -346,6 +349,43 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         return qualifyingQuestions;
+      })
+    );
+  }
+
+  public getAttachmentHintText(): Observable<string | null> {
+    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(this.LD_SERVICE_MESSAGE, { attachment: [] });
+
+    return combineLatest([
+      this.caseNotifier.caseView,
+      hintText$
+    ]).pipe(
+      map(([caseView, hintText]: [CaseView, ServiceAttachmentHintTextResponse]) => {
+        const jurisdictionId = caseView.case_type.jurisdiction.id;
+        const caseTypeId = caseView.case_type.id;
+        const messages = hintText?.attachment || [];
+
+        const filteredMessages = messages.filter((msg) => {
+          if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
+            return false;
+          }
+
+          const caseTypeMatches = msg.caseType === caseTypeId;
+          const onlyJurisdictionMatches = !msg.caseType && msg.jurisdiction === jurisdictionId;
+          const isGeneric = !msg.caseType && !msg.jurisdiction;
+
+          return caseTypeMatches || onlyJurisdictionMatches || isGeneric;
+        });
+
+        if (filteredMessages.length === 0) {
+          return null;
+        }
+
+        const combinedMessages = filteredMessages
+          .map((msg) => msg.hintText)
+          .join('\n\n');
+
+        return combinedMessages;
       })
     );
   }

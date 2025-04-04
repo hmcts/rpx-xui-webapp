@@ -17,4 +17,4 @@ export interface ServiceMessagesResponse {
 
 export interface ServiceAttachmentHintTextResponse {
   attachment: ServiceAttachmentHintText[];
-} 
+}

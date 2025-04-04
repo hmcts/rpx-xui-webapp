@@ -202,14 +202,14 @@ export class CaseFlagsUtils {
       if (flagPath) {
         return {
           ...flag,
-          partyName: partyInSHV ? partyInSHV.partyName : flag.partyName,
+          partyName: partyInSHV?.partyName ? partyInSHV.partyName : flag.partyName,
           displayName: flagPath.name,
           displayPath: flagPath.Path
         };
       }
       return {
         ...flag,
-        partyName: partyInSHV ? partyInSHV.partyName : flag.partyName,
+        partyName: partyInSHV?.partyName ? partyInSHV.partyName : flag.partyName,
         displayName: null,
         displayPath: null
       };
@@ -305,5 +305,15 @@ export class CaseFlagsUtils {
       return AmendmentLabelStatus.AMENDED;
     }
     return AmendmentLabelStatus.NONE;
+  }
+
+  public static areFacilitiesChanged(facilitiesInHMC: string[], facilitiesInSHV: string[]): boolean {
+    const sortedFacilitiesInHMC = facilitiesInHMC.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    const sortedFacilitiesInSHV = facilitiesInSHV.slice().sort((a, b) => {
+      return a > b ? 1 : (a === b ? 0 : -1);
+    });
+    return !_.isEqual(sortedFacilitiesInHMC, sortedFacilitiesInSHV);
   }
 }

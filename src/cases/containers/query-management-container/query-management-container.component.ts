@@ -27,7 +27,7 @@ import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 
 @Component({
@@ -69,7 +69,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
-  public roleName: string;
 
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -377,9 +376,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public async navigateToCaseTaskTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'tasks' }
-    );
+    await this.router.navigate(['cases', 'case-details', this.caseId, 'tasks']);
   }
 
   public hasRespondedToQueryTask(value: boolean): void {
@@ -414,10 +411,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           this.showForm = true;
           this.loadingService.unregister(loadingToken);
 
-          if (this.queryCreateContext === QueryCreateContext.NEW_QUERY){
-            this.caseQueriesCollectionsCount();
-          }
-
           if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
             this.processFilteredMessages();
           }
@@ -442,33 +435,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         }
       });
-    });
-  }
-
-  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-  // When creating a New Query, if caseQueriesCollections is more than one, then  the method getUserDetailsRoleName()
-  private caseQueriesCollectionsCount() {
-    const numberOfCaseQueriesCollections = this.eventTrigger?.case_fields?.filter(
-      (caseField) =>
-        caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-        caseField.field_type.type === this.FIELD_TYPE_COMPLEX
-    )?.length || 0;
-    if (numberOfCaseQueriesCollections > 1) {
-      this.getUserDetailsRoleName();
-    }
-  }
-
-  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-  private getUserDetailsRoleName(): void {
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
-      const matchedRoleAssignment = user.roleAssignmentInfo?.find(
-        (m) => m.caseId === this.caseDetails.case_id
-      );
-      if (matchedRoleAssignment) {
-        this.roleName = matchedRoleAssignment.roleName;
-      } else {
-        this.roleName = '';
-      }
     });
   }
 

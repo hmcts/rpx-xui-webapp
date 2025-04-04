@@ -5014,7 +5014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-node@npm:^10.17.2":
+"@pact-foundation/pact-node@npm:^10.17.2, @pact-foundation/pact-node@npm:^10.18.0":
   version: 10.18.0
   resolution: "@pact-foundation/pact-node@npm:10.18.0"
   dependencies:
@@ -20878,6 +20878,7 @@ __metadata:
     "@ngrx/store-devtools": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^9.18.1"
+    "@pact-foundation/pact-node": "npm:^10.18.0"
     "@playwright/test": "npm:^1.51.1"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^8.0.0"

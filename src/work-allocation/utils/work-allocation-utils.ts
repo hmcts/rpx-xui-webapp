@@ -1,6 +1,6 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { UserInfo, UserRole } from '../../app/models';
+import { HMCTSServiceDetails, UserInfo, UserRole } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
@@ -288,4 +288,30 @@ export function locationWithinRegion(regionLocations: LocationsByRegion[], regio
     }
   });
   return withinRegion;
+}
+
+export function setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSServiceDetails[]): { supportedJurisdictions: string[], detailedWAServices: HMCTSServiceDetails[] } {
+  const supportedJurisdictions = [];
+  detailedWAServices.forEach((jurisdiction) => {
+    // get the serviceIds from the detailed service
+    supportedJurisdictions.push(jurisdiction.serviceId);
+  });
+  if (!roleServiceIds.includes(null) && roleServiceIds.length > 0) {
+    const roleJurisdictions = [];
+    // get set of serviceIds from jurisdictions within user roles
+    const initialRoleJurisdictions = [...new Set(roleServiceIds)];
+    initialRoleJurisdictions.forEach((serviceId) => {
+      if (supportedJurisdictions.includes(serviceId)) {
+        // if there is a service name for the serviceId, use it
+        const matchingServices = detailedWAServices.filter((x) => x.serviceId === serviceId);
+        const serviceName = matchingServices?.length > 0 ? matchingServices[0].serviceName : serviceId;
+        roleJurisdictions.push({ serviceId, serviceName });
+      } else {
+        roleJurisdictions.push({ serviceId, serviceName: serviceId });
+      }
+    });
+    return { supportedJurisdictions, detailedWAServices: roleJurisdictions };
+  }
+  // use provided WA supported services
+  return { supportedJurisdictions, detailedWAServices };
 }

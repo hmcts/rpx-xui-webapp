@@ -33,7 +33,7 @@ Feature: Hearings : Summary page validations EUI-9097
 
         # Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_SCR_1"
 
-        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
         Then I validate view hearing page displayed
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
@@ -50,7 +50,6 @@ Feature: Hearings : Summary page validations EUI-9097
             | field                          | value    |
             | What stage is this hearing at? | Breach 1 |
 
-
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
@@ -65,7 +64,7 @@ Feature: Hearings : Summary page validations EUI-9097
 
         Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_CAT1_only"
 
-        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
         Then I validate view hearing page displayed
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
@@ -82,7 +81,7 @@ Feature: Hearings : Summary page validations EUI-9097
 
         Given I set mock hearing SHV response from file "viewEditHearings/mock_SHV_CAT2_only"
 
-        When In hearings tab, I click action "View or edit" for hearing "TEST_TYPE" under table "Current and upcoming"
+        When In hearings tab, I click action "View details" for hearing "TEST_TYPE" under table "Current and upcoming"
         Then I validate view hearing page displayed
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button

@@ -270,7 +270,7 @@ select::-ms-expand {
 }
 
 .form-hint {
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
   font-family: "nta", Arial, sans-serif;
@@ -465,5 +465,17 @@ button:focus {
 
   a:focus {
     background-color: #ffdd00 !important;
+  }
+}
+
+
+/** Error Summary 
+* Make border color consistent with other error messages for HMCTS
+*/
+.query-container .error-summary {
+  border-color: #d4351c;
+
+  &:focus {
+    outline: none;
   }
 }

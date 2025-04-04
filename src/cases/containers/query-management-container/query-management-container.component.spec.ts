@@ -750,9 +750,7 @@ describe('QueryManagementContainerComponent', () => {
   describe('navigateToCaseTaskTab', () => {
     it('should navigate to case tasks tab', () => {
       component.navigateToCaseTaskTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
-        { fragment: 'tasks' }
-      );
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId, 'tasks']);
     });
   });
 

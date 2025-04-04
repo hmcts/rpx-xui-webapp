@@ -8,13 +8,11 @@ const featureNames = {
   waAccess: 'wa-access',
   noticeOfChange: 'MC_Notice_of_Change',
   booking: 'mc-booking-active',
-  mcHearingsFeature: 'mc-hearings-jurisdictions',
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  enableHearingAmendments: 'mc-enable-hearings-amendments-service',
   enableRestrictedCaseAccess: 'enable-restricted-case-access',
   accessManagementMode: 'access-management-mode'
 };
@@ -138,7 +136,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'SSCS Infected Blood (England, Wales, Northern Ireland & Overseas)',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'contactsscs@justice.gov.uk',
+    email: 'ContactIBCAppeals@justice.gov.uk',
     phone: '0300 123 1142',
     openingTimes: 'Monday to Friday, 9am to 4pm'
   },

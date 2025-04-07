@@ -62,7 +62,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
     res.status(status).send(data);
   } catch (error) {
     if (error.status >= 400 && error.status < 500) {
-      trackTrace(`${error.status} ${error.message}`);
+      trackTrace(`Search for completable task of eventId and caseId: ${error.status} ${error.message}`);
     }
     next(error);
   }

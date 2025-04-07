@@ -58,12 +58,15 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearingss`;
   try {
+    trackTrace(`submitting hearing request`);
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    if (error.status >= 400 && error.status < 600) {
-      trackTrace(`SubmitHearingRequest error: ${error.status} ${error.message}`);
-    }
+    // if (error.status >= 400 && error.status < 600) {
+    trackTrace(`hearing error1`);
+    trackTrace(`SubmitHearingRequest error: ${error.status} ${error.message}`);
+    trackTrace(`hearing error2`);
+    // }
     next(error);
   }
 }

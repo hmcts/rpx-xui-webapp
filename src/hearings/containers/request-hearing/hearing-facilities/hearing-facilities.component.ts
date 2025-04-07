@@ -58,10 +58,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       'addition-securities': this.additionalFacilities ? this.getHearingFacilitiesFormArray : []
     });
 
-    const caseAdditionalSecurityFlag = this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed?
-      this.serviceHearingValuesModel.caseAdditionalSecurityFlag: this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
-
-    if (caseAdditionalSecurityFlag) {
+    if (this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag) {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('Yes');
     } else {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');

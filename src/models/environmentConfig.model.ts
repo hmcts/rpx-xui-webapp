@@ -15,4 +15,8 @@ export interface EnvironmentConfig {
   paymentReturnUrl: string;
   waSupportedServices?: WAFeatureConfig;
   headerConfig: object;
+  hearingJurisdictionConfig: {
+    hearingJurisdictions: object,
+    hearingAmendment: object
+  };
 }

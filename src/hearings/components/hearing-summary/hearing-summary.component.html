@@ -45,7 +45,9 @@
                *ngIf="answer.changeLink"
                class="change-link"
                href="javascript:void(0)"
-               (click)="changeAnswer($event, answer.id, answer.changeLink)">{{ 'Change' | rpxTranslate }}</a>
+               (click)="changeAnswer($event, answer.id, answer.changeLink)"
+               attr.aria-label="{{'Change' | rpxTranslate}} {{ getDisplayChangeString(answer.id) | rpxTranslate }}"
+            >{{ 'Change' | rpxTranslate }}</a>
           </div>
         </div>
       </ng-container>

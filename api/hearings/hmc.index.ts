@@ -64,7 +64,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   } catch (error) {
     // if (error.status >= 400 && error.status < 600) {
     trackTrace('hearing error1');
-    trackTrace(`SubmitHearingRequest error: ${error.status} ${error.message}`);
+    trackTrace(`SubmitHearingRequest error: ${JSON.stringify(error)}`);
     trackTrace('hearing error2');
     // }
     next(error);

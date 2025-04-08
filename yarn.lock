@@ -20880,7 +20880,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
     "@typescript-eslint/parser": "npm:^7.2.0"
     accessibility-checker: "npm:^3.1.70"
-    ajv: "npm:^8.17.1"
     allure-js-commons: "npm:^3.0.0"
     applicationinsights: "npm:1.8.10"
     axe-html-reporter: "npm:^2.2.3"

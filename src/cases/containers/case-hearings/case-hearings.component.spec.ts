@@ -26,6 +26,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
+import { LoadServiceHearingDataPayload } from '../../../hearings/store';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -418,7 +419,8 @@ describe('CaseHearingsComponent', () => {
           useValue: {
             snapshot: {
               params: {
-                cid: '1234'
+                cid: '1234',
+                jid: 'JURISDICTION'
               }
             }
           }
@@ -452,7 +454,8 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1234')));
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore
+      .LoadHearingValues(new fromHearingStore.LoadServiceHearingDataPayload('JURISDICTION', '1234')));
   });
 
   it('should unsubscribe', () => {

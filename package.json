@@ -276,7 +276,14 @@
     "braces": "^3.0.3",
     "ws": "^8.18.0",
     "axios": "1.8.4",
-    "webpack": "^5.94.0"
+    "webpack": "^5.94.0",
+    "ajv": "^8.17.1",
+    "moment": "^2.29.4",
+    "@edium/fsm": "^2.1.2",
+    "pegjs": "^0.10.0",
+    "rx-polling-hmcts": "1.1.1",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.2"
   },
   "packageManager": "yarn@4.8.1"
 }

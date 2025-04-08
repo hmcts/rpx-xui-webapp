@@ -27,9 +27,14 @@ export class CaseHearingsListComponent implements OnInit {
   public hearingList$: Observable<HearingListViewModel[]>;
 
   @Input()
+  public caseId: string;
+
+  @Input()
+  public jurisdictionId: string;
+
+  @Input()
   public actions: Actions[];
 
-  public caseId: string;
   public hasUpdateAction: boolean = false;
   public hasDeleteAction: boolean = false;
   public hasReadOnlyAction: boolean = false;
@@ -98,6 +103,7 @@ export class CaseHearingsListComponent implements OnInit {
 
   public manageLinks(hearing: HearingListViewModel): void {
     this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
+      jurisdictionId: this.jurisdictionId,
       caseReference: this.caseId,
       hearingId: hearing.hearingID
     }));
@@ -117,7 +123,8 @@ export class CaseHearingsListComponent implements OnInit {
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     // If hearing amendments enabled in Launch Darkly, then load the Service Hearing Values to get the latest
     if (this.isHearingAmendmentsEnabled) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({ jurisdictionId: this.jurisdictionId,
+        caseReference: this.caseId }));
     }
     // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
     const url = this.isHearingAmendmentsEnabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';

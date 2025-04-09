@@ -7,15 +7,15 @@ import { UserRole } from '../../app/models';
 import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
 import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
-import { CaseNotifier } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable()
 export class HearingsViewGuard extends HearingsGuard {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
-              protected readonly caseNotifier: CaseNotifier,
+              protected readonly hearingStore: Store<fromAppStore.State>,
               protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
               protected readonly router: Router) {
-    super(appStore, caseNotifier, hearingJurisdictionConfigService);
+    super(appStore, hearingJurisdictionConfigService, hearingStore, router);
+    console.log('HearingsViewGuard');
   }
 
   public canActivate(): Observable<boolean> {

@@ -1,4 +1,3 @@
-import { caseReference } from 'src/noc/store';
 import * as fromHearingValuesAction from './hearing-values.action';
 
 describe('Hearing Values Actions', () => {

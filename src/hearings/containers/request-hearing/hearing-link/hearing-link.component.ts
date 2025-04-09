@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
@@ -12,7 +12,6 @@ import { LovRefDataByServiceModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { LoadServiceLinkedCasesPayload } from '../../../store';
 
 @Component({
   selector: 'exui-hearing-link',
@@ -46,8 +45,11 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       hearingLink: ['', Validators.required]
     });
     this.initialiseFromHearingValues();
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases(
-      new LoadServiceLinkedCasesPayload(this.jurisdictionId, this.caseId, '')));
+    this.hearingStore.select(fromHearingStore.caseInfoSelector).pipe(
+      tap((caseInfo) => {
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, hearingId: '' }));
+      })
+    ).subscribe();
     this.generateLinkedCasesWithReasonDescription();
   }
 

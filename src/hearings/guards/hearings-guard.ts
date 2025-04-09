@@ -1,39 +1,55 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import * as fromAppStore from '../../app/store';
 import { Utils } from '../../cases/utils/utils';
+import * as fromHearingReducers from '../store/reducers';
 import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
-import { CaseNotifier } from '@hmcts/ccd-case-ui-toolkit';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class HearingsGuard {
-  public static DEFAULT_URL: string = '/cases';
+  public static DEFAULT_URL: string = 'cases';
   public userRoles$: Observable<string[]>;
-  private caseType: string;
-  private jurisdiction: string;
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
-              protected readonly caseNotifier: CaseNotifier,
-              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService
+              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
+              protected readonly hearingStore: Store<fromAppStore.State>,
+              protected readonly router: Router
   ){
     this.userRoles$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
       map((userDetails) => userDetails.userInfo.roles)
     );
-    this.caseNotifier.caseView.pipe().subscribe((caseDetails) => {
-      this.caseType = caseDetails.case_type.id;
-      this.jurisdiction = caseDetails.case_type.jurisdiction.id;
-    });
   }
 
   public hasMatchedPermissions(): Observable<boolean> {
-    return this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig().pipe(
-      map((jurisdictionsConfig) => {
-        if (!this.jurisdiction || !this.caseType) {
-          return false;
+    return this.hearingStore.select(fromHearingReducers.caseInfoSelector).pipe(
+      switchMap((caseInfo) => {
+        if (!caseInfo?.jurisdictionId || !caseInfo?.caseType) {
+          this.router.navigate([HearingsGuard.DEFAULT_URL]);
+          return of(false);
         }
-        return jurisdictionsConfig.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, this.jurisdiction, this.caseType));
+        return this.hearingStore.select(fromHearingReducers.serviceHearingValueSelector).pipe(
+          switchMap((hearingValueModel) => {
+            if (hearingValueModel){
+              return this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig().pipe(
+                map((jurisdictionsConfig) =>
+                  jurisdictionsConfig.some((featureVariation) =>
+                    Utils.hasMatchedJurisdictionAndCaseType(
+                      featureVariation,
+                      caseInfo.jurisdictionId,
+                      caseInfo.caseType
+                    )
+                  )
+                )
+              );
+            }
+            this.router.navigate([`/cases/case-details/${caseInfo.caseReference}`]);
+            return of(false);
+          }),
+          map((result) => !!result) // Ensure the observable emits a boolean
+        );
       })
     );
   }

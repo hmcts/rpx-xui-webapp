@@ -123,8 +123,7 @@ export class CaseHearingsListComponent implements OnInit {
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     // If hearing amendments enabled in Launch Darkly, then load the Service Hearing Values to get the latest
     if (this.isHearingAmendmentsEnabled) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({ jurisdictionId: this.jurisdictionId,
-        caseReference: this.caseId }));
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
     }
     // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
     const url = this.isHearingAmendmentsEnabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';

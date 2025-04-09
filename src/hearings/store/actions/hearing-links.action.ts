@@ -32,7 +32,7 @@ export class LoadServiceLinkedCasesPayload {
 
 export class LoadServiceLinkedCases implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES;
-  constructor(public payload: LoadServiceLinkedCasesPayload) {}
+  constructor(public payload: { jurisdictionId: string, caseReference: string, hearingId: string }) {}
 }
 
 export class LoadServiceLinkedCasesSuccess implements Action {
@@ -51,7 +51,7 @@ export class LoadServiceLinkedCasesWithHearingsPayload {
 
 export class LoadServiceLinkedCasesWithHearings implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS;
-  constructor(public payload: LoadServiceLinkedCasesWithHearingsPayload) {}
+  constructor(public payload: { jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string }) {}
 }
 
 export class LoadServiceLinkedCasesWithHearingsSuccess implements Action {

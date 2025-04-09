@@ -1,5 +1,4 @@
 import * as fromHearingValuesAction from './hearing-values.action';
-import { LoadServiceHearingDataPayload } from './hearing-values.action';
 
 describe('Hearing Values Actions', () => {
   describe('Reset', () => {
@@ -11,8 +10,7 @@ describe('Hearing Values Actions', () => {
 
   describe('LoadServiceHearingValues', () => {
     it('should load service hearing values', () => {
-      const action = new fromHearingValuesAction.LoadHearingValues(
-        new LoadServiceHearingDataPayload('JURISDICTION', '1111222233334444'));
+      const action = new fromHearingValuesAction.LoadHearingValues();
       expect(action.type).toBe(fromHearingValuesAction.LOAD_HEARING_VALUES);
     });
   });

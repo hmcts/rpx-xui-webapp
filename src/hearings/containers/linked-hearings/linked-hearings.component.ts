@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import * as fromHearingStore from '../../store';
-import { LoadServiceHearingDataPayload, LoadServiceLinkedCasesPayload, LoadServiceLinkedCasesWithHearingsPayload } from '../../store';
 
 @Component({
   selector: 'exui-linked-hearings',
@@ -30,10 +29,12 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases(
-      new LoadServiceLinkedCasesPayload(this.jurisdictionId, this.caseId, this.hearingId)));
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesWithHearings(
-      new LoadServiceLinkedCasesWithHearingsPayload(this.jurisdictionId, this.caseId, this.caseName, this.hearingId)));
+    this.hearingStore.select(fromHearingStore.caseInfoSelector).pipe(
+      tap((caseInfo) => {
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, hearingId: this.hearingId }));
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesWithHearings({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, caseName: this.caseName, hearingId: this.hearingId }));
+      })
+    ).subscribe();
   }
 
   public ngOnDestroy(): void {

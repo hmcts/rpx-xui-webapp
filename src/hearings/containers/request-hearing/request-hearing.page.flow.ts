@@ -9,7 +9,6 @@ import { ACTION } from '../../models/hearings.enum';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
-import { CaseNotifier } from '@hmcts/ccd-case-ui-toolkit';
 
 export abstract class RequestHearingPageFlow {
   public navigationSub: Subscription;

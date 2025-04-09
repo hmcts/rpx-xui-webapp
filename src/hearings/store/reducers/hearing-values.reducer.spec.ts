@@ -9,7 +9,7 @@ const CASE_INFO_STORE_VALUE = {
   jurisdictionId: '',
   caseReference: '',
   hearingId: ''
-}
+};
 
 const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',

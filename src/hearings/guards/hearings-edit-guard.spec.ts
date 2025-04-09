@@ -1,8 +1,7 @@
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { cold } from 'jasmine-marbles';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { UserDetails } from '../../app/models';
 import * as fromAppStore from '../../app/store';
 import { FeatureVariation } from '../../cases/models/feature-variation.model';
@@ -49,25 +48,25 @@ describe('HearingsEditGuard', () => {
     }
   };
 
-  const CASE_VIEW: CaseView = {
-    case_id: '1546518523959179',
-    case_type: {
-      id: 'Benefit',
-      name: 'Benefit',
-      jurisdiction: {
-        id: 'SSCS',
-        name: 'SSCS'
-      }
-    },
-    channels: [],
-    state: {
-      id: 'CaseCreated',
-      name: 'Case created'
-    },
-    tabs: [],
-    triggers: [],
-    events: []
-  };
+  // const CASE_VIEW: CaseView = {
+  //   case_id: '1546518523959179',
+  //   case_type: {
+  //     id: 'Benefit',
+  //     name: 'Benefit',
+  //     jurisdiction: {
+  //       id: 'SSCS',
+  //       name: 'SSCS'
+  //     }
+  //   },
+  //   channels: [],
+  //   state: {
+  //     id: 'CaseCreated',
+  //     name: 'Case created'
+  //   },
+  //   tabs: [],
+  //   triggers: [],
+  //   events: []
+  // };
   const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',

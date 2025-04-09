@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import * as moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -43,8 +43,10 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingListLastErrorState$: Observable<fromHearingStore.State>;
   public hearingValuesLastErrorState$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
+  public caseNotifierSubscription: Subscription;
   public hasRequestAction: boolean = false;
   public caseId: string = '';
+  public jurisdictionId: string = '';
   public serverError: { id: string, message: string } = null;
   public isOgdRole: boolean;
   public showSpinner$: Observable<boolean>;
@@ -52,6 +54,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
   private userRoles: string[] = [];
+  jurisdiction: string;
+  caseType: string;
 
   constructor(private readonly appStore: Store<fromAppStore.State>,
     private readonly hearingStore: Store<fromHearingStore.State>,
@@ -59,8 +63,17 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly lovRefDataService: LovRefDataService,
     private readonly loadingService: LoadingService,
-    private readonly sessionSvc: SessionStorageService) {
+    private readonly sessionSvc: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier) {
+    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
+      if (caseDetails) {
+        this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+        this.caseType = caseDetails?.case_type?.id;
+        console.log(caseDetails);
+      }
+    });
     this.caseId = this.activatedRoute.snapshot.params.cid;
+    this.jurisdictionId = this.activatedRoute.snapshot.params.jid;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
@@ -68,13 +81,15 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
   }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.caseId));
+    this.hearingStore.dispatch(new fromHearingStore.StoreJurisdictionAndCaseRef({ jurisdictionId: this.jurisdiction, caseReference: this.caseId, caseType: this.caseType }));
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+
     this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((serviceHearingValuesModel) => {
       if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {
         this.refDataSubscription = this.lovRefDataService.getListOfValues(HearingCategory.HearingType, serviceHearingValuesModel.hmctsServiceID, false).subscribe((hearingStageOptions) => {
@@ -198,6 +213,9 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
     if (this.refDataSubscription) {
       this.refDataSubscription.unsubscribe();
+    }
+    if (this.caseNotifierSubscription){
+      this.caseNotifierSubscription.unsubscribe();
     }
   }
 }

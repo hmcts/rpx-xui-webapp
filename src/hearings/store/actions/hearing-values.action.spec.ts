@@ -10,7 +10,7 @@ describe('Hearing Values Actions', () => {
 
   describe('LoadServiceHearingValues', () => {
     it('should load service hearing values', () => {
-      const action = new fromHearingValuesAction.LoadHearingValues('1111222233334444');
+      const action = new fromHearingValuesAction.LoadHearingValues();
       expect(action.type).toBe(fromHearingValuesAction.LOAD_HEARING_VALUES);
     });
   });

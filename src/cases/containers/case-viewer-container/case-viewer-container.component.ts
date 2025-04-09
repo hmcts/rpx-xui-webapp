@@ -12,8 +12,8 @@ import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
+import { HearingJurisdictionConfigService } from '../../../app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
@@ -122,8 +122,9 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
+    protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
     private readonly loggerService: LoggerService,
-    private readonly waService: WASupportedJurisdictionsService) {
+    private readonly waService: WASupportedJurisdictionsService){
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
     );
@@ -181,7 +182,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private setAppendedCaseViewTabs(): void {
     combineLatest([
-      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
+      this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig(),
       this.userRoles$
     ]).pipe(
       map(([featureVariations, userRoles]) => {

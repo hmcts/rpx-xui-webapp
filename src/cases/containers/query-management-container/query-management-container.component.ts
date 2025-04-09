@@ -349,6 +349,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
+        // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+        const placeholder = '${[CASE_REFERENCE]}';
+        qualifyingQuestions.forEach((question) => {
+          if (question.url.includes(placeholder)) {
+            question.url = question.url.replace(placeholder, this.caseId);
+          }
+        });
+
         return qualifyingQuestions;
       })
     );

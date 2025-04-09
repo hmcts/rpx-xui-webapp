@@ -65,7 +65,7 @@ describe('Hearing Links Effects', () => {
         reasonsForLink: ['reason3', 'reason4']
       }];
       hearingsServiceMock.loadServiceLinkedCases.and.returnValue(of(SERVICE_LINKED_CASES));
-      const action = new hearingLinksActions.LoadServiceLinkedCases({ jurisdictionId: 'JURISDICTION',caseReference: '1111222233334446', hearingId: 'h100000' });
+      const action = new hearingLinksActions.LoadServiceLinkedCases({ jurisdictionId: 'JURISDICTION', caseReference: '1111222233334446', hearingId: 'h100000' });
       const completion = new hearingLinksActions.LoadServiceLinkedCasesSuccess(SERVICE_LINKED_CASES);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });

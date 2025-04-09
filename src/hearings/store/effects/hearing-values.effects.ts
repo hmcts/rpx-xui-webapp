@@ -22,6 +22,7 @@ export class HearingValuesEffects {
   public loadHearingValue$ = createEffect(() => this.actions$.pipe(
     ofType(hearingValuesActions.LOAD_HEARING_VALUES),
     withLatestFrom(this.hearingStore.select(fromHearingReducers.caseInfoSelector)),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     switchMap(([action, caseInfo]) => {
       return this.hearingsService.loadHearingValues(caseInfo.jurisdictionId, caseInfo.caseReference).pipe(
         map(

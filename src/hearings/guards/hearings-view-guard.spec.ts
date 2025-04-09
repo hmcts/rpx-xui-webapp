@@ -7,7 +7,6 @@ import * as fromAppStore from '../../app/store';
 import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsViewGuard } from './hearings-view-guard';
 import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
-import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
 
 describe('HearingsViewGuard', () => {
   const USER_1: UserDetails = {
@@ -89,25 +88,25 @@ describe('HearingsViewGuard', () => {
     }
   };
 
-  const CASE_VIEW: CaseView = {
-    case_id: '1546518523959179',
-    case_type: {
-      id: 'Benefit',
-      name: 'Benefit',
-      jurisdiction: {
-        id: 'SSCS',
-        name: 'SSCS'
-      }
-    },
-    channels: [],
-    state: {
-      id: 'CaseCreated',
-      name: 'Case created'
-    },
-    tabs: [],
-    triggers: [],
-    events: []
-  };
+  // const CASE_VIEW: CaseView = {
+  //   case_id: '1546518523959179',
+  //   case_type: {
+  //     id: 'Benefit',
+  //     name: 'Benefit',
+  //     jurisdiction: {
+  //       id: 'SSCS',
+  //       name: 'SSCS'
+  //     }
+  //   },
+  //   channels: [],
+  //   state: {
+  //     id: 'CaseCreated',
+  //     name: 'Case created'
+  //   },
+  //   tabs: [],
+  //   triggers: [],
+  //   events: []
+  // };
 
   const FEATURE_FLAG: FeatureVariation[] = [
     {

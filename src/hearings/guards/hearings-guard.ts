@@ -48,7 +48,7 @@ export class HearingsGuard {
             this.router.navigate([`/cases/case-details/${caseInfo.caseReference}`]);
             return of(false);
           }),
-          map((result) => !!result) // Ensure the observable emits a boolean
+          map((result) => !!result)
         );
       })
     );

@@ -27,7 +27,7 @@ export class CaseViewerContainerComponent implements OnInit {
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
   private retryCount: number;
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
   private waDefaultServiceConfig: any = {
     'configurations': [
       {

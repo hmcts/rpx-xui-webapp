@@ -1,3 +1,4 @@
+import { caseReference } from 'src/noc/store';
 import * as fromHearingValuesAction from './hearing-values.action';
 
 describe('Hearing Values Actions', () => {
@@ -31,6 +32,20 @@ describe('Hearing Values Actions', () => {
     it('should load service hearing values successfully', () => {
       const action = new fromHearingValuesAction.LoadHearingValuesSuccess(null);
       expect(action.type).toBe(fromHearingValuesAction.LOAD_HEARING_VALUES_SUCCESS);
+    });
+  });
+
+  describe('StoreJurisdictionAndCaseRef', () => {
+    it('should store jurisdiction and case reference', () => {
+      const action = new fromHearingValuesAction.StoreJurisdictionAndCaseRef({ caseReference: '123', jurisdictionId: '123' });
+      expect(action.type).toBe(fromHearingValuesAction.STORE_JURISDICTION_AND_CASE_REF);
+    });
+  });
+
+  describe('ResetJurisdictionAndCaseRef', () => {
+    it('should store jurisdiction and case reference', () => {
+      const action = new fromHearingValuesAction.ResetJurisdictionAndCaseRef();
+      expect(action.type).toBe(fromHearingValuesAction.RESET_JURISDICTION_AND_CASE_REF);
     });
   });
 

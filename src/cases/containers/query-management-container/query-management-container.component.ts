@@ -363,7 +363,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       })
     );
   }
-  
+
   public getAttachmentHintText(): Observable<string | null> {
     const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(this.LD_SERVICE_MESSAGE, { attachment: [] });
 

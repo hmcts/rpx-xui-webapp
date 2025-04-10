@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
-import { LocationByEPIMMSModel, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel as LocationByEpimmsModel, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
@@ -41,14 +41,14 @@ class MockLocationSearchContainerComponent {
   @Input() public serviceIds: string = '';
   @Input() public locationType: string = '';
   @Input() public disabled: boolean = false;
-  @Input() public selectedLocations: LocationByEPIMMSModel[];
+  @Input() public selectedLocations: LocationByEpimmsModel[];
   @Input() public submitted?: boolean = true;
   @Input() public control: AbstractControl;
   public autoCompleteInputBox: MockAutoCompleteInputBox = new MockAutoCompleteInputBox();
 }
 
 describe('HearingVenueComponent', () => {
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
@@ -102,7 +102,7 @@ describe('HearingVenueComponent', () => {
       epimms_id: '1',
       court_name: 'wolverhampton court',
       region: 'welsh'
-    }] as LocationByEPIMMSModel[];
+    }] as LocationByEpimmsModel[];
 
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
@@ -167,11 +167,11 @@ describe('HearingVenueComponent', () => {
   });
 
   it('should return false for isFormValid when a location is selected and not added', () => {
-    const location: LocationByEPIMMSModel = {
+    const location: LocationByEpimmsModel = {
       epimms_id: '123',
       court_name: 'Test Caurt Name',
       region: 'Wales'
-    } as LocationByEPIMMSModel;
+    } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     fixture.detectChanges();
@@ -189,11 +189,11 @@ describe('HearingVenueComponent', () => {
   });
 
   it('should return true for isLocationValid when locationSelectedformcontrol is not valid and is dirty', () => {
-    const location: LocationByEPIMMSModel = {
+    const location: LocationByEpimmsModel = {
       epimms_id: '123',
       court_name: 'Test Caurt Name',
       region: 'Wales'
-    } as LocationByEPIMMSModel;
+    } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
@@ -219,7 +219,7 @@ describe('HearingVenueComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationByEPIMMSModel;
+    } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
@@ -246,7 +246,7 @@ describe('HearingVenueComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationByEPIMMSModel;
+    } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
     component.addSelection();
@@ -272,7 +272,7 @@ describe('HearingVenueComponent', () => {
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
       postcode: 'AB11 6LT'
-    } as LocationByEPIMMSModel;
+    } as LocationByEpimmsModel;
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     component.addSelection();
 

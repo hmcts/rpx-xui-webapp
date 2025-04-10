@@ -14,7 +14,7 @@ import { EditHearingChangeConfig } from '../../../models/editHearingChangeConfig
 import { HearingConditions } from '../../../models/hearingConditions';
 import { ACTION, CategoryType, DOW, DOWUnavailabilityType, Mode, PartyType, UnavailabilityType, HearingChannelEnum } from '../../../models/hearings.enum';
 import { PropertiesUpdatedOnPageVisit } from '../../../models/hearingsUpdateMode.enum';
-import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { LocationByEpimmsModel } from '../../../models/location.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingsService } from '../../../services/hearings.service';
@@ -43,9 +43,9 @@ describe('HearingEditSummaryComponent', () => {
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
 
-  const locations: LocationByEPIMMSModel[] = [{
+  const locations: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
@@ -128,6 +128,7 @@ describe('HearingEditSummaryComponent', () => {
     store = TestBed.inject(Store);
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
     fixture = TestBed.createComponent(HearingEditSummaryComponent);
     component = fixture.componentInstance;

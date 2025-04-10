@@ -14,7 +14,7 @@ import {
   userDetailsValid
 } from './utils';
 import { trackTrace } from '../lib/appInsights';
-import { hasUnacceptableCharacters } from '../utils';
+import { containsDangerousCode } from '../utils';
 
 export async function getUserDetails(req, res: Response, next: NextFunction): Promise<Response> {
   if (!exists(req, 'session.passport.user')) {
@@ -32,7 +32,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(rawUserInfo, req);
     const bearerToken = req.session.passport.user.tokenset.accessToken;
-    if (hasUnacceptableCharacters(bearerToken)) {
+    if (containsDangerousCode(bearerToken)) {
       return res.send('Invalid bearer token').status(400);
     }
     const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
@@ -51,6 +51,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     next(error);
   }
 }
+
 export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string [] {
   let syntheticRoles = [];
   const activeRoleAssignments = getActiveRoleAssignments(roleAssignments, new Date());

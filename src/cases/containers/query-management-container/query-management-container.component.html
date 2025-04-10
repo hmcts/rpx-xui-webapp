@@ -44,6 +44,7 @@
             [formGroup]="formGroup"
             [caseDetails]="caseDetails"
             [showForm]="showForm"
+            [serviceMessage]="serviceMessage$ | async"
             [queryCreateContext]="queryCreateContext" [submitted]="submitted">
           </ccd-query-write-raise-query>
           <ccd-query-write-respond-to-query

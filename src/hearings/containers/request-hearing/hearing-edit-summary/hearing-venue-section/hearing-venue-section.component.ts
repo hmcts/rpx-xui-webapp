@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
-import { LocationByEPIMMSModel } from '../../../../models/location.model';
+import { LocationByEpimmsModel } from '../../../../models/location.model';
 import { LocationsDataService } from '../../../../services/locations-data.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class HearingVenueSectionComponent implements OnInit {
   @Input() public hearingRequestToCompareMainModel: HearingRequestMainModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
-  public locations$: Observable<LocationByEPIMMSModel[]>;
+  public locations$: Observable<LocationByEpimmsModel[]>;
   public showAmmendedForHeading: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public hearingLocationIdsToCompare: string[];
@@ -29,7 +29,8 @@ export class HearingVenueSectionComponent implements OnInit {
     hearingLocationIds.sort((a: any, b: any) => a - b);
     this.hearingLocationIdsToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
     this.hearingLocationIdsToCompare.sort((a: any, b: any) => a - b);
-    this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','));
+    const serviceCode = this.hearingRequestMainModel.caseDetails.hmctsServiceCode;
+    this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','), serviceCode);
 
     this.showAmmendedForHeading = !_.isEqual(
       hearingLocationIds,

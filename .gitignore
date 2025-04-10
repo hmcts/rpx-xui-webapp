@@ -12,6 +12,7 @@
 node_modules
 api/node_modules
 api/.nyc_output
+api/.yarn
 
 
 # profiling files

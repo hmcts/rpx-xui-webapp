@@ -1,12 +1,12 @@
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
-import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationByEpimmsModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { VenueAnswerConverter } from './venue.answer.converter';
 
 describe('VenueAnswerConverter', () => {
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',

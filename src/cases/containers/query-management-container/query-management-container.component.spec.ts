@@ -876,7 +876,66 @@ describe('QueryManagementContainerComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
     });
+    it('should return service message markdown when matching RAISE page and case/jurisdiction', fakeAsync(() => {
+      const messages = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          pages: 'RAISE, OTHER',
+          markdown: '### Important notice!'
+        }
+      ];
 
+      mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.serviceMessage$.subscribe((messages) => {
+        expect(messages).toBe('### Important notice!');
+      });
+    }));
+
+    it('should return null if no matching messages found', fakeAsync(() => {
+      const messages = [
+        {
+          jurisdiction: 'OTHER_JURISDICTION',
+          caseType: 'OTHER_CASE_TYPE',
+          pages: 'NOTRAISE',
+          markdown: 'Should not match'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.serviceMessage$.subscribe((messages) => {
+        expect(messages).toBeNull();
+      });
+    }));
+
+    it('should return combined markdown for multiple matching messages', fakeAsync(() => {
+      const messages = [
+        {
+          jurisdiction: 'TEST',
+          pages: 'RAISE',
+          markdown: 'Message One'
+        },
+        {
+          caseType: 'TestAddressBookCase',
+          pages: 'RAISE',
+          markdown: 'Message Two'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.serviceMessage$.subscribe((messages) => {
+        expect(messages).toBe('Message One\n\nMessage Two');
+      });
+    }));
     it('should return hintText markdown when case/jurisdiction', fakeAsync(() => {
       const attachment = [
         {

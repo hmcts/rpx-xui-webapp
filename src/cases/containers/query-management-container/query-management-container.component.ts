@@ -30,6 +30,7 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
+import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -72,6 +73,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
   public attachmentHintText$: Observable<string | null>;
+  public serviceMessage$: Observable<string | null>;
 
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
@@ -115,6 +117,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
     this.showSpinner$ = this.loadingService.isLoading as any;
+    this.serviceMessage$ = this.getServiceMessage();
 
     this.formGroup = new FormGroup({
       subject: new FormControl(null),
@@ -348,11 +351,19 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
+        // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+        const placeholder = '${[CASE_REFERENCE]}';
+        qualifyingQuestions.forEach((question) => {
+          if (question.url.includes(placeholder)) {
+            question.url = question.url.replace(placeholder, this.caseId);
+          }
+        });
+
         return qualifyingQuestions;
       })
     );
   }
-
+  
   public getAttachmentHintText(): Observable<string | null> {
     const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(this.LD_SERVICE_MESSAGE, { attachment: [] });
 
@@ -385,6 +396,53 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         }
 
         return filteredMessages.map((msg) => msg.hintText).join('\n\n');
+      })
+    );
+  }
+
+  private getServiceMessage(): Observable<string | null> {
+    const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, { messages: [] });
+
+    return combineLatest([
+      this.caseNotifier.caseView,
+      serviceMessages$
+    ]).pipe(
+      map(([caseView, serviceMessages]: [CaseView, ServiceMessagesResponse]) => {
+        const jurisdictionId = caseView.case_type.jurisdiction.id;
+        const caseTypeId = caseView.case_type.id;
+        const messages = serviceMessages?.messages || [];
+
+        const filteredMessages = messages.filter((msg) => {
+          if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
+            return false;
+          }
+
+          const caseTypeMatches = msg.caseType === caseTypeId;
+          const onlyJurisdictionMatches = !msg.caseType && msg.jurisdiction === jurisdictionId;
+          const isGeneric = !msg.caseType && !msg.jurisdiction;
+
+          if (!(caseTypeMatches || onlyJurisdictionMatches || isGeneric)) {
+            return false;
+          }
+
+          const pages = msg.pages?.split(',').map((page) => page.trim().toUpperCase()) || [];
+
+          if (this.queryItemId && this.queryItemId === QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
+            return pages.includes('RAISE');
+          }
+
+          return false;
+        });
+
+        if (filteredMessages.length === 0) {
+          return null;
+        }
+
+        const combinedMarkdown = filteredMessages
+          .map((msg) => msg.markdown)
+          .join('\n\n');
+
+        return combinedMarkdown;
       })
     );
   }

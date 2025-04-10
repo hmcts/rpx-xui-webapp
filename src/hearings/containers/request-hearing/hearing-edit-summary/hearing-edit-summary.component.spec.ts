@@ -296,6 +296,73 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
   });
 
+  it('should set the pagesToDispaly and exlude hearing judge', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel.screenFlow,
+        {
+          screenName: 'hearing-panel-required',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ]
+    };
+    const sectionsToDisplay = [
+      'hearing-requirements',
+      'hearing-facilities',
+      'hearing-stage',
+      'hearing-attendance',
+      'hearing-venue',
+      'hearing-welsh',
+      'hearing-panel',
+      'hearing-timing',
+      'hearing-link',
+      'hearing-additional-instructions',
+      'hearing-panel-required'
+    ];
+    component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
+    component.ngOnInit();
+    expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
+  });
+
+  it('should set the pagesToDispaly and exlude hearing panel', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      screenFlow: [
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel.screenFlow,
+        {
+          screenName: 'hearing-panel-required',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ]
+    };
+    const sectionsToDisplay = [
+      'hearing-requirements',
+      'hearing-facilities',
+      'hearing-stage',
+      'hearing-attendance',
+      'hearing-venue',
+      'hearing-welsh',
+      'hearing-judge',
+      'hearing-timing',
+      'hearing-link',
+      'hearing-additional-instructions',
+      'hearing-panel-required'
+    ];
+    component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
+    component.ngOnInit();
+    expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
+    component.hearingRequestMainModel.hearingDetails.isAPanelFlag = undefined;
+  });
+
   it('should set reasonableAdjustmentChangesRequired to false if hearing requirements is not present in the screen flow', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,

@@ -12,13 +12,13 @@ import {
   partySubChannelsRefData
 } from '../hearing.test.data';
 import { AnswerSource, RadioOptions } from '../models/hearings.enum';
-import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationByEpimmsModel } from '../models/location.model';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
 describe('HearingAnswersPipe', () => {
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',

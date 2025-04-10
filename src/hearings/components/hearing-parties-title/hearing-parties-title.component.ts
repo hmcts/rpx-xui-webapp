@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
-import { AppConstants } from '../../../app/app.constants';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import * as fromHearingStore from '../../store';
 import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
@@ -18,7 +17,7 @@ export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
     private readonly hearingsFeatureService: HearingsFeatureService) {}
 
   public ngOnInit(): void {
-    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments);
+    const isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
     const hearingValues$ = this.hearingStore.pipe<ServiceHearingValuesModel>(select(fromHearingStore.getHearingValuesModel));
 
     this.serviceValueSub = combineLatest([isHearingAmendmentsEnabled$, hearingValues$]).subscribe(([isHearingAmendmentsEnabled, hearingValues]) => {

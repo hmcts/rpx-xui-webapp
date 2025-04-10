@@ -30,6 +30,7 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -350,10 +351,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
-        const placeholder = '${[CASE_REFERENCE]}';
         qualifyingQuestions.forEach((question) => {
-          if (question.url.includes(placeholder)) {
-            question.url = question.url.replace(placeholder, this.caseId);
+          const placeholder = '${[CASE_REFERENCE]}';
+          if (question.markdown.includes(placeholder)) {
+            question.markdown = Utils.replaceAll(question.markdown, placeholder, this.caseId);
           }
         });
 

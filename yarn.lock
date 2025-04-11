@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.60-ongoing-accessibility-v1.4":
-  version: 7.1.60-ongoing-accessibility-v1.4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.60-ongoing-accessibility-v1.4"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.60-ongoing-accessibility-v1.5":
+  version: 7.1.60-ongoing-accessibility-v1.5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.60-ongoing-accessibility-v1.5"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c5567c64d9d8fd366caa7e50b55aee1a09d24c356ddcb90cad38ca38d4e9d4411279e7ac630b1bf2d674a8c8f5f7fb49a330597440d52b91d3890b8de9a861c1
+  checksum: 10/545e3044d19dc13fb42668dbe5553e173273cecf2dc27d9b098a11b7dad5a68ec1ed7ba506f873ddfe812de7ef9dc53170963cec3e02c755e831dd486a7ae616
   languageName: node
   linkType: hard
 
@@ -3736,16 +3736,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1":
-  version: 2.0.41-ongoing-accessibility-v1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1"
+"@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1.4":
+  version: 2.0.41-ongoing-accessibility-v1.4
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1.4"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/ee690b6567e6d6e25fe389fc9bf4c9b6985b8974bde59be8e241bff668f315a5ac5bdf8eb61dedeaa1fdcaa16d8be578e5cd29fca7f02fee7a5873b265447e07
+  checksum: 10/1211da43b6266553c6c7621c4772579fd475a908053c4501fc0a5ab0c873ffd74633768b5484b0a3f96cb7c3b2d500fd503a7956d17ff403a176f03432ab4010
   languageName: node
   linkType: hard
 
@@ -22276,13 +22276,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.60-ongoing-accessibility-v1.4"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.60-ongoing-accessibility-v1.5"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.41-ongoing-accessibility-v1"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.41-ongoing-accessibility-v1.4"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.5"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

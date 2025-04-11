@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.66-exui-2960-remove-caseinfo":
-  version: 7.1.66-exui-2960-remove-caseinfo
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.66-exui-2960-remove-caseinfo"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.69-exui-2960-remove-caseinfo-5":
+  version: 7.1.69-exui-2960-remove-caseinfo-5
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.69-exui-2960-remove-caseinfo-5"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/2339b6ad1ec7078af871d577054d483df64ba2b2b7a8bc6eee4e5638e19e8edb62587ef4a043733a1584b063dcfb4d9c21622d5ad6253d4ad04a5efc7cba381c
+  checksum: 10/a0d1d1687731ff175cdf5209465faecc581d84bc902d9440872abaf820e9084ddf638aacb8846fd7db6b7c2fcf82fe6daa2777c9972f15760a7b00dcbfb140e2
   languageName: node
   linkType: hard
 
@@ -22276,7 +22276,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.66-exui-2960-remove-caseinfo"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.69-exui-2960-remove-caseinfo-5"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

@@ -15,7 +15,6 @@ export class HearingsViewGuard extends HearingsGuard {
               protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
               protected readonly router: Router) {
     super(appStore, hearingJurisdictionConfigService, hearingStore, router);
-    console.log('HearingsViewGuard');
   }
 
   public canActivate(): Observable<boolean> {

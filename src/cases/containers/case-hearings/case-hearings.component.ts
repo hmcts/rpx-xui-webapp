@@ -69,7 +69,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       if (caseDetails) {
         this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
         this.caseType = caseDetails?.case_type?.id;
-        console.log(caseDetails);
       }
     });
     this.caseId = this.activatedRoute.snapshot.params.cid;

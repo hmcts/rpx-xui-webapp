@@ -351,8 +351,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+        const placeholder = '${[CASE_REFERENCE]}';
         qualifyingQuestions.forEach((question) => {
-          const placeholder = '${[CASE_REFERENCE]}';
           if (question.markdown.includes(placeholder)) {
             question.markdown = Utils.replaceAll(question.markdown, placeholder, this.caseId);
           }

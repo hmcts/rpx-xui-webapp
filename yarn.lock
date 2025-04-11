@@ -5575,7 +5575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-node@npm:^10.17.2, @pact-foundation/pact-node@npm:^10.9.7":
+"@pact-foundation/pact-node@npm:^10.17.2":
   version: 10.17.7
   resolution: "@pact-foundation/pact-node@npm:10.17.7"
   dependencies:
@@ -5611,7 +5611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact@npm:^9.11.1":
+"@pact-foundation/pact@npm:^9.18.1":
   version: 9.18.1
   resolution: "@pact-foundation/pact@npm:9.18.1"
   dependencies:
@@ -6638,15 +6638,6 @@ __metadata:
   version: 4.2.2
   resolution: "@types/crypto-js@npm:4.2.2"
   checksum: 10/a40fc5a9219fd33f54ba3e094c5e5ab2904d3106681a76f1029bb038976591e9c8959099963bf4474fde21c2d8d00c1f896445206a3a58f85588f9cb1bd96a9a
-  languageName: node
-  linkType: hard
-
-"@types/csurf@npm:^1.11.0":
-  version: 1.11.5
-  resolution: "@types/csurf@npm:1.11.5"
-  dependencies:
-    "@types/express-serve-static-core": "npm:*"
-  checksum: 10/a51b0f3276a8c88eb986709790c227c5cc4b7d663136ee360edd17ac88df1dab5d8ccf9feed737ee46530243bff11f66ead725c585e417c1ca710d0b0245ded3
   languageName: node
   linkType: hard
 
@@ -10587,6 +10578,15 @@ __metadata:
   version: 4.2.0
   resolution: "crypto-js@npm:4.2.0"
   checksum: 10/c7bcc56a6e01c3c397e95aa4a74e4241321f04677f9a618a8f48a63b5781617248afb9adb0629824792e7ec20ca0d4241a49b6b2938ae6f973ec4efc5c53c924
+  languageName: node
+  linkType: hard
+
+"csrf-csrf@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "csrf-csrf@npm:3.1.0"
+  dependencies:
+    http-errors: "npm:^2.0.0"
+  checksum: 10/0792acaf819f36910a5df410237c0989c1577a59bd6c20b590ddd0f08f49ed8b8205df4157481e1530d47b3071effb69c5264ecc6c1c3a595cc6a13c87a5d2fe
   languageName: node
   linkType: hard
 
@@ -14802,7 +14802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors@npm:2.0.0":
+"http-errors@npm:2.0.0, http-errors@npm:^2.0.0":
   version: 2.0.0
   resolution: "http-errors@npm:2.0.0"
   dependencies:
@@ -22293,8 +22293,7 @@ __metadata:
     "@ngrx/store": "npm:^17.2.0"
     "@ngrx/store-devtools": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
-    "@pact-foundation/pact": "npm:^9.11.1"
-    "@pact-foundation/pact-node": "npm:^10.9.7"
+    "@pact-foundation/pact": "npm:^9.18.1"
     "@playwright/test": "npm:^1.51.1"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^8.0.0"
@@ -22306,7 +22305,6 @@ __metadata:
     "@types/config": "npm:^3.0.0"
     "@types/cookie-parser": "npm:^1.4.2"
     "@types/crypto-js": "npm:^4.0.0"
-    "@types/csurf": "npm:^1.11.0"
     "@types/ejs": "npm:^3.0.0"
     "@types/express": "npm:^4.16.1"
     "@types/express-session": "npm:^1.17.0"
@@ -22338,7 +22336,7 @@ __metadata:
     cookie-parser: "npm:^1.4.4"
     core-js: "npm:^3.19.3"
     crypto-js: "npm:^4.2.0"
-    csurf: "npm:^1.11.0"
+    csrf-csrf: "npm:^3.1.0"
     cucumber: "npm:5.1.0"
     cucumber-html-report: "npm:0.6.5"
     cucumber-html-reporter: "npm:^7.1.1"

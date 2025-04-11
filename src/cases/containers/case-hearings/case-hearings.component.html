@@ -13,7 +13,7 @@
   <ng-container *ngIf="{upcoming: upcomingHearings$ | async,
     pastAndCancelled: pastAndCancelledHearings$ |async, listed: listedHearings$ | async} as data">
     <br>
-  <ng-container *ngIf="!serverError && 
+  <ng-container *ngIf="!serverError &&
   (data.upcoming !== null || data.pastAndCancelled !== null || data.listed !==null)">
     <a *ngIf="hasRequestAction"
        href="javascript:void(0)"
@@ -34,6 +34,8 @@
         [status]="upcomingStatus"
         [hearingStageOptions]="hearingStageOptions"
         [hearingList$]="upcomingHearings$"
+        [caseId]="caseId"
+        [jurisdictionId]="jurisdictionId"
         [actions]="hearingsActions">
       </exui-case-hearings-list>
 
@@ -41,6 +43,8 @@
         [status]="pastAndCancelledStatus"
         [hearingStageOptions]="hearingStageOptions"
         [hearingList$]="pastAndCancelledHearings$"
+        [caseId]="caseId"
+        [jurisdictionId]="jurisdictionId"
         [actions]="hearingsActions">
       </exui-case-hearings-list>
     </ng-container>
@@ -50,6 +54,8 @@
         [status]="upcomingStatus"
         [hearingStageOptions]="hearingStageOptions"
         [hearingList$]="listedHearings$"
+        [caseId]="caseId"
+        [jurisdictionId]="jurisdictionId"
         [actions]="hearingsActions">
       </exui-case-hearings-list>
     </ng-container>

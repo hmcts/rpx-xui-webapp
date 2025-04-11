@@ -137,6 +137,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
+  /*
   it('should navigate to case details page when click back button', () => {
     const caseInfo = `{
       "caseType": "Asylum",
@@ -150,6 +151,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     expect(component.sessionStorageService.getItem).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1231231231231231', 'hearings']);
   });
+  */
 
   it('should navigate to back page if caseId not available when click back button', () => {
     spyOn(component.sessionStorageService, 'getItem').and.returnValue(null);

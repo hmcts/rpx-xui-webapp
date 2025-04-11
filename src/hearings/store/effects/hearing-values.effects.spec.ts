@@ -156,7 +156,7 @@ describe('Hearing Values Effects', () => {
 
     it('should return a response with service hearing values', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
-      const action = new hearingValuesActions.LoadHearingValues('1111222233334444');
+      const action = new hearingValuesActions.LoadHearingValues();
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });

@@ -434,8 +434,7 @@ describe('CaseHearingsComponent', () => {
           useValue: {
             snapshot: {
               params: {
-                cid: '1234',
-                jid: 'JURISDICTION'
+                cid: '1234'
               }
             }
           }

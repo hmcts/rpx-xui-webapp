@@ -26,6 +26,7 @@ export class DeleteExclusionComponent implements OnInit {
   public exclusionId: string;
   public caseId: string;
   public jurisdiction: string;
+  public caseType: string;
   public roleExclusion: RoleExclusion;
 
   public showSpinner: boolean;
@@ -64,8 +65,8 @@ export class DeleteExclusionComponent implements OnInit {
     this.exclusionId = queryMap.get('exclusionId');
     this.caseId = queryMap.get('caseId');
     this.jurisdiction = queryMap.get('jurisdiction');
-    const caseType = queryMap.get('caseType');
-    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, this.jurisdiction, caseType, this.exclusionId);
+    this.caseType = queryMap.get('caseType');
+    return this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseId, this.jurisdiction, this.caseType, this.exclusionId);
   }
 
   public populateAnswers(exclusion: RoleExclusion): void {
@@ -87,7 +88,7 @@ export class DeleteExclusionComponent implements OnInit {
   }
 
   public onNavEvent(navEvent: ExclusionNavigationEvent): void {
-    const goToCaseUrl = `cases/case-details/${this.caseId}/roles-and-access`;
+    const goToCaseUrl = `cases/case-details/${this.jurisdiction}/${this.caseType}/${this.caseId}/roles-and-access`;
     switch (navEvent) {
       case ExclusionNavigationEvent.DELETE_EXCLUSION: {
         this.showSpinner = true;

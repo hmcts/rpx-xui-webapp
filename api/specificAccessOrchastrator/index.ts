@@ -1,3 +1,4 @@
+import logger from '@pact-foundation/pact-node/src/logger';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -74,7 +75,7 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
     delete headers.accept;
     return await http.post(fullPath, req.body, { headers });
   } catch (error) {
-    // logger.info(error);
+    logger.info(error);
     return res.status(error.status).send(error);
   }
 }
@@ -156,8 +157,7 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
 
     return res.send(taskResponse.data).status(taskResponse.status);
   } catch (e) {
-    // logger.error(e.status, e.statusText, JSON.stringify(e.data));
-    console.log(e.status, e.statusText, JSON.stringify(e.data));
+    logger.error(e.status, e.statusText, JSON.stringify(e.data));
     throw e;
   }
 }

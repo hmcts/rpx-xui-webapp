@@ -270,7 +270,7 @@ select::-ms-expand {
 }
 
 .form-hint {
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
   font-family: "nta", Arial, sans-serif;
@@ -340,6 +340,13 @@ select::-ms-expand {
     font-size: 19px;
     margin-bottom: 25px;
     white-space: normal;
+  }
+
+  .qm-service-message {
+    strong {
+      font-size: 19px;
+      line-height: 25px;
+    }
   }
 
   ul {

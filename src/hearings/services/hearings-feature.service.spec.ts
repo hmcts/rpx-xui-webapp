@@ -4,6 +4,7 @@ import { StoreModule } from '@ngrx/store';
 import { HearingsFeatureService } from './hearings-feature.service';
 
 describe('HearingsFeatureService', () => {
+  const dummyWindowAat = { location: new URL('https://manage-case.aat.platform.hmcts.net') };
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -11,7 +12,8 @@ describe('HearingsFeatureService', () => {
         StoreModule.forRoot({})
       ],
       providers: [
-        HearingsFeatureService
+        HearingsFeatureService,
+        { provide: Window, useValue: dummyWindowAat }
       ]
     });
   });

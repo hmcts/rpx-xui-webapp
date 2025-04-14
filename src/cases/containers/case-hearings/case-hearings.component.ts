@@ -72,7 +72,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       }
     });
     this.caseId = this.activatedRoute.snapshot.params.cid;
-    this.jurisdictionId = this.activatedRoute.snapshot.params.jid;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));

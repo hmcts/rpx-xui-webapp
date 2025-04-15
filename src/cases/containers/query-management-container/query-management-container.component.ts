@@ -29,6 +29,7 @@ import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
+import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
 import { Utils } from '../../utils/utils';
 
@@ -72,6 +73,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
+  public attachmentHintText$: Observable<string | null>;
   public serviceMessage$: Observable<string | null>;
 
   public caseDetails: CaseView;
@@ -359,6 +361,42 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         });
 
         return qualifyingQuestions;
+      })
+    );
+  }
+
+  public getAttachmentHintText(): Observable<string | null> {
+    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(this.LD_SERVICE_MESSAGE, { attachment: [] });
+
+    return combineLatest([
+      this.caseNotifier.caseView,
+      hintText$
+    ]).pipe(
+      map(([caseView, hintText]: [CaseView, ServiceAttachmentHintTextResponse]) => {
+        const jurisdictionId = caseView.case_type.jurisdiction.id;
+        const caseTypeId = caseView.case_type.id;
+        const messages = hintText?.attachment || [];
+
+        const filteredMessages = messages.filter((msg) => {
+          if (!msg.jurisdiction && !msg.caseType) {
+            return false;
+          }
+
+          if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
+            return false;
+          }
+
+          const caseTypeMatches = msg.caseType === caseTypeId;
+          const onlyJurisdictionMatches = !msg.caseType && msg.jurisdiction === jurisdictionId;
+
+          return caseTypeMatches || onlyJurisdictionMatches;
+        });
+
+        if (filteredMessages.length === 0) {
+          return null;
+        }
+
+        return filteredMessages.map((msg) => msg.hintText).join('\n\n');
       })
     );
   }

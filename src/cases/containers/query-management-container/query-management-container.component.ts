@@ -72,6 +72,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
+  public callbackConfirmationBodyText: string;
   public attachmentHintText$: Observable<string | null>;
   public serviceMessage$: Observable<string | null>;
 
@@ -167,6 +168,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public showConfirmationPage(): void {
     this.showSummary = false;
     this.showConfirmation = true;
+  }
+
+  public callbackConfirmationBody(text: string): void {
+    if (text) {
+      this.callbackConfirmationBodyText = text;
+    } else {
+      this.callbackConfirmationBodyText = 'Our team will read your query and respond.';
+    }
   }
 
   public submitForm(): void {

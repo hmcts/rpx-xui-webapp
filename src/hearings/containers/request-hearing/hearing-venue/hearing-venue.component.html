@@ -82,6 +82,7 @@
               <ul *ngIf="selectedLocations.length" class="hmcts-filter-tags selection-container">
                 <li class="location-selection" *ngFor="let selection of selectedLocations">
                   <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">
+                    <span class="sr-only">{{'Click to remove location: ' | rpxTranslate}}</span>
                     {{ selection.court_name }}
                   </a>
                 </li>

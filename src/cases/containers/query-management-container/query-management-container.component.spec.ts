@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationStart, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -863,5 +863,188 @@ describe('QueryManagementContainerComponent', () => {
         expect(qualifyingQuestions[1].name).toBe('Raise a new query');
       });
     });
+  });
+  describe('validateForm', () => {
+    beforeEach(() => {
+      activatedRoute.snapshot = {
+        ...activatedRoute.snapshot,
+        params: {
+          ...activatedRoute.snapshot.params,
+          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION
+        }
+      } as unknown as ActivatedRouteSnapshot;
+      component.ngOnInit();
+      fixture.detectChanges();
+    });
+    it('should return service message markdown when matching RAISE page and case/jurisdiction', fakeAsync(() => {
+      const messages = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          pages: 'RAISE, OTHER',
+          markdown: '### Important notice!'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.serviceMessage$.subscribe((messages) => {
+        expect(messages).toBe('### Important notice!');
+      });
+    }));
+
+    it('should return null if no matching messages found', fakeAsync(() => {
+      const messages = [
+        {
+          jurisdiction: 'OTHER_JURISDICTION',
+          caseType: 'OTHER_CASE_TYPE',
+          pages: 'NOTRAISE',
+          markdown: 'Should not match'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.serviceMessage$.subscribe((messages) => {
+        expect(messages).toBeNull();
+      });
+    }));
+
+    it('should return combined markdown for multiple matching messages', fakeAsync(() => {
+      const messages = [
+        {
+          jurisdiction: 'TEST',
+          pages: 'RAISE',
+          markdown: 'Message One'
+        },
+        {
+          caseType: 'TestAddressBookCase',
+          pages: 'RAISE',
+          markdown: 'Message Two'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.serviceMessage$.subscribe((messages) => {
+        expect(messages).toBe('Message One\n\nMessage Two');
+      });
+    }));
+    it('should return hintText markdown when case/jurisdiction', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Important notice!'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Important notice!');
+      });
+    }));
+    it('should return null when jurisdiction and caseType do not match', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'OTHER',
+          caseType: 'OtherCase',
+          hintText: 'You should not see this'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+    it('should return hintText when only jurisdiction matches and caseType is not specified', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          hintText: 'Jurisdiction-only hint'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Jurisdiction-only hint');
+      });
+    }));
+    it('should return hintText when neither jurisdiction nor caseType are specified (generic message)', fakeAsync(() => {
+      const attachment = [
+        {
+          hintText: 'Generic message'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+
+    it('should return combined hintText when multiple messages match', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Message 1'
+        },
+        {
+          jurisdiction: 'TEST',
+          hintText: 'Message 2'
+        },
+        {
+          hintText: 'Generic Message'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Message 1\n\nMessage 2');
+      });
+    }));
+
+    it('should return null when attachment list is empty', fakeAsync(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment: [] }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+
+    it('should return null when response has no attachment key', fakeAsync(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of({}));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
   });
 });

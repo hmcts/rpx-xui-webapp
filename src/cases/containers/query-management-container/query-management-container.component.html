@@ -63,7 +63,7 @@
         <div class="govuk-form-group" [class.govuk-form-group--error]="formGroup.get('attachments')?.errors?.length">
           <ccd-query-write-add-documents [formGroup]="formGroup"
             [label]="'Attach a document to this query' | rpxTranslate"
-            [hintText]="'Only attach documents related to your query. For all other documents use your case management document upload function.' | rpxTranslate"
+            [hintText]="getAttachmentHintText() | async | rpxTranslate"
             (documentCollectionUpdate)="onDocumentCollectionUpdate($event)">
           </ccd-query-write-add-documents>
         </div>

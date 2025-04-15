@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.67-callback-success-message":
-  version: 7.1.67-callback-success-message
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.67-callback-success-message"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.70-callback-success-message":
+  version: 7.1.70-callback-success-message
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.70-callback-success-message"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/81ae824227b61b55e9513ced683b60f4d6a7cee9709153080fc5d40ad490b41da7d79144c6107defb952c1b4a90a777f9b7a0ce1e6627e706dfa58e29ba6d571
+  checksum: 10/406c1dfdcdae877be1fc698b87344c1df78a8d1a2be132c04e94fdb4d5ebc7873c932748c0ea12888edf6c80fef61872a3c1a8190c732fc9001ff2a8b692c1e3
   languageName: node
   linkType: hard
 
@@ -22276,7 +22276,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.67-callback-success-message"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.70-callback-success-message"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

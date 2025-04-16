@@ -35,7 +35,7 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
-  const googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['event']);
+  const googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['event', 'virtualPageView']);
 
   const mockRouter = {
     events: of(new NavigationStart(1, '/some-other-route')),
@@ -886,7 +886,7 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should push virtual pageview with metadata to dataLayer', () => {
       const qualifyingQuestion = {
-        name: 'Test Question',
+        name: 'Raise a new query',
         markdown: '### Details<br><p>To find out more about updating …ation using MyHMCTS',
         url: ''
       };
@@ -898,14 +898,12 @@ describe('QueryManagementContainerComponent', () => {
 
       expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
         '/query-management/query/123',
-        'Test Question',
-        {
-          caseTypeId: '123',
-          caseJurisdiction: 'TEST'
-        }
+        'Qualifying Question: Raise a new query',
+        { caseTypeId: '123', jurisdictionId: 'TEST' }
       );
     });
   });
+
   describe('validateForm', () => {
     beforeEach(() => {
       activatedRoute.snapshot = {

@@ -341,23 +341,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.caseNotifier.caseView,
       this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
     ]).pipe(
-      map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
-        this.caseId = caseView.case_id;
-
-        // Safely access the qualifying questions for the current case type
-        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
-
-        // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
-
-        // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
-        const placeholder = '${[CASE_REFERENCE]}';
-        qualifyingQuestions.forEach((question) => {
-          if (question.url.includes(placeholder)) {
-            question.url = question.url.replace(placeholder, this.caseId);
-          }
+      map(([caseView, caseTypeQualifyingQuestions]) => {
+        const caseId = caseView.case_id;
+        const qualifyingQuestions = (caseTypeQualifyingQuestions?.[caseView.case_type.id] || []).map((question) => {
+          const url = question.url?.replace('${[CASE_REFERENCE]}', caseId);
+          const markdown = question.markdown?.replace('${[CASE_REFERENCE]}', caseId);
+          return { ...question, url, markdown };
         });
+
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         return qualifyingQuestions;
       })

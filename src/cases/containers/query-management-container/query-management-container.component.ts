@@ -193,6 +193,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
       if (this.qualifyingQuestion.markdown?.length) {
         this.queryCreateContext = this.getQueryCreateContext();
+        this.trackPageSelected();
         if (!this.qualifyingQuestion.url) {
           this.showContinueButton = false; //Hide Continue button when when qualifying question has no url
         }
@@ -489,6 +490,17 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       url: qualifyingQuestion.url.replace('${CCD_REFERENCE}', this.caseId)
     };
     this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
+  }
+
+  private trackPageSelected(): void {
+    this.googleTagManagerService.virtualPageView(
+      `/query-management/query/${this.caseId}`,
+      `Qualifying Question: ${this.qualifyingQuestion.name}`,
+      {
+        caseTypeId: this.caseId,
+        jurisdictionId: this.jurisdictionId
+      }
+    );
   }
 
   private getEventTrigger():void {

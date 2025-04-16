@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.66-google-analytics":
-  version: 7.1.66-google-analytics
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.66-google-analytics"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.71-google-analytics":
+  version: 7.1.71-google-analytics
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.71-google-analytics"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d62bc490c0178de43407c270769d02f004940d9df2b8b85c6f288f239e69e4ff986d612edfd299f5034d051d6c572997bfe489479b8026a4ac6b4d27f34aa20a
+  checksum: 10/141813568c9b03ae76cbafd3ab1d2da0eb32fd2685ccfacac38a827ee7c6002a181fcbd5df619e39fe7a6230e157a89dcced5e930352d6dfb15bedcdafe667a5
   languageName: node
   linkType: hard
 
@@ -3636,16 +3636,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.41-google-analytics":
-  version: 2.0.41-google-analytics
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41-google-analytics"
+"@hmcts/rpx-xui-common-lib@npm:2.0.42-google-analytics":
+  version: 2.0.42-google-analytics
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.42-google-analytics"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/c80c8060980d077f39f4183b20cad884fe6a08427baa7ffab09542bf89bf5c47e2c46136164a484875e3fb88ba1dbc6f9c8b085d7c16dd13c5a0063f0d734387
+  checksum: 10/851a133bd71d6d1323c9b671d53d0d925fd6fb8c6ee170f0bd3c3dc81168c0ac2cd402e77d3ba85f9134cd7ae65eaabbc791864a0949eaf8f2dc16da62647f0d
   languageName: node
   linkType: hard
 
@@ -22079,13 +22079,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.66-google-analytics"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.71-google-analytics"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.41-google-analytics"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.42-google-analytics"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.5"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

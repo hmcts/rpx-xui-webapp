@@ -883,6 +883,28 @@ describe('QueryManagementContainerComponent', () => {
           url: 'https://example.com/123/details'
         });
     });
+
+    it('should push virtual pageview with metadata to dataLayer', () => {
+      const qualifyingQuestion = {
+        name: 'Test Question',
+        markdown: '### Details<br><p>To find out more about updating …ation using MyHMCTS',
+        url: ''
+      };
+
+      component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
+
+      spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
+      component.submitForm();
+
+      expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
+        '/query-management/query/123',
+        'Test Question',
+        {
+          caseTypeId: '123',
+          caseJurisdiction: 'TEST'
+        }
+      );
+    });
   });
   describe('validateForm', () => {
     beforeEach(() => {

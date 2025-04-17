@@ -868,9 +868,9 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should call googleTagManagerService.event with the correct parameters', () => {
       const qualifyingQuestion = {
-        name: 'Test Question',
-        markdown: '### Details<br><p>To find out more about updating …ation using MyHMCTS',
-        url: 'https://example.com/${CCD_REFERENCE}/details'
+        name: 'Raise a new query',
+        markdown: '### Details<br><p>To find out more about updating using MyHMCTS',
+        url: 'https://example.com/${[CASE_REFERENCE]}/details'
       };
 
       component.logSelection(qualifyingQuestion);
@@ -879,26 +879,23 @@ describe('QueryManagementContainerComponent', () => {
         'QM_QualifyingQuestion_Selection', {
           caseTypeId: '123',
           caseJurisdiction: 'TEST',
-          name: 'Test Question',
+          name: 'Raise a new query',
           url: 'https://example.com/123/details'
         });
     });
 
     it('should push virtual pageview with metadata to dataLayer', () => {
       const qualifyingQuestion = {
-        name: 'Raise a new query',
-        markdown: '### Details<br><p>To find out more about updating …ation using MyHMCTS',
+        name: 'Test question',
+        markdown: '### Details<br><p>To find out more about updating using MyHMCTS',
         url: ''
       };
 
-      component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
-
-      spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
-      component.submitForm();
+      component.logSelection(qualifyingQuestion);
 
       expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
         '/query-management/query/123',
-        'Qualifying Question: Raise a new query',
+        'Qualifying Question: Test question',
         { caseTypeId: '123', jurisdictionId: 'TEST' }
       );
     });

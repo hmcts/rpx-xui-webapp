@@ -41,6 +41,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
   private readonly LD_SERVICE_MESSAGE = 'qm-service-messages';
   private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
+  private readonly FOLLOW_UP_ON_EXISTING_QUERY = 'Follow-up on an existing query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
   private static readonly QUERY_ITEM_QUALIFYING_QUESTION_DETAIL = '1';
@@ -193,7 +194,6 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
       if (this.qualifyingQuestion.markdown?.length) {
         this.queryCreateContext = this.getQueryCreateContext();
-        this.trackPageSelected();
         if (!this.qualifyingQuestion.url) {
           this.showContinueButton = false; //Hide Continue button when when qualifying question has no url
         }
@@ -352,7 +352,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
 
         // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.FOLLOW_UP_ON_EXISTING_QUERY, `/cases/case-details/${this.caseId}#Queries`);
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
@@ -483,19 +483,25 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public logSelection(qualifyingQuestion: QualifyingQuestion) {
-    const eventParams = {
-      caseTypeId: this.caseId,
-      caseJurisdiction: this.jurisdictionId,
-      name: qualifyingQuestion.name,
-      url: qualifyingQuestion.url.replace('${CCD_REFERENCE}', this.caseId)
-    };
-    this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
+    console.log('Qualifying Question selected:--------------', qualifyingQuestion.name);
+    if (this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name) {
+      console.log('Qualifying Question selected:', this.jurisdictionId);
+      const eventParams = {
+        caseTypeId: this.caseId,
+        caseJurisdiction: this.jurisdictionId,
+        name: qualifyingQuestion.name,
+        url: qualifyingQuestion.url.replace('${[CASE_REFERENCE]}', this.caseId)
+      };
+      this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
+    } else {
+      this.trackPageSelected(qualifyingQuestion.name);
+    }
   }
 
-  private trackPageSelected(): void {
+  private trackPageSelected(qualifyingQuestionName: string): void {
     this.googleTagManagerService.virtualPageView(
       `/query-management/query/${this.caseId}`,
-      `Qualifying Question: ${this.qualifyingQuestion.name}`,
+      `Qualifying Question: ${qualifyingQuestionName}`,
       {
         caseTypeId: this.caseId,
         jurisdictionId: this.jurisdictionId

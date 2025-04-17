@@ -343,12 +343,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]) => {
         const caseId = caseView.case_id;
+
+        // Safely access the qualifying questions for the current case type
         const qualifyingQuestions = (caseTypeQualifyingQuestions?.[caseView.case_type.id] || []).map((question) => {
+          // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
           const url = question.url?.replace('${[CASE_REFERENCE]}', caseId);
           const markdown = question.markdown?.replace('${[CASE_REFERENCE]}', caseId);
           return { ...question, url, markdown };
         });
 
+        // Add Extra options to qualifying question
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${caseId}#Queries`);
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 

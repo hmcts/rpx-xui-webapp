@@ -21,7 +21,7 @@ import {
   HttpError,
   CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
@@ -41,6 +41,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
   private readonly LD_SERVICE_MESSAGE = 'qm-service-messages';
   private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
+  private readonly FOLLOW_UP_ON_EXISTING_QUERY = 'Follow-up on an existing query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
   private static readonly QUERY_ITEM_QUALIFYING_QUESTION_DETAIL = '1';
@@ -85,6 +86,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private routerEventsSubscription: Subscription;
   private targetRoutePrefix = '/query-management/query/';
   public showForm: boolean;
+  public jurisdictionId: string;
 
   public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
@@ -107,12 +109,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     private readonly qualifyingQuestionService: QualifyingQuestionService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly alertService: AlertService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private googleTagManagerService: GoogleTagManagerService
   ) {}
 
   public ngOnInit(): void {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.jurisdictionId = this.activatedRoute.snapshot?.data?.case?.case_type?.jurisdiction?.id;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
@@ -348,7 +352,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
 
         // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.FOLLOW_UP_ON_EXISTING_QUERY, `/cases/case-details/${this.caseId}#Queries`);
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
@@ -476,6 +480,33 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public hasRespondedToQueryTask(value: boolean): void {
     this.showContinueButton = !value;
     this.showForm = !value;
+  }
+
+  public logSelection(qualifyingQuestion: QualifyingQuestion) {
+    console.log('Qualifying Question selected:--------------', qualifyingQuestion.name);
+    if (this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name) {
+      console.log('Qualifying Question selected:', this.jurisdictionId);
+      const eventParams = {
+        caseTypeId: this.caseId,
+        caseJurisdiction: this.jurisdictionId,
+        name: qualifyingQuestion.name,
+        url: qualifyingQuestion.url.replace('${[CASE_REFERENCE]}', this.caseId)
+      };
+      this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
+    } else {
+      this.trackPageSelected(qualifyingQuestion.name);
+    }
+  }
+
+  private trackPageSelected(qualifyingQuestionName: string): void {
+    this.googleTagManagerService.virtualPageView(
+      `/query-management/query/${this.caseId}`,
+      `Qualifying Question: ${qualifyingQuestionName}`,
+      {
+        caseTypeId: this.caseId,
+        jurisdictionId: this.jurisdictionId
+      }
+    );
   }
 
   private getEventTrigger():void {

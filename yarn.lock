@@ -6740,7 +6740,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*":
+"@types/express@npm:*, @types/express@npm:^5.0.0":
   version: 5.0.0
   resolution: "@types/express@npm:5.0.0"
   dependencies:
@@ -6752,7 +6752,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:^4.16.1, @types/express@npm:^4.17.11, @types/express@npm:^4.17.13":
+"@types/express@npm:^4.17.11, @types/express@npm:^4.17.13":
   version: 4.17.21
   resolution: "@types/express@npm:4.17.21"
   dependencies:
@@ -22306,7 +22306,7 @@ __metadata:
     "@types/cookie-parser": "npm:^1.4.2"
     "@types/crypto-js": "npm:^4.0.0"
     "@types/ejs": "npm:^3.0.0"
-    "@types/express": "npm:^4.16.1"
+    "@types/express": "npm:^5.0.0"
     "@types/express-session": "npm:^1.17.0"
     "@types/faker": "npm:^6.0.0"
     "@types/global-agent": "npm:^3.0.0"

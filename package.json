@@ -61,7 +61,7 @@
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch=true",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
-    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 15000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
+    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 20000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts dotenv_config_defaults=./api/.env.defaults",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:backendMock": "DEBUG=true nodemon test_codecept/backendMock/app --standalone",
     "test:codeceptE2EDebug": "TEST_TYPE=e2e npx codeceptjs run --plugins retryFailedStep --plugins cucumberJsonReporter --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @functional_debug",

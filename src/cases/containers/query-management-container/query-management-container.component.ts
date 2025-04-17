@@ -341,7 +341,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.caseNotifier.caseView,
       this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
     ]).pipe(
-      map(([caseView, caseTypeQualifyingQuestions]) => {
+      map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         const caseId = caseView.case_id;
 
         // Safely access the qualifying questions for the current case type

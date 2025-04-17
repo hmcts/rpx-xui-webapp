@@ -808,6 +808,32 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.showContinueButton).toBe(true);
       expect(component.showForm).toBe(true);
     });
+
+    describe('Qualifying question placeholders', () => {
+      const markdown = (placeholder) =>
+        `<a href="query-management/query/${placeholder}">an anchor</a>
+         <a href="query-management/query/${placeholder}">another anchor</a>
+         <a href="query-management/query/${placeholder}">yet another anchor</a>`;
+
+      const qualifyingQuestions = {
+        TestAddressBookCase: [
+          { name: 'Question 1', markdown: markdown('${[CASE_REFERENCE]}'), url: '' },
+          { name: 'Question 2', markdown: markdown('${[CASE_REFERENCE]}'), url: '' }
+        ] };
+
+      beforeEach(() => {
+        mockFeatureToggleService.getValue.and.returnValue(of(qualifyingQuestions));
+        component.ngOnInit();
+        fixture.detectChanges();
+      });
+
+      it('should replace all instances of ${[CASE_REFERENCE]} with the case id', () => {
+        component.qualifyingQuestions$.subscribe((qualifyingQuestions) => {
+          expect(qualifyingQuestions[0].markdown).toBe(markdown('123'));
+          expect(qualifyingQuestions[1].markdown).toBe(markdown('123'));
+        });
+      });
+    });
   });
 
   describe('getEventTrigger', () => {

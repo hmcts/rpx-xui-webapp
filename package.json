@@ -92,7 +92,7 @@
     "@dr.pogodin/csurf": "^1.14.0",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.1.71",
+    "@hmcts/ccd-case-ui-toolkit": "7.1.70-exui-2960-remove-caseinfo",
     "@hmcts/ccpay-web-component": "6.2.1",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.16",

@@ -41,10 +41,11 @@
         "em_anno_api": "http://localhost:8080",
         "idam": {
             "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
-            "idamClientID": "xuiwebapp",
+            "idamClientID": "xuiwebapp_passport_0_7",
             "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
             "indexUrl": "/",
             "oauthCallbackUrl": "/oauth2/callback",
+            "serviceOverride": true,
             "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts"
         },
         "location_api": "http://localhost:8080",

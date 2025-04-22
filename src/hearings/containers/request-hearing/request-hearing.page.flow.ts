@@ -18,6 +18,8 @@ export abstract class RequestHearingPageFlow {
   public hearingRequestMainModel: HearingRequestMainModel;
   public hearingRequestToCompareMainModel: HearingRequestMainModel;
   public hearingCondition: HearingConditions;
+  protected jurisdictionId: string;
+  protected caseReference: string;
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
                      protected readonly hearingsService: HearingsService,
@@ -33,6 +35,8 @@ export abstract class RequestHearingPageFlow {
         this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
         this.hearingRequestToCompareMainModel = { ...hearingState.hearingRequestToCompare.hearingRequestMainModel };
         this.hearingCondition = hearingState.hearingConditions;
+        this.jurisdictionId = this.hearingListMainModel.jurisdictionId;
+        this.caseReference = this.hearingListMainModel.caseRef;
       });
   }
 

@@ -44,7 +44,9 @@ describe('S2S Auth API', () => {
     it('returns the correct response', async () => {
       const s2sUrl: string = `${pactSetUp.provider.mockService.baseUrl}/lease`;
       try {
+        console.log('s2sUrl:-', s2sUrl);
         const resp = await postS2SLease(s2sUrl, mockRequest);
+        console.log('resp:-', resp.data);
         assertResponse(resp.data);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();

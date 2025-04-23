@@ -60,9 +60,9 @@ withPipeline(type, product, component) {
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
 
-    // enablePactAs([
-    //     AppPipelineDsl.PactRoles.CONSUMER
-    // ])
+    enablePactAs([
+        AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')

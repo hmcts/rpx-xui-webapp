@@ -46,11 +46,12 @@ describe('S2S Auth API', () => {
       try {
         console.log('s2sUrl:-', s2sUrl);
         const resp = await postS2SLease(s2sUrl, mockRequest);
-        console.log('resp:-', resp.data);
+        console.log('response:-', resp.data);
         assertResponse(resp.data);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
       } catch (e) {
+        console.log('S2S error:-', JSON.stringify(e));
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
         throw new Error(e);

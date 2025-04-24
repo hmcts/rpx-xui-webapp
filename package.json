@@ -217,6 +217,7 @@
     "cucumber-pretty": "^6.0.1",
     "cucumberjs-allure-reporter": "1.0.3",
     "eslint": "^8.37.0",
+    "graphql": "^16.10.0",
     "husky": "^9.1.7",
     "jasmine-core": "~5.6.0",
     "jasmine-marbles": "^0.9.1",

@@ -41,7 +41,7 @@ import { cloneDeep } from 'lodash';
   templateUrl: './hearing-edit-summary.component.html'
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-  private readonly notUpdatedMessage = 'The request has not been updated';
+  private readonly notUpdatedMessage = 'The request has not been updated as there is no change in hearing requirements';
 
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';

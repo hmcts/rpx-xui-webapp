@@ -49,12 +49,11 @@ export async function sendGet(path: string, req: EnhancedRequest, customHeaders:
 export async function handlePost<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
   try {
     logger.info('handle post:', path);
-    const error = { status: 500, message: 'Not found' };
-    next(error);
-    return Promise.reject(error);
-    // const headers = setHeaders(req);
-    // return await http.post(path, body, { headers });
+    const headers = setHeaders(req);
+    return await http.post(path, body, { headers });
   } catch (e) {
+    console.log('throw error:', e);
+    throw e;
     next(e);
   }
 }

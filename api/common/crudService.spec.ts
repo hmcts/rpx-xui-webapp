@@ -6,7 +6,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
-import { handleDelete, handleGet, handlePut } from './crudService';
+import { handleDelete, handleGet, handlePost, handlePut } from './crudService';
 
 chai.use(sinonChai);
 
@@ -42,15 +42,15 @@ describe('crudService', () => {
     });
   });
 
-  // describe('handlePost', () => {
-  //   it('should make a post request', async () => {
-  //     sandbox.stub(http, 'post').resolves(res);
-  //     const crudPath = '/crud/12345';
-  //     const next = sinon.mock() as NextFunction;
-  //     const response = await handlePost(crudPath, dummyData, req, next);
-  //     expect(response.data).to.equal('ok');
-  //   });
-  // });
+  describe('handlePost', () => {
+    it('should make a post request', async () => {
+      sandbox.stub(http, 'post').resolves(res);
+      const crudPath = '/crud/12345';
+      const next = sinon.mock() as NextFunction;
+      const response = await handlePost(crudPath, dummyData, req, next);
+      expect(response.data).to.equal('ok');
+    });
+  });
 
   describe('handlePut', () => {
     it('should make a put request', async () => {

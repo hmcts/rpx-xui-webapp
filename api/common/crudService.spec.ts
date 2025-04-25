@@ -6,7 +6,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
-import { handleDelete, handleGet, handlePost, handlePut } from './crudService';
+import { handleDelete, handleGet, handlePut } from './crudService';
 
 chai.use(sinonChai);
 

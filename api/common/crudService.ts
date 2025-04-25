@@ -52,8 +52,8 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest,
     const headers = setHeaders(req);
     return await http.post(path, body, { headers });
   } catch (e) {
-    throw e;
     next(e);
+    throw e;
   }
 }
 

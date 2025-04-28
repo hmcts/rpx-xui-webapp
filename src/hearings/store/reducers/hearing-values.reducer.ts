@@ -3,6 +3,7 @@ import * as fromActions from '../actions';
 
 export const initialHearingValuesState: HearingValuesStateData = {
   serviceHearingValuesModel: null,
+  caseInfo: null,
   lastError: null
 };
 
@@ -11,7 +12,8 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
   switch (action.type) {
     case fromActions.RESET_HEARING_VALUES: {
       return {
-        ...initialHearingValuesState
+        ...initialHearingValuesState,
+        caseInfo: currentState.caseInfo
       };
     }
     case fromActions.LOAD_HEARING_VALUES_SUCCESS: {
@@ -33,6 +35,19 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
         lastError: null
       };
     }
+    case fromActions.STORE_JURISDICTION_AND_CASE_REF: {
+      console.log('setting the value for caseInfo');
+      return {
+        ...currentState,
+        caseInfo: action.payload
+      };
+    }
+    case fromActions.RESET_JURISDICTION_AND_CASE_REF: {
+      return {
+        ...currentState,
+        caseInfo: null
+      };
+    }
     default: {
       return {
         ...currentState
@@ -42,3 +57,5 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
 }
 
 export const hearingValuesModel = (hearingValuesState) => hearingValuesState.serviceHearingValuesModel;
+export const caseInfoSelector = (hearingValuesState) => hearingValuesState.hearings.hearingValues.caseInfo;
+export const serviceHearingValueSelector = (hearingValuesState) => hearingValuesState.hearings.hearingValues.serviceHearingValuesModel;

@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { UserDetails } from '../../app/models';
-import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsEditGuard } from './hearings-edit-guard';
@@ -58,26 +57,24 @@ describe('HearingsEditGuard', () => {
     }
   ];
 
-  const CASE_INFO = { cid: '1546518523959179', caseType: 'Benefit', jurisdiction: 'SSCS' };
+  const CASE_INFO = { caseReference: '1546518523959179', caseType: 'Benefit', jurisdictionId: 'SSCS' };
 
   let hearingsEditGuard: HearingsEditGuard;
   let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
-  let sessionStorageMock: jasmine.SpyObj<SessionStorageService>;
   let hearingJurisdictionConfigMock: jasmine.SpyObj<HearingJurisdictionConfigService>;
 
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
-    storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
-    sessionStorageMock = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe', 'select']);
     hearingJurisdictionConfigMock = jasmine.createSpyObj<HearingJurisdictionConfigService>('hearingJurisdictionConfigService', ['getHearingJurisdictionsConfig']);
   });
 
   it('should edit hearings be enabled for user with hearing manager role', () => {
     storeMock.pipe.and.returnValue(of(USER_1));
+    storeMock.select.and.returnValue(of(CASE_INFO));
     hearingJurisdictionConfigMock.getHearingJurisdictionsConfig.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, hearingJurisdictionConfigMock, routerMock);
+    hearingsEditGuard = new HearingsEditGuard(storeMock, storeMock, hearingJurisdictionConfigMock, routerMock);
     const result$ = hearingsEditGuard.canActivate();
     const canActive = true;
     const expected = cold('(b|)', { b: canActive });
@@ -86,9 +83,9 @@ describe('HearingsEditGuard', () => {
 
   it('should edit hearings be disabled for user without hearing manager role', () => {
     storeMock.pipe.and.returnValue(of(USER_2));
+    storeMock.select.and.returnValue(of(CASE_INFO));
     hearingJurisdictionConfigMock.getHearingJurisdictionsConfig.and.returnValue(of(FEATURE_FLAG));
-    sessionStorageMock.getItem.and.returnValue(JSON.stringify(CASE_INFO));
-    hearingsEditGuard = new HearingsEditGuard(storeMock, sessionStorageMock, hearingJurisdictionConfigMock, routerMock);
+    hearingsEditGuard = new HearingsEditGuard(storeMock, storeMock, hearingJurisdictionConfigMock, routerMock);
     const result$ = hearingsEditGuard.canActivate();
     const canActive = false;
     const expected = cold('(b|)', { b: canActive });

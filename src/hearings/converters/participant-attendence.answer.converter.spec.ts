@@ -130,6 +130,11 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           caseFlags: null,
           screenFlow: null,
           vocabulary: null
+        },
+        caseInfo: {
+          caseReference: '1111222233334444',
+          jurisdictionId: '',
+          hearingId: ''
         }
       },
       hearingRequestToCompare: null,
@@ -279,6 +284,11 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           caseFlags: null,
           screenFlow: null,
           vocabulary: null
+        },
+        caseInfo: {
+          caseReference: '1111222233334444',
+          jurisdictionId: '',
+          hearingId: ''
         }
       },
       hearingRequestToCompare: null,

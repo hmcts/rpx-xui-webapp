@@ -936,5 +936,115 @@ describe('QueryManagementContainerComponent', () => {
         expect(messages).toBe('Message One\n\nMessage Two');
       });
     }));
+    it('should return hintText markdown when case/jurisdiction', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Important notice!'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Important notice!');
+      });
+    }));
+    it('should return null when jurisdiction and caseType do not match', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'OTHER',
+          caseType: 'OtherCase',
+          hintText: 'You should not see this'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+    it('should return hintText when only jurisdiction matches and caseType is not specified', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          hintText: 'Jurisdiction-only hint'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Jurisdiction-only hint');
+      });
+    }));
+    it('should return hintText when neither jurisdiction nor caseType are specified (generic message)', fakeAsync(() => {
+      const attachment = [
+        {
+          hintText: 'Generic message'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+
+    it('should return combined hintText when multiple messages match', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Message 1'
+        },
+        {
+          jurisdiction: 'TEST',
+          hintText: 'Message 2'
+        },
+        {
+          hintText: 'Generic Message'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Message 1\n\nMessage 2');
+      });
+    }));
+
+    it('should return null when attachment list is empty', fakeAsync(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment: [] }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+
+    it('should return null when response has no attachment key', fakeAsync(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of({}));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
   });
 });

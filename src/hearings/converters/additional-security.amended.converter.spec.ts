@@ -33,6 +33,11 @@ describe('AdditionalSecurityAmendedConverter', () => {
       },
       hearingValues: {
         serviceHearingValuesModel,
+        caseInfo: {
+          caseReference: '1111222233334444',
+          jurisdictionId: '',
+          hearingId: ''
+        },
         lastError: null
       },
       hearingRequestToCompare: {

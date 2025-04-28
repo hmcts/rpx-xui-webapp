@@ -25,9 +25,7 @@ export class HearingLinksEffects {
     ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES),
     map((action: hearingLinksActions.LoadServiceLinkedCases) => action.payload),
     switchMap((payload) => {
-      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
-      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
-      return this.hearingsService.loadServiceLinkedCases(jurisdictionId, payload.caseReference, payload.hearingId).pipe(
+      return this.hearingsService.loadServiceLinkedCases(payload.jurisdictionId, payload.caseReference, payload.hearingId).pipe(
         map((response) => new hearingLinksActions.LoadServiceLinkedCasesSuccess(response)),
         catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesFailure(error)))
       );
@@ -38,9 +36,7 @@ export class HearingLinksEffects {
     ofType(hearingLinksActions.LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS),
     map((action: hearingLinksActions.LoadServiceLinkedCasesWithHearings) => action.payload),
     switchMap((payload) => {
-      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
-      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
-      return this.hearingsService.loadLinkedCasesWithHearings(jurisdictionId, payload.caseReference, payload.caseName, payload.hearingId).pipe(
+      return this.hearingsService.loadLinkedCasesWithHearings(payload.jurisdictionId, payload.caseReference, payload.caseName, payload.hearingId).pipe(
         map((response) => new hearingLinksActions.LoadServiceLinkedCasesWithHearingsSuccess(response)),
         catchError((error: HttpError) => of(new hearingLinksActions.LoadServiceLinkedCasesWithHearingsFailure(error)))
       );

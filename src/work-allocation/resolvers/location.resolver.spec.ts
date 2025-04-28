@@ -278,9 +278,9 @@ describe('LocationResolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot(reducers, { metaReducers }),
+      imports: [StoreModule.forRoot(reducers, { metaReducers }),
         RouterTestingModule.withRoutes([])],
-    providers: [
+      providers: [
         LocationResolver,
         AllocateRoleService,
         LocationDataService,
@@ -288,8 +288,8 @@ describe('LocationResolver', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}
+      ]
+    }
     );
     judicialWorkerDataService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
     locationService = TestBed.inject(LocationDataService) as LocationDataService;

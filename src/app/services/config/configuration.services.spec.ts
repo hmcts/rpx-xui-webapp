@@ -10,10 +10,10 @@ describe('Configuration Service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    teardown: { destroyAfterEach: false },
-    imports: [StoreModule.forRoot({})],
-    providers: [AppConfigService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      teardown: { destroyAfterEach: false },
+      imports: [StoreModule.forRoot({})],
+      providers: [AppConfigService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    });
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
   });
 

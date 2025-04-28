@@ -37,35 +37,35 @@ describe('CaseListComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    declarations: [CaseListComponent, RpxTranslateMockPipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [],
-    providers: [
+      declarations: [CaseListComponent, RpxTranslateMockPipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [],
+      providers: [
         {
-            provide: AppConfig,
-            useValue: mockAppConfig
+          provide: AppConfig,
+          useValue: mockAppConfig
         },
         {
-            provide: DefinitionsService,
-            useValue: mockDefinitionsService
+          provide: DefinitionsService,
+          useValue: mockDefinitionsService
         },
         {
-            provide: WindowService,
-            useValue: mockWindowService
+          provide: WindowService,
+          useValue: mockWindowService
         },
         {
-            provide: FeatureToggleService,
-            useValue: mockFeatureToggleService
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
         },
         {
-            provide: AlertService,
-            useValue: mockAlertService
+          provide: AlertService,
+          useValue: mockAlertService
         },
         provideMockStore({}),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();

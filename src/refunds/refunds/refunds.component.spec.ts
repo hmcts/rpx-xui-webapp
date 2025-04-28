@@ -30,15 +30,15 @@ describe('RefundsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [RefundsComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [],
-    providers: [
+      declarations: [RefundsComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [],
+      providers: [
         provideMockStore({ initialState }),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

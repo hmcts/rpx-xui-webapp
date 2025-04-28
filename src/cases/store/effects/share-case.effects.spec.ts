@@ -33,23 +33,23 @@ describe('Share Case Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({}),
+      imports: [StoreModule.forRoot({}),
         RouterTestingModule],
-    providers: [
+      providers: [
         {
-            provide: CaseShareService,
-            useValue: caseShareServiceMock
+          provide: CaseShareService,
+          useValue: caseShareServiceMock
         },
         {
-            provide: Router,
-            useValue: routerMock
+          provide: Router,
+          useValue: routerMock
         },
         fromShareCaseEffects.ShareCaseEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
     effects = TestBed.inject(fromShareCaseEffects.ShareCaseEffects);

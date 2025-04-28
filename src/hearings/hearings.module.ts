@@ -31,34 +31,34 @@ import { PageFlow } from './utils/page-flow';
 import { WarningAndErrorSectionComponent } from './containers/request-hearing/hearing-edit-summary/warning-and-error-section/warning-and-error-section.component';
 
 @NgModule({ declarations: [...fromComponents.components, ...fromContainers.containers, WarningAndErrorSectionComponent], imports: [CommonModule,
-        StoreModule.forFeature('hearings', reducers),
-        EffectsModule.forFeature(effects),
-        hearingsRouting,
-        SharedModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ExuiCommonLibModule,
-        HearingsPipesModule,
-        PaletteUtilsModule], providers: [
-        PageFlow,
-        {
-            provide: AbstractAppConfig,
-            useExisting: AppConfig
-        },
-        {
-            provide: AbstractPageFlow,
-            useExisting: PageFlow
-        },
-        HearingsService,
-        HearingsEditGuard,
-        HearingsViewGuard,
-        LoadingService,
-        DatePipe,
-        FormatTranslatorService,
-        HearingAmendmentsGuard,
-        HearingsFeatureService,
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+  StoreModule.forFeature('hearings', reducers),
+  EffectsModule.forFeature(effects),
+  hearingsRouting,
+  SharedModule,
+  FormsModule,
+  ReactiveFormsModule,
+  ExuiCommonLibModule,
+  HearingsPipesModule,
+  PaletteUtilsModule], providers: [
+  PageFlow,
+  {
+    provide: AbstractAppConfig,
+    useExisting: AppConfig
+  },
+  {
+    provide: AbstractPageFlow,
+    useExisting: PageFlow
+  },
+  HearingsService,
+  HearingsEditGuard,
+  HearingsViewGuard,
+  LoadingService,
+  DatePipe,
+  FormatTranslatorService,
+  HearingAmendmentsGuard,
+  HearingsFeatureService,
+  provideHttpClient(withInterceptorsFromDi())
+] })
 /**
  * Entry point for Hearings Module that is also lazy loaded.
  */

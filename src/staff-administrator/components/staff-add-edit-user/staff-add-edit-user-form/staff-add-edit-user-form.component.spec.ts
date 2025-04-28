@@ -51,34 +51,34 @@ describe('StaffAddEditUserFormComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-    declarations: [StaffAddEditUserFormComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [RouterTestingModule.withRoutes([
-            { path: 'staff', component: StubComponent }
-        ]),
-        ReactiveFormsModule,
-        ExuiCommonLibModule],
-    providers: [
+      declarations: [StaffAddEditUserFormComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([
+        { path: 'staff', component: StubComponent }
+      ]),
+      ReactiveFormsModule,
+      ExuiCommonLibModule],
+      providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                fragment: of('user-skills'),
-                snapshot: {
-                    data: {
-                        userTypes: staffFilterOptionsTestData.userTypes,
-                        jobTitles: staffFilterOptionsTestData.jobTitles,
-                        skills: staffFilterOptionsTestData.skills,
-                        services: staffFilterOptionsTestData.services
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            fragment: of('user-skills'),
+            snapshot: {
+              data: {
+                userTypes: staffFilterOptionsTestData.userTypes,
+                jobTitles: staffFilterOptionsTestData.jobTitles,
+                skills: staffFilterOptionsTestData.skills,
+                services: staffFilterOptionsTestData.services
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   });
 

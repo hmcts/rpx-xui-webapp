@@ -22,13 +22,13 @@ describe('Search Service', () => {
       }
     };
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         SearchService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     service = TestBed.inject(SearchService);
     httpMock = TestBed.inject(HttpTestingController);
   });

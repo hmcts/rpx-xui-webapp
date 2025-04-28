@@ -18,18 +18,18 @@ describe('acceptTC Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         {
-            provide: AcceptTermsService,
-            useValue: AcceptTermsServiceMock
+          provide: AcceptTermsService,
+          useValue: AcceptTermsServiceMock
         },
         fromTcEffects.AcceptTcEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     effects = TestBed.inject(fromTcEffects.AcceptTcEffects);
   });

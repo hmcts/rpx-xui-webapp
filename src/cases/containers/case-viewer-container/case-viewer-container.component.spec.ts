@@ -252,19 +252,19 @@ describe('CaseViewerContainerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [CaseViewerContainerComponent, CaseViewerComponent],
-    imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
-    providers: [
+      declarations: [CaseViewerContainerComponent, CaseViewerComponent],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      providers: [
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        case: CASE_VIEW
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                case: CASE_VIEW
+              }
             }
+          }
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -273,8 +273,8 @@ describe('CaseViewerContainerComponent', () => {
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   });
 
@@ -345,19 +345,19 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [CaseViewerContainerComponent, CaseViewerComponent],
-    imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
-    providers: [
+      declarations: [CaseViewerContainerComponent, CaseViewerComponent],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      providers: [
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        case: CASE_VIEW
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                case: CASE_VIEW
+              }
             }
+          }
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -366,8 +366,8 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   });
 
@@ -426,19 +426,19 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [CaseViewerContainerComponent, CaseViewerComponent],
-    imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
-    providers: [
+      declarations: [CaseViewerContainerComponent, CaseViewerComponent],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      providers: [
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        case: CASE_VIEW
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                case: CASE_VIEW
+              }
             }
+          }
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -447,8 +447,8 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   });
 
@@ -507,19 +507,19 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [CaseViewerContainerComponent, CaseViewerComponent],
-    imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
-    providers: [
+      declarations: [CaseViewerContainerComponent, CaseViewerComponent],
+      imports: [RouterTestingModule, StoreModule.forRoot(reducers), MatTabsModule, BrowserAnimationsModule],
+      providers: [
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        case: CASE_VIEW
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                case: CASE_VIEW
+              }
             }
+          }
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -528,8 +528,8 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   });
 

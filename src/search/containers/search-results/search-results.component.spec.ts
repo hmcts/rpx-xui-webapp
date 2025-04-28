@@ -152,17 +152,17 @@ describe('SearchResultsComponent', () => {
     jurisdictionService = createSpyObj<JurisdictionService>('jurisdictionService', ['getJurisdictions']);
     jurisdictionService.getJurisdictions.and.returnValue(of(jurisdictions));
     TestBed.configureTestingModule({
-    declarations: [SearchResultsComponent, PaginationComponent, RpxTranslateMockPipe],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [RouterTestingModule],
-    providers: [
+      declarations: [SearchResultsComponent, PaginationComponent, RpxTranslateMockPipe],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule],
+      providers: [
         { provide: FormBuilder, useValue: formBuilder },
         { provide: SearchService, useValue: searchService },
         { provide: JurisdictionService, useValue: jurisdictionService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

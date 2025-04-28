@@ -19,28 +19,28 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
 @NgModule({ declarations: [...fromContainers.containers],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [CommonModule,
-        SharedModule,
-        MatDialogModule,
-        WorkAllocationComponentsModule,
-        PipesModule,
-        workAllocationRouting,
-        CdkTableModule,
-        ExuiCommonLibModule,
-        ReactiveFormsModule,
-        RoleAccessModule,
-        PaginationModule,
-        NgxPaginationModule], providers: [
-        WorkAllocationTaskService,
-        WorkAllocationAccessGuard,
-        AlertService,
-        BookingService,
-        CaseworkerDataService,
-        LocationDataService,
-        StaffSupportedJurisdictionsService,
-        WASupportedJurisdictionsService,
-        LoadingService,
-        SessionStorageService,
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [CommonModule,
+    SharedModule,
+    MatDialogModule,
+    WorkAllocationComponentsModule,
+    PipesModule,
+    workAllocationRouting,
+    CdkTableModule,
+    ExuiCommonLibModule,
+    ReactiveFormsModule,
+    RoleAccessModule,
+    PaginationModule,
+    NgxPaginationModule], providers: [
+    WorkAllocationTaskService,
+    WorkAllocationAccessGuard,
+    AlertService,
+    BookingService,
+    CaseworkerDataService,
+    LocationDataService,
+    StaffSupportedJurisdictionsService,
+    WASupportedJurisdictionsService,
+    LoadingService,
+    SessionStorageService,
+    provideHttpClient(withInterceptorsFromDi())
+  ] })
 export class WorkAllocationModule {}

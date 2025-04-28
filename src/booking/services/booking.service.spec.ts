@@ -6,13 +6,13 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('BookingService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         BookingService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
   });
 
   it('should be created', inject([BookingService], (service: BookingService) => {

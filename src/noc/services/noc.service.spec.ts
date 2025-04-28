@@ -7,13 +7,13 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('NocService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         NocService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
   });
 
   it('should be created', inject([NocService], (service: NocService) => {

@@ -33,25 +33,25 @@ describe('ChooseRoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [ChooseRadioOptionComponent, ChooseRoleComponent],
-    imports: [ReactiveFormsModule],
-    providers: [
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ChooseRadioOptionComponent, ChooseRoleComponent],
+      imports: [ReactiveFormsModule],
+      providers: [
         { provide: Store, useValue: mockStore },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    queryParams: {
-                        roleCategory: 'JUDICIAL'
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {
+                roleCategory: 'JUDICIAL'
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

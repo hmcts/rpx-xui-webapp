@@ -51,8 +51,8 @@ describe('AppConfiguration', () => {
   });
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         { provide: Window, useValue: mockWindow },
         AppConfig,
         InitialisationSyncService,
@@ -62,8 +62,8 @@ describe('AppConfiguration', () => {
         { provide: LoggerService, useValue: mockLoggerService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     const iss = TestBed.inject(InitialisationSyncService);
     iss.initialisationComplete(true);
   });

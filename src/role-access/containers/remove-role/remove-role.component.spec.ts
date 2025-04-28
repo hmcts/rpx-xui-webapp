@@ -97,69 +97,69 @@ describe('RemoveRoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    schemas: [
+      schemas: [
         NO_ERRORS_SCHEMA
-    ],
-    declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
-    imports: [RouterTestingModule],
-    providers: [
+      ],
+      declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
+      imports: [RouterTestingModule],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        roles: [
-                            {
-                                name: 'test user name',
-                                roleCategory: RoleCategory.LEGAL_OPERATIONS,
-                                roleName: TypeOfRole.CaseManager,
-                                location: '1234567',
-                                start: '2021-07-13T00:29:10.656Z',
-                                end: '2021-07-15T00:29:10.656Z',
-                                id: '999999999',
-                                actorId: '1234567',
-                                actions: [],
-                                email: 'user@test.com'
-                            }
-                        ]
-                    },
-                    queryParams: {
-                        caseId: '123456789',
-                        assignmentId: '999999999'
-                    }
-                },
-                queryParamMap: of(convertToParamMap({
-                    caseId: '123456789',
-                    assignmentId: '999999999',
-                    jurisdiction: 'IA',
-                    caseType: 'Alsyum'
-                }))
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                roles: [
+                  {
+                    name: 'test user name',
+                    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+                    roleName: TypeOfRole.CaseManager,
+                    location: '1234567',
+                    start: '2021-07-13T00:29:10.656Z',
+                    end: '2021-07-15T00:29:10.656Z',
+                    id: '999999999',
+                    actorId: '1234567',
+                    actions: [],
+                    email: 'user@test.com'
+                  }
+                ]
+              },
+              queryParams: {
+                caseId: '123456789',
+                assignmentId: '999999999'
+              }
+            },
+            queryParamMap: of(convertToParamMap({
+              caseId: '123456789',
+              assignmentId: '999999999',
+              jurisdiction: 'IA',
+              caseType: 'Alsyum'
+            }))
+          }
         },
         {
-            provide: Router,
-            useValue: routerMock
+          provide: Router,
+          useValue: routerMock
         },
         {
-            provide: Location,
-            useValue: locationMock
+          provide: Location,
+          useValue: locationMock
         },
         {
-            provide: AllocateRoleService,
-            useClass: AllocateRoleMockService
+          provide: AllocateRoleService,
+          useClass: AllocateRoleMockService
         },
         {
-            provide: CaseworkerDataService,
-            useValue: mockCaseworkerDataService
+          provide: CaseworkerDataService,
+          useValue: mockCaseworkerDataService
         },
         {
-            provide: LoggerService,
-            useValue: loggerServiceMock
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

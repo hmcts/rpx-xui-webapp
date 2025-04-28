@@ -28,23 +28,23 @@ describe('Router Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         AppConfigService,
         {
-            provide: Location,
-            useValue: LocationMock
+          provide: Location,
+          useValue: LocationMock
         },
         {
-            provide: Router,
-            useValue: RouterMock
+          provide: Router,
+          useValue: RouterMock
         },
         fromRouterEffects.RouterEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
 

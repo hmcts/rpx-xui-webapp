@@ -11,28 +11,28 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [SpecificAccessDuplicateRecordComponent],
-    imports: [],
-    providers: [
+      declarations: [SpecificAccessDuplicateRecordComponent],
+      imports: [],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        taskAndRole: {
-                            task: {
-                                task: getMockTasks()[0]
-                            },
-                            role: []
-                        }
-                    }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                taskAndRole: {
+                  task: {
+                    task: getMockTasks()[0]
+                  },
+                  role: []
                 }
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

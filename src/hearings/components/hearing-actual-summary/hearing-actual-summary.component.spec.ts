@@ -398,31 +398,31 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingActualSummaryComponent,
+      declarations: [HearingActualSummaryComponent,
         HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe
-    ],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [ReactiveFormsModule, RouterTestingModule],
-    providers: [
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
+      providers: [
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        partyChannels: PARTY_CHANNELS,
-                        hearingRoles: HEARING_ROLES,
-                        hearingStageOptions: HEARING_TYPES
-                    }
-                },
-                fragment: of('point-to-me')
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                partyChannels: PARTY_CHANNELS,
+                hearingRoles: HEARING_ROLES,
+                hearingStageOptions: HEARING_TYPES
+              }
+            },
+            fragment: of('point-to-me')
+          }
         },
         DatePipe, FormatTranslatorService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
     mockStore = TestBed.inject(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);

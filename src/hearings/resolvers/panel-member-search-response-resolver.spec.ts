@@ -16,16 +16,16 @@ describe('Panel Member Search Response Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         provideMockStore({ initialState }),
         PanelMemberSearchResponseResolver,
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}
+      ]
+    }
     );
     judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
   });

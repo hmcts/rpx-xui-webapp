@@ -15,13 +15,13 @@ import { HearingsService } from './hearings.service';
 describe('HearingsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         HearingsService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
   });
 
   it('should be created', inject([HearingsService], (service: HearingsService) => {

@@ -13,11 +13,11 @@ describe('TaskAssignmentPersonNotAuthorised', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [TaskAssignmentPersonNotAuthorisedComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [RouterTestingModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-})
+      declarations: [TaskAssignmentPersonNotAuthorisedComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    })
       .compileComponents();
   }));
 

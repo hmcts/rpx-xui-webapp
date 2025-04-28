@@ -101,31 +101,31 @@ describe('CaseCreateSubmitComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of({}));
     TestBed.configureTestingModule({
-    declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         ExuiCommonLibModule,
         StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
         EffectsModule.forRoot([])],
-    providers: [
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: {
-                queryParams: of({ Origin: 'viewDraft' }),
-                snapshot: {
-                    data: { eventTrigger: EVENT_TRIGGER },
-                    params: {},
-                    pathFromRoot: [
-                        {},
-                        {
-                            data: {
-                                profile: {}
-                            }
-                        }
-                    ]
-                },
-                params: of({ jid: 'jid', ctid: 'ctid' })
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: of({ Origin: 'viewDraft' }),
+            snapshot: {
+              data: { eventTrigger: EVENT_TRIGGER },
+              params: {},
+              pathFromRoot: [
+                {},
+                {
+                  data: {
+                    profile: {}
+                  }
+                }
+              ]
+            },
+            params: of({ jid: 'jid', ctid: 'ctid' })
+          }
         },
         CasesService,
         RetryUtil,
@@ -143,29 +143,29 @@ describe('CaseCreateSubmitComponent', () => {
         AppConfigService,
         AppConfig,
         {
-            provide: SearchService,
-            useValue: {
-                requestOptionsBuilder: RequestOptionsBuilder
-            }
+          provide: SearchService,
+          useValue: {
+            requestOptionsBuilder: RequestOptionsBuilder
+          }
         },
         {
-            provide: AbstractAppConfig,
-            useExisting: AppConfig
+          provide: AbstractAppConfig,
+          useExisting: AppConfig
         },
         {
-            provide: AppConfigService,
-            useClass: MockSortService
+          provide: AppConfigService,
+          useClass: MockSortService
         },
         {
-            provide: AlertService,
-            useValue: mockAlertService
+          provide: AlertService,
+          useValue: mockAlertService
         },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LoggerService, useValue: mockLoggerService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

@@ -10,15 +10,15 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('ActualSummaryResponseResolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         provideMockStore({ initialState }),
         ActualSummaryResponseResolver,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}
+      ]
+    }
     );
   });
 

@@ -9,14 +9,14 @@ describe('Jurisdiction Service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    teardown: { destroyAfterEach: false },
-    imports: [],
-    providers: [
+      teardown: { destroyAfterEach: false },
+      imports: [],
+      providers: [
         JurisdictionService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     httpClientGetSpy = jasmine.createSpyObj('HttpClient', ['get']);
   });

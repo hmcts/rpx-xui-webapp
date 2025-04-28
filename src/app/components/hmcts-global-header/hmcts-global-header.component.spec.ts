@@ -64,38 +64,38 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-    declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
-            ...fromRoot.reducers,
-            feature: combineReducers(fromNocStore.reducers)
+          ...fromRoot.reducers,
+          feature: combineReducers(fromNocStore.reducers)
         })],
-    providers: [
+      providers: [
         {
-            provide: Store,
-            useValue: storeMock
+          provide: Store,
+          useValue: storeMock
         },
         {
-            provide: UserService,
-            useValue: {
-                getUserDetails: () => of({
-                    userInfo: {
-                        roles: ['roleA', 'roleB']
-                    }
-                })
-            }
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of({
+              userInfo: {
+                roles: ['roleA', 'roleB']
+              }
+            })
+          }
         },
         {
-            provide: FeatureToggleService,
-            useValue: {
-                isEnabled: (flag) => of(flags[flag])
-            }
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag])
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 
@@ -427,34 +427,34 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-    declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
-            ...fromRoot.reducers,
-            feature: combineReducers(fromNocStore.reducers)
+          ...fromRoot.reducers,
+          feature: combineReducers(fromNocStore.reducers)
         })],
-    providers: [
+      providers: [
         {
-            provide: Store,
-            useValue: storeMock
+          provide: Store,
+          useValue: storeMock
         },
         {
-            provide: UserService,
-            useValue: {
-                getUserDetails: () => of({})
-            }
+          provide: UserService,
+          useValue: {
+            getUserDetails: () => of({})
+          }
         },
         {
-            provide: FeatureToggleService,
-            useValue: {
-                isEnabled: (flag) => of(flags[flag])
-            }
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag])
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

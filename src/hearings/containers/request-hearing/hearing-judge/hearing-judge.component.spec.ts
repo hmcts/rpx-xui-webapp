@@ -84,28 +84,28 @@ describe('HearingJudgeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingJudgeComponent, HearingJudgeNamesListComponent, MockRpxTranslatePipe],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [ReactiveFormsModule, RouterTestingModule],
-    providers: [
+      declarations: [HearingJudgeComponent, HearingJudgeNamesListComponent, MockRpxTranslatePipe],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
+      providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        hearingJudgeTypes: judgeTypes,
-                        judicialUsers: [{ personalCode: 'p1000000' }]
-                    }
-                },
-                fragment: of('point-to-me')
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                hearingJudgeTypes: judgeTypes,
+                judicialUsers: [{ personalCode: 'p1000000' }]
+              }
+            },
+            fragment: of('point-to-me')
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HearingJudgeComponent);
     component = fixture.componentInstance;

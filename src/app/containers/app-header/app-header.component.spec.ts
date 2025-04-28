@@ -40,39 +40,39 @@ describe('AppHeaderComponent', () => {
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         AppHeaderComponent
-    ],
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      ],
+      imports: [StoreModule.forRoot({})],
+      providers: [
         {
-            provide: Store,
-            useValue: storeMock
+          provide: Store,
+          useValue: storeMock
         },
         {
-            provide: FeatureToggleService,
-            useValue: featureToggleServiceMock
+          provide: FeatureToggleService,
+          useValue: featureToggleServiceMock
         },
         {
-            provide: Router,
-            useValue: {
-                events: eventsSub,
-                url: '/something-or-other'
-            }
+          provide: Router,
+          useValue: {
+            events: eventsSub,
+            url: '/something-or-other'
+          }
         },
         {
-            provide: LoggerService,
-            useValue: loggerServiceMock
+          provide: LoggerService,
+          useValue: loggerServiceMock
         },
         {
-            provide: Window,
-            useValue: window
+          provide: Window,
+          useValue: window
         },
         AppHeaderComponent,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     store = TestBed.inject(Store);
 

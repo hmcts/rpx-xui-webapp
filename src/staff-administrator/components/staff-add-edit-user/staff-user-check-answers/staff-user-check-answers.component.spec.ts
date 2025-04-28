@@ -76,114 +76,114 @@ describe('StaffUserCheckAnswersComponent', () => {
     };
 
     TestBed.configureTestingModule({
-    declarations: [StaffUserCheckAnswersComponent, RpxTranslateMockPipe],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [],
-    providers: [
+      declarations: [StaffUserCheckAnswersComponent, RpxTranslateMockPipe],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [],
+      providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: Router, useValue: mockRouter },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        userTypes: [
-                            {
-                                key: 'userType',
-                                label: 'User Types'
-                            },
-                            {
-                                key: 'ctsc',
-                                label: 'CTSC'
-                            }
-                        ],
-                        jobTitles: [
-                            {
-                                key: 'senior-legal-caseworker',
-                                label: 'Senior Legal Caseworker'
-                            },
-                            {
-                                key: 'legal-caseworker',
-                                label: 'Legal Caseworker'
-                            },
-                            {
-                                key: 'hearing-centre-team-leader',
-                                label: 'Hearing Centre Team Leader'
-                            },
-                            {
-                                key: 'hearing-centre-administrator',
-                                label: 'Hearing Centre Administrator'
-                            },
-                            {
-                                key: 'court-clerk',
-                                label: 'Court Clerk'
-                            }
-                        ],
-                        services: [
-                            {
-                                key: 'ABC1',
-                                label: 'Service A'
-                            },
-                            {
-                                key: 'BCD2',
-                                label: 'Service B'
-                            },
-                            {
-                                key: 'CDE3',
-                                label: 'Service C'
-                            },
-                            {
-                                key: 'DEF4',
-                                label: 'Service D'
-                            }
-                        ],
-                        skills: [
-                            {
-                                group: 'ABC1',
-                                options: [
-                                    {
-                                        key: '1',
-                                        label: 'Underwriter'
-                                    },
-                                    {
-                                        key: '2',
-                                        label: 'Caseworker'
-                                    }
-                                ]
-                            },
-                            {
-                                group: 'BCD2',
-                                options: [
-                                    {
-                                        key: '3',
-                                        label: 'Caseworker'
-                                    },
-                                    {
-                                        key: '4',
-                                        label: 'Case manager'
-                                    }
-                                ]
-                            },
-                            {
-                                group: 'CDE3',
-                                options: [
-                                    {
-                                        key: '5',
-                                        label: 'Underwriter'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                userTypes: [
+                  {
+                    key: 'userType',
+                    label: 'User Types'
+                  },
+                  {
+                    key: 'ctsc',
+                    label: 'CTSC'
+                  }
+                ],
+                jobTitles: [
+                  {
+                    key: 'senior-legal-caseworker',
+                    label: 'Senior Legal Caseworker'
+                  },
+                  {
+                    key: 'legal-caseworker',
+                    label: 'Legal Caseworker'
+                  },
+                  {
+                    key: 'hearing-centre-team-leader',
+                    label: 'Hearing Centre Team Leader'
+                  },
+                  {
+                    key: 'hearing-centre-administrator',
+                    label: 'Hearing Centre Administrator'
+                  },
+                  {
+                    key: 'court-clerk',
+                    label: 'Court Clerk'
+                  }
+                ],
+                services: [
+                  {
+                    key: 'ABC1',
+                    label: 'Service A'
+                  },
+                  {
+                    key: 'BCD2',
+                    label: 'Service B'
+                  },
+                  {
+                    key: 'CDE3',
+                    label: 'Service C'
+                  },
+                  {
+                    key: 'DEF4',
+                    label: 'Service D'
+                  }
+                ],
+                skills: [
+                  {
+                    group: 'ABC1',
+                    options: [
+                      {
+                        key: '1',
+                        label: 'Underwriter'
+                      },
+                      {
+                        key: '2',
+                        label: 'Caseworker'
+                      }
+                    ]
+                  },
+                  {
+                    group: 'BCD2',
+                    options: [
+                      {
+                        key: '3',
+                        label: 'Caseworker'
+                      },
+                      {
+                        key: '4',
+                        label: 'Case manager'
+                      }
+                    ]
+                  },
+                  {
+                    group: 'CDE3',
+                    options: [
+                      {
+                        key: '5',
+                        label: 'Underwriter'
+                      }
+                    ]
+                  }
+                ]
+              }
             }
+          }
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

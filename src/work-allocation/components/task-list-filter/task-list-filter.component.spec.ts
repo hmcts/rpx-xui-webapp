@@ -140,23 +140,23 @@ describe('TaskListFilterComponent', () => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     storeMock.pipe.and.returnValue(of(roleAssignmentInfo));
     TestBed.configureTestingModule({
-    declarations: [TaskListFilterComponent, WrapperComponent],
-    imports: [CdkTableModule,
+      declarations: [TaskListFilterComponent, WrapperComponent],
+      imports: [CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
         ExuiCommonLibModule,
         StoreModule],
-    providers: [
+      providers: [
         { provide: Store, useValue: mockStore },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        location: LOCATION
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                location: LOCATION
+              }
             }
+          }
         },
         { provide: AngularLocation, useValue: locationService },
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
@@ -168,8 +168,8 @@ describe('TaskListFilterComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;

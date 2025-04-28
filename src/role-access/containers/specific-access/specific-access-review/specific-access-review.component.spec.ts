@@ -28,17 +28,17 @@ describe('SpecificAccessReviewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [SpecificAccessReviewComponent],
-    imports: [ReactiveFormsModule, PipesModule],
-    providers: [
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [SpecificAccessReviewComponent],
+      imports: [ReactiveFormsModule, PipesModule],
+      providers: [
         provideMockStore(),
         FormBuilder,
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

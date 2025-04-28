@@ -73,29 +73,29 @@ describe('StaffAdvFilterComponent', () => {
     mockStaffDataFilterService.search.and.callThrough();
 
     TestBed.configureTestingModule({
-    declarations: [StaffAdvFilterComponent, GenericFilterStubComponent],
-    imports: [RouterTestingModule],
-    providers: [
+      declarations: [StaffAdvFilterComponent, GenericFilterStubComponent],
+      imports: [RouterTestingModule],
+      providers: [
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         { provide: FilterService, useValue: mockFilterService },
         StaffDataAccessService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        userTypes: staffFilterOptionsTestData.userTypes,
-                        jobTitles: staffFilterOptionsTestData.jobTitles,
-                        skills: staffFilterOptionsTestData.skills,
-                        services: staffFilterOptionsTestData.services
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                userTypes: staffFilterOptionsTestData.userTypes,
+                jobTitles: staffFilterOptionsTestData.jobTitles,
+                skills: staffFilterOptionsTestData.skills,
+                services: staffFilterOptionsTestData.services
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   });
 

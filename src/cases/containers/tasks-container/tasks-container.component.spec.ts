@@ -123,10 +123,10 @@ describe('TasksContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [TaskAlertBannerComponent, TasksContainerComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [],
-    providers: [
+      declarations: [TaskAlertBannerComponent, TasksContainerComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [],
+      providers: [
         { provide: AlertService, useValue: mockAlertService },
         { provide: WorkAllocationCaseService, useValue: mockWACaseService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
@@ -134,24 +134,24 @@ describe('TasksContainerComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LoadingService, useValue: mockLoadingService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        tasks: {
-                            tasks: getMockTasks(),
-                            caseworkers: null
-                        },
-                        case: CASE_VIEW
-                    },
-                    paramMap: convertToParamMap({ cId: '1234567890123456' })
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                tasks: {
+                  tasks: getMockTasks(),
+                  caseworkers: null
+                },
+                case: CASE_VIEW
+              },
+              paramMap: convertToParamMap({ cId: '1234567890123456' })
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

@@ -36,35 +36,35 @@ describe('ExclusionHomeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    schemas: [
+      schemas: [
         NO_ERRORS_SCHEMA
-    ],
-    declarations: [
+      ],
+      declarations: [
         ...fromContainers.containers
-    ],
-    imports: [ReactiveFormsModule,
+      ],
+      imports: [ReactiveFormsModule,
         UtilsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         provideMockStore(),
         {
-            provide: Router,
-            useValue: routerMock
+          provide: Router,
+          useValue: routerMock
         },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    queryParams: {
-                        caseId: '111111'
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {
+                caseId: '111111'
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
     store = TestBed.inject(Store);
 

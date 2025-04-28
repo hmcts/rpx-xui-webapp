@@ -23,22 +23,22 @@ describe('Organisation Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         {
-            provide: OrganisationService,
-            useValue: organisationServiceMock
+          provide: OrganisationService,
+          useValue: organisationServiceMock
         },
         {
-            provide: LoggerService,
-            useValue: mockedLoggerService
+          provide: LoggerService,
+          useValue: mockedLoggerService
         },
         fromOrganisationEffects.OrganisationEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     effects = TestBed.inject(OrganisationEffects);
     loggerService = TestBed.inject(LoggerService);

@@ -11,25 +11,25 @@ describe('ChooseRoleErrorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [ChooseRoleErrorComponent],
-    imports: [],
-    providers: [
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ChooseRoleErrorComponent],
+      imports: [],
+      providers: [
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    queryParams: {
-                        roleCategory: 'JUDICIAL',
-                        jurisdiction: 'IA'
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {
+                roleCategory: 'JUDICIAL',
+                jurisdiction: 'IA'
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

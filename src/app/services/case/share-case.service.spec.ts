@@ -11,10 +11,10 @@ describe('Share Case Service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    teardown: { destroyAfterEach: false },
-    imports: [StoreModule.forRoot({})],
-    providers: [CaseShareService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      teardown: { destroyAfterEach: false },
+      imports: [StoreModule.forRoot({})],
+      providers: [CaseShareService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    });
     httpClientGetSpy = jasmine.createSpyObj('HttpClient', ['get']);
     httpClientPostSpy = jasmine.createSpyObj('HttpClient', ['post']);
   });

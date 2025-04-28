@@ -31,8 +31,8 @@ describe('Ref Data Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         provideMockStore({ initialState }),
         RefDataResolver,
         LovRefDataService,
@@ -41,8 +41,8 @@ describe('Ref Data Resolver', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
     mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
   });

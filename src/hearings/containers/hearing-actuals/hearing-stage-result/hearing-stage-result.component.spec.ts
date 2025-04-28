@@ -64,17 +64,17 @@ describe('HearingStageResultComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingStageResultComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [ReactiveFormsModule,
+      declarations: [HearingStageResultComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [ReactiveFormsModule,
         RouterTestingModule],
-    providers: [
+      providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

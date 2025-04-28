@@ -15,22 +15,22 @@ import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsSer
 
 // from containers
 @NgModule({ declarations: [
-        ...fromComponents.components
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    exports: [
-        ...fromComponents.components
-    ], imports: [CommonModule,
-        ExuiCommonLibModule,
-        RouterModule,
-        FormsModule, // TODO: Remove this as it's only needed for testing.
-        PipesModule,
-        WorkAllocationPipesModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule,
-        MatFormFieldModule,
-        MatNativeDateModule,
-        MatInputModule], providers: [CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, provideHttpClient(withInterceptorsFromDi())] })
+  ...fromComponents.components
+],
+schemas: [CUSTOM_ELEMENTS_SCHEMA],
+exports: [
+  ...fromComponents.components
+], imports: [CommonModule,
+  ExuiCommonLibModule,
+  RouterModule,
+  FormsModule, // TODO: Remove this as it's only needed for testing.
+  PipesModule,
+  WorkAllocationPipesModule,
+  ReactiveFormsModule,
+  MatAutocompleteModule,
+  MatFormFieldModule,
+  MatNativeDateModule,
+  MatInputModule], providers: [CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, provideHttpClient(withInterceptorsFromDi())] })
 export class WorkAllocationComponentsModule {
 
 }

@@ -19,27 +19,27 @@ describe('ListingInformationSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [ListingInformationSummaryComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule, HearingsPipesModule],
-    providers: [
+      declarations: [ListingInformationSummaryComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule, HearingsPipesModule],
+      providers: [
         LoadingService,
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        caseFlags: caseFlagsRefData
-                    }
-                },
-                fragment: of('point-to-me')
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseFlags: caseFlagsRefData
+              }
+            },
+            fragment: of('point-to-me')
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ListingInformationSummaryComponent);
     component = fixture.componentInstance;

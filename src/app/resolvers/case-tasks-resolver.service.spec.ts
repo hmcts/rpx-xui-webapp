@@ -39,15 +39,14 @@ describe('CaseTasksResolverService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         CaseTasksResolverService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}
-    );
+      ]
+    });
     httpClient = TestBed.inject(HttpClient) as HttpClient;
   });
 

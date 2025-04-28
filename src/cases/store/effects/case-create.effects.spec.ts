@@ -18,16 +18,16 @@ describe('CaseCreate Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    providers: [
+      imports: [RouterTestingModule],
+      providers: [
         CaseCreateEffects,
         { provide: AlertService, useValue: mockAlertService },
         provideMockActions(() => actions$),
         { provide: LoggerService, useValue: mockLogger },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     effects = TestBed.inject(CaseCreateEffects);
   });

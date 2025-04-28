@@ -19,16 +19,16 @@ describe('Ref Data Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         provideMockStore({ initialState: initialStateImmutable }),
         JudicialUserSearchResolver,
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     mockStore = TestBed.inject(Store);
     judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
   });

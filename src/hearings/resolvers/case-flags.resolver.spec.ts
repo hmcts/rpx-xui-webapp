@@ -879,14 +879,14 @@ describe('Case Flags Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         provideMockStore({ initialState }),
         CaseFlagsRefDataService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}
+      ]
+    }
     );
     caseFlagsRefDataService = TestBed.inject(CaseFlagsRefDataService) as CaseFlagsRefDataService;
   });

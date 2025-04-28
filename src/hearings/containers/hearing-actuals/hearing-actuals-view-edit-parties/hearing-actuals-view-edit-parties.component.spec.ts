@@ -357,32 +357,32 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         ReactiveFormsModule],
-    providers: [
+      providers: [
         LoadingService,
         provideMockStore({ initialState: newState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                paramMap: of(convertToParamMap({
-                    id: '1',
-                    hearingDate: '2021-03-12'
-                })),
-                snapshot: {
-                    data: {
-                        partyChannels,
-                        hearingRole
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({
+              id: '1',
+              hearingDate: '2021-03-12'
+            })),
+            snapshot: {
+              data: {
+                partyChannels,
+                hearingRole
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
     component = fixture.componentInstance;
@@ -477,32 +477,32 @@ describe('HearingViewEditSummaryComponent participants check', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         ReactiveFormsModule],
-    providers: [
+      providers: [
         LoadingService,
         provideMockStore({ initialState: newState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                paramMap: of(convertToParamMap({
-                    id: '1',
-                    hearingDate: '2021-03-12'
-                })),
-                snapshot: {
-                    data: {
-                        partyChannels,
-                        hearingRole
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({
+              id: '1',
+              hearingDate: '2021-03-12'
+            })),
+            snapshot: {
+              data: {
+                partyChannels,
+                hearingRole
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
     component = fixture.componentInstance;

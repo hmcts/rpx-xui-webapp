@@ -64,41 +64,41 @@ describe('WorkAllocation', () => {
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-    declarations: [
-        TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent
-    ],
-    imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-        RouterTestingModule.withRoutes([
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
             { path: 'mywork/list', component: NothingComponent }
-        ])],
-    providers: [
-        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        {
+          ])],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
             provide: ActivatedRoute,
             useValue: {
-                snapshot: {
-                    data: {
-                        taskAndCaseworkers: {
-                            task: { task: mockTasks[0] }, caseworkers: []
-                        },
-                        ...TaskActionConstants.Unassign
-                    }
-                },
-                params: of({ task: mockTasks[0] })
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTasks[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTasks[0] })
             }
-        },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        {
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          {
             provide: RpxTranslationService,
             useFactory: rpxTranslationServiceStub
-        },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+          },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
@@ -277,37 +277,37 @@ describe('WorkAllocation', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-    declarations: [
-        TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent
-    ],
-    imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-        RouterTestingModule.withRoutes([
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
             { path: 'mywork/list', component: NothingComponent }
-        ])],
-    providers: [
-        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        {
+          ])],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
             provide: ActivatedRoute,
             useValue: {
-                snapshot: {
-                    data: {
-                        taskAndCaseworkers: {
-                            task: { task: mockTask[0] }, caseworkers: []
-                        },
-                        ...TaskActionConstants.Unassign
-                    }
-                },
-                params: of({ task: mockTask[0] })
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTask[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTask[0] })
             }
-        },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
@@ -359,38 +359,38 @@ describe('WorkAllocation', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-    declarations: [
-        TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent
-    ],
-    imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-        RouterTestingModule.withRoutes([
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
             { path: 'mywork/list', component: NothingComponent }
-        ])],
-    providers: [
-        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        {
+          ])],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
             provide: ActivatedRoute,
             useValue: {
-                snapshot: {
-                    data: {
-                        taskAndCaseworkers: {
-                            task: { task: mockTask[0] }, caseworkers: []
-                        },
-                        ...TaskActionConstants.Unassign
-                    }
-                },
-                params: of({ task: mockTask[0] })
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTask[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTask[0] })
             }
-        },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: CaseNotifier, useValue: mockNotifierService },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          { provide: CaseNotifier, useValue: mockNotifierService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
       component = wrapper.appComponentRef;
@@ -435,37 +435,37 @@ describe('WorkAllocation', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
       TestBed.configureTestingModule({
-    declarations: [
-        TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent
-    ],
-    imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-        RouterTestingModule.withRoutes([
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
             { path: 'mywork/list', component: NothingComponent }
-        ])],
-    providers: [
-        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        {
+          ])],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
             provide: ActivatedRoute,
             useValue: {
-                snapshot: {
-                    data: {
-                        taskAndCaseworkers: {
-                            task: { task: mockTask[0] }, caseworkers: []
-                        },
-                        ...TaskActionConstants.Unassign
-                    }
-                },
-                params: of({ task: mockTask[0] })
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTask[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTask[0] })
             }
-        },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
 
@@ -510,38 +510,38 @@ describe('WorkAllocation', () => {
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
       TestBed.configureTestingModule({
-    declarations: [
-        TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-        ErrorMessageComponent, NothingComponent
-    ],
-    imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-        RouterTestingModule.withRoutes([
+        declarations: [
+          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
+          ErrorMessageComponent, NothingComponent
+        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
             { path: 'mywork/list', component: NothingComponent }
-        ])],
-    providers: [
-        { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
-        {
+          ])],
+        providers: [
+          { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
+          { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+          {
             provide: ActivatedRoute,
             useValue: {
-                snapshot: {
-                    data: {
-                        taskAndCaseworkers: {
-                            task: { task: mockTask[0] }, caseworkers: []
-                        },
-                        ...TaskActionConstants.Unassign
-                    }
-                },
-                params: of({ task: mockTask[0] })
+              snapshot: {
+                data: {
+                  taskAndCaseworkers: {
+                    task: { task: mockTask[0] }, caseworkers: []
+                  },
+                  ...TaskActionConstants.Unassign
+                }
+              },
+              params: of({ task: mockTask[0] })
             }
-        },
-        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: CaseNotifier, useValue: mockNotifierService },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-}).compileComponents();
+          },
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          { provide: CaseNotifier, useValue: mockNotifierService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
 

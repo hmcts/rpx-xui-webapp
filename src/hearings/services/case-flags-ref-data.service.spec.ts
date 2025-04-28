@@ -7,13 +7,13 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('CaseFlagsRefDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         CaseFlagsRefDataService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
   });
 
   it('should be created', inject([CaseFlagsRefDataService], (service: CaseFlagsRefDataService) => {

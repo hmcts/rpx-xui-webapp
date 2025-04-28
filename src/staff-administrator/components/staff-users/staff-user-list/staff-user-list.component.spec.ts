@@ -24,21 +24,21 @@ describe('StaffUserListComponent', () => {
     };
 
     TestBed.configureTestingModule({
-    declarations: [StaffUserListComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [CdkTableModule,
+      declarations: [StaffUserListComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [CdkTableModule,
         RouterTestingModule,
         NgxPaginationModule,
         ExuiCommonLibModule,
         RpxTranslationModule.forChild()],
-    providers: [
+      providers: [
         RpxTranslationService,
         RpxTranslationConfig,
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

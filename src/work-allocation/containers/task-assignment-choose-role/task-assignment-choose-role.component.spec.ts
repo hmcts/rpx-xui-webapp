@@ -27,28 +27,28 @@ describe('TaskAssignmentChooseRoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],
-    imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([])],
-    providers: [
+      declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],
+      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([])],
+      providers: [
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        verb: 'Reassign',
-                        roles: TASK_ROLES
-                    },
-                    paramMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' }),
-                    queryParamMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' })
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                verb: 'Reassign',
+                roles: TASK_ROLES
+              },
+              paramMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' }),
+              queryParamMap: convertToParamMap({ taskId: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8' })
             }
+          }
         },
         { provide: Router, useValue: router },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

@@ -48,15 +48,15 @@ describe('CaseCreateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [CasesCreateComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    teardown: { destroyAfterEach: false },
-    imports: [RouterTestingModule,
+      declarations: [CasesCreateComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      teardown: { destroyAfterEach: false },
+      imports: [RouterTestingModule,
         StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         EffectsModule.forRoot([]),
         SharedModule,
         SearchFiltersModule],
-    providers: [
+      providers: [
         PlaceholderService,
         CasesService,
         CCDAuthService,
@@ -73,24 +73,24 @@ describe('CaseCreateComponent', () => {
         AppConfigService,
         AppConfig,
         {
-            provide: SearchService,
-            useValue: {
-                requestOptionsBuilder: RequestOptionsBuilder
-            }
+          provide: SearchService,
+          useValue: {
+            requestOptionsBuilder: RequestOptionsBuilder
+          }
         },
         {
-            provide: AbstractAppConfig,
-            useExisting: AppConfig
+          provide: AbstractAppConfig,
+          useExisting: AppConfig
         },
         {
-            provide: AppConfigService,
-            useClass: MockSortService
+          provide: AppConfigService,
+          useClass: MockSortService
         },
         ScrollToService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

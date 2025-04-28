@@ -10,23 +10,23 @@ import { TwoDPPipe } from './two-dp.pipe';
 
 // from containers
 @NgModule({ declarations: [
-        CaseworkerDisplayName,
-        DaysFromTodayPipe,
-        IntegerPipe,
-        TwoDPPipe,
-        YesNoPipe
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    exports: [
-        CaseworkerDisplayName,
-        DaysFromTodayPipe,
-        IntegerPipe,
-        TwoDPPipe,
-        YesNoPipe
-    ], imports: [CommonModule,
-        ExuiCommonLibModule,
-        FormsModule, // TODO: Remove this as it's only needed for testing.
-        PipesModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+  CaseworkerDisplayName,
+  DaysFromTodayPipe,
+  IntegerPipe,
+  TwoDPPipe,
+  YesNoPipe
+],
+schemas: [CUSTOM_ELEMENTS_SCHEMA],
+exports: [
+  CaseworkerDisplayName,
+  DaysFromTodayPipe,
+  IntegerPipe,
+  TwoDPPipe,
+  YesNoPipe
+], imports: [CommonModule,
+  ExuiCommonLibModule,
+  FormsModule, // TODO: Remove this as it's only needed for testing.
+  PipesModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class WorkAllocationPipesModule {
 
 }

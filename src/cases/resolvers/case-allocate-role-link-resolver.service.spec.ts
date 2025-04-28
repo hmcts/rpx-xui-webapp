@@ -13,15 +13,15 @@ describe('CaseAllocateRoleLinkResolverService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         CaseAllocateRoleLinkResolverService,
         { provide: Router, useValue: routerSpy },
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     httpClient = TestBed.inject(HttpClient) as HttpClient;
   }));
 

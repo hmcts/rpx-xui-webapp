@@ -107,10 +107,10 @@ describe('ExclusionsTableComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [ExclusionsTableComponent],
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-})
+      declarations: [ExclusionsTableComponent],
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    })
       .compileComponents();
   }));
 

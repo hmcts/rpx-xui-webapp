@@ -17,23 +17,23 @@ import { RoleExclusionsService } from './services';
 import { effects, reducers } from './store';
 
 @NgModule({ declarations: [...fromContainers.containers, ...fromComponents.components],
-    exports: [
-        fromComponents.ChooseRadioOptionComponent
-    ], imports: [CommonModule,
-        StoreModule.forFeature('role-access', reducers),
-        EffectsModule.forFeature(effects),
-        PipesModule,
-        roleAccessRouting,
-        SharedModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ExuiCommonLibModule], providers: [{
-            provide: AbstractAppConfig,
-            useExisting: AppConfig
-        },
-        RoleExclusionsService,
-        CaseworkerDataService,
-        WASupportedJurisdictionsService, provideHttpClient(withInterceptorsFromDi())] })
+  exports: [
+    fromComponents.ChooseRadioOptionComponent
+  ], imports: [CommonModule,
+    StoreModule.forFeature('role-access', reducers),
+    EffectsModule.forFeature(effects),
+    PipesModule,
+    roleAccessRouting,
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ExuiCommonLibModule], providers: [{
+    provide: AbstractAppConfig,
+    useExisting: AppConfig
+  },
+  RoleExclusionsService,
+  CaseworkerDataService,
+  WASupportedJurisdictionsService, provideHttpClient(withInterceptorsFromDi())] })
 /**
  * Entry point for Role Access Module that is also lazy loaded.
  */

@@ -71,28 +71,28 @@ describe('HearingTimingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [ReactiveFormsModule, RouterTestingModule],
-    providers: [
+      declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
+      providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         ValidatorsUtils,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        hearingPriorities: priorities
-                    }
-                },
-                fragment: of('point-to-me')
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                hearingPriorities: priorities
+              }
+            },
+            fragment: of('point-to-me')
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;

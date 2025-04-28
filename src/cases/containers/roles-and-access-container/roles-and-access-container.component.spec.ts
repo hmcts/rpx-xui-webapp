@@ -140,7 +140,7 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         RolesAndAccessContainerComponent,
         RolesAndAccessComponent,
         CaseRolesTableComponent,
@@ -148,39 +148,39 @@ describe('RolesContainerComponent', () => {
         ExclusionsTableComponent,
         RoleAccessSectionComponent,
         AllocateARoleLinkComponent
-    ],
-    imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
-    providers: [
+      ],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
+      providers: [
         CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
         { provide: CaseNotifier, useValue: mockNotifierService },
         {
-            provide: RoleExclusionsService,
-            useClass: RoleExclusionsMockService
+          provide: RoleExclusionsService,
+          useClass: RoleExclusionsMockService
         },
         {
-            provide: FeatureToggleService,
-            useValue: {
-                isEnabled: (flag) => of(flags[flag]),
-                getValue: (flag) => of(flags[flag])
-            }
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag]),
+            getValue: (flag) => of(flags[flag])
+          }
         },
         provideMockStore({ initialState: initialMockState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        roles: CASEROLES,
-                        showAllocateRoleLink: true,
-                        case: CASE_VIEW
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                roles: CASEROLES,
+                showAllocateRoleLink: true,
+                case: CASE_VIEW
+              }
             }
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

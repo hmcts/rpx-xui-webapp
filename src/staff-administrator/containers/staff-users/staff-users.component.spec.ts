@@ -33,19 +33,19 @@ describe('StaffUsersComponent', () => {
     storeMock.pipe.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         StaffUsersComponent
-    ],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [],
-    providers: [
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [],
+      providers: [
         { provide: StaffDataFilterService, useValue: staffDataFilterServiceMock },
         { provide: InfoMessageCommService, useValue: infoMessageCommMock },
         { provide: Store, useValue: storeMock },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

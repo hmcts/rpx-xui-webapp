@@ -25,31 +25,31 @@ describe('HearingSummaryComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    declarations: [HearingSummaryComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [HearingsPipesModule],
-    providers: [
+      declarations: [HearingSummaryComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [HearingsPipesModule],
+      providers: [
         LoadingService,
         provideMockStore({ initialState }),
         {
-            provide: Router,
-            useValue: routerMock
+          provide: Router,
+          useValue: routerMock
         },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        caseFlags: caseFlagsRefData
-                    }
-                },
-                fragment: of('point-to-me')
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                caseFlags: caseFlagsRefData
+              }
+            },
+            fragment: of('point-to-me')
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
     fixture = TestBed.createComponent(HearingSummaryComponent);
     store = TestBed.inject(Store);

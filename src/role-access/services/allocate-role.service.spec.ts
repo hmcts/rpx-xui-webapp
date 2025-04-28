@@ -67,13 +67,13 @@ describe('AllocateRoleService', () => {
     };
     beforeEach(() => {
       TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
-        AllocateRoleService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-});
+        imports: [StoreModule.forRoot({})],
+        providers: [
+          AllocateRoleService,
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
+        ]
+      });
     });
 
     it('should confirm allocation', inject([HttpTestingController, AllocateRoleService], (httpMock: HttpTestingController, service: AllocateRoleService) => {

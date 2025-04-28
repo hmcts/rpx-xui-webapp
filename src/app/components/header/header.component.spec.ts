@@ -27,19 +27,19 @@ describe('Header Component', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [HeaderComponent, RpxTranslateMockPipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule],
-    providers: [
+      declarations: [HeaderComponent, RpxTranslateMockPipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
+      providers: [
         { provide: Store, useValue: mockStore },
         {
-            provide: RpxTranslationService,
-            useFactory: rpxTranslationServiceStub
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

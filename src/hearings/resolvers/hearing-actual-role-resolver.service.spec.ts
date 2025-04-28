@@ -17,16 +17,16 @@ describe('HearingActualRoleResolverService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    providers: [
+      imports: [RouterTestingModule.withRoutes([])],
+      providers: [
         provideMockStore({ initialState }),
         HearingActualRoleResolverService,
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}
+      ]
+    }
     );
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });

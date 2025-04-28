@@ -38,23 +38,23 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
-    imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }])],
-    providers: [
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }])],
+      providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute
         },
         ValidatorsUtils,
         DatePipe,
         FormatTranslatorService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 
@@ -204,23 +204,23 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
-    imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }])],
-    providers: [
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }])],
+      providers: [
         provideMockStore({ initialState: updatedInitialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
-            provide: ActivatedRoute,
-            useValue: mockActivatedRoute
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute
         },
         ValidatorsUtils,
         DatePipe,
         FormatTranslatorService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

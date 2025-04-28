@@ -67,46 +67,46 @@ describe('HearingChangeReasonsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [HearingChangeReasonsComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [ReactiveFormsModule, RouterTestingModule],
-    providers: [
+      declarations: [HearingChangeReasonsComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
+      providers: [
         {
-            provide: HearingsService,
-            useValue: hearingsService
+          provide: HearingsService,
+          useValue: hearingsService
         },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        hearingChangeReasons: reasons
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                hearingChangeReasons: reasons
+              }
             }
+          }
         },
         {
-            provide: Router,
-            useValue: mockRouter
+          provide: Router,
+          useValue: mockRouter
         },
         {
-            provide: FeatureToggleService,
-            useValue: mockFeatureToggleService
+          provide: FeatureToggleService,
+          useValue: mockFeatureToggleService
         },
         provideMockStore({ initialState }),
         {
-            provide: HearingsService,
-            useValue: hearingsService
+          provide: HearingsService,
+          useValue: hearingsService
         },
         {
-            provide: HearingsFeatureService,
-            useValue: hearingsFeatureServiceMock
+          provide: HearingsFeatureService,
+          useValue: hearingsFeatureServiceMock
         },
         FormBuilder,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

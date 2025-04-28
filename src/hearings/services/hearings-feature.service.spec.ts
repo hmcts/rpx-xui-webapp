@@ -8,14 +8,14 @@ describe('HearingsFeatureService', () => {
   const dummyWindowAat = { location: new URL('https://manage-case.aat.platform.hmcts.net') };
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         HearingsFeatureService,
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
   });
   it('should be created', inject([HearingsFeatureService], (service: HearingsFeatureService) => {
     expect(service).toBeTruthy();

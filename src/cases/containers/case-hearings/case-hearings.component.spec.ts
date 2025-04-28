@@ -405,38 +405,38 @@ describe('CaseHearingsComponent', () => {
     mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
 
     TestBed.configureTestingModule({
-    declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule],
-    providers: [
+      declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
+      providers: [
         LoadingService,
         provideMockStore({ initialState }),
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    params: {
-                        cid: '1234'
-                    }
-                }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              params: {
+                cid: '1234'
+              }
             }
+          }
         },
         {
-            provide: Router,
-            useValue: mockRouter
+          provide: Router,
+          useValue: mockRouter
         },
         {
-            provide: LovRefDataService,
-            useValue: mockLovRefDataService
+          provide: LovRefDataService,
+          useValue: mockLovRefDataService
         },
         {
-            provide: SessionStorageService,
-            useValue: mockSessionStore
+          provide: SessionStorageService,
+          useValue: mockSessionStore
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
     mockStore = TestBed.inject(Store);
     component = fixture.componentInstance;

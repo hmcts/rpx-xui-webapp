@@ -38,17 +38,17 @@ describe('SearchFormComponent', () => {
     }]));
 
     TestBed.configureTestingModule({
-    declarations: [SearchFormComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [RouterTestingModule],
-    providers: [
+      declarations: [SearchFormComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule],
+      providers: [
         { provide: FormBuilder, useValue: formBuilder },
         { provide: SearchService, useValue: searchService },
         { provide: JurisdictionsService, useValue: jurisdictionsService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

@@ -46,16 +46,16 @@ describe('StaffSearchComponent', () => {
       ['search', 'changePage', 'setErrors']);
     mockStaffDataFilterService.search.and.callThrough();
     TestBed.configureTestingModule({
-    declarations: [StaffSearchComponent],
-    imports: [ReactiveFormsModule],
-    providers: [
+      declarations: [StaffSearchComponent],
+      imports: [ReactiveFormsModule],
+      providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         { provide: FilterService, useValue: mockFilterService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
   }));
 

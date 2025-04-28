@@ -42,22 +42,22 @@ describe('CaseManagerFilterComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    declarations: [CaseManagerFilterComponent, MockGenericFilterComponent],
-    imports: [CdkTableModule,
+      declarations: [CaseManagerFilterComponent, MockGenericFilterComponent],
+      imports: [CdkTableModule,
         RouterTestingModule,
         RpxTranslationModule.forChild()],
-    providers: [
+      providers: [
         RpxTranslationService, RpxTranslationConfig,
         provideMockStore(),
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
-            provide: FilterService, useValue: mockFilterService
+          provide: FilterService, useValue: mockFilterService
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     store = TestBed.inject(Store);
     storePipeMock = spyOn(store, 'pipe');
 

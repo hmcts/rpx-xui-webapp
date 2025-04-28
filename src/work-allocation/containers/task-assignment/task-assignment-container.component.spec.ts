@@ -74,16 +74,16 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         TaskAssignmentContainerComponent,
         WrapperComponent,
         TaskListComponent,
         ErrorMessageComponent,
         NothingComponent,
         RpxTranslateMockPipe
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [ReactiveFormsModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
@@ -91,37 +91,37 @@ describe('TaskAssignmentContainerComponent2', () => {
         PaginationModule,
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes([
-            { path: 'my-work/list', component: NothingComponent }
+          { path: 'my-work/list', component: NothingComponent }
         ])],
-    providers: [
+      providers: [
         { provide: Location, useValue: locationStub },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        taskAndCaseworkers: {
-                            task: { task: mockTasks[0] }, caseworkers: []
-                        },
-                        ...TaskActionConstants.Reassign
-                    },
-                    params: {
-                        taskId: 'task1111111'
-                    }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                taskAndCaseworkers: {
+                  task: { task: mockTasks[0] }, caseworkers: []
                 },
-                params: of({ task: mockTasks[0] }),
-                paramMap: of({ selectedPerson: SELECTED_PERSON })
-            }
+                ...TaskActionConstants.Reassign
+              },
+              params: {
+                taskId: 'task1111111'
+              }
+            },
+            params: of({ task: mockTasks[0] }),
+            paramMap: of({ selectedPerson: SELECTED_PERSON })
+          }
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: Router, useValue: mockRouter },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;

@@ -70,32 +70,32 @@ describe('CancelHearingComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    declarations: [CancelHearingComponent, MockRpxTranslatePipe],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
-            { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
-        ])],
-    providers: [
+      declarations: [CancelHearingComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
+        { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
+      ])],
+      providers: [
         LoadingService,
         { provide: HearingsService, useValue: hearingsService },
         { provide: LoggerService, useValue: loggerServiceMock },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                snapshot: {
-                    data: {
-                        hearingCancelOptions: reasons
-                    }
-                },
-                params: of({ hearingId: HEARING_ID })
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                hearingCancelOptions: reasons
+              }
+            },
+            params: of({ hearingId: HEARING_ID })
+          }
         },
         provideMockStore({ initialState }),
         FormBuilder,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-})
+      ]
+    })
       .compileComponents();
 
     fixture = TestBed.createComponent(CancelHearingComponent);

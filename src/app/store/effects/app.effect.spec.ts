@@ -20,20 +20,20 @@ describe('App Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         AppConfigService,
         {
-            provide: AuthService,
-            useValue: AuthServiceMock
+          provide: AuthService,
+          useValue: AuthServiceMock
         },
         RoleService,
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     effects = TestBed.inject(fromAppEffects.AppEffects);
   });

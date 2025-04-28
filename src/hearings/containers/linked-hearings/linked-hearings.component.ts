@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
@@ -11,6 +11,7 @@ import * as fromHearingStore from '../../store';
 })
 export class LinkedHearingsComponent implements OnInit, OnDestroy {
   public caseId: string;
+  public jurisdictionId: string;
   public hearingId: string;
   public caseName: string;
   public sub: Subscription;
@@ -18,6 +19,7 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly route: ActivatedRoute) {
     this.caseId = this.route.snapshot.params.caseId;
+    this.jurisdictionId = '';
     this.hearingId = this.route.snapshot.params.hearingId;
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe(
       (state) => {
@@ -27,10 +29,12 @@ export class LinkedHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases(
-      { caseReference: this.caseId, hearingId: this.hearingId }));
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesWithHearings(
-      { caseReference: this.caseId, caseName: this.caseName, hearingId: this.hearingId }));
+    this.hearingStore.select(fromHearingStore.caseInfoSelector).pipe(
+      tap((caseInfo) => {
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, hearingId: this.hearingId }));
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesWithHearings({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, caseName: this.caseName, hearingId: this.hearingId }));
+      })
+    ).subscribe();
   }
 
   public ngOnDestroy(): void {

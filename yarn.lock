@@ -3638,12 +3638,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.69":
-  version: 7.1.69
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.69"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.73":
+  version: 7.1.73
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.73"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/fac60afaff4cf7414312aa967b7c417320ec5480c8dd384f943efaac6944f62c0c9b0580485525e5a9483a2666432e0783ea50b81685166a5d1b25b998aa8663
+  checksum: 10/f73ea72892e7ba49696bd2e233eed29f771911525c7aa8f7fc626fa281cf049237e65fd5992d95723de2d0a5afe440c8fdfb848f1051a7459d129a6d772ab94e
   languageName: node
   linkType: hard
 
@@ -3735,22 +3735,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.40":
-  version: 2.0.40
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.40"
+"@hmcts/rpx-xui-common-lib@npm:2.0.41":
+  version: 2.0.41
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/8c828fb2239b361fb24c95a1f1679f79be8429d2252d56a6a61d7285d412808c48dc6d00bb6ac3a9d2ffacf987ed823d6302d5115093e5fcd694e5fc34b501fc
+  checksum: 10/c709337d31f13754624f87e0d342082b3c8bc2b23178ef70f29b3c30b20a7f16760fad47ddd97fa44bbc5db4eaf7e5379049d3cab903bd64f8972a29f0eb462a
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@file:../rpx-xui-node-lib::locator=rpx-exui%40workspace%3A.":
+"@hmcts/rpx-xui-node-lib@npm:2.30.6":
   version: 2.30.6
-  resolution: "@hmcts/rpx-xui-node-lib@file:../rpx-xui-node-lib#../rpx-xui-node-lib::hash=a11692&locator=rpx-exui%40workspace%3A."
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3761,18 +3761,18 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     express: "npm:^4.20.0"
     express-session: "npm:^1.17.0"
-    jest-mock-axios: "npm:^4.8.0"
+    jest-mock-axios: "npm:^4.7.3"
     jest-ts-auto-mock: "npm:^2.1.0"
-    jwt-decode: "npm:^3.1.2"
+    jwt-decode: "npm:^2.2.0"
     openid-client: "npm:^3.10.0"
     otplib: "npm:^12.0.1"
     passport: "npm:^0.5.3"
     passport-oauth2: "npm:^1.5.0"
     redis: "npm:^3.0.2"
     session-file-store: "npm:^1.5.0"
-    ts-auto-mock: "npm:^3.7.4"
-    ttypescript: "npm:1.5.15"
-  checksum: 10/3a79e5eaf753ef5e1c32991cc0bd432b396fd07ca18190b7937b4b3e5e5d7ca41f7c5a1c85f3503d22d57b5520543426b2dd13f35396a84675b599f872e7d94d
+    ts-auto-mock: "npm:^3.5.0"
+    ttypescript: "npm:^1.5.13"
+  checksum: 10/210602598900bdd86e05640a53069311abe76eb86c887708b0dd50314978d35bf9e72a1670a8eea7be6bb9e3bbab9b95d4b694ee7b3f916dbf2c06913637ac0f
   languageName: node
   linkType: hard
 
@@ -16200,7 +16200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-axios@npm:^4.8.0":
+"jest-mock-axios@npm:^4.7.3":
   version: 4.8.0
   resolution: "jest-mock-axios@npm:4.8.0"
   dependencies:
@@ -16887,10 +16887,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwt-decode@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "jwt-decode@npm:3.1.2"
-  checksum: 10/20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
+"jwt-decode@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "jwt-decode@npm:2.2.0"
+  checksum: 10/2d368aeb1d355b58af73a422e10c44d1adfd444f77f3a95bdc124696bde9cfe8423a9e43cdbce8761eb667252e25a59b5e36d30ebf4b6d2a8f8b107c2f25f358
   languageName: node
   linkType: hard
 
@@ -22275,14 +22275,14 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.69"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.73"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.40"
-    "@hmcts/rpx-xui-node-lib": "file:../rpx-xui-node-lib"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.41"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -24568,7 +24568,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-auto-mock@npm:^3.7.4":
+"ts-auto-mock@npm:^3.5.0":
   version: 3.7.4
   resolution: "ts-auto-mock@npm:3.7.4"
   dependencies:
@@ -24690,7 +24690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ttypescript@npm:1.5.15":
+"ttypescript@npm:^1.5.13":
   version: 1.5.15
   resolution: "ttypescript@npm:1.5.15"
   dependencies:

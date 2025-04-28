@@ -349,15 +349,23 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         const caseId = caseView.case_id;
         const placeholder = '${[CASE_REFERENCE]}';
+        // Normalize caseView case_type id to uppercase
+        const caseTypeKey = caseView.case_type.id.toUpperCase();
 
-        // Safely access the qualifying questions for the current case type
-        const qualifyingQuestions = (caseTypeQualifyingQuestions?.[caseView.case_type.id] || []).map((question) => {
-          // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+        // Build a normalised map: all keys uppercase
+        const normalisedMap = {};
+        Object.keys(caseTypeQualifyingQuestions).forEach((key) => {
+          normalisedMap[key.toUpperCase()] = caseTypeQualifyingQuestions[key];
+        });
+
+        // Find the correct qualifying questions
+        const qualifyingQuestions = (normalisedMap[caseTypeKey] ?? []).map((question) => {
           const url = question.url?.replace(placeholder, caseId);
-          if (question.markdown.includes(placeholder)) {
-            question.markdown = Utils.replaceAll(question.markdown, placeholder, this.caseId);
+          let markdown = question.markdown;
+          if (markdown?.includes(placeholder)) {
+            markdown = Utils.replaceAll(markdown, placeholder, caseId);
           }
-          return { ...question, url };
+          return { ...question, url, markdown };
         });
 
         // Add Extra options to qualifying question

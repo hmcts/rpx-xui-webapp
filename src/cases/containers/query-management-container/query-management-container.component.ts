@@ -347,22 +347,24 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
-        this.caseId = caseView.case_id;
-
-        // Safely access the qualifying questions for the current case type
-        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
-
-        // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.FOLLOW_UP_ON_EXISTING_QUERY, `/cases/case-details/${this.caseId}#Queries`);
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+        const caseId = caseView.case_id;
 
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
         const placeholder = '${[CASE_REFERENCE]}';
+
+        const qualifyingQuestions = caseTypeQualifyingQuestions
+          ?.find((question) => question.caseTypeId === caseView.case_type.id)
+          ?.qualifyingQuestions || [];
+
         qualifyingQuestions.forEach((question) => {
-          if (question.markdown.includes(placeholder)) {
-            question.markdown = Utils.replaceAll(question.markdown, placeholder, this.caseId);
+          if (question.markdown?.includes(placeholder)) {
+            question.markdown = Utils.replaceAll(question.markdown, placeholder, caseId);
           }
         });
+
+        // Add Extra options to qualifying question
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         return qualifyingQuestions;
       })

@@ -31,6 +31,7 @@ import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -358,8 +359,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
         const placeholder = '${[CASE_REFERENCE]}';
         qualifyingQuestions.forEach((question) => {
-          if (question.url.includes(placeholder)) {
-            question.url = question.url.replace(placeholder, this.caseId);
+          if (question.markdown.includes(placeholder)) {
+            question.markdown = Utils.replaceAll(question.markdown, placeholder, this.caseId);
           }
         });
 

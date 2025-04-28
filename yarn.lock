@@ -3539,12 +3539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.73-google-analytics":
-  version: 7.1.73-google-analytics
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.73-google-analytics"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.74-qualifying-questions":
+  version: 7.1.74-qualifying-questions
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.74-qualifying-questions"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/cb7531cf9f577b325dd65addee17be47ea1c99971e74645d95c9f7abb753b7795dca362706c7a24546bb542da80efc74561723c21d3641f9bc91003661ae2319
+  checksum: 10/94f3cd0bc8251e016d3026d0872edce2bee565a870aca2af13a3dc51ac485e138fa87588579a039c1db9261e45f8e4158b71f74c92fb6956fbe3dda829cbe78f
   languageName: node
   linkType: hard
 
@@ -22079,7 +22079,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.73-google-analytics"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.74-qualifying-questions"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

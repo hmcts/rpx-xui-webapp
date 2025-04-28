@@ -44,7 +44,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
     if (this.lostFocus) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
       if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE_EDIT)
         || HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.VIEW_EDIT)) {
         setTimeout(() => this.updatePartyFlagsFromHearingValues(), 500);

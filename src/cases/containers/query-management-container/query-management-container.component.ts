@@ -348,18 +348,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         const caseId = caseView.case_id;
-
-        // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
         const placeholder = '${[CASE_REFERENCE]}';
 
-        const qualifyingQuestions = caseTypeQualifyingQuestions
-          ?.find((question) => question.caseTypeId === caseView.case_type.id)
-          ?.qualifyingQuestions || [];
-
-        qualifyingQuestions.forEach((question) => {
-          if (question.markdown?.includes(placeholder)) {
-            question.markdown = Utils.replaceAll(question.markdown, placeholder, caseId);
+        // Safely access the qualifying questions for the current case type
+        const qualifyingQuestions = (caseTypeQualifyingQuestions?.[caseView.case_type.id] || []).map((question) => {
+          // Interpolate ${[CASE_REFERENCE]} in all qualifying questions
+          const url = question.url?.replace(placeholder, caseId);
+          if (question.markdown.includes(placeholder)) {
+            question.markdown = Utils.replaceAll(question.markdown, placeholder, this.caseId);
           }
+          return { ...question, url };
         });
 
         // Add Extra options to qualifying question

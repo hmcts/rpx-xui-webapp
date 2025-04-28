@@ -3639,12 +3639,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.72":
-  version: 7.1.72
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.72"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.72-ongoing-accessibility-v1":
+  version: 7.1.72-ongoing-accessibility-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.72-ongoing-accessibility-v1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b50df81cb9fb7a7c5d292de4ffd281b2f0d70ccfbd2f8a424bd58ac50b02d399ede579c9716016c999a806f6e460ca96e6056f269a64a81021c43875bd9baa05
+  checksum: 10/b8b7b2db68c9288b344e670278814ac33aeeb99a889da7ad843d47ac0c3ade6c1d4e6f757c0e95bb44b4e39b53abe225159ea03a3b40997bcdba0d6462fb7074
   languageName: node
   linkType: hard
 
@@ -3736,16 +3736,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.41":
-  version: 2.0.41
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41"
+"@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1.11":
+  version: 2.0.41-ongoing-accessibility-v1.11
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1.11"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/c709337d31f13754624f87e0d342082b3c8bc2b23178ef70f29b3c30b20a7f16760fad47ddd97fa44bbc5db4eaf7e5379049d3cab903bd64f8972a29f0eb462a
+  checksum: 10/7a8678434defe03bec87867218933554a8ca90cf7e587f34ef86ef4e1a1dd15c664b035bbabf01fd6660b9a8dc4d0dd80cc616b52475a6a9054eb0eee70338f1
   languageName: node
   linkType: hard
 
@@ -22276,13 +22276,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.72"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.72-ongoing-accessibility-v1"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.41"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.41-ongoing-accessibility-v1.11"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

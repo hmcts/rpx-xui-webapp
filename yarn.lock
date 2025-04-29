@@ -3635,7 +3635,7 @@ __metadata:
   checksum: 10/7046728d3b3f3ba2290d933bc8c7cf3eec84cd03f8bf8b66d380caf328f436e32ea8774331c9910110e9318c3129c22ec8dc9c785169430462fd20cccfe742cd
   languageName: node
   linkType: hard
-  
+
 "@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1.11":
   version: 2.0.41-ongoing-accessibility-v1.11
   resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.41-ongoing-accessibility-v1.11"

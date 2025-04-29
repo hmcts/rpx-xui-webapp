@@ -26,10 +26,13 @@ export const RESET_LINKED_HEARING_LAST_ERROR = '[HEARING LINKS] Reset Linked Hea
 export class ResetHearingLinks implements Action {
   public readonly type = RESET_HEARING_LINKS;
 }
+export class LoadServiceLinkedCasesPayload {
+  constructor(public jurisdictionId: string, public caseReference: string, public hearingId: string) {}
+}
 
 export class LoadServiceLinkedCases implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES;
-  constructor(public payload: { caseReference: string, hearingId: string }) {}
+  constructor(public payload: { jurisdictionId: string, caseReference: string, hearingId: string }) {}
 }
 
 export class LoadServiceLinkedCasesSuccess implements Action {
@@ -42,9 +45,13 @@ export class LoadServiceLinkedCasesFailure implements Action {
   constructor(public payload: HttpError) {}
 }
 
+export class LoadServiceLinkedCasesWithHearingsPayload {
+  constructor(public jurisdictionId: string, public caseReference: string, public caseName: string, public hearingId?: string) {}
+}
+
 export class LoadServiceLinkedCasesWithHearings implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS;
-  constructor(public payload: { caseReference: string, caseName: string, hearingId?: string }) {}
+  constructor(public payload: { jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string }) {}
 }
 
 export class LoadServiceLinkedCasesWithHearingsSuccess implements Action {

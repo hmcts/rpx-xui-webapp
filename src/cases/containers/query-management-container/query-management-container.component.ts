@@ -492,9 +492,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public logSelection(qualifyingQuestion: QualifyingQuestion) {
-    console.log('Qualifying Question selected:--------------', qualifyingQuestion.name);
     if (this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name) {
-      console.log('Qualifying Question selected:', this.jurisdictionId);
       const eventParams = {
         caseTypeId: this.caseId,
         caseJurisdiction: this.jurisdictionId,

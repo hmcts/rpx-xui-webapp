@@ -2281,7 +2281,7 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.referenceId));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
   });
 
   it('should window onblur', () => {

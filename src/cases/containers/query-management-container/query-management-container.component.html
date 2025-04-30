@@ -35,7 +35,8 @@
         <div class="query-form-container">
           <ccd-qualifying-question-options *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
             [qualifyingQuestionsControl]="qualifyingQuestionsControl"
-            [qualifyingQuestions$]="qualifyingQuestions$">
+            [qualifyingQuestions$]="qualifyingQuestions$"
+            (questionSelected)="logSelection($event)">
           </ccd-qualifying-question-options>
           <ccd-qualifying-question-detail *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_DETAIL"
             [qualifyingQuestion]="qualifyingQuestion">

@@ -93,7 +93,6 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
       const roleAssignments = [...getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date())];
       userRoleAssignments = setUserRoles(userInfo, req, id, roleAssignments);
       req.session.roleRequestEtag = response?.headers?.etag;
-      console.log('roles got from AM');
     } catch (error) {
       if (error.status === 304) {
         console.log('304 error in role assignments');

@@ -65,15 +65,6 @@ if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
   app.use(compression());
 }
 
-app.get('/trigger-gc', (req, res) => {
-  if (global.gc) {
-    global.gc();
-    res.status(200).send('Garbage collection triggered');
-  } else {
-    res.status(500).send('Garbage collection is not exposed. Start the application with --expose-gc');
-  }
-});
-
 // TODO: remove tunnel and configurations
 tunnel.init();
 /**

@@ -1,5 +1,4 @@
 const nodeAppMockData = require('./mockData');
-const reportLogger = require('../../codeceptCommon/reportLogger');
 module.exports = {
   mockServiceResetCallbacks: [() => nodeAppMockData.init()],
   get: {
@@ -31,7 +30,6 @@ module.exports = {
 
     '/api/user/details': (req, res) => {
       setTimeout(() => {
-        // reportLogger.AddJson(nodeAppMockData.userDetails.userInfo);
         res.send(nodeAppMockData.userDetails);
       }, 1);
     },

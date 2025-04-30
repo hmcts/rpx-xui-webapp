@@ -107,6 +107,7 @@ async function mockLoginWithRoles(roles, userIdentifier){
     idamLogin.withCredentials('lukesuperuserxui_new@mailnesia.com', 'Monday01');
     loginUser = 'lukesuperuserxui_new@mailnesia.com';
   }
+  reportLogger.AddMessage('User to be logged in: ' + loginUser);
 
   await browser.get('http://localhost:3000/get-help');
 
@@ -114,6 +115,7 @@ async function mockLoginWithRoles(roles, userIdentifier){
 
   await BrowserWaits.retryWithActionCallback(async () => {
     await idamLogin.do();
+    reportLogger.AddMessage('User logged in: ' + loginUser);
     userDetails = idamLogin.userDetailsResponse.details.data;
     const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
     if (sessionUserName !== loginUser){
@@ -221,9 +223,12 @@ Given('I set MOCK with user {string} and userInfo with roles {string} with refer
 
 Given('I set MOCK with user details', async function (datatable) {
   CucumberReporter.reportDatatable(datatable);
+  reportLogger.AddMessage('does it add logs??');
   const rowsHash = datatable.parse().rowsHash();
   const userDetails = await mockLoginWithRoles(rowsHash.roles.split(','));
   const properties = rowsHash;
+  reportLogger.AddMessage('does it add logs??');
+
   for (const key of Object.keys(properties)) {
     if (key === 'roles'){
       userDetails.userInfo[key] = properties[key].split(',').map((v) => v.trim());
@@ -232,11 +237,14 @@ Given('I set MOCK with user details', async function (datatable) {
     }
   }
   const auth = await browser.driver.manage().getCookie('__auth__');
+  reportLogger.AddMessage('AUTH VALUE: ' + auth.value);
+  reportLogger.AddMessage('USER DETAILS: ' + JSON.stringify(userDetails.userInfo));
   await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
 });
 
 Given('I set MOCK with user details with user identifier {string}', async function (userIdentifier, datatable) {
   CucumberReporter.reportDatatable(datatable);
+  reportLogger.AddMessage('does it add logs??');
   const rowsHash = datatable.parse().rowsHash();
   const userDetails = await mockLoginWithRoles(rowsHash.roles.split(','), userIdentifier);
   const properties = rowsHash;
@@ -321,6 +329,8 @@ Given('I set MOCK user with reference {string} roleAssignmentInfo', async functi
   reportLogger.reportDatatable(roleAssignments);
   const boolAttributes = ['isCaseAllocator', 'contractType', 'bookable'];
   const roleAssignmentArr = [];
+  reportLogger.AddMessage('mock user rai: ');
+  reportLogger.AddMessage('roleAssignmentInfo: ' + roleAssignments);
   for (const roleAssignment of roleAssignments.parse().hashes()) {
     const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
     const roleKeys = Object.keys(roleAssignment);

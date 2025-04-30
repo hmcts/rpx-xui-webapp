@@ -6,6 +6,8 @@ const router = express.Router({ mergeParams: true });
 const service = require('./index');
 
 const userApiData = require('../userApiData');
+const rasResponseStore = require('../session/rasResponse');
+
 
 router.get('/actors/:actorId', (req, res) => {
   // res.send(service.getActorRoles(req.params.actorId))
@@ -16,8 +18,7 @@ router.get('/actors/:actorId', (req, res) => {
   // if (!args.standalone) {
   //     roleAssignmentsDefault = { roleAssignmentResponse :[]}
   // }
-  const actorRoles = service.getServiceUsersRolesAssignments(req.headers.authorization.replace('Bearer ', ''));
-  res.send({ roleAssignmentResponse: actorRoles });
+  res.send({ roleAssignmentResponse: rasResponseStore.get(req.headers.authorization.replace('Bearer ', '')) });
   // userApiData.sendResponse(req, res, "OnUserRoleAssignments1", () => { return roleAssignmentsDefault });
 });
 

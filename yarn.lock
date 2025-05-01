@@ -3944,16 +3944,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.40-angular-upgrade-rc1":
-  version: 2.0.40-angular-upgrade-rc1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.40-angular-upgrade-rc1"
+"@hmcts/rpx-xui-common-lib@npm:2.0.43-angular-upgrade-rc1":
+  version: 2.0.43-angular-upgrade-rc1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.43-angular-upgrade-rc1"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/a203aa9dc0b5cfa709e7e2f4ea0c5199a9fbeb1fab1f33f1dc0342a29cf78563726fb3bfc536b3621d1cd7f0cafed8d461f1ebc18acd562f286da379345986b9
+  checksum: 10/f417c2267207f16524a8ddc90ecd62ab0ec2432feb1442681eb5769cfae0b0d0597e86d2c2751231d2b000fd240c6ba4f63eb9d74c60e39c50d492472a6c0c2b
   languageName: node
   linkType: hard
 
@@ -23360,7 +23360,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.40-angular-upgrade-rc1"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.43-angular-upgrade-rc1"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

@@ -97,7 +97,7 @@
     "@hmcts/media-viewer": "4.0.16-angular-upgrade",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "2.0.40-angular-upgrade-rc1",
+    "@hmcts/rpx-xui-common-lib": "2.0.43-angular-upgrade-rc1",
     "@hmcts/rpx-xui-node-lib": "2.30.6",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",

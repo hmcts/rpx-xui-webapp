@@ -60,6 +60,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_START = 'Continue';
 
   public readonly CIVIL_JURISDICTION = 'CIVIL';
+  public readonly DEFAULT_HINT_TEXT = '<span class="form-hint">Only attach documents related to your query. For all other documents use your case management document upload function.</span>';
+
 
   private queryItemId: string;
   public caseId: string;
@@ -396,7 +398,13 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           return '';
         }
 
+        const defaultHintText = this.DEFAULT_HINT_TEXT;
+
         const filteredMessages = messages.filter((msg) => {
+          if (!msg.jurisdiction && !msg.caseType) {
+            return true; // Include message to apply default
+          }
+
           if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
             return false;
           }
@@ -407,14 +415,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           return caseTypeMatches || onlyJurisdictionMatches;
         });
 
-        const defaultHintText = messages.filter((msg) => !msg.jurisdiction && !msg.caseType);
-        const relevantHintText = filteredMessages.length > 0 ? filteredMessages : defaultHintText;
-
-        if (relevantHintText.length === 0) {
-          return null;
+        if (filteredMessages.length === 0) {
+          return defaultHintText;
         }
 
-        return relevantHintText.map((msg) => msg.hintText).join('\n\n');
+        return filteredMessages.map((msg) => msg.hintText || defaultHintText).join('\n\n');
       })
     );
   }

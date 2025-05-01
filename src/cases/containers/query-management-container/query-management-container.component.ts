@@ -407,7 +407,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           return caseTypeMatches || onlyJurisdictionMatches;
         });
 
-        const defaultHintText = messages.filter((msg) => !msg.jurisdiction && !msg.caseType);
+        const defaultHintText = messages.filter((msg) => !msg.jurisdiction && !msg.caseType && msg.hintText);
         const relevantHintText = filteredMessages.length > 0 ? filteredMessages : defaultHintText;
 
         if (relevantHintText.length === 0) {

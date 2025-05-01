@@ -3,11 +3,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -399,11 +399,27 @@ describe('CaseHearingsComponent', () => {
     navigate: jasmine.createSpy('navigate')
   };
 
+  const cv = {
+    case_id: '1620409659381330',
+    case_type: {
+      id: 'CIVIL',
+      name: '',
+      jurisdiction: {
+        id: 'CIVIL',
+        name: '',
+        description: ''
+      }
+    }
+  } as CaseView;
+
   beforeEach(() => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
-    mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
 
+    mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
+    const mockCaseNotifier = new CaseNotifier(mockCasesService);
+    mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -433,6 +449,10 @@ describe('CaseHearingsComponent', () => {
           provide: SessionStorageService,
           useValue: mockSessionStore
         },
+        {
+          provide: CaseNotifier,
+          useValue: mockCaseNotifier
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
@@ -451,7 +471,8 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.LoadHearingValues('1234')));
+    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore
+      .LoadHearingValues());
   });
 
   it('should unsubscribe', () => {

@@ -72,22 +72,25 @@ tunnel.init();
  */
 health.addReformHealthCheck(app);
 
-app.use(getXuiNodeMiddleware());
+(async () => {
+  const xuiNodeMiddleware = await getXuiNodeMiddleware();
+  app.use(xuiNodeMiddleware);
 
-// applyProxy needs to be used before bodyParser
-initProxy(app);
+  // applyProxy needs to be used before bodyParser
+  initProxy(app);
 
-app.use(bodyParser.json({ limit: '5mb' }));
-app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
+  app.use(bodyParser.json({ limit: '5mb' }));
+  app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
-app.use('/am', amRoutes);
-app.use('/api', routes);
-app.use('/external', openRoutes);
-app.use('/workallocation', workAllocationRouter);
-app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  app.use('/am', amRoutes);
+  app.use('/api', routes);
+  app.use('/external', openRoutes);
+  app.use('/workallocation', workAllocationRouter);
+  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
 
-logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
+  logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
-new Promise(idamCheck).then(() => 'IDAM is up and running');
-// EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
-new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
+  new Promise(idamCheck).then(() => 'IDAM is up and running');
+  // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
+  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
+})();

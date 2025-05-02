@@ -13,6 +13,7 @@ import {
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import { trackTrace } from '../lib/appInsights';
 import config = require('config');
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
@@ -26,7 +27,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
-    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
     let dataByDefault = mapDataByDefault(data);
     // If service don't supply the screenFlow pre-set the default screen flow from ExUI
     if (!data.screenFlow) {
@@ -39,6 +40,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
     }
     res.status(status).send(dataByDefault);
   } catch (error) {
+    trackTrace('Error calling serviceHearingValues', error);
     next(error);
   }
 }
@@ -73,7 +75,7 @@ export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -108,7 +110,7 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
     const currentCase: ServiceLinkedCasesModel = {
       caseReference: reqBody.caseReference,
       caseName: reqBody.caseName,

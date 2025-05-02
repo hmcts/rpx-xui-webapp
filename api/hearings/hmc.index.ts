@@ -56,7 +56,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
  */
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/hearings`;
+  const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     trackTrace('submitting hearing request');
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);

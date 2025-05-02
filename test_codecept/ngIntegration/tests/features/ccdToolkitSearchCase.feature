@@ -1,4 +1,4 @@
-@ng
+#@ng
 Feature: Search case page
     Background: Start mock app
         Given I set mock case searchinput config "searchInputConfig"

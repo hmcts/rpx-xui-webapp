@@ -23,6 +23,8 @@ const waCasesTable = new WACasesTable();
 
 const taskApiMockService = require('../../../../backendMock/services/task-management-api/index');
 
+const { When, Given } = require('@cucumber/cucumber');
+
 Given('I set MOCK task required for event as {string}', async function (isTaskRequired) {
   taskApiMockService.setTaskRequiredForEventAs(isTaskRequired.includes('true'));
 });

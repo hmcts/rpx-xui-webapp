@@ -8,6 +8,8 @@ var { defineSupportCode } = require('cucumber');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const { DataTableArgument } = require('codeceptjs');
 
+const { Then, Given } = require('@cucumber/cucumber');
+
 Given('I setup caselist mock {string}', async function (caselistMockRef) {
   const caseListConfig = new CaseListConfig();
   global.scenarioData[caselistMockRef] = caseListConfig;

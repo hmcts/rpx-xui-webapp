@@ -21,6 +21,8 @@ const { DataTableArgument } = require('codeceptjs');
 
 const waCasesTable = new WACasesTable();
 
+const { Given } = require('@cucumber/cucumber');
+
 Given('I set Mock WA case {string} property values', async function (view, datatable) {
   const datatableHashes = datatable.parse().hashes();
 

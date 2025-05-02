@@ -19,6 +19,8 @@ const { DataTableArgument } = require('codeceptjs');
 
 const serviceClientMock = require('../../../backendMock/client/serviceMock');
 
+const { Given } = require('@cucumber/cucumber');
+
 Given('I set mock for existing bookings', async function (bookingdatatable) {
   const bookingsTestData = bookingdatatable.parse().hashes();
   const bookings = [];

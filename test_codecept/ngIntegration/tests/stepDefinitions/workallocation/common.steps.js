@@ -39,6 +39,9 @@ const { DataTableArgument } = require('codeceptjs');
 const taskListTable = new TaskListTable();
 const waCaseListTable = new CaseListTable();
 
+
+const { Then, When, Given } = require('@cucumber/cucumber');
+
 const TASK_SEARHC_FILTERS_TO_IGNORE_IN_REQUEST_BODY = {
   'priority': 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
   'taskType': 'Is to be includes only in 2.1 till the it will be ignored in test'

@@ -37,6 +37,8 @@ const idamLogin = require('../../../util/idamLogin');
 const browser = require('../../../../codeceptCommon/browser');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
+const { Then, When, Given } = require('@cucumber/cucumber');
+
 const invalidCredentialsCounter = 0;
 let testCounter = 0;
 const firstAttemptFailedLogins = 0;

@@ -24,6 +24,8 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
 const jsonUtil = require('../.././../e2e/utils/jsonUtil');
 const path = require('path');
 
+const { Given } = require('@cucumber/cucumber');
+
 function getHearingsMockJsonFromFile(fileName){
   return jsonUtil.getJsonFromFile(path.resolve(__dirname, `../features/hearings/mockData/${fileName}.json`,));
 }

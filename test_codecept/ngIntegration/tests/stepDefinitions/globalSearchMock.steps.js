@@ -13,6 +13,8 @@ const { DataTableArgument } = require('codeceptjs');
 
 const backendMockClient = require('../../../backendMock/client/index');
 
+const { Given } = require('@cucumber/cucumber');
+
 Given('I set global search mock results count {int}', async function (count) {
   globalSearchMockData.searchResponse.resultInfo.caseStartRecord = 1;
   globalSearchMockData.searchResponse.resultInfo.casesReturned = count;

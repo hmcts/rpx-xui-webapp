@@ -14,6 +14,8 @@ const { DataTableArgument } = require('codeceptjs');
 
 const idamlogin = require('../../util/idamLogin');
 
+const { Then, When, Given } = require('@cucumber/cucumber');
+
 Given('I init MockApp', async function () {
   // MockApp.init();
 });

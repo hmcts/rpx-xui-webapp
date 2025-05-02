@@ -1,7 +1,7 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const ArrayUtil = require('../../utils/ArrayUtil');
-const { Then, When, Given } = require('@cucumber/cucumber');
+const { Then, Given } = require('@cucumber/cucumber');
 const { browser } = require('protractor');
 
 const minimist = require('minimist');

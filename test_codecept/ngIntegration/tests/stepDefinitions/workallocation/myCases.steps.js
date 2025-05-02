@@ -18,6 +18,8 @@ const { DataTableArgument } = require('codeceptjs');
 
 const waCasesTable = new WACasesTable();
 
+const { Then, When } = require('@cucumber/cucumber');
+
 When('I click work allocation cases pagination link {string} and wait for req reference {string} not null', async function (paginationLinktext, reference) {
   await BrowserWaits.retryWithActionCallback(async () => {
     await browserUtil.addTextToElementWithCssSelector('tbody tr:nth-of-type(1) .cdk-column-case_category exui-work-field', 'Sort test', true);

@@ -11,7 +11,6 @@ import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel
 } from './models/linkHearings.model';
-import { trackTrace } from '../lib/appInsights';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
 
@@ -56,15 +55,11 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
  */
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  const markupPath: string = `${hmcHearingsUrl}/hearings`;
+  const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
-    trackTrace('submitting hearing request');
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    if (error.status >= 400 && error.status < 600) {
-      trackTrace('SubmitHearingRequest error:', error);
-    }
     next(error);
   }
 }

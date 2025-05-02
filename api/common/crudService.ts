@@ -54,7 +54,6 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest,
   } catch (e) {
     logger.error('handlePost: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
     next(e);
-    throw e;
   }
 }
 

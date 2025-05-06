@@ -130,14 +130,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   }
 
   public onBack(): void {
-    const caseInfoStr = this.sessionStorageService.getItem('caseInfo');
-    if (caseInfoStr) {
-      const caseInfo = JSON.parse(caseInfoStr);
-      const caseId = caseInfo.cid;
-      this.router.navigate(['/', 'cases', 'case-details', caseId, 'hearings']);
-    } else {
-      window.history.back();
-    }
+    window.history.back();
   }
 
   public haveParticipantsBeenAdded(hearingDay: ActualHearingDayModel): boolean {

@@ -207,7 +207,7 @@
     "base-64": "^1.0.0",
     "chai": "^4.3.10",
     "chai-as-promised": "7.1.2",
-    "codeceptjs": "3.5.6",
+    "codeceptjs": "3.6.6",
     "codeceptjs-cucumber-json-reporter": "^1.0.14",
     "codelyzer": "^6.0.0",
     "cucumber": "5.1.0",

@@ -9,12 +9,6 @@ import { submitEvent } from './steps/submit-update-case-event-steps';
 import { createTestCaseErrorValidation } from './steps/create-xui-case-test-case-type-dev-steps';
 
 test('Validate next steps drop down', async ({ page }) => {
-  // Listen for request failures
-  page.on('requestfailed', (request) => {
-    console.error(`❌ Request failed: ${request.url()} (${request.failure()?.errorText})`);
-    console.error(request);
-  });
-
   const response = waitForSpecificResponse(
     page,
     'data/internal/cases/',

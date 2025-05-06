@@ -23,6 +23,11 @@ test('Create case flag 2', async ({ page }) => {
 });
 
 test('View case flag', async ({ page }) => {
+  // Listen for request failures
+  page.on('requestfailed', (request) => {
+    console.error(`❌ Request failed: ${request.url()} (${request.failure()?.errorText})`);
+    console.error(request);
+  });
   await loginExUIWithCaseFlag(page);
   await routeToCasePage(page, '1698182796208883');
   const currentActiveFlags = getActiveFlagsForCase(page);

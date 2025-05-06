@@ -11,7 +11,12 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url 'https://jitpack.io'
+        name = "AzureArtifacts"
+        url = uri("https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1")
+        credentials {
+            username = System.getenv("AZURE_DEVOPS_ARTIFACT_USERNAME")
+            password = System.getenv("AZURE_DEVOPS_ARTIFACT_TOKEN")
+        }
     }
 }
 // end::repositories[]

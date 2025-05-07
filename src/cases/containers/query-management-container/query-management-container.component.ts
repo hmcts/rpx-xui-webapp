@@ -59,6 +59,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
   public static readonly TRIGGER_TEXT_START = 'Continue';
 
+  public static readonly CONFIRMATION_MESSAGE = 'Our team will read your query and respond.';
+
   private queryItemId: string;
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
@@ -179,7 +181,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     if (text) {
       this.callbackConfirmationBodyText = text;
     } else {
-      this.callbackConfirmationBodyText = 'Our team will read your query and respond.';
+      this.callbackConfirmationBodyText = QueryManagementContainerComponent.CONFIRMATION_MESSAGE;
     }
   }
 

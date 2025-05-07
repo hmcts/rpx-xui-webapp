@@ -18,7 +18,7 @@ import {
   AlertService,
   QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
@@ -35,8 +35,9 @@ describe('QueryManagementContainerComponent', () => {
   let component: QueryManagementContainerComponent;
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
-  const mockRouter = {
+  const googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['event', 'virtualPageView']);
 
+  const mockRouter = {
     events: of(new NavigationStart(1, '/some-other-route')),
     navigate: jasmine.createSpy('navigate'),
     navigateByUrl: jasmine.createSpy('navigateByUrl')
@@ -225,6 +226,7 @@ describe('QueryManagementContainerComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: AlertService, useValue: mockAlertService },
+        { provide: GoogleTagManagerService, useValue: googleTagManagerService },
         LoadingService
       ]
     }).compileComponents();
@@ -808,6 +810,32 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.showContinueButton).toBe(true);
       expect(component.showForm).toBe(true);
     });
+
+    describe('Qualifying question placeholders', () => {
+      const markdown = (placeholder) =>
+        `<a href="query-management/query/${placeholder}">an anchor</a>
+         <a href="query-management/query/${placeholder}">another anchor</a>
+         <a href="query-management/query/${placeholder}">yet another anchor</a>`;
+
+      const qualifyingQuestions = {
+        TestAddressBookCase: [
+          { name: 'Question 1', markdown: markdown('${[CASE_REFERENCE]}'), url: '' },
+          { name: 'Question 2', markdown: markdown('${[CASE_REFERENCE]}'), url: '' }
+        ] };
+
+      beforeEach(() => {
+        mockFeatureToggleService.getValue.and.returnValue(of(qualifyingQuestions));
+        component.ngOnInit();
+        fixture.detectChanges();
+      });
+
+      it('should replace all instances of ${[CASE_REFERENCE]} with the case id', () => {
+        component.qualifyingQuestions$.subscribe((qualifyingQuestions) => {
+          expect(qualifyingQuestions[0].markdown).toBe(markdown('123'));
+          expect(qualifyingQuestions[1].markdown).toBe(markdown('123'));
+        });
+      });
+    });
   });
 
   describe('getEventTrigger', () => {
@@ -863,7 +891,42 @@ describe('QueryManagementContainerComponent', () => {
         expect(qualifyingQuestions[1].name).toBe('Raise a new query');
       });
     });
+
+    it('should call googleTagManagerService.event with the correct parameters', () => {
+      const qualifyingQuestion = {
+        name: 'Raise a new query',
+        markdown: '### Details<br><p>To find out more about updating using MyHMCTS',
+        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+      };
+
+      component.logSelection(qualifyingQuestion);
+
+      expect(googleTagManagerService.event).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection', {
+          caseTypeId: '123',
+          caseJurisdiction: 'TEST',
+          name: 'Raise a new query',
+          url: 'https://example.com/123/details'
+        });
+    });
+
+    it('should push virtual pageview with metadata to dataLayer', () => {
+      const qualifyingQuestion = {
+        name: 'Test question',
+        markdown: '### Details<br><p>To find out more about updating using MyHMCTS',
+        url: ''
+      };
+
+      component.logSelection(qualifyingQuestion);
+
+      expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
+        '/query-management/query/123',
+        'Qualifying Question: Test question',
+        { caseTypeId: '123', jurisdictionId: 'TEST' }
+      );
+    });
   });
+
   describe('validateForm', () => {
     beforeEach(() => {
       activatedRoute.snapshot = {
@@ -934,6 +997,116 @@ describe('QueryManagementContainerComponent', () => {
 
       component.serviceMessage$.subscribe((messages) => {
         expect(messages).toBe('Message One\n\nMessage Two');
+      });
+    }));
+    it('should return hintText markdown when case/jurisdiction', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Important notice!'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Important notice!');
+      });
+    }));
+    it('should return null when jurisdiction and caseType do not match', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'OTHER',
+          caseType: 'OtherCase',
+          hintText: 'You should not see this'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+    it('should return hintText when only jurisdiction matches and caseType is not specified', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          hintText: 'Jurisdiction-only hint'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Jurisdiction-only hint');
+      });
+    }));
+    it('should return hintText when neither jurisdiction nor caseType are specified (generic message)', fakeAsync(() => {
+      const attachment = [
+        {
+          hintText: 'Generic message'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+
+    it('should return combined hintText when multiple messages match', fakeAsync(() => {
+      const attachment = [
+        {
+          jurisdiction: 'TEST',
+          caseType: 'TestAddressBookCase',
+          hintText: 'Message 1'
+        },
+        {
+          jurisdiction: 'TEST',
+          hintText: 'Message 2'
+        },
+        {
+          hintText: 'Generic Message'
+        }
+      ];
+
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBe('Message 1\n\nMessage 2');
+      });
+    }));
+
+    it('should return null when attachment list is empty', fakeAsync(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of({ attachment: [] }));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
+      });
+    }));
+
+    it('should return null when response has no attachment key', fakeAsync(() => {
+      mockFeatureToggleService.getValue.and.returnValue(of({}));
+      component.ngOnInit();
+      fixture.detectChanges();
+
+      component.getAttachmentHintText().subscribe((attachment) => {
+        expect(attachment).toBeNull();
       });
     }));
   });

@@ -342,6 +342,13 @@ select::-ms-expand {
     white-space: normal;
   }
 
+  .qm-service-message {
+    strong {
+      font-size: 19px;
+      line-height: 25px;
+    }
+  }
+
   ul {
     font-size: 16px;
     margin-bottom: 25px;
@@ -478,4 +485,9 @@ button:focus {
   &:focus {
     outline: none;
   }
+}
+
+.qm-qualifying-question__divider {
+  margin-bottom: 10px;
+  font-size: 19px;
 }

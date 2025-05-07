@@ -3823,12 +3823,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.72-angular-upgrade-rc1":
-  version: 7.1.72-angular-upgrade-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.72-angular-upgrade-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.75-angular-upgrade-rc2":
+  version: 7.1.75-angular-upgrade-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.75-angular-upgrade-rc2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/0d391c8ed8118225a9f6742e264f8c8aad53042c089d0c309d62202e4af6ac635a7e0e9ada1d09d57791002ee5d24afcf5326d143fde68d5fb6b3ff6afadda3d
+  checksum: 10/d9d2de9545b17ec6c368f6addf601420d3df34ad491611dd0e90b639eb6475ae5a0816e8819c6f38b446e9050ebeeefb600cfe50796d1f8e66db061806243ebd
   languageName: node
   linkType: hard
 
@@ -23328,7 +23328,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.72-angular-upgrade-rc1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.75-angular-upgrade-rc2"
     "@hmcts/ccpay-web-component": "npm:6.2.14-beta3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"

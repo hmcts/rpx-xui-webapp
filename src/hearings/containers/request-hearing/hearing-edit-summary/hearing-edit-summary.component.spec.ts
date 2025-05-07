@@ -296,7 +296,7 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
   });
 
-  it('should set the pagesToDispaly and exlude hearing judge', () => {
+  it('should set the pagesToDisplay and exclude hearing judge', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       screenFlow: [
@@ -329,7 +329,7 @@ describe('HearingEditSummaryComponent', () => {
     expect(component.sectionsToDisplay).toEqual(sectionsToDisplay);
   });
 
-  it('should set the pagesToDispaly and exlude hearing panel', () => {
+  it('should set the pagesToDisplay and exclude hearing panel', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       screenFlow: [

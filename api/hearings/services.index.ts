@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { sendGet, sendPost } from '../common/crudService';
-import { getConfigValue } from '../configuration';
-import { HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import { getConfigValue, showFeature } from '../configuration';
+import { FORCE_NEW_DEFAULT_SCREEN_FLOW, HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { DEFAULT_SCREEN_FLOW, DEFAULT_SCREEN_FLOW_NEW } from './data/defaultScreenFlow.data';
@@ -14,9 +14,19 @@ import {
 } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 import { trackTrace } from '../lib/appInsights';
-import config = require('config');
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
+interface NavigationItem {
+  resultValue: string;
+  conditionOperator?: string;
+  conditionValue?: any;
+}
+
+interface Screen {
+  screenName: string;
+  conditionKey?: string;
+  navigation: NavigationItem[];
+}
 
 /**
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
@@ -26,23 +36,144 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const reqBody = req.body;
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
+
   try {
     const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
     let dataByDefault = mapDataByDefault(data);
-    // If service don't supply the screenFlow pre-set the default screen flow from ExUI
-    if (!data.screenFlow) {
-      const forceNewDefaultScreenFlow = config.get('forceNewDefaultScreenFlow') || null;
-      dataByDefault = {
-        ...data,
-        screenFlow:
-        (forceNewDefaultScreenFlow === 'true') ? DEFAULT_SCREEN_FLOW_NEW : (forceNewDefaultScreenFlow === 'false') ? DEFAULT_SCREEN_FLOW : (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
-      };
+    const forceNewDefaultScreenFlow = retrieveForceNewDefaultScreenFlow();
+    if (forceNewDefaultScreenFlow) {
+      dataByDefault = forceDefaultScreenFlow(data);
+    } else {
+      if (!data.screenFlow) {
+        dataByDefault = {
+          ...data,
+          screenFlow:
+            (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
+        };
+      }
     }
+
     res.status(status).send(dataByDefault);
   } catch (error) {
     trackTrace('Error calling serviceHearingValues', error);
     next(error);
   }
+}
+
+function retrieveForceNewDefaultScreenFlow():boolean {
+  try {
+    const result = showFeature(FORCE_NEW_DEFAULT_SCREEN_FLOW);
+    return toBoolean(result);
+  } catch {
+    return false;
+  }
+}
+
+function toBoolean(value: unknown): boolean {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'string') {
+    return value.toLowerCase() === 'true';
+  }
+  return false;
+}
+
+function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
+  if (!data.screenFlow) {
+    return {
+      ...data,
+      screenFlow: DEFAULT_SCREEN_FLOW_NEW
+    };
+  }
+  const panelSelectorScreen = data.screenFlow.find((screen) => screen.screenName === 'hearing-panel');
+  const followingScreen = panelSelectorScreen?.navigation?.[0]?.resultValue;
+
+  return {
+    ...data,
+    screenFlow: replaceScreenFlow(data.screenFlow, followingScreen)
+  };
+}
+
+function replaceScreenFlow(screenFlow: Screen[], followingScreen: string): Screen[] {
+  // Define the sequence to be replaced
+  const toReplaceSequence = ['hearing-venue', 'hearing-welsh', 'hearing-judge', 'hearing-panel'];
+
+  // Find the index of the sequence
+  let startIndex = -1;
+
+  for (let i = 0; i <= screenFlow.length - toReplaceSequence.length; i++) {
+    const segment = screenFlow.slice(i, i + toReplaceSequence.length).map((s) => s.screenName);
+    if (JSON.stringify(segment) === JSON.stringify(toReplaceSequence)) {
+      startIndex = i;
+      break;
+    }
+  }
+
+  if (startIndex === -1) {
+    return screenFlow; // Sequence not found
+  }
+
+  // Remove old sequence
+  screenFlow.splice(startIndex, toReplaceSequence.length);
+
+  // Define the replacement sequence
+  const newSequence: Screen[] = [
+    {
+      screenName: 'hearing-venue',
+      conditionKey: 'regionId',
+      navigation: [
+        {
+          conditionOperator: 'INCLUDE',
+          conditionValue: '7',
+          resultValue: 'hearing-welsh'
+        },
+        {
+          conditionOperator: 'NOT INCLUDE',
+          conditionValue: '7',
+          resultValue: 'hearing-panel-required'
+        }
+      ]
+    },
+    {
+      screenName: 'hearing-welsh',
+      navigation: [
+        { resultValue: 'hearing-panel-required' }
+      ]
+    },
+    {
+      screenName: 'hearing-panel-required',
+      conditionKey: 'isAPanelFlag',
+      navigation: [
+        {
+          conditionOperator: 'EQUALS',
+          conditionValue: true,
+          resultValue: 'hearing-panel-selector'
+        },
+        {
+          conditionOperator: 'EQUALS',
+          conditionValue: false,
+          resultValue: 'hearing-judge'
+        }
+      ]
+    },
+    {
+      screenName: 'hearing-judge',
+      navigation: [
+        { resultValue: followingScreen }
+      ]
+    },
+    {
+      screenName: 'hearing-panel-selector',
+      navigation: [
+        { resultValue: followingScreen }
+      ]
+    }
+  ];
+
+  // Insert the new sequence at the same location
+  screenFlow.splice(startIndex, 0, ...newSequence);
+  return screenFlow;
 }
 
 export function mapDataByDefault(data: ServiceHearingValuesModel): ServiceHearingValuesModel {

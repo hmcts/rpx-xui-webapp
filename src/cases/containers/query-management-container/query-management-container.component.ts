@@ -80,6 +80,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
 
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
@@ -619,11 +620,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   private extractCaseQueriesFromCaseField(caseField: CaseField) {
-    const { field_type, value } = caseField;
+    const { field_type, value, display_context } = caseField;
 
     // Handle Complex type fields
     if (field_type.type === QueryManagementContainerComponent.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && this.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && display_context !== QueryManagementContainerComponent.DISPLAY_CONTEXT_READONLY && this.isNonEmptyObject(value)) {
         return value;
       }
       return null;

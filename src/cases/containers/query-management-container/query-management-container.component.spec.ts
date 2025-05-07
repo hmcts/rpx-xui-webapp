@@ -846,14 +846,15 @@ describe('QueryManagementContainerComponent', () => {
     });
 
     it('should set the default text if no text is provided', () => {
+      const confirmationMesssage = 'Our team will read your query and respond.';
       component.callbackConfirmationBody('');
-      expect(component.callbackConfirmationBodyText).toBe('Our team will read your query and respond.');
+      expect(component.callbackConfirmationBodyText).toBe(confirmationMesssage);
 
       component.callbackConfirmationBody(null as any);
-      expect(component.callbackConfirmationBodyText).toBe('Our team will read your query and respond.');
+      expect(component.callbackConfirmationBodyText).toBe(confirmationMesssage);
 
       component.callbackConfirmationBody(undefined as any);
-      expect(component.callbackConfirmationBodyText).toBe('Our team will read your query and respond.');
+      expect(component.callbackConfirmationBodyText).toBe(confirmationMesssage);
     });
   });
 

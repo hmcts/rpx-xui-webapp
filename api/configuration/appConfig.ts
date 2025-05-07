@@ -38,7 +38,7 @@ import {
   SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL, SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICE_S2S_PATH,
-  SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH
+  SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH, FORCE_NEW_DEFAULT_SCREEN_FLOW
 } from './references';
 
 /**
@@ -67,6 +67,7 @@ export const applicationConfiguration = () => {
     featureWorkAllocationEnabled: showFeature(FEATURE_WORKALLOCATION_ENABLED),
     featureJrdELinksV2Enabled: showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED),
     featureSpecificChallengedAccessEnabled: showFeature(FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED),
+    forceNewDefaultScreenFlow: showFeature(FORCE_NEW_DEFAULT_SCREEN_FLOW),
     health: getConfigValue(HEALTH),
     idamApiUrl: getConfigValue(SERVICES_IDAM_API_URL),
     idamWeb: getConfigValue(SERVICES_IDAM_LOGIN_URL),

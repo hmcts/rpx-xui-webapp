@@ -10,8 +10,7 @@ interface RadioListItem {
 @Component({
   selector: 'exui-radio-list-builder',
   templateUrl: './radio-list-builder.component.html',
-  styleUrls: ['./radio-list-builder.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./radio-list-builder.component.scss']
 })
 export class RadioListBuilderComponent {
   @Input() public data: RadioListItem[] = [];

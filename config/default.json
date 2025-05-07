@@ -176,7 +176,8 @@
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
     "accessManagementEnabled": true,
-    "compressionEnabled": false
+    "compressionEnabled": false,
+    "forceNewDefaultScreenFlow": false
   },
   "helmet": {
     "referrerPolicy": {
@@ -227,6 +228,5 @@
     "consumerVersion": "",
     "brokerUsername": "",
     "brokerPassword": ""
-  },
-  "forceNewDefaultScreenFlow": ""
+  }
 }

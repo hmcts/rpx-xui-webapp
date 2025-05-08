@@ -144,70 +144,69 @@ describe('retrieveForceNewDefaultScreenFlow', () => {
   });
 
   it('returns true when showFeature returns true', () => {
-    const showFeatureStub = sinon.stub(configuration, 'showFeature').returns(true);
+    sinon.stub(configuration, 'showFeature').returns(true);
     const result = retrieveForceNewDefaultScreenFlow();
-    expect(result).to.be.true;
+    expect(result).to.equal(true);
   });
 
   it('returns false when showFeature returns false', () => {
-    const showFeatureStub = sinon.stub(configuration, 'showFeature').returns(false);
+    sinon.stub(configuration, 'showFeature').returns(false);
     const result = retrieveForceNewDefaultScreenFlow();
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
 
   it('returns false when showFeature throws an error', () => {
-    const showFeatureStub = sinon.stub(configuration, 'showFeature').throws(new Error('Error'));
+    sinon.stub(configuration, 'showFeature').throws(new Error('Error'));
     const result = retrieveForceNewDefaultScreenFlow();
-    expect(result).to.be.false;
+    expect(result).to.equal(false);
   });
   describe('toBoolean', () => {
     it('should return true for boolean true', () => {
       const result = toBoolean(true);
-      expect(result).to.be.true;
+      expect(result).to.equal(true);
     });
 
     it('should return false for boolean false', () => {
       const result = toBoolean(false);
-      expect(result).to.be.false;
+      expect(result).to.equal(false);
     });
 
     it('should return true for string "true" (case insensitive)', () => {
       const result = toBoolean('true');
-      expect(result).to.be.true;
+      expect(result).to.equal(true);
 
       const resultCaseInsensitive = toBoolean('TRUE');
-      expect(resultCaseInsensitive).to.be.true;
+      expect(resultCaseInsensitive).to.equal(true);
     });
 
     it('should return false for string "false" (case insensitive)', () => {
       const result = toBoolean('false');
-      expect(result).to.be.false;
+      expect(result).to.equal(false);
 
       const resultCaseInsensitive = toBoolean('FALSE');
-      expect(resultCaseInsensitive).to.be.false;
+      expect(resultCaseInsensitive).to.equal(false);
     });
 
     it('should return false for non-boolean, non-"true"/"false" strings', () => {
       const result = toBoolean('randomString');
-      expect(result).to.be.false;
+      expect(result).to.equal(false);
     });
 
     it('should return false for non-boolean, non-string values', () => {
       const result = toBoolean(123);
-      expect(result).to.be.false;
+      expect(result).to.equal(false);
 
       const resultNull = toBoolean(null);
-      expect(resultNull).to.be.false;
+      expect(resultNull).to.equal(false);
 
       const resultUndefined = toBoolean(undefined);
-      expect(resultUndefined).to.be.false;
+      expect(resultUndefined).to.equal(false);
 
       const resultObject = toBoolean({});
-      expect(resultObject).to.be.false;
+      expect(resultObject).to.equal(false);
     });
   });
   describe('replaceScreenFlow', () => {
-
     it('should maintain passed in screen flow as flow does not match sequence to replace.', () => {
       const data: Screen[] = [
         {

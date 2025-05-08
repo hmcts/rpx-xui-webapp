@@ -26,8 +26,9 @@ import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { getNewUsersByServiceName } from './workAllocation';
 
-export const app = express();
-(async () => {
+export async function createApp() {
+  const app = express();
+
   const logger: JUILogger = log4jui.getLogger('Application');
 
   if (showFeature(FEATURE_HELMET_ENABLED)) {
@@ -93,4 +94,7 @@ export const app = express();
   new Promise(idamCheck).then(() => 'IDAM is up and running');
   // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
   new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
-})();
+
+  return app;
+}
+

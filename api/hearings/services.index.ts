@@ -60,7 +60,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   }
 }
 
-function retrieveForceNewDefaultScreenFlow():boolean {
+export function retrieveForceNewDefaultScreenFlow():boolean {
   try {
     const result = showFeature(FORCE_NEW_DEFAULT_SCREEN_FLOW);
     return toBoolean(result);
@@ -69,7 +69,7 @@ function retrieveForceNewDefaultScreenFlow():boolean {
   }
 }
 
-function toBoolean(value: unknown): boolean {
+export function toBoolean(value: unknown): boolean {
   if (typeof value === 'boolean') {
     return value;
   }
@@ -79,7 +79,7 @@ function toBoolean(value: unknown): boolean {
   return false;
 }
 
-function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
+export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
   if (!data.screenFlow) {
     return {
       ...data,
@@ -95,7 +95,7 @@ function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
   };
 }
 
-function replaceScreenFlow(screenFlow: Screen[], followingScreen: string): Screen[] {
+export function replaceScreenFlow(screenFlow: Screen[], followingScreen: string): Screen[] {
   // Define the sequence to be replaced
   const toReplaceSequence = ['hearing-venue', 'hearing-welsh', 'hearing-judge', 'hearing-panel'];
 

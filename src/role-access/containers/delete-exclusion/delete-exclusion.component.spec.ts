@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { ExclusionNavigationEvent, RoleCategory } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -48,8 +49,8 @@ describe('DeleteExclusionComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientTestingModule],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
+      imports: [],
       providers: [
         {
           provide: ActivatedRoute,
@@ -77,7 +78,9 @@ describe('DeleteExclusionComponent', () => {
         {
           provide: RoleExclusionsService,
           useValue: mockRoleExclusionService
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();
@@ -176,8 +179,8 @@ describe('DeleteExclusionComponent with no name', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientTestingModule],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
+      imports: [],
       providers: [
         {
           provide: ActivatedRoute,
@@ -209,7 +212,9 @@ describe('DeleteExclusionComponent with no name', () => {
         {
           provide: mockAllocateRoleService,
           useValue: mockAllocateRoleService
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

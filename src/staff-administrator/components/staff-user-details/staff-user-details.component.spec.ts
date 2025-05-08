@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -16,6 +16,7 @@ import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staf
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from './staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: ''
@@ -93,15 +94,13 @@ describe('StaffUserDetailsComponent', () => {
         StaffStatusComponent,
         StubComponent
       ],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([
-          { path: 'service-down', component: StubComponent },
-          { path: 'staff/user-details/:id/update', component: StubComponent },
-          { path: 'staff/user-details/:id/copy', component: StubComponent },
-          { path: 'staff/add-user', component: StubComponent }
-        ])
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([
+        { path: 'service-down', component: StubComponent },
+        { path: 'staff/user-details/:id/update', component: StubComponent },
+        { path: 'staff/user-details/:id/copy', component: StubComponent },
+        { path: 'staff/add-user', component: StubComponent }
+      ])],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         {
@@ -173,9 +172,10 @@ describe('StaffUserDetailsComponent', () => {
           }
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
-        { provide: InfoMessageCommService, useValue: mockMessageService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        { provide: InfoMessageCommService, useValue: mockMessageService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));

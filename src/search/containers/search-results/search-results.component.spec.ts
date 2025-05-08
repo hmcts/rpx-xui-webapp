@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
@@ -13,6 +13,7 @@ import { SearchResult } from '../../../search/models';
 import { NoResultsMessageId, ProcessForAccessType } from '../../enums';
 import { SearchService } from '../../services/search.service';
 import { SearchResultsComponent } from './search-results.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import createSpyObj = jasmine.createSpyObj;
 
@@ -153,14 +154,13 @@ describe('SearchResultsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SearchResultsComponent, PaginationComponent, RpxTranslateMockPipe],
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
+      imports: [RouterTestingModule],
       providers: [
         { provide: FormBuilder, useValue: formBuilder },
         { provide: SearchService, useValue: searchService },
-        { provide: JurisdictionService, useValue: jurisdictionService }
+        { provide: JurisdictionService, useValue: jurisdictionService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

@@ -89,13 +89,14 @@
       [queryCreateContext]="queryCreateContext"
       (backClicked)="showResponseForm()"
       (querySubmitted)="showConfirmationPage()"
-      (callbackConfirmationBody)="callbackConfirmationBody($event)">
+      (callbackConfirmationMessage)="callbackConfirmationMessage($event)">
     </ccd-query-check-your-answers>
 
     <!-- Query submission confirmation page -->
     <ccd-query-confirmation
       *ngIf="showConfirmation"
-      [callbackConfirmationBodyText]="callbackConfirmationBodyText"
+      [callbackConfirmationMessageText]="callbackConfirmationMessageText"
+      [callbackConfirmationHeaderText]="callbackConfirmationHeaderText"
       [queryCreateContext]="queryCreateContext">
     </ccd-query-confirmation>
 

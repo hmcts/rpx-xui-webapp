@@ -838,23 +838,38 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
-  describe('callbackConfirmationBody', () => {
+  describe('callbackConfirmationMessage', () => {
     it('should set the custom text if provided', () => {
-      const customText = 'Our team will carefully read your query and respond as soon as possible.';
-      component.callbackConfirmationBody(customText);
-      expect(component.callbackConfirmationBodyText).toBe(customText);
+      const customText = {
+        body: 'Our team will read your query and respond.',
+        header: 'Confirmation'
+      };
+
+      component.callbackConfirmationMessage(customText);
+
+      expect(component.callbackConfirmationMessageText).toEqual(customText);
     });
 
     it('should set the default text if no text is provided', () => {
-      const confirmationMesssage = 'Our team will read your query and respond.';
-      component.callbackConfirmationBody('');
-      expect(component.callbackConfirmationBodyText).toBe(confirmationMesssage);
+      const confirmationMesssageBody = 'Our team will read your query and respond.';
+      const confirmationMesssageHeader = 'Your query has been sent to HMCTS';
+      component.callbackConfirmationMessage({ body: '', header: '' });
+      expect(component.callbackConfirmationMessageText).toEqual({
+        body: confirmationMesssageBody,
+        header: confirmationMesssageHeader
+      });
 
-      component.callbackConfirmationBody(null as any);
-      expect(component.callbackConfirmationBodyText).toBe(confirmationMesssage);
+      component.callbackConfirmationMessage(null as any);
+      expect(component.callbackConfirmationMessageText).toEqual({
+        body: confirmationMesssageBody,
+        header: confirmationMesssageHeader
+      });
 
-      component.callbackConfirmationBody(undefined as any);
-      expect(component.callbackConfirmationBodyText).toBe(confirmationMesssage);
+      component.callbackConfirmationMessage(undefined as any);
+      expect(component.callbackConfirmationMessageText).toEqual({
+        body: confirmationMesssageBody,
+        header: confirmationMesssageHeader
+      });
     });
   });
 

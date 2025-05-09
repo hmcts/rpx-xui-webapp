@@ -59,7 +59,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
   public static readonly TRIGGER_TEXT_START = 'Continue';
 
-  public static readonly CONFIRMATION_MESSAGE = 'Our team will read your query and respond.';
+  public static readonly CONFIRMATION_MESSAGE_BODY = 'Our team will read your query and respond.';
+  public static readonly CONFIRMATION_MESSAGE_HEAD = 'Your query has been sent to HMCTS';
   public readonly CIVIL_JURISDICTION = 'CIVIL';
 
   private queryItemId: string;
@@ -77,7 +78,9 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
-  public callbackConfirmationBodyText: string;
+  public callbackConfirmationMessageText: { [key: string]: string } = {};
+
+  public callbackConfirmationHeadeText: string;
   public attachmentHintText$: Observable<string | null>;
   public serviceMessage$: Observable<string | null>;
 
@@ -179,12 +182,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.showConfirmation = true;
   }
 
-  public callbackConfirmationBody(text: string): void {
-    if (text) {
-      this.callbackConfirmationBodyText = text;
-    } else {
-      this.callbackConfirmationBodyText = QueryManagementContainerComponent.CONFIRMATION_MESSAGE;
-    }
+  public callbackConfirmationMessage(event: { body: string; header: string }): void {
+    this.callbackConfirmationMessageText = {
+      body: event?.body || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_BODY,
+      header: event?.header || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_HEAD };
   }
 
   public submitForm(): void {

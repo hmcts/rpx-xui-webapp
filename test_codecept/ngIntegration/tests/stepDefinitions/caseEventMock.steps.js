@@ -10,6 +10,8 @@ const CCDCaseConfig = require('../../mockData/ccd/ccdCaseConfig/caseCreateConfig
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const { DataTableArgument } = require('codeceptjs');
 
+const { Then, When, Given } = require('@cucumber/cucumber');
+
 Given('I create mock Case event {string}', function (moduleRef) {
   const mockCaseEvent = new CCDCaseConfig('Mock event ', 'Mock jurisdiction', 'test description ' + moduleRef);
   global.scenarioData[moduleRef] = mockCaseEvent;

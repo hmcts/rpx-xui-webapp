@@ -19,6 +19,8 @@ const waMockData = require('../../../mockData/workAllocation/mockData');
 
 const waCasesTable = new WACasesTable();
 
+const { Then } = require('@cucumber/cucumber');
+
 Then('I validate find person request body from reference {string}', async function (requesrRef, datatable) {
   try {
     await BrowserWaits.waitForCondition(() => global.scenarioData[requesrRef] !== null);

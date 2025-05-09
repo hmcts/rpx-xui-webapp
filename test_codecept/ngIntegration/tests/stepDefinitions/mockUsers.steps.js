@@ -17,6 +17,8 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const { DataTableArgument } = require('codeceptjs');
 
+const { Given } = require('@cucumber/cucumber');
+
 Given('I set MOCK case workers', async function(datatable){
   const dtHashes = datatable.parse().hashes();
   let i = 0;

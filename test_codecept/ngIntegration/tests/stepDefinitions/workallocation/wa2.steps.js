@@ -42,6 +42,8 @@ const taskManagementApiMock = require('../../../../backendMock/services/task-man
 
 const caseListPage = new CaseListPage();
 
+const { Then, Given } = require('@cucumber/cucumber');
+
 Given('I set MOCK locations for WA release 2', async function(locationsDatatable){
   const locationsHashes = locationsdatatable.parse().hashes();
   const locationsResponseBody = [];

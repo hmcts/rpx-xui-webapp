@@ -16,6 +16,8 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
 // const ccdApi = require('../../../nodeMock/ccd/ccdApi');
 
+const { Then, When, Given } = require('@cucumber/cucumber');
+
 Given('I reload app if {string}', async function(isReadRequired){
   if (isReadRequired.toLowerCase().includes('yes') || isReadRequired.toLowerCase().includes('true')){
     await browserUtil.gotoHomePage();

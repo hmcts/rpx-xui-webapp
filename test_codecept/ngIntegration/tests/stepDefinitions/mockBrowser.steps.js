@@ -1,5 +1,7 @@
 const idamLogin = require('../../util/idamLogin');
 
+const { Given } = require('@cucumber/cucumber');
+
 const mockClient = require('../../../backendMock/client/index');
 Given('I set MOCK browser cookies', async function () {
   let cookies = cookieString.replace(' ', '');

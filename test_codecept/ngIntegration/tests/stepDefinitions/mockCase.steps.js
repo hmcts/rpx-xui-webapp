@@ -24,6 +24,8 @@ const idamLogin = require('../../util/idamLogin');
 const { DataTableArgument } = require('codeceptjs');
 const { postTaskAction, getTask } = require('../../../../api/workAllocation');
 
+const { Given } = require('@cucumber/cucumber');
+
 Given('I set mock case create config {string}', async function (configReference) {
   // const caseConfig = getTestJurisdiction();
   // global.scenarioData[configReference] = caseConfig;

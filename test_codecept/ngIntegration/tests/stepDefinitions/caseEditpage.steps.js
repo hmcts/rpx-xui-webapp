@@ -17,6 +17,8 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 
 const { DataTableArgument } = require('codeceptjs');
 
+const { Then, When } = require('@cucumber/cucumber');
+
 Then('I see case edit page displayed', async function () {
   expect(await caseEditPage.amOnPage(), 'Case edit page is not displayed').to.be.true;
 });

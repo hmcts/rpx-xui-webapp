@@ -120,11 +120,11 @@ describe('HearingViewSummaryComponent', () => {
     expect(component.template).toEqual(HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE);
   });
 
-  it('should remove the Judge Details where isPanelRequired is set to true', () => {
+  it('should remove the Judge Details from view summary where isPanelRequired is set to true', () => {
     const testTemplate = HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE.filter((section) => section.sectionHTMLTitle !== '<h2 class="govuk-heading-m">Judge details</h2>');
     USER.userInfo.roles.push('hearing-manager');
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
-    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
@@ -142,11 +142,11 @@ describe('HearingViewSummaryComponent', () => {
     expect(component.template).toEqual(testTemplate);
   });
 
-  it('should remove the Panel Details where isPanelRequired is set to false', () => {
+  it('should remove the Panel Details from view summary where isPanelRequired is set to false', () => {
     const testTemplate = HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE.filter((section) => section.sectionHTMLTitle !== '<h2 class="govuk-heading-m">Panel details</h2>');
     USER.userInfo.roles.push('hearing-manager');
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
-    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = false;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
@@ -164,11 +164,11 @@ describe('HearingViewSummaryComponent', () => {
     expect(component.template).toEqual(testTemplate);
   });
 
-  it('should remove the Judge Details where isPanelRequired is set to true', () => {
+  it('should remove the Judge Details from view only where isPanelRequired is set to true', () => {
     const testTemplate = HEARING_VIEW_ONLY_SUMMARY_TEMPLATE.filter((section) => section.sectionHTMLTitle !== '<h2 class="govuk-heading-m">Judge details</h2>');
     USER.userInfo.roles.push('hearing-viewer');
     featureToggleServiceMock.isEnabled.and.returnValue(of());
-    hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
@@ -186,7 +186,7 @@ describe('HearingViewSummaryComponent', () => {
     expect(component.template).toEqual(testTemplate);
   });
 
-  it('should remove the Panel Details where isPanelRequired is set to false', () => {
+  it('should remove the Panel Details from view only where isPanelRequired is set to false', () => {
     const testTemplate = HEARING_VIEW_ONLY_SUMMARY_TEMPLATE.filter((section) => section.sectionHTMLTitle !== '<h2 class="govuk-heading-m">Panel details</h2>');
     USER.userInfo.roles.push('hearing-viewer');
     featureToggleServiceMock.isEnabled.and.returnValue(of());

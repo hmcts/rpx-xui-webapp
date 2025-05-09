@@ -105,6 +105,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
             id: 'backendError', message: HearingSummaryEnum.BackendError
           };
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+          this.loadingService.unregister(loadingToken);
         } else {
           // Reset the error context if there is no error on subsequent requests
           this.serverError = null;

@@ -931,8 +931,14 @@ describe('workAllocation.utils', () => {
     ];
 
     const expectedCaseList = ['4', '2', '5'];
-    sinon.stub(util, 'searchCasesById').resolves({
-      cases: mockCaseData
+    let sandbox: sinon.SinonSandbox;
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
     });
 
     it('should return empty list if there is nothing given', async () => {
@@ -944,6 +950,7 @@ describe('workAllocation.utils', () => {
     });
 
     it('should avoid duplicating case ids', async () => {
+      sandbox.stub(http, 'post').resolves({ data: { cases: mockCaseData } });
       expect(await getCaseIdListFromRoles(secondRoleAssignment, req)).to.eql(mockCaseData);
     });
   });

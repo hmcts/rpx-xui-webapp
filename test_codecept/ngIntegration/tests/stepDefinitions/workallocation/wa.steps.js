@@ -38,6 +38,9 @@ const taskManager_action = ['Reassign task', 'Unassign task'];
 
 const caseCreatePage = new CreateCasePage();
 const caseListPage = new CaseListPage();
+
+const { Then, Given } = require('@cucumber/cucumber');
+
 Given('I set MOCK My tasks count {int}', async function (taskCount) {
   const alltasks = workAllocationMockData.getMyTasks(taskCount);
   global.scenarioData['workallocation1.mytasks'] = alltasks;

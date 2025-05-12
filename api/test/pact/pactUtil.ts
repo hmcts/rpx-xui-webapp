@@ -111,5 +111,6 @@ export async function postS2SLease(S2SUrl: string, payload: any): Promise<any> {
       'ServiceAuthorization': 'ServiceAuthToken'
     }
   };
+  console.log('postS2SLease:-', S2SUrl, payload);
   return await axios.post(S2SUrl, payload, axiosConfig);
 }

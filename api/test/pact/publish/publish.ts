@@ -20,7 +20,7 @@ const publish = async (): Promise<void> => {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ? getPactBrokerURL() : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
       getConfigValue(PACT_BRANCH_NAME) : 'Dev';
-
+    console.log('PACT URL for testing:-', pactBroker);
     const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
       getConfigValue(PACT_CONSUMER_VERSION) : git.short();
 

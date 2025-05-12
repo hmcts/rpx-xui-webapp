@@ -1061,7 +1061,7 @@ describe('QueryManagementContainerComponent', () => {
       fixture.detectChanges();
 
       component.getAttachmentHintText().subscribe((attachment) => {
-        expect(attachment).toBeNull();
+        expect(attachment).toBe('Generic message');
       });
     }));
 

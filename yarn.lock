@@ -3630,11 +3630,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@hmcts/ccd-case-ui-toolkit@link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit::locator=rpx-exui%40workspace%3A."
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade":
+  version: 7.1.78-govuk-frontend-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  checksum: 10/4f353b37ccfd525e85ba54aae9bd021ba67ca3d20ab2f703e9bb69849545b8c081c60696e0749dacb2e15fb2bc28034a5478ffff091f91b632a7a815e22cdfa9
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@hmcts/ccpay-web-component@npm:6.2.1":
   version: 6.2.1
@@ -22262,7 +22265,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "link:../ccd-case-ui-toolkit/dist/ccd-case-ui-toolkit"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-govuk-frontend-upgrade"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

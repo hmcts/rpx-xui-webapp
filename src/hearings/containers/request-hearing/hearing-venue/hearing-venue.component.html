@@ -50,7 +50,7 @@
                     }">
             <div class="location-picker-custom">
               <div class="search-location">
-                <label id="input-selected-location-label" class="govuk-body">
+                <label id="input-selected-location-label" for="searchVenueLocation" class="govuk-body">
                   {{ 'Search for a location by name' | rpxTranslate }}
                 </label>
                 <br>
@@ -82,6 +82,7 @@
               <ul *ngIf="selectedLocations.length" class="hmcts-filter-tags selection-container">
                 <li class="location-selection" *ngFor="let selection of selectedLocations">
                   <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">
+                    <span class="sr-only">{{'Click to remove: ' | rpxTranslate}}</span>
                     {{ selection.court_name }}
                   </a>
                 </li>

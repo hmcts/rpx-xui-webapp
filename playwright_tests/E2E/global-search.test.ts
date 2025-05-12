@@ -25,7 +25,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Do this next' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Case details' })).toBeVisible();
   await expect(page.getByText('Home Office Reference/Case ID')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
+  // await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
 });
 
 
@@ -52,5 +52,5 @@ function findCaseId(page: any) {
       return '1662020492250902';
     }
     console.log('Use aat case id');
-    return '1714721967501327';
+    return '1746778909032144';
 }

@@ -59,6 +59,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
   public static readonly TRIGGER_TEXT_START = 'Continue';
 
+  public readonly CIVIL_JURISDICTION = 'CIVIL';
+
   private queryItemId: string;
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
@@ -80,6 +82,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
 
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
@@ -389,11 +392,12 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         const caseTypeId = caseView.case_type.id;
         const messages = hintText?.attachment || [];
 
-        const filteredMessages = messages.filter((msg) => {
-          if (!msg.jurisdiction && !msg.caseType) {
-            return false;
-          }
+        // Return empty string if jurisdiction is 'CIVIL' and queryCreateContext is 'RESPOND'
+        if (jurisdictionId.toUpperCase() === this.CIVIL_JURISDICTION.toUpperCase() && this.queryCreateContext === QueryCreateContext.RESPOND) {
+          return '';
+        }
 
+        const filteredMessages = messages.filter((msg) => {
           if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
             return false;
           }
@@ -404,11 +408,14 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           return caseTypeMatches || onlyJurisdictionMatches;
         });
 
-        if (filteredMessages.length === 0) {
+        const defaultHintText = messages.filter((msg) => !msg.jurisdiction && !msg.caseType && msg.hintText);
+        const relevantHintText = filteredMessages.length > 0 ? filteredMessages : defaultHintText;
+
+        if (relevantHintText.length === 0) {
           return null;
         }
 
-        return filteredMessages.map((msg) => msg.hintText).join('\n\n');
+        return relevantHintText.map((msg) => msg.hintText).join('\n\n');
       })
     );
   }
@@ -619,11 +626,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   private extractCaseQueriesFromCaseField(caseField: CaseField) {
-    const { field_type, value } = caseField;
+    const { field_type, value, display_context } = caseField;
 
     // Handle Complex type fields
     if (field_type.type === QueryManagementContainerComponent.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && this.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && display_context !== QueryManagementContainerComponent.DISPLAY_CONTEXT_READONLY && this.isNonEmptyObject(value)) {
         return value;
       }
       return null;

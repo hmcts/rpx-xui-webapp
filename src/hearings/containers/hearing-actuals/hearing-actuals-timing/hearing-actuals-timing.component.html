@@ -86,9 +86,9 @@
               [ngClass]="{'govuk-form-group--error': submitted && formGroup.get('recordTimes').errors}">
           <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-              <h1 class="govuk-fieldset__heading">
+              <h3 class="govuk-fieldset__heading">
                 {{ 'Do you need to record times the hearing was paused?' | rpxTranslate }}
-              </h1>
+              </h3>
             </legend>
             <span class="govuk-error-message" *ngIf="submitted && formGroup.get('recordTimes').hasError('mandatory')">
               <span

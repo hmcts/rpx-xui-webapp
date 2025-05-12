@@ -3823,24 +3823,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.75-angular-upgrade-rc2":
-  version: 7.1.75-angular-upgrade-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.75-angular-upgrade-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc2":
+  version: 7.1.78-angular-upgrade-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d9d2de9545b17ec6c368f6addf601420d3df34ad491611dd0e90b639eb6475ae5a0816e8819c6f38b446e9050ebeeefb600cfe50796d1f8e66db061806243ebd
+  checksum: 10/63144ccee4b37589c5c348c2089bf1826f549ed98f1548993717468f6236f2d3f5800d055e5de3ba717f8bfa075935d8900182e69619389fbdde3725da3fcbbe
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.2.14-beta3":
-  version: 6.2.14-beta3
-  resolution: "@hmcts/ccpay-web-component@npm:6.2.14-beta3"
+"@hmcts/ccpay-web-component@npm:6.2.14":
+  version: 6.2.14
+  resolution: "@hmcts/ccpay-web-component@npm:6.2.14"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/eb3fe315f0e37061e28c90fbe54d983a96027bc596c95ac45d8036e49a598861856cdb3048873a18381e2ce85ceee03b7f72b00fe84514a10e98267d186c6283
+  checksum: 10/aa32a81dac17cc8ca9e36025d73ff4f4c378e748daf062b7730da9d5b65a3db3d4753e5687f758b98b500848a73864f0e9d89868a4c0ee11ec04e453d65ceaaf
   languageName: node
   linkType: hard
 
@@ -3920,16 +3920,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.43-angular-upgrade-rc1":
-  version: 2.0.43-angular-upgrade-rc1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.43-angular-upgrade-rc1"
+"@hmcts/rpx-xui-common-lib@npm:2.0.44-angular-upgrade-rc1":
+  version: 2.0.44-angular-upgrade-rc1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-angular-upgrade-rc1"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/f417c2267207f16524a8ddc90ecd62ab0ec2432feb1442681eb5769cfae0b0d0597e86d2c2751231d2b000fd240c6ba4f63eb9d74c60e39c50d492472a6c0c2b
+  checksum: 10/566de188087b0c8e4da3922ab7ff0bb792ef2a44cb84a3027904eec55e225ab1ee59292e5e673c6564ac25337fe87d7d96bcddfedeb4bf8183db187fa72db24d
   languageName: node
   linkType: hard
 
@@ -23328,13 +23328,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.75-angular-upgrade-rc2"
-    "@hmcts/ccpay-web-component": "npm:6.2.14-beta3"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-angular-upgrade-rc2"
+    "@hmcts/ccpay-web-component": "npm:6.2.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.43-angular-upgrade-rc1"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-angular-upgrade-rc1"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

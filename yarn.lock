@@ -3727,16 +3727,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.44":
-  version: 2.0.44
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44"
+"@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade":
+  version: 2.0.44-govuk-frontend-upgrade
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/57927b358e90c582b401478780056971f9100772d32638a78d3dec2e94c8e7c66c31fa9c955443a2764c4f09a922ddd1af6510e20a3939d3d347743d300dbf90
+  checksum: 10/2334f7787399d60d4cbedad426bd0f635fefa63235653d4b29e50376ac8d38107ea440828ab8feff6c27e8859d11c252116b53f429af7d27214a79db9517686b
   languageName: node
   linkType: hard
 
@@ -22271,7 +22271,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.44"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-govuk-frontend-upgrade"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

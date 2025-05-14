@@ -50,8 +50,8 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 
   logger.info('Setting session and cookies');
 
-  res.cookie(cookieUserId, userinfo.uid);
-  res.cookie(cookieToken, accessToken);
+  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
+  res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
 
   if (!req.isRefresh) {
     return res.redirect('/');
@@ -121,6 +121,7 @@ export const getXuiNodeMiddleware = () => {
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
+      sameSite: 'Lax',
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
     },
     name: 'xui-webapp',

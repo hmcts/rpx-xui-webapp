@@ -1,8 +1,7 @@
-import logger from '@pact-foundation/pact-node/src/logger';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-
+import * as log4jui from '../lib/log4jui';
 import { deleteSpecificAccessRoles, restoreDeletedRole } from '../accessManagement';
 import { sendDelete } from '../common/crudService';
 import { getConfigValue } from '../configuration';
@@ -15,6 +14,8 @@ import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
 import { logAccessRequest } from '../services/lau';
+
+const logger = log4jui.getLogger('specificAccessOrchastrator');
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;

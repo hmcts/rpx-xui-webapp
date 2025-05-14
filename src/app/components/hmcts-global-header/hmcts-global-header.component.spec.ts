@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { UserService } from '../../../app/services/user/user.service';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -65,14 +66,11 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
           feature: combineReducers(fromNocStore.reducers)
-        })
-      ],
+        })],
       providers: [
         {
           provide: Store,
@@ -93,7 +91,9 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
           useValue: {
             isEnabled: (flag) => of(flags[flag])
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();
@@ -429,14 +429,11 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
           feature: combineReducers(fromNocStore.reducers)
-        })
-      ],
+        })],
       providers: [
         {
           provide: Store,
@@ -453,7 +450,9 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
           useValue: {
             isEnabled: (flag) => of(flags[flag])
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

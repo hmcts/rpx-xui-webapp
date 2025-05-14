@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FilterError, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffSearchComponent } from './staff-search.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StaffSearchComponent', () => {
   let component: StaffSearchComponent;
@@ -46,14 +47,13 @@ describe('StaffSearchComponent', () => {
     mockStaffDataFilterService.search.and.callThrough();
     TestBed.configureTestingModule({
       declarations: [StaffSearchComponent],
-      imports: [
-        HttpClientTestingModule,
-        ReactiveFormsModule
-      ],
+      imports: [ReactiveFormsModule],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
-        { provide: FilterService, useValue: mockFilterService }
+        { provide: FilterService, useValue: mockFilterService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

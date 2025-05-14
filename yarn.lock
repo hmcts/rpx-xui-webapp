@@ -3098,22 +3098,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.44":
-  version: 2.0.44
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44"
+"@hmcts/rpx-xui-common-lib@npm:2.0.44-2541-rc1":
+  version: 2.0.44-2541-rc1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-2541-rc1"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/57927b358e90c582b401478780056971f9100772d32638a78d3dec2e94c8e7c66c31fa9c955443a2764c4f09a922ddd1af6510e20a3939d3d347743d300dbf90
+  checksum: 10/73c2c24e2c5b7e6a0cbfb3658af47f847511c9db3001a1955fd8f4acd9cf0dc3449769a29b39c90bbe2ab3660a1488ac110567edb6600444665c2af4d47df555
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.6":
-  version: 2.30.6
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6"
+"@hmcts/rpx-xui-node-lib@npm:2.30.6-2541-rc1":
+  version: 2.30.6-2541-rc1
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6-2541-rc1"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3135,7 +3135,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
     ts-auto-mock: "npm:^3.5.0"
     ttypescript: "npm:^1.5.13"
-  checksum: 10/210602598900bdd86e05640a53069311abe76eb86c887708b0dd50314978d35bf9e72a1670a8eea7be6bb9e3bbab9b95d4b694ee7b3f916dbf2c06913637ac0f
+  checksum: 10/835cdaad087a9c4633076af7d4a51c4ad8bc3be56b23b5ade8770f8e40183676193a5c1f93a3154c8681f2ccb64f2368380dab9ac646a8eb68c13b10b9698095
   languageName: node
   linkType: hard
 
@@ -21185,8 +21185,8 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.0.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.44"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-2541-rc1"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.6-2541-rc1"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -21309,7 +21309,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: "npm:1.8.1"
     protractor-screenshot-utils: "npm:^1.0.5"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.0.11"
+    rpx-xui-translation: "npm:1.0.11-same-site-rc3"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -21338,9 +21338,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.11":
-  version: 1.0.11
-  resolution: "rpx-xui-translation@npm:1.0.11"
+"rpx-xui-translation@npm:1.0.11-same-site-rc3":
+  version: 1.0.11-same-site-rc3
+  resolution: "rpx-xui-translation@npm:1.0.11-same-site-rc3"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -21348,7 +21348,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^15.2.9
     "@angular/core": ^15.2.9
-  checksum: 10/d1d348366d1f01f662f48a5f94561ad381b0db11f8cb97265b33dd61fe710007da96f64b21d0d2abeead579dfefc8fca72cac52c1875b705e696a3a72e60fde6
+  checksum: 10/ef8e669387d46a3763fcfd8b5e4e1d2c1c0c8048ceb5ced4fd6a5adc42dc83529598a6053ac2f8fdf2608871a41e3416608b1676899261358e0147a0b99781e8
   languageName: node
   linkType: hard
 

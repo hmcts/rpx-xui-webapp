@@ -24,7 +24,8 @@ import {
   SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
-  SYSTEM_USER_PASSWORD
+  SYSTEM_USER_PASSWORD,
+  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE
 } from '../configuration/references';
 import { client, trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
@@ -208,7 +209,10 @@ export const getXuiNodeMiddleware = async () => {
     }
   };
 
-  options.serviceOverride = await getClientServiceDetails();
+  if (showFeature(FEATURE_QUERY_IDAM_SERVICE_OVERRIDE)) {
+    logger.info('Querying IDAM service override');
+    options.serviceOverride = await getClientServiceDetails();
+  }
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
   logger._logger.info('Setting XuiNodeLib options');

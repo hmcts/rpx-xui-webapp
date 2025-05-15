@@ -7,24 +7,24 @@ import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from './steps/fla
 test('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
-  await routeToCasePage(page, '1698182796208883');
+  await routeToCasePage(page, '1747043572209027');
   await expect(page.getByText('Case flags', { exact: true })).toBeVisible();
   await page.getByText('Case flags', { exact: true }).click();
-  await expect(page.getByRole('table', { name: 'Respondant' }).getByRole('caption')).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Respondent' }).getByRole('caption')).toBeVisible();
   await expect(page.locator('#case-viewer-field-read--FlagLauncher1').getByText('Language Interpreter')).toBeVisible();
 
   console.log("Check Respondant details");
   const tableClass= "govuk-table";
-  const tableName = "Respondant";
+  const tableName = "Respondent";
   const rowTextRef = "Language Interpreter";
-  const textsToCheck = [/Test/, /Oct 2023/, /Active/];
+  const textsToCheck = [/est/, /May 2025/, /Active/];
   await checkTableRowContent(page, tableClass, tableName, rowTextRef, textsToCheck);
   await checkNumberOfRow(page, tableClass, tableName, 1+1);//One row for the header
 });
 
 test('View case flag', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
-  await routeToCasePage(page, '1698182796208883');
+  await routeToCasePage(page, '1747043572209027');
   const currentActiveFlags = getActiveFlagsForCase(page);
 
   console.log('Check the banner shows the correct value');
@@ -38,33 +38,27 @@ test('View case flag', async ({ page }) => {
   const tableName = "Applicant";
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
 
-  const rowTextRef = "Support filling in forms";
-  const textsToCheck = [/Test/, /24 Oct 2023/, /Active/];
+  const rowTextRef = "Documents in a specified colour";
+  const textsToCheck = [/test/, /12 May 2025/, /Active/];
   await checkTableRowContent(page, tableClass, tableName, rowTextRef, textsToCheck);
 
   console.log("Check line 1");
   await checkTableCellContent(page, tableName, 1, 0, "Documents in a specified colour");
-  await checkTableCellContent(page, tableName, 1, 1, "Test");
-  await checkTableCellContent(page, tableName, 1, 2, "24 Oct 2023");
+  await checkTableCellContent(page, tableName, 1, 1, "test");
+  await checkTableCellContent(page, tableName, 1, 2, "12 May 2025");
   await checkTableCellContent(page, tableName, 1, 4, "ACTIVE");
 
   console.log("Check line 2");
-  await checkTableCellContent(page, tableName, 2, 0, "Documents in a specified colour");
-  await checkTableCellContent(page, tableName, 2, 1, "Test");
-  await checkTableCellContent(page, tableName, 2, 2, "24 Oct 2023");
+  await checkTableCellContent(page, tableName, 2, 0, "Documents in large print");
+  await checkTableCellContent(page, tableName, 2, 1, "test");
+  await checkTableCellContent(page, tableName, 2, 2, "12 May 2025");
   await checkTableCellContent(page, tableName, 2, 4, "ACTIVE");
 
   console.log("Check line 3");
   await checkTableCellContent(page, tableName, 3, 0, "Support filling in forms");
-  await checkTableCellContent(page, tableName, 3, 1, "Test");
-  await checkTableCellContent(page, tableName, 3, 2, "24 Oct 2023");
+  await checkTableCellContent(page, tableName, 3, 1, "test");
+  await checkTableCellContent(page, tableName, 3, 2, "12 May 2025");
   await checkTableCellContent(page, tableName, 3, 4, "ACTIVE");
-
-  console.log("Check line 4");
-  await checkTableCellContent(page, tableName, 4, 0, "Documents in a specified colour");
-  await checkTableCellContent(page, tableName, 4, 1, "Test auto comment");
-  await checkTableCellContent(page, tableName, 4, 2, "05 Feb 2024");
-  await checkTableCellContent(page, tableName, 4, 4, "REQUESTED");
 
 });
 

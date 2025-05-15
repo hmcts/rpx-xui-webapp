@@ -17,7 +17,6 @@ import { Subscription } from 'rxjs';
 export class RequestHearingComponent implements OnDestroy {
   private readonly reloadMessage = 'The Party IDs for this request appear mismatched, please reload and start the request again.';
   public action = ACTION;
-  public caseId: string;
   public hearingStateSub: Subscription;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;

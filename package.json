@@ -92,7 +92,7 @@
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
     "@hmcts/ccd-case-ui-toolkit": "7.1.78-angular-upgrade-rc2",
-    "@hmcts/ccpay-web-component": "6.2.14",
+    "@hmcts/ccpay-web-component": "6.2.15-beta1",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.16-angular-upgrade",
     "@hmcts/nodejs-healthcheck": "1.8.5",

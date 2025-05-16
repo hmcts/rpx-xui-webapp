@@ -3823,12 +3823,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade-2":
-  version: 7.1.78-govuk-frontend-upgrade-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade-3":
+  version: 7.1.78-govuk-frontend-upgrade-3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade-3"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/21d305a80602704d469b474c3ca18b44ccffba11d474d39788971037d5eaccb514bd7bcb66f50bdd94c79ba43b8fd1cbfa455863cdfa0a9a3d82d2822f199493
+  checksum: 10/4e121cd2ce9259ae5b2bd2525ee6ba62810c12e1916d8efe1e4c4c8016bfe44d0e527934cf646189fd0f4a529ad6730578d7369339fb39cbe85211a9e65d4e0d
   languageName: node
   linkType: hard
 
@@ -3851,9 +3851,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.16-angular-upgrade":
-  version: 4.0.16-angular-upgrade
-  resolution: "@hmcts/media-viewer@npm:4.0.16-angular-upgrade"
+"@hmcts/media-viewer@npm:4.0.16-govuk-frontend-upgrade-2":
+  version: 4.0.16-govuk-frontend-upgrade-2
+  resolution: "@hmcts/media-viewer@npm:4.0.16-govuk-frontend-upgrade-2"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3872,7 +3872,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/f3714621d08e37e0c34dfc96fb0e01465b2ca617932974af9484c15fcfb9e377e4994480870e1db04fb1786d977f1262e917a55054cc93cc266e4033be4254b1
+  checksum: 10/7a03dc85d38e8203b4a0e341fa9241b03891c3f1c4f6cfa1ec369eb0f6aff17ad556e2e244f3d99ff3950dc3b9510db4dd7b73868ba90922755434223d99c3a7
   languageName: node
   linkType: hard
 
@@ -3920,16 +3920,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade-2":
-  version: 2.0.44-govuk-frontend-upgrade-2
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade-2"
+"@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade-3":
+  version: 2.0.44-govuk-frontend-upgrade-3
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade-3"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/c47a59ace7f81d748f1641e809356d7f504faefa94105ed2ef76a6de4f876c73deb71a646798cb0d26873ccc8e938fd08265a5aa6d35dc2fb3d0c8655b39de0e
+  checksum: 10/983441e8da3a1a71cc3d34703d4dbea67d4ca705677dd42b5ffe26a77409920d70c738513b4fe782f4bb052c7b51f1a02ce432907b070ce8dd2dff5d1f65a830
   languageName: node
   linkType: hard
 
@@ -15218,10 +15218,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^3.12.0":
-  version: 3.15.0
-  resolution: "govuk-frontend@npm:3.15.0"
-  checksum: 10/0eba38673c523d1461c617305155be147d05cf079d772e330cc9ad236729a2ee490fb67b017092d4b4e6d1c444649fe45916c2efbc9b6e2c5dd3f7742e776b1b
+"govuk-frontend@npm:^4.9.0":
+  version: 4.9.0
+  resolution: "govuk-frontend@npm:4.9.0"
+  checksum: 10/03bae503b0c5aabcfb2724409f55f2221101a60f5334488319c9911408637efaa6737b733d4774436a520e9a79bf52bd9ae9a9e60f61a929c529b8125c0d5e29
   languageName: node
   linkType: hard
 
@@ -23328,13 +23328,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-govuk-frontend-upgrade-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-govuk-frontend-upgrade-3"
     "@hmcts/ccpay-web-component": "npm:6.2.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"
+    "@hmcts/media-viewer": "npm:4.0.16-govuk-frontend-upgrade-2"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-govuk-frontend-upgrade-2"
+    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-govuk-frontend-upgrade-3"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -23406,7 +23406,7 @@ __metadata:
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^3.0.0"
     govuk-elements-sass: "npm:^3.1.3"
-    govuk-frontend: "npm:^3.12.0"
+    govuk-frontend: "npm:^4.9.0"
     govuk_frontend_toolkit: "npm:^9.0.0"
     helmet: "npm:^3.21.3"
     http-proxy-middleware: "npm:3.0.3"

@@ -60,31 +60,76 @@
 /**
  * The "Manage +" button should mirror the GDS accordion functionality. However,
  * it still needs to be in keeping with the styling within the table.
+ * EXUI-477 - Change from govuk-accordion to xui custom styling
  */
-.govuk-accordion__section-header {
+.xui-manage-header {
   padding-top: 5px;
 }
-.govuk-accordion__section-button {
-  &.xui-reset {
-    font-size: 19px;
-    margin-right: 20px;
-    text-decoration: underline;
-    font-weight: 400;
-    &:focus {
-      text-decoration: none;
-    }
-    .govuk-accordion__icon {
-      height: 14px;
-      width: 14px;
-      right: 0;
-      top: 15px;
-      margin-top: 0;
-    }
-    &[aria-expanded=true] {
-      .govuk-accordion__icon::after {
-        display: none;
-      }
-    }
+.xui-manage-button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 19px;
+  color: #1d70b8;
+  text-decoration: underline;
+  font-weight: 400;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin: 0 40px 0 0;
+  padding: 0;
+  border-width: 0;
+  text-align: left;
+  margin-right: 20px;
+  padding-right: 20px;
+
+  &:focus {
+    text-decoration: none;
+    outline: none;
+  }
+
+  &:focus .xui-manage-text {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+  }
+}
+.xui-manage-text {
+  display: inline-block;
+}
+.xui-manage-icon {
+  position: absolute;
+  right: 0;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  margin-top: 0;
+  pointer-events: none;
+  transform: rotate(45deg);
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    height: 14px;
+    width: 4px;
+    background-color: black;
+    left: 5px;
+  }
+
+  &:before {
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    transform: rotate(-45deg);
+  }
+}
+.xui-manage-button[aria-expanded='true'] .xui-manage-icon {
+  &:after {
+    width: 0px;
   }
 }
 .govuk-table__row {

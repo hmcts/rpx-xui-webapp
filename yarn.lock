@@ -3113,24 +3113,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc2":
-  version: 7.1.78-angular-upgrade-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc3":
+  version: 7.1.78-angular-upgrade-rc3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc3"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/63144ccee4b37589c5c348c2089bf1826f549ed98f1548993717468f6236f2d3f5800d055e5de3ba717f8bfa075935d8900182e69619389fbdde3725da3fcbbe
+  checksum: 10/fd46ad42f81d4e8e87380d7b2c7d14178fbd84ae9e728fc20b558eefe484c9d10a7bd0278fcae1a1f4e6b4b3d162a5f253d4899e6db391ab22892bd4c3e5b089
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.2.15-beta1":
-  version: 6.2.15-beta1
-  resolution: "@hmcts/ccpay-web-component@npm:6.2.15-beta1"
+"@hmcts/ccpay-web-component@npm:6.2.15":
+  version: 6.2.15
+  resolution: "@hmcts/ccpay-web-component@npm:6.2.15"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/82b7a81987c8ce491c2f79668e2736674a9035e1c49eb9e98a37305643ab1bc1ad8e805910ae9253981ad2ab3ff874a897464d880cdf6d466b5d05d02c52d823
+  checksum: 10/8937f29e5f3fdb34502ec8cf2bd3a2474255dcb3015e0812c3c0b4c126a938a395496ad65ff63082dc949b20cbca2546371f52cd0b02987844910156ef978990
   languageName: node
   linkType: hard
 
@@ -21973,8 +21973,8 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-angular-upgrade-rc2"
-    "@hmcts/ccpay-web-component": "npm:6.2.15-beta1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-angular-upgrade-rc3"
+    "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"

@@ -4,6 +4,7 @@ const path = require('path');
 const axios = require('axios');
 
 const roleAssignmentsService = require('../roleAssignments/index');
+const rasResponseStore = require('./rasResponse');
 
 class MockSessionService {
   constructor(mode) {
@@ -88,9 +89,10 @@ class MockSessionService {
       const sessionFile = await this.getSessionFileAuth(auth);
       let sessionJson = await fs.readFileSync(sessionFile, 'utf8');
       sessionJson = JSON.parse(sessionJson);
-
-      if (sessionJson.roleAssignmentResponse) {
+      if (rasResponseStore.has(auth)) {
         break;
+      } else if (counter === 0) {
+        rasResponseStore.set(auth, []);
       } else if (counter > 15) {
         throw ('Session not updated with actual role assignments');
       }
@@ -123,25 +125,15 @@ class MockSessionService {
   async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
     await this.waitForSessionWithRoleAssignments(auth);
 
-    const sessionFile = await this.getSessionFileAuth(auth);
-
     roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments);
-    let sessionJson = await fs.readFileSync(sessionFile);
-
-    roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments);
-
-    sessionJson = JSON.parse(sessionJson);
-    if (sessionJson.roleAssignmentResponse) {
-      sessionJson.roleAssignmentResponse.push(...roleAssignments);
+    if (rasResponseStore.has(auth)) {
+      const currentRoles = rasResponseStore.get(auth);
+      rasResponseStore.set(auth, [...new Set([...currentRoles, ...roleAssignments])]);
     } else {
-      sessionJson.roleAssignmentResponse = roleAssignments;
+      rasResponseStore.set(auth, roleAssignments);
     }
 
-    await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
-
-    sessionJson = await fs.readFileSync(sessionFile, 'utf-8');
-    sessionJson = JSON.parse(sessionJson);
-    return sessionJson.roleAssignmentResponse;
+    return rasResponseStore.get(auth);
   }
 
   async getSessionRolesAndRoleAssignments(auth) {
@@ -150,7 +142,7 @@ class MockSessionService {
     sessionJson = JSON.parse(sessionJson);
     return {
       roles: sessionJson.passport.user.userinfo.roles,
-      roleAssignments: sessionJson.roleAssignmentResponse
+      roleAssignments: rasResponseStore.get(auth)
     };
   }
 

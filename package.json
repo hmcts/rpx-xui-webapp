@@ -175,7 +175,7 @@
     "@angular/cli": "^17.3.16",
     "@angular/compiler-cli": "^17.3.12",
     "@angular/language-service": "~17.3.12",
-    "@axe-core/playwright": "^4.9.1",
+    "@axe-core/playwright": "^4.10.1",
     "@ngrx/schematics": "^17.2.0",
     "@pact-foundation/pact": "^9.18.1",
     "@playwright/test": "^1.52.0",

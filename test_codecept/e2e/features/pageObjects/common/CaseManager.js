@@ -524,7 +524,6 @@ class CaseManager {
 
           cucumberReporter.AddMessage(fieldName + ' : complex write collection values', LOG_LEVELS.Debug);
         }
-
         break;
       default:
         console.log('Unknown field type : ' + ccdFileTagName);

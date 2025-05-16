@@ -10,11 +10,6 @@ export const redisHealth = async (): Promise<boolean> => {
   // Safely check if Redis client exists
   const redisClient = app?.locals?.redisClient;
 
-  if (!redisClient || !redisClient.ping) {
-    logger.info('Redis client not available - health check skipped');
-    return true; // Return true to continue app operation even if Redis isn't available
-  }
-
   return new Promise<boolean>((resolve) => {
     try {
       redisClient.ping((err, pong) => {

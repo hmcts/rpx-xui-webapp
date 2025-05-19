@@ -21,6 +21,12 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import {
+  HEARING_ADDITIONAL_INSTRUCTIONS,
+  HEARING_FACILITIES, HEARING_JUDGE,
+  HEARING_PANEL_REQUIRED,
+  HEARING_STAGE
+} from '../../../../../api/hearings/data/defaultScreenFlow.data';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -301,14 +307,7 @@ describe('HearingEditSummaryComponent', () => {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       screenFlow: [
         ...initialState.hearings.hearingValues.serviceHearingValuesModel.screenFlow,
-        {
-          screenName: 'hearing-panel-required',
-          navigation: [
-            {
-              resultValue: 'hearing-attendance'
-            }
-          ]
-        }
+        HEARING_PANEL_REQUIRED
       ]
     };
     const sectionsToDisplay = [
@@ -334,14 +333,7 @@ describe('HearingEditSummaryComponent', () => {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       screenFlow: [
         ...initialState.hearings.hearingValues.serviceHearingValuesModel.screenFlow,
-        {
-          screenName: 'hearing-panel-required',
-          navigation: [
-            {
-              resultValue: 'hearing-attendance'
-            }
-          ]
-        }
+        HEARING_PANEL_REQUIRED
       ]
     };
     const sectionsToDisplay = [
@@ -367,30 +359,9 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       screenFlow: [
-        {
-          screenName: 'hearing-facilities',
-          navigation: [
-            {
-              resultValue: 'hearing-stage'
-            }
-          ]
-        },
-        {
-          screenName: 'hearing-stage',
-          navigation: [
-            {
-              resultValue: 'hearing-attendance'
-            }
-          ]
-        },
-        {
-          screenName: 'hearing-additional-instructions',
-          navigation: [
-            {
-              resultValue: 'hearing-create-edit-summary'
-            }
-          ]
-        }
+        HEARING_FACILITIES,
+        HEARING_STAGE,
+        HEARING_ADDITIONAL_INSTRUCTIONS
       ]
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
@@ -481,22 +452,8 @@ describe('HearingEditSummaryComponent', () => {
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       screenFlow: [
-        {
-          screenName: 'hearing-stage',
-          navigation: [
-            {
-              resultValue: 'hearing-attendance'
-            }
-          ]
-        },
-        {
-          screenName: 'hearing-additional-instructions',
-          navigation: [
-            {
-              resultValue: 'hearing-create-edit-summary'
-            }
-          ]
-        }
+        HEARING_STAGE,
+        HEARING_ADDITIONAL_INSTRUCTIONS
       ]
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
@@ -1725,14 +1682,7 @@ describe('HearingEditSummaryComponent', () => {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
       facilitiesRequired: [],
       screenFlow: [
-        {
-          screenName: 'hearing-judge',
-          navigation: [
-            {
-              resultValue: 'hearing-stage'
-            }
-          ]
-        }
+        HEARING_JUDGE
       ]
     };
 

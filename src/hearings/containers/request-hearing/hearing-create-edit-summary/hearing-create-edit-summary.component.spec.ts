@@ -8,6 +8,13 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HearingCreateEditSummaryComponent } from './hearing-create-edit-summary.component';
 import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
+import {
+  HEARING_JUDGE, HEARING_PANEL,
+  HEARING_PANEL_REQUIRED, HEARING_TIMING,
+  HEARING_VENUE,
+  HEARING_WELSH,
+  replaceResultValue
+} from '../../../../../api/hearings/data/defaultScreenFlow.data';
 
 let component: HearingCreateEditSummaryComponent;
 let fixture: ComponentFixture<HearingCreateEditSummaryComponent>;
@@ -15,70 +22,12 @@ const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
 const hearingsService = new HearingsService(mockedHttpClient);
 hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 const screenFlow: ScreenNavigationModel[] = [
-  {
-    screenName: 'hearing-venue',
-    conditionKey: 'regionId',
-    navigation: [
-      {
-        conditionOperator: 'INCLUDE',
-        conditionValue: '7',
-        resultValue: 'hearing-welsh'
-      },
-      {
-        conditionOperator: 'NOT INCLUDE',
-        conditionValue: '7',
-        resultValue: 'hearing-panel-required'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-welsh',
-    navigation: [
-      {
-        resultValue: 'hearing-panel-required'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-panel-required',
-    conditionKey: 'isAPanelFlag',
-    navigation: [
-      {
-        conditionOperator: 'EQUALS',
-        conditionValue: true,
-        resultValue: 'hearing-panel'
-      },
-      {
-        conditionOperator: 'EQUALS',
-        conditionValue: false,
-        resultValue: 'hearing-judge'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-judge',
-    navigation: [
-      {
-        resultValue: 'hearing-timing'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-panel',
-    navigation: [
-      {
-        resultValue: 'hearing-timing'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-timing',
-    navigation: [
-      {
-        resultValue: 'hearing-link'
-      }
-    ]
-  }
+  replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required'),
+  replaceResultValue(HEARING_WELSH, 'hearing-judge', 'hearing-panel-required'),
+  HEARING_PANEL_REQUIRED,
+  replaceResultValue(HEARING_JUDGE, 'hearing-panel', 'hearing-timing'),
+  HEARING_PANEL,
+  HEARING_TIMING
 ];
 
 const template: Section[] = [

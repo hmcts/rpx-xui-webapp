@@ -4,7 +4,12 @@ import { getConfigValue, showFeature } from '../configuration';
 import { FORCE_NEW_DEFAULT_SCREEN_FLOW, HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
-import { DEFAULT_SCREEN_FLOW, DEFAULT_SCREEN_FLOW_NEW } from './data/defaultScreenFlow.data';
+import {
+  DEFAULT_SCREEN_FLOW,
+  DEFAULT_SCREEN_FLOW_NEW, HEARING_JUDGE, HEARING_PANEL_REQUIRED, HEARING_PANEL_SELECTOR,
+  HEARING_VENUE, HEARING_WELSH,
+  replaceResultValue
+} from './data/defaultScreenFlow.data';
 import { hmcHearingsUrl } from './hmc.index';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
@@ -14,19 +19,9 @@ import {
 } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 import { trackTrace } from '../lib/appInsights';
+import { ScreenNavigationModel } from './models/screenNavigation.model';
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
-interface NavigationItem {
-  resultValue: string;
-  conditionOperator?: string;
-  conditionValue?: any;
-}
-
-interface Screen {
-  screenName: string;
-  conditionKey?: string;
-  navigation: NavigationItem[];
-}
 
 /**
  * loadServiceHearingValues - get details required to populate the hearing request/amend journey
@@ -95,7 +90,7 @@ export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
   };
 }
 
-export function replaceScreenFlow(screenFlow: Screen[], followingScreen: string): Screen[] {
+export function replaceScreenFlow(screenFlow: ScreenNavigationModel[], followingScreen: string): ScreenNavigationModel[] {
   // Define the sequence to be replaced
   const toReplaceSequence = ['hearing-venue', 'hearing-welsh', 'hearing-judge', 'hearing-panel'];
 
@@ -118,57 +113,12 @@ export function replaceScreenFlow(screenFlow: Screen[], followingScreen: string)
   screenFlow.splice(startIndex, toReplaceSequence.length);
 
   // Define the replacement sequence
-  const newSequence: Screen[] = [
-    {
-      screenName: 'hearing-venue',
-      conditionKey: 'regionId',
-      navigation: [
-        {
-          conditionOperator: 'INCLUDE',
-          conditionValue: '7',
-          resultValue: 'hearing-welsh'
-        },
-        {
-          conditionOperator: 'NOT INCLUDE',
-          conditionValue: '7',
-          resultValue: 'hearing-panel-required'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-welsh',
-      navigation: [
-        { resultValue: 'hearing-panel-required' }
-      ]
-    },
-    {
-      screenName: 'hearing-panel-required',
-      conditionKey: 'isAPanelFlag',
-      navigation: [
-        {
-          conditionOperator: 'EQUALS',
-          conditionValue: true,
-          resultValue: 'hearing-panel-selector'
-        },
-        {
-          conditionOperator: 'EQUALS',
-          conditionValue: false,
-          resultValue: 'hearing-judge'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-judge',
-      navigation: [
-        { resultValue: followingScreen }
-      ]
-    },
-    {
-      screenName: 'hearing-panel-selector',
-      navigation: [
-        { resultValue: followingScreen }
-      ]
-    }
+  const newSequence: ScreenNavigationModel[] = [
+    replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required'),
+    replaceResultValue(HEARING_WELSH, 'hearing-judge', 'hearing-panel-required'),
+    HEARING_PANEL_REQUIRED,
+    replaceResultValue(HEARING_JUDGE, 'hearing-panel', followingScreen),
+    replaceResultValue(HEARING_PANEL_SELECTOR, 'hearing-timing', followingScreen)
   ];
 
   // Insert the new sequence at the same location

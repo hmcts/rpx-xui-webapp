@@ -7,73 +7,22 @@ import {
   toBoolean,
   forceDefaultScreenFlow
 } from './services.index';
-import { DEFAULT_SCREEN_FLOW_NEW } from './data/defaultScreenFlow.data';
+import {
+  DEFAULT_SCREEN_FLOW_NEW, HEARING_JUDGE, HEARING_PANEL, HEARING_PANEL_REQUIRED, HEARING_PANEL_SELECTOR,
+  HEARING_VENUE,
+  HEARING_WELSH,
+  replaceResultValue
+} from './data/defaultScreenFlow.data';
 import * as sinon from 'sinon';
 import * as configuration from '../configuration';
+import { ScreenNavigationModel } from './models/screenNavigation.model';
 
-interface NavigationItem {
-  resultValue: string;
-  conditionOperator?: string;
-  conditionValue?: any;
-}
-
-interface Screen {
-  screenName: string;
-  conditionKey?: string;
-  navigation: NavigationItem[];
-}
-
-const newScreenSequence: Screen[] = [
-  {
-    screenName: 'hearing-venue',
-    conditionKey: 'regionId',
-    navigation: [
-      {
-        conditionOperator: 'INCLUDE',
-        conditionValue: '7',
-        resultValue: 'hearing-welsh'
-      },
-      {
-        conditionOperator: 'NOT INCLUDE',
-        conditionValue: '7',
-        resultValue: 'hearing-panel-required'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-welsh',
-    navigation: [
-      { resultValue: 'hearing-panel-required' }
-    ]
-  },
-  {
-    screenName: 'hearing-panel-required',
-    conditionKey: 'isAPanelFlag',
-    navigation: [
-      {
-        conditionOperator: 'EQUALS',
-        conditionValue: true,
-        resultValue: 'hearing-panel-selector'
-      },
-      {
-        conditionOperator: 'EQUALS',
-        conditionValue: false,
-        resultValue: 'hearing-judge'
-      }
-    ]
-  },
-  {
-    screenName: 'hearing-judge',
-    navigation: [
-      { resultValue: 'next-screen' }
-    ]
-  },
-  {
-    screenName: 'hearing-panel-selector',
-    navigation: [
-      { resultValue: 'next-screen' }
-    ]
-  }
+const newScreenSequence: ScreenNavigationModel[] = [
+  replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required'),
+  replaceResultValue(HEARING_WELSH, 'hearing-judge', 'hearing-panel-required'),
+  HEARING_PANEL_REQUIRED,
+  replaceResultValue(HEARING_JUDGE, 'hearing-panel', 'next-screen'),
+  replaceResultValue(HEARING_PANEL_SELECTOR, 'hearing-timing', 'next-screen')
 ];
 
 describe('hearings services', () => {
@@ -208,63 +157,17 @@ describe('retrieveForceNewDefaultScreenFlow', () => {
   });
   describe('replaceScreenFlow', () => {
     it('should maintain passed in screen flow as flow does not match sequence to replace.', () => {
-      const data: Screen[] = [
-        {
-          screenName: 'hearing-venue',
-          conditionKey: 'regionId',
-          navigation: [
-            {
-              conditionOperator: 'INCLUDE',
-              conditionValue: '7',
-              resultValue: 'hearing-welsh'
-            },
-            {
-              conditionOperator: 'NOT INCLUDE',
-              conditionValue: '7',
-              resultValue: 'hearing-panel-required'
-            }
-          ]
-        }];
+      const data: ScreenNavigationModel[] = [replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required')];
       const result = replaceScreenFlow(data, 'next screen');
       expect(JSON.stringify(result)).equal(JSON.stringify(data));
     });
 
     it('should replace screen flow with matching sequence with new default screen flow', () => {
-      const data: Screen[] = [
-        {
-          screenName: 'hearing-venue',
-          conditionKey: 'regionId',
-          navigation: [
-            {
-              conditionOperator: 'INCLUDE',
-              conditionValue: '7',
-              resultValue: 'hearing-welsh'
-            },
-            {
-              conditionOperator: 'NOT INCLUDE',
-              conditionValue: '7',
-              resultValue: 'hearing-panel-required'
-            }
-          ]
-        },
-        {
-          screenName: 'hearing-welsh',
-          navigation: [
-            { resultValue: 'hearing-judge' }
-          ]
-        },
-        {
-          screenName: 'hearing-judge',
-          navigation: [
-            { resultValue: 'hearing-panel' }
-          ]
-        },
-        {
-          screenName: 'hearing-panel',
-          navigation: [
-            { resultValue: 'hearing-timing' }
-          ]
-        }
+      const data: ScreenNavigationModel[] = [
+        HEARING_VENUE,
+        HEARING_WELSH,
+        HEARING_JUDGE,
+        HEARING_PANEL
       ];
 
       const result = replaceScreenFlow(data, 'next-screen');
@@ -288,17 +191,10 @@ describe('retrieveForceNewDefaultScreenFlow', () => {
       it('should maintiain the screen flow when entered screen flow does not match the pattern screenFlow exists', () => {
         const data = {
           screenFlow: [
-            {
-              screenName: 'hearing-panel',
-              navigation: [
-                { resultValue: 'hearing-timing' }
-              ]
-            }
+            HEARING_PANEL
           ]
-        } as any; // Mocking ServiceHearingValuesModel
-
+        } as any; // Moc
         const result = forceDefaultScreenFlow(data);
-
         expect(result.screenFlow).to.be.an('array');
         expect(result.screenFlow[0].screenName).to.equal('hearing-panel');
       });

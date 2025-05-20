@@ -16,6 +16,13 @@ import {
 } from './models/hearings.enum';
 import { JudicialUserModel } from './models/judicialUser.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import {
+  HEARING_ADDITIONAL_INSTRUCTIONS,
+  HEARING_ATTENDANCE,
+  HEARING_FACILITIES, HEARING_JUDGE, HEARING_LINK, HEARING_PANEL,
+  HEARING_REQUIREMENTS,
+  HEARING_STAGE, HEARING_TIMING, HEARING_VENUE, HEARING_WELSH
+} from '../../api/hearings/data/defaultScreenFlow.data';
 
 export const hearingStageRefData = [
   {
@@ -1813,102 +1820,17 @@ export const serviceHearingValuesModel: ServiceHearingValuesModel = {
     flagAmendURL: '/'
   },
   screenFlow: [
-    {
-      screenName: 'hearing-requirements',
-      navigation: [
-        {
-          resultValue: 'hearing-facilities'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-facilities',
-      navigation: [
-        {
-          resultValue: 'hearing-stage'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-stage',
-      navigation: [
-        {
-          resultValue: 'hearing-attendance'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-attendance',
-      navigation: [
-        {
-          resultValue: 'hearing-venue'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-venue',
-      conditionKey: 'regionId',
-      navigation: [
-        {
-          conditionOperator: 'INCLUDE',
-          conditionValue: '7',
-          resultValue: 'hearing-welsh'
-        },
-        {
-          conditionOperator: 'NOT INCLUDE',
-          conditionValue: '7',
-          resultValue: 'hearing-judge'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-welsh',
-      navigation: [
-        {
-          resultValue: 'hearing-judge'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-judge',
-      navigation: [
-        {
-          resultValue: 'hearing-panel'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-panel',
-      navigation: [
-        {
-          resultValue: 'hearing-timing'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-timing',
-      navigation: [
-        {
-          resultValue: 'hearing-link'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-link',
-      navigation: [
-        {
-          resultValue: 'hearing-additional-instructions'
-        }
-      ]
-    },
-    {
-      screenName: 'hearing-additional-instructions',
-      navigation: [
-        {
-          resultValue: 'hearing-create-edit-summary'
-        }
-      ]
-    }
+    HEARING_REQUIREMENTS,
+    HEARING_FACILITIES,
+    HEARING_STAGE,
+    HEARING_ATTENDANCE,
+    HEARING_VENUE,
+    HEARING_WELSH,
+    HEARING_JUDGE,
+    HEARING_PANEL,
+    HEARING_TIMING,
+    HEARING_LINK,
+    HEARING_ADDITIONAL_INSTRUCTIONS
   ],
   vocabulary: [
     {

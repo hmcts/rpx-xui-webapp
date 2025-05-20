@@ -16,6 +16,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-view-summary.template';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
+import { HEARING_PANEL_REQUIRED } from '../../../../../api/hearings/data/defaultScreenFlow.data';
 
 describe('HearingViewSummaryComponent', () => {
   let component: HearingViewSummaryComponent;
@@ -128,14 +129,7 @@ describe('HearingViewSummaryComponent', () => {
     component.hearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
     component.hearingRequestMainModel.hearingDetails.isAPanelFlag = true;
     component.serviceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
-    const hearingPanelRequiredScreen = {
-      screenName: 'hearing-panel-required',
-      navigation: [
-        {
-          resultValue: 'hearing-attendance'
-        }
-      ]
-    };
+    const hearingPanelRequiredScreen = HEARING_PANEL_REQUIRED;
     component.serviceHearingValuesModel.screenFlow.push(hearingPanelRequiredScreen);
     fixture.detectChanges();
     component.ngOnInit();

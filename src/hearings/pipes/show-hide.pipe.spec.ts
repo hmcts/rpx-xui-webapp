@@ -8,6 +8,11 @@ import { HearingChannelEnum, IsHiddenSource, MemberType, RequirementType } from 
 import { LocationByEpimmsModel } from '../models/location.model';
 import { State } from '../store/reducers';
 import { ShowHidePipe } from './show-hide.pipe';
+import {
+  HEARING_FACILITIES, HEARING_JUDGE, HEARING_PANEL,
+  HEARING_REQUIREMENTS,
+  HEARING_STAGE
+} from '../../../api/hearings/data/defaultScreenFlow.data';
 
 const storeMock = jasmine.createSpyObj('Store', [
   'dispatch', 'pipe'
@@ -204,30 +209,9 @@ describe('ShowHidePipe', () => {
           serviceHearingValuesModel: {
             ...initialState.hearings.hearingValues.serviceHearingValuesModel,
             screenFlow: [
-              {
-                screenName: 'hearing-requirements',
-                navigation: [
-                  {
-                    resultValue: 'hearing-facilities'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-facilities',
-                navigation: [
-                  {
-                    resultValue: 'hearing-stage'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-stage',
-                navigation: [
-                  {
-                    resultValue: 'hearing-attendance'
-                  }
-                ]
-              }
+              HEARING_REQUIREMENTS,
+              HEARING_FACILITIES,
+              HEARING_STAGE
             ]
           }
         }
@@ -246,30 +230,9 @@ describe('ShowHidePipe', () => {
           serviceHearingValuesModel: {
             ...initialState.hearings.hearingValues.serviceHearingValuesModel,
             screenFlow: [
-              {
-                screenName: 'hearing-requirements',
-                navigation: [
-                  {
-                    resultValue: 'hearing-facilities'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-facilities',
-                navigation: [
-                  {
-                    resultValue: 'hearing-stage'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-panel',
-                navigation: [
-                  {
-                    resultValue: 'hearing-timing'
-                  }
-                ]
-              }
+              HEARING_REQUIREMENTS,
+              HEARING_FACILITIES,
+              HEARING_PANEL
             ]
           }
         }
@@ -290,30 +253,9 @@ describe('ShowHidePipe', () => {
           serviceHearingValuesModel: {
             ...initialState.hearings.hearingValues.serviceHearingValuesModel,
             screenFlow: [
-              {
-                screenName: 'hearing-requirements',
-                navigation: [
-                  {
-                    resultValue: 'hearing-facilities'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-facilities',
-                navigation: [
-                  {
-                    resultValue: 'hearing-stage'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-stage',
-                navigation: [
-                  {
-                    resultValue: 'hearing-attendance'
-                  }
-                ]
-              }
+              HEARING_REQUIREMENTS,
+              HEARING_FACILITIES,
+              HEARING_STAGE
             ]
           }
         }
@@ -332,30 +274,9 @@ describe('ShowHidePipe', () => {
           serviceHearingValuesModel: {
             ...initialState.hearings.hearingValues.serviceHearingValuesModel,
             screenFlow: [
-              {
-                screenName: 'hearing-requirements',
-                navigation: [
-                  {
-                    resultValue: 'hearing-facilities'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-facilities',
-                navigation: [
-                  {
-                    resultValue: 'hearing-stage'
-                  }
-                ]
-              },
-              {
-                screenName: 'hearing-judge',
-                navigation: [
-                  {
-                    resultValue: 'hearing-panel'
-                  }
-                ]
-              }
+              HEARING_REQUIREMENTS,
+              HEARING_FACILITIES,
+              HEARING_JUDGE
             ]
           }
         }

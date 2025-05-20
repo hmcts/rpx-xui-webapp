@@ -96,7 +96,7 @@
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.0.16-govuk-frontend-upgrade-2",
     "@hmcts/nodejs-healthcheck": "1.8.5",
-    "@hmcts/properties-volume": "^0.0.13",
+    "@hmcts/properties-volume": "^0.0.14",
     "@hmcts/rpx-xui-common-lib": "2.0.44-govuk-frontend-upgrade-3",
     "@hmcts/rpx-xui-node-lib": "2.30.6",
     "@microsoft/applicationinsights-web": "^3.1.0",

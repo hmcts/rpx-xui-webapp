@@ -61,7 +61,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     trackTrace('submitting hearing request');
-    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     logger.error('SubmitHearingRequest error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
@@ -139,7 +139,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.params.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
-    const { status }: { status: number } = await handlePost(markupPath, null, req, next);
+    const { status }: { status: number } = await handlePost(markupPath, null, req);
     res.status(status).send(null);
   } catch (error) {
     logger.error('submitHearingActuals error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
@@ -168,7 +168,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     logger.error('postLinkedHearingGroup error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));

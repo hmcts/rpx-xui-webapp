@@ -46,7 +46,7 @@ export async function sendGet(path: string, req: EnhancedRequest, customHeaders:
  * @param next
  * @returns {Promise<AxiosResponse>}
  */
-export async function handlePost<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
+export async function handlePost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   logger.info('handlePost:', path);
   const headers = setHeaders(req);
   return await http.post(path, body, { headers });

@@ -113,7 +113,7 @@ export const init = () => {
   mock.onPost(submitHearingRequest).reply(() => {
     return [
       200,
-      []
+      { message: 'Hearing request submitted' }
     ];
   });
 

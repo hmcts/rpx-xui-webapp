@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS, SERVICES_HMC_HEARINGS_COMPONENT_API, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
@@ -12,8 +12,10 @@ import {
   LinkedHearingGroupResponseModel
 } from './models/linkHearings.model';
 import { trackTrace } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
+const logger: JUILogger = log4jui.getLogger('hmc-index');
 
 /**
  * getHearings from case ID
@@ -62,8 +64,9 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
+    logger.error('SubmitHearingRequest error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
     if (error.status >= 400 && error.status < 600) {
-      trackTrace('SubmitHearingRequest error:', error);
+      trackTrace(`SubmitHearingRequest error: (${error.status}) : ${JSON.stringify(error.data)}`);
     }
     next(error);
   }
@@ -139,6 +142,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
     const { status }: { status: number } = await handlePost(markupPath, null, req, next);
     res.status(status).send(null);
   } catch (error) {
+    logger.error('submitHearingActuals error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
     next(error);
   }
 }
@@ -167,6 +171,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
+    logger.error('postLinkedHearingGroup error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
     next(error);
   }
 }

@@ -276,6 +276,7 @@ export enum HearingLinkMessages {
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
+  HEARING_ID,
   Type,
   TYPE_FROM_REQUEST,
   STATUS,
@@ -321,7 +322,8 @@ export enum AnswerSource {
   REASONABLE_ADJUSTMENTS,
   PRIVATE_HEARING_REQUIRED,
   CASE_RESTRICTION,
-  PUBLIC_CASE_NAME
+  PUBLIC_CASE_NAME,
+  HEARING_REQUEST_ID
 }
 
 export enum IsHiddenSource {

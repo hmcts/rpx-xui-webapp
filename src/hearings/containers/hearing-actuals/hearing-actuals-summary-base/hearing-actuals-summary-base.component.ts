@@ -89,7 +89,6 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
       filter((state) => !!state.hearingActuals.hearingActualsMainModel),
     )
       .subscribe((state) => {
-        console.log('look for case ref state:', state);
         this.hearingActualsCaseRef = state.hearingRequest.hearingRequestMainModel.caseDetails.caseRef;
         this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;

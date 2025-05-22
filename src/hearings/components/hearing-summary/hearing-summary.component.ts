@@ -31,7 +31,6 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   public ngOnInit(): void {
-    console.log(this.template);
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.sub = this.hearingState$.subscribe((state) => {

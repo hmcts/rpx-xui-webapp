@@ -4,6 +4,7 @@ import * as csrf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
+import * as cors from 'cors';
 import amRoutes from './accessManagement/routes';
 import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import { getXuiNodeMiddleware } from './auth';
@@ -47,6 +48,11 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
     next();
   });
+  const corsOptions = {
+    origin: false, // disables CORS — allows same-site only
+    credentials: true // still allow credentials for same-site
+  };
+  app.use(cors(corsOptions));
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain');
     res.send('User-agent: *\nDisallow: /');
@@ -76,6 +82,7 @@ app.use(getXuiNodeMiddleware());
 
 // applyProxy needs to be used before bodyParser
 initProxy(app);
+
 
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));

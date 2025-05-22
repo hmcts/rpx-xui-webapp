@@ -3001,12 +3001,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-judicial-user-field-casetype-2":
-  version: 7.1.78-judicial-user-field-casetype-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-judicial-user-field-casetype-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.80":
+  version: 7.1.80
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.80"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/a9f92a160905f784fd91cbb3d9cf5895efbb2110fc4044017446bb00278fad466469f425d4c699a10d5656889fbdab06afefceee923596c31889ba02b12fdf4d
+  checksum: 10/b7d459399048c0677ba508172435575ca2fcdd989a078f0a1d3fd1d4a0e4f7760153328a51d412a71b402160594d78c609cc5f21a5bf807fabbb02e55da39a86
   languageName: node
   linkType: hard
 
@@ -21179,7 +21179,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-judicial-user-field-casetype-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.80"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.0.16"

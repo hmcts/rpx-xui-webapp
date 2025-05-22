@@ -83,7 +83,6 @@ app.use(getXuiNodeMiddleware());
 // applyProxy needs to be used before bodyParser
 initProxy(app);
 
-
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 

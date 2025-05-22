@@ -21178,7 +21178,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.10.1"
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
-    "@faker-js/faker": "npm:^9.2.0" 
+    "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.1.81-prerelease-qm"
     "@hmcts/ccpay-web-component": "npm:6.2.1"
     "@hmcts/frontend": "npm:0.0.50-alpha"

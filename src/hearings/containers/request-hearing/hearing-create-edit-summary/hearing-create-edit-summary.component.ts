@@ -9,6 +9,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
 import { Observable } from 'rxjs';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-create-edit-summary',
@@ -47,6 +48,9 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('check-answers');
           });
         });
+        if (this.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
+          this.template = HearingsUtils.checkTemplateForHearingPanelRequiremnts(this.template, storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        }
       }
     });
     return this.template;

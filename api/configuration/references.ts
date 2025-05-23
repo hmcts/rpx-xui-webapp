@@ -89,6 +89,8 @@ export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
 
+export const FORCE_NEW_DEFAULT_SCREEN_FLOW = 'forceNewDefaultScreenFlow';
+
 export const CASEWORKER_PAGE_SIZE = 'caseworkerPageSize';
 
 export const JURISDICTIONS = 'jurisdictions';

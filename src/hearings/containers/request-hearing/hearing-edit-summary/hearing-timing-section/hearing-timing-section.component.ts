@@ -170,13 +170,16 @@ export class HearingTimingSectionComponent implements OnInit {
       (!this.hearingUnavailabilityDatesConfirmed && this.hearingUnavailabilityDatesChanged) ||
       (!this.hearingUnavailabilityDatesConfirmed && this.partyDetailsAnyChangesRequired);
 
-    this.showAmendedLabelForPageTitle = !this.showActionNeededLabelForPageTitle &&
-      (
-        (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
-        this.hearingLengthChanged ||
-        this.hearingDateChanged ||
-        this.hearingPriorityChanged ||
-        this.hearingUnavailabilityDatesConfirmed
-      );
+    if (!this.showActionNeededLabelForPageTitle) {
+      if (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) {
+        this.showAmendedLabelForPageTitle =
+          this.hearingLengthChanged ||
+          this.hearingDateChanged ||
+          this.hearingPriorityChanged ||
+          this.hearingUnavailabilityDatesConfirmed;
+      } else {
+        this.showAmendedLabelForPageTitle = false;
+      }
+    }
   }
 }

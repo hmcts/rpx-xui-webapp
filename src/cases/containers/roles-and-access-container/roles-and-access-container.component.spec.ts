@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -16,6 +16,7 @@ import { AllocateARoleLinkComponent, RoleAccessSectionComponent } from '../../co
 import { RolesAndAccessComponent } from '../../components/roles-and-access/roles-and-access.component';
 import { ShowAllocateLinkDirective } from '../../directives/show-allocate-link.directive';
 import { RolesAndAccessContainerComponent } from './roles-and-access-container.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -139,7 +140,16 @@ describe('RolesContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule],
+      declarations: [
+        RolesAndAccessContainerComponent,
+        RolesAndAccessComponent,
+        CaseRolesTableComponent,
+        ShowAllocateLinkDirective,
+        ExclusionsTableComponent,
+        RoleAccessSectionComponent,
+        AllocateARoleLinkComponent
+      ],
+      imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
       providers: [
         CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
         { provide: CaseNotifier, useValue: mockNotifierService },
@@ -166,16 +176,9 @@ describe('RolesContainerComponent', () => {
               }
             }
           }
-        }
-      ],
-      declarations: [
-        RolesAndAccessContainerComponent,
-        RolesAndAccessComponent,
-        CaseRolesTableComponent,
-        ShowAllocateLinkDirective,
-        ExclusionsTableComponent,
-        RoleAccessSectionComponent,
-        AllocateARoleLinkComponent
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

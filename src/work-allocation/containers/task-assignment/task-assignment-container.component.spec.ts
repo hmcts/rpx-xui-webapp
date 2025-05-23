@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -82,21 +83,16 @@ describe('TaskAssignmentContainerComponent2', () => {
         RpxTranslateMockPipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        ReactiveFormsModule,
+      imports: [ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
-        HttpClientTestingModule,
         EffectsModule.forRoot([]),
         PaginationModule,
         StoreModule.forRoot({}),
-        RouterTestingModule.withRoutes(
-          [
-            { path: 'my-work/list', component: NothingComponent }
-          ]
-        )
-      ],
+        RouterTestingModule.withRoutes([
+          { path: 'my-work/list', component: NothingComponent }
+        ])],
       providers: [
         { provide: Location, useValue: locationStub },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
@@ -121,7 +117,9 @@ describe('TaskAssignmentContainerComponent2', () => {
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: Router, useValue: mockRouter },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);

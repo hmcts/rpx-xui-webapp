@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/s
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({ selector: 'exui-stub-component', template: '' })
 class StubComponent { }
@@ -51,14 +52,12 @@ describe('StaffAddEditUserFormComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [StaffAddEditUserFormComponent],
-      imports: [
-        RouterTestingModule.withRoutes([
-          { path: 'staff', component: StubComponent }
-        ]),
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        ExuiCommonLibModule
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([
+        { path: 'staff', component: StubComponent }
+      ]),
+      ReactiveFormsModule,
+      ExuiCommonLibModule],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
@@ -75,9 +74,10 @@ describe('StaffAddEditUserFormComponent', () => {
               }
             }
           }
-        }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   });

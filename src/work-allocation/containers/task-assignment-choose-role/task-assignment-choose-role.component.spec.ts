@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { TASK_ROLES } from '../../../../api/workAllocation/constants/task-roles.mock.data';
 import { ChooseRadioOptionComponent } from '../../../role-access/components';
 import { TaskAssignmentChooseRoleComponent } from './task-assignment-choose-role.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TaskAssignmentChooseRoleComponent', () => {
   let component: TaskAssignmentChooseRoleComponent;
@@ -26,8 +27,8 @@ describe('TaskAssignmentChooseRoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([]), HttpClientTestingModule],
       declarations: [TaskAssignmentChooseRoleComponent, ChooseRadioOptionComponent],
+      imports: [ReactiveFormsModule, ExuiCommonLibModule, RouterTestingModule.withRoutes([])],
       providers: [
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         {
@@ -43,7 +44,9 @@ describe('TaskAssignmentChooseRoleComponent', () => {
             }
           }
         },
-        { provide: Router, useValue: router }
+        { provide: Router, useValue: router },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

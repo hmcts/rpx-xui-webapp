@@ -1,5 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
@@ -13,6 +13,7 @@ import { AllocateRoleService } from '../../role-access/services';
 import { LocationsByRegion } from '../models/dtos';
 import { LocationDataService } from '../services';
 import { LocationResolver } from './location-resolver.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('LocationResolver', () => {
   let judicialWorkerDataService: AllocateRoleService;
@@ -277,17 +278,16 @@ describe('LocationResolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot(reducers, { metaReducers }),
-        RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule
-      ],
+      imports: [StoreModule.forRoot(reducers, { metaReducers }),
+        RouterTestingModule.withRoutes([])],
       providers: [
         LocationResolver,
         AllocateRoleService,
         LocationDataService,
         SessionStorageService,
-        { provide: APP_BASE_HREF, useValue: '/' }
+        { provide: APP_BASE_HREF, useValue: '/' },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }
     );

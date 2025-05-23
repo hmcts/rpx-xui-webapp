@@ -1,7 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,6 +15,7 @@ import { StaffUserListComponent } from '../../components/staff-users/staff-user-
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffMainContainerComponent } from './staff-main-container.component';
 import { staffFilterOptionsTestData } from '../../test-data/staff-filter-options.test.data';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;
@@ -28,7 +29,7 @@ describe('StaffMainContainerComponent', () => {
   class FooterStubComponent {
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         StaffMainContainerComponent,
@@ -41,13 +42,10 @@ describe('StaffMainContainerComponent', () => {
         ErrorMessageComponent,
         StaffStatusComponent
       ],
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
+      imports: [RouterTestingModule,
         ExuiCommonLibModule,
         CdkTableModule,
-        ReactiveFormsModule
-      ],
+        ReactiveFormsModule],
       providers: [
         StaffDataFilterService,
         StaffDataAccessService,
@@ -60,7 +58,9 @@ describe('StaffMainContainerComponent', () => {
               }
             }
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

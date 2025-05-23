@@ -3113,24 +3113,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc2":
-  version: 7.1.78-angular-upgrade-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-angular-upgrade-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.0":
+  version: 7.2.0
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.0"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/63144ccee4b37589c5c348c2089bf1826f549ed98f1548993717468f6236f2d3f5800d055e5de3ba717f8bfa075935d8900182e69619389fbdde3725da3fcbbe
+  checksum: 10/c0d2ac4250ab46b2567b196d87ed90ee39fd47157df0032c91dc873fd0c5944a863f00cb8f90fa28095684aab6d5758fe5f982c856c57aea30d228bdf2a3f7e7
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.2.14":
-  version: 6.2.14
-  resolution: "@hmcts/ccpay-web-component@npm:6.2.14"
+"@hmcts/ccpay-web-component@npm:6.2.15":
+  version: 6.2.15
+  resolution: "@hmcts/ccpay-web-component@npm:6.2.15"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/aa32a81dac17cc8ca9e36025d73ff4f4c378e748daf062b7730da9d5b65a3db3d4753e5687f758b98b500848a73864f0e9d89868a4c0ee11ec04e453d65ceaaf
+  checksum: 10/8937f29e5f3fdb34502ec8cf2bd3a2474255dcb3015e0812c3c0b4c126a938a395496ad65ff63082dc949b20cbca2546371f52cd0b02987844910156ef978990
   languageName: node
   linkType: hard
 
@@ -3141,9 +3141,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.16-angular-upgrade":
-  version: 4.0.16-angular-upgrade
-  resolution: "@hmcts/media-viewer@npm:4.0.16-angular-upgrade"
+"@hmcts/media-viewer@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@hmcts/media-viewer@npm:4.1.0"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3162,7 +3162,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/f3714621d08e37e0c34dfc96fb0e01465b2ca617932974af9484c15fcfb9e377e4994480870e1db04fb1786d977f1262e917a55054cc93cc266e4033be4254b1
+  checksum: 10/9208f09ae86e77e6c29ce38b1d47b4b14d9aaa81efed3ce6e58b525ea7cd67cb895ff2ddf1e32b5080fb49e5464217cbb316eca043e741c416219a47c579ec5a
   languageName: node
   linkType: hard
 
@@ -3210,16 +3210,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.44-angular-upgrade-rc1":
-  version: 2.0.44-angular-upgrade-rc1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-angular-upgrade-rc1"
+"@hmcts/rpx-xui-common-lib@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/566de188087b0c8e4da3922ab7ff0bb792ef2a44cb84a3027904eec55e225ab1ee59292e5e673c6564ac25337fe87d7d96bcddfedeb4bf8183db187fa72db24d
+  checksum: 10/af16c6925e33979514ae449b3edddc31809cddc6d2f8ccc99373132463a4377264b9733ab3e6d7b603b9116b96bf82f652042f8688e0858e94c5f621a74e3d36
   languageName: node
   linkType: hard
 
@@ -5705,7 +5705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.51.1":
+"@playwright/test@npm:^1.52.0":
   version: 1.52.0
   resolution: "@playwright/test@npm:1.52.0"
   dependencies:
@@ -20470,7 +20470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.52.0, playwright@npm:^1.51.1":
+"playwright@npm:1.52.0, playwright@npm:^1.52.0":
   version: 1.52.0
   resolution: "playwright@npm:1.52.0"
   dependencies:
@@ -21973,13 +21973,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-angular-upgrade-rc2"
-    "@hmcts/ccpay-web-component": "npm:6.2.14"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0"
+    "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.16-angular-upgrade"
+    "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-angular-upgrade-rc1"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.0"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -21991,7 +21991,7 @@ __metadata:
     "@ngrx/store-devtools": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^9.18.1"
-    "@playwright/test": "npm:^1.51.1"
+    "@playwright/test": "npm:^1.52.0"
     "@stryker-mutator/api": "npm:^8.0.0"
     "@stryker-mutator/core": "npm:^8.0.0"
     "@stryker-mutator/html-reporter": "npm:^3.1.0"
@@ -22096,14 +22096,14 @@ __metadata:
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
     pegjs: "npm:^0.10.0"
-    playwright: "npm:^1.51.1"
+    playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     protractor: "npm:~7.0.0"
     protractor-cucumber-framework: "npm:^9.7.0"
     protractor-multiple-cucumber-html-reporter-plugin: "npm:1.8.1"
     protractor-screenshot-utils: "npm:^1.0.5"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.0.11-upgrade-18-2"
+    rpx-xui-translation: "npm:1.1.0"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -22132,9 +22132,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.0.11-upgrade-18-2":
-  version: 1.0.11-upgrade-18-2
-  resolution: "rpx-xui-translation@npm:1.0.11-upgrade-18-2"
+"rpx-xui-translation@npm:1.1.0":
+  version: 1.1.0
+  resolution: "rpx-xui-translation@npm:1.1.0"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -22142,7 +22142,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/bf893b0b7a31fb160079af5b49bb9f703c34b6edd3f5804b611721fc12307e041dba6c4066567790ace21f59c6da88725a9269eca48fc2ff52be7e6904132674
+  checksum: 10/1aae07fae96c927ff4c484cf250c55220579eef42c4b90ec1af680ce163bfe2ff2148d2df4bc4e205f7feabed841d2e5320fa6eae15a2b2ac2cd4ab7586e3824
   languageName: node
   linkType: hard
 

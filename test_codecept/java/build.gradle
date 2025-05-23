@@ -11,7 +11,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url 'https://jitpack.io'
+        url = 'https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1'
     }
 }
 // end::repositories[]
@@ -19,7 +19,7 @@ repositories {
 // tag::dependencies[]
 dependencies {
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.17'
-    testImplementation 'com.github.hmcts:fortify-client:1.4.8:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.9:all'
 }
 // end::dependencies[]
 

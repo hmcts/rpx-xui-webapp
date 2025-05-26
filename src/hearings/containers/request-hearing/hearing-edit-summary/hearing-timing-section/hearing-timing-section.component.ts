@@ -44,6 +44,7 @@ export class HearingTimingSectionComponent implements OnInit {
   public dateRangeStartChanged: boolean;
   public dateRangeEndChanged: boolean;
   public hearingDateChanged: boolean;
+  public specificDateOptionChanged: boolean;
   public firstDateTimeMustBeChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public radioOptions = RadioOptions;
@@ -158,6 +159,8 @@ export class HearingTimingSectionComponent implements OnInit {
     this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe, this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe);
 
     this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
+
+    this.specificDateOptionChanged = HearingsUtils.hasSpecificDateChanged(this.hearingRequestToCompareMainModel.hearingDetails?.hearingWindow, this.hearingRequestMainModel.hearingDetails?.hearingWindow);
 
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestMainModel.partyDetails),

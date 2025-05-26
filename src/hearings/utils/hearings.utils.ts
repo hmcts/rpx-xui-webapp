@@ -213,8 +213,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
-    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString) : null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString) : null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }
@@ -282,5 +282,21 @@ export class HearingsUtils {
     );
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
+  }
+
+  static hasSpecificDateChanged(
+    hearingWindowMainModel: HearingWindowModel | undefined,
+    hearingWindowCompareMainModel: HearingWindowModel | undefined
+  ): boolean {
+    const isEmptyObject = (hw: HearingWindowModel | undefined) =>
+      !hw || Object.keys(hw).length === 0;
+    const isEmptyDate = (date: string | undefined) =>
+      !date || date.length === 0;
+    if (isEmptyObject(hearingWindowMainModel) && isEmptyObject(hearingWindowCompareMainModel)) {
+      return false;
+    } else if (!isEmptyDate(hearingWindowMainModel?.firstDateTimeMustBe) && !isEmptyDate(hearingWindowCompareMainModel?.firstDateTimeMustBe)) {
+      return false;
+    }
+    return true;
   }
 }

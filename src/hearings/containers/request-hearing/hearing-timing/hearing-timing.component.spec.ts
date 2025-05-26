@@ -69,14 +69,11 @@ describe('HearingTimingComponent', () => {
   ];
 
   beforeEach(() => {
-    // const tempInitialState = JSON.parse(JSON.stringify(initialState));
-
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule,
         HttpClientTestingModule],
       declarations: [HearingTimingComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
-        // provideMockStore({ initialState: tempInitialState }),
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         ValidatorsUtils,

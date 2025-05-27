@@ -42,6 +42,8 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
 
   app.use((req, res, next) => {
     res.locals.nonce = randomBytes(16).toString('base64');
+    res.locals.cspNonce = res.locals.nonce;
+
     next();
   });
   app.use(getContentSecurityPolicy(helmet));

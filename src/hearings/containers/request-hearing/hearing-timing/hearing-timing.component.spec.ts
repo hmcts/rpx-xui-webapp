@@ -253,6 +253,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2024');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.firstDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.InvalidHearingDateError);
   });
 
   it('should check date selection valid', () => {
@@ -264,13 +265,14 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError).toEqual(null);
   });
 
-  it('should check date selection weekend', () => {
+  it('should give error for invalid date range', () => {
     component.firstDateOfHearingError = null;
-    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
-    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('99');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('6');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.firstDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.InvalidHearingDateError);
   });
 
   it('should check date selection past date', () => {
@@ -278,6 +280,15 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
+    component.showChosenDateError();
+    expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check date selection invalid range', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('31');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('04');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2023');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
@@ -317,8 +328,8 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue(month);
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue(year);
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError).toEqual(null);
-    expect(component.earliestDateOfHearingError).toEqual(null);
+    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.earliestDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.EarliestHearingDateError);
   });
   it('should check showChosenDateRangeError', () => {
     component.earliestDateOfHearingError = null;
@@ -329,31 +340,8 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2022');
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
-  });
-
-  it('should check showChosenDateRangeError earliest Saturday and latest Sunday', () => {
-    component.dateRangeWeekendError = null;
-    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('09');
-    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2033');
-    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('10');
-    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('04');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2033');
-    component.showChosenDateRangeError();
-    expect(component.dateRangeWeekendError).toEqual(HearingDatePriorityEnum.WeekDayError);
-  });
-
-  it('should check showChosenDateRangeError earliest Saturday and latest not a weekend', () => {
-    component.dateRangeWeekendError = null;
-    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('08');
-    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2023');
-    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('10');
-    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('04');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2023');
-    component.showChosenDateRangeError();
-    expect(component.dateRangeWeekendError).toBeNull();
+    expect(component.latestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.messages).toEqual([HearingDatePriorityEnum.LatestEndDatePastError]);
   });
 
   it('should check showChosenDateRangeError before date check', () => {
@@ -366,6 +354,7 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2050');
     component.showChosenDateRangeError();
     expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.earliestDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.EarliestHearingDateError);
   });
 
   it('should check showChosenDateRangeError valid earliest date check', () => {
@@ -377,7 +366,8 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2016');
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.LatestEndDatePastError);
   });
 
   describe('should check showChosenDateRangeError for invalid dates', () => {

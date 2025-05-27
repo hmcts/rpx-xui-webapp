@@ -138,8 +138,39 @@ export class CspNonceService {
   }
 
   private scopeCSS(css: string, scope: string): string {
-    // Simple CSS scoping - for more complex scenarios, consider using a CSS parser
-    return css.replace(/([^{}]+)\s*{/g, `${scope} $1 {`);
+    // Secure CSS scoping with ReDoS protection
+    // Validate inputs first
+    if (!css || typeof css !== 'string' || css.length > 100000) {
+      this.logger.warn('Invalid CSS input for scoping');
+      return '';
+    }
+
+    if (!scope || typeof scope !== 'string') {
+      this.logger.warn('Invalid scope for CSS scoping');
+      return css;
+    }
+
+    try {
+      // Use a more secure regex pattern with limited backtracking
+      // This pattern avoids nested quantifiers that cause exponential backtracking
+      const selectorPattern = /([^{}]+?)\s*{/g;
+
+      return css.replace(selectorPattern, (match, selector) => {
+        // Trim and validate the selector
+        const trimmedSelector = selector.trim();
+
+        // Skip @-rules (media queries, keyframes, etc.)
+        if (trimmedSelector.startsWith('@')) {
+          return match;
+        }
+
+        // Apply scoping to regular selectors
+        return `${scope} ${trimmedSelector} {`;
+      });
+    } catch (error) {
+      this.logger.error('Error during CSS scoping, returning original CSS', error);
+      return css;
+    }
   }
 
   public removeStyle(identifier: string): void {

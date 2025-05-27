@@ -32,7 +32,9 @@ app.use('/*', (req, res) => {
       { provide: 'RESPONSE', useValue: res }
     ],
     req,
-    res
+    res,
+    nonce: res.locals.nonce,
+    cspNonce: res.locals.cspNonce
   });
 });
 

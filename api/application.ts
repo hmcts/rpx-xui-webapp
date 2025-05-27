@@ -25,6 +25,7 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { getNewUsersByServiceName } from './workAllocation';
+import { randomBytes } from 'crypto';
 
 export const app = express();
 const logger: JUILogger = log4jui.getLogger('Application');
@@ -38,7 +39,13 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet.hidePoweredBy());
   app.use(helmet.hsts({ maxAge: 28800000 }));
   app.use(helmet.xssFilter());
+
+  app.use((req, res, next) => {
+    res.locals.nonce = randomBytes(16).toString('base64');
+    next();
+  });
   app.use(getContentSecurityPolicy(helmet));
+
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.header('Access-Control-Allow-Credentials', 'true');

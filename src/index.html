@@ -6,6 +6,26 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="csp-nonce" content="<%= cspNonce %>">
+
+  <script nonce="<%= cspNonce %>">
+    window.CSP_NONCE = '<%= cspNonce %>';
+    
+    // Monkey patch document.createElement to automatically add nonce to style elements
+    (function() {
+      const originalCreateElement = document.createElement.bind(document);
+      document.createElement = function(tagName, options) {
+        const element = originalCreateElement(tagName, options);
+        
+        if (tagName.toLowerCase() === 'style' && window.CSP_NONCE) {
+          element.setAttribute('nonce', window.CSP_NONCE);
+        }
+        
+        return element;
+      };
+    })();
+  </script>
+  
 </head>
 <body class="govuk-template__body js-enabled">
   <exui-root></exui-root>

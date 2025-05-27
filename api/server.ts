@@ -32,33 +32,9 @@ app.use('/*', (req, res) => {
       { provide: 'RESPONSE', useValue: res }
     ],
     req,
-    res
-  }, (err, html) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-
-    // Inject nonce into <link> and <script> tags and (optionally) as a JS variable
-    const nonce = (res as any).locals.nonce;
-
-    html = html.replace(/<link([^>]+rel="stylesheet"[^>]*)>/g, (match, attrs) => {
-      if (/nonce=/.test(attrs)) {
-        return match;
-      } // Don't double-nonce
-      return `<link${attrs} nonce="${nonce}">`;
-    });
-
-    html = html.replace(/<script([^>]*)>/g, (match, attrs) => {
-      if (/nonce=/.test(attrs)) {
-        return match;
-      }
-      return `<script${attrs} nonce="${nonce}">`;
-    });
-
-    // Optionally: Make nonce available to client JS
-    html = html.replace('</head>', `<script nonce="${nonce}">window.cspNonce="${nonce}";</script>\n</head>`);
-
-    res.send(html);
+    res,
+    nonce: res.locals.nonce,
+    cspNonce: res.locals.cspNonce
   });
 });
 

@@ -3113,12 +3113,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade-3":
-  version: 7.1.78-govuk-frontend-upgrade-3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.78-govuk-frontend-upgrade-3"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.0-govuk-frontend-upgrade":
+  version: 7.2.0-govuk-frontend-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.0-govuk-frontend-upgrade"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/4e121cd2ce9259ae5b2bd2525ee6ba62810c12e1916d8efe1e4c4c8016bfe44d0e527934cf646189fd0f4a529ad6730578d7369339fb39cbe85211a9e65d4e0d
+  checksum: 10/7b0be7231f2f092e28db24a2d7fd31472d74e9902b05441651b7d36049a965c84ef8c80785b85a73d965145ebe901423569c07d411721f81456c269dd123d126
   languageName: node
   linkType: hard
 
@@ -3141,9 +3141,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.0.16-govuk-frontend-upgrade-2":
-  version: 4.0.16-govuk-frontend-upgrade-2
-  resolution: "@hmcts/media-viewer@npm:4.0.16-govuk-frontend-upgrade-2"
+"@hmcts/media-viewer@npm:4.1.0-govuk-frontend-upgrade":
+  version: 4.1.0-govuk-frontend-upgrade
+  resolution: "@hmcts/media-viewer@npm:4.1.0-govuk-frontend-upgrade"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3162,7 +3162,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/7a03dc85d38e8203b4a0e341fa9241b03891c3f1c4f6cfa1ec369eb0f6aff17ad556e2e244f3d99ff3950dc3b9510db4dd7b73868ba90922755434223d99c3a7
+  checksum: 10/35d1280ad15af626356d89bbcea2fa267d1f961b894ca755228bf4daf5ae44e117223e3a4f20a60398fb93cd216d46ce5cf7df5fd7e6b92971d9bbf072ad3426
   languageName: node
   linkType: hard
 
@@ -3199,16 +3199,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade-3":
-  version: 2.0.44-govuk-frontend-upgrade-3
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.44-govuk-frontend-upgrade-3"
+"@hmcts/rpx-xui-common-lib@npm:2.1.0-govuk-frontend-upgrade":
+  version: 2.1.0-govuk-frontend-upgrade
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0-govuk-frontend-upgrade"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/983441e8da3a1a71cc3d34703d4dbea67d4ca705677dd42b5ffe26a77409920d70c738513b4fe782f4bb052c7b51f1a02ce432907b070ce8dd2dff5d1f65a830
+  checksum: 10/3751eb7e9ca590fe9bd143deddd4298f5128952c8bfb3c555735cf0c46b769caf19398f623c79f2a3ce122660afede5588d0c7b97259d68cba43c23eb2f2f17d
   languageName: node
   linkType: hard
 
@@ -21962,13 +21962,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.1.78-govuk-frontend-upgrade-3"
-    "@hmcts/ccpay-web-component": "npm:6.2.14"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0-govuk-frontend-upgrade"
+    "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.0.16-govuk-frontend-upgrade-2"
+    "@hmcts/media-viewer": "npm:4.1.0-govuk-frontend-upgrade"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.14"
-    "@hmcts/rpx-xui-common-lib": "npm:2.0.44-govuk-frontend-upgrade-3"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.0-govuk-frontend-upgrade"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

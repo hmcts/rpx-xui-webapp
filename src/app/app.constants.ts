@@ -14,7 +14,8 @@ const featureNames = {
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
   enableRestrictedCaseAccess: 'enable-restricted-case-access',
-  accessManagementMode: 'access-management-mode'
+  accessManagementMode: 'access-management-mode',
+  cdamExclusionList: 'mc-cdam-exclusion-list'
 };
 
 function featureToAttributeName(key: string): string {
@@ -31,7 +32,8 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
   [featureNames.enableRestrictedCaseAccess, featureToAttributeName(featureNames.enableRestrictedCaseAccess)],
-  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)]
+  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);
 
 const footerDataNavigation = {

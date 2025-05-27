@@ -62,6 +62,8 @@ import { effects } from './store/effects';
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
 import { InitialisationSyncService } from './services/ccd-config/initialisation-sync-service';
+import { CspNonceService } from './services/nonce/csp-nonce.service';
+import { CspStyleInterceptor } from './services/nonce/csp-style.interceptor';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production
   ? [storeFreeze]
@@ -71,6 +73,34 @@ export function launchDarklyClientIdFactory(
   envConfig: EnvironmentConfig
 ): string {
   return envConfig.launchDarklyClientId || '';
+}
+
+export function initializeCSP(
+  cspNonceService: CspNonceService,
+  cspStyleInterceptor: CspStyleInterceptor,
+  logger: NGXLogger
+): () => Promise<void> {
+  return () => {
+    return new Promise<void>((resolve) => {
+      try {
+        logger.info('Initializing CSP nonce support...');
+
+        // Services are initialized through dependency injection
+        const nonce = cspNonceService.getNonce();
+
+        if (nonce) {
+          logger.info('CSP nonce initialized successfully');
+        } else {
+          logger.warn('CSP nonce not found - styles may be blocked by CSP');
+        }
+
+        resolve();
+      } catch (error) {
+        logger.error('Error initializing CSP services:', error);
+        resolve(); // Don't block app startup
+      }
+    });
+  };
 }
 
 @NgModule({
@@ -119,6 +149,12 @@ export function launchDarklyClientIdFactory(
       provide: APP_INITIALIZER,
       useFactory: initApplication,
       deps: [Store, ENVIRONMENT_CONFIG],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeCSP,
+      deps: [CspNonceService, CspStyleInterceptor, NGXLogger],
       multi: true
     },
     MonitoringService,

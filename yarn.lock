@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.1":
-  version: 7.2.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.2":
+  version: 7.2.2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d3e9dbdc41a277a1541ddf465aaa913bfb5c37322a8c92e8809910caf63e7c6cb3234549f1a8b9a5b0aee486b8dc06e70b265e82baaa9018389bd0a185b19bd7
+  checksum: 10/8cdaf63231f2d724abe5e4e11f0fb67ac878232f88682452e95c80c2de3396c6b414bcf46f0c666eb40e2c770f18cb3d70bce58a6e1497824251c55b3a430b30
   languageName: node
   linkType: hard
 
@@ -3209,9 +3209,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.6-sso-fix-rc2":
-  version: 2.30.6-sso-fix-rc2
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6-sso-fix-rc2"
+"@hmcts/rpx-xui-node-lib@npm:2.30.7":
+  version: 2.30.7
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3231,7 +3231,7 @@ __metadata:
     passport-oauth2: "npm:^1.5.0"
     redis: "npm:^3.0.2"
     session-file-store: "npm:^1.5.0"
-  checksum: 10/41181790fb76bd87e7e59d4ba37c660ee2afabc73cb1eea44ec9ccac8f98461f08d848986008b4d7b006256c13378dab13f62c8ee18c261387c794e034253841
+  checksum: 10/71834cb6a7b5600664f2a71f6543c0db14d103dae72da167ea4b91de53f4189bfccb309952aa89bfb1377bdce6c43745a80d7abc43eb6098430788ec9a87d9ee
   languageName: node
   linkType: hard
 
@@ -21950,14 +21950,14 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.2"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.0"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.6"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -22431,17 +22431,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10/c8c04a4d41d30cffa7277904e0ad6998623dd61e36bca9578b0128d8c683b705a3924beada55eae7fa004fb30a9359a53a4ead2b68468d778b602f3b1a28f8e3
-  languageName: node
-  linkType: hard
-
-"semver@npm:7.5.3":
-  version: 7.5.3
-  resolution: "semver@npm:7.5.3"
-  dependencies:
-    lru-cache: "npm:^6.0.0"
-  bin:
-    semver: bin/semver.js
-  checksum: 10/80b4b3784abff33bacf200727e012dc66768ed5835441e0a802ba9f3f5dd6b10ee366294711f5e7e13d73b82a6127ea55f11f9884d35e76a6a618dc11bc16ccf
   languageName: node
   linkType: hard
 

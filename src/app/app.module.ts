@@ -1,4 +1,4 @@
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
 import {
   APP_INITIALIZER,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -73,42 +73,35 @@ export function launchDarklyClientIdFactory(
   return envConfig.launchDarklyClientId || '';
 }
 
-@NgModule({
-  declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent],
-  imports: [
-    LoggerModule.forRoot({
-      level: NgxLoggerLevel.TRACE,
-      disableConsoleLogging: false
-    }),
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-      cookieName: 'XSRF-TOKEN',
-      headerName: 'X-XSRF-TOKEN'
-    }),
-    ProvidersModule.forRoot(),
-    RouterModule.forRoot(ROUTES, routingConfiguration),
-    StoreModule.forRoot(reducers, { metaReducers }),
-    EffectsModule.forRoot(effects),
-    StoreRouterConnectingModule.forRoot(),
-    StoreDevtoolsModule.instrument({
-      logOnly: environment.production,
-      connectInZone: true }),
-    SharedModule,
-    ExuiCommonLibModule,
-    NgIdleKeepaliveModule.forRoot(),
-    PaymentLibModule,
-    RpxTranslationModule.forRoot({
-      baseUrl: '/api/translation',
-      debounceTimeMs: 300,
-      validity: {
-        days: 1
-      },
-      testMode: false
-    })
-  ],
-  providers: [
+@NgModule({ declarations: [AppComponent, BookingServiceDownComponent, BookingSystemErrorComponent, RefreshBookingServiceDownComponent],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [LoggerModule.forRoot({
+    level: NgxLoggerLevel.TRACE,
+    disableConsoleLogging: false
+  }),
+  BrowserModule,
+  BrowserAnimationsModule,
+  ProvidersModule.forRoot(),
+  RouterModule.forRoot(ROUTES, routingConfiguration),
+  StoreModule.forRoot(reducers, { metaReducers }),
+  EffectsModule.forRoot(effects),
+  StoreRouterConnectingModule.forRoot(),
+  StoreDevtoolsModule.instrument({
+    logOnly: environment.production,
+    connectInZone: true
+  }),
+  SharedModule,
+  ExuiCommonLibModule,
+  NgIdleKeepaliveModule.forRoot(),
+  PaymentLibModule,
+  RpxTranslationModule.forRoot({
+    baseUrl: '/api/translation',
+    debounceTimeMs: 300,
+    validity: {
+      days: 1
+    },
+    testMode: false
+  })], providers: [
     NGXLogger,
     NGXLoggerMapperService,
     {
@@ -139,9 +132,10 @@ export function launchDarklyClientIdFactory(
     LoadingService,
     RoleService,
     InitialisationSyncService,
-    { provide: Window, useValue: window }
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
+    { provide: Window, useValue: window },
+    provideHttpClient(withInterceptorsFromDi(), withXsrfConfiguration({
+      cookieName: 'XSRF-TOKEN',
+      headerName: 'X-XSRF-TOKEN'
+    }))
+  ] })
 export class AppModule {}

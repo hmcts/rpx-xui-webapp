@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +14,7 @@ import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
@@ -397,10 +398,11 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingActualSummaryComponent,
         HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe
       ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -416,9 +418,10 @@ describe('HearingActualSummaryComponent', () => {
             fragment: of('point-to-me')
           }
         },
-        DatePipe, FormatTranslatorService
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        DatePipe, FormatTranslatorService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
     mockStore = TestBed.inject(Store);

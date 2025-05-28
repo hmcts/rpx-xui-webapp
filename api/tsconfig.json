@@ -10,5 +10,5 @@
     "lib": ["es2017", "dom"],
   },
   "include": ["**/*.ts", "../*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.ts", "test/**"]
 }

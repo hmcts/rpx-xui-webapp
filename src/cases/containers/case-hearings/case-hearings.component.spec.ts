@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,6 +26,7 @@ import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
 import * as fromHearingStore from '../../../hearings/store';
 import { CaseHearingsComponent } from './case-hearings.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CaseHearingsComponent', () => {
   let component: CaseHearingsComponent;
@@ -421,11 +422,8 @@ describe('CaseHearingsComponent', () => {
     mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState }),
@@ -454,7 +452,9 @@ describe('CaseHearingsComponent', () => {
         {
           provide: CaseNotifier,
           useValue: mockCaseNotifier
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);

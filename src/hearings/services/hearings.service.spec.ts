@@ -1,5 +1,5 @@
-import { HttpRequest } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpRequest, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import * as _ from 'lodash';
@@ -15,12 +15,11 @@ import { HearingsService } from './hearings.service';
 describe('HearingsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        StoreModule.forRoot({})
-      ],
+      imports: [StoreModule.forRoot({})],
       providers: [
-        HearingsService
+        HearingsService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
   });

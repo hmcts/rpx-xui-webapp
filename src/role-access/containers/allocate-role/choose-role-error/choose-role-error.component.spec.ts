@@ -1,8 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { ChooseRoleErrorComponent } from './choose-role-error.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ChooseRoleErrorComponent', () => {
   let component: ChooseRoleErrorComponent;
@@ -12,9 +13,7 @@ describe('ChooseRoleErrorComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRoleErrorComponent],
-      imports: [
-        HttpClientTestingModule
-      ],
+      imports: [],
       providers: [
         {
           provide: ActivatedRoute,
@@ -26,7 +25,9 @@ describe('ChooseRoleErrorComponent', () => {
               }
             }
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { StaffUser } from '../../../models/staff-user.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { StaffUserCheckAnswersComponent } from './staff-user-check-answers.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Pipe({ name: 'rpxTranslate' })
 class RpxTranslateMockPipe implements PipeTransform {
@@ -75,9 +76,9 @@ describe('StaffUserCheckAnswersComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       declarations: [StaffUserCheckAnswersComponent, RpxTranslateMockPipe],
       schemas: [NO_ERRORS_SCHEMA],
+      imports: [],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: Router, useValue: mockRouter },
@@ -178,7 +179,9 @@ describe('StaffUserCheckAnswersComponent', () => {
             }
           }
         },
-        { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService }
+        { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
   }));

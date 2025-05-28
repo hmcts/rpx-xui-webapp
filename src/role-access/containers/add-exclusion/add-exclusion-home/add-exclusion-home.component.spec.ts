@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { ExcludeOption, ExclusionNavigationEvent, ExclusionState } from '../../.
 import * as fromFeature from '../../../store';
 import * as fromContainers from '../../add-exclusion';
 import { AddExclusionHomeComponent } from './add-exclusion-home.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;
@@ -35,18 +36,15 @@ describe('ExclusionHomeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule,
-        RouterTestingModule,
-        HttpClientTestingModule
-      ],
       schemas: [
         NO_ERRORS_SCHEMA
       ],
       declarations: [
         ...fromContainers.containers
       ],
+      imports: [ReactiveFormsModule,
+        UtilsModule,
+        RouterTestingModule],
       providers: [
         provideMockStore(),
         {
@@ -62,7 +60,9 @@ describe('ExclusionHomeComponent', () => {
               }
             }
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

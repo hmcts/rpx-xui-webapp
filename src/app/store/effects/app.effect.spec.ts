@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { AppConfigService } from '../../services/config/configuration.services';
 import { Logout } from '../actions';
 import * as fromAppEffects from './app.effects';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('App Effects', () => {
   let actions$;
@@ -19,10 +20,7 @@ describe('App Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        HttpClientTestingModule
-      ],
+      imports: [StoreModule.forRoot({})],
       providers: [
         AppConfigService,
         {
@@ -31,7 +29,9 @@ describe('App Effects', () => {
         },
         RoleService,
         fromAppEffects.AppEffects,
-        provideMockActions(() => actions$)
+        provideMockActions(() => actions$),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
 

@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { Mode } from '../../models/hearings.enum';
 import { HearingsPipesModule } from '../../pipes/hearings.pipes.module';
 import * as fromHearingStore from '../../store';
 import { HearingSummaryComponent } from './hearing-summary.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HearingSummaryComponent', () => {
   const routerMock = jasmine.createSpyObj('Router', [
@@ -25,10 +26,8 @@ describe('HearingSummaryComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingSummaryComponent, MockRpxTranslatePipe],
-      imports: [
-        HearingsPipesModule,
-        HttpClientTestingModule
-      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [HearingsPipesModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState }),
@@ -46,9 +45,10 @@ describe('HearingSummaryComponent', () => {
             },
             fragment: of('point-to-me')
           }
-        }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
     fixture = TestBed.createComponent(HearingSummaryComponent);

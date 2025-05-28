@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
@@ -18,10 +18,8 @@ import { CaseworkerDataService, LocationDataService, StaffSupportedJurisdictions
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
+@NgModule({ declarations: [...fromContainers.containers],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [CommonModule,
     SharedModule,
     MatDialogModule,
     WorkAllocationComponentsModule,
@@ -32,10 +30,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     ReactiveFormsModule,
     RoleAccessModule,
     PaginationModule,
-    NgxPaginationModule
-  ],
-  declarations: [...fromContainers.containers],
-  providers: [
+    NgxPaginationModule], providers: [
     WorkAllocationTaskService,
     WorkAllocationAccessGuard,
     AlertService,
@@ -45,8 +40,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     StaffSupportedJurisdictionsService,
     WASupportedJurisdictionsService,
     LoadingService,
-    SessionStorageService
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
-})
+    SessionStorageService,
+    provideHttpClient(withInterceptorsFromDi())
+  ] })
 export class WorkAllocationModule {}

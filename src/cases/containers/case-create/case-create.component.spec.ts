@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -28,6 +28,7 @@ import { SharedModule } from '../../../app/shared/shared.module';
 import { reducers } from '../../../app/store';
 import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class MockSortService {
   public features = {};
@@ -47,16 +48,14 @@ describe('CaseCreateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
+      declarations: [CasesCreateComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      teardown: { destroyAfterEach: false },
+      imports: [RouterTestingModule,
         StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         EffectsModule.forRoot([]),
         SharedModule,
-        SearchFiltersModule
-      ],
-      declarations: [CasesCreateComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        SearchFiltersModule],
       providers: [
         PlaceholderService,
         CasesService,
@@ -87,8 +86,10 @@ describe('CaseCreateComponent', () => {
           provide: AppConfigService,
           useClass: MockSortService
         },
-        ScrollToService
-      ], teardown: { destroyAfterEach: false }
+        ScrollToService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));

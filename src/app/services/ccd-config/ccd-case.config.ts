@@ -44,7 +44,7 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, true, obArray);
-        if (obArray.length === 7) {
+        if (obArray.length === 8) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');

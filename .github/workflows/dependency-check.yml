@@ -3,7 +3,7 @@ name: Automated update of known-issue suppression
 on:
   schedule:
     # At 12 midnight, 7am and 5pm
-    - cron: "7,17 * * *"
+    - cron: "0 7,17 * * *"
   workflow_dispatch:
 
 jobs:

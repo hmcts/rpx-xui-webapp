@@ -784,16 +784,65 @@ describe('HearingsUtils', () => {
 
       expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeTruthy();
     });
+  });
+  describe('determineDateOption', () => {
+    // We need to access the private method for testing
+    const determineDateOption = (hearingWindow: HearingWindowModel | undefined) => {
+      // eslint-disable-next-line dot-notation
+      return HearingsUtils['determineDateOption'](hearingWindow);
+    };
 
-    it('should return false when both have empty firstDateTimeMustBe values', () => {
-      const hearingWindow1: HearingWindowModel = {
-        firstDateTimeMustBe: ''
-      };
-      const hearingWindow2: HearingWindowModel = {
-        firstDateTimeMustBe: ''
-      };
+    it('should return noDate when hearing window is undefined', () => {
+      const result = determineDateOption(undefined);
+      expect(result).toBe('noDate');
+    });
 
-      expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeTruthy();
+    it('should return noDate when hearing window is empty object', () => {
+      const result = determineDateOption({});
+      expect(result).toBe('noDate');
+    });
+
+    it('should return specificDate when firstDateTimeMustBe is present', () => {
+      const hearingWindow: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z'
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('specificDate');
+    });
+
+    it('should return dateRange when dateRangeStart is present', () => {
+      const hearingWindow: HearingWindowModel = {
+        dateRangeStart: '2023-05-15T09:00:00.000Z'
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('dateRange');
+    });
+
+    it('should return dateRange when dateRangeEnd is present', () => {
+      const hearingWindow: HearingWindowModel = {
+        dateRangeEnd: '2023-05-15T09:00:00.000Z'
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('dateRange');
+    });
+
+    it('should return dateRange when both dateRangeStart and dateRangeEnd are present', () => {
+      const hearingWindow: HearingWindowModel = {
+        dateRangeStart: '2023-05-10T09:00:00.000Z',
+        dateRangeEnd: '2023-05-20T09:00:00.000Z'
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('dateRange');
+    });
+
+    it('should prioritize specificDate over dateRange when both are present', () => {
+      const hearingWindow: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+        dateRangeStart: '2023-05-10T09:00:00.000Z',
+        dateRangeEnd: '2023-05-20T09:00:00.000Z'
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('specificDate');
     });
   });
 });

@@ -138,8 +138,6 @@ export class CspNonceService {
   }
 
   private scopeCSS(css: string, scope: string): string {
-    // Secure CSS scoping with ReDoS protection
-    // Validate inputs first
     if (!css || typeof css !== 'string' || css.length > 100000) {
       this.logger.warn('Invalid CSS input for scoping');
       return '';
@@ -151,22 +149,23 @@ export class CspNonceService {
     }
 
     try {
-      // Use a more secure regex pattern with limited backtracking
-      // This pattern avoids nested quantifiers that cause exponential backtracking
-      const selectorPattern = /([^{\r\n]+)\s*\{/g;
+      const lines = css.split('\n');
+      const scopedLines = lines.map((line) => {
+        const trimmed = line.trim();
 
-      return css.replace(selectorPattern, (match, selector) => {
-        // Trim and validate the selector
-        const trimmedSelector = selector.trim();
-
-        // Skip @-rules (media queries, keyframes, etc.)
-        if (trimmedSelector.startsWith('@')) {
-          return match;
+        // Match lines that look like selectors
+        if (trimmed.length > 0 && trimmed.includes('{') && !trimmed.startsWith('@')) {
+          const parts = trimmed.split('{');
+          if (parts.length > 1) {
+            const selector = parts[0].trim();
+            return `${scope} ${selector} {${parts.slice(1).join('{')}`;
+          }
         }
 
-        // Apply scoping to regular selectors
-        return `${scope} ${trimmedSelector} {`;
+        return line;
       });
+
+      return scopedLines.join('\n');
     } catch (error) {
       this.logger.error('Error during CSS scoping, returning original CSS', error);
       return css;

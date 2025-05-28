@@ -25,7 +25,7 @@ describe('nodeApp endpoint', () => {
     expect(response.status).to.equal(200);
     expect(response.data).to.have.all.keys(config.configuratioUi[config.testEnv]);
     // expect(response.data.launchDarklyClientId).to.equal('645baeea2787d812993d9d70');
-    expect(response.data.clientId).to.equal('xuiwebapp_passport_0_7');
+    expect(response.data.clientId).to.equal('xuiwebapp');
   });
 
   it('auth/isAuthenticated with session cookies', async () => {

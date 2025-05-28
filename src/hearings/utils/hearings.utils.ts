@@ -11,6 +11,8 @@ import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { PartyType } from 'api/hearings/models/hearings.enum';
 
+type DateOption = 'noDate' | 'specificDate' | 'dateRange';
+
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
@@ -288,15 +290,23 @@ export class HearingsUtils {
     hearingWindowMainModel: HearingWindowModel | undefined,
     hearingWindowCompareMainModel: HearingWindowModel | undefined
   ): boolean {
-    const isEmptyObject = (hw: HearingWindowModel | undefined) =>
-      !hw || Object.keys(hw).length === 0;
-    const isEmptyDate = (date: string | undefined) =>
-      !date || date.length === 0;
-    if (isEmptyObject(hearingWindowMainModel) && isEmptyObject(hearingWindowCompareMainModel)) {
-      return false;
-    } else if (!isEmptyDate(hearingWindowMainModel?.firstDateTimeMustBe) && !isEmptyDate(hearingWindowCompareMainModel?.firstDateTimeMustBe)) {
-      return false;
+    const mainDateOption: DateOption = this.determineDateOption(hearingWindowMainModel);
+    const compareDateOption: DateOption = this.determineDateOption(hearingWindowCompareMainModel);
+
+    if (mainDateOption !== compareDateOption) {
+      return true;
     }
-    return true;
+    return false;
+  }
+
+  private static determineDateOption(hearingWindow: HearingWindowModel | undefined): DateOption {
+    if (!hearingWindow || Object.keys(hearingWindow).length === 0) {
+      return 'noDate';
+    } else if (hearingWindow.firstDateTimeMustBe) {
+      return 'specificDate';
+    } else if (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd) {
+      return 'dateRange';
+    }
+    return 'noDate';
   }
 }

@@ -23,10 +23,10 @@ jobs:
         with:
           node-version: 20
       - run: yarn install
-      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues
+      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues || true
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          skip_dirty_check: false
           commit_message: "Automated update of known-issue suppression"
           branch: master
+          file_pattern: yarn-audit-known-issues

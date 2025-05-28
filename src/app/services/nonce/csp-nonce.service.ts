@@ -153,7 +153,7 @@ export class CspNonceService {
     try {
       // Use a more secure regex pattern with limited backtracking
       // This pattern avoids nested quantifiers that cause exponential backtracking
-      const selectorPattern = /([^{}]+?)\s*{/g;
+      const selectorPattern = /([^{\r\n]+)\s*\{/g;
 
       return css.replace(selectorPattern, (match, selector) => {
         // Trim and validate the selector

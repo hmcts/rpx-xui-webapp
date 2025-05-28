@@ -23,8 +23,6 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public namedCTSCRoles: CaseRole[];
   public judicialRoles: CaseRole[] = [];
   public namedExclusions: RoleExclusion[];
-  public legalOps = RoleCategory.LEGAL_OPERATIONS;
-  public judicial = RoleCategory.JUDICIAL;
   public caseId: string;
   public jurisdiction: string;
 

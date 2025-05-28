@@ -5,8 +5,7 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
-import { AppUtils } from '../../../app/app-utils';
-import { ErrorMessage, UserInfo, UserRole } from '../../../app/models';
+import { ErrorMessage, UserInfo } from '../../../app/models';
 import { RoleCategory } from '../../../role-access/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
@@ -99,7 +98,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+      // EXUI-2907 - Role category is used instead of roles
+      return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
     return false;
   }

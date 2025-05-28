@@ -271,26 +271,6 @@ describe('setThemeBasedOnUserType', () => {
   });
 });
 
-describe('getUserType', () => {
-  it('Solicitor', () => {
-    const userRole = { solicitor: ['role1'] };
-    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
-    expect(userType).toEqual('Solicitor');
-  });
-
-  it('Judicial', () => {
-    const userRole = { judicial: ['role1'] };
-    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
-    expect(userType).toEqual('Judicial');
-  });
-
-  it('LegalOps', () => {
-    const userRole = { legalOps: ['role1'] };
-    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
-    expect(userType).toEqual('LegalOps');
-  });
-});
-
 describe('getFilterPersistenceByRoleType', () => {
   it('should return local persistence if user is a judicial user', () => {
     const persistence = AppUtils.getFilterPersistenceByRoleType(initialMockState.appConfig.userDetails);

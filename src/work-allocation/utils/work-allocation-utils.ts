@@ -1,6 +1,6 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { HMCTSServiceDetails, UserInfo, UserRole } from '../../app/models';
+import { HMCTSServiceDetails, UserInfo } from '../../app/models';
 import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
@@ -208,19 +208,6 @@ export function getRoleCategory(role: string): RoleCategory {
   } else if (role === PersonRole.ADMIN) {
     return RoleCategory.ADMIN;
   } else if (role === PersonRole.CTSC) {
-    return RoleCategory.CTSC;
-  }
-  return null;
-}
-
-export function getRoleCategoryFromUserRole(role: string): RoleCategory {
-  if (role === UserRole.Judicial) {
-    return RoleCategory.JUDICIAL;
-  } else if (role === UserRole.LegalOps) {
-    return RoleCategory.LEGAL_OPERATIONS;
-  } else if (role === UserRole.Admin) {
-    return RoleCategory.ADMIN;
-  } else if (role === UserRole.Ctsc) {
     return RoleCategory.CTSC;
   }
   return null;

@@ -1,8 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { getMockTasks } from '../../../../work-allocation/tests/utils.spec';
 import { SpecificAccessDuplicateRecordComponent } from './specific-access-duplicate-record.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SpecificAccessDuplicateRecordComponent', () => {
   let component: SpecificAccessDuplicateRecordComponent;
@@ -11,7 +12,7 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SpecificAccessDuplicateRecordComponent],
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         {
           provide: ActivatedRoute,
@@ -27,7 +28,9 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
               }
             }
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

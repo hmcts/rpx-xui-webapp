@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text'
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -99,8 +100,8 @@ describe('RemoveRoleComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -154,7 +155,9 @@ describe('RemoveRoleComponent', () => {
         {
           provide: LoggerService,
           useValue: loggerServiceMock
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

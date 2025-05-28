@@ -23,8 +23,6 @@ jobs:
           node-version: 20
       - run: yarn install
       - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues || true
-      - run : git status
-      - run: cat yarn-audit-known-issues
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

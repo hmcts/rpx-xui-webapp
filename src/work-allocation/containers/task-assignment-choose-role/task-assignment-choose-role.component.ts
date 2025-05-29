@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { AppUtils } from '../../../app/app-utils';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../../app/models';
-import { RoleCategory } from '../../../role-access/models';
 import { OptionsModel } from '../../../role-access/models/options-model';
-import { getOptions, getRoleCategoryFromUserRole } from '../../../work-allocation/utils';
+import { getOptions } from '../../../work-allocation/utils';
 import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
@@ -82,7 +81,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem(TaskAssignmentChooseRoleComponent.userDetails);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return getRoleCategoryFromUserRole(AppUtils.getUserRole(userInfo.roles));
+      return userInfo.roleCategory as RoleCategory;
     }
     return null;
   }

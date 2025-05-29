@@ -233,6 +233,14 @@ class IdamLogin{
 
     while (retry && attempts < maxAttempts) {
       reportLogger.AddMessage('LOGIN: onXuiCallBack');
+      reportLogger.AddMessage('LOGIN: loginresponsecallback url ' + this.idamLoginresponse.details.xuiCallback);
+      if (this.idamLoginresponse.details.xuiCallback.includes('nonce=')) {
+        const cbu = new URL(this.idamLoginresponse.details.xuiCallback);
+        if (cbu.searchParams.has('nonce')) {
+          cbu.searchParams.delete('nonce');
+          this.idamLoginresponse.details.xuiCallback = cbu.toString();
+        }
+      }
       const response = await axiosInstance.get(`${this.idamLoginresponse.details.xuiCallback}`, {
         headers: {
           Cookie: this.getCookieString(this.xuiLoginResponse.details.setCookies)

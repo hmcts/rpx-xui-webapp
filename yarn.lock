@@ -3823,12 +3823,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.1":
-  version: 7.2.1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.2":
+  version: 7.2.2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d3e9dbdc41a277a1541ddf465aaa913bfb5c37322a8c92e8809910caf63e7c6cb3234549f1a8b9a5b0aee486b8dc06e70b265e82baaa9018389bd0a185b19bd7
+  checksum: 10/8cdaf63231f2d724abe5e4e11f0fb67ac878232f88682452e95c80c2de3396c6b414bcf46f0c666eb40e2c770f18cb3d70bce58a6e1497824251c55b3a430b30
   languageName: node
   linkType: hard
 
@@ -3933,9 +3933,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-2079-rc1":
-  version: 2.30.7-exui-2079-rc1
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-2079-rc1"
+"@hmcts/rpx-xui-node-lib@npm:2.30.8":
+  version: 2.30.8
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.8"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     axios: "npm:^1.7.7"
@@ -3955,7 +3955,7 @@ __metadata:
     passport-oauth2: "npm:^1.8.0"
     redis: "npm:^3.0.2"
     session-file-store: "npm:^1.5.0"
-  checksum: 10/61b4407876900918928160dc5df0d8d7431d4112cbfbe0a6534385eb77fdf1699bab2dbf2696fe54d07422739ea6105e19a308bce4db4960e21f1edd22d75643
+  checksum: 10/e8353874360d59f74edd446025ed2c34554bca286d86ea10d3ab2dfa448a28d0379d3e310154a0d9e78c8a5caf589606b8944942086c34991d599a1552f9e719
   languageName: node
   linkType: hard
 
@@ -22645,14 +22645,14 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.2"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.0"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-2079-rc1"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.8"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

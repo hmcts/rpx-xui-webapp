@@ -196,7 +196,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     throw new Error('Invalid user role');
                 }
                 break;
-              case RoleCategory.CASEWORKER:
+              case RoleCategory.LEGAL_OPERATIONS:
                 switch (this.userRole) {
                   case UserRole.LegalOps:
                     this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
@@ -245,7 +245,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                             throw new Error('Invalid allocate to');
                         }
                         break;
-                      case RoleCategory.CASEWORKER:
+                      case RoleCategory.LEGAL_OPERATIONS:
                       case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
@@ -259,7 +259,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                       case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
-                      case RoleCategory.CASEWORKER:
+                      case RoleCategory.LEGAL_OPERATIONS:
                         switch (this.allocateTo) {
                           case AllocateTo.ALLOCATE_TO_ME:
                             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));

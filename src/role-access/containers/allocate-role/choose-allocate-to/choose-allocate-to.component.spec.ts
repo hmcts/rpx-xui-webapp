@@ -47,7 +47,7 @@ describe('ChooseAllocateToComponent', () => {
       startDate: new Date(),
       endDate: new Date()
     },
-    roleCategory: RoleCategory.CASEWORKER
+    roleCategory: RoleCategory.LEGAL_OPERATIONS
   };
 
   beforeEach(waitForAsync(() => {

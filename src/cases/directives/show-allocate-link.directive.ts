@@ -16,7 +16,7 @@ export class ShowAllocateLinkDirective implements OnInit {
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {
     const show = false;
-    if (!showAllocateRoleLink || roleCategory === RoleCategory.CASEWORKER && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles)) {
+    if (!showAllocateRoleLink || roleCategory === RoleCategory.LEGAL_OPERATIONS && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles)) {
       return show;
     }
     return true;

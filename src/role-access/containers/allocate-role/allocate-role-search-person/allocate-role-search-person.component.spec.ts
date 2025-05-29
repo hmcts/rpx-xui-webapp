@@ -194,7 +194,7 @@ describe('AllocateRolePersonComponent', () => {
         startDate: new Date(),
         endDate: new Date()
       },
-      roleCategory: RoleCategory.CASEWORKER
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();

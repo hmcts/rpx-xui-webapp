@@ -56,7 +56,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   };
   const locationStub: any = {
     back: jasmine.createSpy('back')

@@ -165,7 +165,7 @@ describe('TaskListWrapperComponent', () => {
     });
 
     it('User should not be Judicial', () => {
-      component.userRoleCategory = RoleCategory.CASEWORKER;
+      component.userRoleCategory = RoleCategory.LEGAL_OPERATIONS;
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeFalsy();
     });
@@ -191,7 +191,7 @@ describe('TaskListWrapperComponent', () => {
         surname: 'Smith',
         email: 'john.smith@email.com',
         roles: [AppConstants.IA_JUDGE_ROLE],
-        roleCategory: RoleCategory.CASEWORKER
+        roleCategory: RoleCategory.LEGAL_OPERATIONS
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
       const roleCategory = component.getCurrentUserRoleCategory();

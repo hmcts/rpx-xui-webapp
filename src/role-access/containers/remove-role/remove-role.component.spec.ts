@@ -32,7 +32,7 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.CASEWORKER
+  roleCategory: RoleCategory.LEGAL_OPERATIONS
 };
 
 describe('RemoveRoleComponent', () => {
@@ -112,7 +112,7 @@ describe('RemoveRoleComponent', () => {
                 roles: [
                   {
                     name: 'test user name',
-                    roleCategory: RoleCategory.CASEWORKER,
+                    roleCategory: RoleCategory.LEGAL_OPERATIONS,
                     roleName: TypeOfRole.CaseManager,
                     location: '1234567',
                     start: '2021-07-13T00:29:10.656Z',

@@ -44,7 +44,7 @@ export class CaseRolesTableComponent implements OnInit {
 
   public getRoleCategoryTitle(roleCategory: string): string {
     switch (roleCategory) {
-      case RoleCategory.CASEWORKER: {
+      case RoleCategory.LEGAL_OPERATIONS: {
         roleCategory = 'legal Ops';
         break;
       }

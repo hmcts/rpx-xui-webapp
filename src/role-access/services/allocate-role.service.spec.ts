@@ -133,7 +133,7 @@ describe('AllocateRoleService', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: RoleCategory.CASEWORKER,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
@@ -173,7 +173,7 @@ describe('AllocateRoleService', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: RoleCategory.CASEWORKER,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {

@@ -9,7 +9,7 @@ describe('Task Role Access Resolver', () => {
   it('resolves on success', () => {
     const mockCaseRole: CaseRole = {
       name: 'Example case name',
-      roleCategory: RoleCategory.CASEWORKER,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
       location: null,
       start: '01-01-2001',
       end: null,

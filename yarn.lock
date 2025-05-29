@@ -3196,16 +3196,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.0-role-category-enum":
-  version: 2.1.0-role-category-enum
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0-role-category-enum"
+"@hmcts/rpx-xui-common-lib@npm:2.1.0-role-enums":
+  version: 2.1.0-role-enums
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0-role-enums"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/daa2b8a44c6175ae0f580bf61aaa9f479714ec5c99f9c2f6496b5d30047341d7c1e78b231c4bf384f431f57dfeb3b0a237f7ac6fbeaa7e198888890c8e13f6fa
+  checksum: 10/837d0e2179b94d9054822acfdadce344cdc9c28c06b400b1a3cb6b6a4dd824786317d257d157f1eacb067b1cf501b4acf64187a52800421b475b9fa192c6adaf
   languageName: node
   linkType: hard
 
@@ -21956,7 +21956,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.0-role-category-enum"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.0-role-enums"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

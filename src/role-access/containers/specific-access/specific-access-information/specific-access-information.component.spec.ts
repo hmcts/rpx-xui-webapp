@@ -55,7 +55,7 @@ describe('DescribeExclusionComponent', () => {
       taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
       jurisdiction: 'IA',
       comment: 'test',
-      roleCategory: RoleCategory.CASEWORKER,
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
       requestedRole: 'specific-access-legal-operations',
       person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null }
     };

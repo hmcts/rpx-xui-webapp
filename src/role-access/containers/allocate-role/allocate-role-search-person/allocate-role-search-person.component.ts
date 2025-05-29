@@ -50,8 +50,8 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
-    if (allocateRoleStateData.roleCategory === RoleCategory.CASEWORKER) {
-      this.domain = PersonRole.CASEWORKER;
+    if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
+      this.domain = PersonRole.LEGAL_OPERATIONS;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
       this.domain = PersonRole.ADMIN;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {

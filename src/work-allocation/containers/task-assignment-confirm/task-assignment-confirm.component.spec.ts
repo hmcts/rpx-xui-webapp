@@ -37,7 +37,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   };
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
@@ -284,7 +284,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       id: 'id123',
       name: 'John Smith',
       email: 'john.smith@email.com',
-      domain: PersonRole.CASEWORKER
+      domain: PersonRole.LEGAL_OPERATIONS
     };
     const mockTasks = getMockTasks();
     // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
@@ -294,7 +294,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     const mockSessionStorageService = {
       getItem: jasmine.createSpy('getItem').and.returnValue(JSON.stringify({
         roles: [role],
-        roleCategory: role === AppConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.CASEWORKER
+        roleCategory: role === AppConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS
       }))
     };
 

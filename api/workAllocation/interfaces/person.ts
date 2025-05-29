@@ -15,7 +15,7 @@ export interface SearchOptions {
 // This enum only used for node layer and should match PersonRole in common-lib
 export enum PersonRole {
   JUDICIAL = 'Judicial',
-  CASEWORKER = 'Legal Ops',
+  LEGAL_OPERATIONS = 'Legal Ops',
   ADMIN = 'Admin',
   CTSC = 'CTSC',
   ALL = 'All',

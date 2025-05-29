@@ -34,13 +34,13 @@ describe('ShowAllocateLinkDirective', () => {
         id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         location: 'Taylor House',
         name: 'Judge Beech',
-        roleCategory: RoleCategory.CASEWORKER,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         roleName: TypeOfRole.CaseManager,
         start: '2021-07-13T00:29:10.656Z',
         email: 'test@mail.com'
       }
     ];
-    directive.roleCategory = RoleCategory.CASEWORKER;
+    directive.roleCategory = RoleCategory.LEGAL_OPERATIONS;
     directive.ngOnInit();
     expect(element.nativeElement.style.display).toBe('none');
   });

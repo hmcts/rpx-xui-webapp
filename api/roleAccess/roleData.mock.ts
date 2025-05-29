@@ -1,4 +1,4 @@
-import { RoleCategory } from "./models/allocate-role.enum";
+import { RoleCategory } from './models/allocate-role.enum';
 
 export const mockAdminRoles: any[] = [{
   name: 'Admin Role',

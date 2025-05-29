@@ -141,8 +141,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   private setDomain(role: RoleCategory): PersonRole {
     if (role === RoleCategory.JUDICIAL) {
       return PersonRole.JUDICIAL;
-    } else if (role === RoleCategory.CASEWORKER) {
-      return PersonRole.CASEWORKER;
+    } else if (role === RoleCategory.LEGAL_OPERATIONS) {
+      return PersonRole.LEGAL_OPERATIONS;
     } else if (role === RoleCategory.ADMIN) {
       return PersonRole.ADMIN;
     }

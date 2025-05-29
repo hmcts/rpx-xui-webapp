@@ -24,7 +24,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '1',
       email: 'j.s@caseworkers.gov.uk',
       location: LOCATION_A,
-      roleCategory: RoleCategory.CASEWORKER
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     },
     {
       firstName: 'Jane',
@@ -32,7 +32,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '2',
       email: 'j.doe@caseworkers.gov.uk',
       location: LOCATION_B,
-      roleCategory: RoleCategory.CASEWORKER
+      roleCategory: RoleCategory.LEGAL_OPERATIONS
     }
   ];
 }

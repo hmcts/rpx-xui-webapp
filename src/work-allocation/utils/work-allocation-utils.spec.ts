@@ -26,7 +26,7 @@ describe('WorkAllocationUtils', () => {
     authorisations: []
   },
   {
-    role_category: RoleCategory.CASEWORKER,
+    role_category: RoleCategory.LEGAL_OPERATIONS,
     role_name: '',
     permissions: [TaskPermission.EXECUTE],
     authorisations: []
@@ -40,7 +40,7 @@ describe('WorkAllocationUtils', () => {
   ];
 
   const taskRolesWithOneOwnPermission = [{
-    role_category: RoleCategory.CASEWORKER,
+    role_category: RoleCategory.LEGAL_OPERATIONS,
     role_name: '',
     permissions: [TaskPermission.EXECUTE],
     authorisations: []
@@ -59,7 +59,7 @@ describe('WorkAllocationUtils', () => {
     surname: 'User',
     email: 'testuser@test.com',
     roles: null,
-    roleCategory: RoleCategory.CASEWORKER
+    roleCategory: RoleCategory.LEGAL_OPERATIONS
   };
 
   beforeEach(() => {
@@ -166,7 +166,7 @@ describe('WorkAllocationUtils', () => {
     expect(options[0].optionId).toEqual('ADMIN');
     expect(options[0].label).toEqual(PersonRole.ADMIN);
     expect(options[1].optionId).toEqual('LEGAL_OPERATIONS');
-    expect(options[1].label).toEqual(PersonRole.CASEWORKER);
+    expect(options[1].label).toEqual(PersonRole.LEGAL_OPERATIONS);
     expect(options[2].optionId).toEqual('JUDICIAL');
     expect(options[2].label).toEqual(PersonRole.JUDICIAL);
     expect(sessionStorageService.getItem).toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe('WorkAllocationUtils', () => {
     const options = getOptions(taskRolesWithOneOwnPermission, sessionStorageService);
     expect(options.length).toEqual(2);
     expect(options[0].optionId).toEqual('LEGAL_OPERATIONS');
-    expect(options[0].label).toEqual(PersonRole.CASEWORKER);
+    expect(options[0].label).toEqual(PersonRole.LEGAL_OPERATIONS);
     expect(options[1].optionId).toEqual('JUDICIAL');
     expect(options[1].label).toEqual(PersonRole.JUDICIAL);
     expect(sessionStorageService.getItem).toHaveBeenCalledTimes(0);
@@ -203,7 +203,7 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('getLabel', () => {
-    let label = getLabel(RoleCategory.CASEWORKER);
+    let label = getLabel(RoleCategory.LEGAL_OPERATIONS);
     expect(label).toEqual('Legal Ops');
 
     label = getLabel(RoleCategory.ADMIN);

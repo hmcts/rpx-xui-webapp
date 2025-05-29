@@ -190,8 +190,8 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
       return PersonRole.ADMIN;
     case RoleCategory.JUDICIAL:
       return PersonRole.JUDICIAL;
-    case RoleCategory.CASEWORKER:
-      return PersonRole.CASEWORKER;
+    case RoleCategory.LEGAL_OPERATIONS:
+      return PersonRole.LEGAL_OPERATIONS;
     case RoleCategory.CTSC:
       return PersonRole.CTSC;
     default:
@@ -202,8 +202,8 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
 export function getRoleCategory(role: string): RoleCategory {
   if (role === PersonRole.JUDICIAL) {
     return RoleCategory.JUDICIAL;
-  } else if (role === PersonRole.CASEWORKER) {
-    return RoleCategory.CASEWORKER;
+  } else if (role === PersonRole.LEGAL_OPERATIONS) {
+    return RoleCategory.LEGAL_OPERATIONS;
   } else if (role === PersonRole.ADMIN) {
     return RoleCategory.ADMIN;
   } else if (role === PersonRole.CTSC) {

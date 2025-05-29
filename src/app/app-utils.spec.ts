@@ -318,7 +318,7 @@ describe('getFilterPersistenceByRoleType', () => {
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
       USER_2.roleAssignmentInfo[0].bookable = false;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
-      USER_2.userInfo.roleCategory = RoleCategory.CASEWORKER;
+      USER_2.userInfo.roleCategory = RoleCategory.LEGAL_OPERATIONS;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
     });
   });

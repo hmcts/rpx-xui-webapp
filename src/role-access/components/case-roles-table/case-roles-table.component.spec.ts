@@ -142,7 +142,7 @@ describe('CaseRolesTableComponent', () => {
   });
 
   it('should getRoleCategoryTitle', () => {
-    expect(component.getRoleCategoryTitle(RoleCategory.CASEWORKER)).toBe('legal Ops');
+    expect(component.getRoleCategoryTitle(RoleCategory.LEGAL_OPERATIONS)).toBe('legal Ops');
     expect(component.getRoleCategoryTitle(RoleCategory.CTSC)).toBe('CTSC');
     expect(component.getRoleCategoryTitle(RoleCategory.JUDICIAL)).toBe('judicial');
     expect(component.getRoleCategoryTitle(RoleCategory.ADMIN)).toBe('admin');

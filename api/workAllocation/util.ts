@@ -768,8 +768,8 @@ export function mapRoleType(roleType: string): string {
     return RoleCategory.JUDICIAL;
   }
 
-  if (roleType === PersonRole.CASEWORKER) {
-    return RoleCategory.CASEWORKER;
+  if (roleType === PersonRole.LEGAL_OPERATIONS) {
+    return RoleCategory.LEGAL_OPERATIONS;
   }
 
   if (roleType === PersonRole.ADMIN) {

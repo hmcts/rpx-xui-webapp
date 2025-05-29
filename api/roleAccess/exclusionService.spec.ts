@@ -216,7 +216,7 @@ describe('exclusions.exclusionService', () => {
   describe('getCorrectRoleCategory', () => {
     it('should get the correct role category', async () => {
       expect(getCorrectRoleCategory('Judicial')).to.deep.equal(RoleCategory.JUDICIAL);
-      expect(getCorrectRoleCategory('Legal Ops')).to.deep.equal(RoleCategory.CASEWORKER);
+      expect(getCorrectRoleCategory('Legal Ops')).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
       expect(getCorrectRoleCategory('Admin')).to.deep.equal(RoleCategory.ADMIN);
     });
   });

@@ -1,7 +1,6 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../auth/interfaces/UserInfo';
 import { AllocateRoleData } from '../models/allocate-role-state-data.interface';
-import { AllocateTo, Period } from '../models/allocate-role.enum';
+import { AllocateTo, Period, RoleCategory } from '../models/allocate-role.enum';
 
 export function toRoleAssignmentBody(currentUserId: string, allocateRoleData: AllocateRoleData) {
   return {
@@ -107,7 +106,7 @@ export function toDenySARoleAssignmentBody(
     case RoleCategory.JUDICIAL:
       requestedrole = 'specific-access-judiciary';
       break;
-    case RoleCategory.CASEWORKER:
+    case RoleCategory.LEGAL_OPERATIONS:
       requestedrole = 'specific-access-legal-ops';
       break;
     case RoleCategory.ADMIN:

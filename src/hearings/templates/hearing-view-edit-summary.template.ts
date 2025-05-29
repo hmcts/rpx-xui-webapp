@@ -14,8 +14,14 @@ export const HEARING_VIEW_EDIT_SUMMARY_TEMPLATE: Section[] = [
       },
       {
         id: 'caseNumber',
-        answerTitle: 'Case number',
+        answerTitle: 'Case reference',
         answerSource: AnswerSource.CASE_NUMBER,
+        isHiddenSource: IsHiddenSource.LISTED
+      },
+      {
+        id: 'hearingId',
+        answerTitle: 'Hearing Id',
+        answerSource: AnswerSource.HEARING_ID,
         isHiddenSource: IsHiddenSource.LISTED
       },
       {

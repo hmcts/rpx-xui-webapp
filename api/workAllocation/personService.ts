@@ -1,4 +1,3 @@
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_CASE_JUDICIAL_REF_PATH } from '../configuration/references';
@@ -7,6 +6,7 @@ import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { PERSON } from './constants/mock.data';
+import { PersonRole } from './interfaces/person';
 import { applySearchFilter } from './util';
 
 const HEADER_ACCEPT_V1 = 'application/json';

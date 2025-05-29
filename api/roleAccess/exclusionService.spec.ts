@@ -1,4 +1,3 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
@@ -18,6 +17,7 @@ import {
   mapResponseToExclusions
 } from './exclusionService';
 import { getRoleCategoryRequestPayload } from './index';
+import { RoleCategory } from './models/allocate-role.enum';
 
 chai.use(sinonChai);
 

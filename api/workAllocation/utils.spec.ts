@@ -1,4 +1,3 @@
-import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
@@ -6,14 +5,15 @@ import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CANCEL, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import { Case } from './interfaces/case';
 import { CachedCaseworker, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
 import { RoleCaseData } from './interfaces/roleCaseData';
-
-import { Case } from './interfaces/case';
+import { PersonRole } from './interfaces/person';
 import {
   applySearchFilter,
   assignActionsToTasks,

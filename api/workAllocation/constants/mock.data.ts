@@ -1,6 +1,5 @@
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { v4 as uuidv4 } from 'uuid';
-import { Person } from '../interfaces/person';
+import { Person, PersonRole } from '../interfaces/person';
 
 export const PERSON: Person[] = [
   {

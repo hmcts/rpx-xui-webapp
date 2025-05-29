@@ -1,4 +1,3 @@
-import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 
@@ -7,6 +6,7 @@ import { CASEWORKER_PAGE_SIZE, SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_A
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
+import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
@@ -32,7 +32,7 @@ import {
   Location,
   LocationApi
 } from './interfaces/common';
-import { Person } from './interfaces/person';
+import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';

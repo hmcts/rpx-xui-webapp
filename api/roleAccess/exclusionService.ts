@@ -1,4 +1,3 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { NextFunction, Response } from 'express';
@@ -11,6 +10,7 @@ import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { JudicialUserDto } from './dtos/judicial-user-dto';
+import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 

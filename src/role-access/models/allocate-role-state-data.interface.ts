@@ -1,4 +1,4 @@
-import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Role } from '.';
 import { AllocateRoleState } from './allocate-role-state.enum';
 import { Actions, AllocateTo, DurationOfRole, Period } from './allocate-role.enum';

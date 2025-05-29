@@ -1,5 +1,3 @@
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-
 export interface Person {
   id: string;
   name: string;
@@ -12,4 +10,13 @@ export interface Person {
 export interface SearchOptions {
   searchTerm: string;
   jurisdiction: string;
+}
+
+// This enum only used for node layer and should match PersonRole in common-lib
+export enum PersonRole {
+  JUDICIAL = 'Judicial',
+  CASEWORKER = 'Legal Ops',
+  ADMIN = 'Admin',
+  CTSC = 'CTSC',
+  ALL = 'All',
 }

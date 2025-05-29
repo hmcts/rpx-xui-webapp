@@ -1,4 +1,4 @@
-import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
 import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, Role, SpecificRole } from '../../models';
 

@@ -1,5 +1,4 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { TypeOfRole } from '../../roleAccess/models/allocate-role.enum';
+import { RoleCategory, TypeOfRole } from '../../roleAccess/models/allocate-role.enum';
 import { CaseRole } from '../interfaces/caseRole';
 
 export const CASEROLES: CaseRole[] = [

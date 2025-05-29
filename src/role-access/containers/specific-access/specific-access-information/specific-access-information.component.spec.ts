@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ErrorMessageComponent } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
@@ -54,7 +55,7 @@ describe('DescribeExclusionComponent', () => {
       taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
       jurisdiction: 'IA',
       comment: 'test',
-      roleCategory: 'LEGAL_OPERATIONS',
+      roleCategory: RoleCategory.CASEWORKER,
       requestedRole: 'specific-access-legal-operations',
       person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null }
     };

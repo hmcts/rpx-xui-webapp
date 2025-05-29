@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
+import { AppConstants } from '../../../app/app.constants';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
@@ -175,7 +176,7 @@ describe('TaskListWrapperComponent', () => {
         forename: 'John',
         surname: 'Smith',
         email: 'john.smith@email.com',
-        roles: ['caseworker-ia-iacjudge'],
+        roles: [AppConstants.IA_JUDGE_ROLE],
         roleCategory: RoleCategory.JUDICIAL
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
@@ -189,7 +190,7 @@ describe('TaskListWrapperComponent', () => {
         forename: 'John',
         surname: 'Smith',
         email: 'john.smith@email.com',
-        roles: ['caseworker-ia-iacjudge'],
+        roles: [AppConstants.IA_JUDGE_ROLE],
         roleCategory: RoleCategory.CASEWORKER
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));

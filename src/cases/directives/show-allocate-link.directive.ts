@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { CaseRole, TypeOfRole } from '../../role-access/models';
 
 @Directive({
   selector: '[exuiShowAllocateLink]'
@@ -15,7 +16,7 @@ export class ShowAllocateLinkDirective implements OnInit {
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {
     const show = false;
-    if (!showAllocateRoleLink || roleCategory === RoleCategory.LEGAL_OPERATIONS && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles)) {
+    if (!showAllocateRoleLink || roleCategory === RoleCategory.CASEWORKER && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles)) {
       return show;
     }
     return true;

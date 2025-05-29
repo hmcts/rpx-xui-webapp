@@ -1,8 +1,8 @@
 import { NavigationExtras, RouterEvent } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 
 import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
-import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
 import { CaseService, SortOrder, TaskService } from '../enums';
 import { Case, CaseServiceConfig } from '../models/cases';
@@ -24,7 +24,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '1',
       email: 'j.s@caseworkers.gov.uk',
       location: LOCATION_A,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.CASEWORKER
     },
     {
       firstName: 'Jane',
@@ -32,7 +32,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '2',
       email: 'j.doe@caseworkers.gov.uk',
       location: LOCATION_B,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.CASEWORKER
     }
   ];
 }

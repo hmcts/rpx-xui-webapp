@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
+import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 
 @Component({
@@ -43,7 +44,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public set roles(value: CaseRole[]) {
     this.pRoles = value;
     if (this.roles) {
-      this.legalOpsRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
+      this.legalOpsRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.CASEWORKER);
       this.judicialRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL);
       this.adminRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ADMIN);
       this.ctscRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.CTSC);
@@ -89,7 +90,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.exclusions && this.exclusions.length > 0) {
       for (const exclusion of this.exclusions) {
         // some exclusions are judicial so this checks whether any exclusion is missing a name
-        if (exclusion.userType === RoleCategory.LEGAL_OPERATIONS || exclusion.userType === RoleCategory.ADMIN || exclusion.userType === RoleCategory.CTSC) {
+        if (exclusion.userType === RoleCategory.CASEWORKER || exclusion.userType === RoleCategory.ADMIN || exclusion.userType === RoleCategory.CTSC) {
           if (!exclusion.name) {
             this.exclusionsNotNamed = true;
           } else {

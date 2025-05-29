@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { UserInfo } from '../../../app/models';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -35,8 +35,7 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: AllocateRoleService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly roleService: AllocateRoleService
   ) { }
 
   public get fields(): FieldConfig[] {
@@ -89,7 +88,7 @@ export class TaskActionContainerComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      // EXUI-2907 - Case judicial check not user judicial check
+      // EXUI-2907 - Role category is used instead of roles
       return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
     return false;

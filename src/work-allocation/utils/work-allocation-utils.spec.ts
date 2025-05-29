@@ -1,5 +1,4 @@
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { RoleCategory } from '../../role-access/models';
+import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { LocationsByRegion } from '../models/dtos';
 import { TaskPermission } from '../models/tasks';
 import {
@@ -27,7 +26,7 @@ describe('WorkAllocationUtils', () => {
     authorisations: []
   },
   {
-    role_category: RoleCategory.LEGAL_OPERATIONS,
+    role_category: RoleCategory.CASEWORKER,
     role_name: '',
     permissions: [TaskPermission.EXECUTE],
     authorisations: []
@@ -41,7 +40,7 @@ describe('WorkAllocationUtils', () => {
   ];
 
   const taskRolesWithOneOwnPermission = [{
-    role_category: RoleCategory.LEGAL_OPERATIONS,
+    role_category: RoleCategory.CASEWORKER,
     role_name: '',
     permissions: [TaskPermission.EXECUTE],
     authorisations: []
@@ -60,7 +59,7 @@ describe('WorkAllocationUtils', () => {
     surname: 'User',
     email: 'testuser@test.com',
     roles: null,
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.CASEWORKER
   };
 
   beforeEach(() => {
@@ -204,7 +203,7 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('getLabel', () => {
-    let label = getLabel(RoleCategory.LEGAL_OPERATIONS);
+    let label = getLabel(RoleCategory.CASEWORKER);
     expect(label).toEqual('Legal Ops');
 
     label = getLabel(RoleCategory.ADMIN);

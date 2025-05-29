@@ -1,16 +1,16 @@
+import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
+
 import { http } from '../lib/http';
-import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CANCEL, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import { CachedCaseworker, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
-import { PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 
 import { Case } from './interfaces/case';
@@ -123,7 +123,7 @@ const CASEWORKER_1: Caseworker = {
   idamId: '1',
   lastName: 'Test',
   location: LOCATION_1,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  roleCategory: RoleCategory.CASEWORKER,
   service: null
 };
 const CASEWORKER_2: Caseworker = {
@@ -141,7 +141,7 @@ const CASEWORKER_3: Caseworker = {
   idamId: '3',
   lastName: 'Two',
   location: LOCATION_2,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS,
+  roleCategory: RoleCategory.CASEWORKER,
   service: null
 };
 const CASEWORKER_4: Caseworker = {
@@ -159,7 +159,7 @@ const mockRoleAssignments: RoleAssignment[] = [
     id: '123',
     attributes: null,
     actorId: '1',
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.CASEWORKER
   },
   {
     id: '123',
@@ -171,13 +171,13 @@ const mockRoleAssignments: RoleAssignment[] = [
     id: '123',
     attributes: null,
     actorId: '3',
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.CASEWORKER
   },
   {
     id: '123',
     attributes: null,
     actorId: '5',
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.CASEWORKER
   }
 ];
 
@@ -1523,7 +1523,7 @@ describe('workAllocation.utils', () => {
       expect(mapRoleType(PersonRole.ALL)).to.deep.equal('');
       expect(mapRoleType(PersonRole.JUDICIAL)).to.deep.equal(RoleCategory.JUDICIAL);
       expect(mapRoleType(PersonRole.ADMIN)).to.deep.equal(RoleCategory.ADMIN);
-      expect(mapRoleType(PersonRole.CASEWORKER)).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
+      expect(mapRoleType(PersonRole.CASEWORKER)).to.deep.equal(RoleCategory.CASEWORKER);
     });
   });
 

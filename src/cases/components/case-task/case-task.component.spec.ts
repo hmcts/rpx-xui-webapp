@@ -1,5 +1,6 @@
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { RoleCategory } from '../../../role-access/models';
+
 import { PriorityLimits } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
@@ -141,7 +142,7 @@ describe('CaseTaskComponent', () => {
         firstName: 'Some',
         lastName: 'Name',
         email: 'test@test.com',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategory: RoleCategory.CASEWORKER,
         location: {
           id: '1',
           locationName: 'TestLocation',

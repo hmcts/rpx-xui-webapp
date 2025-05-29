@@ -1,14 +1,15 @@
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { getMockTasks } from '../../work-allocation/tests/utils.spec';
-import { CaseRole, RoleCategory } from '../models';
+import { CaseRole } from '../models';
 import { TaskRoleAccessResolver } from './task-role-access-resolver';
 
 describe('Task Role Access Resolver', () => {
   it('resolves on success', () => {
     const mockCaseRole: CaseRole = {
       name: 'Example case name',
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+      roleCategory: RoleCategory.CASEWORKER,
       location: null,
       start: '01-01-2001',
       end: null,

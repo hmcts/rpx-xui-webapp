@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -25,7 +25,6 @@ import {
   AllocateTo,
   DEFINED_ROLES,
   DurationOfRole,
-  RoleCategory,
   SpecificRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
@@ -197,7 +196,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                     throw new Error('Invalid user role');
                 }
                 break;
-              case RoleCategory.LEGAL_OPERATIONS:
+              case RoleCategory.CASEWORKER:
                 switch (this.userRole) {
                   case UserRole.LegalOps:
                     this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
@@ -246,7 +245,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                             throw new Error('Invalid allocate to');
                         }
                         break;
-                      case RoleCategory.LEGAL_OPERATIONS:
+                      case RoleCategory.CASEWORKER:
                       case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
@@ -260,7 +259,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                       case RoleCategory.ADMIN:
                         this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
                         break;
-                      case RoleCategory.LEGAL_OPERATIONS:
+                      case RoleCategory.CASEWORKER:
                         switch (this.allocateTo) {
                           case AllocateTo.ALLOCATE_TO_ME:
                             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));

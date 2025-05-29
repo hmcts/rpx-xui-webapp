@@ -1,3 +1,4 @@
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
 import { expect } from 'chai';
 import * as config from 'config';
@@ -14,7 +15,7 @@ const REQUEST_BODY = {
   jurisdiction: 'IA',
   state: 5,
   exclusionOption: 'Exclude another person',
-  personRole: 'Judicial',
+  personRole: PersonRole.JUDICIAL,
   person: {
     id: '123',
     name: 'Test user',

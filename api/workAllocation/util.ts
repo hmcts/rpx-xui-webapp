@@ -1,18 +1,17 @@
+import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
+
 import { getConfigValue } from '../configuration';
 import { CASEWORKER_PAGE_SIZE, SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
-
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
 import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
-
 import { exists, reflect } from '../lib/util';
 import {
   TaskPermission,
@@ -33,7 +32,7 @@ import {
   Location,
   LocationApi
 } from './interfaces/common';
-import { Person, PersonRole } from './interfaces/person';
+import { Person } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
@@ -770,7 +769,7 @@ export function mapRoleType(roleType: string): string {
   }
 
   if (roleType === PersonRole.CASEWORKER) {
-    return RoleCategory.LEGAL_OPERATIONS;
+    return RoleCategory.CASEWORKER;
   }
 
   if (roleType === PersonRole.ADMIN) {

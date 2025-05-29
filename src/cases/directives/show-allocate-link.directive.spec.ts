@@ -1,4 +1,5 @@
-import { RoleCategory, TypeOfRole } from '../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { TypeOfRole } from '../../role-access/models';
 import { ShowAllocateLinkDirective } from './show-allocate-link.directive';
 
 describe('ShowAllocateLinkDirective', () => {
@@ -33,13 +34,13 @@ describe('ShowAllocateLinkDirective', () => {
         id: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         location: 'Taylor House',
         name: 'Judge Beech',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategory: RoleCategory.CASEWORKER,
         roleName: TypeOfRole.CaseManager,
         start: '2021-07-13T00:29:10.656Z',
         email: 'test@mail.com'
       }
     ];
-    directive.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+    directive.roleCategory = RoleCategory.CASEWORKER;
     directive.ngOnInit();
     expect(element.nativeElement.style.display).toBe('none');
   });

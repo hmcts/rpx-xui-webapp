@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
-import { CaseRole, RoleCategory } from '../../models';
+import { CaseRole } from '../../models';
 import { CaseRolesTableComponent } from './case-roles-table.component';
 
 describe('CaseRolesTableComponent', () => {
@@ -142,7 +142,7 @@ describe('CaseRolesTableComponent', () => {
   });
 
   it('should getRoleCategoryTitle', () => {
-    expect(component.getRoleCategoryTitle(RoleCategory.LEGAL_OPERATIONS)).toBe('legal Ops');
+    expect(component.getRoleCategoryTitle(RoleCategory.CASEWORKER)).toBe('legal Ops');
     expect(component.getRoleCategoryTitle(RoleCategory.CTSC)).toBe('CTSC');
     expect(component.getRoleCategoryTitle(RoleCategory.JUDICIAL)).toBe('judicial');
     expect(component.getRoleCategoryTitle(RoleCategory.ADMIN)).toBe('admin');

@@ -1,21 +1,22 @@
 import { Location } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { AnswersComponent } from '../../components';
-import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
+import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -31,7 +32,7 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS
+  roleCategory: RoleCategory.CASEWORKER
 };
 
 describe('RemoveRoleComponent', () => {
@@ -111,7 +112,7 @@ describe('RemoveRoleComponent', () => {
                 roles: [
                   {
                     name: 'test user name',
-                    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+                    roleCategory: RoleCategory.CASEWORKER,
                     roleName: TypeOfRole.CaseManager,
                     location: '1234567',
                     start: '2021-07-13T00:29:10.656Z',

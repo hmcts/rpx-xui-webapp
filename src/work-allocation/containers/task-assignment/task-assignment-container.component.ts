@@ -2,11 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
 import { ErrorMessage, UserInfo } from '../../../app/models';
-import { RoleCategory } from '../../../role-access/models';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -142,7 +141,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   private setDomain(role: RoleCategory): PersonRole {
     if (role === RoleCategory.JUDICIAL) {
       return PersonRole.JUDICIAL;
-    } else if (role === RoleCategory.LEGAL_OPERATIONS) {
+    } else if (role === RoleCategory.CASEWORKER) {
       return PersonRole.CASEWORKER;
     } else if (role === RoleCategory.ADMIN) {
       return PersonRole.ADMIN;

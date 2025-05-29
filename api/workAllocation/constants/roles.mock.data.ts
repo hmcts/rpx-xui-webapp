@@ -1,4 +1,5 @@
-import { RoleCategory, TypeOfRole } from '../../roleAccess/models/allocate-role.enum';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { TypeOfRole } from '../../roleAccess/models/allocate-role.enum';
 import { CaseRole } from '../interfaces/caseRole';
 
 export const CASEROLES: CaseRole[] = [
@@ -43,7 +44,7 @@ export const CASEROLES: CaseRole[] = [
     id: 'cbe74919-e9f0-4c8b-8d90-7da6aede9fe9',
     location: 'Taylor House',
     name: 'Bisa Bulter',
-    roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    roleCategory: RoleCategory.CASEWORKER,
     roleName: TypeOfRole.CaseManager,
     start: '2021-08-19T00:29:10.656Z'
   }

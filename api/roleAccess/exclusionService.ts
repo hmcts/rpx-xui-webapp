@@ -1,3 +1,4 @@
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
 import { NextFunction, Response } from 'express';
@@ -10,7 +11,6 @@ import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { JudicialUserDto } from './dtos/judicial-user-dto';
-import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 
@@ -147,7 +147,7 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
 export function mapRoleCategory(roleCategory: string): RoleCategory {
   switch (roleCategory) {
     case 'LEGAL_OPERATIONS':
-      return RoleCategory.LEGAL_OPERATIONS;
+      return RoleCategory.CASEWORKER;
     case 'JUDICIAL':
       return RoleCategory.JUDICIAL;
     case 'ADMIN':
@@ -164,7 +164,7 @@ export function mapRoleCategory(roleCategory: string): RoleCategory {
 export function getCorrectRoleCategory(domain: string): RoleCategory {
   switch (domain) {
     case 'Legal Ops':
-      return RoleCategory.LEGAL_OPERATIONS;
+      return RoleCategory.CASEWORKER;
     case 'Judicial':
       return RoleCategory.JUDICIAL;
     case 'Admin':

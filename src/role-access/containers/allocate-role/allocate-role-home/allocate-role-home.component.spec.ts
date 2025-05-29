@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -13,8 +14,7 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateTo,
-  DurationOfRole,
-  RoleCategory
+  DurationOfRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
@@ -175,7 +175,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on SEARCH_PERSON page legal ops user assign legal ops user', () => {
       component.navigationCurrentState = AllocateRoleState.SEARCH_PERSON;
       component.userRole = UserRole.LegalOps;
-      component.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+      component.roleCategory = RoleCategory.CASEWORKER;
       component.navigationHandler(navEvent);
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
     });
@@ -183,7 +183,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on SEARCH_PERSON page judicial user assign legal ops user', () => {
       component.navigationCurrentState = AllocateRoleState.SEARCH_PERSON;
       component.userRole = UserRole.Judicial;
-      component.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+      component.roleCategory = RoleCategory.CASEWORKER;
       component.navigationHandler(navEvent);
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
     });
@@ -272,7 +272,7 @@ describe('AllocateRoleHomeComponent', () => {
       component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
       component.action = Actions.Allocate;
       component.userRole = UserRole.Judicial;
-      component.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+      component.roleCategory = RoleCategory.CASEWORKER;
       component.navigationHandler(navEvent);
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
     });
@@ -290,7 +290,7 @@ describe('AllocateRoleHomeComponent', () => {
       component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
       component.action = Actions.Allocate;
       component.userRole = UserRole.LegalOps;
-      component.roleCategory = RoleCategory.LEGAL_OPERATIONS;
+      component.roleCategory = RoleCategory.CASEWORKER;
       component.allocateTo = AllocateTo.ALLOCATE_TO_ME;
       component.navigationHandler(navEvent);
       expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));

@@ -1,3 +1,5 @@
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+
 export interface Person {
   id: string;
   name: string;
@@ -10,12 +12,4 @@ export interface Person {
 export interface SearchOptions {
   searchTerm: string;
   jurisdiction: string;
-}
-
-export enum PersonRole {
-  JUDICIAL = 'Judicial',
-  CASEWORKER = 'Legal Ops',
-  ADMIN = 'Admin',
-  CTSC = 'CTSC',
-  ALL = 'All',
 }

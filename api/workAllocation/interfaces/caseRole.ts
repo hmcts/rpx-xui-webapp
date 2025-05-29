@@ -1,4 +1,4 @@
-import { RoleCategory } from '../../roleAccess/models/allocate-role.enum';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 export interface CaseRole {
   name: string;

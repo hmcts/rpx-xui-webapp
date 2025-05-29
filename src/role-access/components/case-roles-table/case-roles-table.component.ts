@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseRole, RoleCategory } from '../../models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { CaseRole } from '../../models';
 
 interface Item extends CaseRole {
   open: boolean;
@@ -43,7 +44,7 @@ export class CaseRolesTableComponent implements OnInit {
 
   public getRoleCategoryTitle(roleCategory: string): string {
     switch (roleCategory) {
-      case RoleCategory.LEGAL_OPERATIONS: {
+      case RoleCategory.CASEWORKER: {
         roleCategory = 'legal Ops';
         break;
       }

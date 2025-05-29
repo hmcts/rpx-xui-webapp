@@ -203,10 +203,11 @@ export enum HearingDatePriorityEnum {
   PriorityError = 'Select the priority level of the hearing',
   PriorityDateError = 'Select if the hearing needs to take place on a specific date',
   DateRangeError = 'Enter a valid date range for the hearing to take place on',
-  EitherDateRangeError = 'Enter either earliest hearing date or latest hearing date',
+  EitherDateRangeError = 'Enter valid earliest and latest hearing dates',
   WeekendError = 'Hearing date cannot be on the weekend',
   InvalidHearingDateError = 'Enter a valid hearing date',
   DatePastError = 'The hearing dates cannot be in the past',
+  LatestEndDatePastError = 'Latest end date cannot be in the past',
   WeekDayError = 'Date range must include a weekday',
   EarliestHearingDateError = 'The earliest start date must be before the latest end date',
   NotEnoughDaysInDateRangeError = 'There are not enough days in the date range for the hearing'

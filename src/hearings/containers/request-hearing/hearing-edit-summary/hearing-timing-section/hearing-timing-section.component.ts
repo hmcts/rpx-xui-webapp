@@ -174,15 +174,13 @@ export class HearingTimingSectionComponent implements OnInit {
       (!this.hearingUnavailabilityDatesConfirmed && this.partyDetailsAnyChangesRequired);
 
     if (!this.showActionNeededLabelForPageTitle) {
-      if (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) {
-        this.showAmendedLabelForPageTitle =
+      this.showAmendedLabelForPageTitle =
           this.hearingLengthChanged ||
           this.hearingDateChanged ||
           this.hearingPriorityChanged ||
           this.hearingUnavailabilityDatesConfirmed;
-      } else {
-        this.showAmendedLabelForPageTitle = false;
-      }
+    } else {
+      this.showAmendedLabelForPageTitle = false;
     }
   }
 }

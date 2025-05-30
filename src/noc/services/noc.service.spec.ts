@@ -1,17 +1,17 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { NocService } from './noc.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('NocService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        StoreModule.forRoot({})
-      ],
+      imports: [StoreModule.forRoot({})],
       providers: [
-        NocService
+        NocService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
   });

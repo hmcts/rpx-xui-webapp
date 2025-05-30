@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
@@ -12,7 +12,6 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
 import { InitialisationSyncService } from '../../services/ccd-config/initialisation-sync-service';
-
 @Component({
   selector: 'exui-root',
   templateUrl: './app.component.html',
@@ -50,7 +49,15 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly initialisationSyncService: InitialisationSyncService
   ) {
     this.router.events.subscribe((data) => {
-      if (data instanceof RoutesRecognized) {
+      if (data instanceof NavigationStart) {
+        console.log(`Navigation started to: ${data.url}`);
+      } else if (data instanceof NavigationEnd) {
+        console.log(`Navigation ended at: ${data.url}`);
+      } else if (data instanceof NavigationCancel) {
+        console.warn(`Navigation cancelled: ${data.url}`);
+      } else if (data instanceof NavigationError) {
+        console.error(`Navigation error: ${data.error}`);
+      } else if (data instanceof RoutesRecognized) {
         let child = data.state.root;
         do {
           child = child.firstChild;

@@ -366,8 +366,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
 
     it('should set EMPTY label when no changes are detected', () => {
       // Set identical models to ensure no changes
-      component.hearingRequestMainModel = {...initialState.hearings.hearingRequest.hearingRequestMainModel};
-      component.hearingRequestToCompareMainModel = {...initialState.hearings.hearingRequest.hearingRequestMainModel};
+      component.hearingRequestMainModel = { ...initialState.hearings.hearingRequest.hearingRequestMainModel };
+      component.hearingRequestToCompareMainModel = { ...initialState.hearings.hearingRequest.hearingRequestMainModel };
 
       // Call ngOnInit which will trigger setAmendmentLabels()
       component.ngOnInit();
@@ -498,5 +498,4 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       expect(component.showAmendedForFacilitiesRequired('in camera court')).toBeFalse();
     });
   });
-
 });

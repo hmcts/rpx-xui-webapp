@@ -177,6 +177,7 @@
     "substantiveRoleEnabled": true,
     "accessManagementEnabled": true,
     "compressionEnabled": false,
+    "queryIdamServiceOverride": true,
     "forceNewDefaultScreenFlow": false
   },
   "helmet": {

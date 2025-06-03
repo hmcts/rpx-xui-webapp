@@ -46,8 +46,7 @@ describe('crudService', () => {
     it('should make a post request', async () => {
       sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.mock() as NextFunction;
-      const response = await handlePost(crudPath, dummyData, req, next);
+      const response = await handlePost(crudPath, dummyData, req);
       expect(response.data).to.equal('ok');
     });
   });

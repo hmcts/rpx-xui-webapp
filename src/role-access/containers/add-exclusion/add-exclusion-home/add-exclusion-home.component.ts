@@ -67,7 +67,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
       this.route.snapshot.queryParams.jurisdiction : '';
     this.caseType = this.route.snapshot.queryParams?.caseType ?
       this.route.snapshot.queryParams.caseType : '';
-    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
+    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction, this.caseType));
   }
 
   public ngOnInit(): void {

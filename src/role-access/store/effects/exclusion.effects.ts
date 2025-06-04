@@ -40,7 +40,7 @@ export class ExclusionEffects {
               }
               // exclude another person
               return new routeAction.CreateCaseGo({
-                path: [`/cases/case-details/${data.payload.caseId}/roles-and-access`],
+                path: [`/cases/case-details/${data.payload.jurisdiction}/${data.payload.caseType}/${data.payload.caseId}/roles-and-access`],
                 caseId: data.payload.caseId,
                 extras: {
                   state: {

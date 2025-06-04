@@ -48,7 +48,7 @@ nodejs:
 redis:
   enabled: true
   master:
-    resourcesPreset: small
+    resourcesPreset: medium
 idam-pr:
   enabled: true
   redirect_uris:

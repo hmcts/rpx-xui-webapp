@@ -1,4 +1,5 @@
-import { RoleCategory, TypeOfRole } from '../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { TypeOfRole } from '../../role-access/models';
 import { ShowAllocateLinkDirective } from './show-allocate-link.directive';
 
 describe('ShowAllocateLinkDirective', () => {

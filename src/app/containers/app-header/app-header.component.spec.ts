@@ -2,13 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
 import { ApplicationThemeLogo } from '../../enums';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const storeMock = {
   pipe: () => of([]),
@@ -39,13 +40,10 @@ describe('AppHeaderComponent', () => {
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        HttpClientTestingModule
-      ],
       declarations: [
         AppHeaderComponent
       ],
+      imports: [StoreModule.forRoot({})],
       providers: [
         {
           provide: Store,
@@ -70,7 +68,9 @@ describe('AppHeaderComponent', () => {
           provide: Window,
           useValue: window
         },
-        AppHeaderComponent
+        AppHeaderComponent,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 

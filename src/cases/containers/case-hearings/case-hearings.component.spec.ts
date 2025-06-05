@@ -687,7 +687,7 @@ describe('CaseHearingsComponent', () => {
   it('should dispatch events to load all hearings and hearing values', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.reloadHearings();
-    expect(dispatchSpy).toHaveBeenCalledTimes(2);
+    expect(dispatchSpy).toHaveBeenCalledTimes(3);
   });
 
   afterEach(() => {

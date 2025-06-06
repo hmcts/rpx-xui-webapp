@@ -101,7 +101,7 @@ export class CancelHearingComponent implements OnInit {
         () => {
           this.validationErrors = null;
           this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
-            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));
+            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err));
         },
         () => {
           this.cancelActioned = false;

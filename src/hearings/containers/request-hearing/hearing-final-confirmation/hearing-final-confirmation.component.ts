@@ -3,6 +3,8 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
+// import { JurisdictionService } from '@hmcts/ccd-case-ui-toolkit';
+// import { CaseNotifier } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-hearing-final-confirmation',
@@ -17,14 +19,35 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public caseId: string;
   public sub: Subscription;
   public showSpinner$: Observable<boolean>;
+  private caseNotifierSubscription: Subscription;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly loadingService: LoadingService) {
+    private readonly loadingService: LoadingService,
+    // private readonly caseNotifier: CaseNotifier
+  ) {
   }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
+    // this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe({
+    //   next: (jurisdiction) => {
+    //     if (jurisdiction?.currentCaseType) {
+    //       this.jurisdiction = jurisdiction.id;
+    //       this.caseType = jurisdiction.currentCaseType.id
+    //     }
+    //   }
+    // });
+  
+    // this.caseNotifier.caseView.subscribe((caseDetails) => {
+    //   if (caseDetails) {
+    //     this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+    //     this.caseType = caseDetails?.case_type?.id;
+    //   }
+    // });
+    
     this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
       (hearingList) => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
@@ -43,5 +66,8 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+    // if (this.caseNotifierSubscription) {
+    //   this.caseNotifierSubscription.unsubscribe();
+    // }
   }
 }

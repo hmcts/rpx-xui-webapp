@@ -3,7 +3,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, JurisdictionService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -33,6 +33,7 @@ import { effects, reducers } from './store';
 NocService,
 PaletteService,
 FormValidatorsService,
+JurisdictionService,
 YesNoService, provideHttpClient(withInterceptorsFromDi())] })
 /**
  * Entry point for NOC Module that is also lazy loaded.

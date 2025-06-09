@@ -214,10 +214,33 @@ describe('PanelRolesAnswerConverter', () => {
   it('should transform hearing panel exclusion', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-002']
+      panelSpecialisms: [null, 'BBA3-MQPM2-002'],
+      roleType: ['BBA3-DQPM', 'BBA3-MQPM2']
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = 'Disability Qualified Panel Member<br>Medically Qualified Panel Member - Carer';
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
+  });
+  it('should transform hearingRoles', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelSpecialisms: [null],
+      roleType: ['BBA3-DQPM']
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = 'Disability Qualified Panel Member';
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
+  });
+  it('should transform hearingRoles and specialisms', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelSpecialisms: ['BBA3-MQPM2-002', null],
+      roleType: ['BBA3-MQPM2', 'BBA3-DQPM']
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = 'Medically Qualified Panel Member - Carer<br>Disability Qualified Panel Member';
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });

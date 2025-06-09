@@ -44,7 +44,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   @HostListener('window:focus', ['$event'])
   public onFocus(): void {
     if (this.lostFocus) {
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues(this.referenceId));
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
       if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE_EDIT)
         || HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.VIEW_EDIT)) {
         setTimeout(() => this.updatePartyFlagsFromHearingValues(), 500);
@@ -185,7 +185,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public initializeHearingCondition(): void {
     if (this.serviceHearingValuesModel?.hearingLocations) {
       const strLocationIds = this.serviceHearingValuesModel.hearingLocations.map((location) => location.locationId).join(',');
-      this.locationsDataService.getLocationById(strLocationIds).toPromise()
+      const serviceCode = this.hearingRequestMainModel?.caseDetails?.hmctsServiceCode;
+      this.locationsDataService.getLocationById(strLocationIds, serviceCode).toPromise()
         .then((locations) => {
           this.strRegions = locations.map((location) => location.region_id).join(',');
         }).then(() => {

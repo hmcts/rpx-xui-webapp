@@ -626,4 +626,50 @@ describe('CaseFlagsUtils', () => {
       expect(result).toBe(false);
     });
   });
+
+  describe('getActiveDisplaysFlags', () => {
+    it('should set partyName from SHV if available', () => {
+      const caseFlags: PartyFlagsModel[] = [
+        { partyId: 'P1', partyName: 'Flag Party', flagId: 'F1', flagStatus: 'active', flagDescription: 'Active' }
+      ];
+      const caseFlagsRefData: CaseFlagReferenceModel[] = [
+        {
+          flagCode: 'F1',
+          name: 'Flag 1',
+          Path: ['Path1'],
+          childFlags: [],
+          hearingRelevant: true,
+          flagComment: true,
+          isParent: false
+        }
+      ];
+      const partiesInSHV: PartyDetailsModel[] = [
+        { partyID: 'P1', partyName: 'SHV Party', partyType: PartyType.IND, partyRole: 'role' }
+      ];
+      // eslint-disable-next-line dot-notation
+      const result = (CaseFlagsUtils as any)['getActiveDisplaysFlags'](caseFlags, caseFlagsRefData, partiesInSHV);
+      expect(result[0].partyName).toBe('SHV Party');
+    });
+
+    it('should set partyName from flag if not available in SHV', () => {
+      const caseFlags: PartyFlagsModel[] = [
+        { partyId: 'P1', partyName: 'Flag Party', flagId: 'F1', flagStatus: 'active', flagDescription: 'Active' }
+      ];
+      const caseFlagsRefData: CaseFlagReferenceModel[] = [
+        {
+          flagCode: 'F1',
+          name: 'Flag 1',
+          Path: ['Path1'],
+          childFlags: [],
+          hearingRelevant: true,
+          flagComment: true,
+          isParent: false
+        }
+      ];
+      const partiesInSHV: PartyDetailsModel[] = [{ partyID: 'P1', partyType: PartyType.IND, partyRole: 'role' }];
+      // eslint-disable-next-line dot-notation
+      const result = (CaseFlagsUtils as any)['getActiveDisplaysFlags'](caseFlags, caseFlagsRefData, partiesInSHV);
+      expect(result[0].partyName).toBe('Flag Party');
+    });
+  });
 });

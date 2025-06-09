@@ -7,7 +7,6 @@ import { cloneDeep } from 'lodash';
 import * as moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../../app/app.constants';
 import { CaseCategoryModel } from '../../../models/caseCategory.model';
 import { AfterPageVisitProperties, AutoUpdateMode, PagelessPropertiesEnum, WithinPagePropertiesEnum } from '../../../models/hearingsUpdateMode.enum';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
@@ -105,14 +104,15 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.hearingsService.hearingRequestForSubmitValid = false;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
     const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((location) => location.locationId).join(',');
-    this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds).pipe(
+    const serviceCode = this.hearingRequestMainModel.caseDetails.hmctsServiceCode;
+    this.showLanguageRequirementsSection$ = this.locationsDataService.getLocationById(locationIds, serviceCode).pipe(
       map((locations) => {
         return locations.some((location) => location.region_id === this.REGION_ID);
       })
     );
 
     // Enable hearings manual amendments journey only if the feature is toggled on
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.isFeatureEnabled(AppConstants.FEATURE_NAMES.enableHearingAmendments).subscribe((enabled: boolean) => {
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmendmentsEnabled().subscribe((enabled: boolean) => {
       this.isHearingAmendmentsEnabled = enabled;
       if (enabled) {
         this.setPropertiesUpdatedAutomatically();

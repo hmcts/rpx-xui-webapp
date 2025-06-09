@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { UserRole } from '../../app/models';
-import { SessionStorageService } from '../../app/services';
 import * as fromAppStore from '../../app/store';
 import { HearingsGuard } from './hearings-guard';
+import { HearingJurisdictionConfigService } from 'src/app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 
 @Injectable()
 export class HearingsViewGuard extends HearingsGuard {
   constructor(protected readonly appStore: Store<fromAppStore.State>,
-              protected readonly sessionStorageService: SessionStorageService,
-              protected readonly featureToggleService: FeatureToggleService,
+              protected readonly hearingStore: Store<fromAppStore.State>,
+              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
               protected readonly router: Router) {
-    super(appStore, sessionStorageService, featureToggleService);
+    super(appStore, hearingJurisdictionConfigService, hearingStore, router);
   }
 
   public canActivate(): Observable<boolean> {

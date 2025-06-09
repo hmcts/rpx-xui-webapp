@@ -4,6 +4,7 @@ import { MemberType, RadioOptions, RequirementType } from '../../../../models/he
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-panel-details-section',
@@ -85,7 +86,9 @@ export class PanelDetailsSectionComponent implements OnInit {
 
   private getPanelRoles(): string {
     const selectedSpecialisms: string[] = [];
-    this.panelRequirements?.panelSpecialisms?.forEach((panelSpecialism) => {
+    const panelroles = HearingsUtils.replaceRoleWithSpecialism(this.panelRequirements?.roleType, this.panelRequirements?.panelSpecialisms);
+    // this.panelRequirements?.panelSpecialisms?.forEach((panelSpecialism) => {
+    panelroles.forEach((panelSpecialism) => {
       let selectedSpecialism = '';
       this.panelRolesRefData.forEach((panelRole) => {
         if (panelRole.key === panelSpecialism) {
@@ -100,6 +103,6 @@ export class PanelDetailsSectionComponent implements OnInit {
       });
       selectedSpecialisms.push(selectedSpecialism);
     });
-    return selectedSpecialisms.join('<br>');
+    return selectedSpecialisms.join(', ');
   }
 }

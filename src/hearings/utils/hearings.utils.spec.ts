@@ -802,4 +802,40 @@ describe('HearingsUtils', () => {
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
   });
+  describe('replaceRoleWithSpecialism', () => {
+    it('should replace roles with specialisms when specialism is not null', () => {
+      const roles = ['role1', 'role2', 'role3'];
+      const specialisms = ['spec1', null, 'spec3'];
+      const result = HearingsUtils.replaceRoleWithSpecialism(roles, specialisms);
+      expect(result).toEqual(['spec1', 'role2', 'spec3']);
+    });
+
+    it('should return original roles when all specialisms are null', () => {
+      const roles = ['role1', 'role2'];
+      const specialisms = [null, null];
+      const result = HearingsUtils.replaceRoleWithSpecialism(roles, specialisms);
+      expect(result).toEqual(['role1', 'role2']);
+    });
+
+    it('should handle empty arrays', () => {
+      const roles: string[] = [];
+      const specialisms: (string | null)[] = [];
+      const result = HearingsUtils.replaceRoleWithSpecialism(roles, specialisms);
+      expect(result).toEqual([]);
+    });
+
+    it('should handle specialisms array shorter than roles', () => {
+      const roles = ['role1', 'role2', 'role3'];
+      const specialisms = ['spec1'];
+      const result = HearingsUtils.replaceRoleWithSpecialism(roles, specialisms);
+      expect(result).toEqual(['role1', 'role2', 'role3']);
+    });
+
+    it('should handle specialisms array longer than roles', () => {
+      const roles = ['role1', 'role2'];
+      const specialisms = ['spec1', 'spec2', 'spec3'];
+      const result = HearingsUtils.replaceRoleWithSpecialism(roles, specialisms);
+      expect(result).toEqual(['role1', 'role2']);
+    });
+  });
 });

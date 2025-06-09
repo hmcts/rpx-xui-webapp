@@ -303,4 +303,13 @@ export class HearingsUtils {
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
   }
+
+  public static replaceRoleWithSpecialism(panelRole, panelSpecialism) {
+    if (panelRole?.length !== panelSpecialism?.length) {
+      return panelRole;
+    }
+    return panelRole.map((role, index) => {
+      return panelSpecialism[index] !== null ? panelSpecialism[index] : role;
+    });
+  }
 }

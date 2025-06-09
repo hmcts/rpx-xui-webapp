@@ -79,7 +79,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
   }
 

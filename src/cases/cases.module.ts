@@ -67,7 +67,6 @@ import * as fromDirectives from './directives';
 import { queryManagementRouting } from './query-management.routes';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
-import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 // from services
 import * as fromServices from './services';
 import { effects, reducers } from './store';
@@ -134,7 +133,6 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
   CcdCYAPageLabelFilterPipe,
   CaseFileViewService,
   JurisdictionService,
-  RestrictedCaseAccessGuard,
   provideHttpClient(withInterceptorsFromDi())
 ] })
 /**

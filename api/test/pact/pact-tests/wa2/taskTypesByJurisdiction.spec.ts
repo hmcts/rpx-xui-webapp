@@ -1,13 +1,14 @@
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getWorkAllocationAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task_types_by_jurisdiction', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_get_task_types_by_jurisdiction', port: 8000 });
 
 describe('Task management api, tasks by jurisdiction', () => {
   const RESPONSE_BODY = {
@@ -30,18 +31,19 @@ describe('Task management api, tasks by jurisdiction', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'retrieve all task types by jurisdiction',
+        states: [{ description: 'retrieve all task types by jurisdiction' }],
         uponReceiving: 'retrieve all task types by jurisdiction',
         withRequest: {
           method: 'GET',
           path: '/task/task-types',
-          query: 'jurisdiction=wa',
+          query: {
+            jurisdiction: 'wa'
+          },
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
-            // 'content-Type': 'application/json'
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json'
           }
         },
         willRespondWith: {
@@ -50,7 +52,6 @@ describe('Task management api, tasks by jurisdiction', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -60,48 +61,44 @@ describe('Task management api, tasks by jurisdiction', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getWorkAllocationAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getWorkAllocationAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getTaskNames } = requireReloaded('../../../../workAllocation/index');
+        const { getTaskNames } = requireReloaded('../../../../workAllocation/index');
 
-      const req = mockReq({
-        headers: {
-          Authorization: 'Bearer someAuthorizationToken',
-          ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
-          // 'content-Type': 'application/json',
-        },
-        body: {
-          service: 'wa'
+        const req = mockReq({
+          headers: {
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json'
+          },
+          body: {
+            service: 'wa'
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+          return response;
+        };
+
+        try {
+          await getTaskNames(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-        return response;
-      };
-
-      try {
-        await getTaskNames(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function assertResponses(dto: any) {
-  // expect(dto[0].key).to.be.equal('1234');
-  // expect(dto[0].label).to.be.equal('test');
+  expect(dto[0].task_type.task_type_id).to.be.equal('someTaskTypeId');
+  expect(dto[0].task_type.task_type_name).to.be.equal('Some task type name');
 }

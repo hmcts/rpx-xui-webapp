@@ -1,15 +1,15 @@
-import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
+
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { Matchers, V3Interaction } from '@pact-foundation/pact';
 
-const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'hmcHearingServiceProvider', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'hmcHearingServiceProvider', port: 8000 });
 
 const REQUEST_BODY = {
   caseDetails: {
@@ -133,9 +133,8 @@ describe('Hearings, create single hearing request', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-      const interaction: InteractionObject = {
-        state: 'Create a hearing request',
+      const interaction: V3Interaction = {
+        states: [{ description: 'Create a hearing request' }],
         uponReceiving: 'create single hearing request',
         withRequest: {
           method: 'POST',
@@ -165,133 +164,133 @@ describe('Hearings, create single hearing request', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getHearingsAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getHearingsAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { submitHearingRequest } = requireReloaded('../../../../hearings/hmc.index.ts');
+        const { submitHearingRequest } = requireReloaded('../../../../hearings/hmc.index.ts');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          caseDetails: {
-            caseAdditionalSecurityFlag: true,
-            caseCategories: [{
-              categoryParent: 'string',
-              categoryType: 'string',
-              categoryValue: 'string'
-            }],
-            caseDeepLink: 'string',
-            caseInterpreterRequiredFlag: true,
-            caseManagementLocationCode: 'string',
-            caseRef: 'string',
-            caseSLAStartDate: '2023-07-04',
-            caserestrictedFlag: true,
-            externalCaseReference: 'string',
-            hmctsInternalCaseName: 'string',
-            hmctsServiceCode: 'string',
-            publicCaseName: 'string'
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
           },
-          hearingDetails: {
-            amendReasonCodes: ['string'],
-            autolistFlag: true,
-            duration: 0,
-            facilitiesRequired: ['string'],
-            hearingChannels: ['string'],
-            hearingInWelshFlag: true,
-            hearingIsLinkedFlag: true,
-            hearingLocations: [{
-              locationId: 'string',
-              locationType: 'string'
-            }],
-            hearingPriorityType: 'string',
-            hearingRequester: 'string',
-            hearingType: 'string',
-            hearingWindow: {
-              dateRangeEnd: '2023-07-03',
-              dateRangeStart: '2023-07-03',
-              firstDateTimeMustBe: '2023-07-04T11:47:39.004Z'
-            },
-            leadJudgeContractType: 'string',
-            listingAutoChangeReasonCode: 'string',
-            listingComments: 'string',
-            nonStandardHearingDurationReasons: ['string'],
-            numberOfPhysicalAttendees: 0,
-            panelRequirements: {
-              authorisationSubType: ['string'],
-              authorisationTypes: ['string'],
-              panelPreferences: [
-                {
-                  memberID: 'string',
-                  memberType: 'string',
-                  requirementType: 'string'
-                }
-              ],
-              panelSpecialisms: ['string'],
-              roleType: ['string']
-            },
-            privateHearingRequiredFlag: true
-          },
-          partyDetails: [{
-            individualDetails: {
-              custodyStatus: 'string',
-              firstName: 'string',
-              hearingChannelEmail: ['string'],
-              hearingChannelPhone: ['string'],
-              interpreterLanguage: 'string',
-              lastName: 'string',
-              otherReasonableAdjustmentDetails: 'string',
-              preferredHearingChannel: 'string',
-              reasonableAdjustments: ['string'],
-              relatedParties: [{
-                relatedPartyID: 'string',
-                relationshipType: 'string'
+          body: {
+            caseDetails: {
+              caseAdditionalSecurityFlag: true,
+              caseCategories: [{
+                categoryParent: 'string',
+                categoryType: 'string',
+                categoryValue: 'string'
               }],
-              title: 'string',
-              vulnerabilityDetails: 'string',
-              vulnerableFlag: true
+              caseDeepLink: 'string',
+              caseInterpreterRequiredFlag: true,
+              caseManagementLocationCode: 'string',
+              caseRef: 'string',
+              caseSLAStartDate: '2023-07-04',
+              caserestrictedFlag: true,
+              externalCaseReference: 'string',
+              hmctsInternalCaseName: 'string',
+              hmctsServiceCode: 'string',
+              publicCaseName: 'string'
             },
-            organisationDetails: {
-              cftOrganisationID: 'string',
-              name: 'string',
-              organisationType: 'string'
+            hearingDetails: {
+              amendReasonCodes: ['string'],
+              autolistFlag: true,
+              duration: 0,
+              facilitiesRequired: ['string'],
+              hearingChannels: ['string'],
+              hearingInWelshFlag: true,
+              hearingIsLinkedFlag: true,
+              hearingLocations: [{
+                locationId: 'string',
+                locationType: 'string'
+              }],
+              hearingPriorityType: 'string',
+              hearingRequester: 'string',
+              hearingType: 'string',
+              hearingWindow: {
+                dateRangeEnd: '2023-07-03',
+                dateRangeStart: '2023-07-03',
+                firstDateTimeMustBe: '2023-07-04T11:47:39.004Z'
+              },
+              leadJudgeContractType: 'string',
+              listingAutoChangeReasonCode: 'string',
+              listingComments: 'string',
+              nonStandardHearingDurationReasons: ['string'],
+              numberOfPhysicalAttendees: 0,
+              panelRequirements: {
+                authorisationSubType: ['string'],
+                authorisationTypes: ['string'],
+                panelPreferences: [
+                  {
+                    memberID: 'string',
+                    memberType: 'string',
+                    requirementType: 'string'
+                  }
+                ],
+                panelSpecialisms: ['string'],
+                roleType: ['string']
+              },
+              privateHearingRequiredFlag: true
             },
-            partyChannelSubType: 'string',
-            partyID: 'string',
-            partyRole: 'string',
-            partyType: 'string',
-            unavailabilityDOW: [{
-              DOW: 'string',
-              DOWUnavailabilityType: 'string'
-            }],
-            unavailabilityRanges: [{
-              unavailabilityType: 'string',
-              unavailableFromDate: '2023-07-04',
-              unavailableToDate: '2023-07-04'
+            partyDetails: [{
+              individualDetails: {
+                custodyStatus: 'string',
+                firstName: 'string',
+                hearingChannelEmail: ['string'],
+                hearingChannelPhone: ['string'],
+                interpreterLanguage: 'string',
+                lastName: 'string',
+                otherReasonableAdjustmentDetails: 'string',
+                preferredHearingChannel: 'string',
+                reasonableAdjustments: ['string'],
+                relatedParties: [{
+                  relatedPartyID: 'string',
+                  relationshipType: 'string'
+                }],
+                title: 'string',
+                vulnerabilityDetails: 'string',
+                vulnerableFlag: true
+              },
+              organisationDetails: {
+                cftOrganisationID: 'string',
+                name: 'string',
+                organisationType: 'string'
+              },
+              partyChannelSubType: 'string',
+              partyID: 'string',
+              partyRole: 'string',
+              partyType: 'string',
+              unavailabilityDOW: [{
+                DOW: 'string',
+                DOWUnavailabilityType: 'string'
+              }],
+              unavailabilityRanges: [{
+                unavailabilityType: 'string',
+                unavailableFromDate: '2023-07-04',
+                unavailableToDate: '2023-07-04'
+              }]
             }]
-          }]
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await submitHearingRequest(req, response, next);
+        } catch (err) {
+          throw new Error(err);
         }
+
+        assertResponses(returnedResponse);
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await submitHearingRequest(req, response, next);
-      } catch (err) {
-        throw new Error(err);
-      }
-
-      assertResponses(returnedResponse);
-      pactSetUp.provider.verify();
-      pactSetUp.provider.finalize();
     });
   });
 });

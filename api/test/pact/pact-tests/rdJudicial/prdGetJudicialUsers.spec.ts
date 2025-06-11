@@ -2,14 +2,14 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getJudicialRefDataAPIOverrides } from '../utils/configOverride';
 import { DateTimeMatcher2 } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_judicial', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_judicial', port: 8000 });
 
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
@@ -38,9 +38,8 @@ describe('Judicial ref data api, get all judge users', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'return judicial user profiles along with their active appointments and authorisations',
+        states: [{ description: 'return judicial user profiles along with their active appointments and authorisations' }],
         uponReceiving: 'get list of judicial users from search',
         withRequest: {
           method: 'POST',
@@ -60,7 +59,7 @@ describe('Judicial ref data api, get all judge users', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -71,50 +70,42 @@ describe('Judicial ref data api, get all judge users', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getJudicialRefDataAPIOverrides(mockServer.url);
+        configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
-      // @ts-ignore
-      configValues.serviceRefDataMapping = [
-        { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
-      ];
+        // @ts-ignore
+        configValues.serviceRefDataMapping = [
+          { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
+        ];
 
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { searchJudicialUserByPersonalCodes } = requireReloaded('../../../../prd/judicial/index');
+        const { searchJudicialUserByPersonalCodes } = requireReloaded('../../../../prd/judicial/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
-          services: ['IA']
-        }
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          body: {
+            userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
+            services: ['IA']
+          }
 
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
 
-      try {
         await searchJudicialUserByPersonalCodes(req, response, next);
-
         assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
+      });
     });
   });
 });

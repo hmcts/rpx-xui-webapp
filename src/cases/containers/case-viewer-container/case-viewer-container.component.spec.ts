@@ -13,7 +13,7 @@ import { StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 
-import { AppConstants } from '../../../app/app.constants';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import { State, reducers } from '../../../app/store';
 import * as fromRoot from '../../../app/store';
@@ -196,7 +196,7 @@ const TABS: CaseTab[] = [
 
 const roles = [
   'caseworker',
-  AppConstants.IA_JUDGE_ROLE,
+  AppTestConstants.IA_JUDGE_ROLE,
   'caseworker-sscs',
   'caseworker-sscs-judge',
   'caseworker-test',

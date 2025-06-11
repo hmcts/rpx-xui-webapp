@@ -8,7 +8,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 import { TaskListComponent } from '..';
-import { AppConstants } from '../../../app/app.constants';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
 import { CaseRoleDetails } from '../../../role-access/models';
@@ -111,7 +111,7 @@ xdescribe('AllWorkTaskComponent', () => {
       surname: 'surName',
       email: 'email',
       active: true,
-      roles: [AppConstants.IA_LEGAL_OPS_ROLE],
+      roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
       uid: '1233434'
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
@@ -126,7 +126,7 @@ xdescribe('AllWorkTaskComponent', () => {
       surname: 'surName',
       email: 'email',
       active: true,
-      roles: [AppConstants.IA_JUDGE_ROLE],
+      roles: [AppTestConstants.IA_JUDGE_ROLE],
       uid: '1233434'
     }));
     const searchRequest = component.getSearchTaskRequestPagination();
@@ -141,7 +141,7 @@ xdescribe('AllWorkTaskComponent', () => {
       surname: 'surName',
       email: 'email',
       active: true,
-      roles: [AppConstants.IA_LEGAL_OPS_ROLE],
+      roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
       uid: '1233434'
     }));
     const selection = { findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle' };

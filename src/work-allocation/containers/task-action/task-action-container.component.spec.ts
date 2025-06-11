@@ -11,7 +11,7 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
-import { AppConstants } from '../../../app/app.constants';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
@@ -201,7 +201,7 @@ describe('WorkAllocation', () => {
         surname: 'surName',
         email: 'email',
         active: true,
-        roles: [AppConstants.IA_LEGAL_OPS_ROLE],
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
 
@@ -217,7 +217,7 @@ describe('WorkAllocation', () => {
         surname: 'surName',
         email: 'email',
         active: true,
-        roles: [AppConstants.IA_LEGAL_OPS_ROLE],
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
       const task = {} as Task;
@@ -272,7 +272,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -354,7 +354,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -431,7 +431,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
@@ -506,7 +506,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {

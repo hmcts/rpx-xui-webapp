@@ -6,12 +6,20 @@
 ></exui-warning-and-error-section>
 <h1 class="govuk-heading-l">Edit hearing</h1>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
-  <div class="govuk-summary-list__row" *ngIf="!isHearingListed">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Case number
     </div>
     <div class="govuk-summary-list__value">
-      {{ caseReference }}
+      {{ caseReference | caseReference }}
+    </div>
+  </div>
+  <div class="govuk-summary-list__row">
+    <div class="govuk-summary-list__key">
+      Hearing Id
+    </div>
+    <div class="govuk-summary-list__value">
+      {{ hearingId }}
     </div>
   </div>
   <div class="govuk-summary-list__row">

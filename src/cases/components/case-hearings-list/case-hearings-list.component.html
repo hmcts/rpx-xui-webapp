@@ -18,13 +18,9 @@
     <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType | convertToValue: hearingStageOptions }}
       <img *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle" alt="Linked">
     </td>
+    <td class="govuk-table__cell govuk-table-width-15-percent gds-font">{{ hearing.hearingID ? hearing.hearingID: '' }}</td>
     <td
-      class="govuk-table__cell govuk-table-width-15-percent gds-font">
-      {{ hearing.hearingID ? hearing.hearingID: '' }}
-    </td>
-    <td
-      class="govuk-table__cell govuk-table-width-15-percent gds-font">
-      {{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
+      class="govuk-table__cell govuk-table-width-15-percent gds-font">{{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
       <img *ngIf="hearing.hearingDaySchedule && hearing.hearingDaySchedule.length > 1" src="../../../../assets/img/calendar-logo.svg" width="20px;" class="align-middle status-icon" alt="Linked">
     </td>
     <td class="govuk-table__cell govuk-table-width-25-percent gds-font">

@@ -21,7 +21,7 @@ export const HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE: Section[] = [
       },
       {
         id: 'hearingRequestId',
-        answerTitle: 'Hearing request ID',
+        answerTitle: 'Hearing Id',
         answerSource: AnswerSource.HEARING_ID
       }
     ]

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
@@ -26,6 +27,8 @@ export class HearingActualSummaryComponent implements OnInit {
   public dateFormat = HearingDateEnum;
   public answerSource = AnswerSource;
   public hearingTypeDescription: string;
+  public hearingId: string;
+  public caseReference: string;
 
   public ngOnInit(): void {
     const hearingOutcome = this.hearingActualsMainModel &&
@@ -43,6 +46,8 @@ export class HearingActualSummaryComponent implements OnInit {
       map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
     );
     this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
+    this.hearingId = history.state?.hearingId ?? '';
+    this.caseReference = history.state?.caseRef ?? '';
   }
 
   private getHearingTypeDescription(hearingType: string): string {

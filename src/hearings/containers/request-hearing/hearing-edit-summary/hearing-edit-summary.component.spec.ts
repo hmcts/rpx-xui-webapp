@@ -684,7 +684,8 @@ describe('HearingEditSummaryComponent', () => {
           vulnerableFlag: true,
           vulnerabilityDetails: 'New vulnerability details',
           hearingChannelEmail: ['New email'],
-          hearingChannelPhone: ['New Phone']
+          hearingChannelPhone: ['New Phone'],
+          otherReasonableAdjustmentDetails: 'other reasonable adjustments'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
@@ -725,7 +726,8 @@ describe('HearingEditSummaryComponent', () => {
           vulnerableFlag: true,
           vulnerabilityDetails: 'New vulnerability details',
           hearingChannelEmail: ['New email'],
-          hearingChannelPhone: ['New Phone']
+          hearingChannelPhone: ['New Phone'],
+          otherReasonableAdjustmentDetails: 'other reasonable adjustments'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [

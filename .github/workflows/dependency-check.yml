@@ -2,8 +2,8 @@ name: Automated update of known-issue suppression
 
 on:
   schedule:
-    # At 12 midnight, 7am and 5pm
-    - cron: "0 0,7,17 * * *"
+    # At 7am and 5pm, Monday to Friday
+      - cron: "0 7,17 * * 1-5"
   workflow_dispatch:
 
 jobs:
@@ -18,16 +18,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          ref: master
       - uses: actions/setup-node@v4
         with:
-          node-version: 12
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
-      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues
+          node-version: 20
+      - run: yarn install
+      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues || true
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          skip_dirty_check: false
           commit_message: "Automated update of known-issue suppression"
-          branch: master

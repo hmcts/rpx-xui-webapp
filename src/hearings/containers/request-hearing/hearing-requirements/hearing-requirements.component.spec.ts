@@ -17,7 +17,7 @@ import {
   UnavailabilityType
 } from '../../../models/hearings.enum';
 import { HearingWindowModel } from '../../../models/hearingWindow.model';
-import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { LocationByEpimmsModel } from '../../../models/location.model';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
@@ -2211,7 +2211,7 @@ describe('HearingRequirementsComponent', () => {
     }
   ];
 
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
@@ -2281,7 +2281,7 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.referenceId));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
   });
 
   it('should window onblur', () => {

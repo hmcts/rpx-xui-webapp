@@ -1,4 +1,5 @@
-import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, Role, RoleCategory } from '../../models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Actions, AllocateRoleState, AllocateTo, DurationOfRole, Role } from '../../models';
 import * as fromActions from '../actions/allocate-role.action';
 import * as fromReducer from './allocate-role.reducer';
 

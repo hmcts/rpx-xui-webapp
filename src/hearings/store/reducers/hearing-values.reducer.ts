@@ -26,6 +26,7 @@ export function hearingValuesReducer(currentState = initialHearingValuesState,
     case fromActions.LOAD_HEARING_VALUES_FAILURE: {
       return {
         ...initialHearingValuesState,
+        caseInfo: currentState.caseInfo,
         lastError: action.payload
       };
     }

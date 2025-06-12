@@ -26,16 +26,19 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
-    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
-    let dataByDefault = mapDataByDefault(data);
-    // If service don't supply the screenFlow pre-set the default screen flow from ExUI
-    if (!data.screenFlow) {
-      dataByDefault = {
-        ...data,
-        screenFlow: DEFAULT_SCREEN_FLOW
-      };
+    const serviceResponse = await sendPost(markupPath, reqBody, req, next);
+    if (serviceResponse) {
+      const { status, data }: { status: number, data: ServiceHearingValuesModel } = serviceResponse;
+      let dataByDefault = mapDataByDefault(data);
+      // If service don't supply the screenFlow pre-set the default screen flow from ExUI
+      if (!data.screenFlow) {
+        dataByDefault = {
+          ...data,
+          screenFlow: DEFAULT_SCREEN_FLOW
+        };
+      }
+      res.status(status).send(dataByDefault);
     }
-    res.status(status).send(dataByDefault);
   } catch (error) {
     trackTrace('Error calling serviceHearingValues', error);
     next(error);

@@ -13,7 +13,6 @@ const featureNames = {
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  enableRestrictedCaseAccess: 'enable-restricted-case-access',
   accessManagementMode: 'access-management-mode'
 };
 
@@ -30,7 +29,6 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
-  [featureNames.enableRestrictedCaseAccess, featureToAttributeName(featureNames.enableRestrictedCaseAccess)],
   [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)]
 ]);
 

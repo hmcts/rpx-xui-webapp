@@ -838,6 +838,41 @@ describe('QueryManagementContainerComponent', () => {
     });
   });
 
+  describe('callbackConfirmationMessage', () => {
+    it('should set the custom text if provided', () => {
+      const customText = {
+        body: 'Our team will read your query and respond.',
+        header: 'Confirmation'
+      };
+
+      component.callbackConfirmationMessage(customText);
+
+      expect(component.callbackConfirmationMessageText).toEqual(customText);
+    });
+
+    it('should set the default text if no text is provided', () => {
+      const confirmationMesssageBody = 'Our team will read your query and respond.';
+      const confirmationMesssageHeader = 'Your query has been sent to HMCTS';
+      component.callbackConfirmationMessage({ body: '', header: '' });
+      expect(component.callbackConfirmationMessageText).toEqual({
+        body: confirmationMesssageBody,
+        header: confirmationMesssageHeader
+      });
+
+      component.callbackConfirmationMessage(null as any);
+      expect(component.callbackConfirmationMessageText).toEqual({
+        body: confirmationMesssageBody,
+        header: confirmationMesssageHeader
+      });
+
+      component.callbackConfirmationMessage(undefined as any);
+      expect(component.callbackConfirmationMessageText).toEqual({
+        body: confirmationMesssageBody,
+        header: confirmationMesssageHeader
+      });
+    });
+  });
+
   describe('getEventTrigger', () => {
     it('should handle error correctly when getEventTrigger fails', () => {
       // Mock the service to return an error

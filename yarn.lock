@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.0-govuk-frontend-upgrade":
-  version: 7.2.0-govuk-frontend-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.0-govuk-frontend-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.10-govuk-frontend-upgrade":
+  version: 7.2.10-govuk-frontend-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.10-govuk-frontend-upgrade"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7b0be7231f2f092e28db24a2d7fd31472d74e9902b05441651b7d36049a965c84ef8c80785b85a73d965145ebe901423569c07d411721f81456c269dd123d126
+  checksum: 10/70e76e00d122c9616a86eab230bde7e9d3b12547e80198091a3ee4693b13dad183c16d62d2d20916961f8009c38d22b3b879d3986706c2430ed938496b64d339
   languageName: node
   linkType: hard
 
@@ -21939,7 +21939,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0-govuk-frontend-upgrade"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.10-govuk-frontend-upgrade"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0-govuk-frontend-upgrade"

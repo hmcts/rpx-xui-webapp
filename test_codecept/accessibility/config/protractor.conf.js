@@ -2,8 +2,6 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
-const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
-
 const report = require('./reporter');
 
 chai.use(chaiAsPromised);
@@ -40,7 +38,6 @@ const cap = (argv.local) ? localConfig : jenkinsConfig;
 const config = {
   SELENIUM_PROMISE_MANAGER: false,
   framework: 'jasmine',
-  specs: ['../tests/*.protractor.js'],
   baseUrl: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net/',
   params: {
     serverUrls: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net/',

@@ -1,6 +1,5 @@
 const BrowserWaits = require('../../support/customWaits');
 const ArrayUtil = require('../../utils/ArrayUtil');
-const { defineSupportCode } = require('cucumber');
 
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));

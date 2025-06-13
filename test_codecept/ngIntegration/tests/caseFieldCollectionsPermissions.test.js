@@ -7,7 +7,6 @@ const BrowserWaits = require('../../e2e/support/customWaits');
 
 const headerPage = require('../../e2e/features/pageObjects/headerPage');
 const exuiTestCaseType = require('../../nodeMock/ccd/solicitorCreate/exuiTestCaseType');
-const config = require('../config/protractor.conf');
 
 describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
   beforeEach(async function (done) {

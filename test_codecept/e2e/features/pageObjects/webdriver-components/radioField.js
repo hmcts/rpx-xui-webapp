@@ -21,29 +21,27 @@ class RadioField{
     await $(this.css).click();
   }
 
-  async waitForElementToBeInvisible(){
-    const EC = protractor.ExpectedConditions;
-
-    try {
-      await browser.wait(EC.invisibilityOf(await element(by.xpath(this.wrapperXPath))), DEFAULT_TIMEOUT);
-      return true;
-    } catch (e) {
-      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for radio element ${element} to be invisible`;
-      throw new CustomError(message, e);
-    }
+  async waitForElementToBeInvisible(page, timeout = DEFAULT_TIMEOUT) {
+  try {
+    const locator = page.locator(this.wrapperXPath);
+    await locator.waitFor({ state: 'hidden', timeout });
+    return true;
+  } catch (e) {
+    const message = `timed out after ${timeout}ms waiting for radio element "${this.wrapperXPath}" to be invisible`;
+    throw new CustomError(message, e);
   }
+}
 
-  async waitForElementToBeVisible(){
-    const EC = protractor.ExpectedConditions;
-
-    try {
-      await browser.wait(EC.visibilityOf(await element(by.xpath(this.wrapperXPath))), DEFAULT_TIMEOUT);
-      return true;
-    } catch (e) {
-      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for radio element ${element} to be visible`;
-      throw new CustomError(message, e);
-    }
+async waitForElementToBeVisible(page, timeout = DEFAULT_TIMEOUT) {
+  try {
+    const locator = page.locator(this.wrapperXPath);
+    await locator.waitFor({ state: 'visible', timeout });
+    return true;
+  } catch (e) {
+    const message = `timed out after ${timeout}ms waiting for radio element "${this.wrapperXPath}" to be visible`;
+    throw new CustomError(message, e);
   }
+}
 
   /**
    * Check the input tag is present

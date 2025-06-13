@@ -2,7 +2,6 @@
 const CaseListPage = require('../pageObjects/CaseListPage');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
-const { defineSupportCode } = require('cucumber');
 const BrowserWaits = require('../../support/customWaits');
 const headerPage = require('../pageObjects/headerPage');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');

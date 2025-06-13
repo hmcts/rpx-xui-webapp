@@ -1,7 +1,6 @@
 
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
-const { defineSupportCode } = require('cucumber');
 const jsonpath = require('jsonpath');
 
 const BrowserWaits = require('../../../e2e/support/customWaits');

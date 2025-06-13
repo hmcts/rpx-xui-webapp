@@ -44,6 +44,7 @@ export class HearingTimingSectionComponent implements OnInit {
   public dateRangeStartChanged: boolean;
   public dateRangeEndChanged: boolean;
   public hearingDateChanged: boolean;
+  public specificDateOptionChanged: boolean;
   public firstDateTimeMustBeChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public radioOptions = RadioOptions;
@@ -159,6 +160,8 @@ export class HearingTimingSectionComponent implements OnInit {
 
     this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
 
+    this.specificDateOptionChanged = HearingsUtils.hasSpecificDateChanged(this.hearingRequestToCompareMainModel.hearingDetails?.hearingWindow, this.hearingRequestMainModel.hearingDetails?.hearingWindow);
+
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestMainModel.partyDetails),
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestToCompareMainModel.partyDetails)
@@ -170,13 +173,14 @@ export class HearingTimingSectionComponent implements OnInit {
       (!this.hearingUnavailabilityDatesConfirmed && this.hearingUnavailabilityDatesChanged) ||
       (!this.hearingUnavailabilityDatesConfirmed && this.partyDetailsAnyChangesRequired);
 
-    this.showAmendedLabelForPageTitle = !this.showActionNeededLabelForPageTitle &&
-      (
-        (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
-        this.hearingLengthChanged ||
-        this.hearingDateChanged ||
-        this.hearingPriorityChanged ||
-        this.hearingUnavailabilityDatesConfirmed
-      );
+    if (!this.showActionNeededLabelForPageTitle) {
+      this.showAmendedLabelForPageTitle =
+          this.hearingLengthChanged ||
+          this.hearingDateChanged ||
+          this.hearingPriorityChanged ||
+          this.hearingUnavailabilityDatesConfirmed;
+    } else {
+      this.showAmendedLabelForPageTitle = false;
+    }
   }
 }

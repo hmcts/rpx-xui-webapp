@@ -96,6 +96,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private targetRoutePrefix = '/query-management/query/';
   public showForm: boolean;
   public jurisdictionId: string;
+  public caseType: string;
 
   public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
@@ -126,6 +127,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
     this.jurisdictionId = this.activatedRoute.snapshot?.data?.case?.case_type?.jurisdiction?.id;
+    this.caseType = this.activatedRoute.snapshot?.data?.case?.case_type?.id;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
@@ -383,7 +385,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         });
 
         // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.jurisdictionId}/${this.caseType}/${caseId}#Queries`);
         this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         return qualifyingQuestions;
@@ -489,19 +491,19 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public async goToQueryList(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
+    await this.router.navigate(['cases', 'case-details', this.jurisdictionId, this.caseType, this.caseId],
       { fragment: 'Queries' }
     );
   }
 
   public async navigateToCaseOverviewTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
+    await this.router.navigate(['cases', 'case-details', this.jurisdictionId, this.caseType, this.caseId],
       { fragment: 'Overview' }
     );
   }
 
   public async navigateToCaseTaskTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId, 'tasks']);
+    await this.router.navigate(['cases', 'case-details', this.jurisdictionId, this.caseType, this.caseId, 'tasks']);
   }
 
   public hasRespondedToQueryTask(value: boolean): void {

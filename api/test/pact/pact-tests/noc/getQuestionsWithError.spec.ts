@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
 describe('getNoCQuestions with error API', () => {
   const caseId = '1234567890123456';
@@ -16,12 +16,10 @@ describe('getNoCQuestions with error API', () => {
   afterEach(() => {
     sinon.reset();
     sandbox.restore();
-    pactSetUp.provider.finalize();
-    pactSetUp.provider.verify();
   });
 
-  function setUpMockConfigForFunction() {
-    const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+  function setUpMockConfigForFunction(url) {
+    const configValues = getNocAPIOverrides(url);
     sandbox.stub(config, 'get').callsFake((prop) => {
       return configValues[prop];
     });
@@ -38,14 +36,15 @@ describe('getNoCQuestions with error API', () => {
   });
   describe('when an error occurs', () => {
     before(async () => {
-      await pactSetUp.provider.setup();
-      await pactSetUp.provider.addInteraction({
-        state: 'a case with an error exists',
+      pactSetUp.provider.addInteraction({
+        states: [{ description: 'a case with an error exists' }],
         uponReceiving: 'a request to verify NoC answers',
         withRequest: {
           method: 'GET',
           path: '/noc/noc-questions',
-          query: 'case_id=' + caseId
+          query: {
+            case_id: caseId
+          }
         },
         willRespondWith: {
           status: 400,
@@ -59,22 +58,24 @@ describe('getNoCQuestions with error API', () => {
     });
 
     it('should return an error response', async () => {
-      const getNoCQuestions = setUpMockConfigForFunction();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-      const nextSpy = sinon.spy();
-      try {
-        await getNoCQuestions(req, response, nextSpy);
-        const error = nextSpy.args[0][0];
-        assertError(error);
-      } catch (err) {
-        console.log(err.stack);
-        throw new Error(err);
-      }
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const getNoCQuestions = setUpMockConfigForFunction(mockServer.url);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+        const nextSpy = sinon.spy();
+        try {
+          await getNoCQuestions(req, response, nextSpy);
+          const error = nextSpy.args[0][0];
+          assertError(error);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
+      });
     });
   });
 });

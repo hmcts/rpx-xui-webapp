@@ -1,5 +1,3 @@
-// var EC = protractor.ExpectedConditions;
-
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
 const reportLogger = require('../../codeceptCommon/reportLogger');

@@ -1,4 +1,3 @@
-const { defineSupportCode } = require('cucumber');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');

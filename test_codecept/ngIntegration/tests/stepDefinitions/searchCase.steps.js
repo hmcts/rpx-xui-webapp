@@ -1,5 +1,3 @@
-var { defineSupportCode } = require('cucumber');
-
 // const MockApp = require('../../../nodeMock/app');
 
 const caseListPage = require('../pageObjects/caselistPage');

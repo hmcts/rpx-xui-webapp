@@ -48,7 +48,7 @@
     "test:a11y1": "echo disabled to fix tests",
     "test:a11yInTests": "node ./test_codecept/backendMock/configCopy.js && NODE_CONFIG_ENV=mock TEST_TYPE=a11y PARALLEL=false   npx codeceptjs run --config=./test_codecept/codeceptCommon/codeceptA11y.conf.ts",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
-    "test:smoke": "yarn playwright install chromium && TEST_TYPE=smoke npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @smoke --reporter mochawesome",
+    "test:smoke": "yarn playwright install chromium && TEST_TYPE=smoke npx codeceptjs run --plugins retryFailedStep --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep @smoke --reporter mochawesome",
     "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration",
     "test:playwrightE2E": "yarn playwright install && npx playwright test --project chromium",

@@ -184,7 +184,7 @@ exports.config = {
     pauseOnFail: {},
 
     cucumberJsonReporter: {
-      require: 'codeceptjs-cucumber-json-reporter',
+      require: '@cucumber/json-formatter',
       enabled: true, // if false, pass --plugins cucumberJsonReporter
       attachScreenshots: true, // true by default
       attachComments: true, // true by default

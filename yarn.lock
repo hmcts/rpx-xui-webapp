@@ -8701,15 +8701,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"btoa@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "btoa@npm:1.2.1"
-  bin:
-    btoa: bin/btoa.js
-  checksum: 10/29f2ca93837e10427184626bdfd5d00065dff28b604b822aa9849297dac8c8d6ad385cc96eed812ebf153d80c24a4556252afdbb97c7a712938baeaad7547705
-  languageName: node
-  linkType: hard
-
 "buffer-crc32@npm:^0.2.1, buffer-crc32@npm:^0.2.13, buffer-crc32@npm:~0.2.3":
   version: 0.2.13
   resolution: "buffer-crc32@npm:0.2.13"
@@ -9406,16 +9397,6 @@ __metadata:
   version: 4.6.0
   resolution: "co@npm:4.6.0"
   checksum: 10/a5d9f37091c70398a269e625cedff5622f200ed0aa0cff22ee7b55ed74a123834b58711776eb0f1dc58eb6ebbc1185aa7567b57bd5979a948c6e4f85073e2c05
-  languageName: node
-  linkType: hard
-
-"codeceptjs-cucumber-json-reporter@npm:^1.0.14":
-  version: 1.0.14
-  resolution: "codeceptjs-cucumber-json-reporter@npm:1.0.14"
-  dependencies:
-    btoa: "npm:^1.2.1"
-    lodash: "npm:^4.17.21"
-  checksum: 10/b6dac08347572e619c6a40fcfed4201da79841d654f34695a5273a4c7f1b20d937fa38364a75d2f3cbef574cbe17777fa1d41970afd84fe43fda07342344e4d2
   languageName: node
   linkType: hard
 
@@ -20656,7 +20637,6 @@ __metadata:
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.0"
     codeceptjs: "npm:3.5.6"
-    codeceptjs-cucumber-json-reporter: "npm:^1.0.14"
     codelyzer: "npm:^6.0.0"
     compression: "npm:^1.7.4"
     config: "npm:^3.2.5"

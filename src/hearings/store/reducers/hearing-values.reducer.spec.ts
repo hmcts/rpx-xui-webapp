@@ -183,7 +183,7 @@ describe('Hearing Values Reducer', () => {
 
         const finalState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
-          caseInfo: null,
+          caseInfo: { jurisdictionId: '', caseReference: '', hearingId: '' },
           lastError: ERROR_403
         };
 

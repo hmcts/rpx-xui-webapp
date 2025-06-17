@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AppConstants } from '../../app/app.constants';
 import { UserDetails } from '../../app/models';
 import * as fromActions from '../../app/store';
-import { RoleCategory } from '../models';
 
 @Injectable()
 export class BookingGuard {

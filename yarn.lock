@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.12":
-  version: 7.2.12
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.12"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.13-rc1":
+  version: 7.2.13-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.13-rc1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/bb7f15cd7491a46e7f50322aae71a9c42346e17776972001228da919f8cc7daf66284b2f2bec04a10aa47e44425fab22ef9caa2746dd3fd3b55b2dbb9e513477
+  checksum: 10/9400e5209d98577dfc69fdc23ddf253d5295bc17309d5366d9518d9be7e8c6cfc4ca06d15c6f45f14bea40ff4dbe03e7334088a6cf11f71ad6ec6acd437193df
   languageName: node
   linkType: hard
 
@@ -3196,16 +3196,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.0-role-enums":
-  version: 2.1.0-role-enums
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0-role-enums"
+"@hmcts/rpx-xui-common-lib@npm:2.1.2-rc1":
+  version: 2.1.2-rc1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.2-rc1"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/837d0e2179b94d9054822acfdadce344cdc9c28c06b400b1a3cb6b6a4dd824786317d257d157f1eacb067b1cf501b4acf64187a52800421b475b9fa192c6adaf
+  checksum: 10/fa40911306fcc75fd2bf7902485422bfa126eb0bf02f68364059f0556d9c62f63b0a3920cfca6d52551cfbe6f6c50f7b447016c259a01453575e48647d0a3d4a
   languageName: node
   linkType: hard
 
@@ -21885,13 +21885,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.12"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.13-rc1"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.0-role-enums"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.2-rc1"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

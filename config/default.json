@@ -129,7 +129,8 @@
     { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
     { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] },
     { "service": "DIVORCE", "serviceCodes": ["ABA1"] },
-    { "service": "FR", "serviceCodes": ["ABA2"] }
+    { "service": "FR", "serviceCodes": ["ABA2"] },
+    { "service": "PROBATE", "serviceCodes": ["ABA6"] }
   ],
   "wildcardSearchFields": {
     "Benefit": [

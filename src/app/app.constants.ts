@@ -203,6 +203,8 @@ const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';
+const iaJudgeRole: string = 'caseworker-ia-iacjudge';
+const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 
 export class AppConstants {
   public static FOOTER_DATA = null;
@@ -218,6 +220,8 @@ export class AppConstants {
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static IA_JUDGE_ROLE = iaJudgeRole;
+  public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
 }

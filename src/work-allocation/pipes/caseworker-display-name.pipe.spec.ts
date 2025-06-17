@@ -1,4 +1,4 @@
-import { RoleCategory } from '../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Caseworker } from '../models/dtos';
 import { CaseworkerDisplayName } from './caseworker-display-name.pipe';
 

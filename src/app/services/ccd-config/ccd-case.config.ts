@@ -41,10 +41,9 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableRestrictedCaseAccess, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 8) {
+        if (obArray.length === 7) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
@@ -258,10 +257,6 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseDataStoreApiUrl(): string {
     return this.config.case_data_store_api_url;
-  }
-
-  public getEnableRestrictedCaseAccessConfig(): boolean {
-    return this.config.enable_restricted_case_access;
   }
 
   public getEnableCaseFileViewVersion1_1(): boolean {

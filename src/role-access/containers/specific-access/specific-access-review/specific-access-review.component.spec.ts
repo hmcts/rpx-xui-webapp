@@ -1,17 +1,18 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { WASupportedJurisdictionsService } from '../../../../work-allocation/services';
-import { RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessText } from '../../../models/enums';
 import { DecideSpecificAccessAndGo } from '../../../store';
 import { SpecificAccessReviewComponent } from './specific-access-review.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SpecificAccessReviewComponent', () => {
   let component: SpecificAccessReviewComponent;

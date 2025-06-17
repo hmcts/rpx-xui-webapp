@@ -3,7 +3,8 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }
 import {
   GovUkErrorMessageComponent,
   GovUkFieldsetComponent,
-  GovUkLabelComponent
+  GovUkLabelComponent,
+  RoleCategory
 } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
@@ -102,7 +103,7 @@ describe('SpecificAccessDurationComponent', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
@@ -143,7 +144,7 @@ describe('SpecificAccessDurationComponent', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {

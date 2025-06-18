@@ -8,8 +8,8 @@ export class NumberOfAttendancesAnswerConverter implements AnswerConverter {
     return hearingState$.pipe(
       map((state) => {
         return state.hearingConditions?.isHearingAmendmentsEnabled
-          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees.toString()
-          : state.hearingRequest.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees.toString();
+          ? state.hearingRequestToCompare.hearingRequestMainModel?.hearingDetails?.numberOfPhysicalAttendees?.toString()
+          : state.hearingRequest.hearingRequestMainModel?.hearingDetails?.numberOfPhysicalAttendees?.toString();
       })
     );
   }

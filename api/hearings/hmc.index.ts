@@ -58,6 +58,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
  */
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
+  reqBody.caseDetails.caseRef = '';
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     trackTrace('submitting hearing request');

@@ -86,6 +86,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.hearingStore.dispatch(new fromHearingStore.StoreJurisdictionAndCaseRef({ jurisdictionId: this.jurisdiction, caseReference: this.caseId, caseType: this.caseType }));
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
 
     this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((serviceHearingValuesModel) => {
@@ -98,19 +99,25 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.lastErrorSubscription = combineLatest([
       this.hearingListLastErrorState$,
       this.hearingValuesLastErrorState$
-    ]).subscribe(([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
-      if (hearingListlastError || hearingValuesLastError) {
-        this.serverError = {
-          id: 'backendError', message: HearingSummaryEnum.BackendError
-        };
-        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-      } else {
-        // Reset the error context if there is no error on subsequent requests
-        this.serverError = null;
+    ]).subscribe({
+      next: ([hearingListlastError, hearingValuesLastError]: [fromHearingStore.State, fromHearingStore.State]) => {
+        if (hearingListlastError || hearingValuesLastError) {
+          this.serverError = {
+            id: 'backendError', message: HearingSummaryEnum.BackendError
+          };
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        } else {
+          // Reset the error context if there is no error on subsequent requests
+          this.serverError = null;
+        }
+        this.loadingService.unregister(loadingToken);
+      },
+      error: () => {
+        this.loadingService.unregister(loadingToken);
+      },
+      complete: () => {
         this.loadingService.unregister(loadingToken);
       }
-    }, () => {
-      this.loadingService.unregister(loadingToken);
     });
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);

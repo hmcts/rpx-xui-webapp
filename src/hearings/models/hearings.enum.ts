@@ -276,6 +276,7 @@ export enum HearingLinkMessages {
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
+  HEARING_ID,
   Type,
   TYPE_FROM_REQUEST,
   STATUS,

@@ -31,24 +31,25 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const reqBody = req.body;
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
-
   try {
-    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
-    let dataByDefault = mapDataByDefault(data);
-    const forceNewDefaultScreenFlow = retrieveForceNewDefaultScreenFlow();
-    if (forceNewDefaultScreenFlow) {
-      dataByDefault = forceDefaultScreenFlow(data);
-    } else {
-      if (!data.screenFlow) {
-        dataByDefault = {
-          ...data,
-          screenFlow:
-            (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
-        };
+    const serviceResponse = await sendPost(markupPath, reqBody, req, next);
+    if (serviceResponse) {
+      const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
+      let dataByDefault = mapDataByDefault(data);
+      const forceNewDefaultScreenFlow = retrieveForceNewDefaultScreenFlow();
+      if (forceNewDefaultScreenFlow) {
+        dataByDefault = forceDefaultScreenFlow(data);
+      } else {
+        if (!data.screenFlow) {
+          dataByDefault = {
+            ...data,
+            screenFlow:
+              (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
+          };
+        }
       }
+      res.status(status).send(dataByDefault);
     }
-
-    res.status(status).send(dataByDefault);
   } catch (error) {
     trackTrace('Error calling serviceHearingValues', error);
     next(error);

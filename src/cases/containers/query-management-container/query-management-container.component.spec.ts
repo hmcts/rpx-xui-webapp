@@ -23,6 +23,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -955,10 +956,33 @@ describe('QueryManagementContainerComponent', () => {
       component.logSelection(qualifyingQuestion);
 
       expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection',
         '/query-management/query/123',
         'Qualifying Question: Test question',
         { caseTypeId: '123', jurisdictionId: 'TEST' }
       );
+    });
+
+    it('should call setQualifyingQuestionSelection and logSelection if markdown is present and selectedQualifyingQuestion is set', () => {
+      const qualifyingQuestion = {
+        name: 'Raise a new query',
+        markdown: '### Markdown content',
+        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+      };
+
+      // Setup component state
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      component.selectedQualifyingQuestion = qualifyingQuestion;
+      component.qualifyingQuestionsControl = new FormControl(qualifyingQuestion);
+
+      spyOn(component as any, 'logSelection');
+      spyOn(component as any, 'getQueryCreateContext').and.returnValue(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
+
+      component.submitForm();
+
+      expect(qualifyingQuestionService.setQualifyingQuestionSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect((component as any).logSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect(component.showContinueButton).toBeTruthy();
     });
   });
 

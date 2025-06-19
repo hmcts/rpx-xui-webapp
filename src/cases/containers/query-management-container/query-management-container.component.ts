@@ -107,6 +107,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public caseQueriesCollections: CaseQueriesCollection[];
 
+  public selectedQualifyingQuestion: QualifyingQuestion;
+
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
@@ -214,6 +216,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         }
       } else {
         this.router.navigateByUrl(this.qualifyingQuestion.url);
+      }
+
+      if (this.selectedQualifyingQuestion) {
+        this.logSelection(this.selectedQualifyingQuestion);
       }
     }
   }
@@ -528,6 +534,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   private trackPageSelected(qualifyingQuestionName: string): void {
     this.googleTagManagerService.virtualPageView(
+      'QM_QualifyingQuestion_Selection',
       `/query-management/query/${this.caseId}`,
       `Qualifying Question: ${qualifyingQuestionName}`,
       {
@@ -535,6 +542,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         jurisdictionId: this.jurisdictionId
       }
     );
+  }
+
+  public onQuestionSelected(qualifyingQuestion: QualifyingQuestion): void {
+    this.selectedQualifyingQuestion = qualifyingQuestion;
   }
 
   private getEventTrigger(): void {

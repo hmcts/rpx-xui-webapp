@@ -534,6 +534,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   private trackPageSelected(qualifyingQuestionName: string): void {
     this.googleTagManagerService.virtualPageView(
+      'QM_QualifyingQuestion_Selection',
       `/query-management/query/${this.caseId}`,
       `Qualifying Question: ${qualifyingQuestionName}`,
       {

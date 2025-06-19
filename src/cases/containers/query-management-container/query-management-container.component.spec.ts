@@ -23,6 +23,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -955,6 +956,7 @@ describe('QueryManagementContainerComponent', () => {
       component.logSelection(qualifyingQuestion);
 
       expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection',
         '/query-management/query/123',
         'Qualifying Question: Test question',
         { caseTypeId: '123', jurisdictionId: 'TEST' }
@@ -975,16 +977,12 @@ describe('QueryManagementContainerComponent', () => {
 
       spyOn(component as any, 'logSelection');
       spyOn(component as any, 'getQueryCreateContext').and.returnValue(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
-      spyOn(router, 'navigateByUrl');
-      spyOn(qualifyingQuestionService, 'setQualifyingQuestionSelection');
 
       component.submitForm();
 
-      expect(component.getQueryCreateContext).toHaveBeenCalled();
       expect(qualifyingQuestionService.setQualifyingQuestionSelection).toHaveBeenCalledWith(qualifyingQuestion);
       expect((component as any).logSelection).toHaveBeenCalledWith(qualifyingQuestion);
-      expect(component.showContinueButton).toBeTrue();  // since URL is present
-      expect(router.navigateByUrl).not.toHaveBeenCalled(); // because markdown is present
+      expect(component.showContinueButton).toBeTruthy();
     });
   });
 

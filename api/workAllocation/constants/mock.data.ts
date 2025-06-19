@@ -1,5 +1,5 @@
-import { Person, PersonRole } from '../interfaces/person';
 import { v4 as uuidv4 } from 'uuid';
+import { Person, PersonRole } from '../interfaces/person';
 
 export const PERSON: Person[] = [
   {
@@ -38,31 +38,31 @@ export const PERSON: Person[] = [
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a99',
     name: 'Jacky Collins',
     email: 'jacky.collins@legalops.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a98',
     name: 'Jasmine Chiswell',
     email: 'jasmine.chiswell@legalops.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a97',
     name: 'Jamie Vardy',
     email: 'jamie.vardy@legalops.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a96',
     name: 'James Priest',
     email: 'James Priest@legalops.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   },
   {
     id: '49db7670-09b3-49e3-b945-b98f4e5e9a95',
     name: 'Michael Jackson',
     email: 'michael.jackson@legalops.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   },
   {
     id: 'id109',

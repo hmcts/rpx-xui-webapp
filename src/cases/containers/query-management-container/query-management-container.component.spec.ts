@@ -960,6 +960,32 @@ describe('QueryManagementContainerComponent', () => {
         { caseTypeId: '123', jurisdictionId: 'TEST' }
       );
     });
+
+    it('should call setQualifyingQuestionSelection and logSelection if markdown is present and selectedQualifyingQuestion is set', () => {
+      const qualifyingQuestion = {
+        name: 'Raise a new query',
+        markdown: '### Markdown content',
+        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+      };
+
+      // Setup component state
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      component.selectedQualifyingQuestion = qualifyingQuestion;
+      component.qualifyingQuestionsControl = new FormControl(qualifyingQuestion);
+
+      spyOn(component as any, 'logSelection');
+      spyOn(component as any, 'getQueryCreateContext').and.returnValue(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
+      spyOn(router, 'navigateByUrl');
+      spyOn(qualifyingQuestionService, 'setQualifyingQuestionSelection');
+
+      component.submitForm();
+
+      expect(component.getQueryCreateContext).toHaveBeenCalled();
+      expect(qualifyingQuestionService.setQualifyingQuestionSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect((component as any).logSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect(component.showContinueButton).toBeTrue();  // since URL is present
+      expect(router.navigateByUrl).not.toHaveBeenCalled(); // because markdown is present
+    });
   });
 
   describe('validateForm', () => {

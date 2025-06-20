@@ -31,7 +31,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const reqBody = req.body;
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
-
   try {
     const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
     let dataByDefault = mapDataByDefault(data);
@@ -47,7 +46,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
         };
       }
     }
-
     res.status(status).send(dataByDefault);
   } catch (error) {
     trackTrace('Error calling serviceHearingValues', error);

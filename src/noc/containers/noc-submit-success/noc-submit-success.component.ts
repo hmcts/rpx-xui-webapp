@@ -3,7 +3,6 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { NocState } from '../../models';
 import * as fromFeature from '../../store';
-import { JurisdictionService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-noc-submit-success',
@@ -19,25 +18,26 @@ export class NocSubmitSuccessComponent implements OnInit {
   public caseType: string;
 
   constructor(private readonly store: Store<fromFeature.State>,
-              private readonly jurisdictionService: JurisdictionService
-            ) {}
+    // private readonly jurisdictionService: JurisdictionService
+  ) {
+    // this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe({
+    //   next: (jurisdiction) => {
+    //     if (jurisdiction?.currentCaseType) {
+    //       this.jurisdiction = jurisdiction.id;
+    //       this.caseType = jurisdiction.currentCaseType.id
+    //     }
+    //   }
+    // });
+  }
 
   public ngOnInit() {
     this.caseReference$ = this.store.pipe(select(fromFeature.caseReference));
     this.currentNavigation$ = this.store.pipe(select(fromFeature.currentNavigation));
-    this.jurisdictionSubscription = this.jurisdictionService.getSelectedJurisdiction()?.subscribe({
-      next: (jurisdiction) => {
-        if (jurisdiction?.currentCaseType) {
-          this.jurisdiction = jurisdiction.id;
-          this.caseType = jurisdiction.currentCaseType.id
-        }
-      }
-    });
   }
 
-  public ngOnDestroy(): void {
-    if (this.jurisdictionSubscription) {
-      this.jurisdictionSubscription.unsubscribe();
-    }
-  }
+  // public ngOnDestroy(): void {
+  //   if (this.jurisdictionSubscription) {
+  //     this.jurisdictionSubscription.unsubscribe();
+  //   }
+  // }
 }

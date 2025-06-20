@@ -46,7 +46,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   public exclusionOption: ExcludeOption;
   public caseId: string;
   public jurisdiction: string;
-  public caseType: string
+  public caseType: string;
 
   public navEvent: ExclusionNavigation;
 

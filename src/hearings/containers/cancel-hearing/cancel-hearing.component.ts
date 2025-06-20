@@ -26,6 +26,8 @@ export class CancelHearingComponent implements OnInit {
   public caseHearing: HearingListModel;
   public showSpinner$: Observable<boolean>;
   public cancelActioned: boolean = false;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -58,6 +60,12 @@ export class CancelHearingComponent implements OnInit {
       }, () => {
         this.loadingService.unregister(loadingToken);
       });
+    this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
+      if (hearingValues) {
+        this.jurisdiction = hearingValues.caseInfo.jurisdictionId;
+        this.caseType = hearingValues.caseInfo.caseType;
+      }
+    });
     this.hearingCancelOptions = this.route.snapshot.data.hearingCancelOptions;
     this.initForm();
   }
@@ -100,7 +108,7 @@ export class CancelHearingComponent implements OnInit {
       this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(
         () => {
           this.validationErrors = null;
-          this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
+          this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
             .catch((err) => this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err));
         },
         () => {

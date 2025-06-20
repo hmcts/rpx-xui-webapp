@@ -2,17 +2,17 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
 
 const caseId = '12345';
 
-describe.skip('getAccessRolesByCaseId - access management service, query role assignments', () => {
+xdescribe('getAccessRolesByCaseId - access management service, query role assignments', () => {
   const REQUEST_BODY = {
     queryRequests: [
       {
@@ -55,9 +55,8 @@ describe.skip('getAccessRolesByCaseId - access management service, query role as
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'A list of role assignments for the search query',
+        states: [{ description: 'A list of role assignments for the search query' }],
         uponReceiving: 'query role assignments for caseId',
         withRequest: {
           method: 'POST',
@@ -77,7 +76,7 @@ describe.skip('getAccessRolesByCaseId - access management service, query role as
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -87,45 +86,45 @@ describe.skip('getAccessRolesByCaseId - access management service, query role as
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getAccessRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
+        const { getAccessRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
-        },
-        body: {
-          caseId: caseId
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+          },
+          body: {
+            caseId: caseId
+          }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getAccessRolesByCaseId(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
         }
-
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getAccessRolesByCaseId(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });
 
 function assertResponses(dto: any) {
+  console.log('>>>>>>>>');
+  console.log(dto);
   expect(dto.length).to.be.equal(1);
   expect(dto[0].actions[0].id).to.be.equal('reallocate');
   expect(dto[0].actions[0].title).to.be.equal('Reallocate');

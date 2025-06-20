@@ -3,26 +3,24 @@ import * as config from 'config';
 import { NextFunction } from 'express';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, eachLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('getNoCQuestions API', () => {
-  const caseId = '1234567890123456';
+  const caseId = '1234567890123452';
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
   afterEach(() => {
     sinon.reset();
     sandbox.restore();
-    pactSetUp.provider.verify();
-    pactSetUp.provider.finalize();
   });
 
-  function setUpMockConfigForFunction() {
-    const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+  function setUpMockConfigForFunction(url) {
+    const configValues = getNocAPIOverrides(url);
     sandbox.stub(config, 'get').callsFake((prop) => {
       return configValues[prop];
     });
@@ -35,7 +33,7 @@ describe('getNoCQuestions API', () => {
       'Authorization': 'Bearer someAuthorizationToken',
       'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
     },
-    query: { caseId: '1234567890123456' }
+    query: { caseId: '1234567890123452' }
   });
 
   describe('when a request is made to retrieve NoC questions', () => {
@@ -60,15 +58,16 @@ describe('getNoCQuestions API', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let next;
     before(async () => {
-      await pactSetUp.provider.setup();
       next = sandbox.spy();
-      return pactSetUp.provider.addInteraction({
-        state: `a case with id ${caseId} exists`,
+      pactSetUp.provider.addInteraction({
+        states: [{ description: 'NoC questions exist for case with given id', parameters: { caseId } }],
         uponReceiving: 'a request to retrieve NoC questions',
         withRequest: {
           method: 'GET',
           path: '/noc/noc-questions',
-          query: 'case_id=' + caseId
+          query: {
+            case_id: caseId
+          }
         },
         willRespondWith: {
           status: 200,
@@ -78,22 +77,24 @@ describe('getNoCQuestions API', () => {
     });
 
     it('returns the expected NoC questions', async () => {
-      const getNoCQuestions = setUpMockConfigForFunction();
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const getNoCQuestions = setUpMockConfigForFunction(mockServer.url);
 
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
 
-      const next = sinon.mock().atLeast(1) as NextFunction;
-      try {
-        await getNoCQuestions(req, response, next);
-        assertResponse(returnedResponse);
-      } catch (err) {
-        console.log(err.stack);
-        throw new Error(err);
-      }
+        const next = sinon.mock().atLeast(1) as NextFunction;
+        try {
+          await getNoCQuestions(req, response, next);
+          assertResponse(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
+      });
     });
   });
 });

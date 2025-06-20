@@ -1,4 +1,5 @@
-const { defineSupportCode } = require('cucumber');
+const { Given, When, Then } = require('@cucumber/cucumber');
+
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');

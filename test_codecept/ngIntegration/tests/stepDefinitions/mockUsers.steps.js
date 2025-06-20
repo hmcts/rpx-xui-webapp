@@ -1,6 +1,4 @@
-const { defineSupportCode } = require('cucumber');
-
-// const MockApp = require('../../../nodeMock/app');
+const { Given } = require('@cucumber/cucumber');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 

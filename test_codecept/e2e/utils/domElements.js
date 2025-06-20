@@ -1,8 +1,21 @@
+const { $, $$, elementByXpath, elementsByXpath } = require('../../helpers/globals');
 
 class Select{
-  constructor(locatorType, selector){
-    this.selectElement = locatorType.toLowerCase() === 'css' ? $(selector) : element(by.xpath(selector));
-    this.selectElementOptions = locatorType.toLowerCase() === 'css' ? $$(`${selector} option`) : element.all(by.xpath(`${selector}//option`));
+  constructor(locatorType, selector) {
+    this.locatorType = locatorType.toLowerCase();
+    this.selector = selector;
+  }
+
+  get selectElement() {
+    return this.locatorType === 'css'
+      ? $(this.selector)
+      : elementByXpath(this.selector);
+  }
+
+  get selectElementOptions() {
+    return this.locatorType === 'css'
+      ? $$(`${this.selector} option`)
+      : elementsByXpath(`${this.selector}//option`);
   }
 
   async isDisplayed(){
@@ -31,13 +44,13 @@ class GovUKRadios{
   }
 
   async isDisplayed() {
-    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
+    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : elementByXpath(`${this.selector}`);
 
     return await container.isPresent();
   }
 
   async isEnabled(){
-    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
+    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : elementByXpath(`${this.selector}`);
 
     return await containert.isEnabled();
   }
@@ -47,7 +60,7 @@ class GovUKRadios{
   }
 
   async getOptions() {
-    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
+    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : elementsByXpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`);
 
     const count = await labels.count();
     const options = [];
@@ -59,7 +72,7 @@ class GovUKRadios{
   }
 
   async selectOption(option){
-    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
+    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : elementsByXpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`);
     const options = [];
     const count = await labels.count();
     for (let i = 0; i < count; i++) {

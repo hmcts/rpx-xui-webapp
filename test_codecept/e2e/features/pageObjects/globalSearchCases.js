@@ -1,15 +1,28 @@
+const { $, elementByXpath } = require('../../../helpers/globals');
 
 const BrowserWaits = require('../../support/customWaits');
 
 const headerPage = require('./headerPage');
 
 class DateSearchField{
-  constructor(fieldname){
-    this.day = element(by.xpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${fieldname}')]/..//input[contains(@name,'day')]`));
-    this.month = element(by.xpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${fieldname}')]/..//input[contains(@name,'month')]`));
-    this.year = element(by.xpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${fieldname}')]/..//input[contains(@name,'year')]`));
+  constructor(fieldname) {
+    this.fieldname = fieldname;
+  }
 
-    this.errorMessage = element(by.xpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${fieldname}')]/..//xuilib-gov-uk-error-message//span`));
+  get day() {
+    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'day')]`);
+  }
+
+  get month() {
+    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'month')]`);
+  }
+
+  get year() {
+    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'year')]`);
+  }
+
+  get errorMessage() {
+    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//xuilib-gov-uk-error-message//span`);
   }
 
   async getErrorMessageText(){
@@ -47,11 +60,24 @@ class DateSearchField{
 }
 
 class InputSearchField{
-  constructor(fieldid){
-    this.input = element(by.xpath(`//xuilib-gov-uk-input//input[@id = '${fieldid}']`));
-    this.label = element(by.xpath(`//xuilib-gov-uk-input//input[@id = '${fieldid}']/../xuilib-gov-label/label`));
-    this.hintText = element(by.xpath(`//xuilib-gov-uk-input//input[@id = '${fieldid}']/../span[contains(@class ,'govuk-hint')]`));
-    this.errorMessage = element(by.xpath(`//xuilib-gov-uk-input//input[@id = '${fieldid}']/../xuilib-gov-uk-error-message`));
+  constructor(fieldid) {
+    this.fieldid = fieldid;
+  }
+
+  get input() {
+    return elementByXpath(`//xuilib-gov-uk-input//input[@id='${this.fieldid}']`);
+  }
+
+  get label() {
+    return elementByXpath(`//xuilib-gov-uk-input//input[@id='${this.fieldid}']/../xuilib-gov-label/label`);
+  }
+
+  get hintText() {
+    return elementByXpath(`//xuilib-gov-uk-input//input[@id='${this.fieldid}']/../span[contains(@class,'govuk-hint')]`);
+  }
+
+  get errorMessage() {
+    return elementByXpath(`//xuilib-gov-uk-input//input[@id='${this.fieldid}']/../xuilib-gov-uk-error-message`);
   }
 
   async getInputFieldValue(){
@@ -83,27 +109,42 @@ class InputSearchField{
 }
 
 class GlobalSearchCasesPage{
-  constructor(){
-    this.pageHeader = element(by.xpath('//h1[contains(text(),\'Search cases\')]'));
-
-    this.caseReference = $('input#caseRef');
-    this.otherReference = new InputSearchField('otherRef');//$("//xuilib-gov-uk-input//input[@id = 'otherRef']);
-    this.fullName = new InputSearchField('fullName');//$("//xuilib-gov-uk-input//input[@id = 'fullName']);
-    this.firstLineOfAddress = new InputSearchField('addressLine1');//$("//xuilib-gov-uk-input//input[@id = 'addressLine1']);
-    this.postCode = new InputSearchField('postcode');//$("//xuilib-gov-uk-input//input[@id = 'postcode']);
-    this.emailAddress = new InputSearchField('email');//$("//xuilib-gov-uk-input//input[@id = 'email']);
-
+  constructor() {
+    this.otherReference = new InputSearchField('otherRef');
+    this.fullName = new InputSearchField('fullName');
+    this.firstLineOfAddress = new InputSearchField('addressLine1');
+    this.postCode = new InputSearchField('postcode');
+    this.emailAddress = new InputSearchField('email');
     this.dateOfBirth = new DateSearchField('Date of birth');
-
     this.dateOfdeath = new DateSearchField('Date of death');
+  }
 
-    this.servicesSelect = element(by.xpath('//xuilib-gov-select//select[@id = \'servicesList\']'));
+  get pageHeader() {
+    return elementByXpath(`//h1[contains(text(),'Search cases')]`);
+  }
 
-    this.errorSummaryContainer = $('.govuk-error-summary');
-    this.errorSummaryHeader = $('.govuk-error-summary h2');
-    this.errorSummary = $('.govuk-error-summary govuk-error-summary__body ui');
+  get caseReference() {
+    return $('input#caseRef');
+  }
 
-    this.searchButton = $('exui-case-reference-search-box button');
+  get servicesSelect() {
+    return elementByXpath(`//xuilib-gov-select//select[@id='servicesList']`);
+  }
+
+  get errorSummaryContainer() {
+    return $('.govuk-error-summary');
+  }
+
+  get errorSummaryHeader() {
+    return $('.govuk-error-summary h2');
+  }
+
+  get errorSummary() {
+    return $('.govuk-error-summary govuk-error-summary__body ui');
+  }
+
+  get searchButton() {
+    return $('exui-case-reference-search-box button');
   }
 
   async amOnPage(){

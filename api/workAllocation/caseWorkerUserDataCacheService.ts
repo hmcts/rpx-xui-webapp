@@ -5,6 +5,7 @@ import { getConfigValue } from '../configuration';
 import { IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
+import { setHeaders } from '../lib/proxy';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
 import { handleNewUsersGet, handlePostRoleAssignments, handlePostRoleAssignmentsWithNewUsers, handleUsersGet } from './caseWorkerService';
 import { FullUserDetailCache } from './fullUserDetailCache';
@@ -24,18 +25,58 @@ let initialAuthToken: string;
 let cachedUsers: StaffUserDetails[];
 let cachedUsersWithRoles: CachedCaseworker[];
 
+/**
+ * Fetches users for a specific service with proper pagination
+ * @param service The service to fetch users for
+ * @param headers Request headers
+ * @returns All users for the service across all pages
+ */
+async function fetchUsersWithPagination(service: string, headers: any): Promise<StaffUserDetails[]> {
+  let pageNumber = 1;
+  let hasMoreUsers = true;
+  const allUsers: StaffUserDetails[] = [];
+
+  while (hasMoreUsers) {
+    const getUsersPath = prepareGetUsersUrl(baseCaseWorkerRefUrl, service, pageNumber);
+    const pageResponse = await handleNewUsersGet(getUsersPath, headers);
+
+    if (pageResponse && pageResponse.length > 0) {
+      allUsers.push(...pageResponse);
+      pageNumber++;
+    } else {
+      hasMoreUsers = false;
+    }
+  }
+
+  return allUsers;
+}
+
 export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
   try {
     if (hasTTLExpired() || (!cachedUsers || cachedUsers.length === 0)) {
-      // hasTTLExpired to determine whether roles require refreshing
-      // cachedUsers to ensure rerun if user restarts request early
       refreshRoles = true;
       cachedUsers = [];
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-      const userResponse = await handleUsersGet(getUsersPath, req);
+      const allUserResponses: StaffUserDetails[] = [];
+      for (const service of Array.isArray(jurisdictions) ? jurisdictions : [jurisdictions]) {
+        let pageNumber = 1;
+        let hasMoreUsers = true;
+
+        while (hasMoreUsers) {
+          const pageUrl = prepareGetUsersUrl(baseCaseWorkerRefUrl, service, pageNumber);
+          const pageResponse = await handleUsersGet(pageUrl, req);
+
+          if (pageResponse && pageResponse.length > 0) {
+            allUserResponses.push(...pageResponse);
+            pageNumber++;
+          } else {
+            hasMoreUsers = false;
+          }
+        }
+      }
+
       // TODO: Response will be cached eventually via API so caching below should be removed eventually
-      cachedUsers = getUniqueUsersFromResponse(userResponse);
+      cachedUsers = getUniqueUsersFromResponse(allUserResponses);
     } else {
       refreshRoles = false;
     }
@@ -59,9 +100,15 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     const caseworkerHeaders = getRequestHeaders();
     const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
     cachedUsers = [];
-    const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-    const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
-    cachedUsers = getUniqueUsersFromResponse(userResponse);
+
+    // Fetch all users across all pages for each service separately
+    const allUserResponses: StaffUserDetails[] = [];
+    for (const service of Array.isArray(jurisdictions) ? jurisdictions : [jurisdictions]) {
+      const serviceUsers = await fetchUsersWithPagination(service, caseworkerHeaders);
+      allUserResponses.push(...serviceUsers);
+    }
+
+    cachedUsers = getUniqueUsersFromResponse(allUserResponses);
     return cachedUsers;
   } catch (error) {
     if (cachedUsers) {

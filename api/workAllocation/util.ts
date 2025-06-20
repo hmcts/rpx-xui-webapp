@@ -77,9 +77,9 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
   return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
 }
 
-export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
+export function prepareGetUsersUrl(baseUrl: string, service: string, pageNumber: number = 1): string {
+  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE)); // was 12000 now 30000
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}&page_number=${pageNumber}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {

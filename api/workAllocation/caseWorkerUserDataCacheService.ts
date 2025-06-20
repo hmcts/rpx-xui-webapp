@@ -2,7 +2,7 @@ import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 
 import { getConfigValue } from '../configuration';
-import { IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
+import { CASEWORKER_PAGE_SIZE, IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
@@ -13,81 +13,136 @@ import { CachedCaseworker, LocationApi } from './interfaces/common';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
 import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest, prepareRoleApiUrl } from './util';
 
-// 10 minutes
-const TTL = 600;
+// Configuration
+const TTL_IN_SECONDS = 600; // 10 minutes
 
-let timestamp: Date;
-let refreshRoles: boolean;
-let initialServiceAuthToken: string;
-let initialAuthToken: string;
+// Cache state
+interface CacheState {
+  timestamp: Date | null;
+  refreshRoles: boolean;
+  cachedUsers: StaffUserDetails[];
+  cachedUsersWithRoles: CachedCaseworker[];
+}
 
-let cachedUsers: StaffUserDetails[];
-let cachedUsersWithRoles: CachedCaseworker[];
+// Auth tokens
+interface AuthTokens {
+  serviceAuthToken: string;
+  userAuthToken: string;
+}
 
-export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
+// Module state
+const state: CacheState = {
+  timestamp: null,
+  refreshRoles: false,
+  cachedUsers: null,
+  cachedUsersWithRoles: null
+};
+
+let authTokens: AuthTokens = {
+  serviceAuthToken: null,
+  userAuthToken: null
+};
+
+/**
+ * User data fetching functions
+ */
+export async function fetchUserData(req?: EnhancedRequest, next?: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (hasTTLExpired() || (!cachedUsers || cachedUsers.length === 0)) {
-      // hasTTLExpired to determine whether roles require refreshing
-      // cachedUsers to ensure rerun if user restarts request early
-      refreshRoles = true;
-      cachedUsers = [];
+    if (hasTTLExpired() || (!state.cachedUsers || state.cachedUsers.length === 0)) {
+      // Need to refresh cache
+      state.refreshRoles = true;
+      state.cachedUsers = [];
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-      const userResponse = await handleUsersGet(getUsersPath, req);
-      // TODO: Response will be cached eventually via API so caching below should be removed eventually
-      cachedUsers = getUniqueUsersFromResponse(userResponse);
+
+      let headers;
+      if (!req) {
+        await getAuthTokens();
+        headers = getRequestHeaders();
+      }
+
+      // Fetch all user data with pagination
+      const allUsers = await fetchAllUserPages(jurisdictions, req, headers);
+
+      // Process and cache the results
+      state.cachedUsers = getUniqueUsersFromResponse(allUsers);
     } else {
-      refreshRoles = false;
+      state.refreshRoles = false;
     }
-    return cachedUsers;
+
+    return state.cachedUsers;
   } catch (error) {
-    if (cachedUsers) {
-      return cachedUsers;
+    // Handle errors appropriately
+    if (state.cachedUsers && state.cachedUsers.length > 0) {
+      // Return cached data if available despite error
+      return state.cachedUsers;
     }
+
+    // Reset cache on critical errors with no request handler
+    if (!next) {
+      state.timestamp = null;
+      state.refreshRoles = false;
+      return null;
+    }
+
     next(error);
   }
 }
 
-// Note: May not be needed once API caching is in effect
+// Helper function to fetch all pages of user data
+async function fetchAllUserPages(
+  jurisdictions: string,
+  req?: EnhancedRequest,
+  headers?: Record<string, string>
+): Promise<StaffUserDetails[]> {
+  let pageNumber = 0;
+  let hasMoreData = true;
+  let allUsers: StaffUserDetails[] = [];
+  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+
+  while (hasMoreData) {
+    const getUsersPath = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
+
+    // Use appropriate method based on context
+    const userResponse = req
+      ? await handleUsersGet(getUsersPath, req)
+      : await handleNewUsersGet(getUsersPath, headers);
+
+    if (!userResponse || userResponse.length === 0) {
+      hasMoreData = false;
+    } else {
+      allUsers = [...allUsers, ...userResponse];
+
+      // Check if this is the last page
+      if (userResponse.length < pageSize) {
+        hasMoreData = false;
+      }
+      pageNumber++;
+    }
+  }
+
+  return allUsers;
+}
+
+// For backward compatibility
 export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
-  try {
-    // first ensure that there is no immediate re-caching
-    timestamp = new Date();
-    refreshRoles = true;
-    await getAuthTokens();
-    // add the tokens to the request headers
-    const caseworkerHeaders = getRequestHeaders();
-    const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-    cachedUsers = [];
-    const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-    const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
-    cachedUsers = getUniqueUsersFromResponse(userResponse);
-    return cachedUsers;
-  } catch (error) {
-    if (cachedUsers) {
-      return cachedUsers;
-    }
-    // in case of error, reset the cache on application start up
-    timestamp = null;
-    refreshRoles = false;
-  }
+  return fetchUserData();
 }
 
-export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], req: EnhancedRequest, next: NextFunction): Promise<CachedCaseworker[]> {
-  // note: this has been done to cache role categories
-  // it is separate from the above as above caching will be done by backend
+/**
+ * Role assignment functions
+ */
+export async function fetchRoleAssignments(
+  cachedUserData: StaffUserDetails[],
+  req: EnhancedRequest,
+  next: NextFunction
+): Promise<CachedCaseworker[]> {
   try {
-    if (refreshRoles || !cachedUsersWithRoles) {
-      // refreshRoles to determine whether roles require refreshing
-      // cachedUsersWithRoles to ensure rerun if user restarts request early
-      const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-      const jurisdictions = getStaffSupportedJurisdictionsList();
-      const payload = prepareRoleApiRequest(jurisdictions, null, true);
-      const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
-      const roleAssignments = data.roleAssignmentResponse;
-      cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-      FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
+    if (state.refreshRoles || !state.cachedUsersWithRoles) {
+      const roleAssignments = await fetchRoleAssignmentsFromApi(req);
+      state.cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
+      FullUserDetailCache.setUserDetails(state.cachedUsersWithRoles);
     }
+
     return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
     if (FullUserDetailCache.getAllUserDetails()) {
@@ -97,37 +152,31 @@ export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], r
   }
 }
 
-export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
-  // note: this has been done to cache role categories
-  // it is separate from the above as above caching will be done by backend
+export async function fetchRoleAssignmentsForNewUsers(
+  cachedUserData: StaffUserDetails[]
+): Promise<CachedCaseworker[]> {
   try {
-    if (refreshRoles && !cachedUsersWithRoles) {
-      // refreshRoles to determine whether roles require refreshing
-      // cachedUsersWithRoles to ensure rerun if user restarts request early
-      const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-      const jurisdictions = getStaffSupportedJurisdictionsList();
-      const payload = prepareRoleApiRequest(jurisdictions, null, true);
-      const roleAssignmentHeaders = {
-        ...getRequestHeaders(),
-        pageNumber: 0,
-        size: 10000
-      };
-      const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
-      const roleAssignments = data.roleAssignmentResponse;
-      cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-      FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
+    if (state.refreshRoles && !state.cachedUsersWithRoles) {
+      const roleAssignments = await fetchRoleAssignmentsWithHeaders();
+      state.cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
+      FullUserDetailCache.setUserDetails(state.cachedUsersWithRoles);
     }
+
     return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
     if (FullUserDetailCache.getAllUserDetails()) {
       return FullUserDetailCache.getAllUserDetails();
     }
+    return null;
   }
 }
 
-export async function getAuthTokens(): Promise<void> {
+/**
+ * Authentication functions
+ */
+export async function getAuthTokens(): Promise<AuthTokens> {
   try {
-    // get config values for getting auth tokens
+    // Get config values for auth tokens
     const microservice = getConfigValue(MICROSERVICE);
     const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
     const s2sSecret = getConfigValue(S2S_SECRET).trim();
@@ -137,106 +186,150 @@ export async function getAuthTokens(): Promise<void> {
     const axiosConfig = {
       headers: { 'content-type': 'application/x-www-form-urlencoded' }
     };
-    const authBody = getRequestBody();
-    // get auth token to use for pre-sign-in API calls
+
+    // Get auth token for service-to-service call
     const serviceAuthResponse = await http.post(`${s2sEndpointUrl}`, {
       microservice,
       oneTimePassword
     });
-    initialServiceAuthToken = serviceAuthResponse.data;
+
+    // Get user auth token
+    const authBody = getRequestBody();
     const authResponse = await http.post(authURL, authBody, axiosConfig);
-    initialAuthToken = authResponse.data.access_token;
+
+    // Update the module's auth tokens
+    authTokens = {
+      serviceAuthToken: serviceAuthResponse.data,
+      userAuthToken: authResponse.data.access_token
+    };
+
+    return authTokens;
   } catch (error) {
-    console.log('Cannot get auth tokens');
+    console.log('Cannot get auth tokens', error);
+    throw new Error('Failed to obtain authentication tokens');
   }
 }
 
 export function hasTTLExpired(): boolean {
-  if (!timestamp) {
-    // started caching
-    timestamp = new Date();
+  if (!state.timestamp) {
+    // Cache not yet initialized
+    state.timestamp = new Date();
     return true;
-  } else if (Date.now() < timestamp.getTime() + (TTL * 1000)) {
-    // use cache if the time is not more than the TTL
-    return false;
   }
-  // if timestamp has expired then refresh cache
-  timestamp = new Date();
-  return true;
+
+  const hasExpired = Date.now() > state.timestamp.getTime() + (TTL_IN_SECONDS * 1000);
+
+  if (hasExpired) {
+    state.timestamp = new Date();
+  }
+
+  return hasExpired;
 }
 
 export function timestampExists(): boolean {
-  return !!timestamp;
+  return !!state.timestamp;
 }
 
-// This ensures there are no duplicates
+// Helper function for fetching role assignments with request
+async function fetchRoleAssignmentsFromApi(req: EnhancedRequest): Promise<any[]> {
+  const roleApiPath = prepareRoleApiUrl(baseRoleAssignmentUrl);
+  const jurisdictions = getStaffSupportedJurisdictionsList();
+  const payload = prepareRoleApiRequest(jurisdictions, null, true);
+  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
+  return data.roleAssignmentResponse;
+}
+
+// Helper function for fetching role assignments with headers
+async function fetchRoleAssignmentsWithHeaders(): Promise<any[]> {
+  const roleApiPath = prepareRoleApiUrl(baseRoleAssignmentUrl);
+  const jurisdictions = getStaffSupportedJurisdictionsList();
+  const payload = prepareRoleApiRequest(jurisdictions, null, true);
+  const roleAssignmentHeaders = {
+    ...getRequestHeaders(),
+    pageNumber: 0,
+    size: 10000
+  };
+  const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
+  return data.roleAssignmentResponse;
+}
+
+/**
+ * User data processing functions
+ */
 export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): StaffUserDetails[] {
   const userIdList = new Set<string>();
   const uniqueUsers: StaffUserDetails[] = [];
-  // go through all users
+
+  // Process each user
   for (let userIndex = 0; userIndex < userResponse.length; userIndex++) {
     const thisUser = userResponse[userIndex];
-    // line below for Civil -> CIVIL to ensure no issues
+    // Normalize service name to uppercase
     thisUser.ccd_service_name = thisUser.ccd_service_name.toUpperCase();
     const memberProfile = thisUser.staff_profile;
     const userServices = [thisUser.ccd_service_name];
     const baseLocationList = [];
-    if (!userIdList.has(memberProfile.id)) {
-      // if the user is not the same as a previous user, loop through remaining users
-      // this should find all duplicates
-      for (let matchIndex = userIndex + 1; matchIndex < userResponse.length; matchIndex++) {
-        const matchingUser = userResponse[matchIndex];
-        const isOfSameUser = matchingUser.staff_profile.id === memberProfile.id &&
-          !userServices.includes(matchingUser.ccd_service_name.toUpperCase());
-        if (isOfSameUser) {
-          // putting this here to avoid checking base location unless absolutely necessary
-          // will add a first combined base location of first two differing services (iff the user is the same)
-          if (baseLocationList.length === 0 && memberProfile.base_location?.length > 0) {
-            const firstBaseLocation = getFirstBaseLocation(memberProfile, thisUser);
-            if (firstBaseLocation) {
-              baseLocationList.push(firstBaseLocation);
-            }
+
+    // Skip if we've already processed this user
+    if (userIdList.has(memberProfile.id)) {
+      continue;
+    }
+
+    // Find and merge duplicate user entries with different services
+    for (let matchIndex = userIndex + 1; matchIndex < userResponse.length; matchIndex++) {
+      const matchingUser = userResponse[matchIndex];
+      const isOfSameUser = matchingUser.staff_profile.id === memberProfile.id &&
+        !userServices.includes(matchingUser.ccd_service_name.toUpperCase());
+
+      if (isOfSameUser) {
+        // Add base location if this is the first match
+        if (baseLocationList.length === 0 && memberProfile.base_location?.length > 0) {
+          const firstBaseLocation = getFirstBaseLocation(memberProfile, thisUser);
+          if (firstBaseLocation) {
+            baseLocationList.push(firstBaseLocation);
           }
-          userServices.push(matchingUser.ccd_service_name);
-          // will add more combined base locations
-          if (matchingUser.staff_profile.base_location?.length > 0) {
-            const newBaseLocation = getNewBaseLocation(baseLocationList, matchingUser);
-            if (newBaseLocation) {
-              baseLocationList.push(newBaseLocation);
-            }
+        }
+
+        userServices.push(matchingUser.ccd_service_name);
+
+        // Add additional base locations
+        if (matchingUser.staff_profile.base_location?.length > 0) {
+          const newBaseLocation = getNewBaseLocation(baseLocationList, matchingUser);
+          if (newBaseLocation) {
+            baseLocationList.push(newBaseLocation);
           }
         }
       }
-      // user has all related services and combined locations
-      // note: non-combined locations have services undefined
-      thisUser.ccd_service_names = userServices;
-      memberProfile.base_location = baseLocationList?.length > 0 ? baseLocationList : memberProfile.base_location;
-      // ensure user is not reused
-      uniqueUsers.push(thisUser);
-      userIdList.add(thisUser.staff_profile.id);
     }
+
+    // Update the user with combined data
+    thisUser.ccd_service_names = userServices;
+    memberProfile.base_location = baseLocationList?.length > 0 ? baseLocationList : memberProfile.base_location;
+
+    // Save the unique user
+    uniqueUsers.push(thisUser);
+    userIdList.add(thisUser.staff_profile.id);
   }
+
   return uniqueUsers;
 }
 
 export function getFirstBaseLocation(memberProfile: StaffProfile, matchingUser: StaffUserDetails): LocationApi {
   for (const location of memberProfile.base_location) {
     if (location.is_primary) {
-      const firstBaseLocation = {
+      return {
         location_id: location.location_id,
         location: location.location,
         is_primary: true,
         services: [matchingUser.ccd_service_name]
       };
-      return firstBaseLocation;
     }
   }
   return null;
 }
 
-export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser: StaffUserDetails) {
-  let newBaseLocation;
-  // first loop finds primary location for new service
+export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser: StaffUserDetails): LocationApi {
+  // Find primary location for new service
+  let newBaseLocation: LocationApi = null;
   for (const location of matchingUser.staff_profile.base_location) {
     if (location.is_primary) {
       newBaseLocation = {
@@ -248,34 +341,37 @@ export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser
       break;
     }
   }
-  let matchFound = false;
-  // check if location exists with another service
-  if (baseLocationList.length > 0 && newBaseLocation) {
+
+  // No primary location found
+  if (!newBaseLocation) {
+    return null;
+  }
+
+  // Check if location already exists with another service
+  if (baseLocationList.length > 0) {
     for (let locationIndex = 0; locationIndex < baseLocationList.length; locationIndex++) {
       const currentBaseLocation = baseLocationList[locationIndex];
       if (currentBaseLocation.location_id === newBaseLocation.location_id) {
         currentBaseLocation.services.push(matchingUser.ccd_service_name);
         baseLocationList[locationIndex] = currentBaseLocation;
-        matchFound = true;
-        break;
+        return null; // We updated existing location, so don't return a new one
       }
     }
   }
-  // if location does not already exist in user locations, add it
-  if (!matchFound && newBaseLocation) {
-    return newBaseLocation;
-  }
+
+  // Return new location if not found in the list
+  return newBaseLocation;
 }
 
-export function getRequestHeaders(): any {
+export function getRequestHeaders(): Record<string, string> {
   return {
     'content-type': 'application/json',
-    'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-    'authorization': `Bearer ${initialAuthToken}`
+    'serviceAuthorization': `Bearer ${authTokens.serviceAuthToken}`,
+    'authorization': `Bearer ${authTokens.userAuthToken}`
   };
 }
 
-// get the request information from config - similarly in node-lib
+// Get the request information from config
 export const getRequestBody = (): string => {
   const userName = getConfigValue(SYSTEM_USER_NAME);
   const userPassword = encodeURIComponent(getConfigValue(SYSTEM_USER_PASSWORD));

@@ -24,7 +24,7 @@ export class RejectedRequestViewComponent implements OnInit {
   public reviewerName: string;
   public reviewerRole: string;
   public endDate: string;
-  public caseType: string
+  public caseType: string;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,

@@ -4,7 +4,7 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingDateEnum } from '../models/hearings.enum';
+import { HearingChannelEnum, HearingDateEnum } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
@@ -137,6 +137,15 @@ export class HearingsUtils {
     return false;
   }
 
+  public static hasPartyHearingChannelChanged(partyInHMC: PartyDetailsModel, partyInSHV: PartyDetailsModel): boolean {
+    if (partyInHMC.individualDetails && partyInSHV.individualDetails) {
+      if ((partyInHMC.individualDetails.preferredHearingChannel !== partyInSHV.individualDetails.preferredHearingChannel)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Returns a boolean value on the difference between
    * the unavailability dates of the parties
@@ -154,11 +163,11 @@ export class HearingsUtils {
     return !_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC);
   }
 
-  public static hasHearingDurationChanged(length: number, lengthToCompare: number): boolean {
+  public static hasHearingNumberChanged(length: number, lengthToCompare: number): boolean {
     return !_.isEqual(length, lengthToCompare);
   }
 
-  public static hasHearingPriorityChanged(priority: string, priorityToCompare: string): boolean {
+  public static hasHearingStringChanged(priority: string, priorityToCompare: string): boolean {
     return !_.isEqual(priority, priorityToCompare);
   }
 
@@ -282,5 +291,16 @@ export class HearingsUtils {
     );
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
+  }
+
+  static isPaperHearing(hearingChannel: string[], isPaperHearing = true): boolean {
+    return (hearingChannel?.includes(HearingChannelEnum.ONPPR)
+      || !!isPaperHearing);
+  }
+
+  static hasPaperHearingChanged(hearingChannels: string[], hearingChannelToCompare: string[]) {
+    const hearingChannelPaper = this.isPaperHearing(hearingChannels, null);
+    const hearingChannelToComparePaper = this.isPaperHearing(hearingChannelToCompare, null);
+    return hearingChannelPaper !== hearingChannelToComparePaper;
   }
 }

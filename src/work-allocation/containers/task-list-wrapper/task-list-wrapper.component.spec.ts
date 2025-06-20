@@ -154,7 +154,7 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.case_id}/tasks`]);
+      expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.jurisdiction}/${secondTaskAction.task.case_type_id}/${secondTaskAction.task.case_id}/tasks`]);
     });
 
     it('User should be Judicial', () => {

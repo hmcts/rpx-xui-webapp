@@ -25,6 +25,8 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public mode = Mode.VIEW;
   public isHearingAmendmentsEnabled$: Observable<boolean>;
   public isHearingManager$: Observable<boolean>;
+  private jurisdiction: string;
+  private caseType: string;
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
     private readonly router: Router,
@@ -44,6 +46,14 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
       map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager))
     );
 
+    this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
+      if (hearingValues) {
+        console.log('Hearing Values:', hearingValues);
+        this.jurisdiction = hearingValues.caseInfo.jurisdictionId;
+        this.caseType = hearingValues.caseInfo.caseType;
+      }
+    });
+
     combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$])
       .subscribe(([isHearingAmendmentsEnabled, isHearingManager]) => {
         this.template = isHearingAmendmentsEnabled && isHearingManager
@@ -59,7 +69,7 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public executeAction(action: ACTION): void {
     if (action === ACTION.BACK) {
       // Navigate to the hearings tab
-      this.router.navigate(['/', 'cases', 'case-details', this.hearingRequestMainModel.caseDetails.caseRef, 'hearings']);
+      this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.hearingRequestMainModel.caseDetails.caseRef, 'hearings']);
     }
   }
 }

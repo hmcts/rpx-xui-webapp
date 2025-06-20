@@ -65,6 +65,8 @@ describe('CancelHearingComponent', () => {
 
   const HEARING_ID = 'h00001';
   const CASE_REF = '1111222233334444';
+  const JURISDICTION = 'IA';
+  const CASETYPE = 'Asylum';
   let mockHearingService: any;
   let mockStore: any;
 
@@ -73,7 +75,7 @@ describe('CancelHearingComponent', () => {
       declarations: [CancelHearingComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
-        { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
+        { path: 'cases/case-details/IA/Asylum/1111222233334444/hearings', redirectTo: '' }
       ])],
       providers: [
         LoadingService,

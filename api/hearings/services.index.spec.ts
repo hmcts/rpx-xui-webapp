@@ -1,6 +1,29 @@
 import { expect } from 'chai';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
-import { mapDataByDefault } from './services.index';
+import {
+  mapDataByDefault,
+  retrieveForceNewDefaultScreenFlow,
+  replaceScreenFlow,
+  toBoolean,
+  forceDefaultScreenFlow
+} from './services.index';
+import {
+  DEFAULT_SCREEN_FLOW_NEW, HEARING_JUDGE, HEARING_PANEL, HEARING_PANEL_REQUIRED, HEARING_PANEL_SELECTOR,
+  HEARING_VENUE,
+  HEARING_WELSH,
+  replaceResultValue
+} from './data/defaultScreenFlow.data';
+import * as sinon from 'sinon';
+import * as configuration from '../configuration';
+import { ScreenNavigationModel } from './models/screenNavigation.model';
+
+const newScreenSequence: ScreenNavigationModel[] = [
+  replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required'),
+  replaceResultValue(HEARING_WELSH, 'hearing-judge', 'hearing-panel-required'),
+  HEARING_PANEL_REQUIRED,
+  replaceResultValue(HEARING_JUDGE, 'hearing-panel', 'next-screen'),
+  replaceResultValue(HEARING_PANEL_SELECTOR, 'hearing-timing', 'next-screen')
+];
 
 describe('hearings services', () => {
   describe('mapDataByDefault', () => {
@@ -60,6 +83,121 @@ describe('hearings services', () => {
       const result = mapDataByDefault(data);
       expect(result.caseFlags.flags[0].partyID).to.equal(undefined);
       expect(result.caseFlags.flags[1].partyID).to.equal(undefined);
+    });
+  });
+});
+
+describe('retrieveForceNewDefaultScreenFlow', () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('returns true when showFeature returns true', () => {
+    sinon.stub(configuration, 'showFeature').returns(true);
+    const result = retrieveForceNewDefaultScreenFlow();
+    expect(result).to.equal(true);
+  });
+
+  it('returns false when showFeature returns false', () => {
+    sinon.stub(configuration, 'showFeature').returns(false);
+    const result = retrieveForceNewDefaultScreenFlow();
+    expect(result).to.equal(false);
+  });
+
+  it('returns false when showFeature throws an error', () => {
+    sinon.stub(configuration, 'showFeature').throws(new Error('Error'));
+    const result = retrieveForceNewDefaultScreenFlow();
+    expect(result).to.equal(false);
+  });
+  describe('toBoolean', () => {
+    it('should return true for boolean true', () => {
+      const result = toBoolean(true);
+      expect(result).to.equal(true);
+    });
+
+    it('should return false for boolean false', () => {
+      const result = toBoolean(false);
+      expect(result).to.equal(false);
+    });
+
+    it('should return true for string "true" (case insensitive)', () => {
+      const result = toBoolean('true');
+      expect(result).to.equal(true);
+
+      const resultCaseInsensitive = toBoolean('TRUE');
+      expect(resultCaseInsensitive).to.equal(true);
+    });
+
+    it('should return false for string "false" (case insensitive)', () => {
+      const result = toBoolean('false');
+      expect(result).to.equal(false);
+
+      const resultCaseInsensitive = toBoolean('FALSE');
+      expect(resultCaseInsensitive).to.equal(false);
+    });
+
+    it('should return false for non-boolean, non-"true"/"false" strings', () => {
+      const result = toBoolean('randomString');
+      expect(result).to.equal(false);
+    });
+
+    it('should return false for non-boolean, non-string values', () => {
+      const result = toBoolean(123);
+      expect(result).to.equal(false);
+
+      const resultNull = toBoolean(null);
+      expect(resultNull).to.equal(false);
+
+      const resultUndefined = toBoolean(undefined);
+      expect(resultUndefined).to.equal(false);
+
+      const resultObject = toBoolean({});
+      expect(resultObject).to.equal(false);
+    });
+  });
+  describe('replaceScreenFlow', () => {
+    it('should maintain passed in screen flow as flow does not match sequence to replace.', () => {
+      const data: ScreenNavigationModel[] = [replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required')];
+      const result = replaceScreenFlow(data, 'next screen');
+      expect(JSON.stringify(result)).equal(JSON.stringify(data));
+    });
+
+    it('should replace screen flow with matching sequence with new default screen flow', () => {
+      const data: ScreenNavigationModel[] = [
+        HEARING_VENUE,
+        HEARING_WELSH,
+        HEARING_JUDGE,
+        HEARING_PANEL
+      ];
+
+      const result = replaceScreenFlow(data, 'next-screen');
+      expect(JSON.stringify(result)).equal(JSON.stringify(newScreenSequence));
+    });
+  });
+
+  describe('forceDefaultScreenFlow', () => {
+    describe('forceDefaultScreenFlow', () => {
+      it('should replace the screen flow with the default screen flow when no screenFlow exists', () => {
+        const data = {
+          screenFlow: null,
+          panelRequiredDefault: true
+        } as any; // Mocking ServiceHearingValuesModel
+
+        const result = forceDefaultScreenFlow(data);
+
+        expect(result.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
+      });
+
+      it('should maintiain the screen flow when entered screen flow does not match the pattern screenFlow exists', () => {
+        const data = {
+          screenFlow: [
+            HEARING_PANEL
+          ]
+        } as any; // Moc
+        const result = forceDefaultScreenFlow(data);
+        expect(result.screenFlow).to.be.an('array');
+        expect(result.screenFlow[0].screenName).to.equal('hearing-panel');
+      });
     });
   });
 });

@@ -9,45 +9,107 @@ const { constant } = require('lodash');
 class MyWorkPage extends TaskList {
   constructor() {
     super();
-    this.pageHeader = $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
-    this.showHideWorkFilterBtn = element(by.xpath('//button[contains(text(),\'work filter\')]'));
-    this.showHideFilterBadge = element(by.xpath('//button[contains(text(),\'work filter\')]/following-sibling::span[contains(text(),\'Filtered view\')]'));
-    this.showHideFilterHint = element(by.xpath('//button[contains(text(),\'work filter\')]/following-sibling::span[contains(text(),\'All of your work may not be visible.\')]'));
-
-    this.genericFilterContainer = $('xuilib-generic-filter');
-    // this.workFilterLocationContainers = $$('.xui-generic-filter #checkbox_locations .govuk-checkboxes__item');
-
-    //Services filters
-    this.workFilterServicesContainer = $('.xui-generic-filter#services');
-    this.workFilterServicesHeader = $('.xui-generic-filter#services h3');
-    this.workFilterServiceCheckboxeItems = $$('.xui-generic-filter#services .govuk-checkboxes__item');
-    this.workFilterServiceErrorMessage = $('.xui-generic-filter#services #services-error');
-    //Locations filters
-    this.workFiltersLocationsContainer = $('.xui-generic-filter#locations');
-    this.workFilterSearchLocationInput = $('.xui-generic-filter#locations exui-search-location input');
-    this.workFilterLocationSearchResults = $$('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
-    this.addLocationButton = $('.xui-generic-filter#locations xuilib-find-location .location-picker-custom a');
-
-    this.selectedLocations = $$('.xui-generic-filter#locations xuilib-find-location .location-picker-custom .location-selection a');
-    this.workFilterlocationErrorMessage = $('.xui-generic-filter#locations #locations-error');
-
-    //Work type filters
-    this.workFilterWorkTypesContainer = $('.xui-generic-filter#types-of-work');
-    this.workFilterTypesOfWork = $$('.xui-generic-filter #checkbox_types-of-work .govuk-checkboxes__item');
-
-    this.workFilterApplyBtn = $('xuilib-generic-filter #applyFilter');
-    this.workFilterRestBtn = $('xuilib-generic-filter #cancelFilter');
-    //end of work filter locators
-
-    this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
-
-    this.myTasksContaine = $('exui-my-tasks');
-    this.availableTasksContainer = $('exui-available-tasks');
-
-    this.bannerMessageContainer = $('exui-info-message ');
-    this.infoMessages = $$('exui-info-message .hmcts-banner__message');
-
     this.taskInfoMessageBanner = new TaskMessageBanner('exui-work-allocation-home exui-task-home');
+  }
+
+  get pageHeader() {
+    return $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
+  }
+
+  get showHideWorkFilterBtn() {
+    return elementByXpath("//button[contains(text(),'work filter')]");
+  }
+
+  get showHideFilterBadge() {
+    return elementByXpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'Filtered view')]");
+  }
+
+  get showHideFilterHint() {
+    return elementByXpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]");
+  }
+
+  get genericFilterContainer() {
+    return $('xuilib-generic-filter');
+  }
+
+  // Services filters
+  get workFilterServicesContainer() {
+    return $('.xui-generic-filter#services');
+  }
+
+  get workFilterServicesHeader() {
+    return $('.xui-generic-filter#services h3');
+  }
+
+  get workFilterServiceCheckboxeItems() {
+    return $$('.xui-generic-filter#services .govuk-checkboxes__item');
+  }
+
+  get workFilterServiceErrorMessage() {
+    return $('.xui-generic-filter#services #services-error');
+  }
+
+  // Locations filters
+  get workFiltersLocationsContainer() {
+    return $('.xui-generic-filter#locations');
+  }
+
+  get workFilterSearchLocationInput() {
+    return $('.xui-generic-filter#locations exui-search-location input');
+  }
+
+  get workFilterLocationSearchResults() {
+    return $$('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
+  }
+
+  get addLocationButton() {
+    return $('.xui-generic-filter#locations xuilib-find-location .location-picker-custom a');
+  }
+
+  get selectedLocations() {
+    return $$('.xui-generic-filter#locations xuilib-find-location .location-picker-custom .location-selection a');
+  }
+
+  get workFilterlocationErrorMessage() {
+    return $('.xui-generic-filter#locations #locations-error');
+  }
+
+  // Work type filters
+  get workFilterWorkTypesContainer() {
+    return $('.xui-generic-filter#types-of-work');
+  }
+
+  get workFilterTypesOfWork() {
+    return $$('.xui-generic-filter #checkbox_types-of-work .govuk-checkboxes__item');
+  }
+
+  get workFilterApplyBtn() {
+    return $('xuilib-generic-filter #applyFilter');
+  }
+
+  get workFilterRestBtn() {
+    return $('xuilib-generic-filter #cancelFilter');
+  }
+
+  // Sub navigation & main sections
+  get subNavListContainer() {
+    return $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
+  }
+
+  get myTasksContaine() {
+    return $('exui-my-tasks');
+  }
+
+  get availableTasksContainer() {
+    return $('exui-available-tasks');
+  }
+
+  get bannerMessageContainer() {
+    return $('exui-info-message');
+  }
+
+  get infoMessages() {
+    return $$('exui-info-message .hmcts-banner__message');
   }
 
   async waitForWorkFilterToDisplay(){
@@ -55,7 +117,7 @@ class MyWorkPage extends TaskList {
   }
 
   getSubNavigationTabElement(tabLabel){
-    return element(by.xpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`));
+    return elementByXpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`);
   }
 
   async isSubNavigationTabPresent(tabLabel){
@@ -96,7 +158,7 @@ class MyWorkPage extends TaskList {
   }
 
   async clickWorkFilterLoctionInputWithLabel(locationLabel){
-    await element(by.xpath(`//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`)).click();
+    await elementByXpath(`//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`).click();
   }
 
   async selectWorkFilterLocationAtPosition(locationAtPos){
@@ -268,7 +330,7 @@ class MyWorkPage extends TaskList {
   }
 
   async selectWorkFilterLocationSearchResult(location){
-    const locationResult = element(by.xpath(`//div[contains(@class,'cdk-overlay-container')]//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`));
+    const locationResult = elementByXpath(`//div[contains(@class,'cdk-overlay-container')]//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`);
     await locationResult.click();
   }
 

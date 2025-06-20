@@ -1,3 +1,5 @@
+const { Given, When, Then } = require('@cucumber/cucumber');
+
 const MockApp = require('../../../nodeMock/app');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');

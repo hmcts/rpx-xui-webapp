@@ -1,3 +1,4 @@
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
 
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
@@ -6,23 +7,42 @@ const addUserPage = require('./adduserPage');
 
 const MessageBanner = require('../messageBanner');
 class StaffSearchPage{
-  constructor(){
+  constructor() {
     this.messageBanner = new MessageBanner();
-
-    this.pageContainer = $('exui-staff-users');
-    this.addUserButton = element(by.xpath('//button[contains(text(),\'Add new user\')]'));
-
-    this.basicSearch = $('exui-staff-search');
-    this.advancedSearchContainer = $('exui-staff-adv-filter');
-    this.searchButton = $('exui-staff-users #applyFilter');
-
-    this.advancedSearchLink = element(by.xpath('//exui-staff-users//a[contains(text(),\'Advanced search\')]'));
-    this.hideAdvancedSearchLink = element(by.xpath('//exui-staff-users//a[contains(text(),\'Hide advanced search\')]'));
-
-    this.partialNameField = $('input#user-partial-name');
-
     this.advancedSearchFilter = new AdvancedSearch();
     this.staffUsersList = new StaffUsersList();
+  }
+
+  get pageContainer() {
+    return $('exui-staff-users');
+  }
+
+  get addUserButton() {
+    return elementByXpath("//button[contains(text(),'Add new user')]");
+  }
+
+  get basicSearch() {
+    return $('exui-staff-search');
+  }
+
+  get advancedSearchContainer() {
+    return $('exui-staff-adv-filter');
+  }
+
+  get searchButton() {
+    return $('exui-staff-users #applyFilter');
+  }
+
+  get advancedSearchLink() {
+    return elementByXpath("//exui-staff-users//a[contains(text(),'Advanced search')]");
+  }
+
+  get hideAdvancedSearchLink() {
+    return elementByXpath("//exui-staff-users//a[contains(text(),'Hide advanced search')]");
+  }
+
+  get partialNameField() {
+    return $('input#user-partial-name');
   }
 
   async validateSuccessMessageBanner(message){
@@ -128,28 +148,44 @@ class StaffSearchPage{
 }
 
 class AdvancedSearch{
-  constructor(){
-    this.locator = $('exui-staff-adv-filter');
+  constructor() {}
 
-    this.searchService = {
-      serviceInput: this.locator.$('exui-search-service input'),
-      addButton: this.locator.$('xuilib-find-service #add-service'),
-      selectedValues: this.locator.$('.selection-container a'),
+  get locator() {
+    return $('exui-staff-adv-filter');
+  }
+
+  get searchService() {
+    return {
+      serviceInput: this.locator.locator('exui-search-service input'),
+      addButton: this.locator.locator('xuilib-find-service #add-service'),
+      selectedValues: this.locator.locator('.selection-container a'),
       searchResults: $$('.mat-option-text')
     };
+  }
 
-    this.searchLocation = {
-      serchInput: this.locator.$('exui-search-location input'),
-      addButton: this.locator.$('.location-picker-custom a'),
+  get searchLocation() {
+    return {
+      serchInput: this.locator.locator('exui-search-location input'),
+      addButton: this.locator.locator('.location-picker-custom a'),
       searchResults: $$('.mat-option-text'),
-      selectedValues: this.locator.$('.selection-container a')
+      selectedValues: this.locator.locator('.selection-container a')
     };
+  }
 
-    this.userType = this.locator.$('select#select_user-type');
-    this.jobTitle = this.locator.$('select#select_user-job-title');
+  get userType() {
+    return this.locator.locator('select#select_user-type');
+  }
 
-    this.skills = this.locator.$('select#select_user-skills');
-    this.roles = this.locator.$$('#user-role #checkbox_user-role .govuk-checkboxes__item');
+  get jobTitle() {
+    return this.locator.locator('select#select_user-job-title');
+  }
+
+  get skills() {
+    return this.locator.locator('select#select_user-skills');
+  }
+
+  get roles() {
+    return this.locator.locator('#user-role #checkbox_user-role .govuk-checkboxes__item');
   }
 
   async selectService(servicename){
@@ -199,14 +235,30 @@ class AdvancedSearch{
 }
 
 class StaffUsersList {
-  constructor(){
-    this.staffUsersList = $('exui-staff-user-list');
+  constructor() {}
 
-    this.nameColumn = this.staffUsersList.$$('td.cdk-column-name');
-    this.servicesColumn = this.staffUsersList.$$('td.cdk-column-services');
-    this.locationsColumn = this.staffUsersList.$$('td.cdk-column-locations');
-    this.jobTitleColumn = this.staffUsersList.$$('td.cdk-column-jobTitle');
-    this.statusColumn = this.staffUsersList.$$('td.cdk-column-status');
+  get staffUsersList() {
+    return $('exui-staff-user-list');
+  }
+
+  get nameColumn() {
+    return this.staffUsersList.locator('td.cdk-column-name');
+  }
+
+  get servicesColumn() {
+    return this.staffUsersList.locator('td.cdk-column-services');
+  }
+
+  get locationsColumn() {
+    return this.staffUsersList.locator('td.cdk-column-locations');
+  }
+
+  get jobTitleColumn() {
+    return this.staffUsersList.locator('td.cdk-column-jobTitle');
+  }
+
+  get statusColumn() {
+    return this.staffUsersList.locator('td.cdk-column-status');
   }
 
   async isDisplayed(){

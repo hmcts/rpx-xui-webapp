@@ -1,3 +1,5 @@
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
+
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
@@ -8,20 +10,43 @@ const { LOG_LEVELS } = require('../../../support/constants');
 class TaskListPage extends TaskList {
   constructor() {
     super();
-    this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
-    this.myTasksTab = element(by.xpath('//exui-task-home//a[contains(text(),\'My tasks\')]'));
-    this.availableTasksTab = element(by.xpath('//exui-task-home//a[contains(text(),\'Available tasks\')]'));
-
-    this.myTasksContaine = $('exui-my-tasks');
-    this.availableTasksContainer = $('exui-available-tasks');
-
-    this.bannerMessageContainer = $('exui-info-message ');
-    this.infoMessages = $$('exui-info-message .hmcts-banner__message');
-
     this.taskInfoMessageBanner = new TaskMessageBanner();
+  }
 
-    this.pagePreviousLink = $('exui-task-list pagination-template .pagination-previous a');
-    this.pageNextLink = $('exui-task-list pagination-template .pagination-next a');
+  get subNavListContainer() {
+    return $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
+  }
+
+  get myTasksTab() {
+    return elementByXpath('//exui-task-home//a[contains(text(),"My tasks")]');
+  }
+
+  get availableTasksTab() {
+    return elementByXpath('//exui-task-home//a[contains(text(),"Available tasks")]');
+  }
+
+  get myTasksContainer() {
+    return $('exui-my-tasks');
+  }
+
+  get availableTasksContainer() {
+    return $('exui-available-tasks');
+  }
+
+  get bannerMessageContainer() {
+    return $('exui-info-message');
+  }
+
+  get infoMessages() {
+    return $$('exui-info-message .hmcts-banner__message');
+  }
+
+  get pagePreviousLink() {
+    return $('exui-task-list pagination-template .pagination-previous a');
+  }
+
+  get pageNextLink() {
+    return $('exui-task-list pagination-template .pagination-next a');
   }
 
   async amOnPage() {

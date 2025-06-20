@@ -1,3 +1,5 @@
+const { When, Then } = require('@cucumber/cucumber');
+
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 

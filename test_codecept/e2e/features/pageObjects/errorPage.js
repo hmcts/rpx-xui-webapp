@@ -1,40 +1,42 @@
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
-
+const { elementByXpath } = require('../../../helpers/globals');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
 
-class ErrorPage{
-  constructor(){
-    this.title = element(by.xpath('//main[@id=\'content\']//h1[contains(text(),\'Sorry\')]'));
-    this.tryAgainMessage = element(by.xpath('//p[contains(text(),\'Try again later\')]'));
+class ErrorPage {
+  get title() {
+    return elementByXpath("//main[@id='content']//h1[contains(text(),'Sorry')]");
   }
 
-  async isErrorPageDisplayed(){
+  get tryAgainMessage() {
+    return elementByXpath("//p[contains(text(),'Try again later')]");
+  }
+
+  async isErrorPageDisplayed() {
     try {
       await BrowserWaits.waitForElement(this.title);
-      const headermessage = await this.title.getText();
-      console.log('Error messge displayed : ' + headermessage);
-      return headermessage.includes('Sorry');
-    } catch (err){
-      reportLogger.AddMessage('error page not displayed : '+err, LOG_LEVELS.Error);
+      const headerMessage = await this.title.textContent();
+      console.log('Error message displayed : ' + headerMessage);
+      return headerMessage.includes('Sorry');
+    } catch (err) {
+      reportLogger.AddMessage('Error page not displayed : ' + err, LOG_LEVELS.Error);
       return false;
     }
   }
 
-  async getErrorMessage(){
+  async getErrorMessage() {
     expect(await this.isErrorPageDisplayed(), 'Not on error page').to.be.true;
     await BrowserWaits.waitForElement(this.title);
-    return await this.title.getText();
+    return await this.title.textContent();
   }
 
-  async isTryAgainMsgDisplayed(){
+  async isTryAgainMsgDisplayed() {
     expect(await this.isErrorPageDisplayed(), 'Not on error page').to.be.true;
-
     await BrowserWaits.waitForElement(this.title);
     try {
       await BrowserWaits.waitForElement(this.tryAgainMessage);
       return true;
-    } catch (err){
+    } catch (err) {
       return false;
     }
   }

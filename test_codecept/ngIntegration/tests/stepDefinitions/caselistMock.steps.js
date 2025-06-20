@@ -1,3 +1,5 @@
+const { Given, Then } = require('@cucumber/cucumber');
+
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 // const MockApp = require('../../../nodeMock/app');

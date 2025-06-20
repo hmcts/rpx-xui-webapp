@@ -1,3 +1,5 @@
+const { $, $$, elementByXpath } = require('../../../helpers/globals');
+
 Dropdown = require('./webdriver-components/dropdown.js');
 Button = require('./webdriver-components/button.js');
 
@@ -6,44 +8,49 @@ const BrowserWaits = require('../../support/customWaits');
 const CucumberRepprter = require('../../../codeceptCommon/reportLogger');
 
 class CreateCaseStartPage {
-  constructor(){
-    this.caseCaseFilterContainer = $('exui-filter-case ccd-create-case-filters');
-    this.header = '#content h1';
+  constructor() {
     this._jurisdiction = new Dropdown('#cc-jurisdiction');
     this._caseType = new Dropdown('#cc-case-type');
     this._event = new Dropdown('#cc-event');
-    this._submitButton = $('#content button');
-    this._jurisdictionSelector = '#cc-jurisdiction';
-
-    this._startBtn = element(by.xpath('//button[text() = \'Start\']'));
-
-    this.jurisdictionOptions = $$('#cc-jurisdiction option');
   }
 
-  async selectJurisdiction(jurisdiction){
-    const e = element(by.xpath('//*[@id = \'cc-jurisdiction\']'));
-    const options = await e.getSelectOptions();
-    const matchingOption = options.find((opt) => opt.includes(jurisdiction));
-    await e.select(matchingOption);
-    // await BrowserWaits.waitForElement(e);
-    // await e.click();
+  get caseCaseFilterContainer() {
+    return $('exui-filter-case ccd-create-case-filters');
   }
 
-  async selectCaseType(caseType){
-    const e = element(by.xpath('//*[@id = \'cc-case-type\']'));
-    const options = await e.getSelectOptions();
-    const matchingOption = options.find((opt) => opt.includes(caseType));
-    await e.select(matchingOption);
-
-    // await this._caseType.selectFromDropdownByText(option);
+  get header() {
+    return $('#content h1');
   }
 
-  async selectEvent(option){
-    const e = element(by.xpath('//*[@id = \'cc-event\']'));
-    const options = await e.getSelectOptions();
-    const matchingOption = options.find((opt) => opt.includes(option));
-    await e.select(matchingOption);
-    // await this._event.selectFromDropdownByText(option);
+  get submitButton() {
+    return $('#content button');
+  }
+
+  get jurisdictionSelector() {
+    return $('#cc-jurisdiction');
+  }
+
+  get startBtn() {
+    return elementByXpath("//button[text() = 'Start']");
+  }
+
+  get jurisdictionOptions() {
+    return $$('#cc-jurisdiction option');
+  }
+
+  async selectJurisdiction(jurisdictionText) {
+    const dropdown = $('#cc-jurisdiction');
+    await dropdown.selectOption({ label: jurisdictionText });
+  }
+
+  async selectCaseType(caseTypeText) {
+    const dropdown = $('#cc-case-type');
+    await dropdown.selectOption({ label: caseTypeText });
+  }
+
+  async selectEvent(eventText) {
+    const dropdown = $('#cc-event');
+    await dropdown.selectOption({ label: eventText });
   }
 
   async startCaseCreation(jurisdiction, caseType, event){

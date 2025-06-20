@@ -1,7 +1,10 @@
+const { $ } = require('../../../../helpers/globals');
+
 const BrowserWaits = require('../../../support/customWaits');
 class Spinner {
-  constructor() {
-    this.loadingSpinner = $('.loading-spinner-in-action');
+
+  get loadingSpinner() {
+    return $('.loading-spinner-in-action');
   }
 
   async isSpinnerDisplayed() {

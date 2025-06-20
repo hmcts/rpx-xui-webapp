@@ -1,4 +1,4 @@
-// const MockApp = require('../../../../nodeMock/app');
+const { Then } = require('@cucumber/cucumber');
 // const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');

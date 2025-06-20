@@ -1,4 +1,6 @@
 
+const { setPage } = require('../../helpers/globals');
+
 const MockApp = require('../../nodeMock/app');
 
 const BrowserUtil = require('../util/browserUtil');
@@ -11,6 +13,9 @@ const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfig
 
 describe('CCD casefields, retain_hidden_field setting', function () {
   before(async function(){
+    const helper = codeceptjs.container.helpers('Playwright');
+    const page = await helper.page;
+    setPage(page);
     await BrowserUtil.browserInitWithAuth(roles);
     await headerPage.isTabPresent('Case list');
   });

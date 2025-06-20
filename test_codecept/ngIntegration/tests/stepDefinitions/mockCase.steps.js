@@ -1,4 +1,4 @@
-// const MockApp = require('../../../nodeMock/app');
+const { Given } = require('@cucumber/cucumber');
 
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
@@ -20,7 +20,6 @@ const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 const idamLogin = require('../../util/idamLogin');
 
 const { DataTableArgument } = require('codeceptjs');
-const { postTaskAction, getTask } = require('../../../../api/workAllocation');
 
 Given('I set mock case create config {string}', async function (configReference) {
   // const caseConfig = getTestJurisdiction();

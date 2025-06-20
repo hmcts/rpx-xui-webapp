@@ -1,6 +1,8 @@
 const c = require('config');
 const { constants } = require('karma');
 
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
+
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../../support/customWaits');
 const ArrayUtil = require('../../../utils/ArrayUtil');
@@ -13,26 +15,59 @@ const { LOG_LEVELS } = require('../../../support/constants');
 class WAListTable {
   constructor(baseCssLocator) {
     this.baseCssLocator = baseCssLocator;
-
-    this.table = $(this.baseCssLocator);
-    this.tableRows = $$(`${this.baseCssLocator} table tbody>tr:not(.actions-row)`);
-    this.tableHeaderColumns = $$(`${this.baseCssLocator} table thead th`);
-    this.tableFooter = $(`${this.baseCssLocator} table tfoot td`);
-    this.actionsRows = $$(`${this.baseCssLocator} table tbody>tr.actions-row`);
-    this.selectedActioRow = $(`${this.baseCssLocator} table tbody>tr.actions-row.selected`);
-
-    this.selectedActions = $$(`${this.baseCssLocator} table tbody>tr.actions-row.selected .task-action a`);
-
-    this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
-
-    this.paginationContainer = $('ccd-pagination .ngx-pagination');
-    this.paginationResultText = $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`);
-    this.pagePreviousLink = $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
-    this.pageNextLink = $(`${this.baseCssLocator} pagination-template .pagination-next a`);
-
-    this.resetSortButton = $(`${this.baseCssLocator} .reset-sort-button button`);
-
     this.spinner = new Spinner();
+  }
+
+  get table() {
+    return $(this.baseCssLocator);
+  }
+
+  get tableRows() {
+    return $$(`${this.baseCssLocator} table tbody > tr:not(.actions-row)`);
+  }
+
+  get tableHeaderColumns() {
+    return $$(`${this.baseCssLocator} table thead th`);
+  }
+
+  get tableFooter() {
+    return $(`${this.baseCssLocator} table tfoot td`);
+  }
+
+  get actionsRows() {
+    return $$(`${this.baseCssLocator} table tbody > tr.actions-row`);
+  }
+
+  get selectedActionRow() {
+    return $(`${this.baseCssLocator} table tbody > tr.actions-row.selected`);
+  }
+
+  get selectedActions() {
+    return $$(`${this.baseCssLocator} table tbody > tr.actions-row.selected .task-action a`);
+  }
+
+  get displayedActionRow() {
+    return $(`tr.actions-row[aria-hidden=false]`);
+  }
+
+  get paginationContainer() {
+    return $(`ccd-pagination .ngx-pagination`);
+  }
+
+  get paginationResultText() {
+    return $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`);
+  }
+
+  get pagePreviousLink() {
+    return $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
+  }
+
+  get pageNextLink() {
+    return $(`${this.baseCssLocator} pagination-template .pagination-next a`);
+  }
+
+  get resetSortButton() {
+    return $(`${this.baseCssLocator} .reset-sort-button button`);
   }
 
   async isSpinnerDisplayed() {
@@ -69,32 +104,32 @@ class WAListTable {
   async getHeaderColumnWidth(headerName){
     let headerElement = null;
     try {
-      headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]/..`));
+      headerElement = elementByXpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]/..`);
       const dim = await headerElement.getSize();
       return dim.width;
     } catch (err){
       console.log(err);
       console.log('retrying with header element as non-clickable element');
-      headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//h1[contains(text(),'${headerName}')]/..`));
+      headerElement = elementByXpath(`//${this.baseCssLocator}//table//thead//th//h1[contains(text(),'${headerName}')]/..`);
       const dim = await headerElement.getSize();
       return dim.width;
     }
   }
 
   getHeaderElementWithName(headerName) {
-    return element(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`));
+    return elementByXpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`);
   }
 
   getHeaderSortElementWithName(headerName) {
-    return element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).withChild(by.xpath(`//button[contains(text(),'${headerName}')]`));
+    return elementByXpath(`//${this.baseCssLocator}//table//thead//th`).withChild(by.xpath(`//button[contains(text(),'${headerName}')]`));
   }
 
   getNonClickableHeaderElementWithName(headerName) {
-    return element(by.xpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`));
+    return elementByXpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`);
   }
 
   async getHeaderPositionWithName(headerName) {
-    const headerNames = await element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).getTextFromAll();
+    const headerNames = await elementByXpath(`//${this.baseCssLocator}//table//thead//th`).getTextFromAll();
     for (let i = 0; i < headerNames.length; i++) {
       if (headerNames[i].includes(headerName)) {
         return i + 1;
@@ -105,7 +140,7 @@ class WAListTable {
 
   async getColumnHeaderNames() {
     await this.waitForTable();
-    const headers = await element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).getTextFromAll();
+    const headers = await elementByXpath(`//${this.baseCssLocator}//table//thead//th`).getTextFromAll();
 
     return headers;
   }
@@ -213,14 +248,14 @@ class WAListTable {
 
   async isRowActionPresent(rowAction) {
     await BrowserWaits.waitForElement(this.displayedActionRow);
-    const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`));
+    const actionLink = this.displayedActionRow.elementByXpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`);
     return await actionLink.isPresent();
   }
 
   async clickRowAction(action) {
     expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
     await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug);
-    const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`));
+    const actionLink = this.displayedActionRow.elementByXpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`);
     await browser.scrollToElement(actionLink);
     await actionLink.click();
   }
@@ -266,8 +301,8 @@ class WAListTable {
   }
 
   async isPaginationPageNumEnabled(pageNum) {
-    const pageNumWithoutLink = element(by.xpath(`//${ this.baseCssLocator }//pagination-template//li//span[contains(text(),'${pageNum}')]`));
-    const pageNumWithLink = element(by.xpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+    const pageNumWithoutLink = elementByXpath(`//${ this.baseCssLocator }//pagination-template//li//span[contains(text(),'${pageNum}')]`);
+    const pageNumWithLink = elementByXpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
 
     return (await pageNumWithLink.isPresent()) && (await pageNumWithoutLink.isPresent());
   }
@@ -276,7 +311,7 @@ class WAListTable {
     if (!(await this.isPaginationPageNumEnabled(pageNum))) {
       throw new Error('Page num is not present or not enabled: ' + pageNum);
     }
-    const pageNumWithLink = element(by.xpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+    const pageNumWithLink = elementByXpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
     await pageNumWithLink.click();
   }
 
@@ -291,7 +326,7 @@ class WAListTable {
     } else if (linkText.toLowerCase() === 'previous') {
       linkElement = this.pagePreviousLink;
     } else {
-      linkElement = element(by.xpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${linkText}')]`));
+      linkElement = elementByXpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${linkText}')]`);
     }
 
     await BrowserWaits.waitForElement(linkElement);

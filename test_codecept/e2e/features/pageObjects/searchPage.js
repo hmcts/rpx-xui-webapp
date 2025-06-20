@@ -1,3 +1,5 @@
+const { $ } = require('../../../helpers/globals');
+
 Dropdown = require('./webdriver-components/dropdown.js');
 Button = require('./webdriver-components/button.js');
 const BrowserWaits = require('../../support/customWaits');
@@ -5,36 +7,114 @@ const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const headerPage = require('./headerPage');
 class SearchPage {
-  constructor(){
-    this.header = '#content h1';
-    this.jurisdiction = $('#s-jurisdiction');
-    this.searchFilterContainer = $('ccd-search-filters form,ccd-workbasket-filters form');
-    this.caseType = $('#s-case-type');
-    this.applyButton = $('ccd-search-filters button:not(.button-secondary),ccd-workbasket-filters button:not(.button-secondary)');
-    this.resetButton = $('#reset');
-    this.caseReference='#\\[CASE_REFERENCE\\]';
-    this.sccaseNumber='#caseReference';
-    this.appellantNINO='#generatedNino';
-    this.appellantSurname='#generatedSurname';
-    this.appellantEmailAddress='#generatedEmail';
-    this.appellantMobileNumber='#generatedMobile';
-    this.appellantDOBDay='#generatedDOB-day';
-    this.appellantDOBMonth='#generatedDOB-month';
-    this.appellantDOBYear='#generatedDOB-year';
-    this.regionCenter='#region';
-    this.evidencePresentYes='#evidencePresent-Yes';
-    this.evidencePresentNo='#evidencePresent-No';
-    this.isCORDecisionYes='#isCorDecision-Yes';
-    this.isCORDecisionNo='#isCorDecision-No';
-    this.documentsSentToDWPYes='#documentSentToDwp-Yes';
-    this.documentsSentToDWPNo='#documentSentToDwp-No';
+  constructor() {}
 
-    this.searchResultsTopPagination = $('ccd-search-result .pagination-top');
-    this.noResultsNotification = $('ccd-search-result .notification');
-    this.searchResultComponent = $('.search-block');
+  get header() {
+    return $('#content h1');
+  }
 
-    this.firstResultCaseLink = $('ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a');
-    this.secondResultCaseLink = $('ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a');
+  get jurisdiction() {
+    return $('#s-jurisdiction');
+  }
+
+  get searchFilterContainer() {
+    return $('ccd-search-filters form, ccd-workbasket-filters form');
+  }
+
+  get caseType() {
+    return $('#s-case-type');
+  }
+
+  get applyButton() {
+    return $('ccd-search-filters button:not(.button-secondary), ccd-workbasket-filters button:not(.button-secondary)');
+  }
+
+  get resetButton() {
+    return $('#reset');
+  }
+
+  get caseReference() {
+    return $('#\\[CASE_REFERENCE\\]');
+  }
+
+  get sccaseNumber() {
+    return $('#caseReference');
+  }
+
+  get appellantNINO() {
+    return $('#generatedNino');
+  }
+
+  get appellantSurname() {
+    return $('#generatedSurname');
+  }
+
+  get appellantEmailAddress() {
+    return $('#generatedEmail');
+  }
+
+  get appellantMobileNumber() {
+    return $('#generatedMobile');
+  }
+
+  get appellantDOBDay() {
+    return $('#generatedDOB-day');
+  }
+
+  get appellantDOBMonth() {
+    return $('#generatedDOB-month');
+  }
+
+  get appellantDOBYear() {
+    return $('#generatedDOB-year');
+  }
+
+  get regionCenter() {
+    return $('#region');
+  }
+
+  get evidencePresentYes() {
+    return $('#evidencePresent-Yes');
+  }
+
+  get evidencePresentNo() {
+    return $('#evidencePresent-No');
+  }
+
+  get isCORDecisionYes() {
+    return $('#isCorDecision-Yes');
+  }
+
+  get isCORDecisionNo() {
+    return $('#isCorDecision-No');
+  }
+
+  get documentsSentToDWPYes() {
+    return $('#documentSentToDwp-Yes');
+  }
+
+  get documentsSentToDWPNo() {
+    return $('#documentSentToDwp-No');
+  }
+
+  get searchResultsTopPagination() {
+    return $('ccd-search-result .pagination-top');
+  }
+
+  get noResultsNotification() {
+    return $('ccd-search-result .notification');
+  }
+
+  get searchResultComponent() {
+    return $('.search-block');
+  }
+
+  get firstResultCaseLink() {
+    return $('ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a');
+  }
+
+  get secondResultCaseLink() {
+    return $('ccd-search-result>table>tbody>tr:nth-of-type(2)>td:nth-of-type(1)>a');
   }
 
   async _waitForSearchComponent() {

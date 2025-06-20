@@ -1,3 +1,5 @@
+const { $, $$ } = require('../../../../helpers/globals');
+
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 const TaskMessageBanner = require('../messageBanner');
@@ -5,12 +7,23 @@ const TaskMessageBanner = require('../messageBanner');
 class TaskManagerPage extends TaskList{
   constructor(){
     super();
-    this.taskManagerlist = $('exui-task-manager-list');
-    this.taskManagerFilter = $('.exui-task-manager-filter');
-    this.caseWorkerFilter = $('exui-task-manager-filter select#task_assignment_caseworker');
-    this.locationFilter = $('exui-task-manager-filter select#task_assignment_location');
-
     this.taskInfoMessageBanner = new TaskMessageBanner();
+  }
+
+  get taskManagerList() {
+    return $('exui-task-manager-list');
+  }
+
+  get taskManagerFilter() {
+    return $('.exui-task-manager-filter');
+  }
+
+  get caseWorkerFilter() {
+    return $('exui-task-manager-filter select#task_assignment_caseworker');
+  }
+
+  get locationFilter() {
+    return $('exui-task-manager-filter select#task_assignment_location');
   }
 
   async amOnPage(){
@@ -48,7 +61,7 @@ class TaskManagerPage extends TaskList{
     expect(await this.amOnPage(), 'Not on Task manager page ').to.be.true;
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();
-      await this.caseWorkerFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+      await this.caseWorkerFilter.locator(`//option[text() = '${optionDisplayText}']`).click();
     });
   }
 
@@ -57,7 +70,7 @@ class TaskManagerPage extends TaskList{
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();
 
-      await this.locationFilter.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+      await this.locationFilter.locator(`//option[text() = '${optionDisplayText}']`).click();
     });
   }
 

@@ -1,3 +1,4 @@
+const { $, $$ } = require('../../../helpers/globals');
 
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
@@ -5,14 +6,24 @@ const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 const ArrayUtil = require('../../utils/ArrayUtil');
 
 class MessageBanner{
-  constructor(parentCssLocator) {
-    this.parentCssLocator = null;
-    this.bannerMessageContainer = $('.hmcts-banner');
+  constructor(parentCssLocator = null) {
+    this.parentCssLocator = parentCssLocator;
+  }
 
-    this.sucessBanner = $('.hmcts-banner.hmcts-banner--success');
-    this.errorBanner = $('.hmcts-banner.hmcts-banner--success');
+  get bannerMessageContainer() {
+    return $('.hmcts-banner');
+  }
 
-    this.infoMessages = $$('.hmcts-banner__message');
+  get successBanner() {
+    return $('.hmcts-banner.hmcts-banner--success');
+  }
+
+  get errorBanner() {
+    return $('.hmcts-banner.hmcts-banner--error');
+  }
+
+  get infoMessages() {
+    return $$('.hmcts-banner__message');
   }
 
   async isBannerMessageDisplayed() {

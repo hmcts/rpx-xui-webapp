@@ -1,35 +1,77 @@
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
 
 const browser = require('../../../../codeceptCommon/browser');
 const BrowserWaits = require('../../../support/customWaits');
 
 class AddUserPage{
-  constructor(){
-    this.container = $('exui-staff-add-edit-user-form');
-    this.headerTitle = $('exui-staff-add-edit-user-form .govuk-heading-xl');
+  constructor() {}
 
-    this.firstName = $('input#first_name');
-    this.lastName = $('input#last_name');
-    this.email = $('input#email_id');
+  get container() {
+    return $('exui-staff-add-edit-user-form');
+  }
 
-    this.region = $('#region_id');
+  get headerTitle() {
+    return $('exui-staff-add-edit-user-form .govuk-heading-xl');
+  }
 
-    this.services = $('#services');
+  get firstName() {
+    return $('input#first_name');
+  }
 
-    this.primaryLocation = $('#base_locations_primary  exui-staff-select-location #location-primary');
-    this.primaryLocationAddBtn = $('#base_locations_primary  exui-staff-select-location a');
+  get lastName() {
+    return $('input#last_name');
+  }
 
-    this.additionalLocations = $('#base_locations_additional  exui-staff-select-location #location-primary');
-    this.additionalLocationAddBtn = $('#base_locations_additional  exui-staff-select-location a');
+  get email() {
+    return $('input#email_id');
+  }
 
-    this.userType = $('#user_type');
+  get region() {
+    return $('#region_id');
+  }
 
-    this.roles = $('#roles');
+  get services() {
+    return $('#services');
+  }
 
-    this.jobTitles = $('#checkbox_job_title');
+  get primaryLocation() {
+    return $('#base_locations_primary  exui-staff-select-location #location-primary');
+  }
 
-    this.continue = element(by.xpath('//button[contains(text(),"Continue")]'));
-    this.saveChanges = element(by.xpath('//button[contains(text(),"Save changes")]'));
-    this.cancel = element(by.xpath('//button[contains(text(),"Cancel")]'));
+  get primaryLocationAddBtn() {
+    return $('#base_locations_primary  exui-staff-select-location a');
+  }
+
+  get additionalLocations() {
+    return $('#base_locations_additional  exui-staff-select-location #location-primary');
+  }
+
+  get additionalLocationAddBtn() {
+    return $('#base_locations_additional  exui-staff-select-location a');
+  }
+
+  get userType() {
+    return $('#user_type');
+  }
+
+  get roles() {
+    return $('#roles');
+  }
+
+  get jobTitles() {
+    return $('#checkbox_job_title');
+  }
+
+  get continue() {
+    return elementByXpath('//button[contains(text(),"Continue")]');
+  }
+
+  get saveChanges() {
+    return elementByXpath('//button[contains(text(),"Save changes")]');
+  }
+
+  get cancel() {
+    return elementByXpath('//button[contains(text(),"Cancel")]');
   }
 
   async getPageTitle(){

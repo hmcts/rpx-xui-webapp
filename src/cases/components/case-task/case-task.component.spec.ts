@@ -1,5 +1,6 @@
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { RoleCategory } from '../../../role-access/models';
+
 import { PriorityLimits } from '../../../work-allocation/enums';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';

@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.13-rc2":
-  version: 7.2.13-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.13-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.13":
+  version: 7.2.13
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.13"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9a928a7523685775e05ef7c541b82290c6de5a9489859d20414a9912d80b25c11592866af241fb2e41b024a5cb47d298f23360f20e0c71a36f0e2e8e9ca772c9
+  checksum: 10/64496903ae14ce296ffbc9aa3c0a37c023ca453d321caccfda039387f6b3258c1c7c43b1a17716c4971d2c07055f367b94d1c9b52f62354d566de6896a917c4a
   languageName: node
   linkType: hard
 
@@ -3196,16 +3196,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.2-rc1":
-  version: 2.1.2-rc1
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.2-rc1"
+"@hmcts/rpx-xui-common-lib@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.2"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/fa40911306fcc75fd2bf7902485422bfa126eb0bf02f68364059f0556d9c62f63b0a3920cfca6d52551cfbe6f6c50f7b447016c259a01453575e48647d0a3d4a
+  checksum: 10/c27e9e6d5145147cdfcc8df831b00b85729c2f4e1123815c33885fd9e6ce2f7339b5ee8978e951a8e1ef61cfee99cee7fb1326448e38a7555ff8e122770b2ee3
   languageName: node
   linkType: hard
 
@@ -21885,13 +21885,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.13-rc2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.13"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.2-rc1"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.2"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

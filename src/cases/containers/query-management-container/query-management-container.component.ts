@@ -521,31 +521,37 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public logSelection(qualifyingQuestion: QualifyingQuestion) {
     if (this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name) {
       const eventParams = {
-        caseTypeId: this.caseId,
-        caseJurisdiction: this.jurisdictionId,
-        name: qualifyingQuestion.name,
-        url: qualifyingQuestion.url.replace('${[CASE_REFERENCE]}', this.caseId)
-      };
-      this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
-    } else {
       this.trackPageSelected(qualifyingQuestion.name);
     }
   }
+    this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name;
 
-  private trackPageSelected(qualifyingQuestionName: string): void {
-    this.googleTagManagerService.virtualPageView(
-      'QM_QualifyingQuestion_Selection',
-      `/query-management/query/${this.caseId}`,
-      `Qualifying Question: ${qualifyingQuestionName}`,
-      {
-        caseTypeId: this.caseId,
-        jurisdictionId: this.jurisdictionId
-      }
-    );
+    const url = isQualifyingQuestions
+      ? qualifyingQuestion.url.replace('${[CASE_REFERENCE]}', this.caseId)
+      : `/query-management/query/${this.caseId}`;
+
+    const eventParams = {
+      caseTypeId: this.caseId,
+      caseJurisdiction: this.jurisdictionId,
+      name: qualifyingQuestion.name,
+      url,
+      selectionType: this.getQuestionType(qualifyingQuestion.name)
+    };
+    this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
   }
 
   public onQuestionSelected(qualifyingQuestion: QualifyingQuestion): void {
     this.selectedQualifyingQuestion = qualifyingQuestion;
+  }
+
+  private getQuestionType(name: string): string {
+    if (name === this.RAISE_A_QUERY_NAME) {
+      return 'raiseNewQuery';
+    }
+    if (name === this.FOLLOW_UP_ON_EXISTING_QUERY) {
+      return 'followUpOnExistingQuery';
+    }
+    return 'qualifyingQuestion';
   }
 
   private getEventTrigger(): void {

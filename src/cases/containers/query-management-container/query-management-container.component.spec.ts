@@ -942,7 +942,8 @@ describe('QueryManagementContainerComponent', () => {
           caseTypeId: '123',
           caseJurisdiction: 'TEST',
           name: 'Raise a new query',
-          url: 'https://example.com/123/details'
+          url: 'https://example.com/123/details',
+          selectionType: 'raiseNewQuery'
         });
     });
 
@@ -955,12 +956,14 @@ describe('QueryManagementContainerComponent', () => {
 
       component.logSelection(qualifyingQuestion);
 
-      expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
-        'QM_QualifyingQuestion_Selection',
-        '/query-management/query/123',
-        'Qualifying Question: Test question',
-        { caseTypeId: '123', jurisdictionId: 'TEST' }
-      );
+      expect(googleTagManagerService.event).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection', {
+          caseTypeId: '123',
+          caseJurisdiction: 'TEST',
+          name: 'Test question',
+          url: '/query-management/query/123',
+          selectionType: 'qualifyingQuestion'
+        });
     });
 
     it('should call setQualifyingQuestionSelection and logSelection if markdown is present and selectedQualifyingQuestion is set', () => {

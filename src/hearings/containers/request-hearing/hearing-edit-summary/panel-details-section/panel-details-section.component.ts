@@ -100,6 +100,6 @@ export class PanelDetailsSectionComponent implements OnInit {
       });
       selectedSpecialisms.push(selectedSpecialism);
     });
-    return selectedSpecialisms.join(', ');
+    return selectedSpecialisms.join('<br>');
   }
 }

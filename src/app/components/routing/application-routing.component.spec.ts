@@ -1,7 +1,6 @@
 import { fakeAsync, TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { ApplicationRoutingComponent } from './application-routing.component';
 
 describe('ApplicationRoutingComponent', () => {
@@ -63,8 +62,8 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should navigateBasedOnUserRole caseworker-ia-iacjudge', fakeAsync(async () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: [AppTestConstants.IA_JUDGE_ROLE] }));
-    mockStore.pipe.and.returnValue(of({ userInfo: { roles: [AppTestConstants.IA_JUDGE_ROLE] } }));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia-iacjudge'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-ia-iacjudge'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
@@ -86,8 +85,8 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: [AppTestConstants.IA_LEGAL_OPS_ROLE] }));
-    mockStore.pipe.and.returnValue(of({ userInfo: { roles: [AppTestConstants.IA_LEGAL_OPS_ROLE] } }));
+    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia-caseofficer'] }));
+    mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-ia-caseofficer'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));

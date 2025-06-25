@@ -1,4 +1,4 @@
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
 import { Action } from '@ngrx/store';
 import { ExcludeOption, ExclusionState, ExclusionStateData, RoleAccessHttpError } from '../../models';
 

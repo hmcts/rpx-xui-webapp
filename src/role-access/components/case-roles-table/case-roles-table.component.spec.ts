@@ -3,10 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
-import { CaseRole } from '../../models';
+import { CaseRole, RoleCategory } from '../../models';
 import { CaseRolesTableComponent } from './case-roles-table.component';
 
 describe('CaseRolesTableComponent', () => {

@@ -1,13 +1,13 @@
 import { waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import {
   Actions, AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole
+  DurationOfRole,
+  RoleCategory
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';

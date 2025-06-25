@@ -1,4 +1,4 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '../../../role-access/models';
 
 export interface Assignee {
   userId: string;

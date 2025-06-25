@@ -1,6 +1,5 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { CaseRole, TypeOfRole } from '../../role-access/models';
+import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
 
 @Directive({
   selector: '[exuiShowAllocateLink]'

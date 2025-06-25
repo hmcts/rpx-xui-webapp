@@ -35,7 +35,6 @@ export interface UserDetails {
   roleAssignmentInfo?: RoleAssignmentInfo[];
 }
 
-// This enum is used to refer to roles specifically, not role categories
 export enum UserRole {
   Admin = 'admin',
   LegalOps = 'legalops',

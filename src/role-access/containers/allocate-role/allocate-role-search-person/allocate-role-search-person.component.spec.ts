@@ -1,6 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import {
   Actions,
@@ -8,10 +7,11 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole
+  DurationOfRole, RoleCategory
 } from '../../../models';
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('AllocateRolePersonComponent', () => {
   let component: AllocateRoleSearchPersonComponent;

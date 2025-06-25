@@ -1,4 +1,5 @@
-import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '../../role-access/models';
 import { LocationsByRegion } from '../models/dtos';
 import { TaskPermission } from '../models/tasks';
 import {
@@ -166,7 +167,7 @@ describe('WorkAllocationUtils', () => {
     expect(options[0].optionId).toEqual('ADMIN');
     expect(options[0].label).toEqual(PersonRole.ADMIN);
     expect(options[1].optionId).toEqual('LEGAL_OPERATIONS');
-    expect(options[1].label).toEqual(PersonRole.LEGAL_OPERATIONS);
+    expect(options[1].label).toEqual(PersonRole.CASEWORKER);
     expect(options[2].optionId).toEqual('JUDICIAL');
     expect(options[2].label).toEqual(PersonRole.JUDICIAL);
     expect(sessionStorageService.getItem).toHaveBeenCalled();
@@ -177,7 +178,7 @@ describe('WorkAllocationUtils', () => {
     const options = getOptions(taskRolesWithOneOwnPermission, sessionStorageService);
     expect(options.length).toEqual(2);
     expect(options[0].optionId).toEqual('LEGAL_OPERATIONS');
-    expect(options[0].label).toEqual(PersonRole.LEGAL_OPERATIONS);
+    expect(options[0].label).toEqual(PersonRole.CASEWORKER);
     expect(options[1].optionId).toEqual('JUDICIAL');
     expect(options[1].label).toEqual(PersonRole.JUDICIAL);
     expect(sessionStorageService.getItem).toHaveBeenCalledTimes(0);

@@ -1,4 +1,3 @@
-import { AppTestConstants } from '../../app/app.test-constants.spec';
 import { State } from '../../app/store';
 
 export const initialMockState: State = {
@@ -22,7 +21,7 @@ export const initialMockState: State = {
         active: true,
         email: 'juser4@mailinator.com',
         forename: 'XUI test',
-        roles: [AppTestConstants.IA_JUDGE_ROLE],
+        roles: ['caseworker-ia-iacjudge'],
         uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
         surname: 'judge'
       },

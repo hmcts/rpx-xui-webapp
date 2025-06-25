@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { AppUtils } from '../../../app/app-utils';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
-import { UserInfo } from '../../../app/models';
+import { UserInfo, UserRole } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { RoleCategory } from '../../../role-access/models';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { AssignHintText, TaskActionType } from '../../enums';
 import { Task } from '../../models/tasks';
@@ -58,8 +60,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       if (userInfo) {
-        // EXUI-2907 - Use roleCategory instead of roles
-        this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;
+        this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
       }
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;

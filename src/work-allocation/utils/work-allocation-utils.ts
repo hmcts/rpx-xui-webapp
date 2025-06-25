@@ -1,6 +1,7 @@
 import { NavigationExtras } from '@angular/router';
-import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { HMCTSServiceDetails, UserInfo } from '../../app/models';
+import { PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { HMCTSServiceDetails, UserInfo, UserRole } from '../../app/models';
+import { RoleCategory } from '../../role-access/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
@@ -191,7 +192,7 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
     case RoleCategory.JUDICIAL:
       return PersonRole.JUDICIAL;
     case RoleCategory.LEGAL_OPERATIONS:
-      return PersonRole.LEGAL_OPERATIONS;
+      return PersonRole.CASEWORKER;
     case RoleCategory.CTSC:
       return PersonRole.CTSC;
     default:
@@ -202,11 +203,24 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
 export function getRoleCategory(role: string): RoleCategory {
   if (role === PersonRole.JUDICIAL) {
     return RoleCategory.JUDICIAL;
-  } else if (role === PersonRole.LEGAL_OPERATIONS) {
+  } else if (role === PersonRole.CASEWORKER) {
     return RoleCategory.LEGAL_OPERATIONS;
   } else if (role === PersonRole.ADMIN) {
     return RoleCategory.ADMIN;
   } else if (role === PersonRole.CTSC) {
+    return RoleCategory.CTSC;
+  }
+  return null;
+}
+
+export function getRoleCategoryFromUserRole(role: string): RoleCategory {
+  if (role === UserRole.Judicial) {
+    return RoleCategory.JUDICIAL;
+  } else if (role === UserRole.LegalOps) {
+    return RoleCategory.LEGAL_OPERATIONS;
+  } else if (role === UserRole.Admin) {
+    return RoleCategory.ADMIN;
+  } else if (role === UserRole.Ctsc) {
     return RoleCategory.CTSC;
   }
   return null;

@@ -4,7 +4,6 @@ import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { AppConstants } from '../../app/app.constants';
 import { metaReducers } from '../../app/app.module';
 import { UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
@@ -37,7 +36,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -65,7 +64,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -94,7 +93,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -123,7 +122,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -153,7 +152,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -183,7 +182,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },

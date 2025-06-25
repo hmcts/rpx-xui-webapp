@@ -61,9 +61,9 @@ describe('AddExclusionSearchPersonComponent', () => {
 
   it('selectedPerson with domain', () => {
     component.personRole = PersonRole.JUDICIAL;
-    component.selectedPerson({ id: '1234', name: 'name', email: null, domain: PersonRole.LEGAL_OPERATIONS, knownAs: null });
+    component.selectedPerson({ id: '1234', name: 'name', email: null, domain: PersonRole.CASEWORKER, knownAs: null });
     expect(component.person.id).toEqual('1234');
     expect(component.person.name).toEqual('name');
-    expect(component.person.domain).toEqual(PersonRole.LEGAL_OPERATIONS);
+    expect(component.person.domain).toEqual(PersonRole.CASEWORKER);
   });
 });

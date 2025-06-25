@@ -1,4 +1,4 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit';
 import { AccessReason } from '../../../role-access/models/enums';
 import { SpecificAccessState, SpecificAccessStateData } from '../../models';
 import { SpecificAccessAction, SpecificAccessActionTypes } from '../actions';

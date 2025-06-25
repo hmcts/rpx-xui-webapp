@@ -1,8 +1,7 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 
 import { getMockTasks } from '../../work-allocation/tests/utils.spec';
-import { CaseRole } from '../models';
+import { CaseRole, RoleCategory } from '../models';
 import { TaskRoleAccessResolver } from './task-role-access-resolver';
 
 describe('Task Role Access Resolver', () => {

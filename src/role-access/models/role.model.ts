@@ -1,4 +1,4 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from './allocate-role.enum';
 
 export interface Role {
   roleId: string;

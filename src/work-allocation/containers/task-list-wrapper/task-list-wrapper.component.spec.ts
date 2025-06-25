@@ -9,7 +9,6 @@ import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TaskListComponent } from '..';
-import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
@@ -165,7 +164,7 @@ describe('TaskListWrapperComponent', () => {
     });
 
     it('User should not be Judicial', () => {
-      component.userRoleCategory = RoleCategory.LEGAL_OPERATIONS;
+      component.userRoleCategory = RoleCategory.CASEWORKER;
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeFalsy();
     });
@@ -176,7 +175,7 @@ describe('TaskListWrapperComponent', () => {
         forename: 'John',
         surname: 'Smith',
         email: 'john.smith@email.com',
-        roles: [AppTestConstants.IA_JUDGE_ROLE],
+        roles: ['caseworker-ia-iacjudge'],
         roleCategory: RoleCategory.JUDICIAL
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
@@ -190,8 +189,8 @@ describe('TaskListWrapperComponent', () => {
         forename: 'John',
         surname: 'Smith',
         email: 'john.smith@email.com',
-        roles: [AppTestConstants.IA_JUDGE_ROLE],
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
+        roles: ['caseworker-ia-iacjudge'],
+        roleCategory: RoleCategory.CASEWORKER
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
       const roleCategory = component.getCurrentUserRoleCategory();

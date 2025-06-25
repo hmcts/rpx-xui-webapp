@@ -1,5 +1,4 @@
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { CaseRole, CaseRoleDetails, RoleExclusion } from '../../role-access/models';
+import { CaseRole, CaseRoleDetails, RoleCategory, RoleExclusion } from '../../role-access/models';
 import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {

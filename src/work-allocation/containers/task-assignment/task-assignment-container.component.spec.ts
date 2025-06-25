@@ -10,12 +10,11 @@ import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-tool
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
-import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { TaskActionType } from '../../enums';
@@ -56,7 +55,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.LEGAL_OPERATIONS
+    domain: PersonRole.CASEWORKER
   };
   const locationStub: any = {
     back: jasmine.createSpy('back')
@@ -182,8 +181,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppTestConstants.IA_JUDGE_ROLE],
-      roleCategory: 'JUDICIAL'
+      roles: ['caseworker-ia-iacjudge']
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();

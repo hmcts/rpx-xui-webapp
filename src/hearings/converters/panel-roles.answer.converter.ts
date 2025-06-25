@@ -4,7 +4,6 @@ import { map } from 'rxjs/operators';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
-import { HearingsUtils } from '../utils/hearings.utils';
 
 export class PanelRolesAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -17,7 +16,7 @@ export class PanelRolesAnswerConverter implements AnswerConverter {
         const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-        const panelSpecialism: string[] = HearingsUtils.replaceRoleWithSpecialism(panelRequirements?.roleType, panelRequirements?.panelSpecialisms);
+        const panelSpecialism: string[] = panelRequirements && panelRequirements.panelSpecialisms;
         const selectedSpecialisms: string[] = [];
         panelSpecialism.forEach((specialismName) => {
           let selectedSpecialismName: string = '';

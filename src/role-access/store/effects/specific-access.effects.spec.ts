@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
@@ -49,7 +48,7 @@ describe('Specific Access Effects', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategory: 'LEGAL_OPERATIONS',
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
@@ -87,7 +86,7 @@ describe('Specific Access Effects', () => {
         requestId: 'eb7b412d-9e8e-4e1e-8e6f-ad540d455945',
         taskId: '9b440fc1-d9cb-11ec-a8f0-eef41c565753',
         jurisdiction: 'IA',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        roleCategory: 'LEGAL_OPERATIONS',
         requestedRole: 'specific-access-legal-operations',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null }
       };

@@ -8,3 +8,4 @@ export * from './booking-request.interface';
 export * from './booking-response-error.interface';
 export * from './booking-response-success.interface';
 export * from './booking-state.enum';
+export * from './role-category.enum';

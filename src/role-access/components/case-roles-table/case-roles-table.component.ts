@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { CaseRole } from '../../models';
+import { CaseRole, RoleCategory } from '../../models';
 
 interface Item extends CaseRole {
   open: boolean;

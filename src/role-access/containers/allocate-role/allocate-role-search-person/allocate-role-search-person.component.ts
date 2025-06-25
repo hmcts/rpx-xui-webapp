@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -14,10 +13,12 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
+  RoleCategory,
   SpecificRole
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'exui-allocate-role-search-person',
@@ -51,7 +52,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
-      this.domain = PersonRole.LEGAL_OPERATIONS;
+      this.domain = PersonRole.CASEWORKER;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
       this.domain = PersonRole.ADMIN;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {

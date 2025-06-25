@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { Params } from '@angular/router';
 import { CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { CaseRole } from '../../../role-access/models';
+import { CaseRole, RoleCategory } from '../../../role-access/models';
+import { Params } from '@angular/router';
 
 @Component({
   selector: 'exui-role-access-section',

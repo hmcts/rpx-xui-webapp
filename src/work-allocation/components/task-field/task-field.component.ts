@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { UserInfo } from '../../../app/models';
+import { AppUtils } from '../../../app/app-utils';
+import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { FieldType, PriorityLimits } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -51,8 +51,7 @@ export class TaskFieldComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      // EXUI-2907 - Use roleCategory instead of roles
-      this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;
+      this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
     }
     if (this.task && this.task.major_priority) {
       this.isTaskUrgent = this.task.major_priority <= PriorityLimits.Urgent ? true : false;

@@ -519,11 +519,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public logSelection(qualifyingQuestion: QualifyingQuestion) {
-    if (this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name) {
-      const eventParams = {
-      this.trackPageSelected(qualifyingQuestion.name);
-    }
-  }
+    const isQualifyingQuestions =
     this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name;
 
     const url = isQualifyingQuestions

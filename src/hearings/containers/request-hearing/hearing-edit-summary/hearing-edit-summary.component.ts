@@ -221,12 +221,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     if (!!this.hearingRequestMainModel?.partyDetails) {
       partyDetailsModels = [...this.hearingRequestMainModel.partyDetails];
-      partyDetailsModels.sort(this.compareParties);
+      partyDetailsModels.sort((a, b) => this.defaultStringSort(a.partyID, b.partyID));
     }
 
     if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
       partyDetailsCompareModels = [...this.hearingRequestToCompareMainModel.partyDetails];
-      partyDetailsCompareModels.sort(this.compareParties);
+      partyDetailsCompareModels.sort((a, b) => this.defaultStringSort(a.partyID, b.partyID));
     }
 
     const hearingRequestMainModel = {
@@ -276,10 +276,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       JSON.parse(JSON.stringify(CompareUnavailabilityDates, this.replacer)),
       JSON.parse(JSON.stringify(SHVUnavailabilityDates, this.replacer))
     );
-  }
-
-  private compareParties(firstParty: PartyDetailsModel, secondParty: PartyDetailsModel) {
-    return firstParty.partyID.localeCompare(secondParty.partyID);
   }
 
   private replacer (key: any, value: any) {
@@ -545,9 +541,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
     });
     individualParties.forEach(
-      (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
-        return a.localeCompare(b);
-      })
+      (party) => party.individualDetails?.reasonableAdjustments?.sort(this.defaultStringSort)
     );
     return individualParties;
   }
@@ -642,8 +636,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private methodsOfAttendanceChangeExists(): boolean {
-    const methodsOfAttendanceSHV = this.serviceHearingValuesModel.hearingChannels?.sort(this.defaultSort);
-    const methodsOfAttendanceHMC = this.hearingRequestMainModel.hearingDetails.hearingChannels?.sort(this.defaultSort);
+    const methodsOfAttendanceSHV = this.serviceHearingValuesModel.hearingChannels?.sort(this.defaultStringSort);
+    const methodsOfAttendanceHMC = this.hearingRequestMainModel.hearingDetails.hearingChannels?.sort(this.defaultStringSort);
 
     if (methodsOfAttendanceSHV.length !== methodsOfAttendanceHMC.length) {
       return true;
@@ -676,7 +670,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     return false;
   }
 
-  private defaultSort(a: any, b: any): number {
-    return a > b ? 1 : (a === b ? 0 : -1);
+  private defaultStringSort(a: string, b: string): number {
+    return a.localeCompare(b);
   }
 }

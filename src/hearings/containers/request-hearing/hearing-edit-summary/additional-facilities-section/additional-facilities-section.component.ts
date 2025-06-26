@@ -85,14 +85,14 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     this.facilitiesChanged = facilitiesChanged;
     const additionalFacilitiesChangesMade = caseAdditionalSecurityFlagChanged || facilitiesChanged;
 
-    const AmendedChanges = (additionalFacilitiesChangesMade || (this.hearingFacilitiesChangesRequired && this.hearingFacilitiesChangesConfirmed));
-
     if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
       (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)) {
       this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
-      if (AmendedChanges) {
+      if (additionalFacilitiesChangesMade) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
+      } else {
+        this.pageTitleDisplayLabel = AmendmentLabelStatus.EMPTY;
       }
     }
 

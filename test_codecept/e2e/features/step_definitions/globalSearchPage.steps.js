@@ -1,6 +1,5 @@
 'use strict';
 
-const { defineSupportCode } = require('cucumber');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const errorPage = require('../pageObjects/common/errorPage');

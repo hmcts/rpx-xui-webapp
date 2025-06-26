@@ -1,7 +1,6 @@
 
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
-const { defineSupportCode } = require('cucumber');
 const BrowserWaits = require('../../support/customWaits');
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 const mediaViewerPage = require('../pageObjects/mediaViewerPage');

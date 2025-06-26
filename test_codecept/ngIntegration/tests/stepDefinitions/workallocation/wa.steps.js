@@ -1,7 +1,5 @@
+const { Given, Then } = require('@cucumber/cucumber');
 
-const { defineSupportCode } = require('cucumber');
-
-// const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');

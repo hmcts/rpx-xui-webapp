@@ -1,3 +1,4 @@
+const { $, $$ } = require('../../../helpers/globals');
 
 const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require('./messageBanner');
@@ -5,45 +6,100 @@ const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
 class CaseListPage{
-  constructor(){
-    this.caselistComponent = $('.case-list-component');
-
-    this.jurisdictionSelectElement = $('#wb-jurisdiction');
-    this.caseTypeSelectElement = $('#wb-case-type');
-    this.stateSelectElement = $('#wb-case-state');
-
-    this.searchApplyBtn = $('ccd-workbasket-filters form button:not(.button-secondary)');
-    this.searchReset = $('ccd-workbasket-filters form button.button-secondary');
-
-    this.searchFilterContainer = $('ccd-workbasket-filters form');
-
-    this.searchResultsTopPagination = $('ccd-search-result .pagination-top');
-    this.noResultsNotification = $('ccd-search-result .notification');
-
-    this.ccdCaseSearchResult = $('ccd-search-result');
-    this.caseListRows = $$('ccd-search-result>table>tbody>tr');
-
-    //case list pagination navigation
-    this.paginationInfotext = $('.pagination-top span');
-
-    this.paginationControlsContainer = $('.ngx-pagination');
-    this.previousPageLink = $('.ngx-pagination .pagination-previous a');
-    this.nextPageLink = $('.ngx-pagination .pagination-next a');
-
-    this.sortColumnsIconLinks = $$('.search-result-column-sort a.sort-widget');
-
-    //Case list selection feature elements
-    this.tableHeaderSelectAllInput = $('ccd-search-result #select-all');
-    this.caseSelectionCheckboxes = $$('td .govuk-checkboxes__input');
-    this.shareCaseButton = $('#btn-share-button');
-    this.resetCaseSelectionLink = $('a.search-result-reset-link');
-
-    //ccd-case-viewer
-    this.ccdCaseViewer = $('ccd-case-viewer');
-
-    this.loadingSpinner = $('.loading-spinner-in-action');
-
+  constructor() {
     this.taskInfoMessageBanner = new TaskMessageBanner('.case-list-component');
+  }
+
+  get caselistComponent() {
+    return $('.case-list-component');
+  }
+
+  get jurisdictionSelectElement() {
+    return $('#wb-jurisdiction');
+  }
+
+  get caseTypeSelectElement() {
+    return $('#wb-case-type');
+  }
+
+  get stateSelectElement() {
+    return $('#wb-case-state');
+  }
+
+  get searchApplyBtn() {
+    return $('ccd-workbasket-filters form button:not(.button-secondary)');
+  }
+
+  get searchReset() {
+    return $('ccd-workbasket-filters form button.button-secondary');
+  }
+
+  get searchFilterContainer() {
+    return $('ccd-workbasket-filters form');
+  }
+
+  get searchResultsTopPagination() {
+    return $('ccd-search-result .pagination-top');
+  }
+
+  get noResultsNotification() {
+    return $('ccd-search-result .notification');
+  }
+
+  get ccdCaseSearchResult() {
+    return $('ccd-search-result');
+  }
+
+  get caseListRows() {
+    return $$('ccd-search-result>table>tbody>tr');
+  }
+
+  // Pagination
+  get paginationInfotext() {
+    return $('.pagination-top span');
+  }
+
+  get paginationControlsContainer() {
+    return $('.ngx-pagination');
+  }
+
+  get previousPageLink() {
+    return $('.ngx-pagination .pagination-previous a');
+  }
+
+  get nextPageLink() {
+    return $('.ngx-pagination .pagination-next a');
+  }
+
+  get sortColumnsIconLinks() {
+    return $$('.search-result-column-sort a.sort-widget');
+  }
+
+  // Case selection
+  get tableHeaderSelectAllInput() {
+    return $('ccd-search-result #select-all');
+  }
+
+  get caseSelectionCheckboxes() {
+    return $$('td .govuk-checkboxes__input');
+  }
+
+  get shareCaseButton() {
+    return $('#btn-share-button');
+  }
+
+  get resetCaseSelectionLink() {
+    return $('a.search-result-reset-link');
+  }
+
+  // Case viewer
+  get ccdCaseViewer() {
+    return $('ccd-case-viewer');
+  }
+
+  // Spinner
+  get loadingSpinner() {
+    return $('.loading-spinner-in-action');
   }
 
   async amOnPage(){

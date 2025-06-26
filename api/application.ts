@@ -1,6 +1,5 @@
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as csrf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
@@ -19,6 +18,7 @@ import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
 import * as tunnel from './lib/tunnel';
+import csrf from '@dr.pogodin/csurf';
 import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
@@ -87,7 +87,7 @@ export async function createApp() {
   app.use('/api', routes);
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 

@@ -37,7 +37,7 @@ export class HearingValuesEffects {
 
   public static handleError(error: HttpError, caseInfo: any): Observable<Action> {
     if (error && error.status) {
-      return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${caseInfo?.jurisdictionId}/${caseInfo?.caseType}/${caseInfo.caseId}/hearings`] }));
+      return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${caseInfo?.jurisdictionId}/${caseInfo?.caseType}/${caseInfo.caseReference}/hearings`] }));
     }
   }
 }

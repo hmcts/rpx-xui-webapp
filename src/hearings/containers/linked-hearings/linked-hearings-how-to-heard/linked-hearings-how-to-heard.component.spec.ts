@@ -217,7 +217,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   it('should navigate to hearings tab', () => {
     component.onCancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
   });
 
   afterEach(() => {

@@ -65,8 +65,6 @@ describe('CancelHearingComponent', () => {
 
   const HEARING_ID = 'h00001';
   const CASE_REF = '1111222233334444';
-  const JURISDICTION = 'IA';
-  const CASETYPE = 'Asylum';
   let mockHearingService: any;
   let mockStore: any;
 
@@ -233,5 +231,11 @@ describe('CancelHearingComponent', () => {
     fixture.detectChanges();
     const errorMessage = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessage).toBeFalsy();
+  });
+
+  it('should set jurisdiction and caseType from hearingValues', () => {
+    component.ngOnInit();
+    expect(component.jurisdiction).toEqual(initialState.hearings.hearingValues.caseInfo.jurisdictionId);
+    expect(component.caseType).toEqual(initialState.hearings.hearingValues.caseInfo.caseType);
   });
 });

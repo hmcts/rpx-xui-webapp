@@ -25,8 +25,8 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public mode = Mode.VIEW;
   public isHearingAmendmentsEnabled$: Observable<boolean>;
   public isHearingManager$: Observable<boolean>;
-  private jurisdiction: string;
-  private caseType: string;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(protected readonly appStore: Store<fromAppStore.State>,
     private readonly router: Router,
@@ -48,7 +48,6 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
 
     this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
       if (hearingValues) {
-        console.log('Hearing Values:', hearingValues);
         this.jurisdiction = hearingValues.caseInfo.jurisdictionId;
         this.caseType = hearingValues.caseInfo.caseType;
       }

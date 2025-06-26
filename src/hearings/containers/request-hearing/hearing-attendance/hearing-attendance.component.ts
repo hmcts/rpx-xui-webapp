@@ -288,7 +288,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     });
   }
 
-  private setAmendmentFlags() {
+  private setAmendmentFlags():void{
     this.methodOfAttendanceChanged = HearingsUtils.doArraysDiffer(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);
     this.noOfPhysicalAttendeesChanged = HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees, this.serviceHearingValuesModel.numberOfPhysicalAttendees);
     this.paperHearingChanged = HearingsUtils.hasPaperHearingChanged(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);

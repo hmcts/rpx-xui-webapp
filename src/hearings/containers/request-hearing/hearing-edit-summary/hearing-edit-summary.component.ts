@@ -642,12 +642,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private methodsOfAttendanceChangeExists(): boolean {
-    const methodsOfAttendanceSHV = this.serviceHearingValuesModel.hearingChannels?.sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    const methodsOfAttendanceHMC = this.hearingRequestMainModel.hearingDetails.hearingChannels?.sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
+    const methodsOfAttendanceSHV = this.serviceHearingValuesModel.hearingChannels?.sort(this.defaultSort);
+    const methodsOfAttendanceHMC = this.hearingRequestMainModel.hearingDetails.hearingChannels?.sort(this.defaultSort);
 
     if (methodsOfAttendanceSHV.length !== methodsOfAttendanceHMC.length) {
       return true;
@@ -678,5 +674,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       }
     }
     return false;
+  }
+
+  private defaultSort(a: any, b: any): number {
+    return a > b ? 1 : (a === b ? 0 : -1);
   }
 }

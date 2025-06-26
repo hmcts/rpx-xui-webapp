@@ -53,6 +53,10 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When I click continue in hearing workflow
+
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
@@ -69,6 +73,10 @@ Feature: Hearings : Summary page validations EUI-9097
         Then I validate view hearing page Edit hearing button displayed is "true"
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
+
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When I click continue in hearing workflow
 
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"

@@ -263,26 +263,26 @@ describe('HearingsUtils', () => {
     it('Prioritys entered are the same ', () => {
       const priority1 = 'Standard';
       const priority2 = 'Standard';
-      expect(HearingsUtils.hasHearingPriorityChanged(priority1, priority2)).toEqual(false);
+      expect(HearingsUtils.hasHearingStringChanged(priority1, priority2)).toEqual(false);
     });
 
     it('Prioritys entered differ', () => {
       const priority1 = 'Standard';
       const priority2 = 'standard';
-      expect(HearingsUtils.hasHearingPriorityChanged(priority1, priority2)).toEqual(true);
+      expect(HearingsUtils.hasHearingStringChanged(priority1, priority2)).toEqual(true);
     });
   });
   describe('Test of hasDurationChanged functionality', () => {
     it('Durations entered are the same ', () => {
       const duration1 = 120;
       const duration2 = 120;
-      expect(HearingsUtils.hasHearingDurationChanged(duration1, duration2)).toEqual(false);
+      expect(HearingsUtils.hasHearingNumberChanged(duration1, duration2)).toEqual(false);
     });
 
     it('Durations entered differ.', () => {
       const duration1 = 120;
       const duration2 = 121;
-      expect(HearingsUtils.hasHearingDurationChanged(duration1, duration2)).toEqual(true);
+      expect(HearingsUtils.hasHearingNumberChanged(duration1, duration2)).toEqual(true);
     });
   });
   describe('Test of change of unavailability dates', () => {
@@ -730,5 +730,255 @@ describe('HearingsUtils', () => {
     // eslint-disable-next-line dot-notation
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
+  });
+
+  describe('hasPartyHearingChannelChanged', () => {
+    it('should return true when preferred hearing channel differs', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'video'
+        }
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeTrue();
+    });
+
+    it('should return false when preferred hearing channel is the same', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeFalse();
+    });
+
+    it('should handle case when individualDetails is missing from one party', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: null
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeFalse();
+    });
+
+    it('should handle case when individualDetails is missing from both parties', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: null
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: null
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeFalse();
+    });
+
+    it('should handle case when preferred hearing channel is undefined in one party', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson'
+        }
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: undefined
+        }
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeTrue();
+    });
+  });
+
+  describe('isPaperHearing', () => {
+    it('should return true when hearingChannel includes ONPPR', () => {
+      const hearingChannel = ['INTER', 'ONPPRS', 'TEL'];
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+
+    it('should return false when hearingChannel does not include ONPPR and isPaperHearing is false', () => {
+      const hearingChannel = ['INTER', 'TEL', 'VID'];
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should return true when isPaperHearing flag is true regardless of hearingChannel', () => {
+      const hearingChannel = ['INTER', 'TEL', 'VID'];
+      const isPaperHearingFlag = true;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+
+    it('should return true by default when isPaperHearing is not provided', () => {
+      const hearingChannel = ['INTER', 'TEL', 'VID'];
+
+      // Default isPaperHearing value is true
+      expect(HearingsUtils.isPaperHearing(hearingChannel)).toBeTrue();
+    });
+
+    it('should handle null hearingChannel', () => {
+      const hearingChannel = null;
+      const isPaperHearingFlag = true;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+
+    it('should handle undefined hearingChannel', () => {
+      const hearingChannel = undefined;
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should handle empty hearingChannel array', () => {
+      const hearingChannel = [];
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should return false when isPaperHearing is null and no ONPPR in hearingChannel', () => {
+      const hearingChannel = ['INTER', 'TEL'];
+      const isPaperHearingFlag = null;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should return true when isPaperHearing is null but ONPPR is in hearingChannel', () => {
+      const hearingChannel = ['INTER', 'ONPPRS'];
+      const isPaperHearingFlag = null;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+  });
+
+  describe('hasPaperHearingChanged', () => {
+    it('should return true when one array includes ONPPR and the other does not', () => {
+      const hearingChannels = ['INTER', 'ONPPRS', 'TEL'];
+      const hearingChannelToCompare = ['INTER', 'TEL', 'VID'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeTrue();
+    });
+
+    it('should return false when both arrays include ONPPR', () => {
+      const hearingChannels = ['INTER', 'ONPPRS', 'TEL'];
+      const hearingChannelToCompare = ['VID', 'ONPPRS'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should return false when neither array includes ONPPR', () => {
+      const hearingChannels = ['INTER', 'TEL'];
+      const hearingChannelToCompare = ['VID', 'INTER'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should handle null arrays', () => {
+      const hearingChannels = null;
+      const hearingChannelToCompare = ['INTER', 'TEL', 'VID'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should handle both null arrays', () => {
+      const hearingChannels = null;
+      const hearingChannelToCompare = null;
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should handle empty arrays', () => {
+      const hearingChannels = [];
+      const hearingChannelToCompare = ['INTER', 'TEL', 'VID'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should return true when one array is null and the other has ONPPR', () => {
+      const hearingChannels = null;
+      const hearingChannelToCompare = ['INTER', 'ONPPRS'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeTrue();
+    });
+
+    it('should handle one array with ONPPR and one empty array', () => {
+      const hearingChannels = ['INTER', 'ONPPRS', 'TEL'];
+      const hearingChannelToCompare = [];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeTrue();
+    });
   });
 });

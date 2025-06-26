@@ -5,9 +5,9 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
-import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
 import { InformationMessage } from '../../../app/shared/models';
@@ -37,7 +37,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   };
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
@@ -273,7 +273,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 });
 
-['caseworker-ia-iacjudge', 'caseworker-ia-caseofficer'].forEach((role) => {
+[AppTestConstants.IA_JUDGE_ROLE, AppTestConstants.IA_LEGAL_OPS_ROLE].forEach((role) => {
   describe(`TaskAssignmentConfirmComponent by userType role ${role}`, () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
@@ -284,7 +284,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       id: 'id123',
       name: 'John Smith',
       email: 'john.smith@email.com',
-      domain: PersonRole.CASEWORKER
+      domain: PersonRole.LEGAL_OPERATIONS
     };
     const mockTasks = getMockTasks();
     // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
@@ -293,7 +293,8 @@ describe('TaskAssignmentConfirmComponent', () => {
 
     const mockSessionStorageService = {
       getItem: jasmine.createSpy('getItem').and.returnValue(JSON.stringify({
-        roles: [role]
+        roles: [role],
+        roleCategory: role === AppTestConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS
       }))
     };
 
@@ -357,7 +358,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       const headers = fixture.debugElement.queryAll(By.css('th'));
       fixture.detectChanges();
       const fieldLabels = headers.map((header) => header.nativeElement.textContent);
-      if (role === 'caseworker-ia-iacjudge') {
+      if (role === AppTestConstants.IA_JUDGE_ROLE) {
         expect(fieldLabels).toContain('Task created');
         expect(fieldLabels).not.toContain('Due date');
         expect(fieldLabels).not.toContain('Priority');

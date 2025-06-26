@@ -1,5 +1,4 @@
-import { RoleCategory } from '@hmcts/ccd-case-ui-toolkit';
-import { Person } from '@hmcts/rpx-xui-common-lib';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { SpecificRole } from '.';
 import { Period } from './allocate-role.enum';
 import { AccessReason } from './enums';

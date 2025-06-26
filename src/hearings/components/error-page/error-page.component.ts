@@ -20,7 +20,7 @@ export class ErrorPageComponent implements OnInit, OnDestroy {
     this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(
       (state) => {
         this.caseId = state.hearingList?.hearingListMainModel?.caseRef;
-        this.jurisdiction = state.hearingValues?.caseInfo?.jurisdiction;
+        this.jurisdiction = state.hearingValues?.caseInfo?.jurisdictionId;
         this.caseType = state.hearingValues?.caseInfo?.caseType;
       }
     );

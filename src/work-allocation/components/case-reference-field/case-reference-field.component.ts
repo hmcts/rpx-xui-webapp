@@ -21,10 +21,10 @@ export class CaseReferenceFieldComponent implements OnChanges {
     if (this.caseReference) {
       // Get rid of the spaces in the caseReference.
       const caseId = this.caseReference;
-      const jurisdiction = this.jurisdiction;
-      const caseType = this.caseType;
-      if (caseId && jurisdiction && caseType) {
-        href = `${AppConstants.CASE_DETAILS_URL}${jurisdiction}/${caseType}/${caseId}`;
+      const jurisdictionId = this.jurisdiction;
+      const caseTypeId = this.caseType;
+      if (caseId && jurisdictionId && caseTypeId) {
+        href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
       }
     }
     this.pHref = href;

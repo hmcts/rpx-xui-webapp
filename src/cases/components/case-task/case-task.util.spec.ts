@@ -8,12 +8,12 @@ const task: Task = {
   case_id: '1620409659381330',
   case_management_category: null,
   case_name: 'Alan Jonson',
-  case_type_id: null,
+  case_type_id: 'Asylum',
   created_date: '2021-04-19T14:00:00.000+0000',
   due_date: '2021-05-20T16:00:00.000+0000',
   execution_type: null,
   id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc6',
-  jurisdiction: 'Immigration and Asylum',
+  jurisdiction: 'IA',
   location: null,
   location_name: null,
   name: 'Task name',
@@ -30,7 +30,7 @@ const task: Task = {
   assigneeName: null,
   caseName: 'The case name',
   caseCategory: 'The case category',
-  description: 'Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit)',
+  description: 'Click link to proceed to next step [test link next step](/cases/case-details/IA/Asylum/1547652071308205/trigger/editAppealAfterSubmit)',
   taskName: 'The task name',
   dueDate: undefined,
   actions: []
@@ -39,7 +39,7 @@ const task: Task = {
 describe('CaseTaskUtil', () => {
   it('should return task id appended to url as querystring with no prior querystring exists in the url', () => {
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(task);
-    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/IA/Asylum/1547652071308205/trigger/editAppealAfterSubmit?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
   });
 
   it('should return task id appended to url as querystring for multiple urls', () => {
@@ -58,16 +58,16 @@ describe('CaseTaskUtil', () => {
 
   it('should return task id appended to url as querystring with already existing querystrings in the url', () => {
     const taskToCheck = task;
-    taskToCheck.description = 'Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';
+    taskToCheck.description = 'Click link to proceed to next step [test link next step](/cases/case-details/IA/Asylum/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
-    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/IA/Asylum/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
   });
 
   it('should return task id appended to only url as querystring not to text', () => {
     const taskToCheck = task;
-    taskToCheck.description = 'Click link to proceed to next step [test link next step (testing)](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';
+    taskToCheck.description = 'Click link to proceed to next step [test link next step (testing)](/cases/case-details/IA/Asylum/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
-    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step (testing)](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step (testing)](/cases/case-details/IA/Asylum/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
   });
 
   it('should return empty string if there is no task description', () => {
@@ -79,9 +79,9 @@ describe('CaseTaskUtil', () => {
 
   it('should return fragment appended to url after taskId', () => {
     const taskToCheck = task;
-    taskToCheck.description = '[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}#Referrals)';
+    taskToCheck.description = '[Review the Referral](/cases/case-details/IA/Asylum/${[CASE_REFERENCE]}#Referrals)';
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
-    expect(appendedTaskDescription).toEqual('[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6#Referrals)');
+    expect(appendedTaskDescription).toEqual('[Review the Referral](/cases/case-details/IA/Asylum/${[CASE_REFERENCE]}?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6#Referrals)');
   });
 
   it('should return fragment appended to url after taskId', () => {

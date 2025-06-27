@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { CaseRole, RoleCategory, RoleExclusion } from '../../../role-access/models';
+import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 
 @Component({
@@ -23,8 +24,6 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public namedCTSCRoles: CaseRole[];
   public judicialRoles: CaseRole[] = [];
   public namedExclusions: RoleExclusion[];
-  public legalOps = RoleCategory.LEGAL_OPERATIONS;
-  public judicial = RoleCategory.JUDICIAL;
   public caseId: string;
   public jurisdiction: string;
   public caseType: string;

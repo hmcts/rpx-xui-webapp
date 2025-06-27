@@ -116,8 +116,6 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
       roleType.push(item.key);
       if (item.child_nodes && item.child_nodes.length > 0) {
         panelSpecialisms.push(item.child_nodes[0].key);
-      } else {
-        panelSpecialisms.push(null);
       }
     });
     return { roleType, panelSpecialisms };

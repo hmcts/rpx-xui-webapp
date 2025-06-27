@@ -11,6 +11,7 @@ import * as roleAccess from '../roleAccess';
 import * as workAllocation from '../workAllocation';
 import * as locationService from '../workAllocation/locationService';
 import * as lau from '../services/lau';
+import { mockLocations } from '../locations/locationTestData.spec'
 import {
   getBookings,
   createBooking,
@@ -72,17 +73,12 @@ describe('Access Management', (): void => {
       status: 200,
       data: {
         bookings: [
-          { id: '1', locationId: 'loc1', name: 'Booking 1' },
-          { id: '2', locationId: 'loc2', name: 'Booking 2' },
-          { id: '3', locationId: 'loc3', name: 'Booking 3' }
+          { id: '1', locationId: '1234', name: 'Booking 1' },
+          { id: '2', locationId: '231596', name: 'Booking 2' },
+          { id: '3', locationId: '999999', name: 'Booking 3' }
         ]
       }
     };
-
-    const mockLocations = [
-      { epimms_id: 'loc1', site_name: 'Location One' },
-      { epimms_id: 'loc2', site_name: 'Location Two' }
-    ];
 
     httpPostStub.resolves(mockBookings);
     getFullLocationsStub.resolves(mockLocations);
@@ -97,9 +93,9 @@ describe('Access Management', (): void => {
     expect(getFullLocationsStub).to.have.been.calledWith(req);
     expect(res.status).to.have.been.calledWith(200);
     expect(res.send).to.have.been.calledWith([
-      { id: '1', locationId: 'loc1', name: 'Booking 1', locationName: 'Location One' },
-      { id: '2', locationId: 'loc2', name: 'Booking 2', locationName: 'Location Two' },
-      { id: '3', locationId: 'loc3', name: 'Booking 3', locationName: null }
+      { id: '1', locationId: '1234', name: 'Booking 1', locationName: 'Glasgow Tribunals Centre' },
+      { id: '2', locationId: '231596', name: 'Booking 2', locationName: 'Glasgow New Central Court' },
+      { id: '3', locationId: '999999', name: 'Booking 3', locationName: null }
     ]);
     expect(next).to.not.have.been.called;
 });

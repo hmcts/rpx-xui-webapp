@@ -91,7 +91,7 @@
     "@cucumber/cucumber": "^11.0.0",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.2.7",
+    "@hmcts/ccd-case-ui-toolkit": "7.2.12",
     "@hmcts/ccpay-web-component": "6.2.15",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.1.0",
@@ -107,7 +107,7 @@
     "@ngrx/store": "^17.2.0",
     "@ngrx/store-devtools": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
-    "accessibility-checker": "^3.1.70",
+    "accessibility-checker": "^4.0.0",
     "applicationinsights": "1.8.10",
     "axios": "^1.7.7",
     "axios-mock-adapter": "^1.22.0",
@@ -274,7 +274,8 @@
     "braces": "^3.0.3",
     "ws": "^8.18.0",
     "axios": "1.8.4",
-    "webpack": "^5.94.0"
+    "webpack": "^5.94.0",
+    "tar-fs": "^3.0.9"
   },
   "packageManager": "yarn@4.7.0"
 }

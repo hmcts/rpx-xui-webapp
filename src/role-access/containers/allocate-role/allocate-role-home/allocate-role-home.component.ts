@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -25,7 +25,6 @@ import {
   AllocateTo,
   DEFINED_ROLES,
   DurationOfRole,
-  RoleCategory,
   SpecificRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
@@ -75,6 +74,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public assignmentId: string | string[];
   public caseId: string;
   public jurisdiction: string;
+  public caseType: string;
   public userRole: UserRole;
 
   public roleCategory: RoleCategory;
@@ -106,6 +106,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.userIdToBeRemoved = this.route.snapshot.queryParams.actorId ? this.route.snapshot.queryParams.actorId : null;
       this.userNameToBeRemoved = this.route.snapshot.queryParams.userName ? this.route.snapshot.queryParams.userName : null;
       const roleId = this.route.snapshot.queryParams.typeOfRole ? this.route.snapshot.queryParams.typeOfRole : null;
+      this.caseType = this.route.snapshot.queryParams.caseType ? this.route.snapshot.queryParams.caseType : null;
       this.setReallocatedRole(roleId);
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
       this.existingUsers = this.route.snapshot.queryParams.existingUsers ? this.route.snapshot.queryParams.existingUsers.split(',') : [];
@@ -116,7 +117,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.store.dispatch(new fromFeature.AllocateRoleSetInitData({ caseId: this.caseId, jurisdiction: this.jurisdiction, roleCategory: this.roleCategory }));
     }
     const extras = this.router.getCurrentNavigation().extras;
-    this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.caseId}/roles-and-access`;
+    this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.jurisdiction}/${this.caseType}/${this.caseId}/roles-and-access`;
   }
 
   private instantiateReallocateRoleData(): void {

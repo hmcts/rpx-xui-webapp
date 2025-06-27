@@ -25,11 +25,11 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
         const partiesFromRequest = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.partyDetails
           : state.hearingRequest.hearingRequestMainModel.partyDetails;
-        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties;
+        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel?.parties;
         let strReturn = '<ul>';
         partiesFromRequest.filter((party) => party.partyType === PartyType.IND)
           .forEach((party: PartyDetailsModel) => {
-            const foundPartyFromService = partiesFromServiceValue.find((pty) => pty.partyID === party.partyID);
+            const foundPartyFromService = partiesFromServiceValue?.find((pty) => pty.partyID === party.partyID);
             const name = this.getPartyName(party, foundPartyFromService);
             const value = PartyChannelsAnswerConverter.getPartyChannelValue(partyChannels, party);
             strReturn += `<li>${name} - ${value}</li>`;

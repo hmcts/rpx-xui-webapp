@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import { RoleCategory } from '../../models';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
@@ -24,6 +24,7 @@ export class RejectedRequestViewComponent implements OnInit {
   public reviewerName: string;
   public reviewerRole: string;
   public endDate: string;
+  public caseType: string;
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
@@ -52,6 +53,8 @@ export class RejectedRequestViewComponent implements OnInit {
       : 'No reason for rejection found';
     this.endDate = this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ?
       this.route.snapshot.queryParams.endDate : '';
+    this.caseType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseType ?
+      this.route.snapshot.queryParams.caseType : '';
   }
 
   public ngOnInit(): void {
@@ -82,7 +85,7 @@ export class RejectedRequestViewComponent implements OnInit {
   }
 
   public async goToRequest(): Promise<void> {
-    const requestUrl = `/cases/case-details/${this.caseReference}/specific-access-request`;
+    const requestUrl = `/cases/case-details/${this.jurisdiction}/${this.caseType}/${this.caseReference}/specific-access-request`;
     await this.router.navigate([requestUrl]);
   }
 

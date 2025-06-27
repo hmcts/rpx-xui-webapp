@@ -1,15 +1,16 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
-import { ExclusionNavigationEvent, RoleCategory } from '../../models';
+import { ExclusionNavigationEvent } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -39,9 +40,9 @@ describe('DeleteExclusionComponent', () => {
   const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', ['getCurrentUserRoleExclusions', 'deleteExclusion']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
-  const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
+  const goToCaseUrl = `cases/case-details/${jurisdiction}/${caseType}/${exampleCaseId}/roles-and-access`;
   const exclusion = { caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
   beforeEach(waitForAsync(() => {
@@ -169,9 +170,9 @@ describe('DeleteExclusionComponent with no name', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('allocateService', ['getCaseRolesUserDetails']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
-  const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
+  const goToCaseUrl = `cases/case-details/${jurisdiction}/${caseType}/${exampleCaseId}/roles-and-access`;
   const exclusion = { id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
   beforeEach(waitForAsync(() => {

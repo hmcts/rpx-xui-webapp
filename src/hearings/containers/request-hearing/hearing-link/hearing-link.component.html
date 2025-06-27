@@ -45,7 +45,7 @@
         </tr>
         <tr class="govuk-table__row" *ngFor="let linkedCase of linkedCases">
           <td class="govuk-table__cell">
-            <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', linkedCase.caseReference]"
+            <a href="javascript:void(0)" [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, linkedCase.caseReference]"
                class="govuk-link govuk-link--no-visited-state"
                target="_blank"
                style="text-decoration: none;">

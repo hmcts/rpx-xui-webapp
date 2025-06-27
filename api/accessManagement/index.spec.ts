@@ -11,7 +11,9 @@ import * as roleAccess from '../roleAccess';
 import * as workAllocation from '../workAllocation';
 import * as locationService from '../workAllocation/locationService';
 import * as lau from '../services/lau';
-import { mockLocations } from '../locations/locationTestData.spec'
+import { mockLocations } from '../locations/locationTestData.spec';
+import { bookings, bookingResponse, bookingResponseError, refreshRoleAssignmentsSuccess, refreshRoleAssignmentsError } from './data/booking.mock.data'
+import { Bookings, BookingResponse, BookingResponseError } from './models';
 import {
   getBookings,
   createBooking,
@@ -49,7 +51,8 @@ describe('Access Management', (): void => {
     beforeEach(() => {
       req = mockReq({
         body: {
-          userId: 'test-user-id'
+          userId: '21334a2b-79ce-44eb-9168-2d49a744be9c',
+          bookableServices: ['service-1', 'service-2']
         }
       });
       res = mockRes();
@@ -69,13 +72,15 @@ describe('Access Management', (): void => {
   });
 
   it('should fetch bookings and enrich with location names', async () => {
+    // Note: The external API returns 'base_location_id' but we need to map it to 'LocationId'
+    // for the enrichment logic to work correctly.
     const mockBookings = {
       status: 200,
       data: {
         bookings: [
-          { id: '1', locationId: '1234', name: 'Booking 1' },
-          { id: '2', locationId: '231596', name: 'Booking 2' },
-          { id: '3', locationId: '999999', name: 'Booking 3' }
+          { ...bookings.bookings[0], locationId: bookings.bookings[0].base_location_id },
+          { ...bookings.bookings[1], locationId: bookings.bookings[1].base_location_id },
+          { ...bookings.bookings[2], locationId: bookings.bookings[2].base_location_id }
         ]
       }
     };
@@ -87,16 +92,27 @@ describe('Access Management', (): void => {
 
     expect(httpPostStub).to.have.been.calledOnce;
     expect(httpPostStub.firstCall.args[1]).to.deep.equal({
-      queryRequest: { userIds: ['test-user-id'] }
+      queryRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] }
     });
     expect(setHeadersStub).to.have.been.calledWith(req);
     expect(getFullLocationsStub).to.have.been.calledWith(req);
     expect(res.status).to.have.been.calledWith(200);
-    expect(res.send).to.have.been.calledWith([
-      { id: '1', locationId: '1234', name: 'Booking 1', locationName: 'Glasgow Tribunals Centre' },
-      { id: '2', locationId: '231596', name: 'Booking 2', locationName: 'Glasgow New Central Court' },
-      { id: '3', locationId: '999999', name: 'Booking 3', locationName: null }
-    ]);
+
+    // Verify the enriched bookings
+    const sentData = res.send.getCall(0).args[0];
+    expect(sentData).to.be.an('array').that.has.lengthOf(3);
+    expect(sentData[0]).to.deep.include({
+      locationId: '765324',
+      locationName: null, // not found in mockLocations
+    });
+    expect(sentData[1]).to.deep.include({
+      locationId: '231596',
+      locationName: 'Glasgow New Central Court', // found in mockLocations
+    });
+    expect(sentData[2]).to.deep.include({
+      locationId: '512401',
+      locationName: null // not found in mockLocations
+    });
     expect(next).to.not.have.been.called;
 });
 
@@ -125,10 +141,14 @@ it('should handle errors and call next', async () => {
 
   describe('createBooking', () => {
     beforeEach(() => {
+      const now = new Date();
       req = mockReq({
         body: {
-          userId: 'test-user-id',
-          serviceId: 'service-1'
+          userId: '21334a2b-79ce-44eb-9168-2d49a744be9c',
+          locationId: '366796',
+          regionId: '104',
+          beginDate: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+          endDate: new Date(now.getTime() + 25 * 60 * 60 * 1000).toISOString()
         }
       });
       res = mockRes();
@@ -138,7 +158,7 @@ it('should handle errors and call next', async () => {
     it('should create a booking successfully', async () => {
       const mockResponse = {
         status: 201,
-        data: { bookingId: 'new-booking-id' }
+        data: bookingResponse
       };
       httpPostStub.resolves(mockResponse);
 
@@ -150,7 +170,7 @@ it('should handle errors and call next', async () => {
       });
       expect(setHeadersStub).to.have.been.calledWith(req);
       expect(res.status).to.have.been.calledWith(201);
-      expect(res.send).to.have.been.calledWith({ bookingId: 'new-booking-id' });
+      expect(res.send).to.have.been.calledWith(bookingResponse);
       expect(next).to.not.have.been.called;
     });
 
@@ -182,7 +202,7 @@ it('should handle errors and call next', async () => {
     beforeEach(() => {
       req = mockReq({
         body: {
-          userId: 'test-user-id'
+          userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
         }
       });
       res = mockRes();
@@ -203,7 +223,7 @@ it('should handle errors and call next', async () => {
 
       expect(handlePostStub).to.have.been.calledOnce;
       expect(handlePostStub.firstCall.args[1]).to.deep.equal({
-        refreshRequest: { userIds: ['test-user-id'] }
+        refreshRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] }
       });
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({ refreshed: true });

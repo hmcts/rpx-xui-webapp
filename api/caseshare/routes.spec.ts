@@ -18,7 +18,6 @@ describe('Case Share Routes', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     
-    // Create a mock router with all the methods we need
     mockRouter = {
       get: sandbox.stub(),
       post: sandbox.stub(),
@@ -27,10 +26,8 @@ describe('Case Share Routes', () => {
       use: sandbox.stub()
     };
 
-    // Stub express.Router to return our mock router
     expressStub = sandbox.stub(express, 'Router').returns(mockRouter);
     
-    // Clear the routes module cache before each test
     delete require.cache[require.resolve('./routes')];
   });
 
@@ -40,14 +37,12 @@ describe('Case Share Routes', () => {
 
   describe('Route Registration', () => {
     it('should create router with mergeParams option', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       expect(expressStub).to.have.been.calledWith({ mergeParams: true });
     });
 
     it('should register GET /orgs route with organisations handler', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
@@ -57,7 +52,6 @@ describe('Case Share Routes', () => {
     });
 
     it('should register GET /users route with getUsers handler', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
@@ -67,7 +61,6 @@ describe('Case Share Routes', () => {
     });
 
     it('should register GET /cases route with getCases handler', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
@@ -77,7 +70,6 @@ describe('Case Share Routes', () => {
     });
 
     it('should register POST /case-assignments route with assignCasesToUsers handler', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       const postCalls = mockRouter.post.getCalls();
@@ -87,7 +79,6 @@ describe('Case Share Routes', () => {
     });
 
     it('should register GET /case-assignments route with getCases handler', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
@@ -97,13 +88,11 @@ describe('Case Share Routes', () => {
     });
 
     it('should register all routes in correct order', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
       const postCalls = mockRouter.post.getCalls();
       
-      // Verify GET routes
       expect(getCalls).to.have.lengthOf(4);
       expect(getCalls[0].args[0]).to.equal('/orgs');
       expect(getCalls[0].args[1].name).to.equal('handleGetOrganisationsRoute');
@@ -117,14 +106,12 @@ describe('Case Share Routes', () => {
       expect(getCalls[3].args[0]).to.equal('/case-assignments');
       expect(getCalls[3].args[1].name).to.equal('getCases');
       
-      // Verify POST routes
       expect(postCalls).to.have.lengthOf(1);
       expect(postCalls[0].args[0]).to.equal('/case-assignments');
       expect(postCalls[0].args[1].name).to.equal('assignCasesToUsers');
     });
 
     it('should export the router', () => {
-      // Re-require the routes module
       delete require.cache[require.resolve('./routes')];
       const routes = require('./routes');
 
@@ -134,7 +121,6 @@ describe('Case Share Routes', () => {
 
   describe('Handler Function References', () => {
     it('should use the correct handler functions', () => {
-      // Verify that the imported functions exist
       expect(handleGetOrganisationsRoute).to.be.a('function');
       expect(restAPI.getUsers).to.be.a('function');
       expect(restAPI.getCases).to.be.a('function');
@@ -144,14 +130,12 @@ describe('Case Share Routes', () => {
 
   describe('Router Configuration', () => {
     it('should not register any middleware', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       expect(mockRouter.use).to.not.have.been.called;
     });
 
     it('should not register PUT or DELETE routes', () => {
-      // Re-require the routes module to trigger registration
       require('./routes');
 
       expect(mockRouter.put).to.not.have.been.called;

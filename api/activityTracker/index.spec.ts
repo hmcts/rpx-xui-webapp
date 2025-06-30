@@ -18,7 +18,6 @@ describe('Activity Tracker', () => {
   let activityTrackerProxyResponse: any;
 
   before(() => {
-    // Set up the logger stub before importing the module
     sandbox = sinon.createSandbox();
     loggerStub = {
       info: sandbox.stub(),
@@ -28,7 +27,6 @@ describe('Activity Tracker', () => {
     };
     sandbox.stub(log4jui, 'getLogger').returns(loggerStub);
     
-    // Now import the module after stubbing
     const activityTracker = require('./index');
     activityTrackerProxyRequest = activityTracker.activityTrackerProxyRequest;
     activityTrackerProxyResponse = activityTracker.activityTrackerProxyResponse;
@@ -36,27 +34,22 @@ describe('Activity Tracker', () => {
 
   after(() => {
     sandbox.restore();
-    // Clear the module from cache
     delete require.cache[require.resolve('./index')];
   });
 
   beforeEach(() => {
-    // Reset stubs before each test
     loggerStub.info.resetHistory();
     loggerStub.error.resetHistory();
     loggerStub.warn.resetHistory();
     loggerStub.debug.resetHistory();
     
-    // Mock proxy request
     proxyReq = {};
     
-    // Mock response
     res = mockRes();
   });
 
   describe('activityTrackerProxyRequest', () => {
     it('should log user information when user and userinfo exist', async () => {
-      // Mock request with user info
       req = mockReq({
         user: {
           userinfo: {
@@ -77,7 +70,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should not log when user does not exist', async () => {
-      // Mock request without user
       req = mockReq({});
 
       await activityTrackerProxyRequest(proxyReq, req);
@@ -86,7 +78,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should not log when userinfo does not exist', async () => {
-      // Mock request with user but no userinfo
       req = mockReq({
         user: {}
       });
@@ -97,7 +88,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should handle missing user properties gracefully', async () => {
-      // Mock request with partial userinfo
       req = mockReq({
         user: {
           userinfo: {
@@ -117,7 +107,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should handle null userinfo gracefully', async () => {
-      // Mock request with null userinfo
       req = mockReq({
         user: {
           userinfo: null
@@ -150,7 +139,6 @@ describe('Activity Tracker', () => {
     const mockJson = { data: 'test response data' };
 
     it('should log user information and return json when user and userinfo exist', async () => {
-      // Mock request with user info
       req = mockReq({
         user: {
           userinfo: {
@@ -172,7 +160,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should not log when user does not exist but still return json', async () => {
-      // Mock request without user
       req = mockReq({});
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, mockJson);
@@ -182,7 +169,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should not log when userinfo does not exist but still return json', async () => {
-      // Mock request with user but no userinfo
       req = mockReq({
         user: {}
       });
@@ -194,7 +180,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should handle missing user properties gracefully and return json', async () => {
-      // Mock request with partial userinfo
       req = mockReq({
         user: {
           userinfo: {
@@ -215,7 +200,6 @@ describe('Activity Tracker', () => {
     });
 
     it('should handle null userinfo gracefully and return json', async () => {
-      // Mock request with null userinfo
       req = mockReq({
         user: {
           userinfo: null
@@ -241,7 +225,7 @@ describe('Activity Tracker', () => {
       const result = await activityTrackerProxyResponse(proxyReq, req, res, complexJson);
 
       expect(result).to.deep.equal(complexJson);
-      expect(result).to.equal(complexJson); // Same reference
+      expect(result).to.equal(complexJson);
     });
 
     it('should handle null json parameter', async () => {

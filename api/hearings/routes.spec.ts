@@ -46,86 +46,71 @@ describe('Hearings Routes', () => {
 
     it('should register all hearings routes with correct handlers and middleware', () => {
       require('./routes');
-      // POST /loadServiceHearingValues
       expect(mockRouter.post).to.have.been.calledWith(
         '/loadServiceHearingValues',
         hmcIndex.injectHearingsHeaders,
         servicesIndex.loadServiceHearingValues
       );
-      // GET /getHearings
       expect(mockRouter.get).to.have.been.calledWith(
         '/getHearings',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.getHearings
       );
-      // GET /getHearing
       expect(mockRouter.get).to.have.been.calledWith(
         '/getHearing',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.getHearing
       );
-      // POST /submitHearingRequest
       expect(mockRouter.post).to.have.been.calledWith(
         '/submitHearingRequest',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.submitHearingRequest
       );
-      // PUT /updateHearingRequest
       expect(mockRouter.put).to.have.been.calledWith(
         '/updateHearingRequest',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.updateHearingRequest
       );
-      // DELETE /cancelHearings
       expect(mockRouter.delete).to.have.been.calledWith(
         '/cancelHearings',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.cancelHearingRequest
       );
-      // GET /hearingActuals/:hearingId
       expect(mockRouter.get).to.have.been.calledWith(
         '/hearingActuals/:hearingId',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.getHearingActuals
       );
-      // PUT /hearingActuals
       expect(mockRouter.put).to.have.been.calledWith(
         '/hearingActuals',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.updateHearingActuals
       );
-      // POST /hearingActualsCompletion/:hearingId
       expect(mockRouter.post).to.have.been.calledWith(
         '/hearingActualsCompletion/:hearingId',
         hmcIndex.injectHearingsHeaders,
         hmcIndex.submitHearingActuals
       );
-      // POST /loadServiceLinkedCases
       expect(mockRouter.post).to.have.been.calledWith(
         '/loadServiceLinkedCases',
         servicesIndex.loadServiceLinkedCases
       );
-      // POST /loadLinkedCasesWithHearings
       expect(mockRouter.post).to.have.been.calledWith(
         '/loadLinkedCasesWithHearings',
         servicesIndex.loadLinkedCasesWithHearings
       );
-      // GET /getLinkedHearingGroup
       expect(mockRouter.get).to.have.been.calledWith(
         '/getLinkedHearingGroup',
         hmcIndex.getLinkedHearingGroup
       );
-      // POST /postLinkedHearingGroup
       expect(mockRouter.post).to.have.been.calledWith(
         '/postLinkedHearingGroup',
         hmcIndex.postLinkedHearingGroup
       );
-      // PUT /putLinkedHearingGroup
       expect(mockRouter.put).to.have.been.calledWith(
         '/putLinkedHearingGroup',
         hmcIndex.putLinkedHearingGroup
       );
-      // DELETE /deleteLinkedHearingGroup
       expect(mockRouter.delete).to.have.been.calledWith(
         '/deleteLinkedHearingGroup',
         hmcIndex.deleteLinkedHearingGroup
@@ -163,13 +148,11 @@ describe('Hearings Routes', () => {
   describe('Router Configuration', () => {
     it('should not register any unexpected middleware', () => {
       require('./routes');
-      // Only authInterceptor should be registered
       expect(mockRouter.use).to.have.been.calledOnceWith(authInterceptor);
     });
 
     it('should not register any extra routes', () => {
       require('./routes');
-      // There should be no calls to methods other than those defined
       const allowedGetRoutes = [
         '/getHearings',
         '/getHearing',
@@ -193,19 +176,15 @@ describe('Hearings Routes', () => {
         '/cancelHearings',
         '/deleteLinkedHearingGroup'
       ];
-      // Check GET
       mockRouter.get.getCalls().forEach(call => {
         expect(allowedGetRoutes).to.include(call.args[0]);
       });
-      // Check POST
       mockRouter.post.getCalls().forEach(call => {
         expect(allowedPostRoutes).to.include(call.args[0]);
       });
-      // Check PUT
       mockRouter.put.getCalls().forEach(call => {
         expect(allowedPutRoutes).to.include(call.args[0]);
       });
-      // Check DELETE
       mockRouter.delete.getCalls().forEach(call => {
         expect(allowedDeleteRoutes).to.include(call.args[0]);
       });

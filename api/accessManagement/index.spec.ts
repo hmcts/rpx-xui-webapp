@@ -12,8 +12,7 @@ import * as workAllocation from '../workAllocation';
 import * as locationService from '../workAllocation/locationService';
 import * as lau from '../services/lau';
 import { mockLocations } from '../locations/locationTestData.spec';
-import { bookings, bookingResponse, bookingResponseError, refreshRoleAssignmentsSuccess, refreshRoleAssignmentsError } from './data/booking.mock.data'
-import { Bookings, BookingResponse, BookingResponseError } from './models';
+import { bookings, bookingResponse } from './data/booking.mock.data'
 import {
   getBookings,
   createBooking,

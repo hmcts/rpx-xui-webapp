@@ -7,7 +7,6 @@ import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 import * as hmcIndex from './hmc.index';
 import * as servicesIndex from './services.index';
-import { router } from './routes';
 
 chai.use(sinonChai);
 

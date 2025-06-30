@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import { NextFunction, Response } from 'express';
+import { Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 import * as httpModule from '../lib/http';
 import * as proxy from '../lib/proxy';

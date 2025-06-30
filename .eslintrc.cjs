@@ -86,5 +86,14 @@ module.exports = {
     'semi-style': ['error', 'last'],
     'space-in-parens': ['error', 'never'],
     'switch-colon-spacing': 'error'
-  }
+  },
+  'overrides': [
+    {
+      files: ['**/*.spec.ts', '**/*.spec.js'],
+      rules: { 
+        'no-unused-expressions': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+      }
+    }
+  ]
 };

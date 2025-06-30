@@ -6,7 +6,6 @@ import * as sinonChai from 'sinon-chai';
 import * as express from 'express';
 import { handleGetOrganisationsRoute } from '../organisations/index';
 import * as restAPI from './index';
-import { router } from './routes';
 
 chai.use(sinonChai);
 

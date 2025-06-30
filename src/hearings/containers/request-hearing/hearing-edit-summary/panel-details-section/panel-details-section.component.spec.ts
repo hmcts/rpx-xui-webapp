@@ -256,7 +256,7 @@ describe('PanelDetailsSectionComponent', () => {
     expect(component.hearingPanel).toEqual('Yes');
     expect(component.includedPanelMembers).toEqual('Ramon Herrera');
     expect(component.excludedPanelMembers).toEqual('Jack Collins');
-    expect(component.panelRoles).toEqual('Disability Qualified Panel Member<br>Medically Qualified Panel Member - Cardiologist<br>Medically Qualified Panel Member - Cardiologist');
+    expect(component.panelRoles).toEqual('Regional Medical Member,Disability Qualified Panel Member,Medically Qualified Panel Member,Disability Qualified Panel Member,Medically Qualified Panel Member - Cardiologist,Medically Qualified Panel Member - Cardiologist');
   });
 
   it('should verify onChange', () => {

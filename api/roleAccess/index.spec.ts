@@ -140,7 +140,7 @@ describe('roleAccess/index', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    
+
     req = {
       body: {},
       params: {},
@@ -158,12 +158,12 @@ describe('roleAccess/index', () => {
         }
       }
     } as EnhancedRequest;
-    
+
     res = {
       status: sandbox.stub().returnsThis(),
       send: sandbox.stub()
     } as unknown as Response;
-    
+
     next = sandbox.stub();
   });
 
@@ -201,7 +201,7 @@ describe('roleAccess/index', () => {
           roleAssignmentResponse: mockRoleAssignments
         }
       });
-      
+
       const mockRefinedRoles: RefinedRole[] = [
         {
           roleCategory: RoleCategory.JUDICIAL,
@@ -213,16 +213,16 @@ describe('roleAccess/index', () => {
           }
         }
       ];
-      
+
       sandbox.stub(roleAssignmentService, 'getSubstantiveRoles').resolves(mockRefinedRoles);
       sandbox.stub(exclusionService, 'getEmail').returns('test.user@example.com');
       sandbox.stub(exclusionService, 'getUserName').returns('Test User');
       sandbox.stub(exclusionService, 'mapRoleCategory').returns(RoleCategory.JUDICIAL);
-      
+
       req.body = mockCaseRolePayload.queryRequests[0].attributes;
-      
+
       await index.getRolesByCaseId(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
       expect(sentData).to.be.an('array');
@@ -242,11 +242,11 @@ describe('roleAccess/index', () => {
         data: { roleAssignmentResponse: [] }
       });
       sandbox.stub(roleAssignmentService, 'getSubstantiveRoles').resolves([]);
-      
+
       req.body = createMockCaseRoleRequestPayload().queryRequests[0].attributes;
-      
+
       await index.getRolesByCaseId(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith([]);
     });
@@ -256,11 +256,11 @@ describe('roleAccess/index', () => {
       sandbox.stub(configuration, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(httpModule.http, 'post').rejects(error);
-      
+
       req.body = createMockCaseRoleRequestPayload().queryRequests[0].attributes;
-      
+
       await index.getRolesByCaseId(req, res, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -300,15 +300,15 @@ describe('roleAccess/index', () => {
         data: { roleAssignmentResponse: mockRoleAssignments }
       });
       sandbox.stub(exclusionService, 'getEmail').callsFake((actorId) => `${actorId}@example.com`);
-      sandbox.stub(exclusionService, 'getUserName').callsFake(() => `User`);
-      sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) => 
+      sandbox.stub(exclusionService, 'getUserName').callsFake(() => 'User');
+      sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) =>
         cat === 'LEGAL_OPERATIONS' ? RoleCategory.LEGAL_OPERATIONS : RoleCategory.ADMIN
       );
-      
+
       req.body = { caseId: '1234567890123456', jurisdiction: 'SSCS', caseType: 'Benefit' };
-      
+
       await index.getAccessRoles(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
       expect(sentData).to.be.an('array').with.lengthOf(2);
@@ -355,7 +355,7 @@ describe('roleAccess/index', () => {
         status: 200,
         data: { roleAssignmentResponse: mockRoleAssignments }
       });
-      
+
       const mockAxiosResponse: AxiosResponse<Role[]> = {
         status: 200,
         data: mockRoles,
@@ -363,37 +363,37 @@ describe('roleAccess/index', () => {
         headers: {},
         config: { headers: new AxiosHeaders() }
       };
-      
+
       sandbox.stub(roleAssignmentService, 'getAllRoles').resolves(mockAxiosResponse);
       sandbox.stub(exclusionService, 'getEmail').returns('test@example.com');
       sandbox.stub(exclusionService, 'getUserName').returns('Test User');
       sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) => {
-        switch(cat) {
+        switch (cat) {
           case 'JUDICIAL': return RoleCategory.JUDICIAL;
           case 'PROFESSIONAL': return RoleCategory.PROFESSIONAL;
           default: return RoleCategory.ADMIN;
         }
       });
-      
+
       req.body = { caseId: '1234567890123456', assignmentId: null };
-      
+
       await index.getAccessRolesByCaseId(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
       expect(sentData).to.be.an('array');
-      expect(sentData.filter(r => r.roleCategory === RoleCategory.PROFESSIONAL)).to.have.lengthOf(0);
-      expect(sentData.filter(r => r.roleCategory === RoleCategory.JUDICIAL)).to.have.lengthOf(1);
-      expect(sentData.filter(r => r.roleCategory === RoleCategory.ADMIN)).to.have.lengthOf(1);
+      expect(sentData.filter((r) => r.roleCategory === RoleCategory.PROFESSIONAL)).to.have.lengthOf(0);
+      expect(sentData.filter((r) => r.roleCategory === RoleCategory.JUDICIAL)).to.have.lengthOf(1);
+      expect(sentData.filter((r) => r.roleCategory === RoleCategory.ADMIN)).to.have.lengthOf(1);
     });
   });
 
   describe('getJudicialUsers', () => {
     it('should return empty array if no userIds provided', async () => {
       req.body = { userIds: [] };
-      
+
       await index.getJudicialUsers(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith([]);
     });
@@ -405,11 +405,11 @@ describe('roleAccess/index', () => {
       ];
 
       req.body = { userIds: ['user-123', 'user-456'], services: ['SSCS'] };
-      
+
       sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns([
         { service: 'SSCS', serviceCodes: ['BBA3'] }
       ]);
-      
+
       const mockAxiosResponse: AxiosResponse<JudicialUserDto[]> = {
         status: 200,
         data: mockJudicialUsers,
@@ -417,11 +417,11 @@ describe('roleAccess/index', () => {
         headers: {},
         config: { headers: new AxiosHeaders() }
       };
-      
+
       sandbox.stub(exclusionService, 'getJudicialUsersFromApi').resolves(mockAxiosResponse);
-      
+
       await index.getJudicialUsers(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
       expect(sentData).to.deep.equal(mockJudicialUsers);
@@ -430,14 +430,14 @@ describe('roleAccess/index', () => {
     it('should handle API errors', async () => {
       const error = new Error('Judicial API Error');
       req.body = { userIds: ['user-123'], services: ['SSCS'] };
-      
+
       sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns([
         { service: 'SSCS', serviceCodes: ['BBA3'] }
       ]);
       sandbox.stub(exclusionService, 'getJudicialUsersFromApi').rejects(error);
-      
+
       await index.getJudicialUsers(req, res, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -445,10 +445,10 @@ describe('roleAccess/index', () => {
   describe('confirmAllocateRole', () => {
     it('should allocate role using proper DTOs and models', async () => {
       const mockAllocateData = createMockAllocateRoleData();
-      
+
       req.body = mockAllocateData;
       req.session.passport.user.userinfo.id = 'assigner-123';
-      
+
       const toRoleAssignmentBodyStub = sandbox.stub(dtos, 'toRoleAssignmentBody');
       toRoleAssignmentBodyStub.returns({
         roleRequest: {
@@ -471,7 +471,7 @@ describe('roleAccess/index', () => {
           endTime: mockAllocateData.period.endDate
         }]
       });
-      
+
       const mockAxiosResponse: AxiosResponse = {
         status: 201,
         data: { roleAssignmentId: 'new-assignment-123' },
@@ -479,12 +479,12 @@ describe('roleAccess/index', () => {
         headers: {},
         config: { headers: new AxiosHeaders() }
       };
-      
+
       sandbox.stub(crudService, 'sendPost').resolves(mockAxiosResponse);
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
-      
+
       await index.confirmAllocateRole(req, res, next);
-      
+
       expect(toRoleAssignmentBodyStub).to.have.been.calledWith('assigner-123', mockAllocateData);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith({ roleAssignmentId: 'new-assignment-123' });
@@ -500,10 +500,10 @@ describe('roleAccess/index', () => {
         },
         durationOfRole: DurationOfRole.ANOTHER_PERIOD
       });
-      
+
       req.body = mockAllocateData;
       req.session.passport.user.userinfo.id = 'assigner-123';
-      
+
       // confirmAllocateRole always uses toRoleAssignmentBody, not toSARoleAssignmentBody
       const toRoleAssignmentBodyStub = sandbox.stub(dtos, 'toRoleAssignmentBody');
       toRoleAssignmentBodyStub.returns({
@@ -527,7 +527,7 @@ describe('roleAccess/index', () => {
           endTime: mockAllocateData.period.endDate
         }]
       });
-      
+
       sandbox.stub(crudService, 'sendPost').resolves({
         status: 201,
         data: { roleAssignmentId: 'specific-access-assignment-123' },
@@ -536,9 +536,9 @@ describe('roleAccess/index', () => {
         config: { headers: new AxiosHeaders() }
       });
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
-      
+
       await index.confirmAllocateRole(req, res, next);
-      
+
       expect(toRoleAssignmentBodyStub).to.have.been.calledWith('assigner-123', mockAllocateData);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith({ roleAssignmentId: 'specific-access-assignment-123' });
@@ -547,11 +547,11 @@ describe('roleAccess/index', () => {
     it('should handle errors in role allocation', async () => {
       const error = new Error('Allocation failed');
       req.body = createMockAllocateRoleData();
-      
+
       sandbox.stub(dtos, 'toRoleAssignmentBody').throws(error);
-      
+
       await index.confirmAllocateRole(req, res, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -563,9 +563,9 @@ describe('roleAccess/index', () => {
         { id: '2', attributes: { isNew: false }, roleName: 'case-manager' },
         { id: '3', attributes: { isNew: true }, roleName: 'specific-access-admin' }
       ];
-      
+
       req.session.roleAssignmentResponse = mockRoleAssignments;
-      
+
       const mockCaseList = [
         {
           id: '1',
@@ -610,12 +610,12 @@ describe('roleAccess/index', () => {
           isNew: true
         }
       ];
-      
+
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
       sandbox.stub(workAllocationUtil, 'getMyAccessMappedCaseList').resolves(mockCaseList);
-      
+
       await index.getMyAccessNewCount(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({ count: 2 });
     });
@@ -623,9 +623,9 @@ describe('roleAccess/index', () => {
     it('should handle errors when fetching new count', async () => {
       const error = new Error('Failed to refresh assignments');
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').rejects(error);
-      
+
       await index.getMyAccessNewCount(req, res, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -640,11 +640,11 @@ describe('roleAccess/index', () => {
           roleName: 'judge'
         }
       ];
-      
+
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
-      
+
       await index.manageLabellingRoleAssignment(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(204);
     });
 
@@ -652,14 +652,14 @@ describe('roleAccess/index', () => {
       const caseId = '1234567890123456';
       const expectedAssignment = {
         id: 'assignment-123',
-        attributes: { 
+        attributes: {
           caseId: caseId,
           isNew: true,
           requestedRole: 'specific-access-admin'
         },
         roleName: 'challenged-access-judiciary'
       };
-      
+
       req.params = { caseId };
       req.session.roleAssignmentResponse = [
         {
@@ -674,11 +674,11 @@ describe('roleAccess/index', () => {
           roleName: 'case-manager'
         }
       ];
-      
+
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
-      
+
       await index.manageLabellingRoleAssignment(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({ id: 'assignment-123' });
     });
@@ -687,20 +687,20 @@ describe('roleAccess/index', () => {
       const caseId = '1234567890123456';
       const assignment = {
         id: 'assignment-123',
-        attributes: { 
+        attributes: {
           caseId: caseId,
           isNew: true
         },
         roleName: 'challenged-access-admin'
       };
-      
+
       req.params = { caseId };
       req.session.roleAssignmentResponse = [assignment];
-      
+
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
-      
+
       await index.manageLabellingRoleAssignment(req, res, next);
-      
+
       expect(assignment.attributes.isNew).to.be.false;
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({ id: 'assignment-123' });
@@ -709,11 +709,11 @@ describe('roleAccess/index', () => {
     it('should handle errors during labelling management', async () => {
       const error = new Error('Refresh failed');
       req.params = { caseId: '1234567890123456' };
-      
+
       sandbox.stub(userModule, 'refreshRoleAssignmentForUser').rejects(error);
-      
+
       await index.manageLabellingRoleAssignment(req, res, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -747,14 +747,14 @@ describe('roleAccess/index', () => {
         }
       ];
 
-      sandbox.stub(exclusionService, 'getEmail').callsFake((actorId) => 
+      sandbox.stub(exclusionService, 'getEmail').callsFake((actorId) =>
         actorId === 'user-123' ? 'judge.123@example.com' : 'judge.456@example.com'
       );
       sandbox.stub(exclusionService, 'getUserName').callsFake((actorId) => {
         const userNames = {
           'user-123': 'Judge Smith',
           'user-456': 'Judge Jones'
-        }
+        };
         return userNames[actorId] || 'Unknown User';
       });
       sandbox.stub(exclusionService, 'mapRoleCategory').callsFake(() => RoleCategory.JUDICIAL);
@@ -797,7 +797,7 @@ describe('roleAccess/index', () => {
 
       sandbox.stub(exclusionService, 'getEmail').returns('test@example.com');
       sandbox.stub(exclusionService, 'getUserName').returns('Test User');
-      sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) => 
+      sandbox.stub(exclusionService, 'mapRoleCategory').callsFake((cat) =>
         cat === 'JUDICIAL' ? RoleCategory.JUDICIAL : RoleCategory.ADMIN
       );
 

@@ -259,11 +259,11 @@ describe('Case Share Stub API', () => {
       expect(res.send).to.have.been.calledOnce;
       const updatedCases = res.send.getCall(0).args[0];
       expect(updatedCases).to.have.lengthOf(2);
-      
+
       // First case should have u222222 moved to sharedWith
       expect(updatedCases[0].sharedWith).to.have.lengthOf(1);
       expect(updatedCases[0].pendingShares).to.have.lengthOf(0);
-      
+
       // Second case should keep u333333 in pendingShares
       expect(updatedCases[1].sharedWith).to.have.lengthOf(0);
       expect(updatedCases[1].pendingShares).to.have.lengthOf(1);

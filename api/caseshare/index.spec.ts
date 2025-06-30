@@ -72,7 +72,7 @@ describe('Case Share Index - Unit Tests', () => {
     req = mockReq({});
     res = mockRes();
     next = sandbox.stub();
-    
+
     realAPIGetUsersStub = sandbox.stub(realAPI, 'getUsers');
     realAPIGetCasesStub = sandbox.stub(realAPI, 'getCases');
     realAPIAssignCasesStub = sandbox.stub(realAPI, 'assignCases');
@@ -93,7 +93,7 @@ describe('Case Share Index - Unit Tests', () => {
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
       getConfigValueStub.returns(true);
-      
+
       // Clear and re-require the module to pick up the stubbed config
       delete require.cache[require.resolve('./index')];
       const index = require('./index');
@@ -105,10 +105,10 @@ describe('Case Share Index - Unit Tests', () => {
     describe('getUsers', () => {
       it('should return transformed user data when search query matches', async () => {
         req.query = { q: 'joe' };
-        
+
         // Configure stub to use actual stub-api logic
         stubAPIGetUsersStub.callsFake((req, res) => {
-          const users = testUsers.filter(u => 
+          const users = testUsers.filter((u) =>
             u.firstName.toLowerCase().includes('joe') ||
             u.lastName.toLowerCase().includes('joe') ||
             u.email.toLowerCase().includes('joe')
@@ -119,8 +119,8 @@ describe('Case Share Index - Unit Tests', () => {
         await getUsers(req, res, next);
 
         expect(stubAPIGetUsersStub).to.have.been.calledOnceWith(req, res);
-        expect(res.send).to.have.been.calledWith(sinon.match(array => 
-          array.length === 1 && 
+        expect(res.send).to.have.been.calledWith(sinon.match((array) =>
+          array.length === 1 &&
           array[0].idamId === 'u111111' &&
           array[0].firstName === 'Joe'
         ));
@@ -128,38 +128,38 @@ describe('Case Share Index - Unit Tests', () => {
 
       it('should handle empty search results', async () => {
         req.query = { q: 'nonexistent' };
-        
+
         stubAPIGetUsersStub.callsFake((req, res) => {
           return res.status(404).send('{"errorMessage": "User is not found}"');
         });
 
         await getUsers(req, res, next);
-        
+
         expect(res.status).to.have.been.calledWith(404);
         expect(res.send).to.have.been.calledWith('{"errorMessage": "User is not found}"');
       });
 
       it('should return all users when no search query provided', async () => {
         req.query = { q: undefined };
-        
+
         stubAPIGetUsersStub.callsFake((req, res) => {
           return res.send(testUsers);
         });
 
         await getUsers(req, res, next);
-        
+
         expect(res.send).to.have.been.calledWith(testUsers);
       });
 
       it('should handle missing organisation', async () => {
         req.query = { q: 'test' };
-        
+
         stubAPIGetUsersStub.callsFake((req, res) => {
           return res.status(404).send('{"errorMessage": "Organisation is not found}"');
         });
 
         await getUsers(req, res, next);
-        
+
         expect(res.status).to.have.been.calledWith(404);
       });
     });
@@ -172,7 +172,7 @@ describe('Case Share Index - Unit Tests', () => {
           sharedWith: [createMockUserDetails()]
         }),
         createMockSharedCase({
-          caseId: 'case2', 
+          caseId: 'case2',
           caseTitle: 'Test Case 2'
         })
       ];
@@ -194,7 +194,7 @@ describe('Case Share Index - Unit Tests', () => {
         });
 
         await getCases(req, res, next);
-        
+
         expect(res.status).to.have.been.calledWith(404);
       });
     });
@@ -212,9 +212,9 @@ describe('Case Share Index - Unit Tests', () => {
           }],
           sharedWith: []
         }];
-        
+
         req.body = { sharedCases: inputCases };
-        
+
         stubAPIAssignCasesStub.callsFake((req, res) => {
           const shareCases = req.body.sharedCases;
           const updatedCase = {
@@ -231,15 +231,15 @@ describe('Case Share Index - Unit Tests', () => {
         });
 
         await assignCasesToUsers(req, res);
-        
-        expect(res.send).to.have.been.calledWith(sinon.match(cases => 
+
+        expect(res.send).to.have.been.calledWith(sinon.match((cases) =>
           cases[0].sharedWith.length === 1 &&
           cases[0].pendingShares.length === 0 &&
           cases[0].sharedWith[0].idamId === 'u222222'
         ));
       });
 
-it('should return 500 for user u333333', async () => {
+      it('should return 500 for user u333333', async () => {
         const inputCases: SharedCase[] = [{
           caseId: 'case123',
           caseTitle: 'Test Case',
@@ -251,15 +251,15 @@ it('should return 500 for user u333333', async () => {
           }],
           sharedWith: []
         }];
-        
+
         req.body = { sharedCases: inputCases };
-        
+
         stubAPIAssignCasesStub.callsFake((req, res) => {
           return res.sendStatus(500);
         });
 
         await assignCasesToUsers(req, res);
-        
+
         expect(res.sendStatus).to.have.been.calledWith(500);
       });
 
@@ -278,13 +278,13 @@ it('should return 500 for user u333333', async () => {
             sharedWith: []
           }
         ];
-        
+
         req.body = { sharedCases: inputCases };
-        
+
         stubAPIAssignCasesStub.callsFake((req, res) => {
           const shareCases = req.body.sharedCases;
           // Only u222222 gets moved to sharedWith
-          const updatedCases = shareCases.map(c => {
+          const updatedCases = shareCases.map((c) => {
             if (c.pendingShares[0].idamId === 'u222222') {
               return { ...c, pendingShares: [], sharedWith: c.pendingShares };
             }
@@ -294,8 +294,8 @@ it('should return 500 for user u333333', async () => {
         });
 
         await assignCasesToUsers(req, res);
-        
-        expect(res.send).to.have.been.calledWith(sinon.match(cases => 
+
+        expect(res.send).to.have.been.calledWith(sinon.match((cases) =>
           cases[0].sharedWith.length === 1 &&
           cases[1].pendingShares.length === 1
         ));
@@ -307,7 +307,7 @@ it('should return 500 for user u333333', async () => {
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
       getConfigValueStub.returns(false);
-      
+
       // Clear and re-require the module to pick up the stubbed config
       delete require.cache[require.resolve('./index')];
       const index = require('./index');
@@ -323,7 +323,7 @@ it('should return 500 for user u333333', async () => {
           next(error);
           return Promise.resolve();
         });
-        
+
         await getUsers(req, res, next);
 
         expect(realAPIGetUsersStub).to.have.been.calledOnceWith(req, res, next);
@@ -333,7 +333,7 @@ it('should return 500 for user u333333', async () => {
 
       it('should pass through successful responses', async () => {
         realAPIGetUsersStub.resolves(undefined);
-        
+
         await getUsers(req, res, next);
 
         expect(realAPIGetUsersStub).to.have.been.calledOnceWith(req, res, next);
@@ -361,9 +361,9 @@ it('should return 500 for user u333333', async () => {
           next(error);
           return Promise.resolve();
         });
-        
+
         await getCases(req, res, next);
-        
+
         expect(next).to.have.been.calledWith(error);
       });
     });
@@ -400,7 +400,7 @@ it('should return 500 for user u333333', async () => {
             ]
           }
         ];
-        
+
         req.body = { sharedCases: complexCases };
         realAPIAssignCasesStub.resolves(undefined);
 
@@ -415,7 +415,7 @@ it('should return 500 for user u333333', async () => {
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
       getConfigValueStub.returns(true);
-      
+
       delete require.cache[require.resolve('./index')];
       const index = require('./index');
       getUsers = index.getUsers;
@@ -426,30 +426,30 @@ it('should return 500 for user u333333', async () => {
     describe('getUsers edge cases', () => {
       it('should handle undefined query object', async () => {
         req.query = undefined;
-        
+
         stubAPIGetUsersStub.callsFake((req, res) => {
           // Should handle gracefully
           return res.status(400).send('Invalid request');
         });
 
         await getUsers(req, res, next);
-        
+
         expect(res.status).to.have.been.calledWith(400);
       });
 
       it('should handle special characters in search query', async () => {
         req.query = { q: 'test@example.com' };
-        
+
         stubAPIGetUsersStub.callsFake((req, res) => {
           const searchText = req.query.q.toString();
-          const users = testUsers.filter(u => 
+          const users = testUsers.filter((u) =>
             u.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1
           );
           return res.send(users);
         });
 
         await getUsers(req, res, next);
-        
+
         expect(stubAPIGetUsersStub).to.have.been.called;
       });
     });
@@ -462,27 +462,27 @@ it('should return 500 for user u333333', async () => {
           pendingShares: [],
           sharedWith: [createMockUserDetails()]
         }];
-        
+
         req.body = { sharedCases: casesWithoutPending };
-        
+
         stubAPIAssignCasesStub.callsFake((req, res) => {
           return res.send(req.body.sharedCases);
         });
 
         await assignCasesToUsers(req, res);
-        
+
         expect(res.send).to.have.been.calledWith(casesWithoutPending);
       });
 
       it('should handle missing sharedCases in request body', async () => {
         req.body = {};
-        
+
         stubAPIAssignCasesStub.callsFake((req, res) => {
           return res.status(400).send('Missing sharedCases');
         });
 
         await assignCasesToUsers(req, res);
-        
+
         expect(res.status).to.have.been.calledWith(400);
       });
 
@@ -498,16 +498,16 @@ it('should return 500 for user u333333', async () => {
           } as UserDetails],
           sharedWith: []
         }];
-        
+
         req.body = { sharedCases: casesWithNullUser };
-        
+
         stubAPIAssignCasesStub.callsFake((req, res) => {
           // Should handle null values gracefully
           return res.send(req.body.sharedCases);
         });
 
         await assignCasesToUsers(req, res);
-        
+
         expect(stubAPIAssignCasesStub).to.have.been.called;
       });
     });
@@ -517,7 +517,7 @@ it('should return 500 for user u333333', async () => {
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
       getConfigValueStub.returns(false);
-      
+
       delete require.cache[require.resolve('./index')];
       const index = require('./index');
       getUsers = index.getUsers;
@@ -555,7 +555,7 @@ it('should return 500 for user u333333', async () => {
 
     it('should use OrganisationModel structure from test data', () => {
       const org: OrganisationModel = testOrgs[0];
-      
+
       expect(org).to.have.property('orgId', 'o111111');
       expect(org).to.have.property('orgName', 'Woodford solicitors ltd.');
       expect(org).to.have.property('users').that.is.an('array');

@@ -73,11 +73,11 @@ describe('Case Share Real API', () => {
 
   before(() => {
     delete require.cache[require.resolve('./real-api')];
-    
+
     sandbox = sinon.createSandbox();
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
     getConfigValueStub.returns('http://default-api'); // Default return value
-    
+
     const realApi = require('./real-api');
     getUsers = realApi.getUsers;
     getCases = realApi.getCases;
@@ -92,8 +92,7 @@ describe('Case Share Real API', () => {
   beforeEach(() => {
     next = sandbox.stub();
     res = mockRes();
-    
-    
+
     // Stub CRUD service methods
     handleGetStub = sandbox.stub(crudService, 'handleGet');
     sendPostStub = sandbox.stub(crudService, 'sendPost');
@@ -111,7 +110,7 @@ describe('Case Share Real API', () => {
       // Use real test data from stubs
       const woodfordUsers = testOrgs[0].users; // Woodford solicitors users
       const mockPrdUsers: { users: PRDRawUserModel[] } = {
-        users: woodfordUsers.map(user => convertUserToPRDFormat(user))
+        users: woodfordUsers.map((user) => convertUserToPRDFormat(user))
       };
 
       req = mockReq({});
@@ -123,16 +122,16 @@ describe('Case Share Real API', () => {
       const actualUrl = handleGetStub.firstCall.args[0];
       expect(actualUrl).to.include('/refdata/external/v1/organisations/users?returnRoles=false&status=active');
 
-      const expectedUsers: UserDetails[] = woodfordUsers.map(user => ({
+      const expectedUsers: UserDetails[] = woodfordUsers.map((user) => ({
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         idamId: user.idamId
       }));
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(expectedUsers);
-      
+
       // Verify specific users from stub data
       const sentUsers = res.send.firstCall.args[0];
       expect(sentUsers).to.have.lengthOf(4);
@@ -185,7 +184,7 @@ describe('Case Share Real API', () => {
       // Use all users from both organisations in stubs
       const allUsers = testUsers;
       const mockPrdUsers: { users: PRDRawUserModel[] } = {
-        users: allUsers.map(user => convertUserToPRDFormat(user))
+        users: allUsers.map((user) => convertUserToPRDFormat(user))
       };
 
       req = mockReq({});
@@ -195,10 +194,10 @@ describe('Case Share Real API', () => {
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledOnce;
-      
+
       const sentUsers = res.send.firstCall.args[0];
       expect(sentUsers).to.have.lengthOf(8); // 4 from each organisation
-      
+
       // Verify users from both organisations
       const userEmails = sentUsers.map((u: UserDetails) => u.email);
       expect(userEmails).to.include('joe.elliott@woodford.com');
@@ -209,15 +208,15 @@ describe('Case Share Real API', () => {
       req = mockReq({});
       const mockPrdUsers = { users: [] };
       handleGetStub.resolves({ status: 200, data: mockPrdUsers });
-      
+
       await getUsers(req, res, next);
-      
+
       // Verify the URL is constructed correctly with PRD endpoint
       const actualUrl = handleGetStub.firstCall.args[0];
       expect(actualUrl).to.include('/refdata/external/v1/organisations/users');
-      
+
       // The configuration should have been called during module import
-      const configCalls = getConfigValueStub.getCalls().map(call => call.args[0]);
+      const configCalls = getConfigValueStub.getCalls().map((call) => call.args[0]);
       expect(configCalls).to.include('services.prd.api');
     });
   });
@@ -230,7 +229,7 @@ describe('Case Share Real API', () => {
       };
 
       // Use actual case IDs from stub data
-      const caseIds = testSharedCases.map(c => c.caseId).join(',');
+      const caseIds = testSharedCases.map((c) => c.caseId).join(',');
       req = mockReq({
         query: { case_ids: caseIds }
       });
@@ -243,10 +242,10 @@ describe('Case Share Real API', () => {
       expect(actualUrl).to.include(`/case-assignments?case_ids=${caseIds}`);
 
       expect(res.status).to.have.been.calledWith(200);
-      
+
       const sentCases = res.send.firstCall.args[0];
       expect(sentCases).to.have.lengthOf(3);
-      
+
       // Verify first case from stub data
       expect(sentCases[0]).to.deep.equal({
         caseId: '1573922332670942',
@@ -268,7 +267,7 @@ describe('Case Share Real API', () => {
           }
         ]
       });
-      
+
       // Verify third case has users from different organisation
       expect(sentCases[2].caseTitle).to.equal('Sam Green Vs Williams Lee');
       expect(sentCases[2].sharedWith).to.have.lengthOf(3);
@@ -344,9 +343,9 @@ describe('Case Share Real API', () => {
 
     it('should successfully share cases using stub data users', async () => {
       // Use real users from stub data
-      const joeElliott = testUsers.find(u => u.idamId === 'u111111');
-      const anneDellar = testUsers.find(u => u.idamId === 'u555555');
-      
+      const joeElliott = testUsers.find((u) => u.idamId === 'u111111');
+      const anneDellar = testUsers.find((u) => u.idamId === 'u555555');
+
       req.body.sharedCases = [
         {
           caseId: testSharedCases[0].caseId,
@@ -362,7 +361,7 @@ describe('Case Share Real API', () => {
       await assignCases(req, res);
 
       expect(sendPostStub).to.have.been.calledTwice; // Once for each user
-      
+
       // Verify first call for Joe Elliott
       const firstCall = sendPostStub.firstCall;
       expect(firstCall.args[0]).to.include('/case-assignments?use_user_token=true');
@@ -371,7 +370,7 @@ describe('Case Share Real API', () => {
         case_id: '1573922332670942',
         case_type_id: 'Asylum'
       });
-      
+
       // Verify second call for Anne Dellar
       const secondCall = sendPostStub.secondCall;
       expect(secondCall.args[1]).to.deep.equal({
@@ -391,7 +390,7 @@ describe('Case Share Real API', () => {
       // Use a real case that already has shared users
       const existingCase = testSharedCases[1]; // Neha case
       const jamesPriest = existingCase.sharedWith.find((u: any) => u.idamId === 'u333333');
-      
+
       req.body.sharedCases = [
         {
           caseId: existingCase.caseId,
@@ -411,7 +410,7 @@ describe('Case Share Real API', () => {
       expect(sendDeleteStub).to.have.been.calledOnce;
       const actualUrl = sendDeleteStub.firstCall.args[0];
       expect(actualUrl).to.include('/case-assignments');
-      
+
       const expectedUnassignment: UnassignedCaseModel = {
         assignee_id: 'u333333',
         case_id: '1573925439311211',
@@ -423,7 +422,7 @@ describe('Case Share Real API', () => {
 
       expect(res.status).to.have.been.calledWith(201);
       const response = res.send.firstCall.args[0];
-      
+
       // James Priest should be removed, only Shaun Coldwell should remain
       expect(response[0].sharedWith).to.have.lengthOf(1);
       expect(response[0].sharedWith[0].idamId).to.equal('u444444');
@@ -434,8 +433,8 @@ describe('Case Share Real API', () => {
       // Use the third case and mix users from different orgs
       const samGreenCase = testSharedCases[2];
       const kateGrant = samGreenCase.sharedWith.find((u: any) => u.idamId === 'u666666');
-      const newUser = testUsers.find(u => u.idamId === 'u111111'); // Joe from different org
-      
+      const newUser = testUsers.find((u) => u.idamId === 'u111111'); // Joe from different org
+
       req.body.sharedCases = [
         {
           caseId: samGreenCase.caseId,
@@ -457,14 +456,14 @@ describe('Case Share Real API', () => {
 
       expect(sendPostStub).to.have.been.calledOnce;
       expect(sendDeleteStub).to.have.been.calledOnce;
-      
+
       // Verify share operation
       expect(sendPostStub.firstCall.args[1]).to.deep.equal({
         assignee_id: 'u111111',
         case_id: '1574006431043307',
         case_type_id: 'FT_MultipleAppellantComplex'
       });
-      
+
       // Verify unshare operation
       expect(sendDeleteStub.firstCall.args[1]).to.deep.equal({
         unassignments: [{
@@ -473,10 +472,10 @@ describe('Case Share Real API', () => {
           case_roles: ['[CASEWORKER]']
         }]
       });
-      
+
       expect(res.status).to.have.been.calledWith(201);
       const response = res.send.firstCall.args[0];
-      
+
       // Should have 3 users: original 3 - Kate + Joe = 3
       expect(response[0].sharedWith).to.have.lengthOf(3);
       const userIds = response[0].sharedWith.map((u: UserDetails) => u.idamId);
@@ -490,7 +489,7 @@ describe('Case Share Real API', () => {
       const case1 = testSharedCases[0];
       const case2 = testSharedCases[1];
       const lambbrooksUsers = testOrgs[1].users.slice(0, 2); // Anne and Kate
-      
+
       req.body.sharedCases = [
         {
           caseId: case1.caseId,
@@ -503,7 +502,7 @@ describe('Case Share Real API', () => {
           caseId: case2.caseId,
           caseTypeId: 'Asylum',
           caseTitle: case2.caseTitle,
-          pendingShares: [testUsers.find(u => u.idamId === 'u888888')], // Joel
+          pendingShares: [testUsers.find((u) => u.idamId === 'u888888')], // Joel
           sharedWith: case2.sharedWith
         }
       ];
@@ -514,21 +513,21 @@ describe('Case Share Real API', () => {
 
       expect(sendPostStub).to.have.been.calledThrice; // 2 for case1, 1 for case2
       expect(res.status).to.have.been.calledWith(201);
-      
+
       const response = res.send.firstCall.args[0];
-      
+
       // Verify case 1 now has original 2 + 2 new = 4 users
       expect(response[0].sharedWith).to.have.lengthOf(4);
-      
+
       // Verify case 2 now has original 2 + 1 new = 3 users
       expect(response[1].sharedWith).to.have.lengthOf(3);
     });
 
     it('should handle partial failures with stub data', async () => {
       // Try to share with users where one will fail
-      const steveHarrison = testUsers.find(u => u.idamId === 'u222222');
-      const jamesPriest = testUsers.find(u => u.idamId === 'u333333');
-      
+      const steveHarrison = testUsers.find((u) => u.idamId === 'u222222');
+      const jamesPriest = testUsers.find((u) => u.idamId === 'u333333');
+
       req.body.sharedCases = [
         {
           caseId: testSharedCases[0].caseId,
@@ -560,16 +559,16 @@ describe('Case Share Real API', () => {
 
       expect(sendPostStub).to.have.been.calledTwice;
       expect(res.status).to.have.been.calledWith(201);
-      
+
       const response = res.send.firstCall.args[0];
       // Original 2 + Steve = 3 users
       expect(response[0].sharedWith).to.have.lengthOf(3);
-      
+
       // Steve should be added
       const addedUser = response[0].sharedWith.find((u: UserDetails) => u.idamId === 'u222222');
       expect(addedUser).to.exist;
       expect(addedUser.email).to.equal('steve.harrison@woodford.com');
-      
+
       // James should remain in pendingShares
       expect(response[0].pendingShares).to.have.lengthOf(1);
       expect(response[0].pendingShares[0].idamId).to.equal('u333333');
@@ -761,7 +760,7 @@ describe('Case Share Real API', () => {
       // Test sharing cases across different organisations using stub data
       const woodfordCase = testSharedCases[0]; // Currently shared with Woodford users
       const lambbrooksUsers = testOrgs[1].users; // All Lambbrooks users
-      
+
       req.body.sharedCases = [
         {
           caseId: woodfordCase.caseId,
@@ -779,19 +778,19 @@ describe('Case Share Real API', () => {
 
       expect(sendPostStub).to.have.callCount(4); // One for each Lambbrooks user
       expect(res.status).to.have.been.calledWith(201);
-      
+
       const response = res.send.firstCall.args[0];
       // Original 2 Woodford + 4 Lambbrooks = 6 users
       expect(response[0].sharedWith).to.have.lengthOf(6);
-      
+
       // Verify mix of organisations
       const emails = response[0].sharedWith.map((u: UserDetails) => u.email);
       const woodfordEmails = emails.filter((e: string) => e.includes('woodford.com'));
       const lambbrooksEmails = emails.filter((e: string) => e.includes('lambbrooks.com'));
-      
+
       expect(woodfordEmails).to.have.lengthOf(2);
       expect(lambbrooksEmails).to.have.lengthOf(4);
-      
+
       // Verify specific users
       expect(emails).to.include.members([
         'anne.deller@lambbrooks.com',
@@ -806,17 +805,17 @@ describe('Case Share Real API', () => {
         caseId: 'case-123',
         pendingShares: [{ idamId: 'user-123' }]
       }];
-      
+
       sendPostStub.resolves({ status: 201 });
-      
+
       await assignCases(req, res);
-      
+
       // Verify the URL is constructed correctly
       const actualUrl = sendPostStub.firstCall.args[0];
       expect(actualUrl).to.include('/case-assignments?use_user_token=true');
-      
+
       // The configuration should have been called during module import
-      const configCalls = getConfigValueStub.getCalls().map(call => call.args[0]);
+      const configCalls = getConfigValueStub.getCalls().map((call) => call.args[0]);
       expect(configCalls).to.include('services.ccd.caseAssignmentApi');
     });
   });

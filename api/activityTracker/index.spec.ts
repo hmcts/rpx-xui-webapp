@@ -26,7 +26,7 @@ describe('Activity Tracker', () => {
       debug: sandbox.stub()
     };
     sandbox.stub(log4jui, 'getLogger').returns(loggerStub);
-    
+
     const activityTracker = require('./index');
     activityTrackerProxyRequest = activityTracker.activityTrackerProxyRequest;
     activityTrackerProxyResponse = activityTracker.activityTrackerProxyResponse;
@@ -42,9 +42,9 @@ describe('Activity Tracker', () => {
     loggerStub.error.resetHistory();
     loggerStub.warn.resetHistory();
     loggerStub.debug.resetHistory();
-    
+
     proxyReq = {};
-    
+
     res = mockRes();
   });
 
@@ -214,10 +214,10 @@ describe('Activity Tracker', () => {
 
     it('should return the json parameter unchanged', async () => {
       req = mockReq({});
-      const complexJson = { 
-        nested: { 
+      const complexJson = {
+        nested: {
           data: 'value',
-          array: [1, 2, 3] 
+          array: [1, 2, 3]
         },
         status: 'success'
       };
@@ -320,7 +320,7 @@ describe('Activity Tracker', () => {
     it('should create logger only once (module-level)', () => {
       // The logger should have been created when we imported the module in the before hook
       expect(log4jui.getLogger).to.have.been.calledWith('proxy');
-      
+
       // Verify it was called only once despite multiple tests
       const getLoggerStub = log4jui.getLogger as sinon.SinonStub;
       expect(getLoggerStub.calledOnce).to.be.true;

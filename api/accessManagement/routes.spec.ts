@@ -16,7 +16,7 @@ describe('Access Management Routes', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    
+
     mockRouter = {
       use: sandbox.stub(),
       get: sandbox.stub(),
@@ -85,16 +85,16 @@ describe('Access Management Routes', () => {
 
       const postCalls = mockRouter.post.getCalls();
       expect(postCalls).to.have.lengthOf(4);
-      
+
       expect(postCalls[0].args[0]).to.equal('/createBooking');
       expect(postCalls[0].args[1]).to.equal(index.createBooking);
-      
+
       expect(postCalls[1].args[0]).to.equal('/getBookings');
       expect(postCalls[1].args[1]).to.equal(index.getBookings);
-      
+
       expect(postCalls[2].args[0]).to.equal('/role-mapping/judicial/refresh');
       expect(postCalls[2].args[1]).to.equal(index.refreshRoleAssignments);
-      
+
       expect(postCalls[3].args[0]).to.equal('/specific-access-approval');
       expect(postCalls[3].args[1]).to.equal(index.approveSpecificAccessRequest);
     });
@@ -140,7 +140,7 @@ describe('Access Management Routes', () => {
       expect(mockRouter.put).to.not.have.been.called;
       expect(mockRouter.delete).to.not.have.been.called;
       expect(mockRouter.patch).to.not.have.been.called;
-      
+
       expect(mockRouter.post).to.have.been.called;
       expect(mockRouter.post.callCount).to.equal(4);
     });
@@ -163,7 +163,7 @@ describe('Access Management Routes', () => {
       const routes2 = require('./routes');
 
       expect(routes1).to.equal(routes2);
-      
+
       expect(mockRouter.use).to.not.have.been.called;
       expect(mockRouter.post).to.not.have.been.called;
     });

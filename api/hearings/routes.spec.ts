@@ -176,16 +176,16 @@ describe('Hearings Routes', () => {
         '/cancelHearings',
         '/deleteLinkedHearingGroup'
       ];
-      mockRouter.get.getCalls().forEach(call => {
+      mockRouter.get.getCalls().forEach((call) => {
         expect(allowedGetRoutes).to.include(call.args[0]);
       });
-      mockRouter.post.getCalls().forEach(call => {
+      mockRouter.post.getCalls().forEach((call) => {
         expect(allowedPostRoutes).to.include(call.args[0]);
       });
-      mockRouter.put.getCalls().forEach(call => {
+      mockRouter.put.getCalls().forEach((call) => {
         expect(allowedPutRoutes).to.include(call.args[0]);
       });
-      mockRouter.delete.getCalls().forEach(call => {
+      mockRouter.delete.getCalls().forEach((call) => {
         expect(allowedDeleteRoutes).to.include(call.args[0]);
       });
     });

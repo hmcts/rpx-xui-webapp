@@ -17,7 +17,7 @@ describe('Case Share Routes', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    
+
     mockRouter = {
       get: sandbox.stub(),
       post: sandbox.stub(),
@@ -27,7 +27,7 @@ describe('Case Share Routes', () => {
     };
 
     expressStub = sandbox.stub(express, 'Router').returns(mockRouter);
-    
+
     delete require.cache[require.resolve('./routes')];
   });
 
@@ -46,7 +46,7 @@ describe('Case Share Routes', () => {
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
-      const orgsCall = getCalls.find(call => call.args[0] === '/orgs');
+      const orgsCall = getCalls.find((call) => call.args[0] === '/orgs');
       expect(orgsCall).to.exist;
       expect(orgsCall.args[1].name).to.equal('handleGetOrganisationsRoute');
     });
@@ -55,7 +55,7 @@ describe('Case Share Routes', () => {
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
-      const usersCall = getCalls.find(call => call.args[0] === '/users');
+      const usersCall = getCalls.find((call) => call.args[0] === '/users');
       expect(usersCall).to.exist;
       expect(usersCall.args[1].name).to.equal('getUsers');
     });
@@ -64,7 +64,7 @@ describe('Case Share Routes', () => {
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
-      const casesCall = getCalls.find(call => call.args[0] === '/cases');
+      const casesCall = getCalls.find((call) => call.args[0] === '/cases');
       expect(casesCall).to.exist;
       expect(casesCall.args[1].name).to.equal('getCases');
     });
@@ -73,7 +73,7 @@ describe('Case Share Routes', () => {
       require('./routes');
 
       const postCalls = mockRouter.post.getCalls();
-      const caseAssignmentsCall = postCalls.find(call => call.args[0] === '/case-assignments');
+      const caseAssignmentsCall = postCalls.find((call) => call.args[0] === '/case-assignments');
       expect(caseAssignmentsCall).to.exist;
       expect(caseAssignmentsCall.args[1].name).to.equal('assignCasesToUsers');
     });
@@ -82,7 +82,7 @@ describe('Case Share Routes', () => {
       require('./routes');
 
       const getCalls = mockRouter.get.getCalls();
-      const caseAssignmentsCall = getCalls.find(call => call.args[0] === '/case-assignments');
+      const caseAssignmentsCall = getCalls.find((call) => call.args[0] === '/case-assignments');
       expect(caseAssignmentsCall).to.exist;
       expect(caseAssignmentsCall.args[1].name).to.equal('getCases');
     });
@@ -92,20 +92,20 @@ describe('Case Share Routes', () => {
 
       const getCalls = mockRouter.get.getCalls();
       const postCalls = mockRouter.post.getCalls();
-      
+
       expect(getCalls).to.have.lengthOf(4);
       expect(getCalls[0].args[0]).to.equal('/orgs');
       expect(getCalls[0].args[1].name).to.equal('handleGetOrganisationsRoute');
-      
+
       expect(getCalls[1].args[0]).to.equal('/users');
       expect(getCalls[1].args[1].name).to.equal('getUsers');
-      
+
       expect(getCalls[2].args[0]).to.equal('/cases');
       expect(getCalls[2].args[1].name).to.equal('getCases');
-      
+
       expect(getCalls[3].args[0]).to.equal('/case-assignments');
       expect(getCalls[3].args[1].name).to.equal('getCases');
-      
+
       expect(postCalls).to.have.lengthOf(1);
       expect(postCalls[0].args[0]).to.equal('/case-assignments');
       expect(postCalls[0].args[1].name).to.equal('assignCasesToUsers');

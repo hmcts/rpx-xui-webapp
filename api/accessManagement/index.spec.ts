@@ -12,7 +12,7 @@ import * as workAllocation from '../workAllocation';
 import * as locationService from '../workAllocation/locationService';
 import * as lau from '../services/lau';
 import { mockLocations } from '../locations/locationTestData.spec';
-import { bookings, bookingResponse } from './data/booking.mock.data'
+import { bookings, bookingResponse } from './data/booking.mock.data';
 import {
   getBookings,
   createBooking,
@@ -32,14 +32,14 @@ describe('Access Management', (): void => {
   let next: sinon.SinonStub;
   let httpPostStub: sinon.SinonStub;
   let setHeadersStub: sinon.SinonStub;
-  
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     next = sandbox.stub();
     httpPostStub = sandbox.stub(http, 'post');
     setHeadersStub = sandbox.stub(proxy, 'setHeaders');
   });
-  
+
   afterEach(() => {
     sandbox.restore();
   });
@@ -63,59 +63,59 @@ describe('Access Management', (): void => {
       req.body.bookableServices = [];
 
       await getBookings(req, res, next);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith([]);
       expect(httpPostStub).to.not.have.been.called;
       expect(next).to.not.have.been.called;
-  });
+    });
 
-  it('should fetch bookings and enrich with location names', async () => {
+    it('should fetch bookings and enrich with location names', async () => {
     // Note: The external API returns 'base_location_id' but we need to map it to 'LocationId'
     // for the enrichment logic to work correctly.
-    const mockBookings = {
-      status: 200,
-      data: {
-        bookings: [
-          { ...bookings.bookings[0], locationId: bookings.bookings[0].base_location_id },
-          { ...bookings.bookings[1], locationId: bookings.bookings[1].base_location_id },
-          { ...bookings.bookings[2], locationId: bookings.bookings[2].base_location_id }
-        ]
-      }
-    };
+      const mockBookings = {
+        status: 200,
+        data: {
+          bookings: [
+            { ...bookings.bookings[0], locationId: bookings.bookings[0].base_location_id },
+            { ...bookings.bookings[1], locationId: bookings.bookings[1].base_location_id },
+            { ...bookings.bookings[2], locationId: bookings.bookings[2].base_location_id }
+          ]
+        }
+      };
 
-    httpPostStub.resolves(mockBookings);
-    getFullLocationsStub.resolves(mockLocations);
+      httpPostStub.resolves(mockBookings);
+      getFullLocationsStub.resolves(mockLocations);
 
-    await getBookings(req, res, next);
+      await getBookings(req, res, next);
 
-    expect(httpPostStub).to.have.been.calledOnce;
-    expect(httpPostStub.firstCall.args[1]).to.deep.equal({
-      queryRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] }
+      expect(httpPostStub).to.have.been.calledOnce;
+      expect(httpPostStub.firstCall.args[1]).to.deep.equal({
+        queryRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] }
+      });
+      expect(setHeadersStub).to.have.been.calledWith(req);
+      expect(getFullLocationsStub).to.have.been.calledWith(req);
+      expect(res.status).to.have.been.calledWith(200);
+
+      // Verify the enriched bookings
+      const sentData = res.send.getCall(0).args[0];
+      expect(sentData).to.be.an('array').that.has.lengthOf(3);
+      expect(sentData[0]).to.deep.include({
+        locationId: '765324',
+        locationName: null // not found in mockLocations
+      });
+      expect(sentData[1]).to.deep.include({
+        locationId: '231596',
+        locationName: 'Glasgow New Central Court' // found in mockLocations
+      });
+      expect(sentData[2]).to.deep.include({
+        locationId: '512401',
+        locationName: null // not found in mockLocations
+      });
+      expect(next).to.not.have.been.called;
     });
-    expect(setHeadersStub).to.have.been.calledWith(req);
-    expect(getFullLocationsStub).to.have.been.calledWith(req);
-    expect(res.status).to.have.been.calledWith(200);
 
-    // Verify the enriched bookings
-    const sentData = res.send.getCall(0).args[0];
-    expect(sentData).to.be.an('array').that.has.lengthOf(3);
-    expect(sentData[0]).to.deep.include({
-      locationId: '765324',
-      locationName: null, // not found in mockLocations
-    });
-    expect(sentData[1]).to.deep.include({
-      locationId: '231596',
-      locationName: 'Glasgow New Central Court', // found in mockLocations
-    });
-    expect(sentData[2]).to.deep.include({
-      locationId: '512401',
-      locationName: null // not found in mockLocations
-    });
-    expect(next).to.not.have.been.called;
-});
-
-it('should handle errors and call next', async () => {
+    it('should handle errors and call next', async () => {
       const error = new Error('API Error');
       httpPostStub.rejects(error);
 

@@ -85,7 +85,7 @@ describe('Amended Jurisdiction', () => {
   it('should return data unchanged when data is not an array', () => {
     const data = 'not an array';
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-    
+
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data as any);
     expect(response).to.equal(data);
   });
@@ -93,7 +93,7 @@ describe('Amended Jurisdiction', () => {
   it('should return null when data is null', () => {
     const data = null;
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-    
+
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
     expect(response).to.equal(null);
   });
@@ -101,7 +101,7 @@ describe('Amended Jurisdiction', () => {
   it('should return undefined when data is undefined', () => {
     const data = undefined;
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-    
+
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
     expect(response).to.equal(undefined);
   });
@@ -113,9 +113,9 @@ describe('Amended Jurisdiction', () => {
       { id: 'UNKNOWN' }
     ];
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-    
+
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
-    
+
     expect(req.session.jurisdictions).to.deep.equal([
       { id: 'PROBATE' },
       { id: 'DIVORCE' }
@@ -170,7 +170,7 @@ describe('Amended Jurisdiction', () => {
 
     it('should handle jurisdictions URL with different patterns', () => {
       req.session.jurisdictions = [{ id: 'PROBATE' }];
-      
+
       // Test various jurisdiction URL patterns
       const jurisdictionUrls = [
         'aggregated/caseworkers/123/jurisdictions?access=read',
@@ -178,13 +178,13 @@ describe('Amended Jurisdiction', () => {
         'aggregated/users/abc/jurisdictions?'
       ];
 
-      jurisdictionUrls.forEach(url => {
+      jurisdictionUrls.forEach((url) => {
         req.url = url;
         res.send.resetHistory();
         proxyReq.end.resetHistory();
-        
+
         amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
-        
+
         expect(res.send).to.have.been.calledWith(req.session.jurisdictions);
         expect(proxyReq.end).to.have.been.called;
       });
@@ -192,22 +192,22 @@ describe('Amended Jurisdiction', () => {
 
     it('should not match URLs without jurisdictions pattern', () => {
       req.session.jurisdictions = [{ id: 'PROBATE' }];
-      
+
       // Test URLs that should not match
       const nonJurisdictionUrls = [
-        'aggregated/caseworkers/123/jurisdictions',  // No ? at the end
-        'api/jurisdictions?access=read',             // No aggregated prefix
-        'aggregated/jurisdictions',                  // Missing path before jurisdictions
-        'aggregated/users/jurisdiction?'             // Wrong word (jurisdiction vs jurisdictions)
+        'aggregated/caseworkers/123/jurisdictions', // No ? at the end
+        'api/jurisdictions?access=read', // No aggregated prefix
+        'aggregated/jurisdictions', // Missing path before jurisdictions
+        'aggregated/users/jurisdiction?' // Wrong word (jurisdiction vs jurisdictions)
       ];
 
-      nonJurisdictionUrls.forEach(url => {
+      nonJurisdictionUrls.forEach((url) => {
         req.url = url;
         res.send.resetHistory();
         proxyReq.end.resetHistory();
-        
+
         amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
-        
+
         expect(res.send).to.not.have.been.called;
         expect(proxyReq.end).to.not.have.been.called;
       });

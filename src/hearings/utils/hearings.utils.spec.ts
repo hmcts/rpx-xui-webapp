@@ -10,6 +10,7 @@ import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { Section } from '../models/section';
 import * as moment from 'moment';
+import { LovRefDataModel } from '../models/lovRefData.model';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -801,5 +802,142 @@ describe('HearingsUtils', () => {
     // eslint-disable-next-line dot-notation
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
+  });
+});
+
+describe('returnPanelRoles', () => {
+  // Helper factory function to create panel roles test data
+  const createTestPanelRoles = (): LovRefDataModel[] => {
+    return [
+      {
+        key: 'role1',
+        value_en: 'Role 1',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: [
+          {
+            key: 'spec1',
+            value_en: 'Specialization 1',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role1',
+            child_nodes: []
+          }
+        ]
+      },
+      {
+        key: 'role2',
+        value_en: 'Role 2',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: []
+      },
+      {
+        key: 'role3',
+        value_en: 'Role 3',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 3,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: []
+      }
+    ];
+  };
+
+  it('should return formatted panel roles with separator', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2', 'role3'];
+    const selectedPanelSpecialism = ['spec1'];
+    const separator = ', ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2, Role 3, Role 1 - Specialization 1');
+  });
+
+  it('should handle empty selections', () => {
+    const panelRoles = createTestPanelRoles();
+    const result = HearingsUtils.returnPanelRoles(
+      [],
+      [],
+      panelRoles,
+      '; '
+    );
+
+    expect(result).toBe('');
+  });
+
+  it('should handle roles with no matching specialisms', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2'];
+    const selectedPanelSpecialism = ['spec2']; // This doesn't exist
+    const separator = ' | ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2');
+  });
+
+  it('should use different separators correctly', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2'];
+    const selectedPanelSpecialism = ['spec1'];
+    const separator = ' | ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2 | Role 1 - Specialization 1');
+  });
+
+  it('should ignore roles that do not match', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role4']; // This doesn't exist
+    const selectedPanelSpecialism = [];
+    const separator = ', ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('');
   });
 });

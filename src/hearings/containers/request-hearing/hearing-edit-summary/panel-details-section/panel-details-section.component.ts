@@ -4,6 +4,7 @@ import { MemberType, RadioOptions, RequirementType } from '../../../../models/he
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-panel-details-section',
@@ -85,33 +86,9 @@ export class PanelDetailsSectionComponent implements OnInit {
   }
 
   private getPanelRoles(): string {
-    const panelRolesRequired: string[] = [];
-    this.panelRequirements?.roleType?.forEach((roleType) => {
-      let selectedPanelRole = '';
-      this.panelRolesRefData.forEach((panelRole) => {
-        if (panelRole.key === roleType) {
-          selectedPanelRole = panelRole.value_en;
-          panelRolesRequired.push(selectedPanelRole);
-        }
-      });
-    });
-    this.panelRequirements?.panelSpecialisms?.forEach((panelSpecialism) => {
-      let selectedSpecialism = '';
-      this.panelRolesRefData.forEach((panelRole) => {
-        if (panelRole.key === panelSpecialism) {
-          selectedSpecialism = panelRole.value_en;
-        } else if (panelRole.child_nodes?.length > 0) {
-          panelRole.child_nodes.forEach((specialism) => {
-            if (panelSpecialism === specialism.key && !selectedSpecialism.length) {
-              selectedSpecialism = `${panelRole.value_en} - ${specialism.value_en}`;
-            }
-          });
-        }
-      });
-      if (selectedSpecialism.length > 0){
-        panelRolesRequired.push(selectedSpecialism);
-      }
-    });
-    return panelRolesRequired.join(',');
+    const roleTypes = this.panelRequirements?.roleType || [];
+    const panelSpecialisms = this.panelRequirements?.panelSpecialisms || [];
+
+    return HearingsUtils.returnPanelRoles(panelSpecialisms, roleTypes, this.panelRolesRefData, ',');
   }
 }

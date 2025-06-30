@@ -49,7 +49,8 @@ export class PanelDetailsSectionComponent implements OnInit {
   private getHearingPanel(): string {
     const panelMembers = this.panelRequirements?.panelPreferences?.filter((preference) => preference.memberType === MemberType.PANEL_MEMBER).length || 0;
     const panelSpecialisms = this.panelRequirements?.panelSpecialisms?.length || 0;
-    if (panelMembers > 0 || panelSpecialisms > 0) {
+    const roleTypes = this.panelRequirements?.roleType?.length || 0;
+    if (panelMembers > 0 || panelSpecialisms > 0 || roleTypes > 0) {
       return RadioOptions.YES;
     }
     return RadioOptions.NO;
@@ -84,7 +85,16 @@ export class PanelDetailsSectionComponent implements OnInit {
   }
 
   private getPanelRoles(): string {
-    const selectedSpecialisms: string[] = [];
+    const panelRolesRequired: string[] = [];
+    this.panelRequirements?.roleType?.forEach((roleType) => {
+      let selectedPanelRole = '';
+      this.panelRolesRefData.forEach((panelRole) => {
+        if (panelRole.key === roleType) {
+          selectedPanelRole = panelRole.value_en;
+          panelRolesRequired.push(selectedPanelRole);
+        }
+      });
+    });
     this.panelRequirements?.panelSpecialisms?.forEach((panelSpecialism) => {
       let selectedSpecialism = '';
       this.panelRolesRefData.forEach((panelRole) => {
@@ -98,8 +108,10 @@ export class PanelDetailsSectionComponent implements OnInit {
           });
         }
       });
-      selectedSpecialisms.push(selectedSpecialism);
+      if (selectedSpecialism.length > 0){
+        panelRolesRequired.push(selectedSpecialism);
+      }
     });
-    return selectedSpecialisms.join('<br>');
+    return panelRolesRequired.join(',');
   }
 }

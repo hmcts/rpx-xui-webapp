@@ -430,15 +430,9 @@ describe('Hearings Services', () => {
     let loggerStub: sinon.SinonStub;
 
     beforeEach(() => {
-      if (!crudService.sendGet.restore) {
-        sendGetStub = sandbox.stub(crudService, 'sendGet');
-      } else {
-        sendGetStub = crudService.sendGet as sinon.SinonStub;
-      }
+      sendGetStub = sandbox.stub(crudService, 'sendGet');
       loggerStub = sandbox.stub();
-      if (!log4jui.getLogger.restore) {
-        sandbox.stub(log4jui, 'getLogger').returns({ error: loggerStub } as any);
-      }
+      sandbox.stub(log4jui, 'getLogger').returns({ error: loggerStub } as any);
     });
 
     it('should fetch hearings and map statuses correctly', async () => {

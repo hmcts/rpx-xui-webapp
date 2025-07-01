@@ -86,6 +86,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.hearingStore.dispatch(new fromHearingStore.StoreJurisdictionAndCaseRef({ jurisdictionId: this.jurisdiction, caseReference: this.caseId, caseType: this.caseType }));
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
     this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
 
     this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((serviceHearingValuesModel) => {

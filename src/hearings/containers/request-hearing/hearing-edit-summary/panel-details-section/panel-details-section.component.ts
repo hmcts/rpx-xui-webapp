@@ -148,8 +148,8 @@ export class PanelDetailsSectionComponent implements OnInit {
       let specialismDifference: boolean;
       if (roleTypes.length && compareRoleTypes.length) {
         roleDifferece = !_.isEqual(
-          roleTypes.sort((a, b) => a.localeCompare(b)),
-          compareRoleTypes.sort((a, b) => a.localeCompare(b))
+          [...roleTypes].sort((a, b) => a.localeCompare(b)),
+          [...compareRoleTypes].sort((a, b) => a.localeCompare(b))
         );
       } else {
         roleDifferece = !_.isEqual(roleTypes.length, compareRoleTypes.length);
@@ -157,8 +157,8 @@ export class PanelDetailsSectionComponent implements OnInit {
 
       if (specialisms.length && compareSpecialisms.length) {
         specialismDifference = !_.isEqual(
-          specialisms.sort((a, b) => a.localeCompare(b)),
-          compareSpecialisms.sort((a, b) => a.localeCompare(b))
+          [...specialisms].sort((a, b) => a.localeCompare(b)),
+          [...compareSpecialisms].sort((a, b) => a.localeCompare(b))
         );
       } else {
         specialismDifference = !_.isEqual(specialisms.length, compareSpecialisms.length);

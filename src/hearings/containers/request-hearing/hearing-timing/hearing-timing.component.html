@@ -39,6 +39,9 @@
                     name="durationmins" type="text" inputmode="numeric" value="" formControlName="minutes">
                 </div>
               </div>
+              <exui-amendment-label id="length-of-hearing-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && durationChanged"
+                                    [displayLabel]="amendmentLabelEnum.AMENDED">
+              </exui-amendment-label>
             </div>
           </fieldset>
         </div>
@@ -48,9 +51,7 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h3 class="govuk-fieldset__heading">
               {{ 'Does the hearing need to take place on a specific date?' | rpxTranslate }}
-              <exui-amendment-label id="hearing-specific-dates-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && (dateRangeStartChanged || dateRangeEndChanged || firstDateTimeMustBeChanged)"
-                [displayLabel]="amendmentLabelEnum.ACTION_NEEDED">
-              </exui-amendment-label>
+
             </h3>
           </legend>
           <div class="govuk-hint">{{ 'Availability of all the parties will be taken into account when scheduling this hearing' | rpxTranslate }}</div>

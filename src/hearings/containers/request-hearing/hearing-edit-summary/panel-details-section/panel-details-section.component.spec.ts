@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MemberType, RequirementType } from '../../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
@@ -237,6 +238,7 @@ describe('PanelDetailsSectionComponent', () => {
       declarations: [
         PanelDetailsSectionComponent
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: []
     }).compileComponents();
 
@@ -277,5 +279,33 @@ describe('PanelDetailsSectionComponent', () => {
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
       fragmentId: 'panelRoles', changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
     });
+  });
+  it('should set amendment labels correctly', () => {
+    // Arrange: set up different panelRequirements and panelRequirementsToCompare
+    component.panelRequirements = {
+      panelPreferences: [
+        { memberID: '1', memberType: MemberType.JUDGE, requirementType: RequirementType.MUSTINC },
+        { memberID: '2', memberType: MemberType.PANEL_MEMBER, requirementType: RequirementType.EXCLUDE }
+      ],
+      panelSpecialisms: ['BBA3-DQPM'],
+      roleType: ['BBA3-RMM']
+    };
+    component.panelRequirementsToCompare = {
+      panelPreferences: [
+        { memberID: '1', memberType: MemberType.JUDGE, requirementType: RequirementType.MUSTINC }
+      ],
+      panelSpecialisms: ['BBA3-MQPM1-001'],
+      roleType: ['BBA3-RMM', 'BBA3-DQPM']
+    };
+
+    // Act
+    (component as any)['setAmendmentLabels']();
+
+    // Assert
+    expect(component.showAmmendedForNeedPanel).toBeFalse();
+    expect(component.showAmmendedForIncludedPanelNames).toBeFalse();
+    expect(component.showAmmendedForExcludedPanelNames).toBeTrue();
+    expect(component.showAmmendedForPanelType).toBeTrue();
+    expect(component.showAmendedLabelForPageTitle).toBeTrue();
   });
 });

@@ -32,17 +32,15 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
       refreshRoles = true;
       cachedUsers = [];
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-      
-      // Implement pagination to fetch all users across multiple pages
+
       let pageNumber = 0;
       let hasMoreData = true;
       let allUsers: StaffUserDetails[] = [];
-      
+
       while (hasMoreData) {
         const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
         const userResponse = await handleUsersGet(getUsersPath, req);
-        
-        // If response is empty or has fewer items than page size, we've reached the end
+
         if (!userResponse || userResponse.length === 0) {
           hasMoreData = false;
         } else {
@@ -55,7 +53,7 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
           pageNumber++;
         }
       }
-      
+
       // TODO: Response will be cached eventually via API so caching below should be removed eventually
       cachedUsers = getUniqueUsersFromResponse(allUsers);
     } else {
@@ -81,22 +79,18 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     const caseworkerHeaders = getRequestHeaders();
     const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
     cachedUsers = [];
-    
-    // Implement pagination to fetch all users across multiple pages
+
     let pageNumber = 0;
     let hasMoreData = true;
     let allUsers: StaffUserDetails[] = [];
-    
     while (hasMoreData) {
       const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
       const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
-      
-      // If response is empty or has fewer items than page size, we've reached the end
+
       if (!userResponse || userResponse.length === 0) {
         hasMoreData = false;
       } else {
         allUsers = [...allUsers, ...userResponse];
-        // Check if we received fewer items than the max page size
         const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
         if (userResponse.length < pageSize) {
           hasMoreData = false;
@@ -104,7 +98,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
         pageNumber++;
       }
     }
-    
+
     cachedUsers = getUniqueUsersFromResponse(allUsers);
     return cachedUsers;
   } catch (error) {

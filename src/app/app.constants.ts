@@ -13,7 +13,8 @@ const featureNames = {
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  accessManagementMode: 'access-management-mode'
+  accessManagementMode: 'access-management-mode',
+  enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
 };
 
 function featureToAttributeName(key: string): string {
@@ -29,7 +30,8 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
-  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)]
+  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)]
 ]);
 
 const footerDataNavigation = {

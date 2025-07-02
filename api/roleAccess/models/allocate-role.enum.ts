@@ -4,6 +4,7 @@ export enum TypeOfRole {
   CaseManager = 'Case manager',
 }
 
+// RoleCategory only to be used in the node layer and should match RoleCategory in common-lib
 export enum RoleCategory {
   JUDICIAL = 'JUDICIAL',
   LEGAL_OPERATIONS = 'LEGAL_OPERATIONS',

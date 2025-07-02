@@ -2,7 +2,7 @@ import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 
 import { getConfigValue } from '../configuration';
-import { IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
+import { CASEWORKER_PAGE_SIZE, IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
@@ -32,10 +32,30 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
       refreshRoles = true;
       cachedUsers = [];
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-      const userResponse = await handleUsersGet(getUsersPath, req);
+
+      let pageNumber = 0;
+      let hasMoreData = true;
+      let allUsers: StaffUserDetails[] = [];
+
+      while (hasMoreData) {
+        const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
+        const userResponse = await handleUsersGet(getUsersPath, req);
+
+        if (!userResponse || userResponse.length === 0) {
+          hasMoreData = false;
+        } else {
+          allUsers = [...allUsers, ...userResponse];
+          // Check if we received fewer items than the max page size
+          const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+          if (userResponse.length < pageSize) {
+            hasMoreData = false;
+          }
+          pageNumber++;
+        }
+      }
+
       // TODO: Response will be cached eventually via API so caching below should be removed eventually
-      cachedUsers = getUniqueUsersFromResponse(userResponse);
+      cachedUsers = getUniqueUsersFromResponse(allUsers);
     } else {
       refreshRoles = false;
     }
@@ -59,9 +79,27 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     const caseworkerHeaders = getRequestHeaders();
     const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
     cachedUsers = [];
-    const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-    const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
-    cachedUsers = getUniqueUsersFromResponse(userResponse);
+
+    let pageNumber = 0;
+    let hasMoreData = true;
+    let allUsers: StaffUserDetails[] = [];
+    while (hasMoreData) {
+      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
+      const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
+
+      if (!userResponse || userResponse.length === 0) {
+        hasMoreData = false;
+      } else {
+        allUsers = [...allUsers, ...userResponse];
+        const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+        if (userResponse.length < pageSize) {
+          hasMoreData = false;
+        }
+        pageNumber++;
+      }
+    }
+
+    cachedUsers = getUniqueUsersFromResponse(allUsers);
     return cachedUsers;
   } catch (error) {
     if (cachedUsers) {

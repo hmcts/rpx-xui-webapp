@@ -193,7 +193,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -212,7 +212,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -239,7 +239,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -266,7 +266,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: true,
           nonReasonableAdjustmentChangesConfirmed: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -286,7 +286,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: true,
           nonReasonableAdjustmentChangesConfirmed: true,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -306,7 +306,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: true,
           hearingUnavailabilityDatesChanged: false
@@ -326,7 +326,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: true,
           hearingFacilitiesChangesConfirmed: true,

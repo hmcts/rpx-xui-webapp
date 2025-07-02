@@ -55,49 +55,63 @@ class HeaderPage {
     this.headerCaseRefSearch = new HeaderSearch();
   }
 
-  get jcmLogoImg() {
+  getJcmLogoImg() {
     return elementByXpath("//img[@src='/assets/images/govuk-crest-jcm.png']");
   }
-  get myHMCTSHeader() {
+
+  getMyHMCTSHeader() {
     return elementByXpath("//span[contains(text(),'MyHMCTS')]");
   }
-  get headerLink() {
+
+  getHeaderLink() {
     return $('div.hmcts-header__container a.hmcts-header__link');
   }
-  get globalHeaderContainerWithStyle() {
+
+  getGlobalHeaderContainerWithStyle() {
     return elementByXpath('//exui-hmcts-global-header/..');
   }
-  get headerAppLogoLink() {
+
+  getHeaderAppLogoLink() {
     return $('.hmcts-header__logo a, .hmcts-header__container a.hmcts-header__link');
   }
-  get headerBanner() {
+
+  getHeaderBanner() {
     return $('exui-header header > div');
   }
-  get caseReferenceSearchBox() {
+
+  getCaseReferenceSearchBox() {
     return $('.hmcts-primary-navigation__search exui-case-reference-search-box');
   }
-  get primaryNavBar() {
+
+  getPrimaryNavBar() {
     return $('.hmcts-primary-navigation__container');
   }
-  get primaryNavBar_NavItems() {
+
+  getPrimaryNavBarNavItems() {
     return $('.hmcts-primary-navigation__nav ul');
   }
-  get headerMenuItems() {
+
+  getHeaderMenuItems() {
     return $$('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
   }
-  get primaryNavBar_rightSideItems() {
+
+  getPrimaryNavBarRightSideItems() {
     return $('.hmcts-primary-navigation__search ul');
   }
-  get manageCases() {
+
+  getManageCases() {
     return $('.hmcts-header .hmcts-header__link');
   }
-  get findCase() {
+
+  getFindCase() {
     return elementByXpath("//a[contains(text(),'Find case')]");
   }
-  get signOut() {
+
+  getSignOut() {
     return elementByXpath("//a[contains(text(),'Sign out')]");
   }
-  get contentHeader() {
+
+  getContentHeader() {
     return $('#content h1');
   }
 
@@ -155,25 +169,25 @@ class HeaderPage {
 
   async clickFindCase() {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.findCase);
-      await this.findCase.click();
+      await BrowserWaits.waitForElement(this.getFindCase());
+      await this.getFindCase().click();
       const searchPageHeader = elementByXpath('//*[@id = \'content\']//h1[contains(text() , \'Search\')]');
       await BrowserWaits.waitForElement(searchPageHeader);
     });
   }
 
   async clickSignOut() {
-    await BrowserWaits.waitForElement(this.signOut);
-    await this.signOut.click();
+    await BrowserWaits.waitForElement(this.getSignOut());
+    await this.getSignOut().click();
   }
 
   async isTabPresent(tabText) {
-    const tab = this.primaryNavBar.locator(`xpath=//a[contains(text(),"${tabText}")]`);
+    const tab = this.getPrimaryNavBar().locator(`xpath=//a[contains(text(),"${tabText}")]`);
     return await tab.isVisible();
   }
 
   getTabElementWithText(tabText) {
-    return this.primaryNavBar.locator(`xpath=//a[contains(text(),"${tabText}")]`);
+    return this.getPrimaryNavBar().locator(`xpath=//a[contains(text(),"${tabText}")]`);
   }
 
   async clickTabWithText(tabText) {
@@ -187,7 +201,7 @@ class HeaderPage {
   async getPrimaryTabsDisplayed() {
     return await browserUtil.stepWithRetry(async () => {
       const tabsText = [];
-      const tabs = this.primaryNavBar.locator('a');
+      const tabs = this.getPrimaryNavBar().locator('a');
       const count = await tabs.count();
       for (let i = 0; i < count; i++) {
         tabsText.push(await tabs.nth(i).textContent());
@@ -197,7 +211,8 @@ class HeaderPage {
   }
 
   async waitForPrimaryNavDisplay() {
-    await BrowserWaits.waitForElement(this.primaryNavBar);
+    const nav = this.getPrimaryNavBar();
+    await BrowserWaits.waitForElement(nav);
   }
 
   async isPrimaryTabPageDisplayed(primaryTab) {
@@ -222,6 +237,17 @@ class HeaderPage {
       default: throw new Error(`Tab "${primaryTab}" is not recognised.`);
     }
   }
+
+  async clickPrimaryNavigationWithLabel(label) {
+    const tab = this.getTabElementWithText(label);
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(tab);
+      await tab.click();
+    });
+  }
+  async clickAppLogoLink () {
+    await this.getHeaderAppLogoLink().click();
+  }
 }
 
-module.exports = new HeaderPage();
+module.exports = () => new HeaderPage(); 

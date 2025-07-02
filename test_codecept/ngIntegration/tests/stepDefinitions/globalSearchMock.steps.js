@@ -1,11 +1,7 @@
-const { Given } = require('@cucumber/cucumber');
-
-const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
 // const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const globalSearchMockData = require('../../mockData/globalSearch/mockData');
 const globalSearchDataModel = require('../../../dataModels/globalSearch');
 const { DataTableArgument } = require('codeceptjs');

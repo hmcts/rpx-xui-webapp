@@ -11,7 +11,7 @@ const App = require('./application');
 const BrowserLogs = require('../../../support/browserLogs');
 const config = require('../../../config/functional.conf');
 
-const headerPage = require('../headerPage');
+function headerPage () { return require('../headerPage')(); }
 const { LOG_LEVELS } = require('../../../support/constants');
 class CaseManager {
   constructor() {
@@ -84,7 +84,7 @@ class CaseManager {
           await BrowserLogs.printBrowserLogs();
           cucumberReporter.AddMessage('Jurisdiction option not found after 30sec. Retrying again with browser refresh', LOG_LEVELS.Warn);
           retryOnJurisdiction++;
-          await headerPage.refreshBrowser();
+          await headerPage().refreshBrowser();
           throw new Error(error);
         }
       });

@@ -2,7 +2,6 @@
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
-const { Before, After } = require('@cucumber/cucumber');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const conf = require('../config/conf').config;
@@ -20,6 +19,8 @@ const CucumberReportLog = require('./reportLogger');
 const BrowserLogs = require('./browserLogs');
 const browserUtil = require('../../ngIntegration/util/browserUtil');
 const RuntimetestData = require('./runtimeTestData');
+
+console.log('[Hook] ⚠️ Secondary hook running (not setting page):', __dirname);
 
 Before(function (scenario) {
   RuntimetestData.init();

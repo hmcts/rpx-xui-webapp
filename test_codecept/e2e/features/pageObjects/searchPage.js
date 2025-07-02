@@ -1,11 +1,10 @@
-const { $ } = require('../../../helpers/globals');
+const { $, isPresent } = require('../../../helpers/globals');
 
 Dropdown = require('./webdriver-components/dropdown.js');
 Button = require('./webdriver-components/button.js');
 const BrowserWaits = require('../../support/customWaits');
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
-const headerPage = require('./headerPage');
 class SearchPage {
   constructor() {}
 
@@ -192,7 +191,7 @@ class SearchPage {
   }
 
   async openFirstCaseInResults(){
-    await this.searchResultsTopPagination.isPresent();
+    await isPresent(this.searchResultsTopPagination);
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     const thisPageUrl = await browser.getCurrentUrl();
 
@@ -207,7 +206,7 @@ class SearchPage {
   }
 
   async openSecondCaseInResults(){
-    await this.searchResultsTopPagination.isPresent();
+    await isPresent(this.searchResultsTopPagination);
     await BrowserWaits.waitForElement(this.secondResultCaseLink);
     const thisPageUrl = await browser.getCurrentUrl();
 
@@ -231,7 +230,7 @@ class SearchPage {
   }
 
   async hasSearchReturnedResults(){
-    return await this.searchResultsTopPagination.isPresent();
+    return await isPresent(this.searchResultsTopPagination);
   }
 
   async waitForAtleastOneSearchResult(){

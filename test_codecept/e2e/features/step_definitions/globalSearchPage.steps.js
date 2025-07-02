@@ -7,7 +7,7 @@ const BrowserWaits = require('../../support/customWaits');
 const globalSearchPage = require('../pageObjects/globalSearchCases');
 const globalSearchResultsPage = require('../pageObjects/globalSearchResultsPage');
 
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const CaseManager = require('../pageObjects/common/CaseManager');
 
@@ -15,16 +15,16 @@ const { DataTableArgument } = require('codeceptjs');
 
 const caseManager = new CaseManager();
 When('I input case reference in header search field {string}', async function(caseRef){
-  await headerPage.headerSearch.input.clear();
-  await headerPage.headerSearch.input.sendKeys(caseRef);
+  await headerPage().headerSearch.input.clear();
+  await headerPage().headerSearch.input.sendKeys(caseRef);
 });
 
 When('I click find in header search', async function () {
-  await headerPage.headerSearch.button.click();
+  await headerPage().headerSearch.button.click();
 });
 
 When('I validate case search field is displayed in header', async function () {
-  expect(await headerPage.headerSearch.container.isDisplayed()).to.be.true;
+  expect(await headerPage().headerSearch.container.isDisplayed()).to.be.true;
 });
 
 Then('I see global search Page', async function(){
@@ -331,13 +331,13 @@ Then('I validate valid global search case reference searches', async function(da
 
   const softAssert = new SoftAssert();
   for (const scenario of scenarios){
-    await headerPage.clickPrimaryNavigationWithLabel('Search');
+    await headerPage().clickPrimaryNavigationWithLabel('Search');
     expect(await globalSearchPage.amOnPage()).to.be.true;
 
     softAssert.setScenario(`${scenario.ScenarioDescription} : ${scenario.caseReference}`);
-    await headerPage.headerSearch.input.clear();
-    await headerPage.headerSearch.input.sendKeys(scenario.caseReference);
-    await headerPage.headerSearch.button.click();
+    await headerPage().headerSearch.input.clear();
+    await headerPage().headerSearch.input.sendKeys(scenario.caseReference);
+    await headerPage().headerSearch.button.click();
 
     await softAssert.assert(async () => expect(await caseManager.caseDetailsPage.isPresent()).to.be.true);
   }
@@ -350,13 +350,13 @@ Then('I validate invalid global search case reference searches', async function 
 
   const softAssert = new SoftAssert();
   for (const scenario of scenarios) {
-    await headerPage.clickPrimaryNavigationWithLabel('Search');
+    await headerPage().clickPrimaryNavigationWithLabel('Search');
     expect(await globalSearchPage.amOnPage()).to.be.true;
 
     softAssert.setScenario(`${scenario.ScenarioDescription} : ${scenario.caseReference}`);
-    await headerPage.headerSearch.input.clear();
-    await headerPage.headerSearch.input.sendKeys(scenario.caseReference);
-    await headerPage.headerSearch.button.click();
+    await headerPage().headerSearch.input.clear();
+    await headerPage().headerSearch.input.sendKeys(scenario.caseReference);
+    await headerPage().headerSearch.button.click();
 
     await softAssert.assert(async () => expect(await globalSearchResultsPage.noResultsPageContainer.isPresent()).to.be.true);
   }

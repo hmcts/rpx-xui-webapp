@@ -1,5 +1,3 @@
-const { Given } = require('@cucumber/cucumber');
-
 const moment = require('moment');
 const browserUtil = require('../../util/browserUtil');
 // const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');

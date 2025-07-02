@@ -1,4 +1,4 @@
-const { $, $$ } = require('../../../helpers/globals');
+const { $, $$, getSelectOptions, selectOption } = require('../../../helpers/globals');
 
 const BrowserWaits = require('../../support/customWaits');
 const TaskMessageBanner = require('./messageBanner');
@@ -106,7 +106,7 @@ class CaseListPage{
     await BrowserWaits.waitForElement(this.caselistComponent);
     await BrowserWaits.waitForElement(this.searchFilterContainer);
 
-    return (await this.caselistComponent.isPresent());
+    return (await this.caselistComponent.isVisible());
   }
 
   async _waitForSearchComponent(){
@@ -139,15 +139,15 @@ class CaseListPage{
     CucumberReportLogger.LogTestDataInput(`Case list page Jurisdiction : ${jurisdiction}`);
     // const optionSelector = this._getOptionSelectorWithText(jurisdiction);
 
-    const options = await this.jurisdictionSelectElement.getSelectOptions();
+    const options = await getSelectOptions(this.jurisdictionSelectElement);
     const matchingOption = options.find((opt) => opt.includes(jurisdiction));
 
     // const optionText = await element(optionSelector).getText();
-    await this.jurisdictionSelectElement.select(matchingOption);
+    await selectOption(this.jurisdictionSelectElement, matchingOption);
 
     RuntimeTestData.workbasketInputs.jurisdiction = jurisdiction;
     RuntimeTestData.workbasketInputs.casetypes = [];
-    RuntimeTestData.workbasketInputs.casetypes = await this.caseTypeSelectElement.getSelectOptions();
+    RuntimeTestData.workbasketInputs.casetypes = await getSelectOptions(this.caseTypeSelectElement);
   }
 
   async selectCaseType(caseType) {
@@ -157,11 +157,11 @@ class CaseListPage{
     CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
     // const selectOption = element(this._getOptionSelectorWithText(caseType))
 
-    const options = await this.caseTypeSelectElement.getSelectOptions();
+    const options = await getSelectOptions(this.caseTypeSelectElement);
     const matchingOption = options.find((opt) => opt.includes(caseType));
 
     // const selectOptionText = await selectOption.getText();
-    await this.caseTypeSelectElement.select(matchingOption);
+    await selectOption(this.caseTypeSelectElement, matchingOption);
     CucumberReportLogger.LogTestDataInput(`Case list page Case type : ${caseType}`);
     RuntimeTestData.workbasketInputs.casetype = caseType;
   }
@@ -171,11 +171,11 @@ class CaseListPage{
     await this._waitForSearchComponent();
     CucumberReportLogger.LogTestDataInput(`Case list page event: ${state}`);
 
-    const options = await this.stateSelectElement.getSelectOptions();
+    const options = await getSelectOptions(this.stateSelectElement);
     const matchingOption = options.find((opt) => opt.includes(state));
 
     // const optionText = await  element(this._getOptionSelectorWithText(state)).getText()
-    await this.stateSelectElement.select(matchingOption);
+    await selectOption(this.stateSelectElement, matchingOption);
     RuntimeTestData.workbasketInputs.state = state;
   }
 
@@ -211,7 +211,7 @@ class CaseListPage{
   }
 
   async hasCaseListAnyResults(){
-    await this.searchResultsTopPagination.isPresent();
+    await this.searchResultsTopPagination.isVisible();
   }
 
   async clickFirstCaseLink(){
@@ -239,7 +239,7 @@ class CaseListPage{
   }
 
   async isSelectAllColumnDisplayed(){
-    return await this.tableHeaderSelectAllInput.isPresent();
+    return await this.tableHeaderSelectAllInput.isVisible();
   }
 
   async isSelectCheckboxDisplayedForAllCases(){
@@ -281,7 +281,7 @@ class CaseListPage{
 
   async clickPaginationNextPage(){
     const paginationInfobefore = await this.paginationInfotext.getText();
-    expect(await this.nextPageLink.isPresent(), 'Case list next page not present. current page info : ' + paginationInfobefore).to.be.true;
+    expect(await this.nextPageLink.isVisible(), 'Case list next page not present. current page info : ' + paginationInfobefore).to.be.true;
 
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.nextPageLink);
@@ -295,7 +295,7 @@ class CaseListPage{
 
   async clickPaginationPreviousPage() {
     const paginationInfobefore = await this.paginationInfotext.getText();
-    expect(await this.previousPageLink.isPresent(), 'Case list previous page not present. current page info : ' + paginationInfobefore).to.be.true;
+    expect(await this.previousPageLink.isVisible(), 'Case list previous page not present. current page info : ' + paginationInfobefore).to.be.true;
 
     await browser.executeScript('arguments[0].scrollIntoView()',
       this.previousPageLink);

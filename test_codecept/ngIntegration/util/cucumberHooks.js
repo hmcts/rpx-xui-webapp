@@ -1,12 +1,10 @@
 'use strict';
-const { Before, After, BeforeAll } = require('@cucumber/cucumber');
 
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
 const BrowserUtil = require('./browserUtil');
 
-const headerPage = require('../../e2e/features/pageObjects/headerPage');
 const CucumberReportLog = require('../../codeceptCommon/reportLogger');
 
 const MockApp = require('../../nodeMock/app');

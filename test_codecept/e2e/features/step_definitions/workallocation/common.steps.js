@@ -1,4 +1,3 @@
-
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
@@ -20,7 +19,6 @@ const taskCheckYourChangesPage = require('../../pageObjects/workAllocation/taskC
 const workflowUtil = require('../../pageObjects/common/workflowUtil');
 
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
-const { checkYourAnswersHeading } = require('../../../../ngIntegration/tests/pageObjects/ccdCaseEditPages');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 
 const taskAssignmentPersonNotAuthorisedPage = require('../../pageObjects/workAllocation/common/taskAssignmentPersonNotAuthorisedPage');

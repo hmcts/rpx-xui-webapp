@@ -1,5 +1,3 @@
-const { When, Then } = require('@cucumber/cucumber');
-
 const caseListPage = require('../pageObjects/caselistPage');
 const searchCasePage = require('../pageObjects/searchPage');
 
@@ -7,7 +5,6 @@ const browserUtil = require('../../util/browserUtil');
 // const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 
 const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 

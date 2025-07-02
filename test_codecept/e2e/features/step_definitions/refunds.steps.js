@@ -1,10 +1,10 @@
 const RefundsPage = require('../pageObjects/refundsPage.js');
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 
 const refundsPage = new RefundsPage();
 
 When(/^I click on Refunds button$/, async function () {
-  await headerPage.clickRefunds();
+  await headerPage().clickRefunds();
 });
 
 Then(/^Refunds page should be displayed$/, async function () {

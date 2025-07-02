@@ -1,7 +1,7 @@
 'use strict';
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
@@ -298,8 +298,8 @@ Given('I am logged into Expert UI as IA {string}', async function (usertype) {
 });
 
 Then('I should see the expected banner for IA {string}', async function (usertype) {
-  const bannerElementBgColor = await headerPage.headerBanner.getAttribute('style');
-  const navItems = await headerPage.primaryNavBar_NavItems.getText();
+  const bannerElementBgColor = await headerPage().getHeaderBanner().getAttribute('style');
+  const navItems = await headerPage().getPrimaryNavBarNavItems().getText();
   if (usertype === 'judge') {
     // expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
     expect(navItems).to.not.include('Create case');
@@ -356,7 +356,7 @@ Given('I am logged into Expert UI with test user identified as {string}', async 
 
   // await BrowserWaits.retryWithActionCallback(async () => {
   //   await BrowserWaits.waitForSpinnerToDissappear();
-  //   await headerPage.clickAppLogoLink();
+  //   await headerPage().clickAppLogoLink();
   // });
 });
 

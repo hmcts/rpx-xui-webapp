@@ -1,5 +1,3 @@
-const { Given } = require('@cucumber/cucumber');
-
 const idamLogin = require('../../util/idamLogin');
 
 const mockClient = require('../../../backendMock/client/index');

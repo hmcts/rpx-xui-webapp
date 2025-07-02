@@ -1,12 +1,8 @@
-const { Given } = require('@cucumber/cucumber');
-
 const browserUtil = require('../../util/browserUtil');
 // const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 const bookingsMockData = require('../../mockData/workAllocation/bookingsData');
-
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');

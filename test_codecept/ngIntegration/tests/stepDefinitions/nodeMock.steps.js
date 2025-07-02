@@ -1,12 +1,8 @@
-const { Given, When, Then } = require('@cucumber/cucumber');
-
 const MockApp = require('../../../nodeMock/app');
-const BrowserWaits = require('../../../e2e/support/customWaits');
 const browserUtil = require('../../util/browserUtil');
 const nodeAppMockData = require('../../mockData/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAllocationDataModel = require('../../../dataModels/workAllocation');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
 const workAllocationMockData = require('../../mockData/workAllocation/mockData');

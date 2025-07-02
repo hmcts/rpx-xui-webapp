@@ -1,8 +1,10 @@
-const { $$ } = require('../../helpers/globals');
+const { $$, getXUITestPage, waitForElement } = require('../../helpers/globals');
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
 const reportLogger = require('../../codeceptCommon/reportLogger');
+
+let instance = null;
 
 class BrowserWaits {
   constructor() {
@@ -10,6 +12,10 @@ class BrowserWaits {
     this.retriesCount = 3;
 
     this.logLevel = 'DEBUG';
+  }
+
+  get page() {
+    return getXUITestPage();
   }
 
   get pageErrors() {
@@ -41,9 +47,8 @@ class BrowserWaits {
   }
 
   async waitForElement(element, message, waitForSeconds) {
-    const startTime = Date.now();
     CucumberReporter.AddMessage('ELEMENT_WAIT: at ' + this.__getCallingFunctionName() + ' ' + JSON.stringify(element.selector) + ' at ');
-    await element.wait(this.waitTime / 1000);
+    await waitForElement(element, { timeout: this.waitTime });
 
     // await this.waitForConditionAsync(async () => {
     //     const isPresent = await element.isPresent();
@@ -244,4 +249,11 @@ class BrowserWaits {
   }
 }
 
-module.exports = new BrowserWaits();
+function getBrowserWaits() {
+  if (!instance) {
+    instance = new BrowserWaits();
+  }
+  return instance;
+}
+
+module.exports = getBrowserWaits();

@@ -1,5 +1,3 @@
-const { Given } = require('@cucumber/cucumber');
-
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
 const browserUtil = require('../../util/browserUtil');
@@ -11,7 +9,6 @@ const caseDetailsMock = require('../../../backendMock/services/ccd/caseDetails_d
 
 const mockClient = require('../../../backendMock/client/index.js');
 const serviceMock = require('../../../backendMock/client/serviceMock');
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
@@ -76,6 +73,12 @@ Given('I set MOCK case details with reference {string}', async function(caseDeta
 
 Given('I set MOCK case {string} details with reference {string}', async function (caseType, caseDetailsReference) {
   const caseDetails = JSON.parse(JSON.stringify(caseDetailsMock[caseType]));
+  
+  // Defensive guard
+  if (!global.scenarioData) {
+    global.scenarioData = {};
+  }
+
   global.scenarioData[caseDetailsReference] = caseDetails;
   await serviceMock.updateCaseData(global.scenarioData[caseDetailsReference], 200);
 });

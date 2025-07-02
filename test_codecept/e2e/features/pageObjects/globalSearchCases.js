@@ -2,7 +2,7 @@ const { $, elementByXpath } = require('../../../helpers/globals');
 
 const BrowserWaits = require('../../support/customWaits');
 
-const headerPage = require('./headerPage');
+function headerPage () { return require('./headerPage')(); }
 
 class DateSearchField{
   constructor(fieldname) {
@@ -46,16 +46,16 @@ class DateSearchField{
   }
 
   async isHeaderSearchDisplayed(){
-    return await headerPage.headerSearch.container.isDisplayed();
+    return await headerPage().headerSearch.container.isDisplayed();
   }
 
   async inputHeaderSearchFiled(inputVal){
-    await headerPage.headerSearch.input.clear();
-    await headerPage.headerSearch.input.sendKeys(inputVal);
+    await headerPage().headerSearch.input.clear();
+    await headerPage().headerSearch.input.sendKeys(inputVal);
   }
 
   async clickHeaderSearchFind(){
-    await headerPage.headerSearch.button.click();
+    await headerPage().headerSearch.button.click();
   }
 }
 

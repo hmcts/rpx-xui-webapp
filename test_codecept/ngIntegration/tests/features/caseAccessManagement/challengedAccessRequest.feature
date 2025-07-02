@@ -1,5 +1,5 @@
 
-@functional_enabled
+@functional_enabled @functional_debug
 Feature: Case challeged access request
 
 Background: setup

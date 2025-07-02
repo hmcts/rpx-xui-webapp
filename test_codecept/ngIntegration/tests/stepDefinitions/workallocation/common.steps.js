@@ -1,5 +1,3 @@
-const { Given, When, Then } = require('@cucumber/cucumber');
-
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 const rolesAccessMockData = require('../../../mockData/workAllocation/rolesAccess');
@@ -10,7 +8,6 @@ const taskAssignmentPage = require('../../../../e2e/features/pageObjects/workAll
 
 const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
-const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const CaseListPage = require('../../../../e2e/features/pageObjects/CaseListPage');
 const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 
@@ -23,7 +20,6 @@ const WAUtil = require('../../workAllocation/utils');
 // const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
-const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const TaskListTable = require('../../../../e2e/features/pageObjects/workAllocation/taskListTable');
 const CaseListTable = require('../../../../e2e/features/pageObjects/workAllocation/casesTable');

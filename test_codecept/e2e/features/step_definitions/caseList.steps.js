@@ -3,7 +3,7 @@ const CaseListPage = require('../pageObjects/CaseListPage');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 const BrowserWaits = require('../../support/customWaits');
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
 const { LOG_LEVELS } = require('../../support/constants');
 const browser = require('../../../codeceptCommon/browser');
@@ -22,9 +22,9 @@ When('I select search criteria jurisdiction {string} case type {string} state {s
         await caseListPage.selectCaseType(caseType);
         await caseListPage.selectState(state);
       } catch (err){
-        await headerPage.clickManageCases();
+        await headerPage().clickManageCases();
         await browserUtil.waitForLD();
-        await headerPage.clickCaseList();
+        await headerPage().clickCaseList();
         throw new Error(err);
       }
     });
@@ -39,10 +39,10 @@ When('I select search criteria jurisdiction {string} case type {string} state {s
         await caseListPage.selectState(state);
         await caseListPage.clickSearchApplyBtn();
       } catch (err) {
-        await headerPage.refreshBrowser();
+        await headerPage().refreshBrowser();
         await browserUtil.waitForLD();
         await BrowserWaits.waitForSpinnerToDissappear();
-        await headerPage.clickCaseList();
+        await headerPage().clickCaseList();
         throw new Error(err);
       }
     });

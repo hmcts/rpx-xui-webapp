@@ -1,5 +1,3 @@
-const { Given, Then } = require('@cucumber/cucumber');
-
 const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 
 const BrowserWaits = require('../../../../e2e/support/customWaits');
@@ -9,7 +7,7 @@ const taskAssignmentPage = require('../../../../e2e/features/pageObjects/workAll
 
 const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
-const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../../../e2e/features/pageObjects/headerPage')(); }
 const CaseListPage = require('../../../../e2e/features/pageObjects/CaseListPage');
 const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 
@@ -23,7 +21,6 @@ const WAUtil = require('../../workAllocation/utils');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const ArrayUtil = require('../../../../e2e/utils/ArrayUtil');
 
-const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 const CreateCasePage = require('../../../../e2e/features/pageObjects/caseCreatedPage');
 
@@ -36,6 +33,7 @@ const taskManager_action = ['Reassign task', 'Unassign task'];
 
 const caseCreatePage = new CreateCasePage();
 const caseListPage = new CaseListPage();
+
 Given('I set MOCK My tasks count {int}', async function (taskCount) {
   const alltasks = workAllocationMockData.getMyTasks(taskCount);
   global.scenarioData['workallocation1.mytasks'] = alltasks;
@@ -112,10 +110,10 @@ Then('I validate My tasks sort column persist in session', async function () {
     expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
   });
 
-  await headerPage.getTabElementWithText('Case list').click();
+  await headerPage().getTabElementWithText('Case list').click();
   await browserUtil.waitForLD();
   expect(await caseListPage.amOnPage()).to.be.true;
-  await headerPage.getTabElementWithText('Task list').click();
+  await headerPage().getTabElementWithText('Task list').click();
   await taskListPage.amOnPage();
   await taskListPage.waitForTable();
   expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
@@ -131,10 +129,10 @@ Then('I validate Available tasks sort column persist in session', async function
     expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
   });
 
-  await headerPage.getTabElementWithText('Case list').click();
+  await headerPage().getTabElementWithText('Case list').click();
   await browserUtil.waitForLD();
   expect(await caseListPage.amOnPage()).to.be.true;
-  await headerPage.getTabElementWithText('Task list').click();
+  await headerPage().getTabElementWithText('Task list').click();
   await taskListPage.amOnPage();
   await taskListPage.clickAvailableTasks();
   expect(await taskListPage.isAvailableTasksDisplayed(), 'Not on Available tasks page').to.be.true;
@@ -151,10 +149,10 @@ Then('I validate Task manager tasks sort column persist in session', async funct
   await taskListPage.clickColumnHeader(columnHeaders[1]);
   expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
 
-  await headerPage.getTabElementWithText('Create case').click();
+  await headerPage().getTabElementWithText('Create case').click();
   expect(await caseCreatePage.amOnPage()).to.be.true;
   await BrowserWaits.retryWithActionCallback(async () => {
-    await headerPage.getTabElementWithText('Task manager').click();
+    await headerPage().getTabElementWithText('Task manager').click();
     expect(await taskManagerPage.amOnPage()).to.be.true;
   });
   await taskManagerPage.waitForTable();
@@ -172,14 +170,14 @@ Then('I validate error responses on My tasks page', async function(){
   for (const responseCode of testErrorResponseCodes) {
     CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/taskWithPagination/ `);
 
-    await headerPage.clickManageCases();
+    await headerPage().clickManageCases();
 
     await caseListPage.amOnPage();
 
     await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
       res.status(responseCode).send(workAllocationMockData.getMyTasks(10));
     });
-    await headerPage.clickTaskList();
+    await headerPage().clickTaskList();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
     await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);
@@ -204,13 +202,13 @@ Then('I validate error responses on available tasks page', async function(){
     await MockUtil.resetMock();
 
     await BrowserWaits.retryWithActionCallback(async () => {
-      await headerPage.clickManageCases();
+      await headerPage().clickManageCases();
       if (!(await caseListPage.amOnPage())){
         throw new Error('Not on case list page');
       }
     });
 
-    await headerPage.clickTaskList();
+    await headerPage().clickTaskList();
     await taskListPage.amOnPage();
     const taskCount = await taskListPage.getTaskListCountInTable();
 
@@ -233,12 +231,12 @@ Then('I validate error responses on available tasks page', async function(){
     await MockUtil.resetMock();
 
     await BrowserWaits.retryWithActionCallback(async () => {
-      await headerPage.clickManageCases();
+      await headerPage().clickManageCases();
       if (!(await caseListPage.amOnPage())) {
         throw new Error('Not on case list page');
       }
     });
-    await headerPage.clickTaskList();
+    await headerPage().clickTaskList();
     await taskListPage.amOnPage();
     await MockUtil.setMockResponse('GET', '/workallocation/location', (req, res) => {
       res.status(responseCode).send(workAllocationMockData.getAvailableTasks(10));
@@ -274,14 +272,14 @@ Then('I validate error responses on Task manager page', async function(){
 
   // expect(await taskListPage.amOnPage()).to.be.true;
   for (const responseCode of testErrorResponseCodes) {
-    await headerPage.clickManageCases();
+    await headerPage().clickManageCases();
     await caseListPage.amOnPage();
     await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
       res.status(responseCode).send(workAllocationMockData.getTaskManagerTasks(10));
     });
     CucumberReporter.AddMessage(`Validation on ${responseCode} error POST /workallocation/taskWithPagination/ `);
 
-    await headerPage.clickTaskManager();
+    await headerPage().clickTaskManager();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
     await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);
@@ -292,7 +290,7 @@ Then('I validate error responses on Task manager page', async function(){
   }
 
   for (const responseCode of testErrorResponseCodes) {
-    await headerPage.clickManageCases();
+    await headerPage().clickManageCases();
     await caseListPage.amOnPage();
     await MockUtil.resetMock();
     await MockUtil.setMockResponse('GET', '/workallocation/location', (req, res) => {
@@ -300,7 +298,7 @@ Then('I validate error responses on Task manager page', async function(){
     });
     CucumberReporter.AddMessage(`Validation on ${responseCode} error GET /workallocation/location/ `);
 
-    await headerPage.clickTaskManager();
+    await headerPage().clickTaskManager();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
     await softAssertion.assert(async () => expect(isErrorPageDisplayed, '/workallocation/location on error, error page not displayed ' + responseCode).to.be.true);
@@ -324,7 +322,7 @@ Then('I validate My task reassign page errors', async function(){
 
   for (const endPoint of reassignEndpoints) {
     for (const responseCode of testErrorResponseCodes) {
-      await headerPage.clickManageCases();
+      await headerPage().clickManageCases();
       await caseListPage.amOnPage();
       await MockUtil.resetMock();
       await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
@@ -335,7 +333,7 @@ Then('I validate My task reassign page errors', async function(){
         res.status(responseCode).send({});
       });
 
-      await headerPage.clickTaskList();
+      await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       expect(await taskListPage.isMyTasksDisplayed(), 'Default My tasks tab page not displayed').to.be.true;
 
@@ -369,10 +367,10 @@ Then('I validate My task reassign submit errors', async function(){
       res.send(workAllocationMockData.getMyTasks(10));
     });
 
-    await headerPage.clickManageCases();
+    await headerPage().clickManageCases();
     await caseListPage.amOnPage();
 
-    await headerPage.clickTaskList();
+    await headerPage().clickTaskList();
     await taskListPage.amOnPage();
     expect(await taskListPage.isMyTasksDisplayed(), 'Default My tasks tab page not displayed').to.be.true;
 
@@ -420,7 +418,7 @@ Then('I validate available task action page errors', async function(){
   // expect(await taskListPage.amOnPage()).to.be.true;
   for (const action of availableTask_actions) {
     for (const responseCode of testErrorResponseCodes) {
-      await headerPage.clickManageCases();
+      await headerPage().clickManageCases();
       await caseListPage.amOnPage();
       await MockUtil.resetMock();
       await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
@@ -429,7 +427,7 @@ Then('I validate available task action page errors', async function(){
       await MockUtil.setMockResponse('POST', '/workallocation/task/:taskId/claim', (req, res) => {
         res.status(responseCode).send({});
       });
-      await headerPage.clickTaskList();
+      await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       await taskListPage.clickAvailableTasks();
 
@@ -465,7 +463,7 @@ Then('I validate Task manager task action page errors', async function(){
   // expect(await taskListPage.amOnPage()).to.be.true;
   for (const action of taskManager_action) {
     for (const responseCode of testErrorResponseCodes) {
-      await headerPage.clickManageCases();
+      await headerPage().clickManageCases();
       await caseListPage.amOnPage();
       await MockUtil.resetMock();
       await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
@@ -474,7 +472,7 @@ Then('I validate Task manager task action page errors', async function(){
       await MockUtil.setMockResponse('GET', '/workallocation/task/:taskId', (req, res) => {
         res.status(responseCode).send({});
       });
-      await headerPage.clickTaskList();
+      await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       await taskListPage.clickAvailableTasks();
 
@@ -517,20 +515,20 @@ Then('I validate Task actions from page {string}', async function(fromPage, data
     CucumberReporter.AddMessage('********************************************************************************************** ');
     softAssert.setScenario(scenarioDesc);
 
-    await headerPage.clickManageCases();
+    await headerPage().clickManageCases();
     await caseListPage.amOnPage();
 
     if (fromPage.toUpperCase().includes('MY')){
-      await headerPage.clickTaskList();
+      await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       validateOnPage = async () => expect(await taskListPage.isMyTasksDisplayed()).to.be.true;
     } else if (fromPage.toUpperCase().includes('AVAILA')){
-      await headerPage.clickTaskList();
+      await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       await taskListPage.clickAvailableTasks();
       validateOnPage = async () => expect(await taskListPage.isAvailableTasksDisplayed()).to.be.true;
     } else if (fromPage.toUpperCase().includes('MANAGER')) {
-      await headerPage.clickTaskManager();
+      await headerPage().clickTaskManager();
       validateOnPage = async () => expect(await taskManagerPage.amOnPage()).to.be.true;
     }
     await validateOnPage();

@@ -1,6 +1,6 @@
 
 const HearingRecordingsCase = require('../pageObjects/hearingRecordingsCase');
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 const browserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 
@@ -14,7 +14,7 @@ When('I click on Case Hearing Files tab', async function () {
       await cucumberReporter.AddScreenshot();
     } catch (err){
       cucumberReporter.AddMessage('Refresing browser to get missing tab');
-      await headerPage.refreshBrowser();
+      await headerPage().refreshBrowser();
       throw err;
     }
   });
@@ -32,7 +32,7 @@ When('I click on a file', async function () {
         await cucumberReporter.AddScreenshot();
       } catch (err) {
         cucumberReporter.AddMessage('Refresing browser to get missing tab');
-        await headerPage.refreshBrowser();
+        await headerPage().refreshBrowser();
         throw err;
       }
     });

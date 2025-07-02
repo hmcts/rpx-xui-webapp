@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { getLabel } from '../../../../work-allocation/utils';
@@ -10,7 +11,6 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   Role,
-  RoleCategory,
   SpecificRole
 } from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';

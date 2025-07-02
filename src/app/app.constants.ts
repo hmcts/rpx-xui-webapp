@@ -14,7 +14,7 @@ const featureNames = {
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
   accessManagementMode: 'access-management-mode',
-  enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
+  enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups'
 };
 
 function featureToAttributeName(key: string): string {

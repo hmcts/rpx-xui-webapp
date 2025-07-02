@@ -279,7 +279,7 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.enable_service_specific_multi_followups;
   }
 
-  public  getCdamExclusionList(): string {
+  public getCdamExclusionList(): string {
     return '';
   }
 }

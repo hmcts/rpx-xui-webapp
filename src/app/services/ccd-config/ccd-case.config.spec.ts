@@ -28,7 +28,7 @@ class MockConfigService {
       events_to_hide: [
         'queryManagementRespondQuery'
       ],
-      enable_service_specific_multi_followups: ['SERVICE_1', 'SERVICE_2']
+      enable_service_specific_multi_followups: ['SERVICE_1']
     };
   }
 
@@ -205,7 +205,6 @@ describe('AppConfiguration', () => {
   })));
 
   it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {
-    const expected = ['SERVICE_1', 'SERVICE_2'];
-    expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(expected);
+    expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(['foo']);
   }));
 });

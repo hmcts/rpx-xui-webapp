@@ -169,7 +169,7 @@ describe('CaseTaskComponent', () => {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Judicial User',
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
-      description: '[Link the appeal](/cases/case-details/IA/Asylum/${[CASE_REFERENCE]}/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)',
+      description: '[Link the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)',
       task_title: 'Link the appeal',
       dueDate: new Date(),
       location_name: 'Birmingham',
@@ -181,7 +181,7 @@ describe('CaseTaskComponent', () => {
       permissions: ['Own', 'Execute', 'Manage']
     };
     const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
-    expect(result).toBe(`[Link the appeal](/cases/case-details/IA/Asylum/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`);
+    expect(result).toBe(`[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`);
   });
 
   it('should set isTaskUrgent based on the task priority', () => {

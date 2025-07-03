@@ -22,7 +22,7 @@ import {
   CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
@@ -392,7 +392,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public getAttachmentHintText(): Observable<string | null> {
-    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(this.LD_SERVICE_MESSAGE, { attachment: [] });
+    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(
+      this.LD_SERVICE_MESSAGE,
+      { attachment: [] }
+    );
 
     return combineLatest([
       this.caseNotifier.caseView,
@@ -534,47 +537,49 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getEventTrigger():void {
+  private getEventTrigger(): void {
     const loadingToken = this.loadingService.register();
-    this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
-      this.caseDetails = caseDetails;
 
-      if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
-        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      } else {
-        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      }
+    this.caseNotifier.caseView.pipe(
+      take(1),
+      switchMap((caseDetails) => {
+        this.caseDetails = caseDetails;
 
-      this.eventTrigger$.subscribe({
-        next: (eventTrigger) => {
-          this.eventTrigger = eventTrigger;
-          this.showForm = true;
-          this.loadingService.unregister(loadingToken);
+        const eventId = this.queryCreateContext !== QueryCreateContext.RESPOND
+          ? this.RAISE_A_QUERY_EVENT_TRIGGER_ID
+          : this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID;
 
-          if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
-            this.processFilteredMessages();
-          }
-        },
-        error: (err: HttpError) => {
-          this.loadingService.unregister(loadingToken);
-          if (err.status !== 401 && err.status !== 403) {
-            this.errorNotifierService.announceError(err);
-            this.alertService.error({ phrase: err.message });
-            console.error('Error occurred while fetching event data:', err);
-            this.callbackErrorsSubject.next(err);
-            if (!this.ignoreWarning) {
-              this.showContinueButton = false;
-              this.showForm = false;
-            } else {
-              this.showForm = true;
-            }
-          } else {
-            this.eventDataError = true;
-            this.addError('Something unexpected happened. Please try again later.', 'evenDataError');
-          }
-          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, eventId, caseDetails.case_id);
+        return this.eventTrigger$;
+      })
+    ).subscribe({
+      next: (eventTrigger) => {
+        this.eventTrigger = eventTrigger;
+        this.showForm = true;
+        this.loadingService.unregister(loadingToken);
+
+        if ([QueryCreateContext.FOLLOWUP, QueryCreateContext.RESPOND].includes(this.queryCreateContext)) {
+          this.processFilteredMessages();
         }
-      });
+      },
+      error: (err: HttpError) => {
+        this.loadingService.unregister(loadingToken);
+
+        if (err.status !== 401 && err.status !== 403) {
+          this.errorNotifierService.announceError(err);
+          this.alertService.error({ phrase: err.message });
+          console.error('Error occurred while fetching event data:', err);
+          this.callbackErrorsSubject.next(err);
+
+          this.showContinueButton = false;
+          this.showForm = this.ignoreWarning;
+        } else {
+          this.eventDataError = true;
+          this.addError('Something unexpected happened. Please try again later.', 'eventDataError');
+        }
+
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+      }
     });
   }
 

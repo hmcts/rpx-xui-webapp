@@ -75,7 +75,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'case/:jurisdiction/:case-type/:cid/trigger/:triggerPath/:triggerPath2',
-    redirectTo: 'cases/case-details/:cid/trigger/:triggerPath/:triggerPath2', pathMatch: 'full'
+    redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid/trigger/:triggerPath/:triggerPath2', pathMatch: 'full'
   },
   {
     path: 'noc',

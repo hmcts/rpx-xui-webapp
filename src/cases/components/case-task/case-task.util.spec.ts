@@ -79,9 +79,9 @@ describe('CaseTaskUtil', () => {
 
   it('should return fragment appended to url after taskId', () => {
     const taskToCheck = task;
-    taskToCheck.description = '[Review the Referral](/cases/case-details/IA/Asylum/${[CASE_REFERENCE]}#Referrals)';
+    taskToCheck.description = '[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}#Referrals)';
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
-    expect(appendedTaskDescription).toEqual('[Review the Referral](/cases/case-details/IA/Asylum/${[CASE_REFERENCE]}?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6#Referrals)');
+    expect(appendedTaskDescription).toEqual('[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6#Referrals)');
   });
 
   it('should return fragment appended to url after taskId', () => {

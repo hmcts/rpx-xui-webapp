@@ -487,4 +487,154 @@ describe('HearingFacilitiesComponent', () => {
   afterEach(() => {
     fixture.destroy();
   });
+
+  describe('getHearingFacilitiesFormArray', () => {
+    beforeEach(() => {
+      // Reset state before each test
+      component.additionalFacilities = [...ADDITIONAL_FACILITIES_OPTIONS].map((facility) => ({
+        key: facility.key,
+        value_en: facility.value_en,
+        value_cy: facility.value_cy,
+        hint_text_en: facility.hintText_EN,
+        hint_text_cy: facility.hintTextCY,
+        lov_order: facility.order,
+        category_key: 'FACILITIES',
+        active_flag: 'Y',
+        parent_key: facility.parentKey,
+        lov_display_order: facility.order,
+        parent_category: 'HEARING_FACILITIES' // Add this missing required property
+      }));
+
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          facilitiesRequired: []
+        }
+      };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        facilitiesRequired: []
+      };
+      component.hearingFacilitiesChangesRequired = false;
+      component.hearingFacilitiesChangesConfirmed = false;
+    });
+
+    function getControlByKey(formArray, key) {
+      return formArray.controls.find((control) => control.get('key').value === key);
+    }
+
+    function checkFacilityInModel(key) {
+      return component.additionalFacilities.find((f) => f.key === key);
+    }
+
+    it('should create FormArray with selected facilities based on hearingRequestMainModel', () => {
+      // Setup
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(formArray.length).toEqual(ADDITIONAL_FACILITIES_OPTIONS.length);
+      expect(getControlByKey(formArray, 'secureDock').get('selected').value).toBe(true);
+      expect(getControlByKey(formArray, 'witnessScreen').get('selected').value).toBe(true);
+      expect(getControlByKey(formArray, 'inCameraCourt').get('selected').value).toBe(false);
+    });
+
+    it('should use serviceHearingValuesModel when changes required but not confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = false;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(getControlByKey(formArray, 'secureDock').get('selected').value).toBe(true);
+      expect(getControlByKey(formArray, 'witnessScreen').get('selected').value).toBe(false);
+    });
+
+    it('should mark facilities with amended labels when changes required but not confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = false;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      // eslint-disable-next-line no-unused-expressions
+      component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(checkFacilityInModel('secureDock').showAmendedLabel).toBe(true);
+      expect(checkFacilityInModel('witnessScreen').showAmendedLabel).toBe(true);
+    });
+
+    it('should not mark facilities with amended labels when changes are confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = true;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      // eslint-disable-next-line no-unused-expressions
+      component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(checkFacilityInModel('secureDock').showAmendedLabel).toBeUndefined();
+      expect(checkFacilityInModel('witnessScreen').showAmendedLabel).toBeUndefined();
+    });
+
+    it('should use hearingRequestMainModel when changes are confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = true;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(getControlByKey(formArray, 'secureDock').get('selected').value).toBe(false);
+      expect(getControlByKey(formArray, 'witnessScreen').get('selected').value).toBe(true);
+    });
+
+    it('should handle empty facilities arrays', () => {
+      // Setup - already handled in beforeEach
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(formArray.length).toEqual(ADDITIONAL_FACILITIES_OPTIONS.length);
+      formArray.controls.forEach((control) => {
+        expect(control.get('selected').value).toBe(false);
+      });
+    });
+
+    it('should preserve all form control properties from additionalFacilities', () => {
+      // Setup
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+      const secureDockControl = getControlByKey(formArray, 'secureDock');
+
+      // Assert
+      expect(secureDockControl.get('key').value).toBe('secureDock');
+      expect(secureDockControl.get('value_en').value).toBe('secure dock');
+      expect(secureDockControl.get('hint_text_en').value).toBe('Secure Dock');
+      expect(secureDockControl.get('lov_order').value).toBe(4);
+      expect(secureDockControl.get('selected').value).toBe(true);
+    });
+  });
 });

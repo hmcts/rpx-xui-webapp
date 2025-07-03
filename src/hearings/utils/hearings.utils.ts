@@ -303,4 +303,31 @@ export class HearingsUtils {
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
   }
+
+  public static returnPanelRoles(
+    SelectedPanelSpecialism: string[],
+    SelectedPanelRoles: string[],
+    panelRoles: LovRefDataModel[],
+    separator: string): string {
+    const panelRolesRequired: string[] = [];
+    SelectedPanelRoles.forEach((roleName) => {
+      const matchingRole = panelRoles.find((role) => role.key === roleName && !(role.child_nodes?.length));
+      if (matchingRole) {
+        panelRolesRequired.push(matchingRole.value_en);
+      }
+    });
+    SelectedPanelSpecialism.forEach((specialismName) => {
+      for (const role of panelRoles) {
+        if (role.child_nodes?.length) {
+          const matchingSpecialism = role.child_nodes.find((specialism) => specialismName === specialism.key);
+          if (matchingSpecialism) {
+            const selectedSpecialismName = `${role.value_en} - ${matchingSpecialism.value_en}`;
+            panelRolesRequired.push(selectedSpecialismName);
+            break; // Exit the loop once we've found a match
+          }
+        }
+      }
+    });
+    return panelRolesRequired.join(separator);
+  }
 }

@@ -299,7 +299,7 @@ describe('PanelDetailsSectionComponent', () => {
     };
 
     // Act
-    (component as any)['setAmendmentLabels']();
+    (component as any).setAmendmentLabels();
 
     // Assert
     expect(component.showAmmendedForNeedPanel).toBeFalse();

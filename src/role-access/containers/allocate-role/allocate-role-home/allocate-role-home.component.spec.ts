@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -13,8 +14,7 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateTo,
-  DurationOfRole,
-  RoleCategory
+  DurationOfRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
@@ -103,7 +103,9 @@ describe('AllocateRoleHomeComponent', () => {
               queryParams: {
                 caseId: '111111',
                 userType: 'Judicial',
-                roleCategory: 'JUDICIAL'
+                roleCategory: 'JUDICIAL',
+                jurisdiction: 'IA',
+                caseType: 'Appeal'
               },
               routeConfig: {
                 path: 'allocate'
@@ -455,7 +457,7 @@ describe('AllocateRoleHomeComponent', () => {
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
       fixture.detectChanges();
       component.navigationHandler(AllocateRoleNavigationEvent.CANCEL);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/IA/Appeal/111111/roles-and-access');
     });
 
     afterEach(() => {

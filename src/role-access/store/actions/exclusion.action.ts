@@ -1,4 +1,4 @@
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
 import { ExcludeOption, ExclusionState, ExclusionStateData, RoleAccessHttpError } from '../../models';
 
@@ -26,7 +26,7 @@ export class ChangeNavigation implements Action {
 
 export class ExclusionSetCaseId implements Action {
   public readonly type = ExclusionActionTypes.EXCLUSION_SET_CASE_ID;
-  constructor(public caseId: string, public jurisdiction: string) {}
+  constructor(public caseId: string, public jurisdiction: string, public caseType: string) {}
 }
 
 export class UpdateDescribeExclusionText implements Action {

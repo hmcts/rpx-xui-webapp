@@ -38,6 +38,18 @@ describe('HearingPanelAnswerConverter', () => {
     const expected = cold('(b|)', { b: option });
     expect(result$).toBeObservable(expected);
   });
+  it('should transform hearing panel answer selection to Yes due to role types', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      roleType: ['ROLE_TYPE_1', 'ROLE_TYPE_2']
+    };
+    const result$ = converter.transformAnswer(of(STATE));
+    const option = RadioOptions.YES;
+    const expected = cold('(b|)', { b: option });
+    expect(result$).toBeObservable(expected);
+  });
+
   it('should transform hearing panel answer selection to no', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;

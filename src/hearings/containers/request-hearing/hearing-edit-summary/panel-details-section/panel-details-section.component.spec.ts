@@ -22,7 +22,7 @@ describe('PanelDetailsSectionComponent', () => {
         requirementType: RequirementType.EXCLUDE
       }
     ],
-    panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001', 'BBA3-MQPM1-001'],
+    panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-003', 'BBA3-MQPM1-001'],
     roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1']
   };
 
@@ -256,7 +256,7 @@ describe('PanelDetailsSectionComponent', () => {
     expect(component.hearingPanel).toEqual('Yes');
     expect(component.includedPanelMembers).toEqual('Ramon Herrera');
     expect(component.excludedPanelMembers).toEqual('Jack Collins');
-    expect(component.panelRoles).toEqual('Disability Qualified Panel Member<br>Medically Qualified Panel Member - Cardiologist<br>Medically Qualified Panel Member - Cardiologist');
+    expect(component.panelRoles).toEqual('Regional Medical Member,Disability Qualified Panel Member,Medically Qualified Panel Member - Eye Surgeon,Medically Qualified Panel Member - Cardiologist');
   });
 
   it('should verify onChange', () => {

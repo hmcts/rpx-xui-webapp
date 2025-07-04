@@ -1,4 +1,4 @@
-@functional_enabled
+@functional_enabled @functional_debug
 Feature: Case file view
 
     Scenario: Display of case file view V1.1

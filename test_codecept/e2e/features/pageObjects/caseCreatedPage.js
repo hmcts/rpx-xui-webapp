@@ -1,16 +1,18 @@
+const { elementByXpath } = require('../../../helpers/globals');
 const BrowserWaits = require('../../../e2e/support/customWaits');
+
 class CaseCreatedPage {
-  constructor() {
-    this.header = element(by.xpath('//h1'));
+  get header() {
+    return elementByXpath('//h1');
   }
 
-  async getPageHeader(){
-    return await $(this.header).getText();
+  async getPageHeader() {
+    return await this.header.textContent();
   }
 
-  async amOnPage(){
+  async amOnPage() {
     return await BrowserWaits.retryWithActionCallback(async () => {
-      return this.header.isDisplayed();
+      return await this.header.isVisible();
     });
   }
 }

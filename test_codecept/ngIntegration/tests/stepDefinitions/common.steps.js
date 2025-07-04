@@ -1,14 +1,10 @@
-const { defineSupportCode } = require('cucumber');
-
-// const MockApp = require('../../../nodeMock/app');
-
 const caseListPage = require('../pageObjects/caselistPage');
 
 const browserUtil = require('../../util/browserUtil');
 // const nodeAppMockData = require('../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../e2e/support/customWaits');
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
 
 const serviceMock = require('../../../backendMock/client/serviceMock');
 
@@ -20,7 +16,7 @@ Given('I reload app if {string}', async function(isReadRequired){
   if (isReadRequired.toLowerCase().includes('yes') || isReadRequired.toLowerCase().includes('true')){
     await browserUtil.gotoHomePage();
     await BrowserWaits.retryWithActionCallback(async () => {
-      await headerpage.waitForPrimaryNavDisplay();
+      await headerPage().waitForPrimaryNavDisplay();
       await browserUtil.waitForLD();
     });
   }

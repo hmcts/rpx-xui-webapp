@@ -57,22 +57,6 @@ class Button{
   }
 
   /**
-   * Wait for an element to be clickable or throw an error.
-   * will wait for the DEFAULT_TIMEOUT value of 5000ms
-   * @param element to wait to be clickable
-   */
-  async waitForElementToBeClickable(){
-    // const EC = protractor.ExpectedConditions;
-
-    // try {
-    //   await browser.wait(await EC.elementToBeClickable(await this._getElementFinder()), DEFAULT_TIMEOUT);
-    // } catch (e) {
-    //   let message = `timed out after ${DEFAULT_TIMEOUT} waiting for element ${element} to be clickable`;
-    //   throw new CustomError(message, e)
-    // }
-  }
-
-  /**
    * Gets button text
    * @returns {Promise<String>}
    */

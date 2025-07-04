@@ -9,7 +9,7 @@ exports.config = {
   timeout: 120,
   'gherkin': {
     'features': '../features/app/**/*.feature',
-    'steps': '../features/step_definitions/**/*.steps.js'
+    'steps': ['../features/step_definitions/setup.steps.js', '../features/step_definitions/**/*.steps.js']
   },
   output: `${functional_output_dir}/output`,
   helpers: {

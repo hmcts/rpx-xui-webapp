@@ -3,9 +3,7 @@ const CucumberReportLogger = require('../../../../codeceptCommon/reportLogger');
 
 const moment = require('moment-timezone');
 
-const { defineSupportCode } = require('cucumber');
 const BrowserWaits = require('../../../support/customWaits');
-const headerPage = require('../../pageObjects/headerPage');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const workAccessPage = require('../../pageObjects/workAccessBookingUI/workAccessPage');
 const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');

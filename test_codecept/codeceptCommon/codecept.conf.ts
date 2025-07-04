@@ -1,7 +1,7 @@
 
 const { setDefaultResultOrder } = require('dns');
 
-const report = require('multiple-cucumber-html-reporter');
+const report = require('cucumber-html-reporter');
 const { merge } = require('mochawesome-merge');
 const marge = require('mochawesome-report-generator');
 const fs = require('fs');
@@ -16,10 +16,46 @@ const statsReporter = require('./statsReporter');
 
 setDefaultResultOrder('ipv4first');
 
+function findStepFiles(basePath) {
+  const results = [];
+
+  function walk(dir) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        walk(fullPath);
+      } else if (file.endsWith('.steps.js')) {
+        results.push(fullPath);
+      }
+    }
+  }
+
+  walk(basePath);
+  return results;
+}
+
+const e2eStepFiles = findStepFiles(path.resolve(__dirname, '../e2e/features/step_definitions'));
+const ngIntegrationStepFiles = findStepFiles(path.resolve(__dirname, '../ngIntegration/tests/stepDefinitions'));
+
+console.log('Loaded step files:', [...e2eStepFiles, ...ngIntegrationStepFiles]);
+
 let executionResult = 'passed';
 
 const appWithMockBackend = null;
 const testType = process.env.TEST_TYPE;
+
+const CODECEPT_OUT = path.resolve(
+  __dirname,
+  '../../functional-output/tests/codecept-' + testType   // screenshots etc.
+);
+
+const CUKE_OUT = path.resolve(
+  __dirname,
+  '../../functional-output/tests/cucumber-codecept-' + testType
+);
+fs.mkdirSync(CUKE_OUT, { recursive: true });
 
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
 
@@ -29,12 +65,13 @@ console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
 console.log(`headless : ${!head}`);
 
+console.log('process.env.TEST_URL : ', process.env.TEST_URL);
 const pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? 'preview' : 'master';
 const local = process.env.LOCAL && process.env.LOCAL.includes('true');
 let features = '';
-if (testType === 'e2e' || testType === 'smoke'){
+if (testType === 'e2e' || testType === 'smoke') {
   features = '../e2e/features/app/**/*.feature';
-} else if (testType === 'ngIntegration'){
+} else if (testType === 'ngIntegration') {
   features = '../ngIntegration/tests/features/**/*.feature';
 } else {
   throw new Error(`Unrecognized test type ${testType}`);
@@ -42,10 +79,11 @@ if (testType === 'e2e' || testType === 'smoke'){
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`);
+fs.mkdirSync(cucumber_functional_output_dir, { recursive: true });
 
-let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctional';
+let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
 
-if (pipelineBranch === 'master' && testType === 'ngIntegration'){
+if (pipelineBranch === 'master' && testType === 'ngIntegration') {
   bddTags = 'AAT_only';
   process.env.LAUNCH_DARKLY_CLIENT_ID = '645baeea2787d812993d9d70';
 }
@@ -55,13 +93,19 @@ const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`
 console.log(grepTags);
 
 exports.config = {
+  require: [path.resolve(__dirname, 'steps_file.js')],
   timeout: 600,
   'gherkin': {
     'features': features,
-    'steps': '../**/*.steps.js'
+    'steps': [
+      // Ensure this sets up setXUITestPage(page) before anything else
+      '../e2e/features/step_definitions/setup.steps.js',
+      ...e2eStepFiles,
+      ...ngIntegrationStepFiles
+    ]
   },
   grep: grepTags,
-  output: functional_output_dir,
+  output: CODECEPT_OUT,
 
   helpers: {
     CustomHelper: {
@@ -115,12 +159,6 @@ exports.config = {
       screenshot: true,
       windowSize: '1600x900'
     }
-    // WebDriver:{
-    //   url: 'https://manage-case.aat.platform.hmcts.net/',
-    //   browser: 'chrome',
-    //   show: true,
-
-    // }
   },
   'mocha': {
     // reporter: 'mochawesome',
@@ -173,27 +211,21 @@ exports.config = {
       enabled: true,
       fullPageScreenshots: true
     },
-
-    'myPlugin': {
-      'require': './hooks',
-      'enabled': true
-    },
     retryFailedStep: {
       enabled: true
     },
     pauseOnFail: {},
-
-    cucumberJsonReporter: {
+    cucumberJsonReporter: {      // 3rd-party plugin that WRITES the *.json
       require: 'codeceptjs-cucumber-json-reporter',
-      enabled: true, // if false, pass --plugins cucumberJsonReporter
-      attachScreenshots: true, // true by default
-      attachComments: true, // true by default
-      outputFile: cucumber_functional_output_dir + '/cucumberOutput/', // cucumber_output.json by default
-      uniqueFileNames: true, // if true outputFile is ignored in favor of unique file names in the format of `cucumber_output_<UUID>.json`.  Useful for parallel test execution
-      includeExampleValues: false, // if true incorporate actual values from Examples table along with variable placeholder when writing steps to the report
-      timeMultiplier: 1000000 // Used when calculating duration of individual BDD steps.  Defaults to nanoseconds
-    }
+      enabled: true,
 
+      // NOTE: correct option name is *outputDir*, not output
+      outputDir: CUKE_OUT,       // ← single place we chose
+      fileNamePrefix: 'cucumber_output_',
+      uniqueFileNames: true,     // 1 JSON per worker
+      attachScreenshots: true,
+      skipEmptyScenarios: true
+    }
   },
   include: {
   },
@@ -203,7 +235,7 @@ exports.config = {
   },
   bootstrap: async () => {
     share({ users: [], reuseCounter: 0 });
-    if (!parallel){
+    if (!parallel) {
       await setup();
     }
   },
@@ -214,6 +246,11 @@ exports.config = {
     }
   },
   bootstrapAll: async () => {
+    global.scenarioData = {};
+    const path = require('path');
+    console.log(path, 'path Connnnnnnnnooooor')
+    require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
+
     if (parallel) {
       await setup();
     }
@@ -232,15 +269,15 @@ function exitWithStatus() {
   process.exit(executionResult === 'passed' ? 0 : 1);
 }
 
-async function setup(){
-  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
+async function setup() {
+  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.startServer(debugMode);
     await applicationServer.initialize();
     await applicationServer.start();
   }
 }
 
-async function teardown(){
+async function teardown() {
   console.log('Tests execution completed');
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
@@ -252,7 +289,7 @@ async function teardown(){
   // process.exit(1);
 }
 
-async function mochawesomeGenerateReport(){
+async function mochawesomeGenerateReport() {
   const report = await merge({
     files: [`${functional_output_dir}/*.json`]
   });
@@ -266,65 +303,69 @@ async function mochawesomeGenerateReport(){
   return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }
 
-async function generateCucumberReport(){
+async function generateCucumberReport() {
   console.log('Generating cucumber report');
 
-  await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      processCucumberJsonReports();
-      resolve(true);
-    }, 2000);
-  });
-  report.generate({
-    jsonDir: functional_output_dir + '',
-    reportPath: functional_output_dir + '',
-    displayDuration: true,
-    // durationInMS: true,
-    metadata: {
-      browser: {
-        name: 'chrome',
-        version: '60'
-      },
-      device: 'Local test machine',
-      platform: {
-        name: 'ubuntu',
-        version: '16.04'
+  // --- collect only NON-EMPTY cucumber_output_*.json files -------------
+  const jsonFiles = fs.readdirSync(CUKE_OUT)
+    .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+    .map(f => path.join(CUKE_OUT, f))
+    .filter(f => {
+      try {
+        const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+        return Array.isArray(data) && data.length > 0; // keep only real results
+      } catch {
+        return false;          // skip broken JSON
       }
+    });
+
+  if (jsonFiles.length === 0) {
+    console.warn('⚠️  No cucumber JSONs with features – skipping HTML report');
+    return;                    // nothing to show, so don’t throw
+  }
+  // ---------------------------------------------------------------------
+
+  await new Promise(r => setTimeout(r, 2000)); // let reporters flush
+  report.generate({
+    jsonDir: CUKE_OUT,      // folder that holds all accepted files
+    reportPath: CUKE_OUT,
+    files: jsonFiles,     // ← tell reporter which files to read
+    displayDuration: true,
+    metadata: {
+      browser: { name: 'chrome', version: '60' },
+      device: 'Local test machine',
+      platform: { name: 'ubuntu', version: '16.04' }
     }
   });
   console.log('completed cucumber report');
 }
 
 function processCucumberJsonReports() {
-  const executionOutcomes = {};
-  const files = fs.readdirSync(functional_output_dir);
-  for (const f of files) {
-    if (f.startsWith('cucumber_output') && f.endsWith('.json')) {
-      console.log(`processing cucumber-json-report : ${f}`);
-      const jsonString = fs.readFileSync(functional_output_dir + '/' + f, 'utf-8');
-      const json = JSON.parse(jsonString);
+  const executionOutcomes: Record<string, string> = {};
+  const goodFiles = fs.readdirSync(CUKE_OUT)
+    .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'));
 
-      const ObjCount = json.length;
-      for (let i = 0; i < ObjCount; i++) {
-        const obj = json[i];
-        for (const element of obj.elements) {
-          for (const step of element.steps) {
-            executionOutcomes[step.result.status] = step.result.status;
-            if (executionResult === 'passed'){
-              executionResult = step.result.status;
-            }
-            for (const embedd of step.embeddings) {
-              if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')){
-                embedd.data = new Buffer(embedd.data, 'base64').toString('ascii');
-              }
+  for (const f of goodFiles) {
+    const full = path.join(CUKE_OUT, f);
+    const json = JSON.parse(fs.readFileSync(full, 'utf8'));
+    if (!Array.isArray(json) || json.length === 0) continue; // skip empties
+
+    for (const feature of json) {
+      for (const element of feature.elements) {
+        for (const step of element.steps) {
+          executionOutcomes[step.result.status] = step.result.status;
+          if (executionResult === 'passed') executionResult = step.result.status;
+
+          for (const embedd of step.embeddings ?? []) {
+            if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')) {
+              embedd.data = Buffer.from(embedd.data, 'base64').toString('ascii');
             }
           }
         }
       }
-      fs.writeFileSync(functional_output_dir + '/' + f, JSON.stringify(json, null, 2));
     }
+    fs.writeFileSync(full, JSON.stringify(json, null, 2));
   }
   console.log(executionOutcomes);
-
   return executionResult;
 }

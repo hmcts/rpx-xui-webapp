@@ -1,16 +1,25 @@
-// var EC = protractor.ExpectedConditions;
+const { $$, getXUITestPage, waitForElement } = require('../../helpers/globals');
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
 const reportLogger = require('../../codeceptCommon/reportLogger');
 
-class BrowserWaits{
-  constructor(){
+let instance = null;
+
+class BrowserWaits {
+  constructor() {
     this.waitTime = 15000;
-    this.pageErrors = $$('.error-summary');
     this.retriesCount = 3;
 
     this.logLevel = 'DEBUG';
+  }
+
+  get page() {
+    return getXUITestPage();
+  }
+
+  get pageErrors() {
+    return $$('.error-summary');
   }
 
   setLoglevelINFO() {
@@ -29,7 +38,7 @@ class BrowserWaits{
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
-      }, waitInSec*1000);
+      }, waitInSec * 1000);
     });
   }
 
@@ -38,9 +47,8 @@ class BrowserWaits{
   }
 
   async waitForElement(element, message, waitForSeconds) {
-    const startTime = Date.now();
-    CucumberReporter.AddMessage('ELEMENT_WAIT: at ' + this.__getCallingFunctionName()+ ' ' + JSON.stringify(element.selector)+' at ');
-    await element.wait(this.waitTime / 1000);
+    CucumberReporter.AddMessage('ELEMENT_WAIT: at ' + this.__getCallingFunctionName() + ' ' + JSON.stringify(element.selector) + ' at ');
+    await waitForElement(element, { timeout: this.waitTime });
 
     // await this.waitForConditionAsync(async () => {
     //     const isPresent = await element.isPresent();
@@ -58,17 +66,17 @@ class BrowserWaits{
     const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
     CucumberReporter.AddMessage('starting wait for element clickable max in sec ' + waitTimeInMilliSec + ' : ' + JSON.stringify(element.selector));
     let isEnabled = false;
-    for (let i = 0; i< 20; i++){
+    for (let i = 0; i < 20; i++) {
       await this.waitForSeconds(1);
       isEnabled = await element.isEnabled();
-      if (isEnabled){
+      if (isEnabled) {
         break;
       }
     }
 
     CucumberReporter.AddMessage('wait done in sec ' + (Date.now() - startTime) / 1000);
-    if (!isEnabled){
-      throw Error(`element is not enabled : ${JSON.stringify(element.selector) }`);
+    if (!isEnabled) {
+      throw Error(`element is not enabled : ${JSON.stringify(element.selector)}`);
     }
   }
 
@@ -111,7 +119,6 @@ class BrowserWaits{
 
   async waitForPageNavigation(currentPageUrl) {
     let nextPage = '';
-    const pageErrors = '';
     for (let i = 0; i < 20; i++) {
       await this.waitForSeconds(1);
       nextPage = await browser.getCurrentUrl();
@@ -175,7 +182,7 @@ class BrowserWaits{
     let error = null;
     while (retryCounter <= this.retriesCount) {
       const waitSec = retryCounter * 2;
-      if (retryCounter > 0){
+      if (retryCounter > 0) {
         CucumberReporter.AddMessage(`ACTION_WARNING: retrying ${retryCounter} ${functionName}`);
       }
       await this.waitForSeconds(waitSec);
@@ -201,7 +208,7 @@ class BrowserWaits{
       retryCounter += 1;
     }
     if (!isSuccess) {
-      CucumberReporter.AddMessage(`ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${functionName }`);
+      CucumberReporter.AddMessage(`ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${functionName}`);
       throw error;
     }
   }
@@ -228,7 +235,7 @@ class BrowserWaits{
     // }, 'Spinner is still displayed after waiting ');
   }
 
-  __getCallingFunctionName(){
+  __getCallingFunctionName() {
     const e = new Error();
     const frame = e.stack.split('\n')[3]; // change to 3 for grandparent func
     const lineNumber = frame.split(':').reverse()[1];
@@ -242,4 +249,11 @@ class BrowserWaits{
   }
 }
 
-module.exports = new BrowserWaits();
+function getBrowserWaits() {
+  if (!instance) {
+    instance = new BrowserWaits();
+  }
+  return instance;
+}
+
+module.exports = getBrowserWaits();

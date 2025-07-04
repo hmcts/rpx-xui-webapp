@@ -108,8 +108,10 @@
 <!-- Panel selector member details -->
 <exui-panel-details-section *ngIf="sectionsToDisplay.includes(hearingScreenEnum.HEARING_PANEL_SELECTOR)"
   [panelRequirements]="hearingRequestMainModel.hearingDetails.panelRequirements"
+  [panelRequirementsToCompare]="hearingRequestToCompareMainModel.hearingDetails.panelRequirements"
   [panelRolesRefData]="panelRolesRefData"
   [panelMembers]="judicialUsers"
+  [isAPanelFlag]="hearingRequestMainModel.hearingDetails?.isAPanelFlag"
   (changeEditHearing)="onChange($event)"
 ></exui-panel-details-section>
 <!-- Panel member details -->

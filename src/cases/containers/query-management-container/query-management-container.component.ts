@@ -138,7 +138,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       isHearingRelated: new FormControl(null),
       hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[]),
-      closeQuery: new FormControl(null)
+      closeQuery: new FormControl(false)
     });
 
     if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {

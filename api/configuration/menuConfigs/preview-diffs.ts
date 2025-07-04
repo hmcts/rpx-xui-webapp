@@ -11,7 +11,8 @@ export const previewDifferences = {
 
     {
       'roles': [
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-befta_master'
       ],
       'text': 'Case list'
     },

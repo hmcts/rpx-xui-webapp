@@ -12,6 +12,7 @@ const { DataTableArgument } = require('codeceptjs');
 
 const caseDetailsBasicViewPage = require('../../pageObjects/caseAccessManagement/caseDetailsBasicView');
 const challengedAccessRequestPage = require('../../pageObjects/caseAccessManagement/challengedAccessRequestPage');
+const specificAccessRequestPage = require('../../pageObjects/caseAccessManagement/specificAccessRequestPage');
 
 Then('I see case details basic view and request access page', async () => {
   console.log('[Test] getXUITestPage:', require('../../../../helpers/globals').getXUITestPage());

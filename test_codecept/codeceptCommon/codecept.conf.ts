@@ -46,6 +46,17 @@ let executionResult = 'passed';
 const appWithMockBackend = null;
 const testType = process.env.TEST_TYPE;
 
+const CODECEPT_OUT = path.resolve(
+  __dirname,
+  '../../functional-output/tests/codecept-' + testType   // screenshots etc.
+);
+
+const CUKE_OUT = path.resolve(
+  __dirname,
+  '../../functional-output/tests/cucumber-codecept-' + testType
+);
+fs.mkdirSync(CUKE_OUT, { recursive: true });
+
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === 'true' : false;
@@ -68,6 +79,7 @@ if (testType === 'e2e' || testType === 'smoke') {
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`);
+fs.mkdirSync(cucumber_functional_output_dir, { recursive: true });
 
 let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
 
@@ -93,7 +105,7 @@ exports.config = {
     ]
   },
   grep: grepTags,
-  output: functional_output_dir,
+  output: CODECEPT_OUT,
 
   helpers: {
     CustomHelper: {
@@ -202,8 +214,18 @@ exports.config = {
     retryFailedStep: {
       enabled: true
     },
-    pauseOnFail: {}
+    pauseOnFail: {},
+    cucumberJsonReporter: {      // 3rd-party plugin that WRITES the *.json
+      require: 'codeceptjs-cucumber-json-reporter',
+      enabled: true,
 
+      // NOTE: correct option name is *outputDir*, not output
+      outputDir: CUKE_OUT,       // ← single place we chose
+      fileNamePrefix: 'cucumber_output_',
+      uniqueFileNames: true,     // 1 JSON per worker
+      attachScreenshots: true,
+      skipEmptyScenarios: true
+    }
   },
   include: {
   },
@@ -284,62 +306,66 @@ async function mochawesomeGenerateReport() {
 async function generateCucumberReport() {
   console.log('Generating cucumber report');
 
-  await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      processCucumberJsonReports();
-      resolve(true);
-    }, 2000);
-  });
-  report.generate({
-    jsonDir: functional_output_dir + '',
-    reportPath: functional_output_dir + '',
-    displayDuration: true,
-    // durationInMS: true,
-    metadata: {
-      browser: {
-        name: 'chrome',
-        version: '60'
-      },
-      device: 'Local test machine',
-      platform: {
-        name: 'ubuntu',
-        version: '16.04'
+  // --- collect only NON-EMPTY cucumber_output_*.json files -------------
+  const jsonFiles = fs.readdirSync(CUKE_OUT)
+    .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+    .map(f => path.join(CUKE_OUT, f))
+    .filter(f => {
+      try {
+        const data = JSON.parse(fs.readFileSync(f, 'utf8'));
+        return Array.isArray(data) && data.length > 0; // keep only real results
+      } catch {
+        return false;          // skip broken JSON
       }
+    });
+
+  if (jsonFiles.length === 0) {
+    console.warn('⚠️  No cucumber JSONs with features – skipping HTML report');
+    return;                    // nothing to show, so don’t throw
+  }
+  // ---------------------------------------------------------------------
+
+  await new Promise(r => setTimeout(r, 2000)); // let reporters flush
+  report.generate({
+    jsonDir: CUKE_OUT,      // folder that holds all accepted files
+    reportPath: CUKE_OUT,
+    files: jsonFiles,     // ← tell reporter which files to read
+    displayDuration: true,
+    metadata: {
+      browser: { name: 'chrome', version: '60' },
+      device: 'Local test machine',
+      platform: { name: 'ubuntu', version: '16.04' }
     }
   });
   console.log('completed cucumber report');
 }
 
 function processCucumberJsonReports() {
-  const executionOutcomes = {};
-  const files = fs.readdirSync(functional_output_dir);
-  for (const f of files) {
-    if (f.startsWith('cucumber_output') && f.endsWith('.json')) {
-      console.log(`processing cucumber-json-report : ${f}`);
-      const jsonString = fs.readFileSync(functional_output_dir + '/' + f, 'utf-8');
-      const json = JSON.parse(jsonString);
+  const executionOutcomes: Record<string, string> = {};
+  const goodFiles = fs.readdirSync(CUKE_OUT)
+    .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'));
 
-      const ObjCount = json.length;
-      for (let i = 0; i < ObjCount; i++) {
-        const obj = json[i];
-        for (const element of obj.elements) {
-          for (const step of element.steps) {
-            executionOutcomes[step.result.status] = step.result.status;
-            if (executionResult === 'passed') {
-              executionResult = step.result.status;
-            }
-            for (const embedd of step.embeddings) {
-              if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')) {
-                embedd.data = new Buffer(embedd.data, 'base64').toString('ascii');
-              }
+  for (const f of goodFiles) {
+    const full = path.join(CUKE_OUT, f);
+    const json = JSON.parse(fs.readFileSync(full, 'utf8'));
+    if (!Array.isArray(json) || json.length === 0) continue; // skip empties
+
+    for (const feature of json) {
+      for (const element of feature.elements) {
+        for (const step of element.steps) {
+          executionOutcomes[step.result.status] = step.result.status;
+          if (executionResult === 'passed') executionResult = step.result.status;
+
+          for (const embedd of step.embeddings ?? []) {
+            if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')) {
+              embedd.data = Buffer.from(embedd.data, 'base64').toString('ascii');
             }
           }
         }
       }
-      fs.writeFileSync(functional_output_dir + '/' + f, JSON.stringify(json, null, 2));
     }
+    fs.writeFileSync(full, JSON.stringify(json, null, 2));
   }
   console.log(executionOutcomes);
-
   return executionResult;
 }

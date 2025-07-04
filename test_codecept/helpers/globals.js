@@ -22,6 +22,10 @@ function getXUITestPage () {
   return resolvePage();
 }
 
+async function currentUrl() {
+  return resolvePage().url();
+}
+
 /* ------------------------------------------------------------------ */
 /*  Shorthand element helpers – each call re-resolves the page        */
 /* ------------------------------------------------------------------ */
@@ -35,6 +39,11 @@ function elementByXpath(xpath) { return resolvePage().locator(`xpath=${xpath}`);
 async function isPresent(locator) {
   const count = await locator.count?.() ?? 0;
   return count > 0;
+}
+
+async function navigate(url, options = {}) {
+  const page = resolvePage();
+  await page.goto(url, { waitUntil: 'load', ...options });
 }
 
 async function waitForElement(selectorOrLocator, options = {}) {
@@ -56,16 +65,33 @@ async function waitForElement(selectorOrLocator, options = {}) {
   await locator.waitFor({ timeout, state });
 }
 
-async function selectOption(selectLoc, visibleText) {
-  await selectLoc.selectOption({ label: visibleText });
+async function getTagName(locator) {
+  return await locator.evaluate(el => el.tagName.toLowerCase());
 }
+
+async function selectOption(selectLoc, opts) {
+  if (typeof opts === 'string') {
+    // treat as label, for backward-compat
+    return selectLoc.selectOption({ label: opts });
+  }
+  // opts might be { label }, { value } or { index }
+  return selectLoc.selectOption(opts);
+}
+
 async function getSelectOptions(selectLoc) {
   return await selectLoc.locator('option').allTextContents();
+}
+
+async function getText(locator) {
+  return (await locator.textContent())?.trim();
 }
 
 /* ------------------------------------------------------------------ */
 module.exports = {
   getXUITestPage,
+
+  currentUrl,
+  navigate,
 
   /* element helpers */
   $,
@@ -73,10 +99,13 @@ module.exports = {
   elementByXpath,
   elementsByXpath: elementByXpath,
   elementByCss: $,
+  elementsByCss: $$,
 
   /* util helpers */
   isPresent,
   waitForElement,
   selectOption,
-  getSelectOptions
+  getSelectOptions,
+  getText,
+  getTagName
 };

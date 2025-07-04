@@ -50,7 +50,8 @@ export const baseConfig = {
         'caseworker-privatelaw',
         'caseworker-publiclaw-judiciary',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Case list'
     },
@@ -70,7 +71,8 @@ export const baseConfig = {
         'caseworker-probate-judge',
         'caseworker-publiclaw-judiciary',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Find case'
     },

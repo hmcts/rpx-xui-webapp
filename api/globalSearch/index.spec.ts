@@ -193,6 +193,7 @@ describe('Jurisdiction', () => {
   it('should return global search services2', async() => {
     console.log('refDataHMCTS size: ' + refDataHMCTS.length);
     const services = globalSearchServices.generateServices(refDataHMCTS);
+    expect(services).to.have.deep.members(serviceList);
   });
 
   it('should get global search results', async () => {

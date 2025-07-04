@@ -430,11 +430,33 @@ describe('HearingEditSummaryComponent', () => {
             }
           ]
         }
-      ]
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
+  it('should set hearingFacilitiesChangesRequired to be true if caseAdditionalSecurityFlag differs', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      caseAdditionalSecurityFlag: true,
+      screenFlow: [
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
   it('should pageVisitNonReasonableAdjustmentChangeExists return false if non-reasonable adjustment changes already confirmed', () => {
@@ -983,6 +1005,22 @@ describe('HearingEditSummaryComponent', () => {
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
         facilitiesRequired: ['11', '22']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['12', '23']
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitHearingFacilitiesChanged return true if additional security changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['12', '23']
       }
     };
     component.serviceHearingValuesModel = {
@@ -1672,6 +1710,94 @@ describe('HearingEditSummaryComponent', () => {
     component.ngOnInit();
     expect((component as any).pageVisitHearingFacilitiesExists()).toEqual(false);
   });
+  it('should return true if reasonable adjustments changed but not confirmed', () => {
+    // Setup: Mock reasonable adjustments have changed
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(true);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(false);
+
+    expect(result).toBe(true);
+    expect((component as any).pageVisitReasonableAdjustmentChangeExists).toHaveBeenCalled();
+  });
+
+  it('should return true if non-reasonable adjustments changed but not confirmed', () => {
+    // Setup: Mock non-reasonable adjustments have changed
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(true);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(false);
+
+    expect(result).toBe(true);
+    expect((component as any).pageVisitNonReasonableAdjustmentChangeExists).toHaveBeenCalled();
+  });
+
+  it('should return true if parties changed but not confirmed', () => {
+    // Setup: Mock parties have changed
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(true);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(false);
+
+    expect(result).toBe(true);
+    expect((component as any).pageVisitPartiesChangeExists).toHaveBeenCalled();
+  });
+
+  it('should return true if hearing window changed but not confirmed', () => {
+    // Setup: Mock hearing window has changed
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(true);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(false);
+
+    expect(result).toBe(true);
+    expect((component as any).pageVisitHearingWindowChangeExists).toHaveBeenCalled();
+  });
+
+  it('should return false when no changes exist and hearing request object has changed', () => {
+    // Setup: No page visit changes, but hearing request object has changed
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(true);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return false when no changes exist and hearing request object has not changed', () => {
+    // Setup: No page visit changes and no hearing request object changes
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(false);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return true when multiple change types exist', () => {
+    // Setup: Multiple types of changes
+    spyOn<any>(component, 'pageVisitReasonableAdjustmentChangeExists').and.returnValue(true);
+    spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitPartiesChangeExists').and.returnValue(true);
+    spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+
+    const result = (component as any).pageVisitChangesNotConfirmed(true);
+
+    expect(result).toBe(true);
+  });
+
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [
       {

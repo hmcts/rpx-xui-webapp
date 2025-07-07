@@ -51,7 +51,6 @@ test('navigating to a case which displays the new url containing jurisdiction an
     await createCase(page);
     firstCaseRef = await getCaseReferenceFromFirstRow(page);
   }
-  console.log('First case reference:', firstCaseRef);
   await page.getByRole('link', { name: `go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}` }).click();
   await expect(page.locator('h1')).toContainText(`#${firstCaseRef}`);
   const pageUrl = page.url();
@@ -105,14 +104,11 @@ test('Search from menu 16-digit find control and navigate to the new url', async
   await waitForSpinner(page);
   await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
   const firstCaseRef = await getCaseReferenceFromFirstRowForEmployment(page);
-  console.log('First case reference:', firstCaseRef);
   await page.getByRole('textbox', { name: '-digit case reference:' }).click();
   await page.getByRole('textbox', { name: '-digit case reference:' }).fill(firstCaseRef);
   await page.getByRole('button', { name: 'Find' }).click();
   await expect(page.getByRole('link', { name: 'Print' })).toBeVisible();
   const pageUrl = page.url();
-  console.log('Page URL after search:', pageUrl);
   const afterCaseDetails = pageUrl.split('case-details/')[1];
-  console.log('After case details URL:', afterCaseDetails);
   expect(afterCaseDetails).toMatch(/^EMPLOYMENT\/ET_EnglandWales\//);
 });

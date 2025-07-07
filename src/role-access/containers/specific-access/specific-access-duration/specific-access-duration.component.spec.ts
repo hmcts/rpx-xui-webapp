@@ -241,19 +241,19 @@ describe('SpecificAccessDurationComponent', () => {
     it('should return a Period object for ANOTHER_PERIOD duration type for the same start and end date', () => {
       // fake form group and form control values
       component.endDateDayCtrl = new FormControl(7);
-      component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateMonthCtrl = new FormControl(8);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      expect(period?.hasOwnProperty('startDate') && period?.hasOwnProperty('endDate')).toEqual(true);
       date = new Date();
       date.setUTCHours(0, 0, 0, 0);
-      expect(period.startDate).toEqual(date);
-      date = new Date(2025, 6, 7);
+      expect(period?.startDate).toEqual(date);
+      date = new Date(2035, 7, 7);
       date.setUTCHours(23, 59, 59, 999);
-      expect(period.endDate).toEqual(date);
+      expect(period?.endDate).toEqual(date);
     });
 
     it('should return control values when getRawData called', () => {

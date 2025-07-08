@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.10":
-  version: 7.2.10
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.10"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.14":
+  version: 7.2.14
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.14"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9ba5c6a6eb9896e3111bf74f71494992129b8743886e4a01695ed60205132f6da5d81a005fb1f0447c2ee201e0b47955ae79f14fd6519eb4541d8cc0f823d6e7
+  checksum: 10/6cc19e2e155fbe11b73bb9b5ac93a005cd3ded5b49d88ac13a68e7cc5a6580aeb5371178fb645d5626e8eccf5d92f0f78c822fd541ff3031e41e0966b3b29461
   languageName: node
   linkType: hard
 
@@ -3196,16 +3196,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0"
+"@hmcts/rpx-xui-common-lib@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.2"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/af16c6925e33979514ae449b3edddc31809cddc6d2f8ccc99373132463a4377264b9733ab3e6d7b603b9116b96bf82f652042f8688e0858e94c5f621a74e3d36
+  checksum: 10/c27e9e6d5145147cdfcc8df831b00b85729c2f4e1123815c33885fd9e6ce2f7339b5ee8978e951a8e1ef61cfee99cee7fb1326448e38a7555ff8e122770b2ee3
   languageName: node
   linkType: hard
 
@@ -9223,9 +9223,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001646, caniuse-lite@npm:^1.0.30001716":
-  version: 1.0.30001718
-  resolution: "caniuse-lite@npm:1.0.30001718"
-  checksum: 10/e172a4c156f743cc947e659f353ad9edb045725cc109a02cc792dcbf98569356ebfa4bb4356e3febf87427aab0951c34c1ee5630629334f25ae6f76de7d86fd0
+  version: 1.0.30001720
+  resolution: "caniuse-lite@npm:1.0.30001720"
+  checksum: 10/6557c5052fa17fd531f3e1a8013b5924fb69afcd53d9f3e3b9adc9e31c5a7e436b674c000c53659e097fe1fda1c290d1bd17c7f3f98d13749644386ed722ab5f
   languageName: node
   linkType: hard
 
@@ -21885,13 +21885,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.10"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.14"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.0"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.2"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

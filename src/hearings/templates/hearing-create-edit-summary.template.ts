@@ -13,7 +13,7 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
       },
       {
         id: 'caseNumber',
-        answerTitle: 'Case number',
+        answerTitle: 'Case reference',
         answerSource: AnswerSource.CASE_NUMBER
       },
       {

@@ -22,7 +22,7 @@ import { Role, RefinedRole } from './models/roleType';
 import { RoleRequestPayload } from './models/role-request.model';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { JudicialUserDto } from './dtos/judicial-user-dto';
-import { PersonRole } from 'api/workAllocation/interfaces/person';
+import { PersonRole } from '../workAllocation/interfaces/person';
 
 describe('roleAccess/index', () => {
   let sandbox: sinon.SinonSandbox;

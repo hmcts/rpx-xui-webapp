@@ -16,9 +16,6 @@ import { LINKED_HEARING_GROUP } from './data/linkHearings.mock.data';
 import { LinkedHearingGroupResponseModel } from './models/linkHearings.model';
 import { HMCStatus } from './models/hearings.enum';
 
-// Using the actual HMC URL that is set at module level
-const HMC_API_URL = 'http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal';
-
 describe('HMC Hearings API', () => {
   let sandbox: sinon.SinonSandbox;
   let req: EnhancedRequest;
@@ -36,7 +33,7 @@ describe('HMC Hearings API', () => {
     sandbox = sinon.createSandbox();
 
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
-    getConfigValueStub.withArgs('services.hearings.hmcApi').returns(HMC_API_URL);
+    getConfigValueStub.withArgs('services.hearings.hmcApi').returns(hmcIndex.hmcHearingsUrl);
 
     req = {
       query: {},
@@ -79,7 +76,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.getHearings(req, res, next);
 
       expect(handleGetStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearings/1584618195804035`,
+        `${hmcIndex.hmcHearingsUrl}/hearings/1584618195804035`,
         req,
         next
       );
@@ -138,7 +135,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.getHearing(req, res, next);
 
       expect(handleGetStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearing/h100001`,
+        `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
         req,
         next
       );
@@ -173,7 +170,7 @@ describe('HMC Hearings API', () => {
 
       expect(trackTraceStub).to.have.been.calledWith('submitting hearing request');
       expect(handlePostStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearing`,
+        `${hmcIndex.hmcHearingsUrl}/hearing`,
         req.body,
         req,
         next
@@ -222,7 +219,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.cancelHearingRequest(req, res, next);
 
       expect(handleDeleteStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearing/h100001`,
+        `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
         req.body,
         req,
         next
@@ -258,7 +255,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.updateHearingRequest(req, res, next);
 
       expect(handlePutStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearing/h100001`,
+        `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
         req.body,
         req,
         next
@@ -293,7 +290,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.getHearingActuals(req, res, next);
 
       expect(handleGetStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearingActuals/h100001`,
+        `${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`,
         req,
         next
       );
@@ -328,7 +325,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.updateHearingActuals(req, res, next);
 
       expect(sendPutStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearingActuals/h100001`,
+        `${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`,
         req.body,
         req
       );
@@ -359,7 +356,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.submitHearingActuals(req, res, next);
 
       expect(handlePostStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearingActualsCompletion/h100001`,
+        `${hmcIndex.hmcHearingsUrl}/hearingActualsCompletion/h100001`,
         null,
         req,
         next
@@ -394,7 +391,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.getLinkedHearingGroup(req, res, next);
 
       expect(handleGetStub).to.have.been.calledWith(
-        `${HMC_API_URL}/linkedHearingGroup/g1000000`,
+        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`,
         req,
         next
       );
@@ -428,7 +425,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.postLinkedHearingGroup(req, res, next);
 
       expect(handlePostStub).to.have.been.calledWith(
-        `${HMC_API_URL}/linkedHearingGroup`,
+        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup`,
         req.body,
         req,
         next
@@ -464,7 +461,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.putLinkedHearingGroup(req, res, next);
 
       expect(handlePutStub).to.have.been.calledWith(
-        `${HMC_API_URL}/linkedHearingGroup?id=g1000000`,
+        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup?id=g1000000`,
         req.body,
         req,
         next
@@ -500,7 +497,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.deleteLinkedHearingGroup(req, res, next);
 
       expect(handleDeleteStub).to.have.been.calledWith(
-        `${HMC_API_URL}/linkedHearingGroup/g1000000`,
+        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`,
         req.body,
         req,
         next
@@ -568,7 +565,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.getHearings(req, res, next);
 
       expect(handleGetStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearings/undefined`,
+        `${hmcIndex.hmcHearingsUrl}/hearings/undefined`,
         req,
         next
       );
@@ -605,7 +602,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.submitHearingRequest(req, res, next);
 
       expect(handlePostStub).to.have.been.calledWith(
-        `${HMC_API_URL}/hearing`,
+        `${hmcIndex.hmcHearingsUrl}/hearing`,
         {},
         req,
         next

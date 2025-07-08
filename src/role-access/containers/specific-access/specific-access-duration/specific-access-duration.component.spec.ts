@@ -162,7 +162,7 @@ describe('SpecificAccessDurationComponent', () => {
       // fake form group and form control values
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
       component.formGroup = new FormGroup({});
 
       component.selectSpecificAccessDuration(specificAccessState);
@@ -225,7 +225,7 @@ describe('SpecificAccessDurationComponent', () => {
       // fake form group and form control values
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
@@ -234,7 +234,7 @@ describe('SpecificAccessDurationComponent', () => {
       date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
-      date = new Date(2025, 6, 8);
+      date = new Date(2035, 6, 8);
       date.setUTCHours(23, 59, 59, 999);
       expect(period.endDate).toEqual(date);
     });
@@ -243,7 +243,7 @@ describe('SpecificAccessDurationComponent', () => {
       // fake form group and form control values
       component.endDateDayCtrl = new FormControl(7);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
@@ -252,7 +252,7 @@ describe('SpecificAccessDurationComponent', () => {
       date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
-      date = new Date(2025, 6, 7);
+      date = new Date(2035, 6, 7);
       date.setUTCHours(23, 59, 59, 999);
       expect(period.endDate).toEqual(date);
     });
@@ -261,21 +261,21 @@ describe('SpecificAccessDurationComponent', () => {
       // fake form group and form control values
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
       const period = component.getRawData();
       expect(period.endDate.day).toEqual(8);
       expect(period.endDate.month).toEqual(7);
-      expect(period.endDate.year).toEqual(2025);
+      expect(period.endDate.year).toEqual(2035);
       expect(period.hasOwnProperty('endDate')).toEqual(true);
     });
 
     it('should display invalid date messages', () => {
       component.endDateDayCtrl = new FormControl(99);
       component.endDateMonthCtrl = new FormControl(99);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid End date'] });

@@ -97,8 +97,8 @@
     "@hmcts/media-viewer": "4.1.0",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
-    "@hmcts/rpx-xui-common-lib": "2.1.0",
-    "@hmcts/rpx-xui-node-lib": "2.30.6",
+    "@hmcts/rpx-xui-common-lib": "2.1.0-govuk-frontend-upgrade",
+    "@hmcts/rpx-xui-node-lib": "2.30.7",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -107,7 +107,7 @@
     "@ngrx/store": "^17.2.0",
     "@ngrx/store-devtools": "^17.2.0",
     "@nicky-lenaers/ngx-scroll-to": "^14.0.0",
-    "accessibility-checker": "^3.1.70",
+    "accessibility-checker": "^4.0.0",
     "applicationinsights": "1.8.10",
     "axios": "^1.7.7",
     "axios-mock-adapter": "^1.22.0",
@@ -274,7 +274,8 @@
     "braces": "^3.0.3",
     "ws": "^8.18.0",
     "axios": "1.8.4",
-    "webpack": "^5.94.0"
+    "webpack": "^5.94.0",
+    "tar-fs": "^3.0.9"
   },
   "packageManager": "yarn@4.7.0"
 }

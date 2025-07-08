@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { AppUtils } from '../../../app/app-utils';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserInfo } from '../../../app/models';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -36,8 +35,7 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: AllocateRoleService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly roleService: AllocateRoleService
   ) { }
 
   public get fields(): FieldConfig[] {
@@ -90,7 +88,8 @@ export class TaskActionContainerComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+      // EXUI-2907 - Role category is used instead of roles
+      return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
     return false;
   }

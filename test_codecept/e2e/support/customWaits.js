@@ -1,4 +1,5 @@
 const { $$, getXUITestPage, waitForElement } = require('../../helpers/globals');
+const { toLocator } = require('../../helpers/elementWrap');
 
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
@@ -47,14 +48,16 @@ class BrowserWaits {
   }
 
   async waitForElement(element, message, waitForSeconds) {
-    CucumberReporter.AddMessage('ELEMENT_WAIT: at ' + this.__getCallingFunctionName() + ' ' + JSON.stringify(element.selector) + ' at ');
-    await waitForElement(element, { timeout: this.waitTime });
+    CucumberReporter.AddMessage(
+      'ELEMENT_WAIT: … ' + (element.selector || element)
+    );
 
-    // await this.waitForConditionAsync(async () => {
-    //     const isPresent = await element.isPresent();
-    //     return isPresent;
-    // }, 20*1000);
-    // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
+    const target =
+      element?.locator && element.getText
+        ? toLocator(element)
+        : element;
+
+    await waitForElement(target, { timeout: this.waitTime });
   }
 
   async waitForPresenceOfElement(element) {
@@ -65,14 +68,13 @@ class BrowserWaits {
     const startTime = Date.now();
     const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
     CucumberReporter.AddMessage('starting wait for element clickable max in sec ' + waitTimeInMilliSec + ' : ' + JSON.stringify(element.selector));
-    let isEnabled = false;
-    for (let i = 0; i < 20; i++) {
-      await this.waitForSeconds(1);
-      isEnabled = await element.isEnabled();
-      if (isEnabled) {
-        break;
-      }
-    }
+    const locator = element?.locator && element.getText
+      ? toLocator(element)
+      : element;
+
+    await locator.waitFor({ state: 'visible',  timeout: waitTimeInMilliSec });
+    await locator.waitFor({ state: 'attached', timeout: waitTimeInMilliSec });
+    const isEnabled = await locator.isEnabled();
 
     CucumberReporter.AddMessage('wait done in sec ' + (Date.now() - startTime) / 1000);
     if (!isEnabled) {

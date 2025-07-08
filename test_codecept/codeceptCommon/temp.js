@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const CUKE_OUT = path.resolve(
   __dirname,
-  '../../functional-output/tests/cucumber-codecept-ngIntegration'
+  '../../functional-output/tests/codecept-ngIntegration'
 );
 
 async function cucumberReportUpdateEmbeddings() {

@@ -43,7 +43,7 @@ async function isPresent(locator) {
 
 async function navigate(url, options = {}) {
   const page = resolvePage();
-  await page.goto(url, { waitUntil: 'load', ...options });
+  await page.goto(url, { waitUntil: 'domcontentloaded', ...options });
 }
 
 async function waitForElement(selectorOrLocator, options = {}) {

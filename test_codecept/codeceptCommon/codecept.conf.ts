@@ -51,9 +51,10 @@ const CODECEPT_OUT = path.resolve(
   '../../functional-output/tests/codecept-' + testType   // screenshots etc.
 );
 
+
 const CUKE_OUT = path.resolve(
   __dirname,
-  '../../functional-output/tests/cucumber-codecept-' + testType
+  '../../functional-output/tests/codecept-' + testType
 );
 fs.mkdirSync(CUKE_OUT, { recursive: true });
 
@@ -78,7 +79,7 @@ if (testType === 'e2e' || testType === 'smoke') {
 }
 
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
-const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`);
+const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 fs.mkdirSync(cucumber_functional_output_dir, { recursive: true });
 
 let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
@@ -220,11 +221,13 @@ exports.config = {
       enabled: true,
 
       // NOTE: correct option name is *outputDir*, not output
-      outputDir: CUKE_OUT,       // ← single place we chose
+      outputDir: cucumber_functional_output_dir,     // ← single place we chose
       fileNamePrefix: 'cucumber_output_',
       uniqueFileNames: true,     // 1 JSON per worker
       attachScreenshots: true,
-      skipEmptyScenarios: true
+      attachComments: true,
+      includeExampleValues: false,
+      timeMultiplier: 1000000
     }
   },
   include: {
@@ -239,12 +242,6 @@ exports.config = {
       await setup();
     }
   },
-  teardown: async () => {
-    if (!parallel) {
-      await teardown();
-      exitWithStatus();
-    }
-  },
   bootstrapAll: async () => {
     global.scenarioData = {};
     const path = require('path');
@@ -255,12 +252,13 @@ exports.config = {
       await setup();
     }
   },
-  teardownAll: async () => {
-    if (parallel) {
-      await teardown();
-      exitWithStatus();
-    }
-  }
+  teardown: async () => {                  // ← worker‑level finaliser
+    if (!parallel) await teardown();       // no report here any more
+  },
+  teardownAll: async () => {               // ← fires after *all* workers
+    await generateCucumberReport();        // JSON is now on disk
+    exitWithStatus();                      // evaluate pass / fail
+  },
 };
 
 function exitWithStatus() {
@@ -323,14 +321,17 @@ async function generateCucumberReport() {
     console.warn('⚠️  No cucumber JSONs with features – skipping HTML report');
     return;                    // nothing to show, so don’t throw
   }
-  // ---------------------------------------------------------------------
+
+  const reportFile = path.join(CUKE_OUT, 'cucumber_report.html');
 
   await new Promise(r => setTimeout(r, 2000)); // let reporters flush
   report.generate({
+    theme: 'bootstrap',
     jsonDir: CUKE_OUT,      // folder that holds all accepted files
-    reportPath: CUKE_OUT,
+    output: reportFile,
     files: jsonFiles,     // ← tell reporter which files to read
     displayDuration: true,
+    ignoreBadJsonFile: true,
     metadata: {
       browser: { name: 'chrome', version: '60' },
       device: 'Local test machine',

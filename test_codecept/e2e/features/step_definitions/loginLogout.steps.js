@@ -108,7 +108,7 @@ When('I navigate to Expert UI Url', async function () {
 });
 
 Then(/^I should see failure error summary$/, async function () {
-  await $('.heading-large').wait(20);
+  await $('.heading-large').waitFor(20);
   await expect(loginPage.failure_error_heading.isVisible()).to.eventually.be.true;
   await expect(getText(loginPage.failure_error_heading))
     .to
@@ -118,7 +118,7 @@ Then(/^I should see failure error summary$/, async function () {
 });
 
 Then(/^I am on Idam login page$/, async function () {
-  await loginPage.signinTitle.wait();
+  await loginPage.signinTitle.waitFor();
   await expect(loginPage.signinTitle.isVisible()).to.eventually.be.true;
   await expect(await getText(loginPage.signinTitle))
     .to
@@ -372,8 +372,7 @@ Given('I am logged into Expert UI with hrs testes user details', async function 
 });
 
 Given(/^I navigate to Expert UI Url direct link$/, async function () {
-  await browser.driver.manage()
-    .deleteAllCookies();
+  await resolvePage().context().clearCookies();
   const baseUrl = process.env.TEST_URL || 'http://localhost:3000/';
   await navigate(baseUrl + '/cases/case-filter');
 });
@@ -384,6 +383,6 @@ Then(/^I should be redirected back to Login page after direct link$/, async func
     .to
     .eventually
     .contains('Sign in');
-  browser.sleep(LONG_DELAY);
+  BrowserWaits.waitForSeconds(LONG_DELAY);
 });
 

@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.10-govuk-frontend-upgrade":
-  version: 7.2.10-govuk-frontend-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.10-govuk-frontend-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.15-govuk-frontend-upgrade":
+  version: 7.2.15-govuk-frontend-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.15-govuk-frontend-upgrade"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/70e76e00d122c9616a86eab230bde7e9d3b12547e80198091a3ee4693b13dad183c16d62d2d20916961f8009c38d22b3b879d3986706c2430ed938496b64d339
+  checksum: 10/34da92a691a844bff1ef72f639a49146beee0e57b65460c79e3df4f79d00fb2437a476529875fb5c2aa11f0f252e53c622d2d6cd7015a81fc91936fed4eeaf72
   languageName: node
   linkType: hard
 
@@ -3185,16 +3185,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.0-govuk-frontend-upgrade":
-  version: 2.1.0-govuk-frontend-upgrade
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.0-govuk-frontend-upgrade"
+"@hmcts/rpx-xui-common-lib@npm:2.1.2-govuk-frontend-upgrade":
+  version: 2.1.2-govuk-frontend-upgrade
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.2-govuk-frontend-upgrade"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/3751eb7e9ca590fe9bd143deddd4298f5128952c8bfb3c555735cf0c46b769caf19398f623c79f2a3ce122660afede5588d0c7b97259d68cba43c23eb2f2f17d
+  checksum: 10/312801aa5c8916d09bc9e2724ae39779831edfa1679c013b86bbd0334616002c2bf6b0b87bc989fdbee4deaf937b66adcf86b3f3f1cd38a3e741acfe32f2264e
   languageName: node
   linkType: hard
 
@@ -21874,13 +21874,13 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.10-govuk-frontend-upgrade"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.15-govuk-frontend-upgrade"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0-govuk-frontend-upgrade"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.14"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.0-govuk-frontend-upgrade"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.2-govuk-frontend-upgrade"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

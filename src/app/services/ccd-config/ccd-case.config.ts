@@ -43,6 +43,7 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
         if (obArray.length === 7) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
@@ -106,6 +107,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getDocumentSecureModeCaseTypeExclusions() {
     return this.config.documentSecureModeCaseTypeExclusions;
+  }
+
+  public getCdamExclusionList() {
+    return this.config.mc_cdam_exclusion_list;
   }
 
   public getPostcodeLookupUrl() {
@@ -277,9 +282,5 @@ export class AppConfig extends AbstractAppConfig {
 
   public getEnableServiceSpecificMultiFollowups(): string[] {
     return this.config.enable_service_specific_multi_followups;
-  }
-
-  public getCdamExclusionList(): string {
-    return '';
   }
 }

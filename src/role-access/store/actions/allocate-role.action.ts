@@ -1,6 +1,6 @@
-import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
-import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, Role, RoleCategory, SpecificRole } from '../../models';
+import { AllocateRoleState, AllocateRoleStateData, AllocateTo, DurationOfRole, Period, Role, SpecificRole } from '../../models';
 
 export enum AllocateRoleActionTypes {
   CHANGE_NAVIGATION = '[ALLOCATE ROLE] Change Navigation',

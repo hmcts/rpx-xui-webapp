@@ -186,7 +186,7 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith(`SubmitHearingRequest error: (400) : undefined`);
+      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error: (400) : undefined');
       expect(next).to.have.been.calledWith(error);
     });
 
@@ -198,7 +198,7 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith(`SubmitHearingRequest error: (500) : undefined`);
+      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error: (500) : undefined');
       expect(next).to.have.been.calledWith(error);
     });
   });

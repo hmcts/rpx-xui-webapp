@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -9,12 +9,13 @@ import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/cc
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InformationMessage } from 'src/app/shared/models';
-import { InfoMessageType } from 'src/role-access/models/enums';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
@@ -22,6 +23,7 @@ import { WorkAllocationTaskService } from '../../services';
 import { ACTION } from '../../services/work-allocation-task.service';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskActionContainerComponent } from './task-action-container.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -67,14 +69,10 @@ describe('WorkAllocation', () => {
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
           ErrorMessageComponent, NothingComponent
         ],
-        imports: [
-          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'mywork/list', component: NothingComponent }
-            ]
-          )
-        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
+            { path: 'mywork/list', component: NothingComponent }
+          ])],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -97,7 +95,9 @@ describe('WorkAllocation', () => {
           {
             provide: RpxTranslationService,
             useFactory: rpxTranslationServiceStub
-          }
+          },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -201,7 +201,7 @@ describe('WorkAllocation', () => {
         surname: 'surName',
         email: 'email',
         active: true,
-        roles: ['caseworker-ia-caseofficer'],
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
 
@@ -217,7 +217,7 @@ describe('WorkAllocation', () => {
         surname: 'surName',
         email: 'email',
         active: true,
-        roles: ['caseworker-ia-caseofficer'],
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
       const task = {} as Task;
@@ -272,7 +272,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -282,14 +282,10 @@ describe('WorkAllocation', () => {
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
           ErrorMessageComponent, NothingComponent
         ],
-        imports: [
-          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'mywork/list', component: NothingComponent }
-            ]
-          )
-        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
+            { path: 'mywork/list', component: NothingComponent }
+          ])],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -308,7 +304,9 @@ describe('WorkAllocation', () => {
               params: of({ task: mockTask[0] })
             }
           },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -356,7 +354,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -366,14 +364,10 @@ describe('WorkAllocation', () => {
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
           ErrorMessageComponent, NothingComponent
         ],
-        imports: [
-          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'mywork/list', component: NothingComponent }
-            ]
-          )
-        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
+            { path: 'mywork/list', component: NothingComponent }
+          ])],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -393,7 +387,9 @@ describe('WorkAllocation', () => {
             }
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-          { provide: CaseNotifier, useValue: mockNotifierService }
+          { provide: CaseNotifier, useValue: mockNotifierService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -435,7 +431,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
@@ -444,14 +440,10 @@ describe('WorkAllocation', () => {
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
           ErrorMessageComponent, NothingComponent
         ],
-        imports: [
-          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'mywork/list', component: NothingComponent }
-            ]
-          )
-        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
+            { path: 'mywork/list', component: NothingComponent }
+          ])],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -470,7 +462,9 @@ describe('WorkAllocation', () => {
               params: of({ task: mockTask[0] })
             }
           },
-          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService }
+          { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
@@ -512,7 +506,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
@@ -521,14 +515,10 @@ describe('WorkAllocation', () => {
           TaskActionContainerComponent, WrapperComponent, TaskListComponent,
           ErrorMessageComponent, NothingComponent
         ],
-        imports: [
-          WorkAllocationComponentsModule, CdkTableModule, FormsModule, HttpClientTestingModule, PaginationModule,
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'mywork/list', component: NothingComponent }
-            ]
-          )
-        ],
+        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
+          RouterTestingModule.withRoutes([
+            { path: 'mywork/list', component: NothingComponent }
+          ])],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -548,7 +538,9 @@ describe('WorkAllocation', () => {
             }
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-          { provide: CaseNotifier, useValue: mockNotifierService }
+          { provide: CaseNotifier, useValue: mockNotifierService },
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
         ]
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);

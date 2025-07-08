@@ -4,6 +4,7 @@ import { MemberType, RadioOptions, RequirementType } from '../../../../models/he
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
+import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-panel-details-section',
@@ -49,7 +50,8 @@ export class PanelDetailsSectionComponent implements OnInit {
   private getHearingPanel(): string {
     const panelMembers = this.panelRequirements?.panelPreferences?.filter((preference) => preference.memberType === MemberType.PANEL_MEMBER).length || 0;
     const panelSpecialisms = this.panelRequirements?.panelSpecialisms?.length || 0;
-    if (panelMembers > 0 || panelSpecialisms > 0) {
+    const roleTypes = this.panelRequirements?.roleType?.length || 0;
+    if (panelMembers > 0 || panelSpecialisms > 0 || roleTypes > 0) {
       return RadioOptions.YES;
     }
     return RadioOptions.NO;
@@ -84,22 +86,9 @@ export class PanelDetailsSectionComponent implements OnInit {
   }
 
   private getPanelRoles(): string {
-    const selectedSpecialisms: string[] = [];
-    this.panelRequirements?.panelSpecialisms?.forEach((panelSpecialism) => {
-      let selectedSpecialism = '';
-      this.panelRolesRefData.forEach((panelRole) => {
-        if (panelRole.key === panelSpecialism) {
-          selectedSpecialism = panelRole.value_en;
-        } else if (panelRole.child_nodes?.length > 0) {
-          panelRole.child_nodes.forEach((specialism) => {
-            if (panelSpecialism === specialism.key && !selectedSpecialism.length) {
-              selectedSpecialism = `${panelRole.value_en} - ${specialism.value_en}`;
-            }
-          });
-        }
-      });
-      selectedSpecialisms.push(selectedSpecialism);
-    });
-    return selectedSpecialisms.join('<br>');
+    const roleTypes = this.panelRequirements?.roleType || [];
+    const panelSpecialisms = this.panelRequirements?.panelSpecialisms || [];
+
+    return HearingsUtils.returnPanelRoles(panelSpecialisms, roleTypes, this.panelRolesRefData, ',');
   }
 }

@@ -44,4 +44,5 @@ export interface ServiceHearingValuesModel {
   screenFlow: ScreenNavigationModel[];
   vocabulary: VocabularyModel[];
   hearingChannels: string[];
+  panelRequiredDefault?: boolean;
 }

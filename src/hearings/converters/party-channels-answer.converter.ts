@@ -25,7 +25,7 @@ export class PartyChannelsAnswerConverter implements AnswerConverter {
         const partiesFromRequest = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.partyDetails
           : state.hearingRequest.hearingRequestMainModel.partyDetails;
-        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel?.parties;
+        const partiesFromServiceValue = state.hearingValues?.serviceHearingValuesModel?.parties;
         let strReturn = '<ul>';
         partiesFromRequest.filter((party) => party.partyType === PartyType.IND)
           .forEach((party: PartyDetailsModel) => {

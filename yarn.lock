@@ -3307,12 +3307,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.0-properties-upgrade":
-  version: 7.2.0-properties-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.0-properties-upgrade"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.10-properties-upgrade":
+  version: 7.2.10-properties-upgrade
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.10-properties-upgrade"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/87955d0e9e1a248ebbc8e6a5d3e3a184639a81071cc6550601a19c6c7006a991ee34251301c325281588e970179907e9e263702665ef94deb180ff6f8af74677
+  checksum: 10/88a327b66387b68392f3c144d801e5b4a05e8df749cb433a7ed1b07d135540d39ff51a3c07bffadc4943c89012b4c9594a002446ad08c84a0449bc244b296d87
   languageName: node
   linkType: hard
 
@@ -22159,7 +22159,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0-properties-upgrade"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.10-properties-upgrade"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.0"

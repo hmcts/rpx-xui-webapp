@@ -245,7 +245,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
     component.hearingId = 'h1000002';
     component.hearingGroupRequestId = 'g000101';
     component.onBack();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
 
     component.isManageLink = true;
     component.onBack();
@@ -254,7 +254,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   it('should navigate to hearings tab', () => {
     component.onCancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
   });
 
   it('should check on submit for manage link', () => {
@@ -265,7 +265,7 @@ describe('LinkedHearingsWithCaseComponent', () => {
 
   it('should navigate to case hearing page', () => {
     component.navigateToCaseHearing('8254902572336147');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
   });
 
   it('should check update linked cases', () => {

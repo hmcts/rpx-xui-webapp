@@ -24,8 +24,13 @@ export const HEARING_CANCELLED_SUMMARY_TEMPLATE: Section[] = [
       },
       {
         id: 'caseNumber',
-        answerTitle: 'Case number',
+        answerTitle: 'Case reference',
         answerSource: AnswerSource.CASE_NUMBER
+      },
+      {
+        id: 'hearingId',
+        answerTitle: 'Hearing Id',
+        answerSource: AnswerSource.HEARING_ID
       },
       {
         id: 'hearingStage',

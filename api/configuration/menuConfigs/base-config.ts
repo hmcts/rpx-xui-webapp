@@ -241,7 +241,8 @@ export const baseConfig = {
         'caseworker-probate',
         'caseworker-ia',
         'caseworker-publiclaw',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Case list'
     },
@@ -270,7 +271,8 @@ export const baseConfig = {
         'caseworker-probate',
         'caseworker-publiclaw',
         'caseworker-publiclaw-courtadmin',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Find case'
     },
@@ -292,7 +294,8 @@ export const baseConfig = {
         'caseworker-st_cic',
         'caseworker-st_cic-senior-caseworker',
         'caseworker-sscs',
-        'caseworker-employment'
+        'caseworker-employment',
+        'caseworker-pcs'
       ],
       'text': 'Search'
     },

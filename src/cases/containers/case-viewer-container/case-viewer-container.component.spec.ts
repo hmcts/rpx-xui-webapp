@@ -1,3 +1,4 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Component, DebugElement, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
@@ -11,14 +12,14 @@ import { FeatureToggleService, FeatureUser } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 import { State, reducers } from '../../../app/store';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
-import { LoggerService } from '../../../app/services/logger/logger.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 @Component({
   selector: 'ccd-case-viewer',
   template: `
@@ -195,7 +196,7 @@ const TABS: CaseTab[] = [
 
 const roles = [
   'caseworker',
-  'caseworker-ia-iacjudge',
+  AppTestConstants.IA_JUDGE_ROLE,
   'caseworker-sscs',
   'caseworker-sscs-judge',
   'caseworker-test',

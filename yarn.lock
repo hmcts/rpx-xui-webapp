@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.16":
-  version: 7.2.16
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.16"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.17":
+  version: 7.2.17
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.17"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/894191edb60d01b5194c79aff154b43c6321528524331fc56092cac7ad8ce9f2a0f95d5228d59efed82fd08fd7172d2aed476c6057d62a26ceb918831e1a5f64
+  checksum: 10/32e63dec6119866fa8af8ac0402e7beb2b55c6efc7628ade7bb3b58ed057693139b3892a7b8fb42e42c11589707d6b43784133548f19beac6851a169ea48a068
   languageName: node
   linkType: hard
 
@@ -3127,9 +3127,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.0":
-  version: 4.1.0
-  resolution: "@hmcts/media-viewer@npm:4.1.0"
+"@hmcts/media-viewer@npm:4.1.1":
+  version: 4.1.1
+  resolution: "@hmcts/media-viewer@npm:4.1.1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3148,7 +3148,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/9208f09ae86e77e6c29ce38b1d47b4b14d9aaa81efed3ce6e58b525ea7cd67cb895ff2ddf1e32b5080fb49e5464217cbb316eca043e741c416219a47c579ec5a
+  checksum: 10/3214e8f07f4b2bfd09b08ff6c37c1fab3833f0c13008e40f21d69cb25f6d02061081ada0d1aadfd833dffea883dc34a5cf47131521b3dd7d4070f4aa122e8076
   languageName: node
   linkType: hard
 
@@ -21885,10 +21885,10 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.16"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.17"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.0"
+    "@hmcts/media-viewer": "npm:4.1.1"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.3"

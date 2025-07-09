@@ -206,7 +206,6 @@ export async function getAuthTokens(): Promise<AuthTokens> {
     return authTokens;
   } catch (error) {
     console.log('Cannot get auth tokens', error);
-    throw new Error('Failed to obtain authentication tokens');
   }
 }
 

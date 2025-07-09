@@ -90,7 +90,8 @@ export const baseConfig = {
         'caseworker-st_cic-judge',
         'caseworker-st_cic-senior-judge',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Search'
     },

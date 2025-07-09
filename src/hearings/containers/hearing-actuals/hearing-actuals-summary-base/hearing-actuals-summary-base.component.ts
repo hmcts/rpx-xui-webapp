@@ -40,6 +40,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   public actualCancellationReasonCodes: LovRefDataModel[];
   public hearingResult: string;
   public hearingTypeDescription: string;
+  public hearingActualsCaseRef: string;
   public validationErrors: { id: string, message: string }[] = [];
   public serverErrors: { id: string, message: string }[] = [
     { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
@@ -88,6 +89,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
       filter((state) => !!state.hearingActuals.hearingActualsMainModel),
     )
       .subscribe((state) => {
+        this.hearingActualsCaseRef = state.hearingRequest.hearingRequestMainModel.caseDetails.caseRef;
         this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
         this.hearingOutcome = this.hearingActualsMainModel.hearingActuals && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
         this.hearingTypeDescription = this.hearingOutcome?.hearingType && this.getHearingTypeDescription(this.hearingOutcome.hearingType);

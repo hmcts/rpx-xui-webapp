@@ -138,7 +138,7 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
   }
 }
 
-function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {
+export function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {
   const aggregateResult = [];
   allResults.forEach((result) => {
     const { status, value }: {status: string, value: any} = result;
@@ -160,7 +160,7 @@ function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): 
   return aggregateResult;
 }
 
-function getServicePath(jurisdictionId): string {
+export function getServicePath(jurisdictionId): string {
   if (isJurisdictionSupported(jurisdictionId)) {
     const configPath = `services.hearings.${jurisdictionId.toLowerCase()}.serviceApi`;
     return getConfigValue(configPath);
@@ -169,7 +169,7 @@ function getServicePath(jurisdictionId): string {
   return '';
 }
 
-function isJurisdictionSupported(jurisdictionId): boolean {
+export function isJurisdictionSupported(jurisdictionId): boolean {
   const supportedJurisdictions = getConfigValue(HEARINGS_SUPPORTED_JURISDICTIONS);
   return supportedJurisdictions.includes(jurisdictionId);
 }

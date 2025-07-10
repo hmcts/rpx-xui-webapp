@@ -179,8 +179,9 @@ describe('QueryManagementContainerComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
   const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['setQualifyingQuestionSelection', 'clearQualifyingQuestionSelection']);
-  const mockCaseNotifier = new CaseNotifier(casesService);
+  const mockCaseNotifier = jasmine.createSpyObj('CaseNotifier', ['caseView', 'fetchAndRefresh']);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+  mockCaseNotifier.fetchAndRefresh.and.returnValue(of(CASE_VIEW));
   casesService.getEventTrigger.and.returnValue(of(eventMockData));
   casesService.createEvent.and.returnValue(of({ status: 200 }));
 

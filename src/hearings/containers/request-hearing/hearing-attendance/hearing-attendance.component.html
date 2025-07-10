@@ -31,9 +31,6 @@
                     <label class="govuk-label govuk-radios__label" for="paperHearingNo">
                         {{ 'Will this be a paper hearing?' | rpxTranslate : null : 'No' }}
                     </label>
-                  <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && paperHearingChanged"
-                                        [displayLabel]="amendmentLabelEnum.AMENDED">
-                  </exui-amendment-label>
                 </div>
             </div>
         </fieldset>
@@ -56,9 +53,6 @@
                     <div class="govuk-checkboxes__item" *ngFor="let attendance of hearingLevelChannels;index as pos" [formGroupName]="pos">
                       <input class="govuk-checkboxes__input" id="{{attendance.key}}" name="pos" type="checkbox" formControlName="selected" [value]="attendance.value_en">
                       <label class="govuk-label govuk-checkboxes__label" for="{{attendance.key}}" >{{attendance.value_en}}</label>
-                      <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && attendance.showAmendedLabel"
-                                            [displayLabel]="amendmentLabelEnum.AMENDED">
-                      </exui-amendment-label>
                     </div>
                   </div>
                 </div>
@@ -90,9 +84,6 @@
                   <option value="" selected>{{ 'Please select' | rpxTranslate }}</option>
                   <option *ngFor="let party of partyChannels" [ngValue]="party.key">{{party.value_en}}</option>
                 </select>
-                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.individualDetails.preferredHearingChannelAmendmentStatus !== 'NONE'"
-                                      [displayLabel]="partyControl.value.individualDetails.preferredHearingChannelAmendmentStatus">
-                </exui-amendment-label>
               </ng-container>
             </div>
           </div>
@@ -113,9 +104,6 @@
                 <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Enter a valid number of attendees' | rpxTranslate }}
               </span>
               <input formControlName="estimation" class="govuk-input" id="attendance-number" aria-labelledby="attendance-number-header" aria-describedby="attendance-number-hint">
-              <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && noOfPhysicalAttendeesChanged"
-                                    [displayLabel]="amendmentLabelEnum.AMENDED">
-              </exui-amendment-label>
           </div>
         </fieldset>
       </ng-container>

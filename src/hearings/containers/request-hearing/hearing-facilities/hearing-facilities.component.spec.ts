@@ -260,7 +260,7 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingUnavailabilityDatesChanged: false
@@ -307,7 +307,7 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -329,7 +329,7 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -359,7 +359,7 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -381,7 +381,7 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -403,7 +403,7 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingFacilitiesChangesConfirmed: false,

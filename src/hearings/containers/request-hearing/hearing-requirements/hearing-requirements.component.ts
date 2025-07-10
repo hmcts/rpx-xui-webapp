@@ -205,7 +205,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
       if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
           propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-          (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.participantAttendanceChangesRequired)) {
+          (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired)) {
         // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
         this.prepareHearingRequestData();
       }
@@ -236,7 +236,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.participantAttendanceChangesRequired)) {
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.reasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
       // Hearings manual amendment journey is enabled and there are changes to reasonable adjustment flags detected
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.reasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails

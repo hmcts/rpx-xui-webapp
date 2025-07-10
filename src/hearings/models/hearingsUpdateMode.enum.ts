@@ -57,8 +57,8 @@ export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesConfirmed?: boolean;
   nonReasonableAdjustmentChangesRequired: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
-  participantAttendanceChangesRequired: boolean;
-  participantAttendanceChangesConfirmed?: boolean;
+  partyDetailsChangesRequired: boolean;
+  partyDetailsChangesConfirmed?: boolean;
   partyDetailsAnyChangesRequired?: boolean;
   hearingWindowChangesRequired: boolean;
   hearingWindowChangesConfirmed?: boolean;

@@ -44,7 +44,7 @@ describe('HearingRequirementsSectionComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
         reasonableAdjustmentChangesConfirmed: false,
-        participantAttendanceChangesRequired: true,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -64,7 +64,7 @@ describe('HearingRequirementsSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: true,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -83,7 +83,7 @@ describe('HearingRequirementsSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: true,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -103,7 +103,7 @@ describe('HearingRequirementsSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: true,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false

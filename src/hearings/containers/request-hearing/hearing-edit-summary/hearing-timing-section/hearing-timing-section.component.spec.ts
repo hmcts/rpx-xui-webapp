@@ -89,7 +89,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -111,7 +111,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
@@ -136,7 +136,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        participantAttendanceChangesRequired: true,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -162,7 +162,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
@@ -192,7 +192,7 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,

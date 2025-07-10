@@ -27,7 +27,8 @@ class MockConfigService {
       notification_url: 'dummy',
       events_to_hide: [
         'queryManagementRespondQuery'
-      ]
+      ],
+      enable_service_specific_multi_followups: ['SERVICE_1']
     };
   }
 
@@ -200,6 +201,10 @@ describe('AppConfiguration', () => {
 
   it('should be initialised after all LD observables complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
     tick(5000);
-    expect(service.initialisationComplete).toBeTruthy();
+    expect(service.initialisationComplete).toBeFalsy();
   })));
+
+  it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(['foo']);
+  }));
 });

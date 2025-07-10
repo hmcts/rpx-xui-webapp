@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { combineLatest, Observable, Subscription, Subject } from 'rxjs';
+import { combineLatest, Observable, Subscription, Subject, map, switchMap, take } from 'rxjs';
 import {
   CaseNotifier,
   CaseView,
@@ -22,7 +22,6 @@ import {
   CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
-import { map, switchMap, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
@@ -554,7 +553,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private getEventTrigger(): void {
     const loadingToken = this.loadingService.register();
 
-    this.caseNotifier.caseView.pipe(
+    this.caseNotifier.fetchAndRefresh(this.caseId).pipe(
       take(1),
       switchMap((caseDetails) => {
         this.caseDetails = caseDetails;

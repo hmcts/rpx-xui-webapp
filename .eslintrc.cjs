@@ -23,7 +23,6 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-duplicate-enum-values': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
     'array-bracket-spacing': 'error',
     'arrow-parens': ['error', 'always'],
     'arrow-spacing': 'error',
@@ -87,14 +86,5 @@ module.exports = {
     'semi-style': ['error', 'last'],
     'space-in-parens': ['error', 'never'],
     'switch-colon-spacing': 'error'
-  },
-  'overrides': [
-    {
-      files: ['**/*.spec.ts', '**/*.spec.js'],
-      rules: { 
-        'no-unused-expressions': 'off',
-        '@typescript-eslint/no-unused-vars': 'off',
-      }
-    }
-  ]
+  }
 };

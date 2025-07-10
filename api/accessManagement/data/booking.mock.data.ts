@@ -27,6 +27,17 @@ export const bookings: Bookings = {
       },
       {
         appointmentId: '103',
+        base_location_id: '231596',
+        beginTime: new Date('2021-12-22T00:00:00Z'),
+        contract_type_id: '102',
+        created: new Date('2021-02-23T06:37:58Z'),
+        endTime: new Date('2022-02-01T00:00:00Z'),
+        region_id: '104',
+        roleId: 'caseworker',
+        userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
+      },
+      {
+        appointmentId: '103',
         base_location_id: '512401',
         beginTime: new Date('2021-10-10T00:00:00Z'),
         contract_type_id: '102',

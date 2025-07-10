@@ -1,6 +1,6 @@
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as csrf from '@dr.pogodin/csurf';
+import csrf from '@dr.pogodin/csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
@@ -87,7 +87,7 @@ export async function createApp() {
   app.use('/api', routes);
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 

@@ -50,6 +50,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public requestSubmittedDate: string;
   public responseReceivedDate: string;
   public caseStatus: string;
+  public hearingId: string;
   public isHearingListed: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
   public hearingValuesSubscription: Subscription;
@@ -100,6 +101,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.requestSubmittedDate = moment(this.hearingRequestMainModel?.requestDetails?.timestamp)?.format(HearingDateEnum.DisplayMonth) || '';
     this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
+    this.hearingId = this.hearingRequestMainModel.requestDetails.hearingRequestID || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
     this.hearingsService.hearingRequestForSubmitValid = false;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);

@@ -35,13 +35,14 @@ import * as fromHearingStore from '../../../store';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
 
 @Component({
   selector: 'exui-hearing-edit-summary',
   templateUrl: './hearing-edit-summary.component.html'
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-  private readonly notUpdatedMessage = 'The request has not been updated';
+  private readonly notUpdatedMessage = 'The request has not been updated as there is no change in hearing requirements';
 
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
@@ -50,6 +51,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   public requestSubmittedDate: string;
   public responseReceivedDate: string;
   public caseStatus: string;
+  public hearingId: string;
   public isHearingListed: boolean;
   public showLanguageRequirementsSection$: Observable<boolean>;
   public hearingValuesSubscription: Subscription;
@@ -100,6 +102,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     this.requestSubmittedDate = moment(this.hearingRequestMainModel?.requestDetails?.timestamp)?.format(HearingDateEnum.DisplayMonth) || '';
     this.responseReceivedDate = moment(this.hearingRequestMainModel.hearingResponse?.receivedDateTime).format(HearingDateEnum.DisplayMonth) || '';
     this.caseStatus = this.hearingRequestMainModel.hearingResponse?.laCaseStatus || '';
+    this.hearingId = this.hearingRequestMainModel.requestDetails.hearingRequestID || '';
     this.isHearingListed = this.caseStatus === LaCaseStatus.LISTED;
     this.hearingsService.hearingRequestForSubmitValid = false;
     this.sectionsToDisplay = this.serviceHearingValuesModel?.screenFlow.map((screen) => screen.screenName);
@@ -229,10 +232,22 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       partyDetailsCompareModels.sort(this.compareParties);
     }
 
+    let hmcHearingWindow = null;
+    let hmcToCompareHearingWindow = null;
+    if (this.hearingRequestMainModel?.hearingDetails?.hearingWindow) {
+      hmcHearingWindow = this.standardiseHearingDates(this.hearingRequestMainModel.hearingDetails?.hearingWindow);
+    }
+    if (this.hearingRequestToCompareMainModel?.hearingDetails?.hearingWindow) {
+      hmcToCompareHearingWindow = this.standardiseHearingDates(this.hearingRequestToCompareMainModel.hearingDetails?.hearingWindow);
+    }
+
     const hearingRequestMainModel = {
       requestDetails: { ...this.hearingRequestMainModel.requestDetails },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
+        hearingWindow: {
+          ...hmcHearingWindow
+        },
         hearingChannels: [...this.hearingsService.getHearingChannels(this.hearingRequestMainModel)]
       },
       caseDetails: { ...this.hearingRequestMainModel.caseDetails },
@@ -242,13 +257,44 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     const hearingRequestToCompareMainModel = {
       requestDetails: { ...this.hearingRequestToCompareMainModel.requestDetails },
-      hearingDetails: { ...this.hearingRequestToCompareMainModel.hearingDetails },
+      hearingDetails: {
+        ...this.hearingRequestToCompareMainModel.hearingDetails,
+        hearingWindow: {
+          ...hmcToCompareHearingWindow
+        }
+      },
       caseDetails: { ...this.hearingRequestToCompareMainModel.caseDetails },
       hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
       partyDetails: [...partyDetailsCompareModels]
     };
 
     return this.areObjectsfunctionallyDifferentCheck(hearingRequestMainModel, hearingRequestToCompareMainModel);
+  }
+
+  private standardiseHearingDates(hearingWindow: HearingWindowModel) {
+    const standardisedHearingWindow: any = {};
+
+    if (hearingWindow.dateRangeStart) {
+      standardisedHearingWindow.dateRangeStart = moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DefaultFormat);
+    }
+
+    if (hearingWindow.dateRangeEnd) {
+      standardisedHearingWindow.dateRangeEnd = moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DefaultFormat);
+    }
+
+    if (hearingWindow.firstDateTimeMustBe) {
+      standardisedHearingWindow.firstDateTimeMustBe = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat);
+    }
+
+    for (const key of Object.keys(hearingWindow)) {
+      if (!(key in standardisedHearingWindow)) {
+        standardisedHearingWindow[key] = hearingWindow[key];
+      }
+    }
+
+    // const standardisedHearingDetails = { hearingWindow: standardisedHearingWindow };
+
+    return standardisedHearingWindow;
   }
 
   hasHearingRequestPartiesUnavailableDatesChanged(): boolean {
@@ -585,6 +631,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
+
+    if (this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag) {
+      return true;
+    }
+
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
 
@@ -642,10 +693,18 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     if (this.hearingRequestMainModel.partyDetails) {
-      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)){
+      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)) {
         return true;
       }
     }
-    return false;
+    if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)) {
+      return true;
+    }
+
+    if (this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration) {
+      return true;
+    }
+
+    return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
   }
 }

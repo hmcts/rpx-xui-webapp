@@ -21,6 +21,9 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
+import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -91,7 +94,8 @@ describe('HearingEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingEditSummaryComponent
+        HearingEditSummaryComponent,
+        CaseReferencePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -187,7 +191,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -269,7 +273,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -430,11 +434,33 @@ describe('HearingEditSummaryComponent', () => {
             }
           ]
         }
-      ]
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
+  it('should set hearingFacilitiesChangesRequired to be true if caseAdditionalSecurityFlag differs', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      caseAdditionalSecurityFlag: true,
+      screenFlow: [
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
   it('should pageVisitNonReasonableAdjustmentChangeExists return false if non-reasonable adjustment changes already confirmed', () => {
@@ -995,6 +1021,22 @@ describe('HearingEditSummaryComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
+  it('should pageVisitHearingFacilitiesChanged return true if additional security changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['12', '23']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['12', '23']
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
+  });
+
   describe('Display of warning and error message', () => {
     it('should display banner message', () => {
       component.serviceHearingValuesModel.caseManagementLocationCode = 'New Management location code';
@@ -1450,6 +1492,22 @@ describe('HearingEditSummaryComponent', () => {
     };
 
     const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(true);
+  });
+
+  it('should return true as as priority in SHV has been updated', () => {
+    setAfterPageVisitValues();
+    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = false;
+    const shvModel: ServiceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    const hmcModel: HearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
+    shvModel.hearingPriorityType = 'urgent';
+    hmcModel.hearingDetails.hearingPriorityType = 'standard';
+
+    component.serviceHearingValuesModel = shvModel;
+    component.hearingRequestMainModel = hmcModel;
+    component.ngOnInit();
+    const isDifference = hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired;
 
     expect(isDifference).toEqual(true);
   });

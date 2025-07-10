@@ -36,7 +36,7 @@
           <ccd-qualifying-question-options *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
             [qualifyingQuestionsControl]="qualifyingQuestionsControl"
             [qualifyingQuestions$]="qualifyingQuestions$"
-            (questionSelected)="logSelection($event)">
+            (questionSelected)="onQuestionSelected($event)">
           </ccd-qualifying-question-options>
           <ccd-qualifying-question-detail *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_DETAIL"
             [qualifyingQuestion]="qualifyingQuestion">
@@ -100,7 +100,7 @@
       [queryCreateContext]="queryCreateContext">
     </ccd-query-confirmation>
 
-    <!-- Do not show the cancel link on query submittion confirmation page -->
+    <!-- Do not show the cancel link on query submission confirmation page -->
     <div *ngIf="!showConfirmation">
       <ng-container [ngSwitch]="queryCreateContext">
         <a *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"

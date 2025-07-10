@@ -53,6 +53,7 @@ import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
+import { HearingIdAnswerConverter } from '../converters/hearing-id.converter';
 
 @Pipe({
   name: 'transformAnswer'
@@ -66,6 +67,9 @@ export class HearingAnswersPipe implements PipeTransform {
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
         converter = new CaseNameAnswerConverter();
+        break;
+      case AnswerSource.HEARING_ID:
+        converter = new HearingIdAnswerConverter();
         break;
       case AnswerSource.CASE_NUMBER:
         converter = new CaseNumberAnswerConverter();

@@ -18,6 +18,16 @@
   <h1 class="govuk-heading-m" style="display: inline-block;">{{ 'Hearing stage and result' | rpxTranslate }}</h1>
 
   <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="caseReference">
+      <dt class="govuk-summary-list__key">{{ 'Case reference' | rpxTranslate }}</dt>
+      <dd class="govuk-summary-list__value">{{caseReference | caseReference}}</dd>
+    </div>
+
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="hearingId">
+      <dt class="govuk-summary-list__key">{{ 'Hearing Id' | rpxTranslate }}</dt>
+      <dd class="govuk-summary-list__value">{{hearingId}}</dd>
+    </div>
+
     <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
       <dt class="govuk-summary-list__key">{{ 'Hearing stage' | rpxTranslate }}</dt>
       <dd class="govuk-summary-list__value">{{hearingTypeDescription}}</dd>

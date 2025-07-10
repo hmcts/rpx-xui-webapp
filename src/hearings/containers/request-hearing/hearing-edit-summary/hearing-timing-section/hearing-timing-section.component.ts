@@ -149,7 +149,7 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestToCompareMainModel.hearingDetails.duration, this.hearingRequestMainModel.hearingDetails.duration);
+    this.hearingLengthChanged = HearingsUtils.hasHearingNumberChanged(this.hearingRequestToCompareMainModel.hearingDetails.duration, this.hearingRequestMainModel.hearingDetails.duration);
 
     this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.dateRangeStart, this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart);
 
@@ -157,7 +157,7 @@ export class HearingTimingSectionComponent implements OnInit {
 
     this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe, this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe);
 
-    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
+    this.hearingPriorityChanged = HearingsUtils.hasHearingStringChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
 
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestMainModel.partyDetails),

@@ -1,0 +1,48 @@
+name: pr-bot
+on:
+  pull_request:
+    types: [opened, closed]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout respository
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_STG }}
+
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            # Get tokens from Azure Key Vault
+            GH_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-github-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value")
+            echo "::add-mask::$GH_TOKEN"
+            echo "GH_TOKEN=$GH_TOKEN" >> $GITHUB_ENV
+
+            SLACK_BOT_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-slack-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value")
+            echo "::add-mask::$SLACK_BOT_TOKEN"
+            echo "SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN" >> $GITHUB_ENV
+  
+      - name: Run PR-bot script
+        env:
+          GH_TOKEN: ${{ env.GH_TOKEN }}
+          SLACK_CHANNEL: 'exui-code-reviews'
+          SLACK_CHANNEL_ID: 'C06KG2JFZEF'
+          SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
+        run: |
+          node .github/workflows/pr-bot.js

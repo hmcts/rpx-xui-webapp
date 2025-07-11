@@ -8,9 +8,6 @@ on:
 jobs:
   slack-notification:
     runs-on: ubuntu-latest
-    env:
-      SLACK_CHANNEL: 'exui-code-reviews'
-      SLACK_CHANNEL_ID: 'C06KG2JFZEF'
     steps:
       - name: Checkout respository
         uses: actions/checkout@v4
@@ -32,12 +29,11 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            # Get GH_TOKEN from Azure Key Vault
+            # Get tokens from Azure Key Vault
             GH_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-github-token" --vault-name "${{ secrets.VAULT_NAME }}" --query "value")
             echo "::add-mask::$GH_TOKEN"
             echo "GH_TOKEN=$GH_TOKEN" >> $GITHUB_ENV
 
-            # Get SLACK_BOT_TOKEN from Azure Key Vault
             SLACK_BOT_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-slack-token" --vault-name "${{ secrets.VAULT_NAME }}" --query "value")
             echo "::add-mask::$SLACK_BOT_TOKEN"
             echo "SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN" >> $GITHUB_ENV

@@ -530,7 +530,7 @@ describe('HearingTimingComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
@@ -560,7 +560,7 @@ describe('HearingTimingComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
@@ -583,7 +583,7 @@ describe('HearingTimingComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -627,7 +627,7 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesRequired: true, hearingWindowChangesConfirmed: false,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
@@ -649,7 +649,7 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesRequired: true, hearingWindowChangesConfirmed: true,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
@@ -671,7 +671,7 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesRequired: false,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
@@ -870,7 +870,7 @@ describe('HearingTimingComponent', () => {
         hearingUnavailabilityDatesChanged: true, hearingUnavailabilityDatesConfirmed: false,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false
       }
@@ -906,7 +906,7 @@ describe('HearingTimingComponent', () => {
   });
 
   it('should set priorityChanged to true when priorityChanged is true', () => {
-    spyOn(HearingsUtils, 'hasHearingStringChanged').and.returnValue(true);
+    spyOn(HearingsUtils, 'hasHearingPriorityChanged').and.returnValue(true);
 
     component.setAmendmentFlags();
 

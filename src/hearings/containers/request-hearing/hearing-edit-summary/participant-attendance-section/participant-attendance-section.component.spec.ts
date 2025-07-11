@@ -107,7 +107,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: true,
+        partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -127,8 +127,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: true,
-        participantAttendanceChangesConfirmed: true,
+        partyDetailsChangesRequired: true,
+        partyDetailsChangesConfirmed: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -148,7 +148,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
-        participantAttendanceChangesRequired: false,
+        partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -189,7 +189,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          participantAttendanceChangesRequired: false,
+          partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -215,7 +215,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          participantAttendanceChangesRequired: false,
+          partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -241,7 +241,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          participantAttendanceChangesRequired: false,
+          partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -268,8 +268,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          participantAttendanceChangesRequired: true,
-          participantAttendanceChangesConfirmed: false,
+          partyDetailsChangesRequired: true,
+          partyDetailsChangesConfirmed: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false
@@ -289,8 +289,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          participantAttendanceChangesRequired: true,
-          participantAttendanceChangesConfirmed: true,
+          partyDetailsChangesRequired: true,
+          partyDetailsChangesConfirmed: true,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false

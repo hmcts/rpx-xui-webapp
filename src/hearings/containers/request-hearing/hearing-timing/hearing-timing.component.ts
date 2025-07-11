@@ -53,6 +53,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   public dateRangeStartChanged: boolean;
   public dateRangeEndChanged: boolean;
   public firstDateTimeMustBeChanged: boolean;
+  public durationChanged: boolean;
   public priorityChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public duration: number;
@@ -116,22 +117,12 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
   }
 
   public setDataItems() {
-    // it is not a requirement to tell the user if the default value of the hearing duration has been updated.
-    if (this.hearingRequestMainModel.hearingDetails.duration && this.hearingRequestMainModel.hearingDetails.duration > 0) {
-      this.duration = this.hearingRequestMainModel.hearingDetails.duration;
-    } else {
-      if (this.serviceHearingValuesModel.duration) {
-        this.duration = this.serviceHearingValuesModel.duration;
-      }
-    }
-
+    this.hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
+    this.duration = this.hearingRequestMainModel.hearingDetails.duration;
+    this.hearingPriorityType = this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
     if (this.sourceOfData === SourceOfData.SERVICE_HEARING_VALUES) {
-      this.hearingWindow = this.serviceHearingValuesModel.hearingWindow;
-      this.hearingPriorityType = this.serviceHearingValuesModel.hearingPriorityType;
       this.unavailabilityDateList = this.serviceHearingValuesModel.parties.flatMap((party) => party.unavailabilityRanges);
     } else {
-      this.hearingWindow = this.hearingRequestMainModel.hearingDetails.hearingWindow;
-      this.hearingPriorityType = this.hearingRequestMainModel.hearingDetails.hearingPriorityType;
       this.unavailabilityDateList = this.hearingRequestMainModel.partyDetails.flatMap((party) => party.unavailabilityRanges);
     }
   }
@@ -142,6 +133,7 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart, this.serviceHearingValuesModel.hearingWindow?.dateRangeStart);
     this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeEnd, this.serviceHearingValuesModel.hearingWindow?.dateRangeEnd);
     this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe, this.serviceHearingValuesModel.hearingWindow?.firstDateTimeMustBe);
+    this.durationChanged = HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration);
     this.priorityChanged = HearingsUtils.hasHearingStringChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType);
   }
 
@@ -300,19 +292,12 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const chosenDate = moment(this.getDateFormatted(this.firstHearingFormGroup, this.firstHearingDate.id), HearingDateEnum.DefaultFormat);
     const isFirstHearingDateValid = (this.isDateValidFormat(this.firstHearingFormGroup, this.firstHearingDate.id) && chosenDate.isValid());
     const isPastDate = chosenDate.isBefore(moment().startOf('day'));
-    const isWeekday = this.isWeekDay(chosenDate);
     if ((firstHearingDateEntered && !isFirstHearingDateValid) || !firstHearingDateEntered) {
       this.validationErrors.push({
         id: this.firstHearingDate.id,
         message: HearingDatePriorityEnum.InvalidHearingDateError
       });
       this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.InvalidHearingDateError] };
-    } else if (!isFirstHearingDateValid) {
-      this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DateRangeError });
-      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DateRangeError] };
-    } else if (!isWeekday) {
-      this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.WeekendError });
-      this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.WeekendError] };
     } else if (isPastDate) {
       this.validationErrors.push({ id: this.firstHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
       this.firstDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
@@ -353,11 +338,8 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     const isEarliestDateValid = (this.isDateValidFormat(this.earliestHearingFormGroup, this.earliestHearingDate.id) && chosenEarliestDate.isValid());
     const isLatestHearingDateValid = (this.isDateValidFormat(this.latestHearingFormGroup, this.latestHearingDate.id) && chosenLatestDate.isValid());
     const isLatestBeforeEarliest = chosenEarliestDate > chosenLatestDate;
-    const isPastEarliestDate = chosenEarliestDate.isBefore(moment().startOf('day'));
+    const isEarliestAndLatestEqual = chosenEarliestDate.isSame(chosenLatestDate);
     const isPastLatestDate = chosenLatestDate.isBefore(moment().startOf('day'));
-    const isEarliestDateWeekendDate = this.validatorsUtils.isWeekendDate(chosenEarliestDate);
-    const isLatestDateWeekendDate = this.validatorsUtils.isWeekendDate(chosenLatestDate);
-    const numberOfBusinessDays = this.validatorsUtils.calcBusinessDays(chosenEarliestDate, chosenLatestDate);
     let invalidDate = false;
 
     // First check if dates are entered, are they valid, real dates.
@@ -387,25 +369,15 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
     // With dates confirmed to be real dates, apply validation rules to dates
 
-    if (EarliestDateEntered && isPastEarliestDate) {
-      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
-      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
-    } else if (LatestDateEntered && isPastLatestDate) {
-      this.validationErrors.push({ id: this.latestHearingDate.id, message: HearingDatePriorityEnum.DatePastError });
-      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.DatePastError] };
-    } else if (EarliestDateEntered && LatestDateEntered && isLatestBeforeEarliest) {
+    if (LatestDateEntered && isPastLatestDate) {
+      this.validationErrors.push({ id: this.latestHearingDate.id, message: HearingDatePriorityEnum.LatestEndDatePastError });
+      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.LatestEndDatePastError] };
+    } else if (EarliestDateEntered && LatestDateEntered && (isLatestBeforeEarliest || isEarliestAndLatestEqual)) {
       this.validationErrors.push({
         id: this.earliestHearingDate.id,
         message: HearingDatePriorityEnum.EarliestHearingDateError
       });
       this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.EarliestHearingDateError] };
-    } else if ((isEarliestDateWeekendDate || isLatestDateWeekendDate) && numberOfBusinessDays === 0) {
-      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.WeekDayError });
-      this.dateRangeWeekendError = HearingDatePriorityEnum.WeekDayError;
-    } else if (EarliestDateEntered && LatestDateEntered && (numberOfBusinessDays * 6 * 60) < this.calculateDuration()) {
-      this.validationErrors.push({ id: this.earliestHearingDate.id, message: HearingDatePriorityEnum.NotEnoughDaysInDateRangeError });
-      this.earliestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
-      this.latestDateOfHearingError = { isInvalid: true, messages: [HearingDatePriorityEnum.NotEnoughDaysInDateRangeError] };
     }
   }
 

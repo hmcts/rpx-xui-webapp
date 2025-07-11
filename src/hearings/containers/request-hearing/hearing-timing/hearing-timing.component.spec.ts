@@ -255,6 +255,7 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2024');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.firstDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.InvalidHearingDateError);
   });
 
   it('should check date selection valid', () => {
@@ -266,13 +267,14 @@ describe('HearingTimingComponent', () => {
     expect(component.firstDateOfHearingError).toEqual(null);
   });
 
-  it('should check date selection weekend', () => {
+  it('should give error for invalid date range', () => {
     component.firstDateOfHearingError = null;
-    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
-    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('99');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('6');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2022');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.firstDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.InvalidHearingDateError);
   });
 
   it('should check date selection past date', () => {
@@ -280,6 +282,15 @@ describe('HearingTimingComponent', () => {
     component.firstHearingFormGroup.get('firstHearingDate_day').setValue('15');
     component.firstHearingFormGroup.get('firstHearingDate_month').setValue('10');
     component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2020');
+    component.showChosenDateError();
+    expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
+  });
+
+  it('should check date selection invalid range', () => {
+    component.firstDateOfHearingError = null;
+    component.firstHearingFormGroup.get('firstHearingDate_day').setValue('31');
+    component.firstHearingFormGroup.get('firstHearingDate_month').setValue('04');
+    component.firstHearingFormGroup.get('firstHearingDate_year').setValue('2023');
     component.showChosenDateError();
     expect(component.firstDateOfHearingError.isInvalid).toBeTruthy();
   });
@@ -319,8 +330,8 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue(month);
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue(year);
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError).toEqual(null);
-    expect(component.earliestDateOfHearingError).toEqual(null);
+    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.earliestDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.EarliestHearingDateError);
   });
   it('should check showChosenDateRangeError', () => {
     component.earliestDateOfHearingError = null;
@@ -331,31 +342,8 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2022');
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
-  });
-
-  it('should check showChosenDateRangeError earliest Saturday and latest Sunday', () => {
-    component.dateRangeWeekendError = null;
-    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('09');
-    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2033');
-    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('10');
-    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('04');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2033');
-    component.showChosenDateRangeError();
-    expect(component.dateRangeWeekendError).toEqual(HearingDatePriorityEnum.WeekDayError);
-  });
-
-  it('should check showChosenDateRangeError earliest Saturday and latest not a weekend', () => {
-    component.dateRangeWeekendError = null;
-    component.earliestHearingFormGroup.get('earliestHearingDate_day').setValue('08');
-    component.earliestHearingFormGroup.get('earliestHearingDate_month').setValue('04');
-    component.earliestHearingFormGroup.get('earliestHearingDate_year').setValue('2023');
-    component.latestHearingFormGroup.get('latestHearingDate_day').setValue('10');
-    component.latestHearingFormGroup.get('latestHearingDate_month').setValue('04');
-    component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2023');
-    component.showChosenDateRangeError();
-    expect(component.dateRangeWeekendError).toBeNull();
+    expect(component.latestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.messages).toEqual([HearingDatePriorityEnum.LatestEndDatePastError]);
   });
 
   it('should check showChosenDateRangeError before date check', () => {
@@ -368,6 +356,7 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2050');
     component.showChosenDateRangeError();
     expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.earliestDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.EarliestHearingDateError);
   });
 
   it('should check showChosenDateRangeError valid earliest date check', () => {
@@ -379,7 +368,8 @@ describe('HearingTimingComponent', () => {
     component.latestHearingFormGroup.get('latestHearingDate_month').setValue('12');
     component.latestHearingFormGroup.get('latestHearingDate_year').setValue('2016');
     component.showChosenDateRangeError();
-    expect(component.earliestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.isInvalid).toBeTruthy();
+    expect(component.latestDateOfHearingError.messages[0]).toEqual(HearingDatePriorityEnum.LatestEndDatePastError);
   });
 
   describe('should check showChosenDateRangeError for invalid dates', () => {
@@ -700,34 +690,22 @@ describe('HearingTimingComponent', () => {
     expect(component.sourceOfData).toBe(SourceOfData.HEARING_REQUEST_MAIN_MODEL);
   });
 
-  it('should set data items from serviceHearingValuesModel when sourceOFData is SERVICE_HEARING_VALUES', () => {
+  it('should set unavailabilityDateList from serviceHearingValuesModel when sourceOFData is SERVICE_HEARING_VALUES', () => {
     component.sourceOfData = SourceOfData.SERVICE_HEARING_VALUES;
-
-    component.serviceHearingValuesModel = {
-      ...component.serviceHearingValuesModel,
-      parties: [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2024-01-01',
-          unavailableToDate: '2024-01-02',
-          unavailabilityType: UnavailabilityType.PM
-        }]
-      }],
-      hearingPriorityType: 'High',
-      duration: 120,
-      hearingWindow: { dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' }
-    };
 
     component.prepareHearingRequestData();
 
     component.setDataItems();
 
     expect(component.duration).toBe(60);
-    expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' });
-    expect(component.hearingPriorityType).toBe('High');
-    expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-01-01', unavailableToDate: '2024-01-02', unavailabilityType: UnavailabilityType.PM }]);
+    expect(component.hearingWindow).toEqual({ dateRangeStart: null, dateRangeEnd: '2021-01-01T00:00:00.000Z' });
+    expect(component.hearingPriorityType).toBe('Urgent');
+    expect(component.unavailabilityDateList[0].unavailableFromDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[0].unavailabilityRanges[0].unavailableFromDate);
+    expect(component.unavailabilityDateList[0].unavailableToDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[0].unavailabilityRanges[0].unavailableToDate);
+    expect(component.unavailabilityDateList[0].unavailabilityType).toEqual(UnavailabilityType.ALL_DAY);
+    expect(component.unavailabilityDateList[1].unavailableFromDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[1].unavailabilityRanges[0].unavailableFromDate);
+    expect(component.unavailabilityDateList[1].unavailableToDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[1].unavailabilityRanges[0].unavailableToDate);
+    expect(component.unavailabilityDateList[1].unavailabilityType).toEqual(UnavailabilityType.ALL_DAY);
   });
 
   it('should set data items from hearingRequestMainModel when sourceOFData is HEARING_REQUEST_MAIN_MODEL', () => {
@@ -761,110 +739,6 @@ describe('HearingTimingComponent', () => {
     component.setDataItems();
 
     expect(component.duration).toBe(180);
-    expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
-    expect(component.hearingPriorityType).toBe('Medium');
-    expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);
-  });
-
-  it('should set duration from SHV when absent from is HEARING_REQUEST_MAIN_MODEL', () => {
-    component.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
-    component.hearingRequestMainModel = {
-      ...component.hearingRequestMainModel,
-      hearingDetails: {
-        duration: undefined,
-        hearingWindow: { dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' },
-        hearingPriorityType: 'Medium',
-        hearingType: '',
-        hearingLocations: [],
-        panelRequirements: undefined,
-        autolistFlag: false,
-        amendReasonCodes: [],
-        hearingChannels: [],
-        listingAutoChangeReasonCode: ''
-      },
-      partyDetails: [{
-        unavailabilityRanges: [{
-          unavailableFromDate: '2024-02-01',
-          unavailableToDate: '2024-02-02',
-          unavailabilityType: UnavailabilityType.AM
-        }],
-        partyID: '',
-        partyType: PartyType.IND,
-        partyRole: ''
-      }]
-    };
-    component.serviceHearingValuesModel = {
-      ...component.serviceHearingValuesModel,
-      parties: [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2024-01-01',
-          unavailableToDate: '2024-01-02',
-          unavailabilityType: UnavailabilityType.PM
-        }]
-      }],
-      hearingPriorityType: 'High',
-      duration: 120,
-      hearingWindow: { dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' }
-    };
-
-    component.setDataItems();
-
-    expect(component.duration).toBe(120);
-    expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
-    expect(component.hearingPriorityType).toBe('Medium');
-    expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);
-  });
-
-  it('should set duration from SHV when duration is 0 from HEARING_REQUEST_MAIN_MODEL', () => {
-    component.sourceOfData = SourceOfData.HEARING_REQUEST_MAIN_MODEL;
-    component.hearingRequestMainModel = {
-      ...component.hearingRequestMainModel,
-      hearingDetails: {
-        duration: 0,
-        hearingWindow: { dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' },
-        hearingPriorityType: 'Medium',
-        hearingType: '',
-        hearingLocations: [],
-        panelRequirements: undefined,
-        autolistFlag: false,
-        amendReasonCodes: [],
-        hearingChannels: [],
-        listingAutoChangeReasonCode: ''
-      },
-      partyDetails: [{
-        unavailabilityRanges: [{
-          unavailableFromDate: '2024-02-01',
-          unavailableToDate: '2024-02-02',
-          unavailabilityType: UnavailabilityType.AM
-        }],
-        partyID: '',
-        partyType: PartyType.IND,
-        partyRole: ''
-      }]
-    };
-    component.serviceHearingValuesModel = {
-      ...component.serviceHearingValuesModel,
-      parties: [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2024-01-01',
-          unavailableToDate: '2024-01-02',
-          unavailabilityType: UnavailabilityType.PM
-        }]
-      }],
-      hearingPriorityType: 'High',
-      duration: 120,
-      hearingWindow: { dateRangeStart: '2024-01-01', dateRangeEnd: '2024-01-02' }
-    };
-
-    component.setDataItems();
-
-    expect(component.duration).toBe(120);
     expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
     expect(component.hearingPriorityType).toBe('Medium');
     expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);

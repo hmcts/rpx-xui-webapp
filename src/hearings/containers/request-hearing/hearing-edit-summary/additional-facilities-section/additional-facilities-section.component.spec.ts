@@ -355,7 +355,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingFacilitiesChangesConfirmed: false,

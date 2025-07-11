@@ -23,6 +23,7 @@ import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
+import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -93,7 +94,8 @@ describe('HearingEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingEditSummaryComponent
+        HearingEditSummaryComponent,
+        CaseReferencePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

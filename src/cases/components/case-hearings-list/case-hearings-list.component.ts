@@ -136,7 +136,7 @@ export class CaseHearingsListComponent implements OnInit {
       case EXUIDisplayStatusEnum.AWAITING_LISTING:
       case EXUIDisplayStatusEnum.UPDATE_REQUESTED:
       case EXUIDisplayStatusEnum.LISTED:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-view-summary');
+        this.loadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-view-summary', this.caseId);
         break;
       case EXUIDisplayStatusEnum.CANCELLATION_REQUESTED:
         this.loadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary');
@@ -145,10 +145,10 @@ export class CaseHearingsListComponent implements OnInit {
         this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`);
+        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`, this.caseId);
         break;
       case EXUIDisplayStatusEnum.ADJOURNED:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`);
+        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`, this.caseId);
         break;
       case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
         this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-view-actuals-summary/${hearing.hearingID}`);
@@ -162,7 +162,7 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
-  public loadHearingRequestAndRedirect(hearingID: string, targetURL: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL }));
+  public loadHearingRequestAndRedirect(hearingID: string, targetURL: string, caseRef?: string) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL, caseRef }));
   }
 }

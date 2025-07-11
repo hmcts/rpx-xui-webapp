@@ -50,7 +50,8 @@ export const baseConfig = {
         'caseworker-privatelaw',
         'caseworker-publiclaw-judiciary',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Case list'
     },
@@ -70,7 +71,8 @@ export const baseConfig = {
         'caseworker-probate-judge',
         'caseworker-publiclaw-judiciary',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Find case'
     },
@@ -88,7 +90,8 @@ export const baseConfig = {
         'caseworker-st_cic-judge',
         'caseworker-st_cic-senior-judge',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Search'
     },
@@ -238,7 +241,8 @@ export const baseConfig = {
         'caseworker-probate',
         'caseworker-ia',
         'caseworker-publiclaw',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Case list'
     },
@@ -267,7 +271,8 @@ export const baseConfig = {
         'caseworker-probate',
         'caseworker-publiclaw',
         'caseworker-publiclaw-courtadmin',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
+        'caseworker-pcs'
       ],
       'text': 'Find case'
     },
@@ -289,7 +294,8 @@ export const baseConfig = {
         'caseworker-st_cic',
         'caseworker-st_cic-senior-caseworker',
         'caseworker-sscs',
-        'caseworker-employment'
+        'caseworker-employment',
+        'caseworker-pcs'
       ],
       'text': 'Search'
     },

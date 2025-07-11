@@ -3,8 +3,6 @@ const BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const CaseEditPage = require('../pageObjects/caseEditPage');
 
-const { defineSupportCode } = require('cucumber');
-
 const caseEditPage = new CaseEditPage();
 const caseManager = new CaseManager();
 

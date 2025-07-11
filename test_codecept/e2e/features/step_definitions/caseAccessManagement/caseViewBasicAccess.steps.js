@@ -1,4 +1,3 @@
-const { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
@@ -16,12 +15,13 @@ const challengedAccessRequestPage = require('../../pageObjects/caseAccessManagem
 const specificAccessRequestPage = require('../../pageObjects/caseAccessManagement/specificAccessRequestPage');
 
 Then('I see case details basic view and request access page', async () => {
+  console.log('[Test] getXUITestPage:', require('../../../../helpers/globals').getXUITestPage());
   await BrowserWaits.waitForElement(caseDetailsBasicViewPage.container);
 });
 
 Then('I see case details basic view displays banner with message {string}', async (message) => {
   await BrowserWaits.waitForElement(caseDetailsBasicViewPage.bannerMessageContainer);
-  const bannerMessage = await caseDetailsBasicViewPage.bannerMessageContainer.getText();
+  const bannerMessage = await caseDetailsBasicViewPage.bannerMessageContainer.textContent();
   expect(bannerMessage).to.contains(message);
 });
 

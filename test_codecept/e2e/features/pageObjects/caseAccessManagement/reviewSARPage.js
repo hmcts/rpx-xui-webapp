@@ -1,23 +1,30 @@
+const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 
 class SpecificAccessReviewPage{
-  constructor(){
-    this.container = $('exui-specific-access-review');
+  constructor(){}
 
-    this.requestDetails = $$('exui-specific-access-review table tbody tr');
+  get container() {
+    return $('exui-specific-access-review');
+  }
 
-    this.fieldMapping = {
-      'Review specific access request': element(by.xpath('//h1[contains(text(),\'Review specific access request\')]/../../table')),
-      'What do you want to do with this request?': element(by.xpath('//h1[contains(text(),\'What do you want to do with this request?\')]/../..//exui-choose-radio-option')),
-      'Approve request': element(by.xpath('//label[contains(text(),\'Approve request\')]/../input')),
-      'Reject request': element(by.xpath('//label[contains(text(),\'Reject request\')]/../input')),
-      'Request more information': element(by.xpath('//label[contains(text(),\'Request more information\')]/../input'))
+  get requestDetails() {
+    return $$('exui-specific-access-review table tbody tr');
+  }
+
+  get fieldMapping() {
+    return {
+      'Review specific access request': elementByXpath('//h1[contains(text(),\'Review specific access request\')]/../../table'),
+      'What do you want to do with this request?': elementByXpath('//h1[contains(text(),\'What do you want to do with this request?\')]/../..//exui-choose-radio-option'),
+      'Approve request': elementByXpath('//label[contains(text(),\'Approve request\')]/../input'),
+      'Reject request': elementByXpath('//label[contains(text(),\'Reject request\')]/../input'),
+      'Request more information': elementByXpath('//label[contains(text(),\'Request more information\')]/../input')
     };
   }
 
   async inputValues(field, value){
     switch (field){
       case 'What do you want to do with this request?':
-        const ele = element(by.xpath(`//h1[contains(text(),'What do you want to do with this request?')]/../..//exui-choose-radio-option//label[contains(text(),'${value}')]/../input`));
+        const ele = elementByXpath(`//h1[contains(text(),'What do you want to do with this request?')]/../..//exui-choose-radio-option//label[contains(text(),'${value}')]/../input`);
         await ele.click();
         break;
       default:
@@ -30,8 +37,8 @@ class SpecificAccessReviewPage{
     const rowsCount = await this.requestDetails.count();
     for (let i = 0; i < rowsCount; i++) {
       const row = await this.requestDetails.get(i);
-      const name = await row.$('th').getText();
-      const value = await row.$('td').getText();
+      const name = await getText(row.locator('th'));
+      const value = await getText(row.locator('td'));
       requestDetails[name] = value;
     }
     return requestDetails;

@@ -1,15 +1,34 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 const BrowserWaits = require('../../../support/customWaits');
 
 class SARActionConfirmationPage{
   constructor(action){
     this.tag = this.getContainerTagForAction(action);
-    this.header = $(`${this.tag} .govuk-panel--confirmation h1`);
-    this.detailsHeader = $(`${this.tag} h2.govuk-heading-m`);
-    this.detailsPara = $(`${this.tag} p`);
+  }
 
-    this.returnToMyTasksBtn = element(by.xpath(`//${this.tag}/../../*[contains(@class,'govuk-button-group')]//button`));
-    this.returnToTasksTabLink = element(by.xpath(`//${this.tag}/../../*[contains(@class,'govuk-button-group')]//a`));
+  get header() {
+    return $(`${this.tag} .govuk-panel--confirmation h1`);
+  }
+
+  get detailsHeader() {
+    return $(`${this.tag} h2.govuk-heading-m`);
+  }
+
+  get detailsPara() {
+    return $(`${this.tag} p`);
+  }
+
+  get returnToMyTasksBtn() {
+    return elementByXpath(
+      `//${this.tag}/../../*[contains(@class,'govuk-button-group')]//button`
+    );
+  }
+
+  get returnToTasksTabLink() {
+    return elementByXpath(
+      `//${this.tag}/../../*[contains(@class,'govuk-button-group')]//a`
+    );
   }
 
   async waitForContainer(){

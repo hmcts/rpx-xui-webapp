@@ -1,7 +1,3 @@
-const { defineSupportCode } = require('cucumber');
-
-// const MockApp = require('../../../nodeMock/app');
-
 const caseEditPage = require('../pageObjects/ccdCaseEditPages');
 
 const browserUtil = require('../../util/browserUtil');
@@ -9,7 +5,6 @@ const browserUtil = require('../../util/browserUtil');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 
-const headerpage = require('../../../e2e/features/pageObjects/headerPage');
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
 const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');

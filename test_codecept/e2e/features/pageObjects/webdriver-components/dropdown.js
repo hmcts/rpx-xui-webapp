@@ -140,7 +140,6 @@ class Dropdown {
   }
 
   async waitForElementToBeInvisible(){
-    // const EC = protractor.ExpectedConditions;
 
     try {
       await browser.wait(EC.invisibilityOf(await element(by.css(this._dropdownElement))), DEFAULT_TIMEOUT);
@@ -151,17 +150,16 @@ class Dropdown {
     }
   }
 
-  async waitForElementToBeVisible(){
-    const EC = protractor.ExpectedConditions;
-
-    try {
-      await browser.wait(EC.visibilityOf($(this._dropdownElement)), DEFAULT_TIMEOUT);
-      return true;
-    } catch (e) {
-      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for dropdown element ${element} to be visible`;
-      throw new CustomError(message, e);
-    }
+  async waitForElementToBeVisible(page, timeout = DEFAULT_TIMEOUT) {
+  try {
+    const locator = page.locator(this._dropdownElement);
+    await locator.waitFor({ state: 'visible', timeout });
+    return true;
+  } catch (e) {
+    const message = `timed out after ${timeout}ms waiting for dropdown element "${this._dropdownElement}" to be visible`;
+    throw new CustomError(message, e);
   }
+}
 
   /**
    * Select a dropdown option by text value. Retry 2 more times if fails.

@@ -21,6 +21,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 
@@ -93,7 +94,8 @@ describe('HearingEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingEditSummaryComponent
+        HearingEditSummaryComponent,
+        CaseReferencePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -432,11 +434,33 @@ describe('HearingEditSummaryComponent', () => {
             }
           ]
         }
-      ]
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesRequired).toEqual(false);
+  });
+
+  it('should set hearingFacilitiesChangesRequired to be true if caseAdditionalSecurityFlag differs', () => {
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      caseAdditionalSecurityFlag: true,
+      screenFlow: [
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        }
+      ],
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = null;
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
   });
 
   it('should pageVisitNonReasonableAdjustmentChangeExists return false if non-reasonable adjustment changes already confirmed', () => {
@@ -686,7 +710,8 @@ describe('HearingEditSummaryComponent', () => {
           vulnerableFlag: true,
           vulnerabilityDetails: 'New vulnerability details',
           hearingChannelEmail: ['New email'],
-          hearingChannelPhone: ['New Phone']
+          hearingChannelPhone: ['New Phone'],
+          otherReasonableAdjustmentDetails: 'other reasonable adjustments'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
@@ -727,7 +752,8 @@ describe('HearingEditSummaryComponent', () => {
           vulnerableFlag: true,
           vulnerabilityDetails: 'New vulnerability details',
           hearingChannelEmail: ['New email'],
-          hearingChannelPhone: ['New Phone']
+          hearingChannelPhone: ['New Phone'],
+          otherReasonableAdjustmentDetails: 'other reasonable adjustments'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
@@ -985,6 +1011,22 @@ describe('HearingEditSummaryComponent', () => {
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
         facilitiesRequired: ['11', '22']
+      }
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      facilitiesRequired: ['12', '23']
+    };
+    component.ngOnInit();
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
+  });
+
+  it('should pageVisitHearingFacilitiesChanged return true if additional security changed', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      hearingDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+        facilitiesRequired: ['12', '23']
       }
     };
     component.serviceHearingValuesModel = {

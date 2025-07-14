@@ -5,6 +5,10 @@ on:
   pull_request_review:
     types: [submitted]
 
+permissions:
+    id-token: write
+    contents: read
+
 jobs:
   slack-notification:
     runs-on: ubuntu-latest

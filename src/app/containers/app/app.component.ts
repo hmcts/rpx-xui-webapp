@@ -49,15 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly initialisationSyncService: InitialisationSyncService
   ) {
     this.router.events.subscribe((data) => {
-      if (data instanceof NavigationStart) {
-        console.log(`Navigation started to: ${data.url}`);
-      } else if (data instanceof NavigationEnd) {
-        console.log(`Navigation ended at: ${data.url}`);
-      } else if (data instanceof NavigationCancel) {
-        console.warn(`Navigation cancelled: ${data.url}`);
-      } else if (data instanceof NavigationError) {
-        console.error(`Navigation error: ${data.error}`);
-      } else if (data instanceof RoutesRecognized) {
+      if (data instanceof RoutesRecognized) {
         let child = data.state.root;
         do {
           child = child.firstChild;

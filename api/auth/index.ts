@@ -27,22 +27,13 @@ import {
   SYSTEM_USER_PASSWORD,
   FEATURE_QUERY_IDAM_SERVICE_OVERRIDE
 } from '../configuration/references';
-import { client, trackTrace } from '../lib/appInsights';
+import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 import axios from 'axios';
 import qs = require('qs');
 
 const logger = log4jui.getLogger('auth');
-
-const totalReplicas = 24;
-const specialReplicasCount = 5;
-
-function shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount) {
-  const randomNumber = Math.floor(Math.random() * totalReplicas);
-  return randomNumber < specialReplicasCount;
-}
-const isSpecialPod = shouldSetSessionCookieFlag(totalReplicas, specialReplicasCount);
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -133,13 +124,6 @@ export const getXuiNodeMiddleware = async () => {
     saveUninitialized: false,
     secret: getConfigValue(SESSION_SECRET)
   } as SessionMetadata;
-
-  if (!isSpecialPod){
-    baseStoreOptions.cookie.maxAge = 28800000;
-  } else {
-    trackTrace('Pod is serving session cookie');
-    logger.info('Pod is serving session cookie');
-  }
 
   const redisStoreOptions = {
     redisStore: {

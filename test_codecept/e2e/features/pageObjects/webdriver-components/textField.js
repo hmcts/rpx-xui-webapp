@@ -1,3 +1,4 @@
+const { $, isPresent } = require('../../../../helpers/globals');
 /**
  * WebDriver Text field component class
  */
@@ -16,7 +17,7 @@ class TextField {
    * @param text
    */
   async enterText(text) {
-    await $(this.css).sendKeys(text);
+    await $(this.css).fill(text);
   }
 
   /**
@@ -32,7 +33,7 @@ class TextField {
    * @returns {Promise<boolean|*>}
    */
   async isPresent() {
-    return await $(this.css).isPresent();
+    return await isPresent($(this.css));
   }
 
   /**
@@ -40,7 +41,7 @@ class TextField {
    * @returns {Promise<boolean|*>}
    */
   async isDisplayed() {
-    return await $(this.css).isDisplayed();
+    return await $(this.css).isVisible();
   }
 
   async waitForElementToBeInvisible(page, timeout = DEFAULT_TIMEOUT) {

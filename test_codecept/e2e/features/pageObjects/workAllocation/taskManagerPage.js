@@ -1,8 +1,7 @@
-const { $, $$ } = require('../../../../helpers/globals');
-
-const TaskList = require('./taskListTable');
+const { $ } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 const TaskMessageBanner = require('../messageBanner');
+const TaskList = require('./taskListTable');
 
 class TaskManagerPage extends TaskList{
   constructor(){
@@ -50,9 +49,9 @@ class TaskManagerPage extends TaskList{
   async getFilterOptionsFromSelect(selectElement){
     expect(await this.amOnPage(), 'Not on Task manager page ').to.be.true;
     const optionValues = [];
-    const optionsCount = await selectElement.$$('option').count();
+    const optionsCount = await selectElement.locator('option').count();
     for (let i = 0; i < optionsCount; i++) {
-      optionValues.push(await selectElement.$$('option').get(i).getText());
+      optionValues.push(await selectElement.locator('option').nth(i).textContent());
     }
     return optionValues;
   }

@@ -72,7 +72,7 @@ class CreateCaseStartPage {
 
   async getPageHeader(){
     await BrowserWaits.waitForElement($(this.header));
-    return await $(this.header).getText();
+    return await $(this.header).textContent();
   }
 
   async amOnPage(){

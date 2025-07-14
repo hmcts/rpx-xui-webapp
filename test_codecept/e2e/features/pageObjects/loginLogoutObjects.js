@@ -1,9 +1,9 @@
 'use strict';
 
-const { $, elementByXpath } = require('../../../helpers/globals');
-const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
-const BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
+const { $, elementByXpath, getXUITestPage } = require('../../../helpers/globals');
+const { LONG_DELAY } = require('../../support/constants');
+const BrowserWaits = require('../../support/customWaits');
 
 class LoginLogout {
   get emailAddress() {
@@ -102,7 +102,7 @@ class LoginLogout {
     try {
       await BrowserWaits.waitForElement($('exui-app-header'));
       const { users } = inject();
-      const cookies = await page.context().cookies();
+      const cookies = await getXUITestPage().context().cookies();
       users.push({ email: username, cookies });
       share({ users });
     } catch (err) {

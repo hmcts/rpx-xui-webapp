@@ -1,11 +1,8 @@
-const { $, $$, elementByXpath } = require('../../../../helpers/globals');
+const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 
-const browser = require('../../../../codeceptCommon/browser');
 const BrowserWaits = require('../../../support/customWaits');
 
 class AddUserPage{
-  constructor() {}
-
   get container() {
     return $('exui-staff-add-edit-user-form');
   }
@@ -75,11 +72,11 @@ class AddUserPage{
   }
 
   async getPageTitle(){
-    return await this.headerTitle.getText();
+    return await getText(this.headerTitle);
   }
 
   async isDisplayed(){
-    return await this.container.isDisplayed();
+    return await this.container.isVisible();
   }
 
   async clickContinue(){
@@ -101,13 +98,13 @@ class AddUserPage{
       const inputVal = userDetails[key];
       switch (key){
         case 'First name':
-          await this.firstName.sendKeys(inputVal);
+          await this.firstName.fill(inputVal);
           break;
         case 'Last name':
-          await this.lastName.sendKeys(inputVal);
+          await this.lastName.fill(inputVal);
           break;
         case 'Email':
-          await this.email.sendKeys(inputVal);
+          await this.email.fill(inputVal);
           break;
         case 'Region':
           await this.region.selectOptionAtIndex(1);
@@ -125,12 +122,12 @@ class AddUserPage{
           break;
         case 'Primary location':
           await this.primaryLocation.scrollIntoView();
-          await this.primaryLocation.sendKeys(inputVal);
+          await this.primaryLocation.fill(inputVal);
           const searchResults = $$('.mat-option-text');
 
           let e = null;
           await BrowserWaits.retryWithActionCallback(async () => {
-            await browser.sleep(2);
+            await BrowserWaits.waitForSeconds(2);
             e = await searchResults.getItemWithText(inputVal);
             if (e === null){
               throw new Error('locations not found, retry waiting');
@@ -141,11 +138,11 @@ class AddUserPage{
           break;
         case 'Additional locations':
           inputVal.forEach(async(loc) => {
-            await this.additionalLocations.sendKeys(loc);
+            await this.additionalLocations.fill(loc);
             const additionaLocationResults = $$('.mat-option-text');
             let ale = null;
             await BrowserWaits.retryWithActionCallback(async () => {
-              await browser.sleep(2);
+              await BrowserWaits.waitForSeconds(2);
               ale = additionaLocationResults.getItemWithText(loc);
               if (ale === null) {
                 throw new Error('locations not found, retry waiting');
@@ -189,12 +186,12 @@ class AddUserPage{
 
 async function checkBoxes(parent){
   const checkBoxes = {};
-  const elements = parent.$$('.govuk-checkboxes__item');
+  const elements = parent.locator('.govuk-checkboxes__item');
   const count = await elements.count();
   for (let i = 0; i< count; i++){
-    const e = elements.get(i);
-    const label = await e.$('label').getText();
-    checkBoxes[label] = e.$('input');
+    const e = elements.nth(i);
+    const label = await getText(e.locator('label'));
+    checkBoxes[label] = e.locator('input');
   }
   return checkBoxes;
 }

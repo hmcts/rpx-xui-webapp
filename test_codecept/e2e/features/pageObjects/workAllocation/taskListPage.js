@@ -1,11 +1,9 @@
-const { $, $$, elementByXpath } = require('../../../../helpers/globals');
-
-const TaskList = require('./taskListTable');
-const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
-
-const TaskMessageBanner = require('../messageBanner');
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
+const BrowserWaits = require('../../../support/customWaits');
+const TaskMessageBanner = require('../messageBanner');
+const TaskList = require('./taskListTable');
 
 class TaskListPage extends TaskList {
   constructor() {
@@ -73,7 +71,7 @@ class TaskListPage extends TaskList {
   }
 
   async amOnMyTasksTab(){
-    return await this.myTasksContaine.isDisplayed();
+    return await this.myTasksContaine.isVisible();
   }
 
   async isMyTasksDisplayed(){

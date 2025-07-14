@@ -8,7 +8,7 @@ const { container } = require('codeceptjs');
 /*  No global `currentPage`, so no stale references survive a         */
 /*  scenario—even if CodeceptJS recreated the page internally.        */
 /* ------------------------------------------------------------------ */
-function resolvePage () {
+function resolvePage() {
   const pw = container.helpers().Playwright;
   if (pw && pw.page) return pw.page;
 
@@ -18,7 +18,12 @@ function resolvePage () {
   );
 }
 
-function getXUITestPage () {
+async function refresh() {
+  const page = resolvePage();
+  await page.reload({ waitUntil: 'load' });
+}
+
+function getXUITestPage() {
   return resolvePage();
 }
 
@@ -29,8 +34,8 @@ async function currentUrl() {
 /* ------------------------------------------------------------------ */
 /*  Shorthand element helpers – each call re-resolves the page        */
 /* ------------------------------------------------------------------ */
-function $(selector)           { return resolvePage().locator(selector); }
-function $$(selector)          { return resolvePage().locator(selector); }
+function $(selector) { return resolvePage().locator(selector); }
+function $$(selector) { return resolvePage().locator(selector); }
 function elementByXpath(xpath) { return resolvePage().locator(`xpath=${xpath}`); }
 
 /* ------------------------------------------------------------------ */
@@ -47,9 +52,9 @@ async function navigate(url, options = {}) {
 }
 
 async function waitForElement(selectorOrLocator, options = {}) {
-  const page    = resolvePage();
+  const page = resolvePage();
   const timeout = options.timeout ?? 15000;
-  const state   = options.state   ?? 'visible';
+  const state = options.state ?? 'visible';
 
   let locator;
   if (typeof selectorOrLocator === 'string') {
@@ -92,6 +97,7 @@ module.exports = {
 
   currentUrl,
   navigate,
+  refresh,
 
   /* element helpers */
   $,

@@ -1,12 +1,18 @@
-
+const { $, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class EXUIErrorMessageComponent{
-  constructor(){
-    this.component = $('exui-error-message');
-    this.summaryTitle = this.component.$('h2#error-summary-title');
 
-    this.summaryBody = this.component.$('.govuk-error-summary__body .govuk-list.govuk-error-summary__list');
+  get component() {
+    return $('exui-error-message');
+  }
+
+  get summaryTitle() {
+    return this.component.locator('h2#error-summary-title');
+  }
+
+  get summaryBody() {
+    return this.component.locator('.govuk-error-summary__body .govuk-list.govuk-error-summary__list');
   }
 
   async isDisplayed(){
@@ -19,29 +25,29 @@ class EXUIErrorMessageComponent{
   }
 
   async getSummaryTitle(){
-    return await this.summaryTitle.getText();
+    return await getText(this.summaryTitle);
   }
 
   async isMessageDisplayedInSummary(message){
-    const messages = await await this.summaryBody.getText();
+    const messages = await await getText(this.summaryBody);
     return messages.includes(message);
   }
 
   async getFieldLevelErrorMessage(fieldText){
     const formGroupErrorFieldElement = this.getFormGroupErrorFieldWithText(fieldText);
-    expect(await formGroupErrorFieldElement.isPresent()).to.be.true;
+    expect(await isPresent(formGroupErrorFieldElement)).to.be.true;
 
-    const fieldLevelErrorMessageElement = formGroupErrorFieldElement.$('.govuk-error-message');
-    return await fieldLevelErrorMessageElement.getText();
+    const fieldLevelErrorMessageElement = formGroupErrorFieldElement.locator('.govuk-error-message');
+    return await getText(fieldLevelErrorMessageElement);
   }
 
   async isFieldLevelErrorDisplayed(fieldText){
     const formGroupErrorFieldElement = this.getFormGroupErrorFieldWithText(fieldText);
-    return await formGroupErrorFieldElement.isPresent();
+    return await isPresent(formGroupErrorFieldElement);
   }
 
   getFormGroupErrorFieldWithText(fieldtext){
-    return element(by.xpath(`//div[contains(@class,'form-group-error')]//*[contains(text(),'${fieldtext}')]//ancestor::div[contains(@class,'form-group-error')]`));
+    return elementByXpath(`//div[contains(@class,'form-group-error')]//*[contains(text(),'${fieldtext}')]//ancestor::div[contains(@class,'form-group-error')]`);
   }
 }
 

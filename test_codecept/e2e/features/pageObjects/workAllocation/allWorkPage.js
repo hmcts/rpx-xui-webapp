@@ -1,11 +1,10 @@
-const TaskList = require('./taskListTable');
-const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
-
-const { Select, GovUKRadios } = require('../../../utils/domElements');
-
-const TaskMessageBanner = require('../messageBanner');
+const { $, $$, elementByXpath, getText, isPresent, selectOption } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
+const BrowserWaits = require('../../../support/customWaits');
+const { Select, GovUKRadios } = require('../../../utils/domElements');
+const TaskMessageBanner = require('../messageBanner');
+const TaskList = require('./taskListTable');
 
 class AllWork extends TaskList {
   constructor() {
@@ -93,9 +92,9 @@ class AllWork extends TaskList {
     }
 
     if (this.selectOrRadioFilterItems.includes(filterItem)) {
-      return await this.FILTER_ITEMS[filterItem].isDisplayed();
+      return await this.FILTER_ITEMS[filterItem].isVisible();
     }
-    return await this.FILTER_ITEMS[filterItem].isPresent();
+    return await isPresent(this.FILTER_ITEMS[filterItem]);
   }
 
   async isFilterItemEnbled(filterItem) {
@@ -103,7 +102,7 @@ class AllWork extends TaskList {
     if (!filtersItems.includes(filterItem)) {
       throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
     }
-    return await this.FILTER_ITEMS[filterItem].isDisplayed()
+    return await this.FILTER_ITEMS[filterItem].isVisible()
       && await this.FILTER_ITEMS[filterItem].isEnabled();
   }
 
@@ -126,13 +125,13 @@ class AllWork extends TaskList {
       throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
     }
     if (this.selectOrRadioFilterItems.includes(filterItem)) {
-      return await this.FILTER_ITEMS[filterItem].selectOption(option);
+      return await selectOption(this.FILTER_ITEMS[filterItem], option);
     }
     throw new Error(`filter item ${filterItem} is not a select or a Radio item..${filtersItems}`);
   }
 
   async inputFilterItem(filterItem, inputText) {
-    await await this.FILTER_ITEMS[filterItem].sendKeys(inputText);
+    await await this.FILTER_ITEMS[filterItem].fill(inputText);
   }
 
   getSubNavigationTabElement(tabLabel) {
@@ -140,7 +139,7 @@ class AllWork extends TaskList {
   }
 
   async isSubNavigationTabPresent(tabLabel) {
-    return await this.getSubNavigationTabElement(tabLabel).isPresent();
+    return await isPresent(this.getSubNavigationTabElement(tabLabel));
   }
 
   async clickSubNavigationTab(tabLabel) {
@@ -157,7 +156,7 @@ class AllWork extends TaskList {
       await BrowserWaits.waitForSpinnerToDissappear();
       await this.pageHeader.wait();
       await BrowserWaits.waitForConditionAsync(async () => {
-        const pageHeaderTitle = await this.pageHeader.getText();
+        const pageHeaderTitle = await getText(this.pageHeader);
         return pageHeaderTitle.includes('All work');
       });
       return true;
@@ -169,12 +168,12 @@ class AllWork extends TaskList {
 
   // Task container methods
   async isTasksContainerDisplayed() {
-    return await this.tasksContainer.isPresent() && await this.tasksContainer.isDisplayed();
+    return await isPresent(this.tasksContainer) && await this.tasksContainer.isVisible();
   }
 
   //Cases container methods
   async isCasesContainerDisplayed() {
-    return await this.casesContainer.isDisplayed();
+    return await this.casesContainer.isVisible();
   }
 
   async isBannerMessageDisplayed() {
@@ -202,8 +201,8 @@ class AllWork extends TaskList {
     const count = await this.filterSearchResults.count();
     const results = [];
     for (let i = 0; i < count; i++) {
-      const e = await this.filterSearchResults.get(i);
-      results.push(await e.getText());
+      const e = await this.filterSearchResults.nth(i);
+      results.push(await getText(e));
     }
     return results;
   }
@@ -222,8 +221,8 @@ class AllWork extends TaskList {
     const count = await this.filterSearchResults.count();
     const results = [];
     for (let i = 0; i < count; i++) {
-      const e = await this.filterSearchResults.get(i);
-      const eText = await e.getText();
+      const e = await this.filterSearchResults.nth(i);
+      const eText = await getText(e);
       results.push(eText);
       if (eText.includes(result)) {
         await e.click();

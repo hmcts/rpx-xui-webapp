@@ -1,3 +1,4 @@
+const { $, isPresent } = require('../../../../helpers/globals');
 /**
  * WebDriver Radio field component class
  */
@@ -48,7 +49,7 @@ async waitForElementToBeVisible(page, timeout = DEFAULT_TIMEOUT) {
    * @returns {Promise<boolean|*>}
    */
   async isPresent(){
-    return await $(this.css).isPresent();
+    return await isPresent($(this.css));
   }
 
   /**

@@ -1,10 +1,9 @@
-const TaskList = require('./taskListTable');
-const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
-
-const TaskMessageBanner = require('../messageBanner');
+const { $, $$, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
-const { constant } = require('lodash');
+const BrowserWaits = require('../../../support/customWaits');
+const TaskMessageBanner = require('../messageBanner');
+const TaskList = require('./taskListTable');
 
 class MyWorkPage extends TaskList {
   constructor() {
@@ -121,7 +120,7 @@ class MyWorkPage extends TaskList {
   }
 
   async isSubNavigationTabPresent(tabLabel){
-    return await this.getSubNavigationTabElement(tabLabel).isPresent();
+    return await isPresent(this.getSubNavigationTabElement(tabLabel));
   }
 
   async clickSubNavigationTab(tabLabel){
@@ -142,7 +141,7 @@ class MyWorkPage extends TaskList {
   }
 
   async OpenWorkFilter(){
-    const isOpen = await this.genericFilterContainer.isPresent() && await this.genericFilterContainer.isDisplayed();
+    const isOpen = await isPresent(this.genericFilterContainer) && await this.genericFilterContainer.isVisible();
 
     if (!isOpen){
       await this.showHideWorkFilterBtn.click();
@@ -150,7 +149,7 @@ class MyWorkPage extends TaskList {
   }
 
   async CloseWorkFilter() {
-    const isOpen = await this.genericFilterContainer.isPresent() && await this.genericFilterContainer.isDisplayed();
+    const isOpen = await isPresent(this.genericFilterContainer) && await this.genericFilterContainer.isVisible();
 
     if (isOpen) {
       await this.showHideWorkFilterBtn.click();
@@ -167,8 +166,8 @@ class MyWorkPage extends TaskList {
       throw Error('location pos is out of bound');
     }
 
-    const locInput = await this.workFilterLocationContainers.get(locationAtPos - 1);
-    if (!(await locInput.isSelected())){
+    const locInput = await this.workFilterLocationContainers.nth(locationAtPos - 1);
+    if (!(await locInput.isChecked())){
       await locInput.click();
     }
   }
@@ -177,10 +176,10 @@ class MyWorkPage extends TaskList {
     const selectedLocations = [];
     const locationsCount = await this.getWorkFilterLocationsCount();
     for (let i = 0; i < locationsCount; i++){
-      const locElement = await this.workFilterLocationContainers.get(i);
-      const isLocationSelected = await locElement.$('input').isSelected();
+      const locElement = await this.workFilterLocationContainers.nth(i);
+      const isLocationSelected = await locElement.locator('input').isChecked();
       if (isLocationSelected){
-        selectedLocations.push(await locElement.$('label').getText());
+        selectedLocations.push(await getText(locElement.locator('label')));
       }
     }
     return selectedLocations;
@@ -190,10 +189,10 @@ class MyWorkPage extends TaskList {
     const selectedLocations = [];
     const locationsCount = await this.getWorkFilterTypesOfCount();
     for (let i = 0; i < locationsCount; i++) {
-      const locElement = await this.workFilterTypesOfWork.get(i);
-      const isLocationSelected = await locElement.$('input').isSelected();
+      const locElement = await this.workFilterTypesOfWork.nth(i);
+      const isLocationSelected = await locElement.locator('input').isChecked();
       if (isLocationSelected) {
-        selectedLocations.push(await locElement.$('label').getText());
+        selectedLocations.push(await getText(locElement.locator('label')));
       }
     }
     return selectedLocations;
@@ -204,7 +203,7 @@ class MyWorkPage extends TaskList {
       await BrowserWaits.waitForSpinnerToDissappear();
       await this.pageHeader.wait(20);
       await BrowserWaits.waitForConditionAsync(async () => {
-        const pageHeaderTitle = await this.pageHeader.getText();
+        const pageHeaderTitle = await getText(this.pageHeader);
         return pageHeaderTitle.includes('My work');
       });
       return true;
@@ -225,7 +224,7 @@ class MyWorkPage extends TaskList {
   }
 
   async amOnMyTasksTab() {
-    return await this.myTasksContaine.isDisplayed();
+    return await this.myTasksContaine.isVisible();
   }
 
   async isMyTasksDisplayed() {
@@ -275,15 +274,15 @@ class MyWorkPage extends TaskList {
     const servicesCheckBoxItemsCount = await this.workFilterServiceCheckboxeItems.count();
     const returnValues = [];
     for (let i = 0; i < servicesCheckBoxItemsCount; i++){
-      const checkBoxItem = await this.workFilterServiceCheckboxeItems.get(i);
-      returnValues.push(await checkBoxItem.$('label').getText());
+      const checkBoxItem = await this.workFilterServiceCheckboxeItems.nth(i);
+      returnValues.push(await getText(checkBoxItem.locator('label')));
     }
     return returnValues;
   }
 
   async selectWorkFilterService(service){
     const serviceCheckBox = await this.getServiceCheckBox(service);
-    const isChecked = await serviceCheckBox.isSelected();
+    const isChecked = await serviceCheckBox.isChecked();
     if (!isChecked) {
       await serviceCheckBox.click();
     }
@@ -291,7 +290,7 @@ class MyWorkPage extends TaskList {
 
   async unselectWorkFilterService(service) {
     const serviceCheckBox = await this.getServiceCheckBox(service);
-    const isChecked = await serviceCheckBox.isSelected();
+    const isChecked = await serviceCheckBox.isChecked();
     if (isChecked) {
       await serviceCheckBox.click();
     }
@@ -299,17 +298,17 @@ class MyWorkPage extends TaskList {
 
   async isWorkFilterServiceSelected(service){
     const serviceCheckBox = await this.getServiceCheckBox(service);
-    return serviceCheckBox.isSelected();
+    return serviceCheckBox.isChecked();
   }
 
   async getServiceCheckBox(service) {
     const servicesCheckBoxItemsCount = await this.workFilterServiceCheckboxeItems.count();
     let serviceCheckBox = null;
     for (let i = 0; i < servicesCheckBoxItemsCount; i++) {
-      const checkBoxItem = await this.workFilterServiceCheckboxeItems.get(i);
-      const serviceName = await checkBoxItem.$('label').getText();
+      const checkBoxItem = await this.workFilterServiceCheckboxeItems.nth(i);
+      const serviceName = await getText(checkBoxItem.locator('label'));
       if (serviceName.includes(service)) {
-        serviceCheckBox = checkBoxItem.$('input');
+        serviceCheckBox = checkBoxItem.locator('input');
         break;
       }
     }
@@ -323,8 +322,8 @@ class MyWorkPage extends TaskList {
     const count = await this.workFilterLocationSearchResults.count();
     const locations = [];
     for (let i = 0; i < count; i++){
-      const loc = await await this.workFilterLocationSearchResults.get(i);
-      locations.push(await loc.getText());
+      const loc = await await this.workFilterLocationSearchResults.nth(i);
+      locations.push(await getText(loc));
     }
     return locations;
   }
@@ -338,8 +337,8 @@ class MyWorkPage extends TaskList {
     const count = await this.selectedLocations.count();
     const returnValue = [];
     for (let i = 0; i < count; i++){
-      const e = await this.selectedLocations.get(i);
-      returnValue.push(await e.getText());
+      const e = await this.selectedLocations.nth(i);
+      returnValue.push(await getText(e));
     }
     return returnValue;
   }
@@ -348,8 +347,8 @@ class MyWorkPage extends TaskList {
     const count = await this.selectedLocations.count();
     const actualLocations = [];
     for (let i = 0; i < count; i++){
-      const e = await this.selectedLocations.get(i);
-      const locationName = await e.getText();
+      const e = await this.selectedLocations.nth(i);
+      const locationName = await getText(e);
       actualLocations.push(locationName);
       if (locationName.includes(location)){
         await e.click();
@@ -363,7 +362,7 @@ class MyWorkPage extends TaskList {
     let count = await this.selectedLocations.count();
 
     while (count > 0){
-      const e = await this.selectedLocations.get(0);
+      const e = await this.selectedLocations.nth(0);
       await e.click();
       count = await this.selectedLocations.count();
     }
@@ -388,7 +387,7 @@ class MyWorkPage extends TaskList {
   async isWorkFilterOfTypeDisplayed(filterType){
     const filterContainer = this.getFilterContainer(filterType);
 
-    return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
+    return (await isPresent(filterContainer)) && (await filterContainer.isVisible());
   }
 
   async isWorkFilterOfTypeDisplayed(filterType){
@@ -405,7 +404,7 @@ class MyWorkPage extends TaskList {
       throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
     }
 
-    return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
+    return (await isPresent(filterContainer)) && (await filterContainer.isVisible());
   }
 }
 

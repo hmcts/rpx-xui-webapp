@@ -1,3 +1,4 @@
+const { $, elementByCss, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 CustomError = require('../../../utils/errors/custom-error.js');
 /**
  * WebDriver Button component class
@@ -21,7 +22,7 @@ class Button{
    */
   async isPresent(){
     const button = await this._getElementFinder();
-    return await button.isPresent();
+    return await isPresent(button);
   }
 
   /**
@@ -36,7 +37,7 @@ class Button{
   async isDisplayed(){
     let displayed = null;
     try {
-      displayed = await $(this.css).isDisplayed();
+      displayed = await $(this.css).isVisible();
     } catch (e) {
       if (e.name === 'NoSuchElementError'){
         displayed = false; //element not present so not displayed
@@ -61,11 +62,11 @@ class Button{
    * @returns {Promise<String>}
    */
   async getText(){
-    return await $(this.css).getText();
+    return await getText($(this.css));
   }
 
   async _getElementFinder() {
-    return this.content ? element(by.xpath(this.xpath)) : element(by.css(this.css));
+    return this.content ? elementByXpath(this.xpath) : elementByCss(this.css);
   }
 }
 

@@ -1,14 +1,4 @@
-const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
-const SoftAssert = require('../../../../ngIntegration/util/softAssert');
-
-const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
-const caseRolesAndAccessPage = require('../../pageObjects/workAllocation/caseRolesAccessPage');
-
-const ArrayUtil = require('../../../utils/ArrayUtil');
-
-const workFlowPage = require('../../pageObjects/caseAccessManagement/SARWorkflow');
-const { DataTableArgument } = require('codeceptjs');
 
 const caseDetailsBasicViewPage = require('../../pageObjects/caseAccessManagement/caseDetailsBasicView');
 const challengedAccessRequestPage = require('../../pageObjects/caseAccessManagement/challengedAccessRequestPage');
@@ -37,7 +27,7 @@ When('I click request access button in case basic view page', async () => {
 
 Then('I see challenged access request page', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await challengedAccessRequestPage.container.isDisplayed()).to.be.true;
+    expect(await challengedAccessRequestPage.container.isVisible()).to.be.true;
   });
 });
 
@@ -47,34 +37,34 @@ When('In challenged access request page, I select radio option {string}', async 
 
 Then('In challenged access request page, I see case reference input', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await challengedAccessRequestPage.caseReferenceInput.isDisplayed()).to.be.true;
+    expect(await challengedAccessRequestPage.caseReferenceInput.isVisible()).to.be.true;
   });
 });
 
 Then('In challenged access request page, I do not see case reference input', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await challengedAccessRequestPage.caseReferenceInput.isDisplayed()).to.be.false;
+    expect(await challengedAccessRequestPage.caseReferenceInput.isVisible()).to.be.false;
   });
 });
 
 When('In challenged access request page, I enter case reference {string}', async (caseRef) => {
-  await challengedAccessRequestPage.caseReferenceInput.sendKeys(caseRef);
+  await challengedAccessRequestPage.caseReferenceInput.fill(caseRef);
 });
 
 Then('In challenged access request page, I see other reason input', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await challengedAccessRequestPage.otherReasonTextArea.isDisplayed()).to.be.true;
+    expect(await challengedAccessRequestPage.otherReasonTextArea.isVisible()).to.be.true;
   });
 });
 
 Then('In challenged access request page, I do not see other reason input', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await challengedAccessRequestPage.otherReasonTextArea.isDisplayed()).to.be.false;
+    expect(await challengedAccessRequestPage.otherReasonTextArea.isVisible()).to.be.false;
   });
 });
 
 When('In challenged access request page, I enter other reason {string}', async (reason) => {
-  await challengedAccessRequestPage.otherReasonTextArea.sendKeys(reason);
+  await challengedAccessRequestPage.otherReasonTextArea.fill(reason);
 });
 
 When('In challenged access request page, I click submit', async () => {
@@ -87,18 +77,18 @@ When('In challenged access request page, I click cancel', async () => {
 
 When('I see challenged access request success page', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await challengedAccessRequestPage.challengedAccessSuccessContainer.isDisplayed()).to.be.true;
+    expect(await challengedAccessRequestPage.challengedAccessSuccessContainer.isVisible()).to.be.true;
   });
 });
 
 Then('I see specific access request page', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await specificAccessRequestPage.container.isDisplayed()).to.be.true;
+    expect(await specificAccessRequestPage.container.isVisible()).to.be.true;
   });
 });
 
 When('In specific access request page, I enter reason {string}', async (reason) => {
-  await specificAccessRequestPage.provideReasonInput.sendKeys(reason);
+  await specificAccessRequestPage.provideReasonInput.fill(reason);
 });
 
 When('In specific access request page, I click submit', async () => {
@@ -107,7 +97,7 @@ When('In specific access request page, I click submit', async () => {
 
 Then('I see specific access request success page', async () => {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await specificAccessRequestPage.requestSuccessPageContainer.isDisplayed()).to.be.true;
+    expect(await specificAccessRequestPage.requestSuccessPageContainer.isVisible()).to.be.true;
   });
 });
 

@@ -26,11 +26,11 @@ class DateSearchField{
   }
 
   async getErrorMessageText(){
-    return await this.errorMessage.getText();
+    return await this.errorMessage.textContent();
   }
 
   async isErrorMessageDisplayed(){
-    return await this.errorMessage.isDisplayed();
+    return await this.errorMessage.isVisible();
   }
 
   async getDayValue(){
@@ -46,12 +46,12 @@ class DateSearchField{
   }
 
   async isHeaderSearchDisplayed(){
-    return await headerPage().headerSearch.container.isDisplayed();
+    return await headerPage().headerSearch.container.isVisible();
   }
 
   async inputHeaderSearchFiled(inputVal){
     await headerPage().headerSearch.input.clear();
-    await headerPage().headerSearch.input.sendKeys(inputVal);
+    await headerPage().headerSearch.input.fill(inputVal);
   }
 
   async clickHeaderSearchFind(){
@@ -87,24 +87,24 @@ class InputSearchField{
   async inputText(inputVal){
     await this.input.clear();
     if (inputVal !== ''){
-      await this.input.sendKeys(inputVal);
+      await this.input.fill(inputVal);
     }
   }
 
   async getLabel(){
-    return await this.label.getText();
+    return await this.label.textContent();
   }
 
   async getHintText(){
-    return await this.hintTex.getText();
+    return await this.hintTex.textContent();
   }
 
   async getErrorMessageText(){
-    return await this.errorMessage.getText();
+    return await this.errorMessage.textContent();
   }
 
   async isErrorMessageDisplayed(){
-    return await this.errorMessage.isDisplayed();
+    return await this.errorMessage.isVisible();
   }
 }
 
@@ -157,13 +157,13 @@ class GlobalSearchCasesPage{
   }
 
   async getServicesFieldsOptions() {
-    const options = this.servicesSelect.$$('option');
+    const options = this.servicesSelect.locator('option');
     const optionsCount = await options.count();
     const optionValues = [];
 
     for (let i = 0; i < optionsCount; i++) {
-      const optionElement = await options.get(i);
-      optionValues.push(await optionElement.getText());
+      const optionElement = await options.nth(i);
+      optionValues.push(await optionElement.textContent());
     }
     return optionValues;
   }

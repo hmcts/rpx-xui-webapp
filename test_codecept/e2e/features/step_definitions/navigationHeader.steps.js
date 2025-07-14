@@ -1,9 +1,8 @@
+const { currentUrl, navigate, refresh } = require('../../../helpers/globals');
 function headerPage () { return require('../pageObjects/headerPage')(); }
 const browserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
-const constants = require('../../support/constants');
-const featureToggleUtil = require('../../../ngIntegration/util/featureToggleUtil');
 const config = require('../../config/conf.js');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
@@ -119,7 +118,7 @@ Then('I see primary navigation tabs {string} in main header', async function (na
       }
       softAssert.finally();
     } catch (err){
-      await headerPage().refreshBrowser();
+      await refresh();
       throw new Error(err);
     }
   });
@@ -159,7 +158,7 @@ Then('I do not see primary navigation tabs does not exist excluding {string}', a
       }
       softAssert.finally();
     } catch (err) {
-      await browser.get(config.config.baseUrl);
+      await navigate(config.config.baseUrl);
       throw new Error(err);
     }
   });
@@ -186,7 +185,7 @@ Then('I see primary navigation tabs {string} in right side header column', async
       }
       softAssert.finally();
     } catch (err){
-      await browser.get(config.config.baseUrl);
+      await navigate(config.config.baseUrl);
       throw new Error(err);
     }
   });
@@ -216,7 +215,7 @@ Then('I validate header displayed for user type {string}', async function(userTy
       }
     } catch (err){
       const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
-      await browser.get(baseUrl);
+      await navigate(baseUrl);
       await browserUtil.waitForLD();
       throw new Error(err);
     }
@@ -242,7 +241,7 @@ When('If env is {string}, I enter {string} in  case ref in header 16 digit ref s
 
         await headerPage().headerCaseRefSearch.searchInput(input);
       } catch (err){
-        await browser.refresh();
+        await refresh();
         throw err;
       }
     });
@@ -264,7 +263,7 @@ When('If env is {string}, I find {string} from case ref in header 16 digit ref s
         for (let i = 0; i< 20; i++){
           await browserWaits.waitForSeconds(1);
           caseDetailsDisplayed = await caseDetailsPage.isDisplayed();
-          const currenturl = await browser.getCurrentUrl();
+          const currenturl = await currentUrl();
           isNoResultsPageDisplayed = currenturl.includes('search/noresults');
           if (caseDetailsDisplayed || isNoResultsPageDisplayed){
             break;
@@ -273,7 +272,7 @@ When('If env is {string}, I find {string} from case ref in header 16 digit ref s
 
         expect(caseDetailsDisplayed || isNoResultsPageDisplayed).to.be.true;
       } catch (err) {
-        await browser.refresh();
+        await refresh();
         throw err;
       }
     });

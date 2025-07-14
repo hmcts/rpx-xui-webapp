@@ -61,10 +61,10 @@ fs.mkdirSync(CUKE_OUT, { recursive: true });
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === 'true' : false;
-const head = process.env.HEAD;
+const head = process.env.HEAD !== 'false'
 console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
-console.log(`headless : ${!head}`);
+console.log(`headless : ${head}`);
 
 console.log('process.env.TEST_URL : ', process.env.TEST_URL);
 const pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? 'preview' : 'master';

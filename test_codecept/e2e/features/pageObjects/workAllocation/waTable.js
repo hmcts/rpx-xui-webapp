@@ -1,16 +1,10 @@
-const c = require('config');
-const { constants } = require('karma');
-
-const { $, $$, elementByXpath } = require('../../../../helpers/globals');
-
-const browserUtil = require('../../../../ngIntegration/util/browserUtil');
-const BrowserWaits = require('../../../support/customWaits');
-const ArrayUtil = require('../../../utils/ArrayUtil');
-const Spinner = require('../../pageObjects/common/spinner');
-
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
+const { $, $$, elementByXpath, elementsByXpath, isPresent } = require('../../../../helpers/globals');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const { LOG_LEVELS } = require('../../../support/constants');
+const BrowserWaits = require('../../../support/customWaits');
+const Spinner = require('../../pageObjects/common/spinner');
 
 class WAListTable {
   constructor(baseCssLocator) {
@@ -82,14 +76,14 @@ class WAListTable {
     await BrowserWaits.waitForElement(this.table);
     await BrowserWaits.waitForConditionAsync(async () => {
       const tableRowsCount = await this.tableRows.count();
-      const isTableFooterDispayed = await this.tableFooter.isDisplayed();
+      const isTableFooterDispayed = await this.tableFooter.isVisible();
       // cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
       return tableRowsCount > 0 || isTableFooterDispayed;
     }, BrowserWaits.waitTime);
   }
 
   async isTableDisplayed() {
-    return await this.table.isPresent();
+    return await isPresent(this.table);
   }
 
   async getColumnCount() {
@@ -147,7 +141,7 @@ class WAListTable {
 
   async clickColumnHeader(headerName) {
     const headerElement = await this.getHeaderElementWithName(headerName);
-    expect(await headerElement.isPresent(), `Column with header name ${headerName} not present`).to.be.true;
+    expect(await isPresent(headerElement), `Column with header name ${headerName} not present`).to.be.true;
     await browserUtil.scrollToElement(headerElement);
     await headerElement.click();
   }
@@ -158,7 +152,7 @@ class WAListTable {
   }
 
   async isTableFooterDisplayed() {
-    return await this.tableFooter.isDisplayed();
+    return await this.tableFooter.isVisible();
   }
 
   async getTableFooterMessage() {
@@ -166,14 +160,14 @@ class WAListTable {
     if (!tableFooterDisplayStatus) {
       throw new Error('Table footer not displayed');
     }
-    return await this.tableFooter.getText();
+    return await this.tableFooter.textContent();
   }
 
   async getTableRowAt(position) {
     await BrowserWaits.waitForConditionAsync(async () => {
       return await this.tableRows.count() > 0;
     });
-    return await this.tableRows.get(position - 1);
+    return await this.tableRows.nth(position - 1);
   }
 
   async getColumnValueAt(columnName, atPos) {
@@ -182,27 +176,27 @@ class WAListTable {
     if (columnPos === -1){
       throw new Error(`${columnName} is not displayed in table`);
     }
-    const columnValue = await waRow.$(`td:nth-of-type(${columnPos})`).getText();
+    const columnValue = await waRow.locator(`td:nth-of-type(${columnPos})`).textContent();
     return columnValue;
   }
 
   async isColValALink(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    const isLink = await waRow.$(`td:nth-of-type(${columnPos}) exui-url-field`).isPresent();
+    const isLink = await isPresent(waRow.locator(`td:nth-of-type(${columnPos}) exui-url-field`));
     return isLink;
   }
 
   async clickColLink(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    await waRow.$(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
+    await waRow.locator(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
   }
 
   async getColumnValueElementAt(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    return waRow.$(`td:nth-of-type(${columnPos})`);
+    return waRow.locator(`td:nth-of-type(${columnPos})`);
   }
 
   async getRowWithColumnValue(columnName, columnValue) {
@@ -219,14 +213,14 @@ class WAListTable {
   async isManageLinkPresent(position) {
     return await browserUtil.stepWithRetry(async () => {
       const row = await this.getTableRowAt(position);
-      return await row.$('button[id^="manage_"]').isPresent();
+      return await isPresent(row.locator('button[id^="manage_"]'));
     });
   }
 
   async clickManageLinkForRowAt(position) {
     await BrowserWaits.retryWithActionCallback(async () => {
       const row = await this.getTableRowAt(position);
-      const rowManageLink = row.$('button[id^="manage_"]');
+      const rowManageLink = row.locator('button[id^="manage_"]');
       await browser.scrollToElement(rowManageLink);
       await rowManageLink.click();
       if (!(await this.isManageLinkOpenAtPos(position))) {
@@ -236,11 +230,10 @@ class WAListTable {
   }
 
   async isManageLinkOpenAtPos(position) {
-    const waRows = element.all(by.xpath('//tr[(contains(@class,\'actions-row\'))]'));
-    const row = await waRows.get(position - 1);
+    const waRows = elementsByXpath('//tr[(contains(@class,\'actions-row\'))]');
+    const row = await waRows.nth(position - 1);
     try {
-      return await row.isDisplayed();
-      return true;
+      return await row.isVisible();
     } catch (err) {
       return false;
     }
@@ -249,27 +242,27 @@ class WAListTable {
   async isRowActionPresent(rowAction) {
     await BrowserWaits.waitForElement(this.displayedActionRow);
     const actionLink = this.displayedActionRow.elementByXpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`);
-    return await actionLink.isPresent();
+    return await isPresent(actionLink);
   }
 
   async clickRowAction(action) {
     expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
-    await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug);
+    await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.textContent()}`, LOG_LEVELS.Debug);
     const actionLink = this.displayedActionRow.elementByXpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`);
     await browser.scrollToElement(actionLink);
     await actionLink.click();
   }
 
   async isRowActionRowForRowDisplayed(position) {
-    return await this.displayedActionRow.isPresent();
+    return await isPresent(this.displayedActionRow);
   }
 
   async getCountOfDisplayedActionsRows() {
     const actionRowsCount = await this.actionsRows.count();
     let displayedActionRows = 0;
     for (let rowCtr = 0; rowCtr < actionRowsCount; rowCtr++) {
-      const actionRow = await this.actionsRows.get(rowCtr);
-      if (await actionRow.isDisplayed()) {
+      const actionRow = await this.actionsRows.nth(rowCtr);
+      if (await actionRow.isVisible()) {
         displayedActionRows++;
       }
     }
@@ -277,7 +270,7 @@ class WAListTable {
   }
 
   async getTableRow(index) {
-    return await this.tableRows.get(index);
+    return await this.tableRows.nth(index);
   }
 
   async isRowActionBarDisplayed() {
@@ -291,20 +284,20 @@ class WAListTable {
   }
 
   async isRowActionBarDisplayedForAtPos(row) {
-    const waRow = await this.actionsRows.get(row - 1);
+    const waRow = await this.actionsRows.nth(row - 1);
     await BrowserWaits.waitForSeconds(1);
-    return await waRow.isDisplayed();
+    return await waRow.isVisible();
   }
 
   async getPaginationResultText() {
-    return await this.paginationResultText.getText();
+    return await this.paginationResultText.textContent();
   }
 
   async isPaginationPageNumEnabled(pageNum) {
     const pageNumWithoutLink = elementByXpath(`//${ this.baseCssLocator }//pagination-template//li//span[contains(text(),'${pageNum}')]`);
     const pageNumWithLink = elementByXpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
 
-    return (await pageNumWithLink.isPresent()) && (await pageNumWithoutLink.isPresent());
+    return (await isPresent(pageNumWithLink)) && (await isPresent(pageNumWithoutLink));
   }
 
   async clickPaginationPageNum(pageNum) {
@@ -316,7 +309,7 @@ class WAListTable {
   }
 
   async getRowActions() {
-    return await this.selectedActioRow.getText();
+    return await this.selectedActioRow.textContent();
   }
 
   async clickPaginationLink(linkText) {
@@ -336,11 +329,11 @@ class WAListTable {
   }
 
   async isPaginationControlDisplayed() {
-    const isPresent = await this.paginationContainer.isPresent();
+    const isPresent = await isPresent(this.paginationContainer);
     let isDisplayed = false;
 
     if (isPresent){
-      isDisplayed = await this.paginationContainer.isDisplayed();
+      isDisplayed = await this.paginationContainer.isVisible();
     }
     return isPresent && isDisplayed;
   }
@@ -356,7 +349,7 @@ class WAListTable {
   }
 
   async isResetSortButtonDisplayed(){
-    return await this.resetSortButton.isPresent();
+    return await isPresent(this.resetSortButton);
   }
 
   async clickResetSortButton(){
@@ -365,11 +358,8 @@ class WAListTable {
 
   async isHeaderSortable(headerName){
     const headerElementClickable = this.getHeaderElementWithName(headerName);
-    const headerElementNonClickable = this.getNonClickableHeaderElementWithName(headerName);
-    const isClickableElementPresent = await headerElementClickable.isPresent();
-    const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
 
-    const isDisplayed = await headerElementClickable.isDisplayed();
+    const isDisplayed = await headerElementClickable.isVisible();
 
     return isDisplayed;
   }
@@ -378,7 +368,7 @@ class WAListTable {
     const links = await this.getRowActionLinks();
     const linkTexts = [];
     for (const link of links){
-      linkTexts.push(await link.getText());
+      linkTexts.push(await link.textContent());
     }
     return linkTexts;
   }
@@ -387,7 +377,7 @@ class WAListTable {
     const linksCount = await this.selectedActions.count();
     const links = [];
     for (let i = 0; i < linksCount; i++){
-      const e = await await this.selectedActions.get(i);
+      const e = await await this.selectedActions.nth(i);
       links.push(e);
     }
     return links;

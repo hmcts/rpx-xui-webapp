@@ -1,6 +1,6 @@
-const { $ } = require('../../../../helpers/globals');
-
+const { $, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
+
 class Spinner {
 
   get loadingSpinner() {
@@ -8,12 +8,12 @@ class Spinner {
   }
 
   async isSpinnerDisplayed() {
-    return await this.loadingSpinner.isPresent();
+    return await isPresent(this.loadingSpinner);
   }
 
   async waitForSpinnerToDissappear() {
     await BrowserWaits.waitForCondition(async () => {
-      return !(await this.loadingSpinner.isPresent());
+      return !(await isPresent(this.loadingSpinner));
     });
   }
 }

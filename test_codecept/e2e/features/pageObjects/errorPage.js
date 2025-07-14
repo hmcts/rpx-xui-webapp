@@ -1,7 +1,7 @@
+const reportLogger = require('../../../codeceptCommon/reportLogger');
+const { elementByXpath } = require('../../../helpers/globals');
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
-const { elementByXpath } = require('../../../helpers/globals');
-const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 class ErrorPage {
   get title() {

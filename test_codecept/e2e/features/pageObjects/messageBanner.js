@@ -1,8 +1,6 @@
-const { $, $$ } = require('../../../helpers/globals');
-
-const { LOG_LEVELS } = require('../../support/constants');
-const BrowserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../../codeceptCommon/reportLogger');
+const { $, $$ } = require('../../../helpers/globals');
+const { LOG_LEVELS } = require('../../support/constants');
 const ArrayUtil = require('../../utils/ArrayUtil');
 
 class MessageBanner{
@@ -38,12 +36,12 @@ class MessageBanner{
 
   async getBannerMessagesDisplayed() {
     expect(await this.isBannerMessageDisplayed(), 'Message banner not displayed').to.be.true;
-    await this.bannerMessageContainer.isDisplayed();
+    await this.bannerMessageContainer.isVisible();
 
     const messagescount = await this.infoMessages.count();
     const messages = [];
     for (let i = 0; i < messagescount; i++) {
-      const message = await this.infoMessages.get(i).getText();
+      const message = await this.infoMessages.nth(i).textContent();
 
       const submessagestrings = message.split('\n');
       messages.push(...submessagestrings);

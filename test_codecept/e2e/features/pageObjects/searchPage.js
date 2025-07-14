@@ -1,10 +1,10 @@
-const { $, isPresent } = require('../../../helpers/globals');
-
-Dropdown = require('./webdriver-components/dropdown.js');
-Button = require('./webdriver-components/button.js');
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
+const { $, currentUrl, isPresent } = require('../../../helpers/globals');
 const BrowserWaits = require('../../support/customWaits');
 const RuntimeTestData = require('../../support/runtimeTestData');
-const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
+Button = require('./webdriver-components/button.js');
+Dropdown = require('./webdriver-components/dropdown.js');
+
 class SearchPage {
   constructor() {}
 
@@ -130,33 +130,11 @@ class SearchPage {
 
     const options = await this.jurisdiction.getSelectOptions();
     const option = options.find((opt) => opt.includes(jurisdiction));
-    await this.jurisdiction.select(option);
-
-    // const options = jurisdiction.split('|');
-    // // let locatorString = "//option[";
-    // let i = 0;
-    // for (const option of options) {
-    //   // if (i === 0) {
-    //   //   locatorString += `contains(text(), '${option.trim()}')`;
-    //   // } else {
-    //   //   locatorString += `or contains(text(), '${option.trim()}')`;
-    //   // }
-    //   await this.jurisdiction.select(option.trim());
-    //   i++;
-    // }
-
-    // const elementLocator = by.xpath(locatorString + ']');
-
-    // var optionElement = this.jurisdiction.element(elementLocator);
-    // await BrowserWaits.waitForElement(optionElement);
-
-    // await optionElement.click();
+    await this.jurisdiction.selectOption({ label: option });
 
     CucumberReportLogger.LogTestDataInput('Search  page Jurisdiction : ');
 
     RuntimeTestData.searchCasesInputs.jurisdiction = jurisdiction;
-    // const caseTypeElements = this.caseType.$$('option');
-    // const caseTypesSize = await caseTypeElements.count();
     RuntimeTestData.searchCasesInputs.casetypes = await this.caseType.getSelectOptions();
   }
 
@@ -193,7 +171,7 @@ class SearchPage {
   async openFirstCaseInResults(){
     await isPresent(this.searchResultsTopPagination);
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
-    const thisPageUrl = await browser.getCurrentUrl();
+    const thisPageUrl = await currentUrl();
 
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();
@@ -208,7 +186,7 @@ class SearchPage {
   async openSecondCaseInResults(){
     await isPresent(this.searchResultsTopPagination);
     await BrowserWaits.waitForElement(this.secondResultCaseLink);
-    const thisPageUrl = await browser.getCurrentUrl();
+    const thisPageUrl = await currentUrl();
 
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();
@@ -219,7 +197,7 @@ class SearchPage {
   }
 
   async getPageHeader(){
-    return await $(this.header).getText();
+    return await $(this.header).textContent();
   }
 
   async amOnPage(){

@@ -21,7 +21,11 @@
     "**/*.spec.ts",
     "local.ts",
     "routes.ts",
-    "server.ts"
+    "server.ts",
+    "**/*.mock.ts",
+    "**/*.mock.data.ts",
+    "**/mocks/**",
+    "**/mock*/**"
   ],
   "reporter": [
     "lcov",

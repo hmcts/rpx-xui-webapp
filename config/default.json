@@ -176,8 +176,7 @@
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
     "accessManagementEnabled": true,
-    "compressionEnabled": false,
-    "queryIdamServiceOverride": true
+    "compressionEnabled": false
   },
   "helmet": {
     "referrerPolicy": {

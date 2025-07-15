@@ -1,15 +1,10 @@
-
-const CucumberReportLogger = require('../../../../codeceptCommon/reportLogger');
-
 const moment = require('moment-timezone');
-
+const CucumberReportLogger = require('../../../../codeceptCommon/reportLogger');
+const { currentUrl, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
-const browserUtil = require('../../../../ngIntegration/util/browserUtil');
+const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
 const workAccessPage = require('../../pageObjects/workAccessBookingUI/workAccessPage');
 const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
-
-const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/createNewBookingWorkflow');
-const customWaits = require('../../../support/customWaits');
 
 function getWorkAccessRadioButton(radioButtonName){
   const normalisedName = radioButtonName.toLowerCase();
@@ -53,30 +48,30 @@ Then('I see work access page displayed', async function(){
 Then('I see work access radio button {string} displayed', async function(radioButtonName){
   await BrowserWaits.retryWithActionCallback(async () => {
     const radioButton = getWorkAccessRadioButton(radioButtonName);
-    expect(await radioButton.isDisplayed()).to.be.true;
+    expect(await radioButton.isVisible()).to.be.true;
   });
 });
 
 Then('I see work access radio button {string} not displayed', async function (radioButtonName) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const radioButton = getWorkAccessRadioButton(radioButtonName);
-    expect(await radioButton.isDisplayed()).to.be.false;
+    expect(await radioButton.isVisible()).to.be.false;
   });
 });
 
 When('I select work access radio button {string}', async function (radioButtonName) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const radioButton = getWorkAccessRadioButton(radioButtonName);
-    expect((await radioButton.isPresent() && await radioButton.isDisplayed()), `Radio option ${radioButtonName} is not displayed`).to.be.true;
+    expect((await isPresent(radioButton) && await radioButton.isVisible()), `Radio option ${radioButtonName} is not displayed`).to.be.true;
     await radioButton.click();
   });
 });
 
 Then('I see work access continue button displayed', async function(){
   await BrowserWaits.retryWithActionCallback(async () => {
-    const ispresent = await workAccessPage.continueButton.isPresent();
+    const ispresent = await isPresent(workAccessPage.continueButton);
     if (ispresent) {
-      expect(await workAccessPage.continueButton.isDisplayed()).to.be.true;
+      expect(await workAccessPage.continueButton.isVisible()).to.be.true;
     } else {
       throw new Error('Assertion failed. expected false to be true');
     }
@@ -85,9 +80,9 @@ Then('I see work access continue button displayed', async function(){
 
 Then('I see work access continue button not displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
-    const ispresent = await workAccessPage.continueButton.isPresent();
+    const ispresent = await isPresent(workAccessPage.continueButton);
     if (ispresent) {
-      expect(await workAccessPage.continueButton.isDisplayed()).to.be.false;
+      expect(await workAccessPage.continueButton.isVisible()).to.be.false;
     }
   });
 });
@@ -100,14 +95,14 @@ When('I click work access continue button', async function(){
 
 Then('I see work access existing bookings list container', async function(){
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await workAccessPage.existingBookingsList.isDisplayed()).to.be.true;
+    expect(await workAccessPage.existingBookingsList.isVisible()).to.be.true;
   });
 });
 
 Then('I see work access existing bookings displayed with details', async function(datatable){
   CucumberReportLogger.reportDatatable(datatable);
   const bookingsHashes = datatable.parse().hashes();
-  await customWaits.retryWithActionCallback(async () => {
+  await BrowserWaits.retryWithActionCallback(async () => {
     for (const booking of bookingsHashes) {
       workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate);
       const fromDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate);
@@ -164,7 +159,7 @@ When('I click continue to submit new booking work flow', async function () {
   await BrowserWaits.waitForElement(createNewBookingWorkflow.confirmBookingButton);
   await createNewBookingWorkflow.confirmBookingButton.click();
   await BrowserWaits.retryWithActionCallback(async () => {
-    await BrowserWaits.waitForPageNavigation(await browser.getCurrentUrl());
+    await BrowserWaits.waitForPageNavigation(await currentUrl());
   });
 });
 

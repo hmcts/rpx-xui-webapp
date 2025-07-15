@@ -151,20 +151,24 @@ class AllWork extends TaskList {
     return this.getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
   }
 
-  async amOnPage() {
-    try {
-      await BrowserWaits.waitForSpinnerToDissappear();
-      await this.pageHeader.wait();
-      await BrowserWaits.waitForConditionAsync(async () => {
-        const pageHeaderTitle = await getText(this.pageHeader);
-        return pageHeaderTitle.includes('All work');
-      });
-      return true;
-    } catch (err) {
-      cucumberReporter.AddMessage('All work page not displayed ' + err.stack, LOG_LEVELS.Error);
-      return false;
-    }
+  async amOnPage () {
+  try {
+    await BrowserWaits.waitForSpinnerToDissappear();
+
+    await this.pageHeader.waitFor({ state: 'visible', timeout: 20_000 });
+
+    await BrowserWaits.waitForConditionAsync(
+      async () => (await getText(this.pageHeader)).includes('All work'),
+      20_000
+    );
+
+    return true;
+  } catch (err) {
+    cucumberReporter.AddMessage('All work page not displayed ' + err.stack,
+                                LOG_LEVELS.Error);
+    return false;
   }
+}
 
   // Task container methods
   async isTasksContainerDisplayed() {

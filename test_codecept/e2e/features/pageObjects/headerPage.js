@@ -12,7 +12,6 @@ const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require('../../features/pageObjects/workAllocation/allWorkPage');
 const globalSearchPage = require('./globalSearchCases');
 const staffSearchPage = require('./staffUI/staffUISearchPage');
-const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
@@ -127,6 +126,10 @@ class HeaderPage {
   taskManager() {
     return elementByXpath("//li/a[contains(text(),'Task manager')]");
   }
+
+  async getMenuItemsCount() {
+    return await this.getHeaderMenuItems().count();
+  };
 
   async clickCaseList() {
     await BrowserWaits.waitForSpinnerToDissappear();

@@ -10,7 +10,7 @@ class ViewOrEditHearingPage {
 
   get warningMessage() { return $('exui-warning-and-error-section .govuk-warning-text__text'); }
   get errorSummaryMessage() { return $('.govuk-error-summary__body'); }
-  get errorMessage() { return $('.govuk-error-message'); }
+  get errorMessage() { return $('.govuk-error-message').first(); }
 
   async getHeader() {
     return await getText(this.headerElement);

@@ -37,7 +37,7 @@ class EXUIErrorMessageComponent{
     const formGroupErrorFieldElement = this.getFormGroupErrorFieldWithText(fieldText);
     expect(await isPresent(formGroupErrorFieldElement)).to.be.true;
 
-    const fieldLevelErrorMessageElement = formGroupErrorFieldElement.locator('.govuk-error-message');
+    const fieldLevelErrorMessageElement = formGroupErrorFieldElement.locator('.govuk-error-message').first();
     return await getText(fieldLevelErrorMessageElement);
   }
 

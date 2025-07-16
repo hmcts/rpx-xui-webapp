@@ -23,6 +23,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -178,8 +179,9 @@ describe('QueryManagementContainerComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
   const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['setQualifyingQuestionSelection', 'clearQualifyingQuestionSelection']);
-  const mockCaseNotifier = new CaseNotifier(casesService);
+  const mockCaseNotifier = jasmine.createSpyObj('CaseNotifier', ['caseView', 'fetchAndRefresh']);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+  mockCaseNotifier.fetchAndRefresh.and.returnValue(of(CASE_VIEW));
   casesService.getEventTrigger.and.returnValue(of(eventMockData));
   casesService.createEvent.and.returnValue(of({ status: 200 }));
 
@@ -941,7 +943,8 @@ describe('QueryManagementContainerComponent', () => {
           caseTypeId: '123',
           caseJurisdiction: 'TEST',
           name: 'Raise a new query',
-          url: 'https://example.com/123/details'
+          url: 'https://example.com/123/details',
+          selectionType: 'raiseNewQuery'
         });
     });
 
@@ -954,11 +957,36 @@ describe('QueryManagementContainerComponent', () => {
 
       component.logSelection(qualifyingQuestion);
 
-      expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
-        '/query-management/query/123',
-        'Qualifying Question: Test question',
-        { caseTypeId: '123', jurisdictionId: 'TEST' }
-      );
+      expect(googleTagManagerService.event).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection', {
+          caseTypeId: '123',
+          caseJurisdiction: 'TEST',
+          name: 'Test question',
+          url: '/query-management/query/123',
+          selectionType: 'qualifyingQuestion'
+        });
+    });
+
+    it('should call setQualifyingQuestionSelection and logSelection if markdown is present and selectedQualifyingQuestion is set', () => {
+      const qualifyingQuestion = {
+        name: 'Raise a new query',
+        markdown: '### Markdown content',
+        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+      };
+
+      // Setup component state
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      component.selectedQualifyingQuestion = qualifyingQuestion;
+      component.qualifyingQuestionsControl = new FormControl(qualifyingQuestion);
+
+      spyOn(component as any, 'logSelection');
+      spyOn(component as any, 'getQueryCreateContext').and.returnValue(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
+
+      component.submitForm();
+
+      expect(qualifyingQuestionService.setQualifyingQuestionSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect((component as any).logSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect(component.showContinueButton).toBeTruthy();
     });
   });
 

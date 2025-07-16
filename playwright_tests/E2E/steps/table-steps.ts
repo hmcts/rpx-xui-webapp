@@ -29,6 +29,13 @@ export async function getCaseReferenceFromFirstRow(page) {
   return caseID;
 }
 
+export async function getCaseReferenceFromFirstRowForEmployment(page) {
+  const cellXPath = '//*[@id="search-result"]/ccd-search-result/table/tbody/tr[2]/td[3]';
+  const cell = page.locator(cellXPath);
+  const caseID = await cell.textContent();
+  return caseID;
+}
+
 export function dealWithShortenedCaseRefLabel(caseId): string{
   //label has last 4 digits of case ref cut off, do the same so navigation can occur
   return caseId.trim(4);

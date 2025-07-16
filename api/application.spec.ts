@@ -336,6 +336,119 @@ describe('Application', () => {
         expect(app).to.exist;
         expect(showFeatureStub).to.have.been.calledWith('helmetEnabled');
       });
+
+      describe('security headers and routes when helmet enabled', () => {
+        let app: any;
+        let mockReq: any;
+        let mockRes: any;
+        let nextSpy: any;
+
+        beforeEach(async () => {
+          setupFeatureStubs(true, false);
+          app = await createApp();
+          
+          mockReq = {};
+          mockRes = {
+            header: sinon.spy(),
+            setHeader: sinon.spy(),
+            type: sinon.spy(),
+            send: sinon.spy()
+          };
+          nextSpy = sinon.spy();
+        });
+
+        it('should set CORS and security headers via custom middleware', async () => {
+          const middlewareStack = app._router.stack;
+          const customHeadersMiddleware = middlewareStack.find((layer: any) => 
+            layer.handle && 
+            layer.handle.toString().includes('Access-Control-Allow-Headers')
+          );
+
+          expect(customHeadersMiddleware).to.exist;
+
+          customHeadersMiddleware.handle(mockReq, mockRes, nextSpy);
+
+          expect(mockRes.header).to.have.been.calledWith(
+            'Access-Control-Allow-Headers', 
+            'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+          );
+          expect(mockRes.header).to.have.been.calledWith('Access-Control-Allow-Credentials', 'true');
+          expect(mockRes.header).to.have.been.calledWith(
+            'Access-Control-Allow-Methods', 
+            'GET, POST, PUT, DELETE, OPTIONS'
+          );
+
+          expect(mockRes.setHeader).to.have.been.calledWith('X-Robots-Tag', 'noindex');
+          expect(mockRes.setHeader).to.have.been.calledWith(
+            'Cache-Control', 
+            'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate'
+          );
+
+          expect(nextSpy).to.have.been.called;
+        });
+
+        it('should serve robots.txt with correct content and headers', async () => {
+          const robotsReq = { url: '/robots.txt', method: 'GET' };
+          
+          const middlewareStack = app._router.stack;
+          const robotsRoute = middlewareStack.find((layer: any) => 
+            layer.route && layer.route.path === '/robots.txt'
+          );
+
+          expect(robotsRoute).to.exist;
+
+          robotsRoute.route.stack[0].handle(robotsReq, mockRes);
+
+          expect(mockRes.type).to.have.been.calledWith('text/plain');
+          expect(mockRes.send).to.have.been.calledWith('User-agent: *\nDisallow: /');
+        });
+
+        it('should serve sitemap.xml with correct content and headers', async () => {
+          const sitemapReq = { url: '/sitemap.xml', method: 'GET' };
+          
+          const middlewareStack = app._router.stack;
+          const sitemapRoute = middlewareStack.find((layer: any) => 
+            layer.route && layer.route.path === '/sitemap.xml'
+          );
+
+          expect(sitemapRoute).to.exist;
+
+          sitemapRoute.route.stack[0].handle(sitemapReq, mockRes);
+
+          expect(mockRes.type).to.have.been.calledWith('text/xml');
+          expect(mockRes.send).to.have.been.calledWith('User-agent: *\nDisallow: /');
+        });
+
+        it('should not have robots.txt and sitemap.xml routes when helmet is disabled', async () => {
+          setupFeatureStubs(false, false);
+          const appWithoutHelmet = await createApp();
+
+          const middlewareStack = appWithoutHelmet._router.stack;
+          
+          const robotsRoute = middlewareStack.find((layer: any) => 
+            layer.route && layer.route.path === '/robots.txt'
+          );
+          const sitemapRoute = middlewareStack.find((layer: any) => 
+            layer.route && layer.route.path === '/sitemap.xml'
+          );
+
+          expect(robotsRoute).to.not.exist;
+          expect(sitemapRoute).to.not.exist;
+        });
+
+        it('should not have security headers middleware when helmet is disabled', async () => {
+          setupFeatureStubs(false, false);
+          const appWithoutHelmet = await createApp();
+
+          const middlewareStack = appWithoutHelmet._router.stack;
+          const customHeadersMiddleware = middlewareStack.find((layer: any) => 
+            layer.handle && 
+            layer.handle.toString().includes('Access-Control-Allow-Headers')
+          );
+
+          expect(customHeadersMiddleware).to.not.exist;
+        });
+      });
     });
   });
 });

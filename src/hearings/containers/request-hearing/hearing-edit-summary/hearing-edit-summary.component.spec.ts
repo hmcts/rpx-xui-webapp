@@ -21,6 +21,9 @@ import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import * as fromHearingStore from '../../../store';
 import { HearingEditSummaryComponent } from './hearing-edit-summary.component';
+import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
+import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
+import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -91,7 +94,8 @@ describe('HearingEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingEditSummaryComponent
+        HearingEditSummaryComponent,
+        CaseReferencePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -187,7 +191,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -269,7 +273,7 @@ describe('HearingEditSummaryComponent', () => {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
         partyDetailsChangesRequired: true,
-        hearingWindowChangesRequired: false,
+        hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: true,
         partyDetailsAnyChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -706,7 +710,8 @@ describe('HearingEditSummaryComponent', () => {
           vulnerableFlag: true,
           vulnerabilityDetails: 'New vulnerability details',
           hearingChannelEmail: ['New email'],
-          hearingChannelPhone: ['New Phone']
+          hearingChannelPhone: ['New Phone'],
+          otherReasonableAdjustmentDetails: 'other reasonable adjustments'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
@@ -747,7 +752,8 @@ describe('HearingEditSummaryComponent', () => {
           vulnerableFlag: true,
           vulnerabilityDetails: 'New vulnerability details',
           hearingChannelEmail: ['New email'],
-          hearingChannelPhone: ['New Phone']
+          hearingChannelPhone: ['New Phone'],
+          otherReasonableAdjustmentDetails: 'other reasonable adjustments'
         },
         unavailabilityDOW: null,
         unavailabilityRanges: [
@@ -1486,6 +1492,22 @@ describe('HearingEditSummaryComponent', () => {
     };
 
     const isDifference = component.pageVisitReasonableAdjustmentChangeExists();
+
+    expect(isDifference).toEqual(true);
+  });
+
+  it('should return true as as priority in SHV has been updated', () => {
+    setAfterPageVisitValues();
+    hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = false;
+    const shvModel: ServiceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
+    const hmcModel: HearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
+    shvModel.hearingPriorityType = 'urgent';
+    hmcModel.hearingDetails.hearingPriorityType = 'standard';
+
+    component.serviceHearingValuesModel = shvModel;
+    component.hearingRequestMainModel = hmcModel;
+    component.ngOnInit();
+    const isDifference = hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesRequired;
 
     expect(isDifference).toEqual(true);
   });

@@ -11,6 +11,8 @@ import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { PartyType } from 'api/hearings/models/hearings.enum';
 
+type DateOption = 'noDate' | 'specificDate' | 'dateRange';
+
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
@@ -213,8 +215,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
-    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString) : null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString) : null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }
@@ -282,5 +284,29 @@ export class HearingsUtils {
     );
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
+  }
+
+  static hasSpecificDateChanged(
+    hearingWindowMainModel: HearingWindowModel | undefined,
+    hearingWindowCompareMainModel: HearingWindowModel | undefined
+  ): boolean {
+    const mainDateOption: DateOption = this.determineDateOption(hearingWindowMainModel);
+    const compareDateOption: DateOption = this.determineDateOption(hearingWindowCompareMainModel);
+
+    if (mainDateOption !== compareDateOption) {
+      return true;
+    }
+    return false;
+  }
+
+  private static determineDateOption(hearingWindow: HearingWindowModel | undefined): DateOption {
+    if (!hearingWindow || Object.keys(hearingWindow).length === 0) {
+      return 'noDate';
+    } else if (hearingWindow.firstDateTimeMustBe) {
+      return 'specificDate';
+    } else if (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd) {
+      return 'dateRange';
+    }
+    return 'noDate';
   }
 }

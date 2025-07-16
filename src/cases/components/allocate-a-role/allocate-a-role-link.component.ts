@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { CaseRole, RoleCategory } from '../../../role-access/models';
 import { Params } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { CaseRole } from '../../../role-access/models';
 
 @Component({
   selector: 'exui-allocate-a-role-link',

@@ -175,7 +175,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.participantAttendanceChangesRequired)) {
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails
         : this.hearingRequestToCompareMainModel.partyDetails;

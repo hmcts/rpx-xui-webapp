@@ -74,27 +74,21 @@ describe('ServiceName', () => {
 
   describe('methodName', () => {
     it('should handle successful response', async () => {
-      // Arrange
       const mockData = { /* test data */ };
       sandbox.stub(http, 'get').resolves({ data: mockData });
       
-      // Act
       await serviceMethod(req, res, next);
       
-      // Assert
       expect(res.send).to.have.been.calledWith(mockData);
       expect(res.status).to.have.been.calledWith(200);
     });
 
     it('should handle errors', async () => {
-      // Arrange
       const error = new Error('Test error');
       sandbox.stub(http, 'get').rejects(error);
       
-      // Act
       await serviceMethod(req, res, next);
       
-      // Assert
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -102,7 +96,7 @@ describe('ServiceName', () => {
 ```
 
 ## Target File
-I'm currently working on: api/noc/nocService.ts
+I'm currently working on: api/organisations/index.ts
 
 ## Additional Context
 - We use Mocha as test runner, Chai for assertions, and Sinon for mocking

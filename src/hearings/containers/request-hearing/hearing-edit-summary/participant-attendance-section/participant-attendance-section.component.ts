@@ -40,8 +40,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
-    this.partyDetailsChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesRequired;
-    this.partyDetailsChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
+    this.partyDetailsChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.participantAttendanceChangesRequired;
+    this.partyDetailsChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.participantAttendanceChangesConfirmed;
     this.partyChannelsRefDataCombined = [...this.partyChannelsRefData, ...this.partySubChannelsRefData];
     this.isPaperHearing = this.getIsPaperHearing();
     this.participantChannels = this.getParticipantChannels();
@@ -179,15 +179,21 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
     this.participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);
 
+    const changesMadeToParticipantAttendance = this.isPaperHearingChanged ||
+      this.numberOfPhysicalAttendeesChanged ||
+      this.methodOfAttendanceChanged ||
+      this.participantChannelsChanged;
+
     if (this.partyDetailsChangesRequired) {
-      this.pageTitleDisplayLabel = !this.partyDetailsChangesConfirmed
-        ? AmendmentLabelStatus.ACTION_NEEDED
-        : AmendmentLabelStatus.AMENDED;
+      if (!this.partyDetailsChangesConfirmed) {
+        this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
+      } else {
+        this.pageTitleDisplayLabel = changesMadeToParticipantAttendance
+          ? AmendmentLabelStatus.AMENDED
+          : AmendmentLabelStatus.NONE;
+      }
     } else {
-      if (this.isPaperHearingChanged ||
-        this.numberOfPhysicalAttendeesChanged ||
-        this.methodOfAttendanceChanged ||
-        this.participantChannelsChanged) {
+      if (changesMadeToParticipantAttendance) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       }
     }

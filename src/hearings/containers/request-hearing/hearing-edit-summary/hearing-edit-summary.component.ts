@@ -514,19 +514,18 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitChangesNotConfirmed(hasHearingRequestObjectChanged: boolean): boolean {
-    const reasonableAdjustmentChangeExists = this.pageVisitReasonableAdjustmentChangeExists();
-    const partiesChangeExists = this.pageParticipantAttendanceChangeExists();
-    const hearingWindowChangeExists = this.pageVisitHearingWindowChangeExists();
-    const nonReasonableAdjustmentChangeExists = this.pageVisitNonReasonableAdjustmentChangeExists();
+    const reasonableAdjustmentChanged = this.pageVisitReasonableAdjustmentChangeExists();
+    const nonReasonableAdjustmentChanged = this.pageVisitNonReasonableAdjustmentChangeExists();
+    const partiesChanged = this.pageParticipantAttendanceChangeExists();
+    const hearingWindowChanged = this.pageVisitHearingWindowChangeExists();
 
-    if (!(reasonableAdjustmentChangeExists || partiesChangeExists || hearingWindowChangeExists) && nonReasonableAdjustmentChangeExists && hasHearingRequestObjectChanged) {
+    const anyChange = reasonableAdjustmentChanged || nonReasonableAdjustmentChanged || partiesChanged || hearingWindowChanged;
+
+    if (!anyChange && hasHearingRequestObjectChanged) {
       return false;
     }
 
-    return this.pageVisitReasonableAdjustmentChangeExists() ||
-      this.pageVisitNonReasonableAdjustmentChangeExists() ||
-      this.pageParticipantAttendanceChangeExists() ||
-      this.pageVisitHearingWindowChangeExists();
+    return anyChange;
   }
 
   pageVisitReasonableAdjustmentChangeExists(): boolean {
@@ -598,8 +597,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed) {
-      // Reasonable adjustment changes already confirmed
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed){
       return false;
     }
     const nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(this.caseFlagsRefData, this.serviceHearingValuesModel.caseFlags?.flags, this.serviceHearingValuesModel.parties);

@@ -12,7 +12,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   selector: 'exui-hearing-facilities',
@@ -146,7 +145,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = this.haveUpdatesMadeToSelections();
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
       }
       if (propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
@@ -187,14 +186,5 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
         this.caseFlagsRefData, this.caseFlagType);
     }
-  }
-
-  private haveUpdatesMadeToSelections() {
-    const { caseAdditionalSecurityFlagChanged, facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
-      this.hearingRequestMainModel,
-      this.hearingRequestToCompareMainModel
-    );
-
-    return caseAdditionalSecurityFlagChanged || facilitiesChanged;
   }
 }

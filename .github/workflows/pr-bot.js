@@ -4,7 +4,7 @@ const fs = require('fs');
 const CONFIG = {
   REQUIRED_APPROVALS: 2,
   TITLE_MAX_LENGTH: 60,
-  SLACK_API_BASE: 'https://slack.com',
+  SLACK_API_BASE: 'slack.com',
   GITHUB_API_BASE: 'api.github.com',
   TS_COMMENT_PREFIX: 'SLACK_MESSAGE_TS:'
 };

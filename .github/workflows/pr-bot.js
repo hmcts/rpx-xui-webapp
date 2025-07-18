@@ -21,17 +21,6 @@ function validateEnvironment() {
   const required = ['slackBotToken', 'slackChannel', 'slackChannelId', 'githubToken'];
   const missing = required.filter(key => !ENV[key]);
   
-  // Debug logging
-  console.log('Environment variables check:');
-  required.forEach(key => {
-    const value = ENV[key];
-    if (value) {
-      console.log(`${key}: SET`);
-    } else {
-      console.log(`${key}: MISSING`);
-    }
-  });
-  
   if (missing.length > 0) {
     console.error(`Missing required env variables: ${missing.join(', ')}`);
     process.exit(1);
@@ -63,18 +52,11 @@ async function httpRequest(hostname, path, method = 'GET', headers = {}, body = 
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch (error) {
-          reject(new Error(`Invalid JSON response: ${error.message}`));
-        }
+        resolve(data ? JSON.parse(data || '{}') : {});
       });
     });
     
-    req.on('error', error => {
-      console.error('Request error:', error);
-      reject(error);
-    });
+    req.on('error', error => reject(error));
     if (body) req.write(JSON.stringify(body));
     req.end();
   });
@@ -140,7 +122,6 @@ const github = {
 
 const slack = {
   async postMessage(channel, text) {
-    console.log(`Attempting to post to Slack channel: ${channel}`);
     const headers = {
       'Authorization': `Bearer ${ENV.slackBotToken}`,
       'Content-Type': 'application/json'
@@ -153,9 +134,7 @@ const slack = {
       headers,
       { channel, text }
     );
-    
-    console.log('Slack postMessage response:', JSON.stringify(response));
-    
+        
     if (!response.ok) {
       throw new Error(`Slack API error: ${response.error}`);
     }
@@ -208,7 +187,7 @@ function formatPRMessage(prNumber, prAuthor, prTitle, repo, approvalCount, emoji
     : prTitle;
   const prLink = `https://github.com/${repo}/pull/${prNumber}`;
   
-  return `(${approvalCount} of ${CONFIG.REQUIRED_APPROVALS} approvals) PR #${prNumber} by ${prAuthor}:\n<${emoji} ${prLink}|${truncatedTitle}>`;
+  return `(${approvalCount} of ${CONFIG.REQUIRED_APPROVALS} approvals) PR #${prNumber} by ${prAuthor}:\n${emoji}<${prLink}|${truncatedTitle}>`;
 }
 
 async function handlePROpened(event) {
@@ -262,7 +241,7 @@ async function handlePRChangesRequested(event) {
     return;
   }
 
-  const message = formatPRMessage(prNumber, prAuthor, prTitle, repo, approvalCount, '🔧');
+  const message = formatPRMessage(prNumber, prAuthor, prTitle, repo, approvalCount, '🔧 ');
   await slack.updateMessage(ENV.slackChannelId, timestampData.ts, message);
 }
 
@@ -284,8 +263,6 @@ async function main() {
   validateEnvironment();
   const event = loadEventData();
   
-  console.log(`Processing event: ${event.action} for PR #${event.prNumber} in ${event.repo}`);
-  
   if (!event.prNumber || !event.repo) {
     console.error('Error with PR data');
     return;
@@ -294,19 +271,15 @@ async function main() {
   try {
     switch (event.action) {
       case 'opened':
-        console.log('Handling PR opened event');
         await handlePROpened(event);
         break;
       case 'reopened':
-        console.log('Handling PR reopened event');
         await handlePROpened(event);
         break;
       case 'submitted':
-        console.log('Handling PR review submitted event');
         await handlePRReview(event);
         break;
       case 'closed':
-        console.log('Handling PR closed event');
         await handlePRClosed(event);
         break;
       default:

@@ -5,6 +5,7 @@ export interface IndividualDetailsModel {
   firstName?: string;
   lastName?: string;
   preferredHearingChannel?: string;
+  preferredHearingChannelAmendmentStatus?: string;
   interpreterLanguage?: string;
   reasonableAdjustments?: string[];
   vulnerableFlag?: boolean;

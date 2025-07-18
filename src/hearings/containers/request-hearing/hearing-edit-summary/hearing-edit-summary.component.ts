@@ -224,12 +224,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     if (!!this.hearingRequestMainModel?.partyDetails) {
       partyDetailsModels = [...this.hearingRequestMainModel.partyDetails];
-      partyDetailsModels.sort(this.compareParties);
+      partyDetailsModels.sort((a, b) => this.defaultStringSort(a.partyID, b.partyID));
     }
 
     if (!!this.hearingRequestToCompareMainModel?.partyDetails) {
       partyDetailsCompareModels = [...this.hearingRequestToCompareMainModel.partyDetails];
-      partyDetailsCompareModels.sort(this.compareParties);
+      partyDetailsCompareModels.sort((a, b) => this.defaultStringSort(a.partyID, b.partyID));
     }
 
     let hmcHearingWindow = null;
@@ -324,10 +324,6 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
   }
 
-  private compareParties(firstParty: PartyDetailsModel, secondParty: PartyDetailsModel) {
-    return firstParty.partyID.localeCompare(secondParty.partyID);
-  }
-
   private replacer (key: any, value: any) {
     // Party name is not present in HMC so ignoring it.
     // Is paper hearing flag is transient to indicate whether it is paper hearing
@@ -378,7 +374,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
           afterPageVisit: {
             reasonableAdjustmentChangesRequired: this.pageVisitReasonableAdjustmentChangeExists(),
             nonReasonableAdjustmentChangesRequired: this.pageVisitNonReasonableAdjustmentChangeExists(),
-            partyDetailsChangesRequired: this.pageVisitPartiesChangeExists(),
+            participantAttendanceChangesRequired: this.pageParticipantAttendanceChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
             hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesExists(),
             partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
@@ -510,7 +506,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     // page visit change exists
     this.pageVisitChangeExists = this.pageVisitReasonableAdjustmentChangeExists() ||
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
-      this.pageVisitPartiesChangeExists() ||
+      this.pageParticipantAttendanceChangeExists() ||
       this.pageVisitHearingWindowChangeExists() ||
       this.pageVisitHearingFacilitiesExists();
     // Reset submit updated request event
@@ -520,7 +516,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   private pageVisitChangesNotConfirmed(hasHearingRequestObjectChanged: boolean): boolean {
     const reasonableAdjustmentChanged = this.pageVisitReasonableAdjustmentChangeExists();
     const nonReasonableAdjustmentChanged = this.pageVisitNonReasonableAdjustmentChangeExists();
-    const partiesChanged = this.pageVisitPartiesChangeExists();
+    const partiesChanged = this.pageParticipantAttendanceChangeExists();
     const hearingWindowChanged = this.pageVisitHearingWindowChangeExists();
 
     const anyChange = reasonableAdjustmentChanged || nonReasonableAdjustmentChanged || partiesChanged || hearingWindowChanged;
@@ -591,9 +587,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
     });
     individualParties.forEach(
-      (party) => party.individualDetails?.reasonableAdjustments?.sort((a, b) => {
-        return a.localeCompare(b);
-      })
+      (party) => party.individualDetails?.reasonableAdjustments?.sort(this.defaultStringSort)
     );
     return individualParties;
   }
@@ -646,30 +640,23 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
   }
 
-  private pageVisitPartiesChangeExists(): boolean {
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed) {
-      // Reasonable adjustment changes already confirmed
+  private pageParticipantAttendanceChangeExists(): boolean {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.participantAttendanceChangesConfirmed) {
+      // participant attendance changes already confirmed
       return false;
     }
-    const partiesSHV = this.serviceHearingValuesModel.parties;
-    const partiesHMC = this.hearingRequestMainModel.partyDetails;
-    // Return true if the number of parties in SHV and HMC are different
-    if (partiesSHV.length !== partiesHMC.length) {
+    if (this.pageVisitPartiesChangeExists()){
       return true;
     }
-    // Number of parties are the same in both SHV and HMC
-    // Loop through the parties in SHV, locate the corresponding party in HMC
-    // and return true if there are any changes in the party name of party type
-    for (const partySHV of partiesSHV) {
-      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (!party || party.partyType !== partySHV.partyType ||
-        HearingsUtils.hasPartyNameChanged(party, partySHV)) {
-        return true;
-      }
+    if (this.methodsOfAttendanceChangeExists()){
+      return true;
+    }
+    if (this.numberOfPhysicalAttendeesChangeExists()){
+      return true;
     }
 
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired) {
-      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsChangesConfirmed;
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.participantAttendanceChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.participantAttendanceChangesConfirmed;
     }
 
     if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingUnavailabilityDatesChanged) {
@@ -678,6 +665,41 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     // There are no changes for parties when compared SHV with HMC
     return false;
+  }
+
+  private pageVisitPartiesChangeExists(): boolean {
+    const partiesSHV = this.serviceHearingValuesModel.parties;
+    const partiesHMC = this.hearingRequestMainModel.partyDetails;
+    // Return true if the number of parties in SHV and HMC are different
+    if (partiesSHV.length !== partiesHMC.length) {
+      return true;
+    }
+    for (const partySHV of partiesSHV) {
+      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
+      if (!party || party.partyType !== partySHV.partyType ||
+        HearingsUtils.hasPartyNameChanged(party, partySHV) ||
+        HearingsUtils.hasPartyHearingChannelChanged(party, partySHV)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private methodsOfAttendanceChangeExists(): boolean {
+    const methodsOfAttendanceSHV = this.serviceHearingValuesModel.hearingChannels?.sort(this.defaultStringSort);
+    const methodsOfAttendanceHMC = this.hearingRequestMainModel.hearingDetails.hearingChannels?.sort(this.defaultStringSort);
+
+    if (methodsOfAttendanceSHV.length !== methodsOfAttendanceHMC.length) {
+      return true;
+    }
+    return !_.isEqual(methodsOfAttendanceSHV, methodsOfAttendanceHMC);
+  }
+
+  private numberOfPhysicalAttendeesChangeExists(): boolean {
+    const numberOfPhysicalAttendeesSHV = this.serviceHearingValuesModel?.numberOfPhysicalAttendees;
+    const numberOfPhysicalAttendeesHMC = this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees;
+
+    return !_.isEqual(numberOfPhysicalAttendeesSHV, numberOfPhysicalAttendeesHMC);
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {
@@ -704,5 +726,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+  }
+
+  private defaultStringSort(a: string, b: string): number {
+    return a.localeCompare(b);
   }
 }

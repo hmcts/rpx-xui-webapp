@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { AnswersComponent } from '../../../components';
@@ -8,8 +9,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole,
-  RoleCategory
+  DurationOfRole
 } from '../../../models';
 import { AnswerLabelText } from '../../../models/enums';
 import { ConfirmAllocation } from '../../../store/actions';

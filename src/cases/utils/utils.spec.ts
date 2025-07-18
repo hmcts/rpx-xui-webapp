@@ -1,4 +1,5 @@
-import { CaseRoleDetails, RoleCategory } from '../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { CaseRoleDetails } from '../../role-access/models';
 import { Utils } from './utils';
 
 describe('Utils', () => {

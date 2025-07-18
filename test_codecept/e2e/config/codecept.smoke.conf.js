@@ -1,6 +1,7 @@
 
 const functional_output_dir = '../../../functional_output';
 const codeceptCommonDir = '../../codeceptCommon';
+const head = process.env.HEAD !== 'false'
 
 exports.config = {
   grep: '@smoke',
@@ -14,7 +15,7 @@ exports.config = {
     Playwright: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
       browser: 'chromium',
-      show: /^(true|1)$/i.test(process.env.HEAD ?? ''),          // or false when running headless
+      show: head,
       restart: true,
       waitForNavigation: 'domcontentloaded',
       ignoreHTTPSErrors: true,

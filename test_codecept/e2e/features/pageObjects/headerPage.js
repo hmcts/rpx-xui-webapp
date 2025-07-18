@@ -1,17 +1,17 @@
 'use strict';
 
-const { $, $$, elementByXpath } = require('../../../helpers/globals');
+const { $, $$, elementByXpath, isPresent } = require('../../../helpers/globals');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
 const BrowserWaits = require('../../support/customWaits');
 const CaseListPage = require('./CaseListPage');
 const CreateCaseStartPage = require('./createCaseStartPage');
-const SearchCasePage = require('../pageObjects/searchPage');
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require('../../features/pageObjects/workAllocation/allWorkPage');
 const globalSearchPage = require('./globalSearchCases');
 const staffSearchPage = require('./staffUI/staffUISearchPage');
+const SearchCasePage = require('../pageObjects/searchPage');
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
@@ -187,6 +187,18 @@ class HeaderPage {
   async isTabPresent(tabText) {
     const tab = this.getPrimaryNavBar().locator(`xpath=//a[contains(text(),"${tabText}")]`);
     return await tab.isVisible();
+  }
+
+  async isTabPresentInMainNav(tabText) {
+    return await isPresent(this.getPrimaryNavBarNavItems().locator('//a[contains(text(),"' + tabText + '")]'));
+  }
+
+  async isTabPresentInRightNav(tabText) {
+    return await isPresent(this.getPrimaryNavBarRightSideItems().locator('//a[contains(text(),"' + tabText + '")]'));
+  }
+
+  async waitForPrimaryNavDisplay() {
+    await BrowserWaits.waitForElement(this.primaryNavBar);
   }
 
   getTabElementWithText(tabText) {

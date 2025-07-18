@@ -1,5 +1,5 @@
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
-const { $, $$, elementByXpath, getText, isPresent, selectOption } = require('../../../../helpers/globals');
+const { $, $$, elementByXpath, getText, isPresent, selectOption: selectOptionGlobal } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
 const BrowserWaits = require('../../../support/customWaits');
 const { Select, GovUKRadios } = require('../../../utils/domElements');
@@ -92,7 +92,7 @@ class AllWork extends TaskList {
     }
 
     if (this.selectOrRadioFilterItems.includes(filterItem)) {
-      return await this.FILTER_ITEMS[filterItem].isVisible();
+      return await this.FILTER_ITEMS[filterItem].isDisplayed();
     }
     return await isPresent(this.FILTER_ITEMS[filterItem]);
   }
@@ -102,7 +102,7 @@ class AllWork extends TaskList {
     if (!filtersItems.includes(filterItem)) {
       throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
     }
-    return await this.FILTER_ITEMS[filterItem].isVisible()
+    return await this.FILTER_ITEMS[filterItem].isDisplayed()
       && await this.FILTER_ITEMS[filterItem].isEnabled();
   }
 
@@ -125,7 +125,7 @@ class AllWork extends TaskList {
       throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
     }
     if (this.selectOrRadioFilterItems.includes(filterItem)) {
-      return await selectOption(this.FILTER_ITEMS[filterItem], option);
+      return await this.FILTER_ITEMS[filterItem].selectOption(option);
     }
     throw new Error(`filter item ${filterItem} is not a select or a Radio item..${filtersItems}`);
   }
@@ -151,24 +151,24 @@ class AllWork extends TaskList {
     return this.getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
   }
 
-  async amOnPage () {
-  try {
-    await BrowserWaits.waitForSpinnerToDissappear();
+  async amOnPage() {
+    try {
+      await BrowserWaits.waitForSpinnerToDissappear();
 
-    await this.pageHeader.waitFor({ state: 'visible', timeout: 20_000 });
+      await this.pageHeader.waitFor({ state: 'visible', timeout: 20_000 });
 
-    await BrowserWaits.waitForConditionAsync(
-      async () => (await getText(this.pageHeader)).includes('All work'),
-      20_000
-    );
+      await BrowserWaits.waitForConditionAsync(
+        async () => (await getText(this.pageHeader)).includes('All work'),
+        20_000
+      );
 
-    return true;
-  } catch (err) {
-    cucumberReporter.AddMessage('All work page not displayed ' + err.stack,
-                                LOG_LEVELS.Error);
-    return false;
+      return true;
+    } catch (err) {
+      cucumberReporter.AddMessage('All work page not displayed ' + err.stack,
+        LOG_LEVELS.Error);
+      return false;
+    }
   }
-}
 
   // Task container methods
   async isTasksContainerDisplayed() {

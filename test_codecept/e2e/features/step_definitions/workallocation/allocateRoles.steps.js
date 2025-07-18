@@ -1,12 +1,5 @@
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
-const SoftAssert = require('../../../../ngIntegration/util/softAssert');
-
-const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
-const caseRolesAndAccessPage = require('../../pageObjects/workAllocation/caseRolesAccessPage');
-
-const ArrayUtil = require('../../../utils/ArrayUtil');
-
 const workFlowPage = require('../../pageObjects/workAllocation/workFlow');
 
 Then('I see Allocate role work flow page {string} with caption {string} is displayed', async function (workFlowPageType, captionHeader) {
@@ -37,7 +30,7 @@ Then('I see find person search results in work flow', async function(resulEmails
   let counter = 0;
   await BrowserWaits.retryWithActionCallback(async () => {
     if (counter > 0){
-      await BrowserWaits.waitForSeconds(1);
+      await BrowserWaits.waitForSeconds(5);
     }
     counter++;
     let actualSearcResults = await workFlowPage.findPersonPage.getPersonsReturned();

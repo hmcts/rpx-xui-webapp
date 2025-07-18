@@ -1,10 +1,9 @@
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
+const { $, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 const caseDetailsTaskTabPage = require('../../pageObjects/workAllocation/caseDetailsTaskTab');
 const WorkAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
-const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
-const caseRolesAndAccessPage = require('../../pageObjects/workAllocation/caseRolesAccessPage');
 
 const { DataTableArgument } = require('codeceptjs');
 
@@ -20,7 +19,7 @@ When('I click manage link {string} for task at position {int} in case details ta
 Then('I validate case details task tab page is displayed', async function(){
   await BrowserWaits.retryWithActionCallback(async () => {
     try {
-      expect(await caseDetailsTaskTabPage.container.isPresent(), 'Task details tab page display ').be.true;
+      expect(await isPresent(caseDetailsTaskTabPage.container), 'Task details tab page display ').be.true;
     } catch (err){
       reportLogger.AddMessage('Error occured '+err);
       await browser.refresh();
@@ -33,24 +32,24 @@ Then('I validate case details task tab page is displayed', async function(){
 });
 
 Then('I validate task tab alert container displayed', async function(){
-  expect(await caseDetailsTaskTabPage.alertBanner.isPresent()).be.true;
+  expect(await isPresent(caseDetailsTaskTabPage.alertBanner)).be.true;
 });
 
 Then('I validate task tab alert banner header is {string}', async function (alertheader) {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await caseDetailsTaskTabPage.alertBannerHeading.getText()).includes(alertheader);
+    expect(await caseDetailsTaskTabPage.alertBannerHeading.textContent()).includes(alertheader);
   });
 });
 
 Then('I validate task tab alert banner message is {string}', async function (alertMessagee) {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await caseDetailsTaskTabPage.alertBannerMessage.getText()).includes(alertMessagee);
+    expect(await caseDetailsTaskTabPage.alertBannerMessage.textContent()).includes(alertMessagee);
   });
 });
 
 Then('I validate task tab active tasks container displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await caseDetailsTaskTabPage.activeTasksContainer.isPresent()).to.be.true;
+    expect(await isPresent(caseDetailsTaskTabPage.activeTasksContainer)).to.be.true;
   });
 });
 
@@ -77,19 +76,19 @@ When('I click active tast attribute Next steps link {string} for task at positio
 
     const actualDisplayValues = {};
     for (const taskAttrib of Object.keys(taskAttributes)) {
-      const attriText = await taskAttributes[taskAttrib].getText();
+      const attriText = await taskAttributes[taskAttrib].textContent();
       actualDisplayValues[taskAttrib] = attriText;
     }
     reportLogger.FormatPrintJson(actualDisplayValues);
   });
   const nextSteps = taskAttributes['Next steps'];
-  const links = nextSteps.$$('a');
+  const links = nextSteps.locator('a');
   const linksCount = await links.count();
 
   let linkToClick = null;
   for (let i =0; i < linksCount; i++){
-    const link = await links.get(i);
-    const linktext = await link.getText();
+    const link = await links.nth(i);
+    const linktext = await link.textContent();
     if (linktext.includes(attributeLinktext)){
       linkToClick = link;
       break;
@@ -117,7 +116,7 @@ Then('I validate task tab active task at position {int} with task name {string} 
 
       const actualDisplayValues = {};
       for (const taskAttrib of Object.keys(taskAttributes)) {
-        const attriText = await taskAttributes[taskAttrib].getText();
+        const attriText = await taskAttributes[taskAttrib].textContent();
         actualDisplayValues[taskAttrib] = attriText;
       }
       reportLogger.FormatPrintJson(actualDisplayValues);
@@ -144,17 +143,17 @@ Then('I validate task tab active task at position {int} with task name {string} 
         softAssert.setScenario('Task attribute displayed and match content');
 
         await softAssert.assert(async () => expect(Object.keys(taskAttributes), `Task details missing : ${attribName}`).to.includes(attribName));
-        await softAssert.assert(async () => expect(await taskAttributes[attribName].getText()).to.includes(contentText));
+        await softAssert.assert(async () => expect(await taskAttributes[attribName].textContent()).to.includes(contentText));
 
         if (validateContentType.toLowerCase().includes('link')) {
-          const links = taskAttributes[attribName].$$('a');
+          const links = taskAttributes[attribName].locator('a');
           const linksCount = await links.count();
 
           let linktext = '';
           let isLinkWithTextPresent = false;
           for (let i = 0; i < linksCount; i++) {
-            const linkElement = await links.get(i);
-            linktext = await linkElement.getText();
+            const linkElement = await links.nth(i);
+            linktext = await linkElement.textContent();
             isLinkWithTextPresent = linktext.includes(contentText);
             if (isLinkWithTextPresent) {
               if (validateContentType.toLowerCase().includes('urlcontains')) {

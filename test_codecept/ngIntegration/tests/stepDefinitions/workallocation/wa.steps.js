@@ -61,7 +61,6 @@ Then('I validate tasks column sorting', async function(){
   });
 
   const columnHeaders = await taskListPage.getColumnHeaderNames();
-  console.log(columnHeaders);
   for (let i = 0; i < columnHeaders.length; i++) {
     const headerName = columnHeaders[i];
     CucumberReporter.AddMessage('Validating sort column for header : ' + headerName);

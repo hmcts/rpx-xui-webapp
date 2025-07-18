@@ -1,4 +1,4 @@
-const { $, $$, elementByXpath, elementsByXpath } = require('../../helpers/globals');
+const { $, $$, elementByXpath, elementsByXpath, getSelectOptions, isPresent } = require('../../helpers/globals');
 
 class Select{
   constructor(locatorType, selector) {
@@ -19,7 +19,7 @@ class Select{
   }
 
   async isDisplayed(){
-    return await this.selectElement.isPresent() && await this.selectElement.isDisplayed();
+    return await isPresent(this.selectElement) && await this.selectElement.isVisible();
   }
 
   async isEnabled() {
@@ -27,13 +27,13 @@ class Select{
   }
 
   async getOptions(){
-    const options = await this.selectElement.getSelectOptions();
+    const options = await getSelectOptions(this.selectElement);
 
     return options;
   }
 
   async selectOption(optiontext){
-    await this.selectElement.selectOptionWithLabel(optiontext);
+    await this.selectElement.selectOption({ label: optiontext });
   }
 }
 
@@ -46,13 +46,13 @@ class GovUKRadios{
   async isDisplayed() {
     const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : elementByXpath(`${this.selector}`);
 
-    return await container.isPresent();
+    return await isPresent(container);
   }
 
   async isEnabled(){
     const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : elementByXpath(`${this.selector}`);
 
-    return await containert.isEnabled();
+    return await container.isEnabled();
   }
 
   async getRadioOptions(){
@@ -65,7 +65,7 @@ class GovUKRadios{
     const count = await labels.count();
     const options = [];
     for (let i = 0; i < count; i++) {
-      const optionVal = await labels.get(i).getText();
+      const optionVal = await labels.nth(i).textContent();
       options.push(optionVal);
     }
     return options;
@@ -76,8 +76,8 @@ class GovUKRadios{
     const options = [];
     const count = await labels.count();
     for (let i = 0; i < count; i++) {
-      const element = await labels.get(i);
-      const optionVal = await element.getText();
+      const element = await labels.nth(i);
+      const optionVal = await element.textContent();
       options.push(optionVal);
       if (optionVal.includes(option)){
         await element.click();

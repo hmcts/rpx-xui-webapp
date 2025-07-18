@@ -1,5 +1,6 @@
 
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
+const { isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 
@@ -27,19 +28,19 @@ Then('I see work filter of type {string} is not displayed', async function (filt
 Then('I see work filter button displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await BrowserWaits.waitForElement(myWorkPage.showHideWorkFilterBtn);
-    expect(await myWorkPage.showHideWorkFilterBtn.isDisplayed()).to.be.true;
+    expect(await myWorkPage.showHideWorkFilterBtn.isVisible()).to.be.true;
   });
 });
 
 Then('I validate work filter button text is {string}', async function (btntext) {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await myWorkPage.showHideWorkFilterBtn.getText()).to.contains(btntext);
+    expect(await myWorkPage.showHideWorkFilterBtn.textContent()).to.contains(btntext);
   });
 });
 
 When('I click work filter button to {string} filter', async function (filterStateTo) {
   await BrowserWaits.retryWithActionCallback(async () => {
-    const buttonText = await myWorkPage.showHideWorkFilterBtn.getText();
+    const buttonText = await myWorkPage.showHideWorkFilterBtn.textContent();
     reportLogger.AddMessage(`Button text before click "${buttonText}"`);
     if (buttonText.toLowerCase().includes(filterStateTo.toLowerCase())){
       reportLogger.AddMessage(`Clicking button with text "${buttonText}"`);
@@ -47,7 +48,7 @@ When('I click work filter button to {string} filter', async function (filterStat
       await myWorkPage.showHideWorkFilterBtn.click();
       await BrowserWaits.waitForSeconds(1);
     }
-    const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.getText();
+    const afterClickButtonText = await myWorkPage.showHideWorkFilterBtn.textContent();
     reportLogger.AddMessage(`Button text after click "${afterClickButtonText}"`);
 
     expect(afterClickButtonText.toLowerCase().includes(filterStateTo.toLowerCase())).to.be.false;
@@ -68,7 +69,7 @@ Then('I validate location filter is displayed', async function () {
 
 Then('I validate location filter is not displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await myWorkPage.genericFilterContainer.isPresent(), 'location filter is still displayed').to.be.false;
+    expect(await isPresent(myWorkPage.genericFilterContainer), 'location filter is still displayed').to.be.false;
   });
 });
 
@@ -122,34 +123,34 @@ When('I click work location filter Reset button', async function () {
 });
 
 Then('I validate work location filter batch and hint labels are displayed', async function () {
-  expect(await myWorkPage.showHideFilterBadge.isPresent()).to.be.true;
-  expect(await myWorkPage.showHideFilterHint.isPresent()).to.be.true;
+  expect(await isPresent(myWorkPage.showHideFilterBadge)).to.be.true;
+  expect(await isPresent(myWorkPage.showHideFilterHint)).to.be.true;
 });
 
 Then('I validate work location filter batch and hint labels are not displayed', async function () {
-  expect(await myWorkPage.showHideFilterBadge.isPresent()).to.be.false;
-  expect(await myWorkPage.showHideFilterHint.isPresent()).to.be.false;
+  expect(await isPresent(myWorkPage.showHideFilterBadge)).to.be.false;
+  expect(await isPresent(myWorkPage.showHideFilterHint)).to.be.false;
 });
 
 // New work filters updated
 
 Then('I validate my work filter services container displayed', async function(){
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await myWorkPage.workFilterServicesContainer.isPresent()).to.be.true;
-    expect(await myWorkPage.workFilterServicesContainer.isDisplayed()).to.be.true;
+    expect(await isPresent(myWorkPage.workFilterServicesContainer)).to.be.true;
+    expect(await myWorkPage.workFilterServicesContainer.isVisible()).to.be.true;
   });
 });
 
 Then('I validate my work filter services container not displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await myWorkPage.workFilterServicesContainer.isPresent()).to.be.false;
+    expect(await isPresent(myWorkPage.workFilterServicesContainer)).to.be.false;
   });
 });
 
 Then('I validate my work filter location search displayed', async function(){
   await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await myWorkPage.workFiltersLocationsContainer.isPresent()).to.be.true;
-    expect(await myWorkPage.workFiltersLocationsContainer.isDisplayed()).to.be.true;
+    expect(await isPresent(myWorkPage.workFiltersLocationsContainer)).to.be.true;
+    expect(await myWorkPage.workFiltersLocationsContainer.isVisible()).to.be.true;
   });
 });
 
@@ -214,7 +215,7 @@ When('I unselect service {string} in my work filter', async function (service) {
 
 When('I search for location text {string} in my work filters', async function(location){
   await myWorkPage.workFilterSearchLocationInput.clear();
-  await myWorkPage.workFilterSearchLocationInput.sendKeys(location);
+  await myWorkPage.workFilterSearchLocationInput.fill(location);
 });
 
 Then('I see location search results in my work filter', async function (expectedLocationsDatatable){
@@ -256,14 +257,14 @@ Then('I see location {string} selected in my work filter', async function(locati
 });
 
 Then('I see error message {string} for service work filter in my work page', async function(message){
-  expect(await myWorkPage.workFilterServiceErrorMessage.getText()).to.includes(message);
+  expect(await myWorkPage.workFilterServiceErrorMessage.textContent()).to.includes(message);
 });
 
 Then('I see error message {string} for location work filter in my work page', async function (message) {
-  expect(await myWorkPage.workFilterlocationErrorMessage.getText()).to.includes(message);
+  expect(await myWorkPage.workFilterlocationErrorMessage.textContent()).to.includes(message);
 });
 
-When('I remove slected location {string} from my work filters', async function(location){
+When('I remove selected location {string} from my work filters', async function(location){
   await myWorkPage.clickSelectedLocationFromWorkFilter(location);
 });
 

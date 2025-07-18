@@ -67,7 +67,7 @@ When('In hearing actual, I see hearings for date {string}', async function (hear
   const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate);
 
   await browserWaits.waitForElement(elementByXpath(hearingDateObj.hearingDateDetailsSummary));
-  expect(await hearingDateObj.isVisible()).to.be.true;
+  expect(await hearingDateObj.isDisplayed()).to.be.true;
 });
 
 When('In hearing actual, I click hearing date {string}', async function (hearingDate) {
@@ -77,7 +77,7 @@ When('In hearing actual, I click hearing date {string}', async function (hearing
 
 Then('In hearing actuals, hearing date {string} displayed with values and actions', async function (hearingDate, datatable) {
   const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate);
-  expect(await hearingDateObj.isVisible(), `Hearing actuals for date ${hearingDate} not displayed`).to.be.true;
+  expect(await hearingDateObj.isDisplayed(), `Hearing actuals for date ${hearingDate} not displayed`).to.be.true;
 
   const rows = datatable.parse().hashes();
 
@@ -103,7 +103,7 @@ Then('In hearing actuals, hearing date {string} displayed with values and action
 
 When('In hearing actual for date {string}, I click action link {string} for field {string}', async function (hearingDate, actionLink, field) {
   const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate);
-  expect(await hearingDateObj.isVisible(), `Hearing actuals for date ${hearingDate} not displayed`).to.be.true;
+  expect(await hearingDateObj.isDisplayed(), `Hearing actuals for date ${hearingDate} not displayed`).to.be.true;
 
   await hearingDateObj.clickAction(field, actionLink);
 });

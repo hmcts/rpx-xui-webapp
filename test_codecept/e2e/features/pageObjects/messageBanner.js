@@ -3,13 +3,13 @@ const { $, $$ } = require('../../../helpers/globals');
 const { LOG_LEVELS } = require('../../support/constants');
 const ArrayUtil = require('../../utils/ArrayUtil');
 
-class MessageBanner{
+class MessageBanner {
   constructor(parentCssLocator = null) {
     this.parentCssLocator = parentCssLocator;
   }
 
   get bannerMessageContainer() {
-    return $('.hmcts-banner');
+    return $('.hmcts-banner').first();
   }
 
   get successBanner() {
@@ -26,10 +26,14 @@ class MessageBanner{
 
   async isBannerMessageDisplayed() {
     try {
-      await this.bannerMessageContainer.wait();
+      // 1️⃣  wait until it exists in the DOM *and* is visible
+      await this.bannerMessageContainer.waitFor({ state: 'visible', timeout: 5000 });
       return true;
     } catch (err) {
-      cucumberReporter.AddMessage('message banner not displayed: ' + err, LOG_LEVELS.Error);
+      cucumberReporter.AddMessage(
+        'message banner not displayed: ' + err,
+        LOG_LEVELS.Error
+      );
       return false;
     }
   }
@@ -49,7 +53,7 @@ class MessageBanner{
     return messages;
   }
 
-  async isMessageTextDisplayed(expectedMessage){
+  async isMessageTextDisplayed(expectedMessage) {
     const allMessages = await this.getBannerMessagesDisplayed();
     cucumberReporter.AddMessage(`Case details tasks tab banner messages : ${JSON.stringify(allMessages)}`, LOG_LEVELS.Info);
     const matchingMessages = await ArrayUtil.filter(allMessages, async (message) => {

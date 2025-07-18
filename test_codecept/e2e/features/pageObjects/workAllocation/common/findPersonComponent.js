@@ -74,7 +74,7 @@ class FindPersonComponent {
 
   async getResultElementWithText(resulttext) {
     const elementWithResulst = elementByXpath('//*[contains(@class,\'cdk-overlay-container\')]//*[contains(@class,\'mat-autocomplete-visible\')]');
-    await elementWithResulst.wait();
+    await elementWithResulst.waitFor({ state: 'visible' });
     CucumberReporter.AddMessage(await getText(elementWithResulst), LOG_LEVELS.Debug);
     return elementByXpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`);
   }
@@ -89,7 +89,7 @@ class FindPersonComponent {
   async selectPerson(result) {
     const resultElement = await this.getResultElementWithText(result);
     CucumberReporter.AddMessage(` Select person "${result}"`, LOG_LEVELS.Debug);
-    await resultElement.wait();
+    await resultElement.waitFor({ state: 'visible' });
     expect(await this.isPersonReturned(result), `Result is not found "${result}"`).to.be.true;
     await resultElement.click();
   }

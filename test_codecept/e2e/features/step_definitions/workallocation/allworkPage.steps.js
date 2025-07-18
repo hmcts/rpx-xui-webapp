@@ -1,4 +1,5 @@
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
+const { isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
 
@@ -70,7 +71,7 @@ When('I select filter item {string} select or radio option {string} in all work 
     return;
   }
 
-  const optionElement = await allWorkPage.setFilterSelectOrRadioOptions(filterItem, option);
+  await allWorkPage.setFilterSelectOrRadioOptions(filterItem, option);
 });
 
 When('I input filter item {string} input text {string} in all work page', async function (filterItem, inputText) {
@@ -98,20 +99,20 @@ When('I click Reset filter button in all work page', async function () {
 });
 
 Then('I see location search input is enabled in all work filters', async function () {
-  expect(await allWorkPage.FILTER_ITEMS['Location search'].isPresent(), 'Search input not present').to.be.true;
-  expect(await allWorkPage.FILTER_ITEMS['Location search'].isDisplayed(), 'Search input not displayed').to.be.true;
+  expect(await isPresent(allWorkPage.FILTER_ITEMS['Location search']), 'Search input not present').to.be.true;
+  expect(await allWorkPage.FILTER_ITEMS['Location search'].isVisible(), 'Search input not displayed').to.be.true;
   expect(await allWorkPage.FILTER_ITEMS['Location search'].isEnabled(), 'Search input not enabled').to.be.true;
 });
 
 Then('I see location search input is disabled in all work filters', async function () {
-  expect(await allWorkPage.FILTER_ITEMS['Location search'].isPresent(), 'Search input not present').to.be.true;
-  expect(await allWorkPage.FILTER_ITEMS['Location search'].isDisplayed(), 'Search input not displayed').to.be.true;
+  expect(await isPresent(allWorkPage.FILTER_ITEMS['Location search']), 'Search input not present').to.be.true;
+  expect(await allWorkPage.FILTER_ITEMS['Location search'].isVisible(), 'Search input not displayed').to.be.true;
   expect(await allWorkPage.FILTER_ITEMS['Location search'].isEnabled(), 'Search input not disabled').to.be.false;
 });
 
 When('I enter location search {string} in all work filter', async function (searchTerm) {
   await allWorkPage.FILTER_ITEMS['Location search'].clear();
-  await allWorkPage.FILTER_ITEMS['Location search'].sendKeys(searchTerm);
+  await allWorkPage.FILTER_ITEMS['Location search'].fill(searchTerm);
 });
 
 Then('I see location search results in all work filter', async function (dataTable) {
@@ -135,7 +136,6 @@ When('I select location search result {string} in all work filter', async functi
 });
 
 Then('I see location {string} selected in all work filter', async function (expectedValue) {
-  const inputValue = await allWorkPage.FILTER_ITEMS['Location search'].getAttribute('value');
-  expect(inputValue).to.includes(expectedValue);
+  const inputValue = await allWorkPage.FILTER_ITEMS['Location search'].inputValue();
+  expect(inputValue).to.include(expectedValue);
 });
-

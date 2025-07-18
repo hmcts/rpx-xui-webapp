@@ -21,6 +21,17 @@ function validateEnvironment() {
   const required = ['slackBotToken', 'slackChannel', 'slackChannelId', 'githubToken'];
   const missing = required.filter(key => !ENV[key]);
   
+  // Debug logging
+  console.log('Environment variables check:');
+  required.forEach(key => {
+    const value = ENV[key];
+    if (value) {
+      console.log(`${key}: SET`);
+    } else {
+      console.log(`${key}: MISSING`);
+    }
+  });
+  
   if (missing.length > 0) {
     console.error(`Missing required env variables: ${missing.join(', ')}`);
     process.exit(1);
@@ -60,7 +71,10 @@ async function httpRequest(hostname, path, method = 'GET', headers = {}, body = 
       });
     });
     
-    req.on('error', error => reject(error));
+    req.on('error', error => {
+      console.error('Request error:', error);
+      reject(error);
+    });
     if (body) req.write(JSON.stringify(body));
     req.end();
   });
@@ -105,7 +119,7 @@ const github = {
     const comments = await github.getComments(repo, prNumber);
     
     if (!Array.isArray(comments)) {
-      throw new Error('Expected array of comments');
+      throw new Error(`GitHub API returned ${typeof comments}, expected array. Response: ${JSON.stringify(comments)}`);
     }
     
     const tsComment = comments.find(comment => comment.body.startsWith(CONFIG.TS_COMMENT_PREFIX));

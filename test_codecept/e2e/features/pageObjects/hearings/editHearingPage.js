@@ -1,20 +1,19 @@
-
+const { $, getText } = require('../../../../helpers/globals');
 const SummaryTable = require('../common/summaryTable');
 
 class ViewOrEditHearingPage {
-  constructor() {
-    this.container = $('exui-hearing-edit-summary');
-    this.headerElement = $('exui-hearing-edit-summary h1');
 
-    this.summaryTable = new SummaryTable('exui-hearing-edit-summary');
+  get container() { return $('exui-hearing-edit-summary'); }
+  get headerElement() { return $('exui-hearing-edit-summary h1'); }
 
-    this.warningMessage = $('exui-warning-and-error-section .govuk-warning-text__text');
-    this.errorSummaryMessage = $('.govuk-error-summary__body');
-    this.errorMessage = $('.govuk-error-message');
-  }
+  get summaryTable() { return new SummaryTable('exui-hearing-edit-summary'); }
+
+  get warningMessage() { return $('exui-warning-and-error-section .govuk-warning-text__text'); }
+  get errorSummaryMessage() { return $('.govuk-error-summary__body'); }
+  get errorMessage() { return $('.govuk-error-message').first(); }
 
   async getHeader() {
-    return await this.headerElement.getText();
+    return await getText(this.headerElement);
   }
 
   async isKeyFieldDisplayed(field) {
@@ -37,16 +36,16 @@ class ViewOrEditHearingPage {
     return await this.summaryTable.isAmendedFlagDisplayedForField(field);
   }
 
-  async isWarningTextBannerDisplayed(){
-    return await this.warningMessage.isDisplayed();
+  async isWarningTextBannerDisplayed() {
+    return await this.warningMessage.isVisible();
   }
 
-  async getWarningBanerText(){
-    return await this.warningMessage.getText();
+  async getWarningBanerText() {
+    return await getText(this.warningMessage);
   }
 
   async getErrorSummary() {
-    return await this.errorSummaryMessage.getText();
+    return await getText(this.errorSummaryMessage);
   }
 }
 

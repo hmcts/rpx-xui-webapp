@@ -1,30 +1,30 @@
-
-const CaseManager = require('./CaseManager');
-const BrowserWaits = require('../../../support/customWaits');
 const path = require('path');
+const { $, elementByXpath, isPresent } = require('../../../../helpers/globals');
+const BrowserWaits = require('../../../support/customWaits');
+const CaseManager = require('./CaseManager');
 
 class CcdFields {
   constructor() {
     this.caseManager = new CaseManager();
-
-    this.addressField = element(by.xpath('//input[@name=\'postcode\']'));
-    this.findAddressBtn = element(by.xpath('//button[contains(text(),\'Find address\')]'));
-    this.selectAddressField = element(by.xpath('//select[@name=\'address\']'));
-    this.firstOption = element(by.xpath('//option[@value=\'1: Object\']'));
-
-    this.addNewBtn = element(by.xpath('//button[contains(text(),\'Add new\')]'));
-    this.docUploadField = element(by.xpath('//input[@class=\'form-control bottom-30\']'));
-    this.describeDocField = $('#uploadTheNoticeOfDecisionDocs_0_description');
-
-    this.uploadDone = element(by.xpath('//ccd-write-document-field//span[contains(text(),"Uploading")]'));
   }
+
+  get addressField ()        { return elementByXpath("//input[@name='postcode']"); }
+  get findAddressBtn ()      { return elementByXpath("//button[contains(text(),'Find address')]"); }
+  get selectAddressField ()  { return elementByXpath("//select[@name='address']"); }
+  get firstOption ()         { return elementByXpath("//option[@value='1: Object']"); }
+
+  get addNewBtn ()           { return elementByXpath("//button[contains(text(),'Add new')]"); }
+  get docUploadField ()      { return $('input.form-control.bottom-30'); }
+  get describeDocField ()    { return $('#uploadTheNoticeOfDecisionDocs_0_description'); }
+  get uploadDone ()          { return elementByXpath("//ccd-write-document-field//span[contains(text(),'Uploading')]"); }
+
 
   async docUpload(){
     const fileToUpload = path.resolve(__dirname, '../../../documents/dummy.pdf');
-    await this.docUploadField.sendKeys(fileToUpload);
-    await browser.sleep(1);
+    await this.docUploadField.fill(fileToUpload);
+    await BrowserWaits.waitForSeconds(1);
     await BrowserWaits.waitForCondition(async () => {
-      const isUploadDone = await this.uploadDone.isPresent();
+      const isUploadDone = await isPresent(this.uploadDone);
       console.log('file upload status : ' + isUploadDone);
       await browser.sleep(5);
       return !isUploadDone;
@@ -32,12 +32,12 @@ class CcdFields {
   }
 
   async docDescriptionField(){
-    await this.describeDocField.sendKeys('description');
+    await this.describeDocField.fill('description');
   }
 
   async postcodeLookup(){
     await BrowserWaits.waitForSeconds(3);
-    await this.addressField.sendKeys('n1');
+    await this.addressField.fill('n1');
     await this.findAddressBtn.click();
     await BrowserWaits.waitForSeconds(3);
     await this.firstOption.click();

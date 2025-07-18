@@ -1,3 +1,4 @@
+const { $, elementByCss, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 CustomError = require('../../../utils/errors/custom-error.js');
 /**
  * WebDriver Button component class
@@ -21,7 +22,7 @@ class Button{
    */
   async isPresent(){
     const button = await this._getElementFinder();
-    return await button.isPresent();
+    return await isPresent(button);
   }
 
   /**
@@ -36,7 +37,7 @@ class Button{
   async isDisplayed(){
     let displayed = null;
     try {
-      displayed = await $(this.css).isDisplayed();
+      displayed = await $(this.css).isVisible();
     } catch (e) {
       if (e.name === 'NoSuchElementError'){
         displayed = false; //element not present so not displayed
@@ -57,31 +58,15 @@ class Button{
   }
 
   /**
-   * Wait for an element to be clickable or throw an error.
-   * will wait for the DEFAULT_TIMEOUT value of 5000ms
-   * @param element to wait to be clickable
-   */
-  async waitForElementToBeClickable(){
-    // const EC = protractor.ExpectedConditions;
-
-    // try {
-    //   await browser.wait(await EC.elementToBeClickable(await this._getElementFinder()), DEFAULT_TIMEOUT);
-    // } catch (e) {
-    //   let message = `timed out after ${DEFAULT_TIMEOUT} waiting for element ${element} to be clickable`;
-    //   throw new CustomError(message, e)
-    // }
-  }
-
-  /**
    * Gets button text
    * @returns {Promise<String>}
    */
   async getText(){
-    return await $(this.css).getText();
+    return await getText($(this.css));
   }
 
   async _getElementFinder() {
-    return this.content ? element(by.xpath(this.xpath)) : element(by.css(this.css));
+    return this.content ? elementByXpath(this.xpath) : elementByCss(this.css);
   }
 }
 

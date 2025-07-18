@@ -1,4 +1,4 @@
-
+const { $ } = require('../../../../helpers/globals');
 const createHearingWorkflow = require('../../pageObjects/hearings/createHearingWorkflow/createhearingWorkflow');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
@@ -22,7 +22,7 @@ When('I click continue in hearing workflow', async function () {
 
 async function verifyOnHearingPage(page){
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await getPageObject(page).isDisplayed(), `${page} not displayed`).to.be.true;
+    expect(await getPageObject(page).pageContainer.isVisible(), `${page} not displayed`).to.be.true;
   });
 }
 

@@ -1,7 +1,7 @@
 name: pr-bot
 on:
   pull_request:
-    types: [opened, closed]
+    types: [opened, closed, reopened]
   pull_request_review:
     types: [submitted]
 

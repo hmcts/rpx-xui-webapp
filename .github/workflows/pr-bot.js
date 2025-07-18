@@ -123,7 +123,18 @@ const github = {
     }
     
     const tsComment = comments.find(comment => comment.body.startsWith(CONFIG.TS_COMMENT_PREFIX));
-    return tsComment ? tsComment.body.split(':')[1] : null;
+    return tsComment ? { ts: tsComment.body.split(':')[1], commentId: tsComment.id } : null;
+  },
+
+  async deleteComment(repo, commentId) {
+    const path = `/repos/${repo}/issues/comments/${commentId}`;
+    const headers = {
+      'Authorization': `Bearer ${ENV.githubToken}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'Node.js'
+    };
+    
+    return await httpRequest(CONFIG.GITHUB_API_BASE, path, 'DELETE', headers);
   }
 };
 
@@ -223,17 +234,17 @@ async function handlePRReview(event) {
   
   const approvalCount = await github.getReviews(repo, prNumber);
   
-  const messageTs = await github.getSlackMessageTimestamp(repo, prNumber);
+  const timestampData = await github.getSlackMessageTimestamp(repo, prNumber);
   
-  if (!messageTs) {
+  if (!timestampData) {
     return;
   }
   
   if (approvalCount < CONFIG.REQUIRED_APPROVALS) {
     const message = formatPRMessage(prNumber, prAuthor, prTitle, repo, approvalCount);
-    await slack.updateMessage(ENV.slackChannelId, messageTs, message);
+    await slack.updateMessage(ENV.slackChannelId, timestampData.ts, message);
   } else {
-    await slack.deleteMessage(ENV.slackChannelId, messageTs);
+    await slack.deleteMessage(ENV.slackChannelId, timestampData.ts);
   }
 }
 
@@ -245,26 +256,28 @@ async function handlePRChangesRequested(event) {
   }
 
   const approvalCount = await github.getReviews(repo, prNumber);
-  const messageTs = await github.getSlackMessageTimestamp(repo, prNumber);
+  const timestampData = await github.getSlackMessageTimestamp(repo, prNumber);
 
-  if (!messageTs) {
+  if (!timestampData) {
     return;
   }
 
   const message = formatPRMessage(prNumber, prAuthor, prTitle, repo, approvalCount, '🔧');
-  await slack.updateMessage(ENV.slackChannelId, messageTs, message);
+  await slack.updateMessage(ENV.slackChannelId, timestampData.ts, message);
 }
 
 async function handlePRClosed(event) {
   const { prNumber, repo } = event;
   
-  const messageTs = await github.getSlackMessageTimestamp(repo, prNumber);
+  const timestampData = await github.getSlackMessageTimestamp(repo, prNumber);
   
-  if (!messageTs) {
+  if (!timestampData) {
     return;
   }
   
-  await slack.deleteMessage(ENV.slackChannelId, messageTs);
+  await slack.deleteMessage(ENV.slackChannelId, timestampData.ts);
+  
+  await github.deleteComment(repo, timestampData.commentId);
 }
 
 async function main() {
@@ -282,6 +295,10 @@ async function main() {
     switch (event.action) {
       case 'opened':
         console.log('Handling PR opened event');
+        await handlePROpened(event);
+        break;
+      case 'reopened':
+        console.log('Handling PR reopened event');
         await handlePROpened(event);
         break;
       case 'submitted':

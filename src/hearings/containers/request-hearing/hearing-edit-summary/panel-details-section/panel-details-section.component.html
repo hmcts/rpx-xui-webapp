@@ -1,4 +1,7 @@
-<h2 class="govuk-heading-m">Panel details</h2>
+<h2 class="govuk-heading-m">Panel details
+<exui-amendment-label  *ngIf="showAmendedLabelForPageTitle" [displayLabel]="amendmentLabelEnum.AMENDED">
+</exui-amendment-label>
+</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
@@ -6,6 +9,8 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ hearingPanel }}
+      <exui-amendment-label *ngIf="showAmmendedForNeedPanel" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="hearingPanel"
@@ -20,6 +25,8 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ includedPanelMembers }}
+      <exui-amendment-label *ngIf="showAmmendedForIncludedPanelNames" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="panelInclusion"
@@ -34,6 +41,8 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ excludedPanelMembers }}
+      <exui-amendment-label *ngIf="showAmmendedForExcludedPanelNames" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="panelExclusion"
@@ -48,6 +57,8 @@
     </div>
     <div class="govuk-summary-list__value">
       {{ panelRoles }}
+      <exui-amendment-label *ngIf="showAmmendedForPanelType" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <a id="panelRoles"

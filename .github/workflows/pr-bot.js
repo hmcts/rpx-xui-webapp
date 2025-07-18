@@ -4,7 +4,7 @@ const fs = require('fs');
 const CONFIG = {
   REQUIRED_APPROVALS: 2,
   TITLE_MAX_LENGTH: 60,
-  SLACK_API_BASE: 'slack.com',
+  SLACK_API_BASE: 'https://slack.com',
   GITHUB_API_BASE: 'api.github.com',
   TS_COMMENT_PREFIX: 'SLACK_MESSAGE_TS:'
 };
@@ -129,6 +129,7 @@ const github = {
 
 const slack = {
   async postMessage(channel, text) {
+    console.log(`Attempting to post to Slack channel: ${channel}`);
     const headers = {
       'Authorization': `Bearer ${ENV.slackBotToken}`,
       'Content-Type': 'application/json'
@@ -141,6 +142,8 @@ const slack = {
       headers,
       { channel, text }
     );
+    
+    console.log('Slack postMessage response:', JSON.stringify(response));
     
     if (!response.ok) {
       throw new Error(`Slack API error: ${response.error}`);
@@ -268,6 +271,8 @@ async function main() {
   validateEnvironment();
   const event = loadEventData();
   
+  console.log(`Processing event: ${event.action} for PR #${event.prNumber} in ${event.repo}`);
+  
   if (!event.prNumber || !event.repo) {
     console.error('Error with PR data');
     return;
@@ -276,12 +281,15 @@ async function main() {
   try {
     switch (event.action) {
       case 'opened':
+        console.log('Handling PR opened event');
         await handlePROpened(event);
         break;
       case 'submitted':
+        console.log('Handling PR review submitted event');
         await handlePRReview(event);
         break;
       case 'closed':
+        console.log('Handling PR closed event');
         await handlePRClosed(event);
         break;
       default:

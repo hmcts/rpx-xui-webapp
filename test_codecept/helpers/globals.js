@@ -18,8 +18,19 @@ function resolvePage() {
   );
 }
 
+async function ensurePage () {
+  const pw = container.helpers().Playwright;
+  if (pw.page) return pw.page;            // already initialised
+
+  await actor()._within(async () => {
+    // 👇 official internal helper that opens a new page + context
+    await pw._createContextPage();
+  });
+  return pw.page;                         // now guaranteed
+}
+
 async function refresh() {
-  const page = resolvePage();
+  const page = await ensurePage();
   await page.reload({ waitUntil: 'load' });
 }
 

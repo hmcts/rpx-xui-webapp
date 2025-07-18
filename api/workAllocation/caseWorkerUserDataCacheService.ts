@@ -85,6 +85,7 @@ export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], r
       const payload = prepareRoleApiRequest(jurisdictions, null, true);
       const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
       const roleAssignments = data.roleAssignmentResponse;
+      cachedUsersWithRoles = [];
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
       FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
@@ -114,6 +115,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       };
       const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
       const roleAssignments = data.roleAssignmentResponse;
+      cachedUsersWithRoles = [];
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
       FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }

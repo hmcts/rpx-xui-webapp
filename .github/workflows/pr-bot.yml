@@ -32,11 +32,11 @@ jobs:
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID_STG }}
 
             # Get tokens from Azure Key Vault
-            GH_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-github-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value")
+            GH_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-github-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value" --output tsv)
             echo "::add-mask::$GH_TOKEN"
             echo "GH_TOKEN=$GH_TOKEN" >> $GITHUB_ENV
 
-            SLACK_BOT_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-slack-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value")
+            SLACK_BOT_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-slack-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value" --output tsv)
             echo "::add-mask::$SLACK_BOT_TOKEN"
             echo "SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN" >> $GITHUB_ENV
   

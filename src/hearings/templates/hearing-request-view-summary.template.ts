@@ -8,9 +8,13 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
     answers: [
       {
         id: 'caseNumber',
-        answerTitle: 'Case number',
-        answerSource: AnswerSource.CASE_NUMBER,
-        isHiddenSource: IsHiddenSource.LISTED
+        answerTitle: 'Case reference',
+        answerSource: AnswerSource.CASE_NUMBER
+      },
+      {
+        id: 'hearingId',
+        answerTitle: 'Hearing Id',
+        answerSource: AnswerSource.HEARING_ID
       },
       {
         id: 'status',

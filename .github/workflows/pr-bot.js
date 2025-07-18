@@ -13,7 +13,7 @@ const ENV = {
   slackBotToken: process.env.SLACK_BOT_TOKEN,
   slackChannel: process.env.SLACK_CHANNEL,
   slackChannelId: process.env.SLACK_CHANNEL_ID,
-  githubToken: process.env.GH_TOKEN,
+  githubToken: process.env.GITHUB_TOKEN,
   githubEventPath: process.env.GITHUB_EVENT_PATH
 };
 

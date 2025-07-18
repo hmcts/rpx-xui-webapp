@@ -18,7 +18,7 @@ function resolvePage() {
   );
 }
 
-async function ensurePage () {
+async function ensurePage() {
   const pw = container.helpers().Playwright;
   if (pw.page) return pw.page;            // already initialised
 
@@ -30,7 +30,7 @@ async function ensurePage () {
 }
 
 async function refresh() {
-  const page = await ensurePage();
+  const page = resolvePage();
   await page.reload({ waitUntil: 'load' });
 }
 
@@ -58,7 +58,7 @@ async function isPresent(locator) {
 }
 
 async function navigate(url, options = {}) {
-  const page = resolvePage();
+  const page = await ensurePage();
   await page.goto(url, { waitUntil: 'domcontentloaded', ...options });
 }
 

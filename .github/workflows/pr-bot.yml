@@ -6,7 +6,6 @@ on:
     types: [submitted]
 
 permissions:
-    id-token: write
     contents: read
 
 jobs:
@@ -21,18 +20,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Azure login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_STG }}
-
       - name: Azure CLI script
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
+            # Log in to Azure using service principal
+            az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+            # Set the active subscription
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID_STG }}
+
             # Get tokens from Azure Key Vault
             GH_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-github-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value")
             echo "::add-mask::$GH_TOKEN"

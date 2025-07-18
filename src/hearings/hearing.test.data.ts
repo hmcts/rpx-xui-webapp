@@ -2226,7 +2226,8 @@ export const initialState = {
       hearingRequestMainModel: {
         requestDetails: {
           timestamp: null,
-          versionNumber: 1
+          versionNumber: 1,
+          hearingRequestID: '1000000'
         },
         hearingDetails: {
           duration: 60,

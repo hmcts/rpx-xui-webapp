@@ -27,6 +27,7 @@ import {
   HEARING_PANEL_REQUIRED,
   HEARING_STAGE
 } from '../../../../../api/hearings/data/defaultScreenFlow.data';
+import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
 
 describe('HearingEditSummaryComponent', () => {
   let component: HearingEditSummaryComponent;
@@ -97,7 +98,8 @@ describe('HearingEditSummaryComponent', () => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [
-        HearingEditSummaryComponent
+        HearingEditSummaryComponent,
+        CaseReferencePipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

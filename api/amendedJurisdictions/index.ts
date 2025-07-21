@@ -21,11 +21,11 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
       const result: any = {
         id: jurisdiction.id
       };
-      
+
       if (jurisdiction.name !== undefined) {
         result.name = jurisdiction.name;
       }
-      
+
       if (jurisdiction.caseTypes !== undefined) {
         result.caseTypes = jurisdiction.caseTypes.map((caseType) => {
           return {
@@ -38,7 +38,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
           };
         });
       }
-      
+
       return result;
     });
 

@@ -276,7 +276,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       };
       const validate$ = this.validate(queryData);
       this.validateCaseSubscription = validate$.subscribe({
-        next: (callbackResponse) => {
+        next: () => {
           this.showSummary= true;
           this.qmCaseQueriesCollectionData = data;
         },

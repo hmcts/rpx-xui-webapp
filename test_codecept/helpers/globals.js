@@ -1,7 +1,7 @@
 /* helpers/globals.js  – CLEAN, PAGE-SAFE VERSION */
 'use strict';
 
-const { container, recorder } = require('codeceptjs'); 
+const { container, actor } = require('codeceptjs');
 
 /* ------------------------------------------------------------------ */
 /*  Always ask CodeceptJS for the current Playwright page.            */
@@ -21,14 +21,14 @@ function resolvePage() {
 async function ensurePage() {
   const pw = container.helpers().Playwright;
   if (pw.page) return pw.page;
-  await recorder.add('create Playwright page', async () => {
-    await pw._createContextPage();
-  });
+  if (!pw.page) {
+    await actor().amOnPage('about:blank');
+  }
   return pw.page;
 }
 
 async function refresh() {
-  const page = resolvePage();
+  const page = await ensurePage(); 
   await page.reload({ waitUntil: 'load' });
 }
 
@@ -56,8 +56,7 @@ async function isPresent(locator) {
 }
 
 async function navigate(url, options = {}) {
-  const page = await ensurePage();
-  await page.goto(url, { waitUntil: 'domcontentloaded', ...options });
+  await actor().amOnPage(url, options);
 }
 
 async function waitForElement(selectorOrLocator, options = {}) {

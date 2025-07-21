@@ -18,10 +18,16 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
   const filteredJurisdictions = [...data]
     .filter((o) => filters.includes(o.id))
     .map((jurisdiction) => {
-      return {
-        id: jurisdiction.id,
-        name: jurisdiction.name,
-        caseTypes: (jurisdiction.caseTypes || []).map((caseType) => {
+      const result: any = {
+        id: jurisdiction.id
+      };
+      
+      if (jurisdiction.name !== undefined) {
+        result.name = jurisdiction.name;
+      }
+      
+      if (jurisdiction.caseTypes !== undefined) {
+        result.caseTypes = jurisdiction.caseTypes.map((caseType) => {
           return {
             id: caseType.id,
             name: caseType.name,
@@ -30,8 +36,10 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
               name: state.name
             }))
           };
-        })
-      };
+        });
+      }
+      
+      return result;
     });
 
   req.session.jurisdictions = filteredJurisdictions;

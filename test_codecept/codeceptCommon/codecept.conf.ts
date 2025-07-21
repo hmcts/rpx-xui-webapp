@@ -61,7 +61,7 @@ fs.mkdirSync(CUKE_OUT, { recursive: true });
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === 'true' : false;
-const head = process.env.HEAD !== 'false'
+const head = process.env.HEAD === 'true';
 console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
 console.log(`headless : ${head}`);

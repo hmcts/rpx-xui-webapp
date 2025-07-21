@@ -1,17 +1,21 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, CaseNotifier, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { reducers } from '../../../app/store';
+import { AllocateRoleService } from '../../../role-access/services';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import { CaseworkerDataService, WorkAllocationCaseService } from '../../services';
+import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
+import { JurisdictionsService } from '../../services/juridictions.service';
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { MyAccessComponent } from './my-access.component';
@@ -21,7 +25,7 @@ class WrapperComponent {
   @ViewChild(MyAccessComponent) public appComponentRef: MyAccessComponent;
 }
 
-xdescribe('MyAccessComponent', () => {
+describe('MyAccessComponent', () => {
   let component: MyAccessComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -34,7 +38,13 @@ xdescribe('MyAccessComponent', () => {
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
+  const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream', 'get']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
+  const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions', 'getDetailedWASupportedJurisdictions']);
+  const mockJurisdictionsService = jasmine.createSpyObj('mockJurisdictionsService', ['getJurisdictions']);
+  const mockRolesService = jasmine.createSpyObj('mockRolesService', ['getRoles']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -42,6 +52,7 @@ xdescribe('MyAccessComponent', () => {
         CdkTableModule,
         ExuiCommonLibModule,
         RouterTestingModule,
+        HttpClientTestingModule,
         StoreModule.forRoot({ ...reducers }),
         WorkAllocationComponentsModule,
         PaginationModule
@@ -54,6 +65,12 @@ xdescribe('MyAccessComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: FilterService, useValue: mockFilterService },
+        { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
+        { provide: LocationDataService, useValue: mockLocationService },
+        { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
+        { provide: JurisdictionsService, useValue: mockJurisdictionsService },
+        { provide: AllocateRoleService, useValue: mockRolesService },
         CaseNotifier
       ]
     }).compileComponents();
@@ -62,7 +79,7 @@ xdescribe('MyAccessComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
-    component = wrapper.appComponentRef;
+    
     // TODO: CAM_BOOKING 0 not neeed
     // component.isPaginationEnabled$ = of(false);
     router = TestBed.inject(Router);
@@ -72,7 +89,24 @@ xdescribe('MyAccessComponent', () => {
     mockCaseworkerService.getAll.and.returnValue(of([]));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFilterService.getStream.and.returnValue(of({}));
+    mockFilterService.get.and.returnValue({});
+    mockLocationService.getLocations.and.returnValue(of([]));
+    mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    mockWASupportedJurisdictionsService.getDetailedWASupportedJurisdictions.and.returnValue(of([]));
+    mockJurisdictionsService.getJurisdictions.and.returnValue(of([]));
+    mockRolesService.getRoles.and.returnValue(of([]));
+    
     fixture.detectChanges();
+    
+    // Ensure the ViewChild component is available
+    component = wrapper.appComponentRef;
+    
+    // If ViewChild is still not available, wait for next tick
+    if (!component) {
+      fixture.detectChanges();
+      component = wrapper.appComponentRef;
+    }
   });
 
   // on merge bookingUi and WA service isPaginationEnabled$ seems not part of component so at this stage it s deactivated
@@ -84,7 +118,10 @@ xdescribe('MyAccessComponent', () => {
     expect(component.cases.length).toEqual(2);
   });
 
-  xit('should have all column headers', () => {
+  it('should have all column headers', () => {
+    expect(component).toBeDefined();
+    expect(component.fields).toBeDefined();
+    
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -110,7 +147,10 @@ xdescribe('MyAccessComponent', () => {
   });
 
   it('should show the footer when there are no cases xx', () => {
-    spyOnProperty(component, 'cases').and.returnValue([]);
+    expect(component).toBeDefined();
+    
+    // Create a spy on the cases getter
+    spyOnProperty(component, 'cases', 'get').and.returnValue([]);
     fixture.detectChanges();
     const element = fixture.debugElement.nativeElement;
     const footerRow = element.querySelector('.footer-row');

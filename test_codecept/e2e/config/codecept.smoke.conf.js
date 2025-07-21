@@ -2,7 +2,7 @@
 const functional_output_dir = '../../../functional_output';
 const codeceptCommonDir = '../../codeceptCommon';
 const global = require(`${codeceptCommonDir}/globals`);
-const head = process.env.HEAD !== 'false'
+const head = process.env.HEAD === 'true'; 
 
 exports.config = {
   grep: '@smoke',

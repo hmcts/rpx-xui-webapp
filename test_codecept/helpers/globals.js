@@ -1,7 +1,7 @@
 /* helpers/globals.js  – CLEAN, PAGE-SAFE VERSION */
 'use strict';
 
-const { container } = require('codeceptjs');
+const { container, recorder } = require('codeceptjs'); 
 
 /* ------------------------------------------------------------------ */
 /*  Always ask CodeceptJS for the current Playwright page.            */
@@ -20,13 +20,11 @@ function resolvePage() {
 
 async function ensurePage() {
   const pw = container.helpers().Playwright;
-  if (pw.page) return pw.page;            // already initialised
-
-  await actor()._within(async () => {
-    // 👇 official internal helper that opens a new page + context
+  if (pw.page) return pw.page;
+  await recorder.add('create Playwright page', async () => {
     await pw._createContextPage();
   });
-  return pw.page;                         // now guaranteed
+  return pw.page;
 }
 
 async function refresh() {

@@ -1,7 +1,7 @@
 /* helpers/globals.js  – CLEAN, PAGE-SAFE VERSION */
 'use strict';
 
-const { container, actor } = require('codeceptjs');
+const { container, recorder } = require('codeceptjs'); 
 
 /* ------------------------------------------------------------------ */
 /*  Always ask CodeceptJS for the current Playwright page.            */
@@ -18,11 +18,21 @@ function resolvePage() {
   );
 }
 
-async function ensurePage() {
+async function ensurePage () {
   const pw = container.helpers().Playwright;
-  if (pw.page) return pw.page;
+
+  /* 1️⃣  Browser -------------------------------------------------- */
+  if (!pw.browser) {
+    await recorder.add('launch Playwright browser', async () => {
+      await pw._startBrowser();             // private but stable
+    });
+  }
+
+  /* 2️⃣  Page ----------------------------------------------------- */
   if (!pw.page) {
-    await actor().amOnPage('about:blank');
+    await recorder.add('open blank page', async () => {
+      await pw._createContextPage();        // now safe: browser exists
+    });
   }
   return pw.page;
 }
@@ -55,8 +65,9 @@ async function isPresent(locator) {
   return count > 0;
 }
 
-async function navigate(url, options = {}) {
-  await actor().amOnPage(url, options);
+async function navigate (url, options = {}) {
+  const page = await ensurePage();
+  await page.goto(url, { waitUntil: 'domcontentloaded', ...options });
 }
 
 async function waitForElement(selectorOrLocator, options = {}) {

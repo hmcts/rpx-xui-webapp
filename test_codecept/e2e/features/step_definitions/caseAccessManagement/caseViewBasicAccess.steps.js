@@ -4,6 +4,10 @@ const caseDetailsBasicViewPage = require('../../pageObjects/caseAccessManagement
 const challengedAccessRequestPage = require('../../pageObjects/caseAccessManagement/challengedAccessRequestPage');
 const specificAccessRequestPage = require('../../pageObjects/caseAccessManagement/specificAccessRequestPage');
 
+Then('I see case details basic view and request access page', async () => {
+  await BrowserWaits.waitForElement(caseDetailsBasicViewPage.container);
+});
+
 Then('I see case details basic view displays banner with message {string}', async (message) => {
   await BrowserWaits.waitForElement(caseDetailsBasicViewPage.bannerMessageContainer);
   const bannerMessage = await caseDetailsBasicViewPage.bannerMessageContainer.textContent();

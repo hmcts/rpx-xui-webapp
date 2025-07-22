@@ -268,10 +268,10 @@
   "resolutions": {
     "form-data@^4": "4.0.4",
     "form-data@^3": "3.0.4",
-    "form-data@^2": "2.5.4",
+    "form-data@^2": "2.5.5",
     "form-data@npm:^4.0.0": "npm:4.0.4",
-    "form-data@npm:^2.5.0": "npm:2.5.4",
-    "form-data@npm:~2.3.2": "npm:2.5.4",
+    "form-data@npm:^2.5.0": "npm:2.5.5",
+    "form-data@npm:~2.3.2": "npm:2.5.5",
     "flat": "~5.0.1",
     "loader-utils": "~2.0.3",
     "minimist": "^1.2.8",

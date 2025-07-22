@@ -13394,7 +13394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:2.5.5, form-data@npm:^2.5.4":
+"form-data@npm:2.5.5, form-data@npm:^2.5.5":
   version: 2.5.5
   resolution: "form-data@npm:2.5.5"
   dependencies:
@@ -21956,7 +21956,7 @@ __metadata:
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:1.0.7"
     file-saver: "npm:^2.0.2"
-    form-data: "npm:^2.5.4"
+    form-data: "npm:^2.5.5"
     get-port: "npm:^7.0.0"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^3.0.0"

@@ -1,27 +1,28 @@
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 
 class HearingPanelPage{
-  constructor() {
-    this.pageContainer = $('exui-hearing-panel');
+  get pageContainer()                { return $('exui-hearing-panel'); }
 
-    this.specificPanelSelection = $('#specificPanelSelection');
-    this.noSpecificPanel = $('#noSpecificPanel');
+  get specificPanelSelection()       { return $('#specificPanelSelection'); }
+  get noSpecificPanel()              { return $('#noSpecificPanel'); }
 
-    this.includePanelMemberSearchInput = element(by.xpath('//div[contains(text(),\'Include specific panel members\')]/..//xuilib-search-judicials//input'));
-    this.excludePanelMemberSearchInput = element(by.xpath('//div[contains(text(),\'Exclude specific panel members\')]/..//xuilib-search-judicials//input'));
+  get includePanelMemberSearchInput(){ return elementByXpath("//div[contains(text(),'Include specific panel members')]/..//xuilib-search-judicials//input"); }
+  get excludePanelMemberSearchInput(){ return elementByXpath("//div[contains(text(),'Exclude specific panel members')]/..//xuilib-search-judicials//input"); }
 
-    this.includePanelMemberBtn = element(by.xpath('//div[contains(text(),\'Include specific panel members\')]/..//div[contains(@class ,\'govuk-button--secondary\')]'));
-    this.excludePanelMemberBtn = element(by.xpath('//div[contains(text(),\'Exclude specific panel members\')]/..//div[contains(@class ,\'govuk-button--secondary\')]'));
+  get includePanelMemberBtn()        { return elementByXpath("//div[contains(text(),'Include specific panel members')]/..//div[contains(@class ,'govuk-button--secondary')]"); }
+  get excludePanelMemberBtn()        { return elementByXpath("//div[contains(text(),'Exclude specific panel members')]/..//div[contains(@class ,'govuk-button--secondary')]"); }
 
-    this.fieldMapping = {
-      'Do you require a panel for this hearing?': element(by.xpath('//h1[contains(text(),\'Do you require a panel for this hearing?\')]')),
-      'Include specific panel members': element(by.xpath('//div[contains(text(),\'Include specific panel members\')]')),
-      'Exclude specific panel members': element(by.xpath('//div[contains(text(),\'Exclude specific panel members\')]')),
+  get fieldMapping() {
+    return {
+      'Do you require a panel for this hearing?': elementByXpath("//h1[contains(text(),'Do you require a panel for this hearing?')]"),
+      'Include specific panel members'         : elementByXpath("//div[contains(text(),'Include specific panel members')]"),
+      'Exclude specific panel members'         : elementByXpath("//div[contains(text(),'Exclude specific panel members')]"),
       'Or select any other panel roles required': $('#panel-role-selector')
     };
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async inputValue(field, value){
@@ -35,13 +36,13 @@ class HearingPanelPage{
         break;
       case 'Include specific panel members':
         const includeMembers = value.split(',');
-        await this.includePanelMemberSearchInput.sendKeys(includeMembers[0].trim());
+        await this.includePanelMemberSearchInput.fill(includeMembers[0].trim());
         await this.selectPanelMember(includeMembers[1].trim());
         await this.includePanelMemberBtn.click();
         break;
       case 'Exclude specific panel members':
         const excludeMember = value.split(',');
-        await this.excludePanelMemberSearchInput.sendKeys(excludeMember[0].trim());
+        await this.excludePanelMemberSearchInput.fill(excludeMember[0].trim());
         await this.selectPanelMember(excludeMember[1].trim());
         await this.excludePanelMemberBtn.click();
         break;
@@ -57,12 +58,12 @@ class HearingPanelPage{
   }
 
   async selectPanelRole(role){
-    const ele = element(by.xpath(`//*[@id='panel-role-selector']//label[contains(text(),'${role}')]/../input`));
+    const ele = elementByXpath(`//*[@id='panel-role-selector']//label[contains(text(),'${role}')]/../input`);
     await ele.click();
   }
 
   async selectPanelMember(member) {
-    const ele = element(by.xpath(`//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${member}')]`));
+    const ele = elementByXpath(`//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${member}')]`);
     await ele.click();
   }
 }

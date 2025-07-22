@@ -5,7 +5,7 @@ const MockUtil = require('../../util/mockUtil');
 const BrowserUtil = require('../../util/browserUtil');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
-const headerPage = require('../../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
 const taskListPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const CaselistPage = require('../../../e2e/features/pageObjects/CaseListPage');
 const errorPage = require('../../../e2e/features/pageObjects/errorPage');
@@ -34,10 +34,10 @@ describe('Task list page', function () {
   async function navigatetoTaskListPage() {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
 
-    await headerPage.waitForPrimaryNavDisplay()
+    await headerPage().waitForPrimaryNavDisplay()
     await BrowserUtil.waitForLD();
     await browser.get('tasks/list/');
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await taskListPage.amOnPage();
   }
 
@@ -112,9 +112,9 @@ describe('Task list page', function () {
       await taskListPage.clickColumnHeader(columnHeaders[1]);
       expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
 
-      await headerPage.getTabElementWithText('Case list').click();
+      await headerPage().getTabElementWithText('Case list').click();
       expect(await caseListPage.amOnPage()).to.be.true;
-      await headerPage.getTabElementWithText('Task list').click();
+      await headerPage().getTabElementWithText('Task list').click();
       await taskListPage.amOnPage();
       expect(await taskListPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
     });
@@ -122,7 +122,7 @@ describe('Task list page', function () {
     const testErrorResponseCodes = [500, 400, 401, 403];
     it('My Tasks on error ', async function () {
       await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-      await headerPage.waitForPrimaryNavDisplay();
+      await headerPage().waitForPrimaryNavDisplay();
       await BrowserUtil.waitForLD();
 
       MockUtil.setMockResponse('POST', '/workallocation/task/', (req, res) => {
@@ -131,11 +131,11 @@ describe('Task list page', function () {
 
       // expect(await tasklistPage.amOnPage()).to.be.true;
       for (const responseCode of testErrorResponseCodes) {
-        await headerPage.clickManageCases();
+        await headerPage().clickManageCases();
         MockUtil.setMockResponse('POST', '/workallocation/task/', (req, res) => {
           res.status(responseCode).send(workAllocationMockData.getMyTasks(10));
         })
-        await headerPage.clickTaskList();
+        await headerPage().clickTaskList();
 
         const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
         await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);

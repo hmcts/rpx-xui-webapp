@@ -1,11 +1,10 @@
 const BrowserWaits = require('../../support/customWaits');
 const ArrayUtil = require('../../utils/ArrayUtil');
-const { defineSupportCode } = require('cucumber');
 
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const browserutil = require('../../../ngIntegration/util/browserUtil');
-const headerPage = require('../../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
 
 const loginlogout = require('../pageObjects/loginLogoutObjects');
 
@@ -15,7 +14,7 @@ Given('I save current window handle reference {string}', async function (windowR
 
 Given('I navigate to page route {string}', async function (pageRoute) {
   await BrowserWaits.retryWithActionCallback(async () => {
-    await headerPage.navigateToRoute(pageRoute);
+    await headerPage().navigateToRoute(pageRoute);
   });
 });
 
@@ -34,16 +33,16 @@ Then('I validate debug text {string} not present in element with css selector {s
 Given('I navigate to home page', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await browserutil.gotoHomePage();
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await browserutil.waitForLD();
-    // await headerPage.clickAppLogoLink();
+    // await headerPage().clickAppLogoLink();
   });
 });
 
 Given('I navigate page route {string}', async function (routeUrl) {
   await browser.get(process.env.TEST_URL+routeUrl);
   await BrowserWaits.retryWithActionCallback(async () => {
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await browserutil.waitForLD();
   });
 });
@@ -51,7 +50,7 @@ Given('I navigate page route {string}', async function (routeUrl) {
 Given('I navigate page route {string}, wait for locator {string}', async function (routeUrl, locator) {
   await browser.get(routeUrl);
   await BrowserWaits.retryWithActionCallback(async () => {
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await browserutil.waitForLD();
     await BrowserWaits.waitForElement($(locator));
   });
@@ -66,7 +65,7 @@ Then('I validate route guard route {string} with locator {string}, is route allo
   await browser.get(routeUrl);
   if (boolRouteAllowed) {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await headerPage.waitForPrimaryNavDisplay();
+      await headerPage().waitForPrimaryNavDisplay();
       await browserutil.waitForLD();
       await BrowserWaits.waitForElement(routePageElement);
     });

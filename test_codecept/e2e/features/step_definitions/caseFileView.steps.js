@@ -1,24 +1,23 @@
-
-const { fieldNameMapper } = require('../../../../api/lib/util');
+const { isPresent } = require('../../../helpers/globals');
 const caseFileViewPageObject = require('../pageObjects/caseFileViewPage');
 const browserWaits = require('../../support/customWaits');
 
 Then('In case file view tab, I see documents tree view', async function () {
-  expect(await caseFileViewPageObject.docTreeContainer.isDisplayed()).to.be.true;
+  expect(await caseFileViewPageObject.docTreeContainer.isVisible()).to.be.true;
 });
 
 Then('In case file view tab, I see documents media view', async function () {
-  expect(await caseFileViewPageObject.mediaViewContainer.isDisplayed()).to.be.true;
+  expect(await caseFileViewPageObject.mediaViewContainer.isVisible()).to.be.true;
 });
 
 Then('In case file view tab, I see documents tree view header with text {string}', async function (headerText) {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await caseFileViewPageObject.documentFolderHeader.getText()).to.includes(headerText);
+    expect(await caseFileViewPageObject.documentFolderHeader.textContent()).to.includes(headerText);
   });
 });
 
 Then('In case file view tab, I see documents sort icon displayed', async function () {
-  expect(await caseFileViewPageObject.sortDocumentsIcon.isDisplayed()).to.be.true;
+  expect(await caseFileViewPageObject.sortDocumentsIcon.isVisible()).to.be.true;
 });
 
 When('In case file view tab, I click documents sort icon', async function () {
@@ -26,7 +25,7 @@ When('In case file view tab, I click documents sort icon', async function () {
 });
 
 Then('In case file view tab, I see documents sort options menu displayed', async function () {
-  expect(await caseFileViewPageObject.sortDocumentsMenuContainer.isDisplayed()).to.be.true;
+  expect(await caseFileViewPageObject.sortDocumentsMenuContainer.isVisible()).to.be.true;
 });
 
 Then('In case file view tab, I see documents sort options', async function (datatable) {
@@ -47,7 +46,7 @@ Then('In case file view tab, I dont see documents sort options', async function 
 
 Then('In case file view tab, I see tree view displays folder {string}', async function (folderPath) {
   const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
-  expect(await folderContainer.isDisplayed()).to.be.true;
+  expect(await folderContainer.isVisible()).to.be.true;
 });
 
 Then('In case file view tab, I see tree view displays folders', async function (datatable) {
@@ -64,7 +63,7 @@ Then('In case file view tab, I see tree view displays folder files count', async
 
   for (const row of datatableHash) {
     const folderContainer = await caseFileViewPageObject.getFolderContainer(row.folderPath);
-    expect(await folderContainer.nodeCountElement.getText()).to.equal(row.count);
+    expect(await folderContainer.nodeCountElement.textContent()).to.equal(row.count);
   }
 });
 
@@ -74,7 +73,7 @@ Then('In case file view tab, I see files under folder {string}', async function 
 
   for (const row of datatableHash) {
     const fileContainer = await folderContainer.getChildFileContainer(row.file);
-    expect(await fileContainer.fileElement.isDisplayed()).to.be.true;
+    expect(await fileContainer.fileElement.isVisible()).to.be.true;
   }
 });
 
@@ -84,9 +83,9 @@ Then('In case file view tab, I see file upload stamp for files under folder {str
 
   for (const row of datatableHash) {
     const fileContainer = await folderContainer.getChildFileContainer(row.file);
-    expect(await fileContainer.fileElement.isPresent()).to.be.true;
-    expect(await fileContainer.fileUploadTimestamp.isPresent()).to.be.true;
-    // expect(await fileContainer.fileUploadTimestamp.getText()).to.includes(row.uploadDate)
+    expect(await isPresent(fileContainer.fileElement)).to.be.true;
+    expect(await isPresent(fileContainer.fileUploadTimestamp)).to.be.true;
+    // expect(await fileContainer.fileUploadTimestamp.textContent()).to.includes(row.uploadDate)
   }
 });
 
@@ -96,8 +95,8 @@ Then('In case file view tab, I dont see file upload stamp for files under folder
 
   for (const row of datatableHash) {
     const fileContainer = await folderContainer.getChildFileContainer(row.file);
-    expect(await fileContainer.fileElement.isDisplayed()).to.be.true;
-    expect(await fileContainer.fileUploadTimestamp.getText()).to.equal('');
+    expect(await fileContainer.fileElement.isVisible()).to.be.true;
+    expect(await fileContainer.fileUploadTimestamp.textContent()).to.equal('');
   }
 });
 

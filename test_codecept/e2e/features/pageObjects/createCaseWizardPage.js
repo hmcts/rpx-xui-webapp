@@ -1,3 +1,4 @@
+const { $, $$, elementByXpath } = require('../../../helpers/globals');
 Button = require('./webdriver-components/button.js');
 
 class CreateCaseWizardPage{
@@ -127,7 +128,7 @@ class CreateCaseWizardPage{
 
   async clickCollectionAddNewButton(collectionFieldId) {
     const xpathLocator = await this.collectionAddNewElementButtonXPathTemplate.replace('COLLECTION-ID-PLACEHOLDER', collectionFieldId);
-    await element(by.xpath(xpathLocator)).click();
+    await elementByXpath(xpathLocator).click();
   }
 
   /**
@@ -152,7 +153,7 @@ class CreateCaseWizardPage{
     const labelElements = await $$(this.fieldLabels);
     const labels = [];
     for (const labelElem of labelElements){
-      const labelText = await labelElem.getText();
+      const labelText = await labelElem.textContent();
       const label = labelText.replace(' (Optional)', '');
       labels.push(label);
     }
@@ -164,7 +165,7 @@ class CreateCaseWizardPage{
     const labelElements = await $$(this.greyBarFieldLabels);
     const labels = [];
     for (const labelElem of labelElements){
-      const labelText = await labelElem.getText();
+      const labelText = await labelElem.textContent();
       const label = labelText.replace(' (Optional)', '');
       labels.push(label);
     }
@@ -176,17 +177,17 @@ class CreateCaseWizardPage{
     const label = await labelText.replace(' (Optional)', '');
     const xpathLocator = await this.answerValueXpathTemplate.replace('LABEL-TEXT-PLACEHOLDER', label);
 
-    return await element(by.xpath(xpathLocator.toString())).getText();
+    return await elementByXpath(xpathLocator.toString()).textContent();
   }
 
   async clickChangeLink(labelText){
     const label = await labelText.replace(' (Optional)', '');
     const xpathLocator = await this.answerChangeLinkXpathTemplate.replace('LABEL-TEXT-PLACEHOLDER', label);
-    await element(by.xpath(xpathLocator)).click();
+    await elementByXpath(xpathLocator).click();
   }
 
   async getPageHeader(){
-    return await $(this.header).getText();
+    return await $(this.header).textContent();
   }
 
   async errorSummaryDispalyed() {
@@ -202,7 +203,7 @@ class CreateCaseWizardPage{
   }
 
   async continueButtonDisplayed(){
-    return await this.continueButton.isDisplayed();
+    return await this.continueButton.isVisible();
   }
 
   async clickGenericCollectionAddNewButton() {

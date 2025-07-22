@@ -1,28 +1,25 @@
-
+const { $, getText } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class ChooseRadioOptionComponent{
-  constructor(parentCss){
-    // if (typeof parentCss === 'string'){
-    //     this.component = $(`${parentCss ? parentCss : ''} exui-choose-radio-option`);
-    // }else{
-    //     this.component = parentCss.$(`exui-choose-radio-option`);
-    // }
-
-    this.component = $('exui-choose-radio-option');
-
-    this.header = this.component.$('h1');
-    this.headerCaption = this.component.$('h1 span');
-
-    this.radioOptions = this.component.$$('.govuk-radios');
-
-    this.errorMessage = $('exui-choose-radio-option #error-message');
+  get component() {                               // <exui-choose-radio-option>
+    return $('exui-choose-radio-option');
   }
+
+  /* elements inside the component ------------------------------------- */
+  get header()         { return this.component.locator('h1'); }
+  get headerCaption()  { return this.component.locator('h1 span'); }
+
+  // all <div class="govuk-radios"> groups inside the component
+  get radioOptions()   { return this.component.locator('.govuk-radios'); }
+
+  /* cross-component error message (same selector as before) ------------ */
+  get errorMessage()   { return $('exui-choose-radio-option #error-message'); }
 
   async isDisplayed(){
     try {
       await BrowserWaits.waitForElement(this.component);
-      return await this.component.isDisplayed();
+      return await this.component.isVisible();
     } catch (err){
       return false;
     }
@@ -31,7 +28,7 @@ class ChooseRadioOptionComponent{
   async isValidationErrorMessageDisplayed(){
     try {
       await BrowserWaits.waitForElement(this.errorMessage);
-      return await this.component.isDisplayed();
+      return await this.component.isVisible();
     } catch (err) {
       return false;
     }
@@ -42,16 +39,16 @@ class ChooseRadioOptionComponent{
     if (!isMsgDisplayed){
       throw new Error('Validation error message is not displayed.');
     }
-    return this.errorMessage.getText();
+    return getText(this.errorMessage);
   }
 
   async getHeaderCaption(){
-    return this.headerCaption.getText();
+    return getText(this.headerCaption);
   }
 
   async getHeaderText(){
-    await this.isDisplayed();
-    return this.header.getText();
+    await this.isVisible();
+    return getText(this.header);
   }
 
   async getCountOfRadioOptions(){
@@ -59,11 +56,11 @@ class ChooseRadioOptionComponent{
   }
 
   async isRadioOptionPresent(radioLabel){
-    return await this.component.element(by.xpath(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]`)).isDisplayed();
+    return await this.component.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]`).isVisible();
   }
 
   async getRadioOptionInputElement(radioLabel){
-    return await this.component.element(by.xpath(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]//../input`));
+    return await this.component.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]//../input`);
   }
 
   async selectRadioOption(radioLabel){
@@ -74,7 +71,7 @@ class ChooseRadioOptionComponent{
 
   async isRadioOptionSelected(radioLabel) {
     const radioInput = await this.getRadioOptionInputElement(radioLabel);
-    return await radioInput.isSelected();
+    return await radioInput.isChecked();
   }
 }
 

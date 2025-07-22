@@ -1,6 +1,3 @@
-
-const { defineSupportCode } = require('cucumber');
-
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 const workAllocationDataModel = require('../../../../dataModels/workAllocation');
@@ -15,7 +12,6 @@ const taskAssignmentPage = require('../../../../e2e/features/pageObjects/workAll
 
 const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
-const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
 const CaseListPage = require('../../../../e2e/features/pageObjects/CaseListPage');
 const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 
@@ -29,7 +25,6 @@ const WAUtil = require('../../workAllocation/utils');
 // const nodeAppMockData = require('../../../../nodeMock/nodeApp/mockData');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
-const headerpage = require('../../../../e2e/features/pageObjects/headerPage');
 const taskActionPage = require('../../../../e2e/features/pageObjects/workAllocation/taskActionPage');
 
 const myWorkPage = require('../../../../e2e/features/pageObjects/workAllocation/myWorkPage');

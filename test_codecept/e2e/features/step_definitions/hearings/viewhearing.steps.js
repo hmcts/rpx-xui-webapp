@@ -4,13 +4,13 @@ const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 Then('I validate view hearing page displayed', async function () {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await viewHearingPage.container.isDisplayed()).to.be.true;
+    expect(await viewHearingPage.container.isVisible()).to.be.true;
   });
 });
 
 Then('I validate view hearing page Edit hearing button displayed is {string}', async function (displayBool) {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await viewHearingPage.editHearingBtn.isDisplayed()).to.equal(displayBool.toLowerCase().includes('true'));
+    expect(await viewHearingPage.editHearingBtn.isVisible()).to.equal(displayBool.toLowerCase().includes('true'));
   });
 });
 

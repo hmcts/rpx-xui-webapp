@@ -32,14 +32,14 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
             id: caseType.id,
             name: caseType.name
           };
-          
+
           if (caseType.states) {
             mappedCaseType.states = caseType.states.map((state) => ({
               id: state.id,
               name: state.name
             }));
           }
-          
+
           return mappedCaseType;
         });
       }

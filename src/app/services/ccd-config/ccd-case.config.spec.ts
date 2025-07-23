@@ -201,7 +201,7 @@ describe('AppConfiguration', () => {
 
   it('should be initialised after all LD observables complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
     tick(5000);
-    expect(service.initialisationComplete).toBeFalsy();
+    expect(service.initialisationComplete).toBeTruthy();
   })));
 
   it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {

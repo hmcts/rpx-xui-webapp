@@ -14,6 +14,7 @@ const featureNames = {
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
   accessManagementMode: 'access-management-mode',
+  enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
   cdamExclusionList: 'mc-cdam-exclusion-list'
 };
 
@@ -31,6 +32,7 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
   [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
   [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);
 

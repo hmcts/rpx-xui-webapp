@@ -57,8 +57,8 @@ export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesConfirmed?: boolean;
   nonReasonableAdjustmentChangesRequired: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
-  partyDetailsChangesRequired: boolean;
-  partyDetailsChangesConfirmed?: boolean;
+  participantAttendanceChangesRequired: boolean;
+  participantAttendanceChangesConfirmed?: boolean;
   partyDetailsAnyChangesRequired?: boolean;
   hearingWindowChangesRequired: boolean;
   hearingWindowChangesConfirmed?: boolean;
@@ -88,7 +88,8 @@ export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED',
   WARNING = 'WARNING',
-  NONE = 'NONE'
+  NONE = 'NONE',
+  EMPTY = ''
 }
 
 export interface ParticipantAttendanceMode {

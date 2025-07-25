@@ -41,3 +41,21 @@ variable "redis_capacity" {
   default     = "1"
   description = "The size of the Redis cache to deploy. Valid values are 1, 2, 3, 4, 5"
 }
+
+variable "welsh_reporting_enabled" {
+  type        = bool
+  description = "Enable Welsh language usage reporting"
+  default     = false
+}
+
+variable "welsh_action_group_name" {
+  description = "The name of the Action Group for Welsh reporting."
+  type        = string
+  default     = "welsh-support"
+}
+
+variable "welsh_email_address_key" {
+  description = "Email address key in azure Key Vault for Welsh reporting."
+  type        = string
+  default     = "welsh-report-email"
+}

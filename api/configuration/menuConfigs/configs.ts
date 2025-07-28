@@ -1,12 +1,11 @@
 import { baseConfig } from './base-config';
 import { aatDifferences } from './aat-diffs';
-import { previewDifferences } from './preview-diffs';
 
 export function setupMenuConfig(environment) {
   let config;
   if (environment === 'prod') {
     config = baseConfig;
-  } else if (environment === 'aat') {
+  } else if (environment === 'aat' || environment === 'preview') {
     let aatConfig = { ...baseConfig };
     const rolesRegexChanges = {
       '(judge)|(judiciary)': '(judge)|(judiciary)|(panelmember)'
@@ -14,10 +13,6 @@ export function setupMenuConfig(environment) {
     aatConfig = replaceRolesRegex(baseConfig, rolesRegexChanges);
     aatConfig = mergeConfigs(baseConfig, aatDifferences);
     config = aatConfig;
-  } else if (environment === 'preview') {
-    let previewConfig = { ...baseConfig };
-    previewConfig = mergeConfigs(baseConfig, previewDifferences);
-    config = previewConfig;
   }
   return config;
 }

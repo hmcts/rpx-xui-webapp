@@ -317,4 +317,11 @@ describe('HearingAnswersPipe', () => {
     const expected = cold('(b|)', { b: answer });
     expect(result$).toBeObservable(expected);
   });
+
+  it('should transform hearingId', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_ID, of(STATE), 0);
+    const answer = '1000000';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
 });

@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { ADMIN_ROLE_LIST, AppConstants, CTSC_ROLE_LIST, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
-import { Theme, UserTypeRole } from './models/theme.model';
+import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
 
@@ -228,16 +228,6 @@ export class AppUtils {
       default:
         break;
     }
-  }
-
-  public static getUserType(userRoles: string[], userTypeRoles: UserTypeRole): string {
-    if (userRoles.some((userRole) => userTypeRoles.solicitor && userTypeRoles.solicitor.includes(userRole))) {
-      return 'Solicitor';
-    } else if (userRoles.some((userRole) => userTypeRoles.judicial && userTypeRoles.judicial.includes(userRole))) {
-      return 'Judicial';
-    }
-
-    return 'LegalOps';
   }
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {

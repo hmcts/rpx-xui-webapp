@@ -34,7 +34,7 @@ export class InitializeHearingRequest implements Action {
 export class LoadHearingRequest implements Action {
   public readonly type = LOAD_HEARING_REQUEST;
 
-  constructor(public payload: { hearingID: string, targetURL: string }) {}
+  constructor(public payload: { hearingID: string, targetURL: string, caseRef: string }) {}
 }
 
 export class UpdateHearingRequest implements Action {

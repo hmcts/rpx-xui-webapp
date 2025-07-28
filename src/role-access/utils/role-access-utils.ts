@@ -1,6 +1,6 @@
 import { NavigationExtras } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
 import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { InfoMessageType } from '../models/enums';

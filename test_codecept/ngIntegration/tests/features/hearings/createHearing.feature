@@ -145,7 +145,7 @@ Feature: Create hearings workflow
         Then In create hearing workflow, I validate check yoor answers displayed
             | section                                    | field                                                    | value                     |
             |  | Case name | 1234567812345678 |
-            |  | Case number | 1690- |
+            |  | Case reference | 1690- |
             # |                                            | Type                                                     |                                     |
             # | Hearing requirements                       | Reasonable adjustments                                   |                           |
             | Additional facilities                      | Will additional security be required?                    | No                        |
@@ -292,7 +292,7 @@ Feature: Create hearings workflow
         Then In create hearing workflow, I validate check yoor answers displayed
             | section                                    | field                                                    | value                     |
             |  | Case name   | 1234567812345678 |
-            |  | Case number | 1690-            |
+            |  | Case reference | 1690-            |
             # |                                            | Type                                                     |                                     |
           | Hearing requirements                       | Reasonable adjustments                                   |                           |
           | Additional facilities                      | Will additional security be required?                    | No                        |
@@ -440,7 +440,7 @@ Feature: Create hearings workflow
         Then In create hearing workflow, I validate check yoor answers displayed
             | section                                    | field                                                    | value                                                      |
             |                                            | Case name                                                | 1690                                                       |
-            |                                            | Case number                                              | 1690-                                                      |
+            |                                            | Case reference                                              | 1690-                                                      |
             # |                                            | Type                                                     |                                     |
             # | Hearing requirements                       | Reasonable adjustments                                   |                                                            |
             | Additional facilities                      | Will additional security be required?                    | No                                                         |
@@ -596,7 +596,7 @@ Feature: Create hearings workflow
         Then In create hearing workflow, I validate check yoor answers displayed
             | section                | field                                                    | value                     |
             |  | Case name | 1234567812345678 |
-            |                        | Case number                                              | 1690-                     |
+            |                        | Case reference                                              | 1690-                     |
             # |                                            | Type                                                     |                                     |
             # | Hearing requirements   | Reasonable adjustments                                   |                           |
             | Additional facilities  | Will additional security be required?                    | No                        |

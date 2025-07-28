@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Person } from '@hmcts/rpx-xui-common-lib/lib/models/person.model';
+import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -25,7 +25,6 @@ import {
   AllocateTo,
   DEFINED_ROLES,
   DurationOfRole,
-  RoleCategory,
   SpecificRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';

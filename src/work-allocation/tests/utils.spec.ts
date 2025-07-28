@@ -1,8 +1,8 @@
 import { NavigationExtras, RouterEvent } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 
 import { CaseRoleDetails } from '../../role-access/models/case-role-details.interface';
-import { RoleCategory } from '../../role-access/models';
 import { ConfigConstants } from '../components/constants';
 import { CaseService, SortOrder, TaskService } from '../enums';
 import { Case, CaseServiceConfig } from '../models/cases';

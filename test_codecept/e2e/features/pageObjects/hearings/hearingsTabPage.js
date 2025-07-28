@@ -47,13 +47,13 @@ class HearingsTable {
     let colNum = -1;
     switch (headerName) {
       case 'Hearing date':
-        colNum = 2;
-        break;
-      case 'Status':
         colNum = 3;
         break;
-      case 'Actions':
+      case 'Status':
         colNum = 4;
+        break;
+      case 'Actions':
+        colNum = 5;
         break;
       default:
         colNum = -1;

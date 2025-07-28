@@ -3,17 +3,17 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
+
 import { http } from '../lib/http';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CANCEL, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import { CachedCaseworker, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
-import { PersonRole } from './interfaces/person';
-import { RoleCaseData } from './interfaces/roleCaseData';
-
 import { Case } from './interfaces/case';
+import { CachedCaseworker, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
+import { RoleCaseData } from './interfaces/roleCaseData';
+import { PersonRole } from './interfaces/person';
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -869,14 +869,14 @@ describe('workAllocation.utils', () => {
 
   describe('applySearchFilter', () => {
     it('PersonRole BOTH', () => {
-      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.LEGAL_OPERATIONS };
       const result = applySearchFilter(person, PersonRole.ALL, 'name');
       expect(result).to.equal(true);
     });
 
     it('PersonRole CASEWORKER', () => {
-      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
-      const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
+      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.LEGAL_OPERATIONS };
+      const result = applySearchFilter(person, PersonRole.LEGAL_OPERATIONS, 'name');
       expect(result).to.equal(true);
     });
 
@@ -888,12 +888,12 @@ describe('workAllocation.utils', () => {
 
     it('PersonRole CASEWORKER no match', () => {
       const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL };
-      const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
+      const result = applySearchFilter(person, PersonRole.LEGAL_OPERATIONS, 'name');
       expect(result).to.equal(false);
     });
 
     it('PersonRole JUDICIAL no match', () => {
-      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.LEGAL_OPERATIONS };
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(false);
     });
@@ -1523,7 +1523,7 @@ describe('workAllocation.utils', () => {
       expect(mapRoleType(PersonRole.ALL)).to.deep.equal('');
       expect(mapRoleType(PersonRole.JUDICIAL)).to.deep.equal(RoleCategory.JUDICIAL);
       expect(mapRoleType(PersonRole.ADMIN)).to.deep.equal(RoleCategory.ADMIN);
-      expect(mapRoleType(PersonRole.CASEWORKER)).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
+      expect(mapRoleType(PersonRole.LEGAL_OPERATIONS)).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
     });
   });
 

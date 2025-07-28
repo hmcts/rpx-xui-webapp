@@ -1,9 +1,11 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import { TermsAndConditionsComponent } from './terms-and-conditions.component';
@@ -11,7 +13,7 @@ import { TermsAndConditionsComponent } from './terms-and-conditions.component';
 const storeMock = {
   pipe: () => of(null),
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  dispatch: () => {}
+  dispatch: () => { }
 };
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
@@ -35,22 +37,24 @@ describe('TermsAndConditionsComponent', () => {
   let element: DebugElement;
   let termsConditionsService: TermsConditionsService;
 
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: (key: string) => key === 'Get help' ? 'Get help' : key, getTranslation$: (phrase: string) => phrase === 'Get help' ? of('Get help') : of(phrase) });
+
   beforeEach(waitForAsync(() => {
     pipeSpy = spyOn(storeMock, 'pipe');
     dispatchSpy = spyOn(storeMock, 'dispatch');
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule
-      ],
-      declarations: [TermsAndConditionsComponent, TestDummyHostComponent],
+      declarations: [TermsAndConditionsComponent, TestDummyHostComponent, RpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule],
       providers: [{
         provide: Store,
         useValue: storeMock
       },
-      TermsConditionsService
-      ]
+      {
+        provide: RpxTranslationService,
+        useFactory: rpxTranslationServiceStub
+      },
+      TermsConditionsService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
     })
       .compileComponents();
   }));

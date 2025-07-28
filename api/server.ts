@@ -5,7 +5,7 @@
  * and higher environments.
  */
 import 'source-map-support/register';
-import { app } from './application';
+import { createApp } from './application';
 
 import * as ejs from 'ejs';
 import * as express from 'express';
@@ -15,32 +15,35 @@ import errorHandler from './lib/error.handler';
 import { removeCacheHeaders } from './lib/middleware/removeCacheHeaders';
 import { corsMw } from './security/cors';
 
-app.engine('html', ejs.renderFile);
-app.set('view engine', 'html');
-app.set('views', __dirname);
+createApp()
+  .then((app: express.Application) => {
+    app.engine('html', ejs.renderFile);
+    app.set('view engine', 'html');
+    app.set('views', __dirname);
 
-app.set('view engine', 'html');
-app.set('views', __dirname);
+    app.set('view engine', 'html');
+    app.set('views', __dirname);
 
-app.use(corsMw);
+    app.use(corsMw);
 
-app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
-app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
+    app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
+    app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
 
-app.use('/*', (req, res) => {
-  res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
-  res.render('../index', {
-    providers: [
-      { provide: 'REQUEST', useValue: req },
-      { provide: 'RESPONSE', useValue: res }
-    ],
-    req,
-    res
+    app.use('/*', (req, res) => {
+      res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
+      res.render('../index', {
+        providers: [
+          { provide: 'REQUEST', useValue: req },
+          { provide: 'RESPONSE', useValue: res }
+        ],
+        req,
+        res
+      });
+    });
+
+    app.use(appInsights);
+    app.use(errorHandler);
+    app.listen(process.env.PORT || 3000, () => {
+      console.log('Server listening on port 3000!');
+    });
   });
-});
-
-app.use(appInsights);
-app.use(errorHandler);
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Server listening on port 3000!');
-});

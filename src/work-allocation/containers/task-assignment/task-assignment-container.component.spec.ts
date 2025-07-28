@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,11 +10,12 @@ import { PaginationModule, SessionStorageService } from '@hmcts/ccd-case-ui-tool
 import { PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 
-import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { TaskActionConstants } from '../../components/constants';
 import { TaskActionType } from '../../enums';
@@ -22,6 +23,7 @@ import { Task } from '../../models/tasks';
 import { WorkAllocationTaskService } from '../../services';
 import { getMockTasks } from '../../tests/utils.spec';
 import { TaskAssignmentContainerComponent } from './task-assignment-container.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: `
@@ -54,7 +56,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.CASEWORKER
+    domain: PersonRole.LEGAL_OPERATIONS
   };
   const locationStub: any = {
     back: jasmine.createSpy('back')
@@ -82,21 +84,16 @@ describe('TaskAssignmentContainerComponent2', () => {
         RpxTranslateMockPipe
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        ReactiveFormsModule,
+      imports: [ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
-        HttpClientTestingModule,
         EffectsModule.forRoot([]),
         PaginationModule,
         StoreModule.forRoot({}),
-        RouterTestingModule.withRoutes(
-          [
-            { path: 'my-work/list', component: NothingComponent }
-          ]
-        )
-      ],
+        RouterTestingModule.withRoutes([
+          { path: 'my-work/list', component: NothingComponent }
+        ])],
       providers: [
         { provide: Location, useValue: locationStub },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
@@ -121,7 +118,9 @@ describe('TaskAssignmentContainerComponent2', () => {
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: Router, useValue: mockRouter },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
@@ -183,7 +182,8 @@ describe('TaskAssignmentContainerComponent2', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE],
+      roleCategory: 'JUDICIAL'
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();

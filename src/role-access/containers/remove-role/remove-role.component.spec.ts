@@ -1,15 +1,17 @@
 import { Location } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { AnswersComponent } from '../../components';
-import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, RoleCategory, TypeOfRole } from '../../models';
+import { AllocateRoleStateData, CaseRole, RemoveAllocationNavigationEvent, Role, TypeOfRole } from '../../models';
 import { CaseRoleDetails } from '../../models';
 import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
@@ -99,8 +101,8 @@ describe('RemoveRoleComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientTestingModule, RouterTestingModule],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
+      imports: [RouterTestingModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -154,7 +156,9 @@ describe('RemoveRoleComponent', () => {
         {
           provide: LoggerService,
           useValue: loggerServiceMock
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

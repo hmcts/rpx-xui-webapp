@@ -13,8 +13,8 @@ const featureNames = {
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  enableRestrictedCaseAccess: 'enable-restricted-case-access',
-  accessManagementMode: 'access-management-mode'
+  accessManagementMode: 'access-management-mode',
+  cdamExclusionList: 'mc-cdam-exclusion-list'
 };
 
 function featureToAttributeName(key: string): string {
@@ -30,8 +30,8 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
-  [featureNames.enableRestrictedCaseAccess, featureToAttributeName(featureNames.enableRestrictedCaseAccess)],
-  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)]
+  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);
 
 const footerDataNavigation = {
@@ -205,6 +205,8 @@ const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';
+const iaJudgeRole: string = 'caseworker-ia-iacjudge';
+const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 
 export class AppConstants {
   public static FOOTER_DATA = null;
@@ -220,6 +222,8 @@ export class AppConstants {
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static IA_JUDGE_ROLE = iaJudgeRole;
+  public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
 }

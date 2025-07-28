@@ -1,11 +1,13 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { AnswersComponent } from '../../components/answers/answers.component';
-import { ExclusionNavigationEvent, RoleCategory } from '../../models';
+import { ExclusionNavigationEvent } from '../../models';
 import { AnswerHeaderText, AnswerLabelText, ExclusionMessageText } from '../../models/enums';
 import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
@@ -48,8 +50,8 @@ describe('DeleteExclusionComponent', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientTestingModule],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
+      imports: [],
       providers: [
         {
           provide: ActivatedRoute,
@@ -77,7 +79,9 @@ describe('DeleteExclusionComponent', () => {
         {
           provide: RoleExclusionsService,
           useValue: mockRoleExclusionService
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();
@@ -176,8 +180,8 @@ describe('DeleteExclusionComponent with no name', () => {
       schemas: [
         NO_ERRORS_SCHEMA
       ],
-      imports: [HttpClientTestingModule],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
+      imports: [],
       providers: [
         {
           provide: ActivatedRoute,
@@ -209,7 +213,9 @@ describe('DeleteExclusionComponent with no name', () => {
         {
           provide: mockAllocateRoleService,
           useValue: mockAllocateRoleService
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

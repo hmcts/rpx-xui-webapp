@@ -5,14 +5,16 @@ const list =
 
 const opts: cors.CorsOptions = {
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true);            // same‑origin / curl
-    const ok = list.some(o =>
+    if (!origin) {
+      return cb(null, true);
+    }
+    const ok = list.some((o) =>
       // allow exact match or sub‑domains
       origin === o || origin.endsWith(`.${o.replace(/^https?:\/\//, '')}`)
     );
     cb(null, ok);
   },
-  credentials: true,
+  credentials: true
 };
 
 export const corsMw = cors(opts);

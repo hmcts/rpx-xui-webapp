@@ -164,8 +164,8 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   QUERY
 
   severity    = 3
-  frequency   = "P1M"
-  time_window = "P1M"
+  frequency   = 5
+  time_window = 43200
 
   trigger {
     operator  = "GreaterThanOrEqual"

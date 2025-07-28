@@ -165,7 +165,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
 
   severity    = 3
   frequency   = 5
-  time_window = 43200
+  time_window = 2880
 
   trigger {
     operator  = "GreaterThanOrEqual"

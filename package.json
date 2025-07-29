@@ -283,5 +283,5 @@
     "webpack": "^5.94.0",
     "tar-fs": "^3.0.9"
   },
-  "packageManager": "yarn@4.7.0"
+  "packageManager": "yarn@4.9.2"
 }

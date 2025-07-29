@@ -30,7 +30,6 @@ import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
-import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-query-management-container',

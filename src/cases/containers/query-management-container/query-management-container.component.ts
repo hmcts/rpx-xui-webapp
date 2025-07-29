@@ -363,8 +363,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
     return combineLatest([
-      this.caseNotifier.caseView,
-      this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
+      this.caseNotifier.caseView as unknown as Observable<CaseView>,
+      this.featureToggleService.getValue<CaseTypeQualifyingQuestions[]>(this.LD_QUALIFYING_QUESTIONS, [])
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         const caseId = caseView.case_id;
@@ -386,6 +386,19 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             markdown = Utils.replaceAll(markdown, placeholder, caseId);
           }
           return { ...question, url, markdown };
+            ? question.markdown.replaceAll(placeholder, caseId)
+            : question.markdown;
+
+          const markdown_cy = question.markdown_cy?.includes(placeholder)
+            ? question.markdown_cy.replaceAll(placeholder, caseId)
+            : question.markdown_cy;
+
+          return {
+            ...question,
+            url,
+            markdown,
+            markdown_cy
+          };
         });
 
         // Add Extra options to qualifying question
@@ -404,7 +417,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     );
 
     return combineLatest([
-      this.caseNotifier.caseView,
+      this.caseNotifier.caseView as unknown as Observable<CaseView>,
       hintText$
     ]).pipe(
       map(([caseView, hintText]: [CaseView, ServiceAttachmentHintTextResponse]) => {
@@ -444,7 +457,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, { messages: [] });
 
     return combineLatest([
-      this.caseNotifier.caseView,
+      this.caseNotifier.caseView as unknown as Observable<CaseView>,
       serviceMessages$
     ]).pipe(
       map(([caseView, serviceMessages]: [CaseView, ServiceMessagesResponse]) => {

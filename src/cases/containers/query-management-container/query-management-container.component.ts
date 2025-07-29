@@ -381,11 +381,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         // Find the correct qualifying questions
         const qualifyingQuestions = (normalisedMap[caseTypeKey] ?? []).map((question) => {
           const url = question.url?.replace(placeholder, caseId);
-          let markdown = question.markdown;
-          if (markdown?.includes(placeholder)) {
-            markdown = Utils.replaceAll(markdown, placeholder, caseId);
-          }
-          return { ...question, url, markdown };
+          const markdown = question.markdown?.includes(placeholder)
             ? question.markdown.replaceAll(placeholder, caseId)
             : question.markdown;
 

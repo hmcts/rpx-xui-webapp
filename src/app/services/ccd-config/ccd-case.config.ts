@@ -193,7 +193,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl(): string {
-    return `${this.getCaseDataUrl()}/internal/banners/`;
+    return `${this.getCaseDataUrl()}/internal/banners`;
   }
 
   public getPrdUrl(): string {

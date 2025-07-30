@@ -1,6 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import moment from 'moment';';
+import moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { ValidatorsUtils } from './validators.utils';
 

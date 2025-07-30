@@ -8,7 +8,7 @@ import { HearingsUtils } from './hearings.utils';
 import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import moment from 'moment';';
+import moment from 'moment';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {

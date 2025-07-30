@@ -1,5 +1,5 @@
 import { FormBuilder, FormControl } from '@angular/forms';
-import moment from 'moment';';
+import moment from 'moment';
 import {
   BookingDateFormErrorMessage,
   BookingDateOption

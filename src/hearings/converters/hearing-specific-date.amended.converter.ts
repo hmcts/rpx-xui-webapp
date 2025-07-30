@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import moment from 'moment';';
+import moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HearingDateEnum } from '../models/hearings.enum';

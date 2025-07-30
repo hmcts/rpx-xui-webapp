@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import moment from 'moment';';
+import moment from 'moment';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import {
   Actions,

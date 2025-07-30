@@ -2,7 +2,7 @@ import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import moment from 'moment';';
+import moment from 'moment';
 import * as momentTimezone from 'moment-timezone';
 import { Subscription, combineLatest } from 'rxjs';
 import { filter, first } from 'rxjs/operators';

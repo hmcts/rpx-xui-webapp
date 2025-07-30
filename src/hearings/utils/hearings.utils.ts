@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import moment from 'moment';';
+import moment from 'moment';
 import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';

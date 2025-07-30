@@ -4682,74 +4682,63 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngrx/effects@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/effects@npm:17.2.0"
-  dependencies:
-    "@ngrx/operators": "npm:17.0.0-beta.0"
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/core": ^17.0.0
-    "@ngrx/store": 17.2.0
-    rxjs: ^6.5.3 || ^7.5.0
-  checksum: 10/ec0d7ca12ae39d49b257b15431269ea90e90261f87d3e4458dd0ee2f84ebcd66a7f79a8c0c129d9ab394918d9c2b5d60865e25e6fa352d61317ea0f2babf4eba
-  languageName: node
-  linkType: hard
-
-"@ngrx/operators@npm:17.0.0-beta.0":
-  version: 17.0.0-beta.0
-  resolution: "@ngrx/operators@npm:17.0.0-beta.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/ca9ce33f827a1ceeb3569061cd54933763c497aee09c03ac84f92be84a3a8f3b9d2ea0c42518843288c557586e15af1d7bf442c3eca624ddae44f60907423930
-  languageName: node
-  linkType: hard
-
-"@ngrx/router-store@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/router-store@npm:17.2.0"
+"@ngrx/effects@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@ngrx/effects@npm:20.0.0"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/common": ^17.0.0
-    "@angular/core": ^17.0.0
-    "@angular/router": ^17.0.0
-    "@ngrx/store": 17.2.0
+    "@angular/core": ^20.0.0
+    "@ngrx/store": 20.0.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 10/5296d5ee52d2217f208010151341b1c7c5cf982cfa5fc066a113a5df41d92053997fd2385e9769abb762a47c3948cf549bd32bbf46041f6c785cafdd283d1848
+  checksum: 10/bc88cc8a302a5e32586845e638623286e4b54a51c758b0c36dd39f2b8df7026b6bfe44f2a85348d99bff6718ced7638df0b2945395d28be232ddd356dcd0da64
   languageName: node
   linkType: hard
 
-"@ngrx/schematics@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/schematics@npm:17.2.0"
-  checksum: 10/5879a05412388e0d97b595be3be706dde1d52ac339dc4a4e4991e76ffbe5b973f0b3f202abae5da75eb701da61ea903f5b56687b8c3f7fc59fd66e7313cdb584
-  languageName: node
-  linkType: hard
-
-"@ngrx/store-devtools@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/store-devtools@npm:17.2.0"
+"@ngrx/router-store@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@ngrx/router-store@npm:20.0.0"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@ngrx/store": 17.2.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/store": 20.0.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 10/52bfa084fed420a460aa4767e0f14d5d8193beb5102e3420203226ef710b80cb7e9f21741d55a36b1c6df092accf489120cea76f701ef16de0b03dea84d644f6
+  checksum: 10/5b77dbe90d4c342043a9af86598a1c393627335b4ba275ade6f82d9a1f2d71ad28cc5b32a76efc26c736f26204dcea2953e4a6dfcb9f241f40e167401570c576
   languageName: node
   linkType: hard
 
-"@ngrx/store@npm:^17.2.0":
-  version: 17.2.0
-  resolution: "@ngrx/store@npm:17.2.0"
+"@ngrx/schematics@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@ngrx/schematics@npm:20.0.0"
+  checksum: 10/a0f717e34e9132433ae4ae5928c857bee1da1c03a5130c4297c9e08d5ec553212597feeb53b821567002941c104abfa8aaa69eb2d950f6cdef363a32ded0a042
+  languageName: node
+  linkType: hard
+
+"@ngrx/store-devtools@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@ngrx/store-devtools@npm:20.0.0"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/core": ^17.0.0
+    "@angular/core": ^20.0.0
+    "@ngrx/store": 20.0.0
     rxjs: ^6.5.3 || ^7.5.0
-  checksum: 10/3eff90e71679b12be8c57a17816f624ad3d06f845815346566ba47f642ec7ca30797c45b2732b086e461765f6ff16975e757bcf6a6f0af397baef25e8ab08079
+  checksum: 10/502e26893371723ddc3b39eb099fc6269746fab67c909589859e2e81e1cc229d5b5c9afcd708dcf7850bf6d5677db0033f66b599b730fa674ce7ef1a58e22e7f
+  languageName: node
+  linkType: hard
+
+"@ngrx/store@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@ngrx/store@npm:20.0.0"
+  dependencies:
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/core": ^20.0.0
+    rxjs: ^6.5.3 || ^7.5.0
+  checksum: 10/482b80b8012d001c3e4fbf49dd77c10f6fba334490bf0468c540b9906e43fe9a7cae31f8ca2c9295bc3f4c0b9eb56041a9e081f8a3f38fa27487ae01f8b569de
   languageName: node
   linkType: hard
 
@@ -21280,11 +21269,11 @@ __metadata:
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
-    "@ngrx/effects": "npm:^17.2.0"
-    "@ngrx/router-store": "npm:^17.2.0"
-    "@ngrx/schematics": "npm:^17.2.0"
-    "@ngrx/store": "npm:^17.2.0"
-    "@ngrx/store-devtools": "npm:^17.2.0"
+    "@ngrx/effects": "npm:^20.0.0"
+    "@ngrx/router-store": "npm:^20.0.0"
+    "@ngrx/schematics": "npm:^20.0.0"
+    "@ngrx/store": "npm:^20.0.0"
+    "@ngrx/store-devtools": "npm:^20.0.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
     "@pact-foundation/pact": "npm:^9.18.1"
     "@playwright/test": "npm:^1.52.0"

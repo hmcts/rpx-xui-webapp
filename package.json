@@ -82,7 +82,6 @@
     "@angular/compiler": "^18.2.13",
     "@angular/core": "^18.2.13",
     "@angular/forms": "^18.2.13",
-    "@angular/material": "^16.2.0",
     "@angular/platform-browser": "^18.2.13",
     "@angular/platform-browser-dynamic": "^18.2.13",
     "@angular/router": "^18.2.13",

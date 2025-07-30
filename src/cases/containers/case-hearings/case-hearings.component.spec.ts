@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
-import * as moment from 'moment';
+import moment from 'moment';';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';

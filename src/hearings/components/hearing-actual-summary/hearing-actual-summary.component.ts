@@ -5,7 +5,7 @@ import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel 
 import { AnswerSource, HearingChannelEnum, HearingDateEnum, HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import * as fromHearingStore from '../../store';
-import * as moment from 'moment';
+import moment from 'moment';';
 
 @Component({
     selector: 'exui-hearing-actual-summary',

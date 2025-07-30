@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';';
 import { CheckDatesResult } from '../models';
 
 @Injectable({ providedIn: 'root' })

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';

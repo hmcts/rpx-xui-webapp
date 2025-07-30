@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import * as moment from 'moment';
+import moment from 'moment';';
 import { combineLatest, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';

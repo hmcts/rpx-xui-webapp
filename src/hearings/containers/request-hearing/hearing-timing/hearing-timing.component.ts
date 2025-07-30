@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';';
 import * as fromHearingStore from '../../../../hearings/store';
 import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import {

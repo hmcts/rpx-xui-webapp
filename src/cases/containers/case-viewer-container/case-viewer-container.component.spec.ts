@@ -21,13 +21,14 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 @Component({
-  selector: 'ccd-case-viewer',
-  template: `
+    selector: 'ccd-case-viewer',
+    template: `
     <mat-tab-group>
       <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
       </mat-tab>
     </mat-tab-group>
-  `
+  `,
+    standalone: false
 })
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;

@@ -11,8 +11,9 @@ import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.mode
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'exui-hearing-create-edit-summary',
-  templateUrl: './hearing-create-edit-summary.component.html'
+    selector: 'exui-hearing-create-edit-summary',
+    templateUrl: './hearing-create-edit-summary.component.html',
+    standalone: false
 })
 export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_CREATE_EDIT_SUMMARY_TEMPLATE;

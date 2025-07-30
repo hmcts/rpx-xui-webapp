@@ -7,8 +7,9 @@ import { ApplicationTheme } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
-  selector: 'exui-app-header-signed-out',
-  templateUrl: './app-header-signed-out.component.html'
+    selector: 'exui-app-header-signed-out',
+    templateUrl: './app-header-signed-out.component.html',
+    standalone: false
 })
 export class AppHeaderSignedOutComponent implements OnInit {
   public navItems: NavItemsModel[];

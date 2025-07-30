@@ -5,9 +5,10 @@ import { InfoMessageCommService } from '../../../../app/shared/services/info-mes
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
-  selector: 'exui-staff-search',
-  templateUrl: './staff-search.component.html',
-  styleUrls: ['./staff-search.component.scss']
+    selector: 'exui-staff-search',
+    templateUrl: './staff-search.component.html',
+    styleUrls: ['./staff-search.component.scss'],
+    standalone: false
 })
 export class StaffSearchComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;

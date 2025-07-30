@@ -6,9 +6,10 @@ import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookin
 import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
 
 @Component({
-  selector: 'exui-booking-wrapper',
-  templateUrl: './booking-wrapper.component.html',
-  styleUrls: ['./booking-wrapper.component.scss']
+    selector: 'exui-booking-wrapper',
+    templateUrl: './booking-wrapper.component.html',
+    styleUrls: ['./booking-wrapper.component.scss'],
+    standalone: false
 })
 export class BookingWrapperComponent implements OnInit {
   public backVisibilityStates = bookingBackButtonVisibilityStates;

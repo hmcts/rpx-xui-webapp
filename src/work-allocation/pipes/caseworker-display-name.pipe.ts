@@ -5,7 +5,10 @@ import { Caseworker } from '../models/dtos';
 /*
  * Returns a formatted display name for a Caseworker.
  */
-@Pipe({ name: 'caseworkerDisplayName' })
+@Pipe({
+    name: 'caseworkerDisplayName',
+    standalone: false
+})
 export class CaseworkerDisplayName implements PipeTransform {
   public transform(caseworker: Caseworker, includeEmail = true): string {
     if (caseworker) {

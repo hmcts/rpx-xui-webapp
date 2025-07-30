@@ -9,8 +9,9 @@ import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-additional-instructions',
-  templateUrl: './hearing-additional-instructions.component.html'
+    selector: 'exui-hearing-additional-instructions',
+    templateUrl: './hearing-additional-instructions.component.html',
+    standalone: false
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public instructionsForm: FormGroup;

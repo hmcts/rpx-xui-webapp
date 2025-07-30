@@ -4,9 +4,10 @@ import { select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'exui-alert',
-  templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.scss']
+    selector: 'exui-alert',
+    templateUrl: './alert.component.html',
+    styleUrls: ['./alert.component.scss'],
+    standalone: false
 })
 
 export class AlertComponent implements OnInit, OnDestroy {

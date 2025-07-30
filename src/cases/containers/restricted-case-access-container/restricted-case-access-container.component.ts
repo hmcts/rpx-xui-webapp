@@ -12,8 +12,9 @@ import { RestrictedCase } from '../../models/restricted-case.model';
 import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.service';
 
 @Component({
-  selector: 'exui-restricted-case-access-container',
-  templateUrl: './restricted-case-access-container.component.html'
+    selector: 'exui-restricted-case-access-container',
+    templateUrl: './restricted-case-access-container.component.html',
+    standalone: false
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy {
   public caseId: string;

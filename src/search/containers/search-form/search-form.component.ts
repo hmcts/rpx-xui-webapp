@@ -8,9 +8,10 @@ import { SearchService } from '../../services/search.service';
 import { SearchValidators } from '../../utils';
 
 @Component({
-  selector: 'exui-search-form',
-  templateUrl: './search-form.component.html',
-  styleUrls: ['./search-form.component.scss']
+    selector: 'exui-search-form',
+    templateUrl: './search-form.component.html',
+    styleUrls: ['./search-form.component.scss'],
+    standalone: false
 })
 export class SearchFormComponent implements OnInit {
   public formGroup: FormGroup;

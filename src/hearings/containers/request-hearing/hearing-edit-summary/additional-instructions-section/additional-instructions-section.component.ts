@@ -5,8 +5,9 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 
 @Component({
-  selector: 'exui-additional-instructions-section',
-  templateUrl: './additional-instructions-section.component.html'
+    selector: 'exui-additional-instructions-section',
+    templateUrl: './additional-instructions-section.component.html',
+    standalone: false
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;

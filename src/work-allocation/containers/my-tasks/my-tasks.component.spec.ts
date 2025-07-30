@@ -20,7 +20,8 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
 @Component({
-  template: '<exui-my-tasks></exui-my-tasks>'
+    template: '<exui-my-tasks></exui-my-tasks>',
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(MyTasksComponent, { static: true }) public appComponentRef: MyTasksComponent;

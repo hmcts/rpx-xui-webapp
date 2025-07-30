@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Mode } from '../../models/hearings.enum';
 
 @Component({
-  selector: 'exui-linked-hearings-case-title',
-  templateUrl: './linked-hearings-case-title.component.html'
+    selector: 'exui-linked-hearings-case-title',
+    templateUrl: './linked-hearings-case-title.component.html',
+    standalone: false
 })
 export class LinkedHearingsCaseTitleComponent {
   @Input() public caseName: string;

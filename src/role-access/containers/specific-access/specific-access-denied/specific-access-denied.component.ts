@@ -7,8 +7,9 @@ import { SpecificAccessNavigation } from '../../../models/specific-access-naviga
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-specific-access-denied',
-  templateUrl: './specific-access-denied.component.html'
+    selector: 'exui-specific-access-denied',
+    templateUrl: './specific-access-denied.component.html',
+    standalone: false
 })
 export class SpecificAccessDeniedComponent implements OnDestroy {
   @Input() public navEvent: SpecificAccessNavigation;

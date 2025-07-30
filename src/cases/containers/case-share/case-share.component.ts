@@ -13,9 +13,10 @@ import { LoadShareCase, LoadUserFromOrgForCase } from '../../store/actions';
 import * as fromCaseList from '../../store/reducers';
 
 @Component({
-  selector: 'exui-case-share',
-  templateUrl: './case-share.component.html',
-  styleUrls: ['./case-share.component.scss']
+    selector: 'exui-case-share',
+    templateUrl: './case-share.component.html',
+    styleUrls: ['./case-share.component.scss'],
+    standalone: false
 })
 export class CaseShareComponent implements OnInit {
   public routerState$: Observable<RouterReducerState<RouterStateUrl>>;

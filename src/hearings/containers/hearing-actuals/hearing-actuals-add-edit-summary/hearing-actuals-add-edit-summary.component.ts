@@ -11,10 +11,11 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from 'src/app/services';
 
 @Component({
-  selector: 'exui-hearing-actuals-add-edit-summary',
-  templateUrl: './hearing-actuals-add-edit-summary.component.html',
-  styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
-  providers: [DatePipe]
+    selector: 'exui-hearing-actuals-add-edit-summary',
+    templateUrl: './hearing-actuals-add-edit-summary.component.html',
+    styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
+    providers: [DatePipe],
+    standalone: false
 })
 export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   public successBanner = false;

@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'exui-task-assignment-person-not-authorised',
-  templateUrl: './task-assignment-person-not-authorised.component.html'
+    selector: 'exui-task-assignment-person-not-authorised',
+    templateUrl: './task-assignment-person-not-authorised.component.html',
+    standalone: false
 })
 export class TaskAssignmentPersonNotAuthorisedComponent {
   public returnUrl = '/work/my-work/list';

@@ -9,8 +9,8 @@ import * as fromCaseCreate from '../../store/reducers';
  * injected by the root
  */
 @Component({
-  selector: 'exui-filter-case',
-  template: `
+    selector: 'exui-filter-case',
+    template: `
     <exui-page-wrapper [title]="'Create Case' | rpxTranslate">
       <div class="width-50">
         <exui-ccd-connector
@@ -26,7 +26,8 @@ import * as fromCaseCreate from '../../store/reducers';
         </exui-ccd-connector>
       </div>
     </exui-page-wrapper>`,
-  encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CaseFilterComponent implements OnInit {
   public startButtonText: string;

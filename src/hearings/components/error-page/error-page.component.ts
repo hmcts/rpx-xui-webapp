@@ -4,9 +4,10 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-hearings-error-page',
-  templateUrl: './error-page.component.html',
-  styleUrls: ['./error-page.component.scss']
+    selector: 'exui-hearings-error-page',
+    templateUrl: './error-page.component.html',
+    styleUrls: ['./error-page.component.scss'],
+    standalone: false
 })
 export class ErrorPageComponent implements OnInit, OnDestroy {
   public caseId: string;

@@ -125,8 +125,9 @@ const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
 ];
 
 @Component({
-  selector: 'exui-hearing-parties-title',
-  template: ''
+    selector: 'exui-hearing-parties-title',
+    template: '',
+    standalone: false
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;

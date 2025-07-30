@@ -7,8 +7,9 @@ import { FooterComponent } from './footer.component';
 describe('FooterComponent', () => {
   @Component({
     selector: 'exui-app-host-dummy-component',
-    template: '<exui-app-footer></exui-app-footer>'
-  })
+    template: '<exui-app-footer></exui-app-footer>',
+    standalone: false
+})
   class TestDummyHostComponent {
     @ViewChild(FooterComponent, { static: false })
     public footerComponent: FooterComponent;

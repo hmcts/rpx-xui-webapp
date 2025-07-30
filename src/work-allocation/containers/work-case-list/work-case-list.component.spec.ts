@@ -16,14 +16,15 @@ import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from './work-case-list.component';
 
 @Component({
-  template: `
+    template: `
     <exui-work-case-list
       [fields]='fields'
       [cases]='cases'
       [casesTotal]="casesTotal"
       [caseServiceConfig]="caseServiceConfig"
       [sortedBy]="CaseSortField"
-      [pagination]="pagination"></exui-work-case-list>`
+      [pagination]="pagination"></exui-work-case-list>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(WorkCaseListComponent, { static: true }) public appComponentRef: WorkCaseListComponent;

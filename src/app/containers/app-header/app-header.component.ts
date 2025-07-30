@@ -16,8 +16,9 @@ import { environment } from '../../../environments/environment';
 import * as fromActions from '../../store';
 
 @Component({
-  selector: 'exui-app-header',
-  templateUrl: './app-header.component.html'
+    selector: 'exui-app-header',
+    templateUrl: './app-header.component.html',
+    standalone: false
 })
 
 /**

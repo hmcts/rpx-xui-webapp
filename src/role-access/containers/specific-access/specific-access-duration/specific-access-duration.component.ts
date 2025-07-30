@@ -14,9 +14,10 @@ import { DurationHelperService } from '../../../services/duration-helper.service
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-specific-access-duration',
-  templateUrl: './specific-access-duration.component.html',
-  styleUrls: ['./specific-access-duration.component.scss']
+    selector: 'exui-specific-access-duration',
+    templateUrl: './specific-access-duration.component.html',
+    styleUrls: ['./specific-access-duration.component.scss'],
+    standalone: false
 })
 export class SpecificAccessDurationComponent implements OnInit {
   // static properties

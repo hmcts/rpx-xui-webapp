@@ -7,8 +7,9 @@ import * as fromHearingStore from '../../store';
 import { HearingsUtils } from '../../utils/hearings.utils';
 
 @Component({
-  selector: 'exui-hearing-amend-warning-msg',
-  templateUrl: './hearing-amend-warning-msg.component.html'
+    selector: 'exui-hearing-amend-warning-msg',
+    templateUrl: './hearing-amend-warning-msg.component.html',
+    standalone: false
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
   @Input() public warningMsg: string = '';

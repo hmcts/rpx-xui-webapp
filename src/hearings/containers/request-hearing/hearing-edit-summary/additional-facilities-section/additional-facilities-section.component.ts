@@ -7,8 +7,9 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
-  selector: 'exui-additional-facilities-section',
-  templateUrl: './additional-facilities-section.component.html'
+    selector: 'exui-additional-facilities-section',
+    templateUrl: './additional-facilities-section.component.html',
+    standalone: false
 })
 export class AdditionalFacilitiesSectionComponent implements OnInit {
   @Input() public additionalFacilitiesRefData: LovRefDataModel[];

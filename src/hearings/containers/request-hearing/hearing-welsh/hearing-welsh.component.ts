@@ -9,8 +9,9 @@ import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-welsh',
-  templateUrl: './hearing-welsh.component.html'
+    selector: 'exui-hearing-welsh',
+    templateUrl: './hearing-welsh.component.html',
+    standalone: false
 })
 export class HearingWelshComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public error: ErrorMessage = null;

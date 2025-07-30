@@ -10,8 +10,9 @@ interface CookieDetails{
 }
 
 @Component({
-  selector: 'exui-cookie-policy',
-  templateUrl: './cookie-policy.component.html'
+    selector: 'exui-cookie-policy',
+    templateUrl: './cookie-policy.component.html',
+    standalone: false
 })
 export class CookiePolicyComponent {
   public readonly googlePurpose =

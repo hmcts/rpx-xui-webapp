@@ -15,8 +15,9 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
-  selector: 'exui-hearing-facilities',
-  templateUrl: './hearing-facilities.component.html'
+    selector: 'exui-hearing-facilities',
+    templateUrl: './hearing-facilities.component.html',
+    standalone: false
 })
 export class HearingFacilitiesComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public caseFlagsRefData: CaseFlagReferenceModel[];

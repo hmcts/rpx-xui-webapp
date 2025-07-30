@@ -11,10 +11,11 @@ import * as fromAppStore from '../../../app/store';
 import { getRoleCategory } from '../../utils';
 
 @Component({
-  selector: 'exui-task-manager-filter',
-  templateUrl: './task-manager-filter.component.html',
-  styleUrls: ['./task-manager-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-task-manager-filter',
+    templateUrl: './task-manager-filter.component.html',
+    styleUrls: ['./task-manager-filter.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';

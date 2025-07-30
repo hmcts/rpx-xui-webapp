@@ -4,10 +4,11 @@ import { Subscription } from 'rxjs';
 import { ControlTypeEnum } from '../../models/hearings.enum';
 
 @Component({
-  selector: 'exui-multi-level-selector',
-  templateUrl: './multi-level-selector.component.html',
-  styleUrls: ['./multi-level-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'exui-multi-level-selector',
+    templateUrl: './multi-level-selector.component.html',
+    styleUrls: ['./multi-level-selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   @Input() public multiLevelSelect: FormArray;

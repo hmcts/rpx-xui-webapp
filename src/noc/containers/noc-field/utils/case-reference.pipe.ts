@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'caseReference'
+    name: 'caseReference',
+    standalone: false
 })
 export class CaseReferencePipe implements PipeTransform {
   public transform(caseReference: string): string {

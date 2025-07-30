@@ -6,8 +6,9 @@ import { TermsConditionsService } from '../../../app/services/terms-and-conditio
 import * as fromRoot from '../../store';
 
 @Component({
-  selector: 'exui-terms-and-conditions',
-  templateUrl: './terms-and-conditions.component.html'
+    selector: 'exui-terms-and-conditions',
+    templateUrl: './terms-and-conditions.component.html',
+    standalone: false
 })
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {
   public document: TCDocument = null;

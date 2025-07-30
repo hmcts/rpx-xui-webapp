@@ -7,8 +7,9 @@ import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
 @Component({
-  selector: 'exui-my-cases',
-  templateUrl: 'my-cases.component.html'
+    selector: 'exui-my-cases',
+    templateUrl: 'my-cases.component.html',
+    standalone: false
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {

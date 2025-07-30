@@ -9,8 +9,9 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-add-exclusion-search-person',
-  templateUrl: './add-exclusion-search-person.component.html'
+    selector: 'exui-add-exclusion-search-person',
+    templateUrl: './add-exclusion-search-person.component.html',
+    standalone: false
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;

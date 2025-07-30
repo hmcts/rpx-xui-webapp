@@ -3,9 +3,10 @@ import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../app/store';
 
 @Component({
-  selector: 'exui-refunds',
-  templateUrl: './refunds.component.html',
-  styleUrls: ['./refunds.component.scss']
+    selector: 'exui-refunds',
+    templateUrl: './refunds.component.html',
+    styleUrls: ['./refunds.component.scss'],
+    standalone: false
 })
 export class RefundsComponent implements OnInit {
   public refundsApiRoot = 'api/refund';

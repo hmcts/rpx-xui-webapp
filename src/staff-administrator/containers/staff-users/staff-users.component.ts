@@ -6,10 +6,11 @@ import { StaffDataFilterService } from '../../components/staff-users/services/st
 import { selectStaffError } from '../../store/selectors/staff-select.selector';
 
 @Component({
-  selector: 'exui-staff-users',
-  templateUrl: './staff-users.component.html',
-  styleUrls: ['./staff-users.component.scss'],
-  providers: [StaffDataFilterService]
+    selector: 'exui-staff-users',
+    templateUrl: './staff-users.component.html',
+    styleUrls: ['./staff-users.component.scss'],
+    providers: [StaffDataFilterService],
+    standalone: false
 })
 export class StaffUsersComponent {
   public advancedSearchEnabled = false;

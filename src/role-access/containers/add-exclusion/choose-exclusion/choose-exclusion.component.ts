@@ -13,8 +13,9 @@ import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-choose-exclusion',
-  templateUrl: './choose-exclusion.component.html'
+    selector: 'exui-choose-exclusion',
+    templateUrl: './choose-exclusion.component.html',
+    standalone: false
 })
 
 export class ChooseExclusionComponent implements OnInit, OnDestroy {

@@ -14,8 +14,9 @@ import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { TaskHomeComponent } from './task-home.component';
 
 @Component({
-  template: `
-    <exui-task-home></exui-task-home>`
+    template: `
+    <exui-task-home></exui-task-home>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(TaskHomeComponent, { static: true }) public appComponentRef: TaskHomeComponent;

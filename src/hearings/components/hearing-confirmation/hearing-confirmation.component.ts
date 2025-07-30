@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'exui-hearing-confirmation',
-  templateUrl: './hearing-confirmation.component.html'
+    selector: 'exui-hearing-confirmation',
+    templateUrl: './hearing-confirmation.component.html',
+    standalone: false
 })
 export class HearingConfirmationComponent {
   @Input() public caseId: string;

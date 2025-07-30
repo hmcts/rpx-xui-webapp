@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'exui-access-view-field',
-  templateUrl: './access-view-field.component.html',
-  styleUrls: ['access-view-field.component.scss']
+    selector: 'exui-access-view-field',
+    templateUrl: './access-view-field.component.html',
+    styleUrls: ['access-view-field.component.scss'],
+    standalone: false
 })
 export class AccessViewFieldComponent {
   /**

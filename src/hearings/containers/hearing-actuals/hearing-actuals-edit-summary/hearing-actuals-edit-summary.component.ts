@@ -7,10 +7,11 @@ import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-b
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
-  selector: 'exui-hearing-actuals-edit-summary',
-  templateUrl: './hearing-actuals-edit-summary.component.html',
-  styleUrls: ['./hearing-actuals-edit-summary.component.scss'],
-  providers: [DatePipe]
+    selector: 'exui-hearing-actuals-edit-summary',
+    templateUrl: './hearing-actuals-edit-summary.component.html',
+    styleUrls: ['./hearing-actuals-edit-summary.component.scss'],
+    providers: [DatePipe],
+    standalone: false
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   constructor(

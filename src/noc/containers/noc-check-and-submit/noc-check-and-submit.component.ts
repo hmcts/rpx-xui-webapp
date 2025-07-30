@@ -8,9 +8,10 @@ import { NocAnswer, NocEvent, NocNavigation, NocNavigationEvent, NocQuestion } f
 import * as fromFeature from '../../store';
 
 @Component({
-  selector: 'exui-noc-check-and-submit',
-  templateUrl: './noc-check-and-submit.component.html',
-  styleUrls: ['./noc-check-and-submit.component.scss']
+    selector: 'exui-noc-check-and-submit',
+    templateUrl: './noc-check-and-submit.component.html',
+    styleUrls: ['./noc-check-and-submit.component.scss'],
+    standalone: false
 })
 export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   @Input()

@@ -17,9 +17,10 @@ import { HearingJurisdictionConfigService } from '../../../app/services/hearing-
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
-  selector: 'exui-case-viewer-container',
-  templateUrl: './case-viewer-container.component.html',
-  styleUrls: ['./case-viewer-container.component.scss']
+    selector: 'exui-case-viewer-container',
+    templateUrl: './case-viewer-container.component.html',
+    styleUrls: ['./case-viewer-container.component.scss'],
+    standalone: false
 })
 export class CaseViewerContainerComponent implements OnInit {
   public caseDetails: CaseView;

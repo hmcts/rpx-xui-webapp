@@ -12,7 +12,10 @@ import { RestrictedCaseAccessContainerComponent } from './restricted-case-access
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.service';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

@@ -7,8 +7,9 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { CaseTypesUtils } from '../../../../utils/case-types.utils';
 
 @Component({
-  selector: 'exui-case-details-section',
-  templateUrl: './case-details-section.component.html'
+    selector: 'exui-case-details-section',
+    templateUrl: './case-details-section.component.html',
+    standalone: false
 })
 export class CaseDetailsSectionComponent implements OnInit {
   @Input() public caseTypeRefData: LovRefDataModel[];

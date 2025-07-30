@@ -31,10 +31,11 @@ import * as fromCaseList from '../../store/reducers';
  * param TBC
  */
 @Component({
-  selector: 'exui-case-list',
-  templateUrl: 'case-list.component.html',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: ['case-list.component.scss']
+    selector: 'exui-case-list',
+    templateUrl: 'case-list.component.html',
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['case-list.component.scss'],
+    standalone: false
 })
 export class CaseListComponent implements OnInit, OnDestroy {
   @ViewChild('ccdSearchResult', { static: false }) public ccdSearchResult: SearchResultComponent; // EUI-2906

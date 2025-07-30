@@ -9,7 +9,10 @@ import { AppConstants } from '../../../app/app.constants';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
 import * as fromActions from '../../store';
 
-@Component({ templateUrl: './application-routing.component.html' })
+@Component({
+    templateUrl: './application-routing.component.html',
+    standalone: false
+})
 export class ApplicationRoutingComponent implements OnInit {
   constructor(
     private readonly router: Router,

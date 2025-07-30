@@ -12,9 +12,10 @@ import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
-  selector: 'exui-noc-home',
-  templateUrl: 'noc-home.component.html',
-  styleUrls: ['noc-home.component.scss']
+    selector: 'exui-noc-home',
+    templateUrl: 'noc-home.component.html',
+    styleUrls: ['noc-home.component.scss'],
+    standalone: false
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
   @ViewChild('nocCaseRef', { static: false, read: NocCaseRefComponent })

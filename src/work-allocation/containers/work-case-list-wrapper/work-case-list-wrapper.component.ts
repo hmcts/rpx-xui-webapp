@@ -30,7 +30,8 @@ import { JurisdictionsService } from '../../services/juridictions.service';
 import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
-  templateUrl: 'work-case-list-wrapper.component.html'
+    templateUrl: 'work-case-list-wrapper.component.html',
+    standalone: false
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public specificPage: string = '';

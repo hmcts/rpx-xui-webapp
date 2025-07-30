@@ -4,9 +4,10 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole } from '../../../role-access/models';
 
 @Component({
-  selector: 'exui-allocate-a-role-link',
-  templateUrl: './allocate-a-role-link.component.html',
-  styleUrls: ['./allocate-a-role-link.component.scss']
+    selector: 'exui-allocate-a-role-link',
+    templateUrl: './allocate-a-role-link.component.html',
+    styleUrls: ['./allocate-a-role-link.component.scss'],
+    standalone: false
 })
 
 export class AllocateARoleLinkComponent implements OnInit, OnChanges {

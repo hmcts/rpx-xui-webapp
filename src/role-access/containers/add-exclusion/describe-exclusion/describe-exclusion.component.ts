@@ -8,8 +8,9 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-describe-exclusion',
-  templateUrl: './describe-exclusion.component.html'
+    selector: 'exui-describe-exclusion',
+    templateUrl: './describe-exclusion.component.html',
+    standalone: false
 })
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
   @Input() public navEvent: ExclusionNavigation;

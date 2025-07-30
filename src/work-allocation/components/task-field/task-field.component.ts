@@ -8,10 +8,11 @@ import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-task-field',
-  templateUrl: './task-field.component.html',
-  styleUrls: ['task-field.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-task-field',
+    templateUrl: './task-field.component.html',
+    styleUrls: ['task-field.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class TaskFieldComponent implements OnInit {
   /**

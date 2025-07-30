@@ -36,9 +36,10 @@ import { ChooseDurationComponent } from '../choose-duration/choose-duration.comp
 import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 
 @Component({
-  selector: 'exui-allocate-role-home',
-  templateUrl: './allocate-role-home.component.html',
-  styleUrls: ['./allocate-role-home.component.scss']
+    selector: 'exui-allocate-role-home',
+    templateUrl: './allocate-role-home.component.html',
+    styleUrls: ['./allocate-role-home.component.scss'],
+    standalone: false
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   @Input() public existingUsers: string[] = [];

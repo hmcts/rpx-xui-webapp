@@ -13,9 +13,10 @@ import { LocationsDataService } from '../../../services/locations-data.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-venue',
-  templateUrl: './hearing-venue.component.html',
-  styleUrls: ['./hearing-venue.component.scss']
+    selector: 'exui-hearing-venue',
+    templateUrl: './hearing-venue.component.html',
+    styleUrls: ['./hearing-venue.component.scss'],
+    standalone: false
 })
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public locationType: string;

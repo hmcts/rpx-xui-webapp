@@ -18,8 +18,9 @@ import { servicesMap } from '../../utils';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-  template: `
-    <exui-task-list-filter></exui-task-list-filter>`
+    template: `
+    <exui-task-list-filter></exui-task-list-filter>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(TaskListFilterComponent, { static: true }) public appComponentRef: TaskListFilterComponent;

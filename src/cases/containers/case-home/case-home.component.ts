@@ -17,9 +17,10 @@ import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
 
 @Component({
-  selector: 'exui-case-home',
-  templateUrl: 'case-home.component.html',
-  styleUrls: ['case-home.component.scss']
+    selector: 'exui-case-home',
+    templateUrl: 'case-home.component.html',
+    styleUrls: ['case-home.component.scss'],
+    standalone: false
 })
 export class CaseHomeComponent implements OnInit, OnDestroy {
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';

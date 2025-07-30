@@ -11,8 +11,9 @@ import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
 
 @Component({
-  selector: 'exui-choose-allocate-to',
-  templateUrl: './choose-allocate-to.component.html'
+    selector: 'exui-choose-allocate-to',
+    templateUrl: './choose-allocate-to.component.html',
+    standalone: false
 })
 export class ChooseAllocateToComponent implements OnInit {
   public ERROR_MESSAGE = ERROR_MESSAGE;

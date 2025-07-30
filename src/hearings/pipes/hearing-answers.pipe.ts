@@ -56,7 +56,8 @@ import { State } from '../store';
 import { HearingIdAnswerConverter } from '../converters/hearing-id.converter';
 
 @Pipe({
-  name: 'transformAnswer'
+    name: 'transformAnswer',
+    standalone: false
 })
 export class HearingAnswersPipe implements PipeTransform {
   constructor(protected readonly route: ActivatedRoute,

@@ -3,8 +3,9 @@ import { Component, Input } from '@angular/core';
 import { Task } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-derived-icon-field',
-  templateUrl: './derived-icon-field.component.html'
+    selector: 'exui-derived-icon-field',
+    templateUrl: './derived-icon-field.component.html',
+    standalone: false
 })
 export class DerivedIconFieldComponent {
   /**

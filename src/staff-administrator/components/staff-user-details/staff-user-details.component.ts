@@ -12,9 +12,10 @@ import { StaffUser } from '../../models/staff-user.model';
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 
 @Component({
-  selector: 'exui-staff-user-details',
-  templateUrl: './staff-user-details.component.html',
-  styleUrls: ['./staff-user-details.component.scss']
+    selector: 'exui-staff-user-details',
+    templateUrl: './staff-user-details.component.html',
+    styleUrls: ['./staff-user-details.component.scss'],
+    standalone: false
 })
 export class StaffUserDetailsComponent {
   public userDetails: StaffUser;

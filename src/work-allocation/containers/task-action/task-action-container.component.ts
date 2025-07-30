@@ -20,8 +20,9 @@ import { ACTION } from '../../services/work-allocation-task.service';
 import { getAssigneeName, handleFatalErrors } from '../../utils';
 
 @Component({
-  selector: 'exui-task-action-container',
-  templateUrl: 'task-action-container.component.html'
+    selector: 'exui-task-action-container',
+    templateUrl: 'task-action-container.component.html',
+    standalone: false
 })
 export class TaskActionContainerComponent implements OnInit {
   public tasks: any[];

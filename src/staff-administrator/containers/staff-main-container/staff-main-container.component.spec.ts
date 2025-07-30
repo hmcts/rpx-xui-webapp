@@ -21,11 +21,17 @@ describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;
   let fixture: ComponentFixture<StaffMainContainerComponent>;
 
-  @Component({ selector: 'exui-app-header', template: '' })
+  @Component({
+    selector: 'exui-app-header', template: '',
+    standalone: false
+})
   class HeaderStubComponent {
   }
 
-  @Component({ selector: 'exui-app-footer', template: '' })
+  @Component({
+    selector: 'exui-app-footer', template: '',
+    standalone: false
+})
   class FooterStubComponent {
   }
 

@@ -13,8 +13,9 @@ import { AllocateRoleService, RoleExclusionsService } from '../../services';
 import { handleError } from '../../utils';
 
 @Component({
-  selector: 'exui-delete-exclusion',
-  templateUrl: './delete-exclusion.component.html'
+    selector: 'exui-delete-exclusion',
+    templateUrl: './delete-exclusion.component.html',
+    standalone: false
 })
 export class DeleteExclusionComponent implements OnInit {
   public caseworkers$: Observable<Caseworker[]>;

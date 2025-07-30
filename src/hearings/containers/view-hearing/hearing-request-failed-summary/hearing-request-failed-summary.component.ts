@@ -3,8 +3,9 @@ import { HearingSummaryEnum, Mode } from '../../../models/hearings.enum';
 import { HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-failed-summary.template';
 
 @Component({
-  selector: 'exui-hearing-request-failed-summary',
-  templateUrl: './hearing-request-failed-summary.component.html'
+    selector: 'exui-hearing-request-failed-summary',
+    templateUrl: './hearing-request-failed-summary.component.html',
+    standalone: false
 })
 export class HearingRequestFailedSummaryComponent {
   public template = HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE;

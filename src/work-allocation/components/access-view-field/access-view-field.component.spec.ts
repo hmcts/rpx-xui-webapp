@@ -7,7 +7,8 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { AccessViewFieldComponent } from './access-view-field.component';
 
 @Component({
-  template: '<exui-access-view-field [workField]="workField"></exui-access-view-field>'
+    template: '<exui-access-view-field [workField]="workField"></exui-access-view-field>',
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(AccessViewFieldComponent) public appComponentRef: AccessViewFieldComponent;

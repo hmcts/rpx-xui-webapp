@@ -10,10 +10,11 @@ import { HMCTSServiceDetails } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 
 @Component({
-  selector: 'exui-case-manager-filter',
-  templateUrl: './case-manager-filter.component.html',
-  styleUrls: ['./case-manager-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-case-manager-filter',
+    templateUrl: './case-manager-filter.component.html',
+    styleUrls: ['./case-manager-filter.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';

@@ -23,9 +23,9 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
-  selector: 'exui-hearing-actual-summary-base',
-  template: ''
-
+    selector: 'exui-hearing-actual-summary-base',
+    template: '',
+    standalone: false
 })
 export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;

@@ -3,9 +3,10 @@ import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
-  selector: 'exui-app-hmcts-global-footer',
-  templateUrl: './hmcts-global-footer.component.html',
-  styleUrls: ['./hmcts-global-footer.component.scss']
+    selector: 'exui-app-hmcts-global-footer',
+    templateUrl: './hmcts-global-footer.component.html',
+    styleUrls: ['./hmcts-global-footer.component.scss'],
+    standalone: false
 })
 export class HmctsGlobalFooterComponent {
   @Input() public help: Helper;

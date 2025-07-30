@@ -17,7 +17,10 @@ import * as fromHearingStore from '../../../store';
 import { HearingActualsEditSummaryComponent } from './hearing-actuals-edit-summary.component';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
-@Pipe({ name: 'transformAnswer' })
+@Pipe({
+    name: 'transformAnswer',
+    standalone: false
+})
 export class MockHearingAnswersPipe implements PipeTransform {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public transform(answerSource, hearingState$, index?: number): string {
@@ -26,8 +29,9 @@ export class MockHearingAnswersPipe implements PipeTransform {
 }
 
 @Component({
-  template: `
-    <div>Nothing</div>`
+    template: `
+    <div>Nothing</div>`,
+    standalone: false
 })
 class NothingComponent {
 }

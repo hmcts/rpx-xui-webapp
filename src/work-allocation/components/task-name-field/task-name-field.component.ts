@@ -3,9 +3,10 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
-  selector: 'exui-task-name-field',
-  templateUrl: './task-name-field.component.html',
-  styleUrls: ['task-name-field.component.scss']
+    selector: 'exui-task-name-field',
+    templateUrl: './task-name-field.component.html',
+    styleUrls: ['task-name-field.component.scss'],
+    standalone: false
 })
 /**
  * Note: This class currently identical to case-name-field component however

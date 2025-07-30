@@ -17,9 +17,10 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
-  selector: 'exui-check-your-answers',
-  templateUrl: './linked-hearings-check-your-answers.component.html',
-  styleUrls: ['./linked-hearings-check-your-answers.component.scss']
+    selector: 'exui-check-your-answers',
+    templateUrl: './linked-hearings-check-your-answers.component.html',
+    styleUrls: ['./linked-hearings-check-your-answers.component.scss'],
+    standalone: false
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestroy {
   private static readonly MANAGE_JOURNEY_FINAL_PAGE = 'check-your-answers';

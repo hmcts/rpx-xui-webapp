@@ -18,8 +18,9 @@ import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-choose-role',
-  templateUrl: './choose-role.component.html'
+    selector: 'exui-choose-role',
+    templateUrl: './choose-role.component.html',
+    standalone: false
 })
 export class ChooseRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;

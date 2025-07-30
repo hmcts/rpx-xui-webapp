@@ -15,10 +15,11 @@ import * as fromCasesFeature from '../../store';
  * param TBC
  */
 @Component({
-  selector: 'exui-search-case',
-  templateUrl: 'case-search.component.html',
-  styleUrls: ['case-search.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-search-case',
+    templateUrl: 'case-search.component.html',
+    styleUrls: ['case-search.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {
   public caseSearchFilterEventsBindings: ActionBindingModel[];

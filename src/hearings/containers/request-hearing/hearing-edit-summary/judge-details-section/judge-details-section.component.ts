@@ -8,8 +8,9 @@ import { JudicialUserModel } from '../../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 
 @Component({
-  selector: 'exui-judge-details-section',
-  templateUrl: './judge-details-section.component.html'
+    selector: 'exui-judge-details-section',
+    templateUrl: './judge-details-section.component.html',
+    standalone: false
 })
 export class JudgeDetailsSectionComponent implements OnInit {
   @Input() public panelRequirements: PanelRequirementsModel;

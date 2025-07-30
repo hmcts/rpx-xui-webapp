@@ -15,8 +15,9 @@ import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-specific-access-review',
-  templateUrl: './specific-access-review.component.html'
+    selector: 'exui-specific-access-review',
+    templateUrl: './specific-access-review.component.html',
+    standalone: false
 })
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;

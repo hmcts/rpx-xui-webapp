@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ValidationErrors } from '@angular/forms';
 
 @Pipe({
-  name: 'nocError'
+    name: 'nocError',
+    standalone: false
 })
 export class NocErrorPipe implements PipeTransform {
   public transform(value: ValidationErrors): string {

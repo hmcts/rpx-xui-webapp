@@ -12,8 +12,9 @@ import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../mod
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-specific-access-navigation',
-  templateUrl: 'specific-access-navigation.component.html'
+    selector: 'exui-specific-access-navigation',
+    templateUrl: 'specific-access-navigation.component.html',
+    standalone: false
 })
 export class SpecificAccessNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();

@@ -9,9 +9,10 @@ import { getOptions } from '../../../work-allocation/utils';
 import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-task-assignment-choose-role',
-  templateUrl: './task-assignment-choose-role.component.html',
-  styleUrls: ['./task-assignment-choose-role.component.scss']
+    selector: 'exui-task-assignment-choose-role',
+    templateUrl: './task-assignment-choose-role.component.html',
+    styleUrls: ['./task-assignment-choose-role.component.scss'],
+    standalone: false
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {
   private static readonly userDetails: string = 'userDetails';

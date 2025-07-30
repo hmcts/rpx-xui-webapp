@@ -6,7 +6,8 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
-  template: '<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>'
+    template: '<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>',
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(CaseReferenceFieldComponent, { static: true }) public appComponentRef: CaseReferenceFieldComponent;

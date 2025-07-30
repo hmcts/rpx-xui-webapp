@@ -6,9 +6,10 @@ import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ActualHearingsUtils } from '../../utils/actual-hearings.utils';
 
 @Component({
-  selector: 'exui-hearing-actual-summary-single-day',
-  templateUrl: './hearing-actual-summary-single-day.component.html',
-  styleUrls: ['./hearing-actual-summary-single-day.component.scss']
+    selector: 'exui-hearing-actual-summary-single-day',
+    templateUrl: './hearing-actual-summary-single-day.component.html',
+    styleUrls: ['./hearing-actual-summary-single-day.component.scss'],
+    standalone: false
 })
 export class HearingActualSummarySingleDayComponent {
   @Input() public hearingActualsMainModel: HearingActualsMainModel;

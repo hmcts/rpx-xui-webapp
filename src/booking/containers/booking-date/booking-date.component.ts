@@ -17,8 +17,9 @@ import {
 } from '../../models/booking-date.enum';
 
 @Component({
-  selector: 'exui-booking-date',
-  templateUrl: './booking-date.component.html'
+    selector: 'exui-booking-date',
+    templateUrl: './booking-date.component.html',
+    standalone: false
 })
 export class BookingDateComponent implements OnInit {
   @Input() public bookingProcess: BookingProcess;

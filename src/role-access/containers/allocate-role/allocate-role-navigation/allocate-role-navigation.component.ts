@@ -12,8 +12,9 @@ import { Actions, AllocateRoleNavigationEvent, AllocateRoleState, AllocateRoleSt
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-allocate-role-navigation',
-  templateUrl: './allocate-role-navigation.component.html'
+    selector: 'exui-allocate-role-navigation',
+    templateUrl: './allocate-role-navigation.component.html',
+    standalone: false
 })
 export class AllocateRoleNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();

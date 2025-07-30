@@ -21,7 +21,8 @@ import { WorkFieldComponent } from '../work-field/work-field.component';
 import { TaskFieldComponent } from './task-field.component';
 
 @Component({
-  template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>'
+    template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>',
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
@@ -29,7 +30,10 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

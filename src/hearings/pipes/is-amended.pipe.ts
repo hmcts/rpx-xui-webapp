@@ -31,7 +31,8 @@ import { State } from '../store';
 import { ReasonableAdjustmentsAmendedConverter } from '../converters/reasonable-adjustments.amended.converter';
 
 @Pipe({
-  name: 'isAmended'
+    name: 'isAmended',
+    standalone: false
 })
 export class IsAmendedPipe implements PipeTransform {
   constructor(protected readonly route: ActivatedRoute) {}

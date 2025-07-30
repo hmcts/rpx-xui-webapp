@@ -14,9 +14,10 @@ import { LoggerService } from '../../services/logger/logger.service';
 const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
 
 @Component({
-  selector: 'exui-case-reference-search-box',
-  templateUrl: './case-reference-search-box.component.html',
-  styleUrls: ['./case-reference-search-box.component.scss']
+    selector: 'exui-case-reference-search-box',
+    templateUrl: './case-reference-search-box.component.html',
+    styleUrls: ['./case-reference-search-box.component.scss'],
+    standalone: false
 })
 export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public item: NavItemsModel;

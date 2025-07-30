@@ -26,8 +26,9 @@ import { TaskActionContainerComponent } from './task-action-container.component'
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-  template: `
-    <exui-task-action-container></exui-task-action-container>`
+    template: `
+    <exui-task-action-container></exui-task-action-container>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(TaskActionContainerComponent, { static: true }) public appComponentRef: TaskActionContainerComponent;
@@ -35,8 +36,9 @@ class WrapperComponent {
 }
 
 @Component({
-  template: `
-    <div>Nothing</div>`
+    template: `
+    <div>Nothing</div>`,
+    standalone: false
 })
 class NothingComponent { }
 

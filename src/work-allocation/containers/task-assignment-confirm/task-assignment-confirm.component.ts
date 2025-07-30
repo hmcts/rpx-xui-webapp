@@ -13,8 +13,9 @@ import { WorkAllocationTaskService } from '../../services';
 import { handleTasksFatalErrors } from '../../utils';
 
 @Component({
-  selector: 'exui-task-assignment-confirm',
-  templateUrl: './task-assignment-confirm.component.html'
+    selector: 'exui-task-assignment-confirm',
+    templateUrl: './task-assignment-confirm.component.html',
+    standalone: false
 })
 export class TaskAssignmentConfirmComponent implements OnInit {
   public verb: TaskActionType;

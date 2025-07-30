@@ -4,8 +4,8 @@ import * as csrf from 'csurf';
 import * as express from 'express';
 import helmet from 'helmet';
 import * as compression from 'compression';
+import { csp } from '@hmcts/rpx-xui-node-lib';
 import amRoutes from './accessManagement/routes';
-import { csp, getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {

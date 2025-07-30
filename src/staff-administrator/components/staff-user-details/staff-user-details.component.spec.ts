@@ -183,7 +183,7 @@ describe('StaffUserDetailsComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
     fixture.detectChanges();
     location = TestBed.inject(Location);

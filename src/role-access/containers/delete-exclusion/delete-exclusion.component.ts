@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import * as moment from 'moment';
+import moment from 'moment';';
 import { Observable } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
 

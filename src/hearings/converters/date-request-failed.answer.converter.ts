@@ -1,4 +1,4 @@
-import * as moment from 'moment-timezone';
+import moment from 'moment';-timezone';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HearingDateEnum } from '../models/hearings.enum';

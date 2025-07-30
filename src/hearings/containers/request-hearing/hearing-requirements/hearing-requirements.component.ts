@@ -21,7 +21,7 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { CaseTypesUtils } from '../../../utils/case-types.utils';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import * as moment from 'moment';
+import moment from 'moment';';
 
 @Component({
     selector: 'exui-hearing-requirements',

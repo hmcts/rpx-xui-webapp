@@ -10,8 +10,9 @@ import { HearingsService } from '../../../services/hearings.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
-  selector: 'exui-hearing-stage',
-  templateUrl: './hearing-stage.component.html'
+    selector: 'exui-hearing-stage',
+    templateUrl: './hearing-stage.component.html',
+    standalone: false
 })
 export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];

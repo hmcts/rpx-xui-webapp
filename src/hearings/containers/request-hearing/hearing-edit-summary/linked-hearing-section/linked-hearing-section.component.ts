@@ -6,8 +6,9 @@ import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 
 @Component({
-  selector: 'exui-linked-hearing-section',
-  templateUrl: './linked-hearing-section.component.html'
+    selector: 'exui-linked-hearing-section',
+    templateUrl: './linked-hearing-section.component.html',
+    standalone: false
 })
 export class LinkedHearingSectionComponent {
   @Input() public hearingIsLinkedFlag: boolean;

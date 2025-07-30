@@ -19,8 +19,9 @@ import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
-  template: `
-    <exui-remove-role></exui-remove-role>`
+    template: `
+    <exui-remove-role></exui-remove-role>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;

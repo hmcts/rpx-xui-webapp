@@ -21,8 +21,9 @@ let dispatchSpy: jasmine.Spy;
 describe('TermsAndConditionsComponent', () => {
   @Component({
     selector: 'exui-app-host-dummy-component',
-    template: '<exui-terms-and-conditions></exui-terms-and-conditions>'
-  })
+    template: '<exui-terms-and-conditions></exui-terms-and-conditions>',
+    standalone: false
+})
   class TestDummyHostComponent {
     @ViewChild(TermsAndConditionsComponent, { static: false })
     public footerComponent: TermsAndConditionsComponent;

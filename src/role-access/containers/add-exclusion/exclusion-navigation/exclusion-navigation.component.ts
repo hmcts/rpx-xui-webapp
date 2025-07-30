@@ -12,8 +12,9 @@ import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-exclusion-navigation',
-  templateUrl: 'exclusion-navigation.component.html'
+    selector: 'exui-exclusion-navigation',
+    templateUrl: 'exclusion-navigation.component.html',
+    standalone: false
 })
 export class ExclusionNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();

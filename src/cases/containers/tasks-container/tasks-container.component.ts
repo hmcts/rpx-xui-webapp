@@ -12,9 +12,10 @@ import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-
 import { getAssigneeName } from '../../../work-allocation/utils';
 
 @Component({
-  selector: 'exui-tasks-container',
-  templateUrl: './tasks-container.component.html',
-  styleUrls: ['./tasks-container.component.scss']
+    selector: 'exui-tasks-container',
+    templateUrl: './tasks-container.component.html',
+    styleUrls: ['./tasks-container.component.scss'],
+    standalone: false
 })
 export class TasksContainerComponent implements OnInit {
   public caseDetails: CaseView;

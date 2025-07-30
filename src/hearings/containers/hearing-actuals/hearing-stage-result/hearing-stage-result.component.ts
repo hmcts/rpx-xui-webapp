@@ -16,9 +16,10 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
 @Component({
-  selector: 'exui-hearing-stage-result',
-  templateUrl: './hearing-stage-result.component.html',
-  styleUrls: ['./hearing-stage-result.component.scss']
+    selector: 'exui-hearing-stage-result',
+    templateUrl: './hearing-stage-result.component.html',
+    styleUrls: ['./hearing-stage-result.component.scss'],
+    standalone: false
 })
 export class HearingStageResultComponent implements OnInit, OnDestroy {
   public hearingStageResultForm: FormGroup;

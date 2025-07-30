@@ -5,9 +5,10 @@ import * as fromRoot from '../../store';
 import { Helper, Navigation, NavigationItems } from './footer.model';
 
 @Component({
-  selector: 'exui-app-footer',
-  templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+    selector: 'exui-app-footer',
+    templateUrl: './footer.component.html',
+    styleUrls: ['./footer.component.scss'],
+    standalone: false
 })
 
 export class FooterComponent implements OnInit {

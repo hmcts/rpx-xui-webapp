@@ -24,8 +24,9 @@ import { MockRouter, getMockLocations, getMockTasks } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 @Component({
-  template: `
-    <exui-available-tasks></exui-available-tasks>`
+    template: `
+    <exui-available-tasks></exui-available-tasks>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksComponent, { static: true }) public appComponentRef: AvailableTasksComponent;
@@ -40,7 +41,10 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
 
 @Pipe({
-  name: 'hearingsBadge'
+    name: 'hearingsBadge',
+    standalone: false
 })
 export class HearingsBadgePipe implements PipeTransform {
   public transform(value: EXUIDisplayStatusEnum): string {

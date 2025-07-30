@@ -3,7 +3,8 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole, TypeOfRole } from '../../role-access/models';
 
 @Directive({
-  selector: '[exuiShowAllocateLink]'
+    selector: '[exuiShowAllocateLink]',
+    standalone: false
 })
 export class ShowAllocateLinkDirective implements OnInit {
   private static readonly CASE_MANAGERS_LIMIT = 1;

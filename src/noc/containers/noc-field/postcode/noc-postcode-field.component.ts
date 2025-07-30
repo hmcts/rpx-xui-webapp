@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
-  selector: 'exui-noc-postcode-field',
-  templateUrl: './noc-postcode-field.component.html'
+    selector: 'exui-noc-postcode-field',
+    templateUrl: './noc-postcode-field.component.html',
+    standalone: false
 })
 export class NocPostcodeFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public postcodeControl: FormControl;

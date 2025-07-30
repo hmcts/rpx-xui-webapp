@@ -8,8 +8,9 @@ import { SpecificAccessNavigation } from '../../../models/specific-access-naviga
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-specific-access-information',
-  templateUrl: './specific-access-information.component.html'
+    selector: 'exui-specific-access-information',
+    templateUrl: './specific-access-information.component.html',
+    standalone: false
 })
 export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   @Input() public navEvent: SpecificAccessNavigation;

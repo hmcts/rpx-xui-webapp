@@ -30,7 +30,8 @@ import {
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
-  templateUrl: 'task-list-wrapper.component.html'
+    templateUrl: 'task-list-wrapper.component.html',
+    standalone: false
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public specificPage: string = '';

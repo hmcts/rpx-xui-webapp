@@ -4,8 +4,9 @@ import { AppUtils } from '../../../../app/app-utils';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
-  selector: 'exui-noc-time-field',
-  templateUrl: './noc-time-field.component.html'
+    selector: 'exui-noc-time-field',
+    templateUrl: './noc-time-field.component.html',
+    standalone: false
 })
 export class NocTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
   public timeControl: FormControl;

@@ -4,9 +4,10 @@ import { AmendmentLabelStatus } from '../../models/hearingsUpdateMode.enum';
 import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
 
 @Component({
-  selector: 'exui-case-flags',
-  templateUrl: './case-flags.component.html',
-  styleUrls: ['./case-flags.component.scss']
+    selector: 'exui-case-flags',
+    templateUrl: './case-flags.component.html',
+    styleUrls: ['./case-flags.component.scss'],
+    standalone: false
 })
 export class CaseFlagsComponent {
   @Input() public caseFlagsGroup: CaseFlagGroup[];

@@ -3,8 +3,9 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
-  selector: 'exui-noc-number-field',
-  templateUrl: './noc-number-field.component.html'
+    selector: 'exui-noc-number-field',
+    templateUrl: './noc-number-field.component.html',
+    standalone: false
 })
 export class NocNumberFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public numberControl: FormControl;

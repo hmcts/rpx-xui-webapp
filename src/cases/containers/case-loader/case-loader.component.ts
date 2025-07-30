@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'exui-case-loader',
-  template: '<xuilib-loading-spinner></xuilib-loading-spinner>'
+    selector: 'exui-case-loader',
+    template: '<xuilib-loading-spinner></xuilib-loading-spinner>',
+    standalone: false
 })
 
 /**

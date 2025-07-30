@@ -13,9 +13,10 @@ import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
 import { BookingService } from '../../services';
 
 @Component({
-  selector: 'exui-booking-home',
-  templateUrl: './booking-home.component.html',
-  styleUrls: ['./booking-home.component.scss']
+    selector: 'exui-booking-home',
+    templateUrl: './booking-home.component.html',
+    styleUrls: ['./booking-home.component.scss'],
+    standalone: false
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
   @Input() public bookingProcess: BookingProcess;

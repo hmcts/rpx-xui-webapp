@@ -13,16 +13,18 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingWelshComponent } from './hearing-welsh.component';
 
 @Component({
-  selector: 'exui-error-message',
-  template: ''
+    selector: 'exui-error-message',
+    template: '',
+    standalone: false
 })
 class MockTestComponent {
   @Input() public error: ErrorMessage;
 }
 
 @Component({
-  selector: 'exui-hearing-parties-title',
-  template: ''
+    selector: 'exui-hearing-parties-title',
+    template: '',
+    standalone: false
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;

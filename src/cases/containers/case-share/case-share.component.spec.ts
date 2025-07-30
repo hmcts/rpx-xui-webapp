@@ -6,7 +6,10 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { CaseShareComponent } from './case-share.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+    name: 'rpxTranslate',
+    standalone: false
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

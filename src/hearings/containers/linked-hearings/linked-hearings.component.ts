@@ -5,9 +5,10 @@ import { Subscription, tap } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-linked-hearings',
-  templateUrl: './linked-hearings.component.html',
-  styleUrls: ['./linked-hearings.component.scss']
+    selector: 'exui-linked-hearings',
+    templateUrl: './linked-hearings.component.html',
+    styleUrls: ['./linked-hearings.component.scss'],
+    standalone: false
 })
 export class LinkedHearingsComponent implements OnInit, OnDestroy {
   public caseId: string;

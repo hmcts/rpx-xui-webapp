@@ -27,8 +27,9 @@ import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { isEmpty } from 'lodash';
 
 @Component({
-  selector: 'exui-hearing-timing',
-  templateUrl: './hearing-timing.component.html'
+    selector: 'exui-hearing-timing',
+    templateUrl: './hearing-timing.component.html',
+    standalone: false
 })
 export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public priorityForm: FormGroup;

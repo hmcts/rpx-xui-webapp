@@ -7,8 +7,9 @@ import * as fromRoot from '../../store';
 import { NavItemsModel } from './../../models/nav-item.model';
 
 @Component({
-  selector: 'exui-header',
-  templateUrl: './header.component.html'
+    selector: 'exui-header',
+    templateUrl: './header.component.html',
+    standalone: false
 })
 export class HeaderComponent {
   @Input() public navItems: NavItemsModel[];

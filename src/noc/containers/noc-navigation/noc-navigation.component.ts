@@ -6,9 +6,10 @@ import { NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
-  selector: 'exui-noc-navigation',
-  templateUrl: 'noc-navigation.component.html',
-  styleUrls: ['noc-navigation.component.scss']
+    selector: 'exui-noc-navigation',
+    templateUrl: 'noc-navigation.component.html',
+    styleUrls: ['noc-navigation.component.scss'],
+    standalone: false
 })
 export class NocNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();

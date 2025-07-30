@@ -9,9 +9,10 @@ import { Section } from '../../models/section';
 import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-hearing-summary',
-  templateUrl: './hearing-summary.component.html',
-  styleUrls: ['./hearing-summary.component.scss']
+    selector: 'exui-hearing-summary',
+    templateUrl: './hearing-summary.component.html',
+    styleUrls: ['./hearing-summary.component.scss'],
+    standalone: false
 })
 export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public template: Section[];

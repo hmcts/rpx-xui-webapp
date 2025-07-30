@@ -5,8 +5,9 @@ import { Component, OnInit } from '@angular/core';
 * Responsible for displaying you been signed out page.
 */
 @Component({
-  selector: 'exui-sign-out',
-  templateUrl: './signed-out.component.html'
+    selector: 'exui-sign-out',
+    templateUrl: './signed-out.component.html',
+    standalone: false
 })
 export class SignedOutComponent implements OnInit {
   public redirectUrl: string;

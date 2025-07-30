@@ -10,9 +10,10 @@ import { BookingService } from '../../services';
 import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/booking-error-handler';
 
 @Component({
-  selector: 'exui-booking-check',
-  templateUrl: './booking-check.component.html',
-  styleUrls: ['./booking-check.component.scss']
+    selector: 'exui-booking-check',
+    templateUrl: './booking-check.component.html',
+    styleUrls: ['./booking-check.component.scss'],
+    standalone: false
 })
 export class BookingCheckComponent {
   @Input() public selectedBookingOption: number;

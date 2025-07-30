@@ -8,11 +8,17 @@ describe('CookiePolicyComponentTest', () => {
     language: 'cy'
   };
 
-  @Component({ selector: 'exui-app-header', template: '' })
+  @Component({
+    selector: 'exui-app-header', template: '',
+    standalone: false
+})
   class HeaderStubComponent {
   }
 
-  @Component({ selector: 'exui-app-footer', template: '' })
+  @Component({
+    selector: 'exui-app-footer', template: '',
+    standalone: false
+})
   class FooterStubComponent {
   }
 

@@ -5,9 +5,10 @@ import { JudicialUserModel } from '../../models/judicialUser.model';
 import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
-  selector: 'exui-hearing-judge-names-list',
-  templateUrl: './hearing-judge-names-list.component.html',
-  styleUrls: ['./hearing-judge-names-list.component.scss']
+    selector: 'exui-hearing-judge-names-list',
+    templateUrl: './hearing-judge-names-list.component.html',
+    styleUrls: ['./hearing-judge-names-list.component.scss'],
+    standalone: false
 })
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;

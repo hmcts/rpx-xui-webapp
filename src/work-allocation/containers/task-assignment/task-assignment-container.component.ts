@@ -13,8 +13,9 @@ import { Caseworker, Location } from '../../models/dtos';
 import { TaskServiceConfig } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-task-container-assignment',
-  templateUrl: 'task-assignment-container.component.html'
+    selector: 'exui-task-container-assignment',
+    templateUrl: 'task-assignment-container.component.html',
+    standalone: false
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;

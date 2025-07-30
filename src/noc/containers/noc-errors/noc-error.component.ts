@@ -6,8 +6,9 @@ import { NocHttpError, NocNavigation } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
-  selector: 'exui-noc-error',
-  templateUrl: 'noc-error.component.html'
+    selector: 'exui-noc-error',
+    templateUrl: 'noc-error.component.html',
+    standalone: false
 })
 export class NocErrorComponent implements OnChanges {
   @Input() public navEvent: NocNavigation;

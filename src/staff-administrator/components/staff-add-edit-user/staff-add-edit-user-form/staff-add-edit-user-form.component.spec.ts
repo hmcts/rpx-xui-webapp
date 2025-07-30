@@ -13,7 +13,10 @@ import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-opti
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@Component({ selector: 'exui-stub-component', template: '' })
+@Component({
+    selector: 'exui-stub-component', template: '',
+    standalone: false
+})
 class StubComponent { }
 
 describe('StaffAddEditUserFormComponent', () => {

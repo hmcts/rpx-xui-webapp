@@ -11,9 +11,10 @@ import * as fromCaseCreate from '../../store';
  * Initialized from routing
  */
 @Component({
-  selector: 'exui-create-case',
-  templateUrl: './case-create.component.html',
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-create-case',
+    templateUrl: './case-create.component.html',
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {
   public caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};

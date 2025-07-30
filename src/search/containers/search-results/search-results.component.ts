@@ -8,9 +8,10 @@ import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 
 @Component({
-  selector: 'exui-search-results',
-  templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.scss']
+    selector: 'exui-search-results',
+    templateUrl: './search-results.component.html',
+    styleUrls: ['./search-results.component.scss'],
+    standalone: false
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {
   public searchSubscription$: Subscription;

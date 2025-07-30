@@ -4,8 +4,9 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
-  selector: 'exui-hearing-case-name',
-  templateUrl: './hearing-case-name.component.html'
+    selector: 'exui-hearing-case-name',
+    templateUrl: './hearing-case-name.component.html',
+    standalone: false
 })
 export class HearingCaseNameComponent implements OnInit, OnDestroy {
   public caseName: string;

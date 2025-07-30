@@ -15,8 +15,9 @@ import { CaseworkerDataService } from '../../../work-allocation/services';
 import { Utils } from '../../utils/utils';
 
 @Component({
-  selector: 'exui-roles-and-access-container',
-  templateUrl: './roles-and-access-container.component.html'
+    selector: 'exui-roles-and-access-container',
+    templateUrl: './roles-and-access-container.component.html',
+    standalone: false
 })
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;

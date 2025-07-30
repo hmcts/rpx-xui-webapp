@@ -3,8 +3,9 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 @Component({
-  selector: 'exui-case-details-home',
-  templateUrl: './case-details-home.component.html'
+    selector: 'exui-case-details-home',
+    templateUrl: './case-details-home.component.html',
+    standalone: false
 })
 export class CaseDetailsHomeComponent implements OnInit {
   private readonly extras: NavigationExtras;

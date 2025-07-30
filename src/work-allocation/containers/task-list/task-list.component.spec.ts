@@ -18,14 +18,15 @@ import { MockRouter, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
-  template: `
+    template: `
     <exui-task-list
       [fields]='fields'
       [tasks]='tasks'
       [tasksTotal]="tasksTotal"
       [taskServiceConfig]="taskServiceConfig"
       [sortedBy]="sortedBy"
-      [pagination]="pagination"></exui-task-list>`
+      [pagination]="pagination"></exui-task-list>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;

@@ -10,9 +10,10 @@ import { PaginationParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['task-list.component.scss']
+    selector: 'exui-task-list',
+    templateUrl: './task-list.component.html',
+    styleUrls: ['task-list.component.scss'],
+    standalone: false
 })
 export class TaskListComponent implements OnChanges {
   /**

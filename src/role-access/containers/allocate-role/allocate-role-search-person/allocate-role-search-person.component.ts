@@ -20,8 +20,9 @@ import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
 
 @Component({
-  selector: 'exui-allocate-role-search-person',
-  templateUrl: './allocate-role-search-person.component.html'
+    selector: 'exui-allocate-role-search-person',
+    templateUrl: './allocate-role-search-person.component.html',
+    standalone: false
 })
 export class AllocateRoleSearchPersonComponent implements OnInit {
   public allocateAction = 'Allocate';

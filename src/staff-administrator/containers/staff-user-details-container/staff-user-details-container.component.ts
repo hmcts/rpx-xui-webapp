@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'exui-staff-user-details-container',
-  templateUrl: './staff-user-details-container.component.html',
-  styleUrls: ['./staff-user-details-container.component.scss']
+    selector: 'exui-staff-user-details-container',
+    templateUrl: './staff-user-details-container.component.html',
+    styleUrls: ['./staff-user-details-container.component.scss'],
+    standalone: false
 })
 export class StaffUserDetailsContainerComponent {}

@@ -7,10 +7,11 @@ import { FieldConfig } from '../../models/common';
 import { Task } from '../../models/tasks';
 
 @Component({
-  selector: 'exui-work-field',
-  templateUrl: './work-field.component.html',
-  styleUrls: ['./work-field.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-work-field',
+    templateUrl: './work-field.component.html',
+    styleUrls: ['./work-field.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WorkFieldComponent {
   /**

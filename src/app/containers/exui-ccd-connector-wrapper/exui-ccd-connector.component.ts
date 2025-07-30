@@ -17,12 +17,13 @@ import { Subscription } from 'rxjs';
  * @Input eventsBindings - bind CCD event to ExUI actions
  */
 @Component({
-  selector: 'exui-ccd-connector',
-  template: `
+    selector: 'exui-ccd-connector',
+    template: `
     <ng-container>
       <ng-content></ng-content>
     </ng-container>
-  `
+  `,
+    standalone: false
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   @ContentChild('ccdComponent', { static: false }) public ccdComponent;

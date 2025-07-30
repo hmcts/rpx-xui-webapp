@@ -9,9 +9,10 @@ import * as fromHearingStore from '../../store';
 import { HearingsUtils } from '../../utils/hearings.utils';
 
 @Component({
-  selector: 'exui-listing-information-summary',
-  templateUrl: './listing-information-summary.component.html',
-  styleUrls: ['./listing-information-summary.component.scss']
+    selector: 'exui-listing-information-summary',
+    templateUrl: './listing-information-summary.component.html',
+    styleUrls: ['./listing-information-summary.component.scss'],
+    standalone: false
 })
 export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   private static readonly HEARING_PANEL_SCREEN_NAME = 'hearing-panel';

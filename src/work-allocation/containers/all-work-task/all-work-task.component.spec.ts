@@ -21,14 +21,16 @@ import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
-  template: `
-    <exui-all-work-tasks></exui-all-work-tasks>`
+    template: `
+    <exui-all-work-tasks></exui-all-work-tasks>`,
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(AllWorkTaskComponent) public appComponentRef: AllWorkTaskComponent;
 }
 @Component({
-  template: '<div>Nothing</div>'
+    template: '<div>Nothing</div>',
+    standalone: false
 })
 class NothingComponent { }
 const USER_DETAILS = {

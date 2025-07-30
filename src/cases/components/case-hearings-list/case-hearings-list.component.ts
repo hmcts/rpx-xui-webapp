@@ -11,9 +11,10 @@ import { HearingsService } from '../../../hearings/services/hearings.service';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
-  selector: 'exui-case-hearings-list',
-  templateUrl: './case-hearings-list.component.html',
-  styleUrls: ['./case-hearings-list.component.scss']
+    selector: 'exui-case-hearings-list',
+    templateUrl: './case-hearings-list.component.html',
+    styleUrls: ['./case-hearings-list.component.scss'],
+    standalone: false
 })
 
 export class CaseHearingsListComponent implements OnInit {

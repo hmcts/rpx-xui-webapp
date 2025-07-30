@@ -8,10 +8,11 @@ import { Title } from '@angular/platform-browser';
 const MEDIA_VIEWER = 'media-viewer-info';
 
 @Component({
-  selector: 'exui-media-viewer',
-  templateUrl: './media-viewer-wrapper.component.html',
-  styleUrls: ['./media-viewer-wrapper.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'exui-media-viewer',
+    templateUrl: './media-viewer-wrapper.component.html',
+    styleUrls: ['./media-viewer-wrapper.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class MediaViewerWrapperComponent implements OnInit {
   public mediaURL = '';

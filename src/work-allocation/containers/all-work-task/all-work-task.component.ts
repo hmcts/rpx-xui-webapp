@@ -15,9 +15,10 @@ import { setServiceList } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
-  selector: 'exui-all-work-tasks',
-  templateUrl: 'all-work-task.component.html',
-  styleUrls: ['all-work-task.component.scss']
+    selector: 'exui-all-work-tasks',
+    templateUrl: 'all-work-task.component.html',
+    styleUrls: ['all-work-task.component.scss'],
+    standalone: false
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static readonly ALL_TASKS = 'All';

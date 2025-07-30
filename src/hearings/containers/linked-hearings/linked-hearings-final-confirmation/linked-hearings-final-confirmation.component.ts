@@ -4,8 +4,9 @@ import { select, Store } from '@ngrx/store';
 import * as fromHearingStore from '../../../store';
 
 @Component({
-  selector: 'exui-linked-hearings-final-confirmation',
-  templateUrl: './linked-hearings-final-confirmation.component.html'
+    selector: 'exui-linked-hearings-final-confirmation',
+    templateUrl: './linked-hearings-final-confirmation.component.html',
+    standalone: false
 })
 export class LinkedHearingsFinalConfirmationComponent implements OnInit {
   public heading: string;

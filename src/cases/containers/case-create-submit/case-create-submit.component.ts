@@ -8,8 +8,9 @@ import * as fromCases from '../../../cases/store';
 import * as fromCaseCreate from '../../store';
 
 @Component({
-  selector: 'exui-case-create-submit',
-  templateUrl: 'case-create-submit.component.html'
+    selector: 'exui-case-create-submit',
+    templateUrl: 'case-create-submit.component.html',
+    standalone: false
 })
 export class CaseCreateSubmitComponent implements OnInit {
   public eventTrigger: CaseEventTrigger = new CaseEventTrigger();

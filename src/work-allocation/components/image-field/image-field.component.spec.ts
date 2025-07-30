@@ -4,7 +4,8 @@ import { WorkAllocationComponentsModule } from './../work-allocation.components.
 import { ImageFieldComponent } from './image-field.component';
 
 @Component({
-  template: '<exui-image-field [src]="src" [alt]="alt"></exui-image-field>'
+    template: '<exui-image-field [src]="src" [alt]="alt"></exui-image-field>',
+    standalone: false
 })
 class WrapperComponent {
   @ViewChild(ImageFieldComponent, { static: true }) public appComponentRef: ImageFieldComponent;

@@ -3,9 +3,10 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
-  selector: 'exui-case-name-field',
-  templateUrl: './case-name-field.component.html',
-  styleUrls: ['case-name-field.component.scss']
+    selector: 'exui-case-name-field',
+    templateUrl: './case-name-field.component.html',
+    styleUrls: ['case-name-field.component.scss'],
+    standalone: false
 })
 export class CaseNameFieldComponent implements OnChanges {
   /**

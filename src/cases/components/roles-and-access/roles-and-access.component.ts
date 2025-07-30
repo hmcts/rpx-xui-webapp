@@ -6,8 +6,9 @@ import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 
 @Component({
-  selector: 'exui-roles-and-access',
-  templateUrl: './roles-and-access.component.html'
+    selector: 'exui-roles-and-access',
+    templateUrl: './roles-and-access.component.html',
+    standalone: false
 })
 export class RolesAndAccessComponent implements OnInit, OnChanges {
   public exclusionsNotNamed = false;

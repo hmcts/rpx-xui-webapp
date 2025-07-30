@@ -12,9 +12,10 @@ import * as fromHearingStore from '../../store';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
-  selector: 'exui-cancel-hearing',
-  templateUrl: './cancel-hearing.component.html',
-  styleUrls: ['./cancel-hearing.component.scss']
+    selector: 'exui-cancel-hearing',
+    templateUrl: './cancel-hearing.component.html',
+    styleUrls: ['./cancel-hearing.component.scss'],
+    standalone: false
 })
 export class CancelHearingComponent implements OnInit {
   public hearingCancelOptions: LovRefDataModel[];

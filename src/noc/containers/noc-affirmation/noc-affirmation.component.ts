@@ -6,9 +6,10 @@ import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERRO
 import * as fromFeature from '../../store';
 
 @Component({
-  selector: 'exui-noc-affirmation',
-  templateUrl: './noc-affirmation.component.html',
-  styleUrls: ['./noc-affirmation.component.scss']
+    selector: 'exui-noc-affirmation',
+    templateUrl: './noc-affirmation.component.html',
+    styleUrls: ['./noc-affirmation.component.scss'],
+    standalone: false
 })
 export class NocAffirmationComponent implements OnInit {
   @Input()

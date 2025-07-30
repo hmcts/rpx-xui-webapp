@@ -7,8 +7,9 @@ import {
 } from '../../../models';
 
 @Component({
-  selector: 'exui-choose-role-error',
-  templateUrl: './choose-role-error.component.html'
+    selector: 'exui-choose-role-error',
+    templateUrl: './choose-role-error.component.html',
+    standalone: false
 })
 export class ChooseRoleErrorComponent implements OnInit {
   @Input() public navEvent: AllocateRoleNavigation;

@@ -7,9 +7,10 @@ import * as fromRoot from '../../../app/store';
 import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
-  selector: 'exui-booking-location',
-  templateUrl: './booking-location.component.html',
-  styleUrls: ['./booking-location.component.scss']
+    selector: 'exui-booking-location',
+    templateUrl: './booking-location.component.html',
+    styleUrls: ['./booking-location.component.scss'],
+    standalone: false
 })
 export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Input() public bookingProcess: BookingProcess;

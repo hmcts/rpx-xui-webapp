@@ -8,8 +8,9 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 
 @Component({
-  selector: 'exui-hearing-stage-section',
-  templateUrl: './hearing-stage-section.component.html'
+    selector: 'exui-hearing-stage-section',
+    templateUrl: './hearing-stage-section.component.html',
+    standalone: false
 })
 export class HearingStageSectionComponent implements OnInit {
   @Input() public hearingStageOptionsRefData: LovRefDataModel[];

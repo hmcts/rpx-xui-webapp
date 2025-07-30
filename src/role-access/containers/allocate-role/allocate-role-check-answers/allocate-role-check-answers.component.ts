@@ -20,8 +20,9 @@ import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import * as fromFeature from '../../../store';
 
 @Component({
-  selector: 'exui-allocate-role-check-answers',
-  templateUrl: './allocate-role-check-answers.component.html'
+    selector: 'exui-allocate-role-check-answers',
+    templateUrl: './allocate-role-check-answers.component.html',
+    standalone: false
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   @Input() public navEvent: AllocateRoleNavigation;

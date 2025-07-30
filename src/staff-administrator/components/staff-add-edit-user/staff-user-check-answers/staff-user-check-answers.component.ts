@@ -13,9 +13,10 @@ import { StaffDataAccessService } from '../../../services/staff-data-access/staf
 import { ResponseErrorMessage } from '../../../../app/models/error-message.model';
 
 @Component({
-  selector: 'exui-staff-user-check-answers',
-  templateUrl: './staff-user-check-answers.component.html',
-  styleUrls: ['./staff-user-check-answers.component.scss']
+    selector: 'exui-staff-user-check-answers',
+    templateUrl: './staff-user-check-answers.component.html',
+    styleUrls: ['./staff-user-check-answers.component.scss'],
+    standalone: false
 })
 
 export class StaffUserCheckAnswersComponent implements OnInit {

@@ -7,9 +7,10 @@ import { NocAnswer, NocEvent, NocHttpError, NocNavigation, NocNavigationEvent, N
 import * as fromFeature from '../../store';
 
 @Component({
-  selector: 'exui-noc-q-and-a',
-  templateUrl: './noc-q-and-a.component.html',
-  styleUrls: ['./noc-q-and-a.component.scss']
+    selector: 'exui-noc-q-and-a',
+    templateUrl: './noc-q-and-a.component.html',
+    styleUrls: ['./noc-q-and-a.component.scss'],
+    standalone: false
 })
 export class NocQAndAComponent implements OnInit, OnDestroy {
   public questions$: Observable<NocQuestion[]>;

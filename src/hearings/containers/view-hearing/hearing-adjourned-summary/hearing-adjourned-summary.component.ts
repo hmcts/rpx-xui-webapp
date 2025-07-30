@@ -9,8 +9,9 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
 @Component({
-  selector: 'exui-hearing-adjourned-summary',
-  templateUrl: './hearing-adjourned-summary.component.html'
+    selector: 'exui-hearing-adjourned-summary',
+    templateUrl: './hearing-adjourned-summary.component.html',
+    standalone: false
 })
 export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;

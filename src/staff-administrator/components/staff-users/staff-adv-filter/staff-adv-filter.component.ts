@@ -6,9 +6,10 @@ import { StaffAdvancedSearchFilters } from '../../../models/staff-search-filters
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
-  selector: 'exui-staff-adv-filter',
-  templateUrl: './staff-adv-filter.component.html',
-  styleUrls: ['./staff-adv-filter.component.scss']
+    selector: 'exui-staff-adv-filter',
+    templateUrl: './staff-adv-filter.component.html',
+    styleUrls: ['./staff-adv-filter.component.scss'],
+    standalone: false
 })
 export class StaffAdvFilterComponent implements OnInit, OnDestroy {
   public readonly FILTER_NAME = 'staff-advanced-filters';

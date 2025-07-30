@@ -14,9 +14,10 @@ import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/util
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
-  selector: 'exui-case-task',
-  templateUrl: './case-task.component.html',
-  styleUrls: ['./case-task.component.scss']
+    selector: 'exui-case-task',
+    templateUrl: './case-task.component.html',
+    styleUrls: ['./case-task.component.scss'],
+    standalone: false
 })
 export class CaseTaskComponent implements OnInit {
   private static readonly CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';

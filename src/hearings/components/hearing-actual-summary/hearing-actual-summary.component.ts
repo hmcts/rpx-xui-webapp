@@ -8,9 +8,10 @@ import * as fromHearingStore from '../../store';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'exui-hearing-actual-summary',
-  templateUrl: './hearing-actual-summary.component.html',
-  styleUrls: ['./hearing-actual-summary.component.scss']
+    selector: 'exui-hearing-actual-summary',
+    templateUrl: './hearing-actual-summary.component.html',
+    styleUrls: ['./hearing-actual-summary.component.scss'],
+    standalone: false
 })
 export class HearingActualSummaryComponent implements OnInit {
   @Input() public hearingState$: Observable<fromHearingStore.State>;

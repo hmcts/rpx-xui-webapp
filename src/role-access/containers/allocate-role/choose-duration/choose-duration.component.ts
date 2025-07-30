@@ -16,9 +16,10 @@ import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
 
 @Component({
-  selector: 'exui-choose-duration',
-  templateUrl: './choose-duration.component.html',
-  styleUrls: ['./choose-duration.component.scss']
+    selector: 'exui-choose-duration',
+    templateUrl: './choose-duration.component.html',
+    styleUrls: ['./choose-duration.component.scss'],
+    standalone: false
 })
 
 export class ChooseDurationComponent implements OnInit {

@@ -7,8 +7,9 @@ import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../store';
 
 @Component({
-  selector: 'exui-get-help',
-  templateUrl: './get-help.component.html'
+    selector: 'exui-get-help',
+    templateUrl: './get-help.component.html',
+    standalone: false
 })
 export class GetHelpComponent implements OnInit {
   public userDetails$: Observable<any>;

@@ -15,8 +15,9 @@ import { ALL_LOCATIONS } from '../constants/locations';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-  selector: 'xuilib-generic-filter',
-  template: '<span></span>'
+    selector: 'xuilib-generic-filter',
+    template: '<span></span>',
+    standalone: false
 })
 class MockGenericFilterComponent {
   @Input() public config;

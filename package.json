@@ -168,7 +168,6 @@
     "@angular-eslint/eslint-plugin-template": "20.1.1",
     "@angular-eslint/schematics": "20.1.1",
     "@angular-eslint/template-parser": "20.1.1",
-    "@angular-material-components/moment-adapter": "^16.0.1",
     "@angular/cli": "^18.2.18",
     "@angular/compiler-cli": "^18.2.13",
     "@angular/language-service": "~18.2.13",

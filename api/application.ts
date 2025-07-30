@@ -2,10 +2,10 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
 import * as express from 'express';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import * as compression from 'compression';
 import amRoutes from './accessManagement/routes';
-import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
+import { csp, getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
@@ -24,6 +24,7 @@ import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
+import { MC_CSP } from './interfaces/csp-config';
 import { getNewUsersByServiceName } from './workAllocation';
 
 export async function createApp() {
@@ -40,7 +41,7 @@ export async function createApp() {
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
     app.use(helmet.xssFilter());
-    app.use(getContentSecurityPolicy(helmet));
+    app.use(csp(MC_CSP));
     app.use((req, res, next) => {
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
       res.header('Access-Control-Allow-Credentials', 'true');

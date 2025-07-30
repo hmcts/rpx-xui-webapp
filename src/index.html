@@ -5,6 +5,10 @@
   <title>HMCTS Manage cases</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- ✱ 1.  expose the nonce for runtime style tags -->
+  <meta name="csp-nonce" content="{{cspNonce}}">
+  <!-- ✱ 2.  load the Angular bootstrap script and give it the same nonce -->
+  <script nonce="{{cspNonce}}" src="assets/bootstrap.js"></script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="govuk-template__body js-enabled">

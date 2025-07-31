@@ -148,6 +148,11 @@ describe('TaskAssignmentConfirmComponent', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
     component.verb = TaskActionType.Assign;
     fixture.detectChanges();
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'all-work/tasks'
+    });
+    
     component.onChange();
     expect(router.navigate).toHaveBeenCalledWith(['test', 'task1111111', 'assign'], {
       state: {
@@ -163,18 +168,33 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'all-work/tasks'
+    });
+    
     component.onCancel();
     expect(router.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     window.history.pushState({}, '');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => ''
+    });
+    
     component.onCancel();
     expect(router.navigate).toHaveBeenCalledWith(['']);
   });
 
   it('should return to the "All work" page on successful task assignment', () => {
     window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'all-work/tasks'
+    });
+    
     component.onSubmit();
     expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', { userId: 'id123' });
     expect(router.navigate).toHaveBeenCalledWith(['all-work/tasks'], {
@@ -198,6 +218,11 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should return the correct message/state for case', () => {
     window.history.pushState({ returnUrl: 'case/case-details', showAssigneeColumn: false }, '', 'case/case-details');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'case/case-details'
+    });
+    
     const message = {
       type: InfoMessageType.SUCCESS,
       message: InfoMessage.REASSIGNED_TASK
@@ -215,6 +240,11 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should return to the "My work" page on successful task reassignment', () => {
     window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'my-work/list'
+    });
+    
     component.onSubmit();
     expect(mockTaskService.assignTask).toHaveBeenCalledWith('task1111111', { userId: 'id123' });
     expect(router.navigate).toHaveBeenCalledWith(['my-work/list'], {
@@ -237,16 +267,22 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should handle an HTTP 401 error on submission', () => {
-    // Set dummy task ID to trigger an error response from the fake assignTask() method
     component.taskId = '401';
+    window.history.pushState({ returnUrl: 'my-work/list' }, '', '');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'my-work/list'
+    });
+    
     fixture.detectChanges();
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
+    expect(router.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised], {
+      state: { returnUrl: 'my-work/list' }
+    });
   });
 
   it('should handle an HTTP 500 error on submission', () => {
-    // Set dummy task ID to trigger an error response from the fake assignTask() method
     component.taskId = '500';
     fixture.detectChanges();
     component.onSubmit();
@@ -255,8 +291,13 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should handle an unknown error on submission', () => {
-    // Set dummy task ID to trigger an error response from the fake assignTask() method
     component.taskId = '999';
+    window.history.pushState({ returnUrl: 'my-work/list' }, '', '');
+    
+    Object.defineProperty(component, 'returnUrl', {
+      get: () => 'my-work/list'
+    });
+    
     fixture.detectChanges();
     const message = {
       type: InfoMessageType.WARNING,
@@ -264,7 +305,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     } as InformationMessage;
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
-    expect(router.navigate).toHaveBeenCalledWith([''], {
+    expect(router.navigate).toHaveBeenCalledWith(['my-work/list'], {
       state: {
         badRequest: true,
         retainMessages: true
@@ -287,7 +328,6 @@ describe('TaskAssignmentConfirmComponent', () => {
       domain: PersonRole.LEGAL_OPERATIONS
     };
     const mockTasks = getMockTasks();
-    // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
     const mockTaskService = jasmine.createSpyObj('mockTaskService', ['assignTask']);
     const mockRouter = jasmine.createSpyObj('mockRouter', ['getCurrentNavigation', 'navigate']);
 

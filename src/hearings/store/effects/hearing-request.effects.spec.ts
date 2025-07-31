@@ -9,12 +9,13 @@ import { cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import { Go } from '../../../app/store';
-import { hearingRequestMainModel, initialState } from '../../../hearings/hearing.test.data';
-import { Mode } from '../../../hearings/models/hearings.enum';
-import { AbstractPageFlow } from '../../../hearings/utils/abstract-page-flow';
+import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
+import { HearingRequestPageRouteNames, Mode } from '../../models/hearings.enum';
+import { AbstractPageFlow } from '../../utils/abstract-page-flow';
 import { HearingsService } from '../../services/hearings.service';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
+import { ScreenNavigationModel } from '../../models/screenNavigation.model';
 
 describe('Hearing Request Effects', () => {
   let actions$;
@@ -195,6 +196,43 @@ describe('Hearing Request Effects', () => {
         message: 'error'
       });
       action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+    });
+  });
+  describe('createAndViewEditScreenFlow', () => {
+    beforeEach(() => {
+      effects.fragmentId = 'test-fragment';
+      effects.screenNavigations$ = of<ScreenNavigationModel[]>([
+        { screenName: 'current', conditionKey: null, navigation: null },
+        { screenName: 'other', conditionKey: 'cond', navigation: null }
+      ]);
+      pageflowMock.getNextPage.and.returnValue('next-page');
+      pageflowMock.getCurrentPage.and.returnValue('current');
+    });
+
+    it('should navigate to WELSH_PAGE if nextPage is WELSH_PAGE', () => {
+      effects.isHearingAmendmentsEnabled = false;
+      effects.createAndViewEditScreenFlow(HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY, HearingRequestEffects.WELSH_PAGE);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-welsh']);
+    });
+
+    it('should navigate to nextPage if currentScreen has conditionKey', () => {
+      effects.isHearingAmendmentsEnabled = false;
+      pageflowMock.getCurrentPage.and.returnValue('other');
+      effects.createAndViewEditScreenFlow(HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY, 'next-page');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'next-page']);
+    });
+
+    it('should navigate to routeName with fragment if no conditionKey and not WELSH_PAGE', () => {
+      effects.isHearingAmendmentsEnabled = false;
+      effects.createAndViewEditScreenFlow(HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY, 'not-welsh');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'test-fragment' });
+    });
+
+    it('should use getNextPage if isHearingAmendmentsEnabled and not on HEARING_EDIT_SUMMARY', () => {
+      effects.isHearingAmendmentsEnabled = true;
+      pageflowMock.getCurrentPage.and.returnValue('not-summary');
+      effects.createAndViewEditScreenFlow(HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY, 'not-welsh');
+      expect(pageflowMock.getNextPage).toHaveBeenCalled();
     });
   });
 });

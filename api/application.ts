@@ -1,10 +1,12 @@
 import * as bodyParser from 'body-parser';
+import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as csrf from 'csurf';
 import * as express from 'express';
+import { existsSync, readFileSync } from 'fs';
 import helmet from 'helmet';
-import * as compression from 'compression';
-import { csp } from '@hmcts/rpx-xui-node-lib';
+import * as path from 'path';
+import { csp, SECURITY_POLICY } from '@hmcts/rpx-xui-node-lib';
 import amRoutes from './accessManagement/routes';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
@@ -27,6 +29,21 @@ import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 import { getNewUsersByServiceName } from './workAllocation';
 
+function loadIndexHtml(): string {
+  // production build output
+  let p = path.join(__dirname, '..', 'rpx-exui', 'index.html');
+  if (!existsSync(p)) {
+    // running from sources - use the template inside src/
+    p = path.join(__dirname, '..', 'src', 'index.html');
+  }
+  return readFileSync(p, 'utf8');
+}
+const indexHtmlRaw = loadIndexHtml();
+
+function injectNonce(html: string, nonce: string): string {
+  return html.replace(/{{cspNonce}}/g, nonce);
+}
+
 export async function createApp() {
   const app = express();
 
@@ -41,7 +58,12 @@ export async function createApp() {
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
     app.use(helmet.xssFilter());
-    app.use(csp(MC_CSP));
+    app.use(
+      csp({
+        defaultCsp: SECURITY_POLICY,
+        ...MC_CSP
+      })
+    );
     app.use((req, res, next) => {
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
       res.header('Access-Control-Allow-Credentials', 'true');
@@ -89,6 +111,10 @@ export async function createApp() {
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
   app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  app.use('/*', (req, res) => {
+    const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
+  });
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 

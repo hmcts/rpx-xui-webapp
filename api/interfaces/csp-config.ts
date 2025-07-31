@@ -11,7 +11,8 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
   extraStyle: [
     'https://fonts.googleapis.com',
     'https://fonts.gstatic.com',
-    'https://www.googletagmanager.com'
+    'https://www.googletagmanager.com',
+    "'unsafe-eval'"
   ],
 
   extraFont: [

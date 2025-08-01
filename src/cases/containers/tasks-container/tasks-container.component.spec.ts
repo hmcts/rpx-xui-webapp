@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -10,6 +10,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
 import { getMockTasks } from '../../../work-allocation/tests/utils.spec';
 import { TasksContainerComponent } from './tasks-container.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const metadataField = {} as CaseField;
 metadataField.id = '[JURISDICTION]';
@@ -113,7 +114,7 @@ const CASE_VIEW: CaseView = {
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
-  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getCaseworkersForServices']);
+  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getUsersFromServices']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -123,9 +124,8 @@ describe('TasksContainerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [TaskAlertBannerComponent, TasksContainerComponent],
-      imports: [
-        HttpClientTestingModule
-      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [],
       providers: [
         { provide: AlertService, useValue: mockAlertService },
         { provide: WorkAllocationCaseService, useValue: mockWACaseService },
@@ -147,9 +147,10 @@ describe('TasksContainerComponent', () => {
               paramMap: convertToParamMap({ cId: '1234567890123456' })
             }
           }
-        }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));
@@ -159,7 +160,7 @@ describe('TasksContainerComponent', () => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
     mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));
-    mockCaseworkerService.getCaseworkersForServices.and.returnValue([]);
+    mockCaseworkerService.getUsersFromServices.and.returnValue([]);
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
   });

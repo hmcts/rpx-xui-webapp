@@ -2,8 +2,7 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
-var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
-
+const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
 
 chai.use(chaiAsPromised);
 
@@ -45,7 +44,7 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    username: 'lukesuperuserxui@mailnesia.com',
+    username: 'lukesuperuserxui_new@mailnesia.com',
     password: 'Monday01',
     caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
     caseworkerPassword: 'London01',
@@ -101,8 +100,6 @@ const config = {
     }
   ]
 
-
 };
-
 
 exports.config = config;

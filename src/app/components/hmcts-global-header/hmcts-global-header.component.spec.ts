@@ -1,5 +1,5 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +11,14 @@ import { UserService } from '../../../app/services/user/user.service';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('HmctsGlobalHeaderComponent - with active user', () => {
   let component: HmctsGlobalHeaderComponent;
@@ -56,16 +64,13 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-      declarations: [HmctsGlobalHeaderComponent],
+      declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
           feature: combineReducers(fromNocStore.reducers)
-        })
-      ],
+        })],
       providers: [
         {
           provide: Store,
@@ -86,7 +91,9 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
           useValue: {
             isEnabled: (flag) => of(flags[flag])
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();
@@ -420,16 +427,13 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     TestBed.configureTestingModule({
-      declarations: [HmctsGlobalHeaderComponent],
+      declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
           feature: combineReducers(fromNocStore.reducers)
-        })
-      ],
+        })],
       providers: [
         {
           provide: Store,
@@ -446,7 +450,9 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
           useValue: {
             isEnabled: (flag) => of(flags[flag])
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

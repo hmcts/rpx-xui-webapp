@@ -11,7 +11,7 @@ import {
 export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -234,7 +234,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -454,7 +454,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -663,7 +663,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -872,7 +872,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -1081,7 +1081,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -1291,7 +1291,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -1500,7 +1500,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -1709,7 +1709,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -1918,7 +1918,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -2055,7 +2055,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -2192,7 +2192,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
   },
   {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000Z',
+      timestamp: '2022-02-23T09:00:00.000Z',
       versionNumber: 1
     },
     hearingDetails: {
@@ -2396,7 +2396,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
     }
   }, {
     requestDetails: {
-      timeStamp: '2022-02-23T09:00:00.000+0000',
+      timestamp: '2022-02-23T09:00:00.000+0000',
       versionNumber: 1
     },
     hearingDetails: {

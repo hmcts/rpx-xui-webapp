@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/s
 import { StaffDataAccessService } from '../../../services/staff-data-access/staff-data-access.service';
 import { staffFilterOptionsTestData } from '../../../test-data/staff-filter-options.test.data';
 import { StaffAddEditUserFormComponent } from './staff-add-edit-user-form.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({ selector: 'exui-stub-component', template: '' })
 class StubComponent { }
@@ -51,14 +52,12 @@ describe('StaffAddEditUserFormComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [StaffAddEditUserFormComponent],
-      imports: [
-        RouterTestingModule.withRoutes([
-          { path: 'staff', component: StubComponent }
-        ]),
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        ExuiCommonLibModule
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([
+        { path: 'staff', component: StubComponent }
+      ]),
+      ReactiveFormsModule,
+      ExuiCommonLibModule],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
@@ -75,9 +74,10 @@ describe('StaffAddEditUserFormComponent', () => {
               }
             }
           }
-        }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   });
@@ -113,6 +113,48 @@ describe('StaffAddEditUserFormComponent', () => {
       expect(component.errors).toBeFalsy();
       expect(component.submitted).toBe(true);
       expect(validForm.markAllAsTouched).toHaveBeenCalled();
+    });
+
+    it('should give location error if there is an incorrect location', () => {
+      component.errors = {
+        title: 'There is a problem',
+        description: 'Check the form for errors and try again.',
+        multiple: true,
+        errors: []
+      };
+      expect(component.errors).not.toBeFalsy();
+      expect(component.submitted).toBe(false);
+
+      const validForm = new FormGroup<any>({});
+      spyOn(validForm, 'markAllAsTouched');
+      expect(validForm.markAllAsTouched).not.toHaveBeenCalled();
+
+      validForm.setControl('services', new FormControl());
+      validForm.get('services').setValue('AAA7');
+      component.baseLocationsFormControl.patchValue([{ location_id: '123', location: 'Manchester', service_codes: ['BFA1'] }]);
+      component.submitForm(validForm);
+      expect(component.wrongLocationError).toEqual('There is a problem. Location Manchester is not valid for the services selected');
+    });
+
+    it('should give location multiple error if incorrect locations', () => {
+      component.errors = {
+        title: 'There is a problem',
+        description: 'Check the form for errors and try again.',
+        multiple: true,
+        errors: []
+      };
+      expect(component.errors).not.toBeFalsy();
+      expect(component.submitted).toBe(false);
+
+      const validForm = new FormGroup<any>({});
+      spyOn(validForm, 'markAllAsTouched');
+      expect(validForm.markAllAsTouched).not.toHaveBeenCalled();
+
+      validForm.setControl('services', new FormControl());
+      validForm.get('services').setValue('AAA7');
+      component.baseLocationsFormControl.patchValue([{ location_id: '125', location: 'Cardiff', service_codes: ['ABA5'] }, { location_id: '126', location: 'Birmingham', service_codes: ['AAA7'] }]);
+      component.submitForm(validForm);
+      expect(component.wrongLocationError).toEqual('There is a problem. Location Cardiff is not valid for the services selected');
     });
 
     it('should navigate to relative route /check-your-answers when form is valid', () => {

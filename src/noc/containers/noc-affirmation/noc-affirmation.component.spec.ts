@@ -1,7 +1,15 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { NocAffirmationComponent } from './noc-affirmation.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocAffirmationComponent', () => {
   let store;
@@ -13,7 +21,7 @@ describe('NocAffirmationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [NocAffirmationComponent],
+      declarations: [NocAffirmationComponent, RpxTranslateMockPipe],
       providers: [
         provideMockStore()
       ]

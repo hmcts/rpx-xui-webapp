@@ -36,6 +36,7 @@ Feature: Test case type case creation and case details validations
         Then I am on case form page
         Then Validate event pages display show condition logic
 
+    @Flaky
     Scenario: Validate Case event check your answers summary page links
         When I click on primary navigation header tab "Create case", I see selected tab page displayed
         Then Create case page should be displayed

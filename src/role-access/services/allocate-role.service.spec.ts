@@ -1,9 +1,11 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AllocateRoleService, DurationHelperService } from '.';
-import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, CaseRoleDetails, DurationOfRole, RoleCategory, SpecificAccessState, SpecificAccessStateData } from '../models';
+import { Actions, AllocateRoleState, AllocateRoleStateData, AllocateTo, CaseRoleDetails, DurationOfRole, SpecificAccessState, SpecificAccessStateData } from '../models';
 import { AccessReason, DurationType } from '../models/enums';
 
 const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
@@ -58,7 +60,7 @@ describe('AllocateRoleService', () => {
       jurisdiction: 'IA',
       state: AllocateRoleState.CHOOSE_ROLE,
       typeOfRole: null,
-      allocateTo: AllocateTo.RESERVE_TO_ME,
+      allocateTo: AllocateTo.ALLOCATE_TO_ME,
       person: null,
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
@@ -66,12 +68,11 @@ describe('AllocateRoleService', () => {
     };
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [
-          HttpClientTestingModule,
-          StoreModule.forRoot({})
-        ],
+        imports: [StoreModule.forRoot({})],
         providers: [
-          AllocateRoleService
+          AllocateRoleService,
+          provideHttpClient(withInterceptorsFromDi()),
+          provideHttpClientTesting()
         ]
       });
     });
@@ -132,7 +133,7 @@ describe('AllocateRoleService', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
@@ -172,7 +173,7 @@ describe('AllocateRoleService', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {

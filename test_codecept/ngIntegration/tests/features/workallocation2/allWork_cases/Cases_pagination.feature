@@ -140,7 +140,7 @@ Feature: WA Release 2: All work > cases -  pagination sorting
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
 
     # For EUI-4366
-    @ignore
+  
     Scenario Outline: pagnation control display 0 items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service

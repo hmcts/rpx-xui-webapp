@@ -43,7 +43,10 @@ module.exports = {
       res.send(workAllocationMockData.getTaskRoles());
     },
     '/api/wa-supported-jurisdiction/get': (req, res) => {
-      res.send(workAllocationMockData.waSupportedJusridictions);
+      res.send(workAllocationMockData.waSupportedJurisdictions);
+    },
+    '/api/wa-supported-jurisdiction/detail' : (req,res) => {
+      res.send(workAllocationMockData.waDetailedSupportedServices);
     },
     '/api/locations/getLocationsById': (req, res) => {
       res.send(workAllocationMockData.getLocationById(req.query.ids));
@@ -262,8 +265,8 @@ module.exports = {
       }
       res.send(returnUsers);
     },
-    '/workallocation/retrieveCaseWorkersForServices': (req, res) => {
-      res.send(workAllocationMockData.retrieveCaseWorkersForServices(req.body.serviceIds, req.body.fullServices));
+    '/workallocation/caseworker/getUsersByServiceName': (req, res) => {
+      res.send(workAllocationMockData.getUsersFromServices(req.query.ccd_service_name));
     },
     '/api/role-access/allocate-role/valid-roles': (req, res) => {
       res.send(workAllocationMockData.getRoles(req.body.serviceIds));

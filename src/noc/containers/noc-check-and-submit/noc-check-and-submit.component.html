@@ -3,15 +3,15 @@
 
     <div *ngIf="validationErrors$ | async" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
       <h2 class="govuk-error-summary__title" id="error-summary-title">
-        There is a problem
+        {{'There is a problem' | rpxTranslate}}
       </h2>
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngIf="hasDisagreeError$ | async">
-            <a href="noc#affirmation">Tick the box to confirm all these details are accurate and match what is written on the case</a>
+            <a href="noc#affirmation">{{'Tick the box to confirm all these details are accurate and match what is written on the case' | rpxTranslate}}</a>
           </li>
           <li *ngIf="hasNotifyEveryPartyError$ | async">
-            <a href="noc#notifyEveryParty">Tick the box to confirm you have served notice of this change on every party to the case, including the former legal representative (if there was one)</a>
+            <a href="noc#notifyEveryParty">{{'Tick the box to confirm you have served notice of this change on every party to the case, including the former legal representative (if there was one)' | rpxTranslate}}</a>
           </li>
         </ul>
       </div>
@@ -19,7 +19,7 @@
 
     <div class="hmcts-page-heading">
       <div class="hmcts-page-heading__title">
-        <h1 class="govuk-heading-l">Check and submit</h1>
+        <h1 class="govuk-heading-l">{{'Check and submit' | rpxTranslate}}</h1>
       </div>
     </div>
     <div>

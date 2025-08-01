@@ -18,7 +18,7 @@ Feature: WA Release 2: My work - My Tasks - negative scenarios
             | yes        | 401          | Page             | Sorry, you're not authorised to perform this action |
             | yes        | 403          | Page             | Sorry, you're not authorised to perform this action |
 
-    @ignore
+
     Scenario Outline:  Locations api error with response code <ResponseCode>
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK api method "get" endpoint "/workallocation/location" with error response code <ResponseCode>

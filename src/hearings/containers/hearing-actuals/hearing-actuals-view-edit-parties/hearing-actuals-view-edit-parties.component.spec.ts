@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -9,9 +9,13 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs/internal/observable/of';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
+import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
+import { CategoryType, HMCStatus } from '../../../models/hearings.enum';
 import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingActualsViewEditPartiesComponent } from './hearing-actuals-view-edit-parties.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const hearingRole = [
   {
@@ -184,7 +188,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent],
+      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
       imports: [
         RouterTestingModule,
         ReactiveFormsModule
@@ -246,7 +250,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           isPlannedParty: false,
           role: null,
           attendanceType:
-          null,
+            null,
           organisation: null
         }));
   });
@@ -353,12 +357,10 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsViewEditPartiesComponent],
-      imports: [
-        RouterTestingModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule
-      ],
+      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
+        ReactiveFormsModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState: newState }),
@@ -376,9 +378,10 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
               }
             }
           }
-        }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
@@ -389,6 +392,126 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
   it('should create form with actual parties involved', () => {
     const parties: any = component.form.value;
     expect(parties.parties.length).toBe(3);
+  });
+
+  afterEach(() => {
+    fixture.destroy();
+  });
+});
+
+describe('HearingViewEditSummaryComponent participants check', () => {
+  let component: HearingActualsViewEditPartiesComponent;
+  let fixture: ComponentFixture<HearingActualsViewEditPartiesComponent>;
+
+  const actualsData: HearingActualsMainModel = {
+    hearingActuals: null,
+    hearingPlanned: {
+      plannedHearingType: 'final',
+      plannedHearingDays: [
+        {
+          plannedStartTime: '2021-03-12T09:00:00',
+          plannedEndTime: '2021-03-12T11:00:00',
+          parties: [
+            {
+              partyID: '1eef0c47-a257-47b5-9089-648aafa77b2c',
+              partyRole: 'APPL',
+              individualDetails: {
+                title: null,
+                firstName: 'Ted',
+                lastName: 'Jacob'
+              },
+              organisationDetails: null,
+              partyChannelSubType: 'INTER'
+            },
+            {
+              partyID: '3bb0fa2a-a31c-43a9-bc6f-8595814dcb26',
+              partyRole: 'LGRP',
+              individualDetails: null,
+              organisationDetails: {
+                name: 'Kapil71HjOWjo5SaTT7u3w1y9 JainhuRYbAs5i0lxPCPiUnro',
+                cftOrganisationID: 'HQRZHN4'
+              },
+              partyChannelSubType: null
+            }
+          ]
+        }
+      ]
+    },
+    hmcStatus: HMCStatus.UPDATE_SUBMITTED,
+    caseDetails: {
+      hmctsServiceCode: 'BBA3',
+      caseRef: '1584618195804035',
+      requestTimeStamp: null,
+      hearingID: 'h100001',
+      externalCaseReference: null,
+      caseDeepLink: null,
+      hmctsInternalCaseName: 'Jane Smith vs DWP',
+      publicCaseName: 'Jane Smith vs DWP',
+      caseAdditionalSecurityFlag: false,
+      caseInterpreterRequiredFlag: false,
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'BBA3-002'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002'
+        }],
+      caseManagementLocationCode: null,
+      caserestrictedFlag: false,
+      caseSLAStartDate: '2021-03-12T09:00:00.000Z'
+    }
+  };
+
+  const newState: any = JSON.parse(JSON.stringify(initialState));
+  newState.hearings.hearingActuals.hearingActualsMainModel = actualsData;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
+        ReactiveFormsModule],
+      providers: [
+        LoadingService,
+        provideMockStore({ initialState: newState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({
+              id: '1',
+              hearingDate: '2021-03-12'
+            })),
+            snapshot: {
+              data: {
+                partyChannels,
+                hearingRole
+              }
+            }
+          }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('should display only individual participants', () => {
+    fixture.detectChanges();
+    expect(component.parties.length).toEqual(1);
+    expect(component.participants.length).toEqual(1);
   });
 
   afterEach(() => {

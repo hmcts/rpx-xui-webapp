@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { getConfigValue, showFeature } from './index';
+import { setupMenuConfig } from './menuConfigs/configs';
 import {
   FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
@@ -12,14 +13,39 @@ import {
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
-  SERVICES_WA_WORKFLOW_API_URL,
-  WA_SUPPORTED_JURISDICTIONS
+  SERVICES_WA_WORKFLOW_API_URL
 } from './references';
-import { getFormattedSupportedServicesCaseTypes } from './waSupportedServicesCaseTypesHelper';
+import { setupHearingConfigs } from './hearingConfigs/configs';
 
 export const router = express.Router({ mergeParams: true });
 
+const AAT_CONFIG_ENVS = ['.aat.', '.demo.', '.perftest.', '.ithc.'];
 router.get('/', uiConfigurationRouter);
+
+let menuConfigCache;
+let hearingJurisdictionsConfigCache;
+
+function getBackendEnvironment() {
+  const hasPreviewID = process.env.PREVIEW_DEPLOYMENT_ID;
+  const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
+  return hasPreviewID ? 'preview' : AAT_CONFIG_ENVS.some((substring) => envUrl.includes(substring)) ? 'aat' : 'prod';
+}
+
+function getHeaderConfig() {
+  if (!menuConfigCache) {
+    const environment = getBackendEnvironment();
+    menuConfigCache = setupMenuConfig(environment);
+  }
+  return menuConfigCache;
+}
+
+function getHearingJurisdictions() {
+  if (!hearingJurisdictionsConfigCache) {
+    const environment = getBackendEnvironment();
+    hearingJurisdictionsConfigCache = setupHearingConfigs(environment);
+  }
+  return hearingJurisdictionsConfigCache;
+}
 
 /**
  * UI Configuration Route
@@ -43,7 +69,8 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
-    waSupportedServices: getFormattedSupportedServicesCaseTypes(getConfigValue(WA_SUPPORTED_JURISDICTIONS))
+    headerConfig: getHeaderConfig(),
+    hearingJurisdictionConfig: getHearingJurisdictions()
   });
 }
 

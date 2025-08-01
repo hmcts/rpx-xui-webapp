@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { CaseRole, RoleCategory, TypeOfRole } from '../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { CaseRole, TypeOfRole } from '../../role-access/models';
 
 @Directive({
   selector: '[exuiShowAllocateLink]'
@@ -9,6 +10,7 @@ export class ShowAllocateLinkDirective implements OnInit {
   @Input() public showAllocateRoleLink: boolean = false;
   @Input() public roles: CaseRole[];
   @Input() public roleCategory: RoleCategory;
+  @Input() public existingUsers: string[] = [];
 
   constructor(private readonly element: ElementRef<HTMLElement>) {}
 

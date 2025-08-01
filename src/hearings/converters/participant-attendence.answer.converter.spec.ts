@@ -130,6 +130,11 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           caseFlags: null,
           screenFlow: null,
           vocabulary: null
+        },
+        caseInfo: {
+          caseReference: '1111222233334444',
+          jurisdictionId: '',
+          hearingId: ''
         }
       },
       hearingRequestToCompare: null,
@@ -189,7 +194,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
       hearingLinks: null
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'Error: P1 - Error: invalidChannel';
+    const room = 'Jane Smith - Error: invalidChannel';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });
@@ -279,6 +284,11 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           caseFlags: null,
           screenFlow: null,
           vocabulary: null
+        },
+        caseInfo: {
+          caseReference: '1111222233334444',
+          jurisdictionId: '',
+          hearingId: ''
         }
       },
       hearingRequestToCompare: null,
@@ -338,7 +348,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
       hearingLinks: null
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
-    const room = 'Error: P1 - Error: invalidChannel';
+    const room = 'Jane Smith - Error: invalidChannel';
     const expected = cold('(b|)', { b: room });
     expect(result$).toBeObservable(expected);
   });

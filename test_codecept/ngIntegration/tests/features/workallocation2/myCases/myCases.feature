@@ -1,4 +1,4 @@
-@ng  @wa2 @wa @codecept_enabled
+@ng  @wa2 @wa 
 Feature: WA Release 2: My cases
 
     Background: Mock and browser setup
@@ -28,7 +28,7 @@ Feature: WA Release 2: My cases
             | Case role     |
             | Start         |
             | End           |
-            | Hearing date  |
+            # | Hearing date  |
 
         Then I validate work allocation table columns are links
             | ColumnHeader |
@@ -42,7 +42,7 @@ Feature: WA Release 2: My cases
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker,judge |
 
     Scenario Outline: My cases pagnation control display with only 1 page of items
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"

@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CaseResolver, editorRouting, viewerRouting as caseViewRouting } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseResolver, viewerRouting as caseViewRouting, editorRouting } from '@hmcts/ccd-case-ui-toolkit';
 import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
@@ -8,16 +8,16 @@ import {
   CaseHearingsComponent,
   CaseHomeComponent,
   CaseListComponent,
-  CasesCreateComponent,
   CaseShareCompleteComponent,
   CaseShareComponent,
-  CaseShareConfirmComponent
+  CaseShareConfirmComponent,
+  CasesCreateComponent
 } from './containers';
 import { CaseLoaderComponent } from './containers/case-loader/case-loader.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
-import { RolesAndAccessContainerComponent
-} from './containers/roles-and-access-container/roles-and-access-container.component';
+import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
+import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
@@ -129,6 +129,13 @@ export const ROUTES: Routes = [
         data: {
           title: 'Case Details'
         }
+      },
+      {
+        path: 'restricted-case-access/:cid',
+        component: RestrictedCaseAccessContainerComponent,
+        data: {
+          title: 'Restricted case access'
+        }
       }
     ]
   }
@@ -136,4 +143,3 @@ export const ROUTES: Routes = [
 ];
 
 export const casesRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);
-

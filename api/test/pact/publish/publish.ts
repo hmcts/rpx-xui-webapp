@@ -11,19 +11,18 @@ import {
 } from '../../../configuration/references';
 
 const publish = async (): Promise<void> => {
+  function getPactBrokerURL() {
+    return getConfigValue(PACT_BROKER_URL).includes('localhost') ? getConfigValue(PACT_BROKER_URL)
+      : `https://${getConfigValue(PACT_BROKER_URL)}`;
+  }
+
   try {
-    const pactBroker = getConfigValue(PACT_BROKER_URL) ?
-      getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
-
-    // const pactBroker = "https://pact-broker.platform.hmcts.net"
-
+    const pactBroker = getConfigValue(PACT_BROKER_URL) ? getPactBrokerURL() : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
       getConfigValue(PACT_BRANCH_NAME) : 'Dev';
 
     const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
       getConfigValue(PACT_CONSUMER_VERSION) : git.short();
-
-    process.env.SSL_CERT_FILE = path.resolve(__dirname, '../cer/ca-bundle.crt');
 
     const opts = {
       consumerVersion,
@@ -36,18 +35,12 @@ const publish = async (): Promise<void> => {
       publishVerificationResult: true,
       tags: [pactTag]
     };
-
-    if (pactTag === 'master') {
-      await pact.publishPacts(opts);
-
-      console.log('Pact contract publishing complete!');
-      console.log('');
-      console.log(`Head over to ${pactBroker}`);
-      console.log('to see your published contracts.');
-    } else {
-      console.log('Pact branchName is', pactTag);
-      console.log('publish is disabled for non "master" branchName');
-    }
+    await pact.publishPacts(opts);
+    console.log('Pact contract publishing complete!');
+    console.log('');
+    console.log(`Head over to ${pactBroker}`);
+    console.log('to see your published contracts.');
+    console.log('Pact branchName is', pactTag);
   } catch (e) {
     console.log('Pact contract publishing failed: ', e);
   }

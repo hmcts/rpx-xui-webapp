@@ -2,7 +2,7 @@
   <exui-error-message [error]="errors"></exui-error-message>
 </div>
 
-<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="content" role="main">
   <a href="javascript:void(0)" [routerLink]="'../'" class="govuk-back-link">Back</a>
 
   <div>
@@ -146,6 +146,11 @@
            class="govuk-error-message">
               <span
                 class="govuk-visually-hidden">Error: </span>{{ VALIDATION_ERROR_MESSAGES['base_locations.noPrimaryLocation'] }}
+        </p>
+        <p *ngIf="submitted && form.get('base_locations')?.invalid && wrongLocationError" id="location-incorrect-error"
+           class="govuk-error-message">
+              <span
+                class="govuk-visually-hidden">Error: </span>{{ wrongLocationError }}
         </p>
       </legend>
 

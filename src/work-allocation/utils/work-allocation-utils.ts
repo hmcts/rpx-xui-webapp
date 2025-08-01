@@ -1,7 +1,6 @@
 import { NavigationExtras } from '@angular/router';
-import { PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { UserInfo, UserRole } from '../../app/models';
-import { RoleCategory } from '../../role-access/models';
+import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { HMCTSServiceDetails, UserInfo } from '../../app/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
@@ -132,7 +131,11 @@ export const getAssigneeName = (caseworkers: any[], assignee: string): string =>
 
 export const servicesMap: { [key: string]: string } = {
   IA: 'Immigration and Asylum',
-  SSCS: 'Social security and child support'
+  SSCS: 'Social security and child support',
+  CIVIL: 'Civil',
+  PRIVATELAW: 'Private Law',
+  PUBLICLAW: 'Public Law',
+  EMPLOYMENT: 'Employment'
 };
 
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
@@ -188,7 +191,7 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
     case RoleCategory.JUDICIAL:
       return PersonRole.JUDICIAL;
     case RoleCategory.LEGAL_OPERATIONS:
-      return PersonRole.CASEWORKER;
+      return PersonRole.LEGAL_OPERATIONS;
     case RoleCategory.CTSC:
       return PersonRole.CTSC;
     default:
@@ -199,24 +202,11 @@ export function getLabel(roleCategory: RoleCategory): PersonRole {
 export function getRoleCategory(role: string): RoleCategory {
   if (role === PersonRole.JUDICIAL) {
     return RoleCategory.JUDICIAL;
-  } else if (role === PersonRole.CASEWORKER) {
+  } else if (role === PersonRole.LEGAL_OPERATIONS) {
     return RoleCategory.LEGAL_OPERATIONS;
   } else if (role === PersonRole.ADMIN) {
     return RoleCategory.ADMIN;
   } else if (role === PersonRole.CTSC) {
-    return RoleCategory.CTSC;
-  }
-  return null;
-}
-
-export function getRoleCategoryFromUserRole(role: string): RoleCategory {
-  if (role === UserRole.Judicial) {
-    return RoleCategory.JUDICIAL;
-  } else if (role === UserRole.LegalOps) {
-    return RoleCategory.LEGAL_OPERATIONS;
-  } else if (role === UserRole.Admin) {
-    return RoleCategory.ADMIN;
-  } else if (role === UserRole.Ctsc) {
     return RoleCategory.CTSC;
   }
   return null;
@@ -284,4 +274,30 @@ export function locationWithinRegion(regionLocations: LocationsByRegion[], regio
     }
   });
   return withinRegion;
+}
+
+export function setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSServiceDetails[]): { supportedJurisdictions: string[], detailedWAServices: HMCTSServiceDetails[] } {
+  const supportedJurisdictions = [];
+  detailedWAServices.forEach((jurisdiction) => {
+    // get the serviceIds from the detailed service
+    supportedJurisdictions.push(jurisdiction.serviceId);
+  });
+  if (!roleServiceIds.includes(null) && roleServiceIds.length > 0) {
+    const roleJurisdictions = [];
+    // get set of serviceIds from jurisdictions within user roles
+    const initialRoleJurisdictions = [...new Set(roleServiceIds)];
+    initialRoleJurisdictions.forEach((serviceId) => {
+      if (supportedJurisdictions.includes(serviceId)) {
+        // if there is a service name for the serviceId, use it
+        const matchingServices = detailedWAServices.filter((x) => x.serviceId === serviceId);
+        const serviceName = matchingServices?.length > 0 ? matchingServices[0].serviceName : serviceId;
+        roleJurisdictions.push({ serviceId, serviceName });
+      } else {
+        roleJurisdictions.push({ serviceId, serviceName: serviceId });
+      }
+    });
+    return { supportedJurisdictions, detailedWAServices: roleJurisdictions };
+  }
+  // use provided WA supported services
+  return { supportedJurisdictions, detailedWAServices };
 }

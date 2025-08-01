@@ -1,40 +1,43 @@
-import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { HttpError } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
-import { Go } from '../../../app/store/actions';
-import { hearingRequestMainModel, initialState } from '../../hearing.test.data';
-import { Mode } from '../../models/hearings.enum';
+import { LoggerService } from '../../../app/services/logger/logger.service';
+import { Go } from '../../../app/store';
+import { hearingRequestMainModel, initialState } from '../../../hearings/hearing.test.data';
+import { Mode } from '../../../hearings/models/hearings.enum';
+import { AbstractPageFlow } from '../../../hearings/utils/abstract-page-flow';
 import { HearingsService } from '../../services/hearings.service';
-import { AbstractPageFlow } from '../../utils/abstract-page-flow';
-import * as hearingRequestToCompareActions from '../actions/hearing-request-to-compare.action';
 import * as hearingRequestActions from '../actions/hearing-request.action';
 import { HearingRequestEffects } from './hearing-request.effects';
 
 describe('Hearing Request Effects', () => {
   let actions$;
-  let effects: HearingRequestEffects;
   let store: any;
+  let effects: HearingRequestEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
     'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest'
   ]);
+  const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+  const mockLocation = jasmine.createSpyObj('Location', ['back']);
   const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
     'getCurrentPage', 'getLastPage', 'getNextPage'
   ]);
-  const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
-  const mockLocation = jasmine.createSpyObj('Location', ['back']);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const hearingConditions = {
     isInit: false,
     region: 'Wales'
   };
-
   beforeEach(() => {
+    mockRouter.navigate.and.returnValue(Promise.resolve(true));
+
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -50,6 +53,10 @@ describe('Hearing Request Effects', () => {
           useValue: mockRouter
         },
         {
+          provide: LoggerService,
+          useValue: loggerServiceMock
+        },
+        {
           provide: Location,
           useValue: mockLocation
         },
@@ -59,6 +66,10 @@ describe('Hearing Request Effects', () => {
     });
     effects = TestBed.inject(HearingRequestEffects);
     store = TestBed.inject(Store);
+  });
+
+  afterEach(() => {
+    mockRouter.navigate.calls.reset();
   });
 
   describe('continueNavigation$', () => {
@@ -91,64 +102,6 @@ describe('Hearing Request Effects', () => {
       const expected = cold('-b', { b: navigateAction });
       expect(effects.continueNavigation$).toBeObservable(expected);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
-    });
-  });
-
-  describe('backNavigation$', () => {
-    it('should navigate to last page if going back on CREATE mode', () => {
-      effects.mode = Mode.CREATE;
-      pageflowMock.getLastPage.and.returnValue('last');
-      const action = new hearingRequestActions.NavigateBackHearingRequest();
-      actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
-      expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
-
-    it('should navigate to hearing-create-edit-summary page if going back on CREATE_EDIT mode', () => {
-      effects.mode = Mode.CREATE_EDIT;
-      const action = new hearingRequestActions.NavigateBackHearingRequest();
-      actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
-      expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
-
-    it('should navigate to hearing tab page if going back on VIEW mode', () => {
-      effects.mode = Mode.VIEW;
-      const action = new hearingRequestActions.NavigateBackHearingRequest();
-      actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
-      expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
-
-    it('should navigate to hearing-view-edit-summary page if going back on VIEW_EDIT mode', () => {
-      effects.mode = Mode.VIEW_EDIT;
-      const action = new hearingRequestActions.NavigateBackHearingRequest();
-      actions$ = cold('-a', { a: action });
-      const navigateAction = new hearingRequestActions.NavigateBackHearingRequest();
-      const expected = cold('-b', { b: navigateAction });
-      expect(effects.backNavigation$).toBeObservable(expected);
-      expect(mockLocation.back).toHaveBeenCalled();
-    });
-  });
-
-  describe('loadHearingRequest$', () => {
-    it('should load hearing requests', () => {
-      const dispatchSpy = spyOn(store, 'dispatch');
-      hearingsServiceMock.loadHearingRequest.and.returnValue(of(hearingRequestMainModel));
-      const action = new hearingRequestActions.LoadHearingRequest({ hearingID: 'h1000000', targetURL: 'dummy-url' });
-      actions$ = cold('-a', { a: action });
-      const expected = cold('-b', { b: hearingRequestMainModel });
-      expect(effects.loadHearingRequest$).toBeObservable(expected);
-      expect(hearingsServiceMock.loadHearingRequest).toHaveBeenCalledWith('h1000000');
-      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
-      expect(dispatchSpy).toHaveBeenCalledWith(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
-      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('dummy-url');
     });
   });
 

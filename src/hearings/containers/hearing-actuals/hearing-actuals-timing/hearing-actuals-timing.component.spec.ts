@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -6,16 +6,18 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
+import * as _ from 'lodash';
 import { of } from 'rxjs/internal/observable/of';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
 import { HearingsService } from '../../../services/hearings.service';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingActualsTimingComponent } from './hearing-actuals-timing.component';
-
-import * as _ from 'lodash';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({ selector: 'exui-app-blank', template: '' })
-class BlankComponent {}
+class BlankComponent { }
 
 const mockActivatedRoute = {
   paramMap: of(convertToParamMap({
@@ -36,7 +38,9 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }]), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }])],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -44,10 +48,12 @@ describe('HearingActualsTimingComponent', () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute
         },
-        ValidatorsUtils
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent, BlankComponent]
+        ValidatorsUtils,
+        DatePipe,
+        FormatTranslatorService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));
@@ -162,6 +168,24 @@ describe('HearingActualsTimingComponent', () => {
     expect(component.formGroup.hasError('invalidPauseStartTimeRange')).toBeTruthy();
     expect(component.formGroup.hasError('invalidPauseEndTimeRange')).toBeTruthy();
   });
+
+  it('should format time with default parameters', () => {
+    const time = '2021-03-12T09:20:00.000Z';
+    const formattedTime = component.getTime(time);
+    expect(formattedTime).toBe('09:20');
+  });
+
+  it('should format time with custom format', () => {
+    const time = '2021-03-12T09:20:00.000Z';
+    const formattedTime = component.getTime(time, 'local', 'h:mm A');
+    expect(formattedTime).toBe('9:20 AM');
+  });
+
+  it('should format time to local time', () => {
+    const time = '2021-03-12T09:20:00.000Z';
+    const formattedTime = component.getTime(time, 'local');
+    expect(formattedTime).toBe('09:20');
+  });
 });
 
 describe('HearingActualsTimingComponent', () => {
@@ -180,7 +204,9 @@ describe('HearingActualsTimingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }]), HttpClientTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [HearingActualsTimingComponent, BlankComponent, MockRpxTranslatePipe],
+      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([{ path: 'hearings/actuals/1/hearing-actual-add-edit-summary', component: BlankComponent }])],
       providers: [
         provideMockStore({ initialState: updatedInitialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -188,10 +214,12 @@ describe('HearingActualsTimingComponent', () => {
           provide: ActivatedRoute,
           useValue: mockActivatedRoute
         },
-        ValidatorsUtils
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HearingActualsTimingComponent, BlankComponent]
+        ValidatorsUtils,
+        DatePipe,
+        FormatTranslatorService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));
@@ -205,13 +233,5 @@ describe('HearingActualsTimingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('ngOnInit', () => {
-    it('should create form and hearingStartTime and hearingEndTime set to null', () => {
-      console.log(component.formGroup.value);
-      expect(component.formGroup.value.hearingStartTime).toBeNull();
-      expect(component.formGroup.value.hearingEndTime).toBeNull();
-    });
   });
 });

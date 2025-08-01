@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +11,7 @@ import {
   CaseEventTrigger,
   CaseField,
   CasesService,
+  RetryUtil,
   createCaseEventTrigger,
   DraftService,
   HttpErrorService,
@@ -30,13 +31,16 @@ import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
 import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
+import { InitialisationSyncService } from '../../../app/services/ccd-config/initialisation-sync-service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class MockSortService {
   public features = {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getFeatureToggle() {}
+  public getFeatureToggle() { }
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getEditorConfiguration() {}
+  public getEditorConfiguration() { }
 }
 
 const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -78,7 +82,7 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   template: '<div></div>'
 })
 
-class FakeExuidCcdConnectorComponent {}
+class FakeExuidCcdConnectorComponent { }
 
 describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
@@ -87,6 +91,7 @@ describe('CaseCreateSubmitComponent', () => {
   let draftService: DraftService;
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
+  const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -96,20 +101,16 @@ describe('CaseCreateSubmitComponent', () => {
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of({}));
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        ExuiCommonLibModule,
-        HttpClientTestingModule,
-        StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
-        EffectsModule.forRoot([])
-      ],
       declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
+        ExuiCommonLibModule,
+        StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
+        EffectsModule.forRoot([])],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue:
-          {
+          useValue: {
             queryParams: of({ Origin: 'viewDraft' }),
             snapshot: {
               data: { eventTrigger: EVENT_TRIGGER },
@@ -127,6 +128,7 @@ describe('CaseCreateSubmitComponent', () => {
           }
         },
         CasesService,
+        RetryUtil,
         CCDAuthService,
         DraftService,
         AlertService,
@@ -136,6 +138,8 @@ describe('CaseCreateSubmitComponent', () => {
         LoadingService,
         SessionStorageService,
         HttpErrorService,
+        { provide: Window, useValue: window },
+        InitialisationSyncService,
         AppConfigService,
         AppConfig,
         {
@@ -156,7 +160,10 @@ describe('CaseCreateSubmitComponent', () => {
           provide: AlertService,
           useValue: mockAlertService
         },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: LoggerService, useValue: mockLoggerService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();

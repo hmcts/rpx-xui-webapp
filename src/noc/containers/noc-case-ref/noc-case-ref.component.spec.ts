@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -7,6 +7,13 @@ import { of } from 'rxjs';
 import { NocNavigationEvent, NocState } from '../../models';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCaseRefComponent } from './noc-case-ref.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocCaseRefComponent', () => {
   let fixture: ComponentFixture<NocCaseRefComponent>;
@@ -24,7 +31,8 @@ describe('NocCaseRefComponent', () => {
         NO_ERRORS_SCHEMA
       ],
       declarations: [
-        NocCaseRefComponent
+        NocCaseRefComponent,
+        RpxTranslateMockPipe
       ],
       providers: [
         provideMockStore()
@@ -50,6 +58,29 @@ describe('NocCaseRefComponent', () => {
       };
       component.onSubmit();
       expect(navigationHandlerSpy).toHaveBeenCalledWith(NocNavigationEvent.CONTINUE);
+    });
+  });
+
+  describe('ngAfterViewChecked', () => {
+    beforeEach(() => {
+      component.errorContainer = jasmine.createSpyObj('errorContainer', ['nativeElement']);
+      component.errorContainer.nativeElement = jasmine.createSpyObj('nativeElement', ['scrollIntoView', 'focus']);
+    });
+
+    it('should do nothing if there is no scrollToError set', () => {
+      component.scrollToError = false;
+      component.ngAfterViewChecked();
+      expect(component.scrollToError).toBe(false);
+      expect(component.errorContainer.nativeElement.scrollIntoView).not.toHaveBeenCalled();
+      expect(component.errorContainer.nativeElement.focus).not.toHaveBeenCalled();
+    });
+
+    it('should set the component focus on the error messages when relevant', () => {
+      component.scrollToError = true;
+      component.ngAfterViewChecked();
+      expect(component.scrollToError).toBe(false);
+      expect(component.errorContainer.nativeElement.scrollIntoView).toHaveBeenCalled();
+      expect(component.errorContainer.nativeElement.focus).toHaveBeenCalled();
     });
   });
 

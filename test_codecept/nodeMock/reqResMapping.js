@@ -1,92 +1,21 @@
-// const ccdApiMock = require('../ngIntegration/mockData/ccd/ccdApi');
-// const WAReqResMappings  = require('./workAllocation/reqResMapping');
-// const ccdReqResMapping = require('../ngIntegration/mockData/ccd/reqResMapping');
-// const nodeAppReqResMappings = require('./nodeApp/reqResMapping');
 
-// const globalSearchReqResMapping = require('../ngIntegration/mockData/globalSearch/reqResMapping');
+const requestMapping = {
+  mockServiceResetCallbacks: [],
+  get: {
 
+  },
+  post: {
 
-// const dummyCaseDetails = require('../ngIntegration/mockData/ccd/caseDetails_data');
+  },
+  put: {
 
-// const requestMapping = {
-//     mockServiceResetCallbacks: [...WAReqResMappings.mockServiceResetCallbacks, ...ccdReqResMapping.mockServiceResetCallbacks ],
-//     get:{
-//         ...nodeAppReqResMappings.get,
-//         ...WAReqResMappings.get,
-//         ...ccdReqResMapping.get,
-//         ...globalSearchReqResMapping.get,
+  },
+  delete: {
 
-       
-//        '/api/organisation': (req,res) => {
-//            res.send(getOrganisation());
-//        },
-       
-//        '/api/userList':(req,res) => {
-//             res.send(getUsersList());
-//        },
-//        '/api/jurisdictions':(req,res) => {
-//             res.send(getJurisdictions());
-//        },
-//        '/api/unassignedcases':(req,res) => {
-//            res.send(createCaseData(5));
-//        },
-//        '/api/caseshare/cases': (req,res) => {
-//            res.send(getShareCases());
-//        },
-//        '/api/caseshare/users': (req,res) => {
-//            res.send(organisationUsers());
-//        },
-//         '/data/internal/profile' : (req,res) => {
-//             res.send({});
-//         },
-//         '/api/caseshare/orgs': (req, res) => {
-//             res.send(getCaseShareOrgs());
-//         },
-//         '/data/caseworkers/:uid/jurisdictions/:jurisdiction/case-types/:caseType/cases/pagination_metadata': (req,res) => {
-//             res.send();
-//         },
-//         '/api/service-ref-data/get': (req,res) => {
-//             res.send([
-//                 {
-//                     "service": "IA",
-//                     "serviceCodes": [
-//                         "BFA1"
-//                     ]
-//                 },
-//                 {
-//                     "service": "CIVIL",
-//                     "serviceCodes": [
-//                         "AAA6",
-//                         "AAA7"
-//                     ]
-//                 }
-//             ]);
-//         }
-      
+  }
 
-//     },
-//     post:{
-//         ...WAReqResMappings.post,
-//         ...ccdReqResMapping.post,
-//         ...WAReqResMappings.post,
-//         ...globalSearchReqResMapping.post,
-
-        
-//         '/api/caseshare/case-assignments': (req, res) => {
-//             res.send( []);
-//         },
-       
-
-//     },
-//     put:{
-
-//     },
-//     delete:{
-
-//     }
-
-// }
-
+};
+module.exports = { requestMapping };
 
 // function getOrganisation(){
 //     return {"organisationIdentifier":"VRSFNPV","name":"Test sreekanth org","status":"ACTIVE","sraId":null,"sraRegulated":false,"companyNumber":null,"companyUrl":null,"superUser":{"firstName":"test","lastName":"test","email":"sreekanth_su1@mailinator.com"},"paymentAccount":[],"contactInformation":[{"addressLine1":"Flat 39","addressLine2":"Sheraton House","addressLine3":null,"townCity":"London","county":"Essex","country":null,"postCode":"SW1V 3BZ","dxAddress":[]}]}
@@ -100,9 +29,6 @@
 // function getJurisdictions(){
 //     return [{"id":"SSCS"},{"id":"AUTOTEST1"},{"id":"DIVORCE"},{"id":"PROBATE"},{"id":"PUBLICLAW"},{"id":"bulkscan"},{"id":"BULKSCAN"},{"id":"IA"},{"id":"EMPLOYMENT"},{"id":"CMC"}]
 // }
-
-
-// module.exports = { requestMapping};
 
 // function getShareCases(){
 //     return [

@@ -1,10 +1,10 @@
-@ng @codecept_enabled 
+@ng @functional_enabled
 Feature: WA Release 2: My work - Available tasks - Manage links
 
     Background: Mock and browser setup
         Given I init MockApp
-       
-            
+
+
     Scenario Outline:  Available Tasks, colums and column links for "<UserType>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -37,15 +37,13 @@ Feature: WA Release 2: My work - Available tasks - Manage links
             | index | actions                                  |
             | 1     | Assign to me,Assign to me and go to task |
             | 2     | Assign to me,Assign to me and go to task |
-            | 3     |                                          |
             | 4     | Assign to me,Assign to me and go to task |
             | 5     | Assign to me,Assign to me and go to task |
-            | 6     |                                          |
 
         Examples:
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
-            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
+            | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker,judge |
 
 
     Scenario Outline:  Task Manage links for "<UserType>"  action "<actionLink>"

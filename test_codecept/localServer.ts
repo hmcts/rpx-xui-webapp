@@ -1,70 +1,73 @@
 /**
- * Local.ts used to run the application locally.
+ * localServer.ts used to run the application locally.
  */
-import { app } from '../api/application'
-import { applicationConfiguration } from '../api/configuration/appConfig'
-import { appInsights } from '../api/lib/appInsights'
-import errorHandler from '../api/lib/error.handler'
+import { createApp } from '../api/application';
+import { applicationConfiguration } from '../api/configuration/appConfig';
+import { appInsights } from '../api/lib/appInsights';
+import errorHandler from '../api/lib/error.handler';
 
-const axios = require('axios')
-
+import axios from 'axios';
 
 import * as ejs from 'ejs';
 import * as express from 'express';
 import * as path from 'path';
 
 import { removeCacheHeaders } from '../api/lib/middleware/removeCacheHeaders';
+
 /**
  * Show the developer the application configuration when they are developing locally.
  */
 
+class ApplicationServer {
+  server: any;
+  app: any;
 
-app.engine('html', ejs.renderFile);
-app.set('view engine', 'html');
-app.set('views', path.join(__dirname, ''));
+  async initialize() {
+    this.app = await createApp();
+    this.app.engine('html', ejs.renderFile);
+    this.app.set('view engine', 'html');
+    this.app.set('views', path.join(__dirname, ''));
 
+    this.app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })]);
+    this.app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })]);
 
-app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })]);
-app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })]);
-
-app.use('/*', (req, res) => {
-    res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
-    res.render('../dist/rpx-exui/index', {
+    this.app.use('/*', (req, res) => {
+      res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
+      res.render('../dist/rpx-exui/index', {
         providers: [
-            { provide: 'REQUEST', useValue: req },
-            { provide: 'RESPONSE', useValue: res },
+          { provide: 'REQUEST', useValue: req },
+          { provide: 'RESPONSE', useValue: res }
         ],
         req,
-        res,
+        res
+      });
     });
-});
 
+    console.log(applicationConfiguration());
 
-console.log(applicationConfiguration())
+    this.app.use(appInsights);
+    this.app.use(errorHandler);
+  }
 
-app.use(appInsights)
-app.use(errorHandler)
-
-
-// app.listen(3000)
-class ApplicationServer{
-    server:any
-    async start(){
-
-        this.server = await app.listen(3000);
-
-        const res = await axios.get('http://localhost:3000/auth/isAuthenticated')
-
-        console.log(res.data)
-
+  async start() {
+    if (!this.app) {
+      await this.initialize();
     }
-
-    async stop(){
-        return await this.server.close()
+    this.server = await this.app.listen(3000);
+    try {
+      const res = await axios.get('http://localhost:3000/auth/isAuthenticated');
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
     }
+  }
 
-
+  async stop() {
+    return await this.server.close();
+  }
 }
 
 const applicationServer = new ApplicationServer();
+
+// applicationServer.start()
 export default applicationServer;

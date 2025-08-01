@@ -8,7 +8,6 @@ import {
   PlannedDayPartyModel,
   PlannedHearingDayModel
 } from '../models/hearingActualsMainModel';
-import { HearingDateEnum } from '../models/hearings.enum';
 
 export class ActualHearingsUtils {
   public static getDate(dateTime: string): string {
@@ -27,11 +26,23 @@ export class ActualHearingsUtils {
             (item) => item.hearingDate === this.getDate(plannedDay.plannedStartTime)
           );
         }
-
+        // Check your answers page must display only actuals data
+        if (isCheckYourAnswersPage) {
+          return {
+            hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
+            hearingStartTime: existingActualData?.hearingStartTime,
+            hearingEndTime: existingActualData?.hearingEndTime,
+            pauseDateTimes: existingActualData?.pauseDateTimes || [],
+            notRequired: existingActualData?.notRequired || false,
+            actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
+          };
+        }
+        // If not check your answers page, then if actual data exists then display
+        // actual data else display planned data
         return {
           hearingDate: existingActualData?.hearingDate || this.getDate(plannedDay.plannedStartTime),
-          hearingStartTime: existingActualData?.hearingStartTime,
-          hearingEndTime: existingActualData?.hearingEndTime,
+          hearingStartTime: existingActualData?.hearingStartTime ? existingActualData.hearingStartTime : plannedDay.plannedStartTime,
+          hearingEndTime: existingActualData?.hearingEndTime ? existingActualData.hearingEndTime : plannedDay.plannedEndTime,
           pauseDateTimes: existingActualData?.pauseDateTimes || [],
           notRequired: existingActualData?.notRequired || false,
           actualDayParties: ActualHearingsUtils.getActualDayParties(existingActualData, plannedDay, isCheckYourAnswersPage)
@@ -214,6 +225,10 @@ export class ActualHearingsUtils {
   public static getPauseDateTime(day: ActualHearingDayModel, state: 'start' | 'end'): string {
     const pauseTimeState = state === 'start' ? 'pauseStartTime' : 'pauseEndTime';
     return day.pauseDateTimes && day.pauseDateTimes.length && day.pauseDateTimes[0] && day.pauseDateTimes[0].pauseStartTime
-      ? moment(day.pauseDateTimes[0][pauseTimeState]).format(HearingDateEnum.DisplayTime) : null;
+      ? day.pauseDateTimes[0][pauseTimeState] : null;
+  }
+
+  public static formatTime(time: string, format: string = 'HH:mm'): string {
+    return time ? moment(time).format(format) : null;
   }
 }

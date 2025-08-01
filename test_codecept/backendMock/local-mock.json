@@ -27,10 +27,16 @@
         },
         "waWorkflowApi": "http://localhost:8080",
         "documentsv2": {
-            "api": "http://localhost:8080/cases/documents"
+            "api": "http://localhost:8080/"
+        },
+        "locationref": {
+            "api": "http://localhost:8080"
         },
         "prd": {
-            "api": "http://localhost:8080"
+            "api": "http://localhost:8080",
+            "commondataApi": "http://localhost:8080",
+            "locationApi": "http://localhost:8080",
+            "judicialApi": "http://localhost:8080"
         },
         "em_anno_api": "http://localhost:8080",
         "idam": {
@@ -54,21 +60,26 @@
             "judicialworkerApi": "http://localhost:8080",
             "judicialApi": "http://localhost:8080"
         },
+        "hearings": {
+            "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+            "sscs": {
+                "serviceApi": "http://localhost:8080",
+                "caseTypes": "Benefit"
+            },
+            "privatelaw": {
+                "serviceApi": "http://localhost:8080",
+                "caseTypes": "PRLAPPS"
+            },
+            "civil": {
+                "serviceApi": "http://localhost:8080",
+                "caseTypes": "CIVIL"
+            },
+            "hmcApi": "http://localhost:8080"
+        },
         "s2s": "http://localhost:8080",
         "termsAndConditions": "http://localhost:8080",
         "payments": "http://localhost:8080",
         "judicialBookingApi": "http://localhost:8080"
-    },
-    "secrets": {
-        "rpx": {
-            "launch-darkly-client-id": "5de6610b23ce5408280f2268",
-            "appinsights-instrumentationkey-mc": "***REMOVED***",
-            "mc-s2s-client-secret": "FHYQN3ZQ3BF66XWR",
-            "mc-idam-client-secret": "***REMOVED***",
-            "webapp-redis-connection-string": "redis://localhost:6379",
-            "system-user-name": "cwd_system@mailinator.com",
-            "system-user-password": "Welcome01"
-        }
     },
     "feature": {
         "appInsightsEnabled": false,
@@ -85,5 +96,39 @@
         "prefix": "MC-activity:",
         "ttl": 86400
     },
-    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW"
+    "staffSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+    "serviceRefDataMapping": [
+        {
+            "service": "IA",
+            "serviceCodes": [
+                "BFA1"
+            ]
+        },
+        {
+            "service": "CIVIL",
+            "serviceCodes": [
+                "AAA6",
+                "AAA7"
+            ]
+        },
+        {
+            "service": "PRIVATELAW",
+            "serviceCodes": [
+                "ABA5"
+            ]
+        },
+        {
+            "service": "PUBLICLAW",
+            "serviceCodes": [
+                "ABA3"
+            ]
+        },
+        {
+            "service": "SSCS",
+            "serviceCodes": [
+                "SSCS1"
+            ]
+        }
+    ]
 }

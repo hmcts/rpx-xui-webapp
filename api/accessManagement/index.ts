@@ -12,6 +12,11 @@ import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpec
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
 import { getFullLocationsForServices } from '../workAllocation/locationService';
+import { logAccessRequest } from '../services/lau';
+import * as log4jui from '../lib/log4jui';
+import { JUILogger } from '../lib/models';
+
+const logger: JUILogger = log4jui.getLogger('global-search');
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
   if (req.body.bookableServices && req.body.bookableServices.length === 0) {
@@ -59,9 +64,10 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
   const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
 
   try {
-    const response = await handlePost(fullPath, { 'refreshRequest': { 'userIds': [req.body.userId] } }, req, next);
+    const response = await handlePost(fullPath, { 'refreshRequest': { 'userIds': [req.body.userId] } }, req);
     return res.status(response.status).send(response.data);
   } catch (error) {
+    logger.error('getSearchResults error: ' + error.status + ' ' + fullPath, error.statusText, JSON.stringify(error.data));
     next(error);
   }
 }
@@ -88,6 +94,10 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
       // restore specific access requested role and delete two created roles
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
+
+    //do not await. This is a fire and forget call
+    logAccessRequest(req, false);
+
     // if everything has worked send the last response back to the user
     return res.send(taskResponse.data).status(taskResponse.status);
   } catch (error) {

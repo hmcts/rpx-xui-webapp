@@ -1,6 +1,7 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { JurisdictionService } from './jurisdiction.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Jurisdiction Service', () => {
   let httpClientGetSpy: { get: jasmine.Spy };
@@ -8,11 +9,12 @@ describe('Jurisdiction Service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
+      teardown: { destroyAfterEach: false },
+      imports: [],
       providers: [
-        JurisdictionService
+        JurisdictionService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
 

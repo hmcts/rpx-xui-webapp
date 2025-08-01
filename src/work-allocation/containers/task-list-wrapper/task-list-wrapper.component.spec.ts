@@ -1,23 +1,31 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { ExuiCommonLibModule, FeatureToggleService, FilterService, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import { TaskListComponent } from '..';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { TaskActionIds } from '../../enums';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationFeatureService, WorkAllocationTaskService } from '../../services';
+import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslationMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
@@ -34,13 +42,7 @@ describe('TaskListWrapperComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-  const mockCheckReleaseVersionService = {
-    isRelease4: () => {
-      return {
-        subscribe: () => true
-      };
-    }
-  };
+
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
@@ -54,6 +56,8 @@ describe('TaskListWrapperComponent', () => {
       unsubscribe: () => null
     }
   };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
   beforeEach((() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
@@ -62,10 +66,9 @@ describe('TaskListWrapperComponent', () => {
         WorkAllocationComponentsModule,
         ExuiCommonLibModule,
         RouterTestingModule,
-        CdkTableModule,
-        PaginationModule
+        CdkTableModule
       ],
-      declarations: [TaskListComponent, TaskListWrapperComponent],
+      declarations: [TaskListComponent, TaskListWrapperComponent, RpxTranslationMockPipe],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockRef },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
@@ -73,14 +76,13 @@ describe('TaskListWrapperComponent', () => {
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
-        { provide: WorkAllocationFeatureService, useValue: mockFeatureService },
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
-        { provide: CheckReleaseVersionService, useValue: mockCheckReleaseVersionService }
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
@@ -157,15 +159,43 @@ describe('TaskListWrapperComponent', () => {
     });
 
     it('User should be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{"sub":"juser8@mailinator.com","uid":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}');
+      component.userRoleCategory = RoleCategory.JUDICIAL;
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeTruthy();
     });
 
     it('User should not be Judicial', () => {
-      mockSessionStorageService.getItem.and.returnValue('{"sub":"juser8@mailinator.com","uid":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}');
+      component.userRoleCategory = RoleCategory.LEGAL_OPERATIONS;
       const isJudicial = component.isCurrentUserJudicial();
       expect(isJudicial).toBeFalsy();
+    });
+
+    it('Judicial role category should be received', () => {
+      const userDetails = {
+        id: 'id123',
+        forename: 'John',
+        surname: 'Smith',
+        email: 'john.smith@email.com',
+        roles: [AppTestConstants.IA_JUDGE_ROLE],
+        roleCategory: RoleCategory.JUDICIAL
+      };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+      const roleCategory = component.getCurrentUserRoleCategory();
+      expect(roleCategory).toBe(RoleCategory.JUDICIAL);
+    });
+
+    it('Non-judicial role category should be received', () => {
+      const userDetails = {
+        id: 'id123',
+        forename: 'John',
+        surname: 'Smith',
+        email: 'john.smith@email.com',
+        roles: [AppTestConstants.IA_JUDGE_ROLE],
+        roleCategory: RoleCategory.LEGAL_OPERATIONS
+      };
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
+      const roleCategory = component.getCurrentUserRoleCategory();
+      expect(roleCategory).not.toBe(RoleCategory.JUDICIAL);
     });
   });
 

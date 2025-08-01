@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { Person } from '@hmcts/rpx-xui-common-lib';
 import { select } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { UserInfo, UserRole } from '../../../app/models';
+import { HMCTSServiceDetails, UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
-import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder, TaskContext } from '../../enums';
 import { Location } from '../../interfaces/common';
 import { FieldConfig, SortField } from '../../models/common';
 import { PaginationParameter, SearchTaskRequest } from '../../models/dtos';
+import { setServiceList } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
@@ -22,8 +22,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static readonly ALL_TASKS = 'All';
   private static readonly AVAILABLE_TASKS = 'None / Available tasks';
-  public locations: Location[];
-  public waSupportedJurisdictions$: Observable<string[]>;
   public supportedJurisdictions: string[];
   public sortedBy: SortField = {
     fieldName: '',
@@ -46,6 +44,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private selectedTaskType: string = 'All';
   private selectedTaskName: string = '';
 
+  // has the initial filter been ran previously
+  private hasInitialFilterRan = false;
+
   public get emptyMessage(): string {
     return ListConstants.EmptyMessage.AllWork;
   }
@@ -63,28 +64,28 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public get fields(): FieldConfig[] {
-    let fields = [];
-    this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
-      fields = this.isCurrentUserJudicial() ?
-        (isRelease4 ? ConfigConstants.AllWorkTasksForJudicial : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForJudicial) :
-        (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
-    });
-    return fields;
+    return this.isCurrentUserJudicial() ? ConfigConstants.AllWorkTasksForJudicial : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) =>
-      userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) => {
+      if (!userDetails.roleAssignmentInfo) {
+        // if no role assignment info, do not allow page to disappear
+        return [];
+      }
+      return userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null);
+    }
     ));
 
-    const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.waSupportedJurisdictions$ = combineLatest(
+    // get detailed services for the all work services list
+    const waJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
+    this.waSupportedDetailedServices$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
     ).pipe(map((jurisdictions) => {
-      this.supportedJurisdictions = jurisdictions[1];
-      const result = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
-      return [...new Set(result)];
+      const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
+      this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
+      return fullServiceDetails.detailedWAServices;
     }));
   }
 
@@ -123,9 +124,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
         pagination_parameters: this.getPaginationParameter()
       };
-      if (this.updatedTaskPermission) {
-        searchTaskParameter.request_context = TaskContext.ALL_WORK;
-      }
+      searchTaskParameter.request_context = TaskContext.ALL_WORK;
       return searchTaskParameter;
     }
   }
@@ -144,7 +143,44 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
-    this.onPaginationHandler(1);
+    this.loadBasedOnFilter();
+  }
+
+  private setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSServiceDetails[]): HMCTSServiceDetails[] {
+    const supportedJurisdictions = [];
+    detailedWAServices.forEach((jurisdiction) => {
+      // get the serviceIds from the detailed service
+      supportedJurisdictions.push(jurisdiction.serviceId);
+    });
+    this.supportedJurisdictions = supportedJurisdictions;
+    if (!roleServiceIds.includes(null) && roleServiceIds.length > 0) {
+      const roleJurisdictions = [];
+      // get set of serviceIds from jurisdictions within user roles
+      const initialRoleJurisdictions = [...new Set(roleServiceIds)];
+      initialRoleJurisdictions.forEach((serviceId) => {
+        if (supportedJurisdictions.includes(serviceId)) {
+          // if there is a service name for the serviceId, use it
+          const matchingServices = detailedWAServices.filter((x) => x.serviceId === serviceId);
+          const serviceName = matchingServices?.length > 0 ? matchingServices[0].serviceName : serviceId;
+          roleJurisdictions.push({ serviceId, serviceName });
+        } else {
+          roleJurisdictions.push({ serviceId, serviceName: serviceId });
+        }
+      });
+      return roleJurisdictions;
+    }
+    // use provided WA supported services
+    return detailedWAServices;
+  }
+
+  private loadBasedOnFilter(): void {
+    if (this.hasInitialFilterRan) {
+      // added to only reset task list on filter
+      this.onPaginationHandler(1);
+    } else {
+      this.hasInitialFilterRan = true;
+      this.loadTasks();
+    }
   }
 
   private getLocationParameter(): any {

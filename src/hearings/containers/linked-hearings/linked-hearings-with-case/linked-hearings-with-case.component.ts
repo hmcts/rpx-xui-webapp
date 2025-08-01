@@ -45,6 +45,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public showSpinner: boolean = true;
   public hearingStageOptions: LovRefDataModel[];
 
+  public message: string = 'Hearings may be unavailable due to their status, or if they are already linked to another hearing.\nOnly hearings from cases linked to this case will appear in this list.';
+
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly validators: ValidatorsUtils,
               private readonly route: ActivatedRoute,
@@ -85,10 +87,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
 
   public get getCasesFormValue(): FormArray {
     return (this.linkHearingForm.get('linkedCasesWithHearings') as FormArray);
-  }
-
-  public getHearingsFormValue(position): FormArray {
-    return this.getCasesFormValue.controls[position].get('caseHearings') as FormArray;
   }
 
   public isHearingsSelected(linkedCases: ServiceLinkedCasesWithHearingsModel[]) {
@@ -153,6 +151,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getHearingsFormValue(casePos: number, hearingPos?: number): FormArray {
+    const formArray: FormArray = this.getCasesFormValue.controls[casePos].get('caseHearings') as FormArray;
+    if (String(hearingPos && formArray.controls[hearingPos].get('hearingID').value) === this.hearingId) {
+      this.updateLinkedCase(casePos, hearingPos);
+    }
+    return formArray;
+  }
+
   public updateLinkedCase(casePos: number, hearingPos: number) {
     this.clearHearings(casePos);
     this.getHearingsFormValue(casePos).controls[hearingPos].get('isSelected').setValue(true);
@@ -212,7 +218,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     if (this.isManageLink) {
       return this.hearingGroupRequestId === hearing.hearingGroupRequestId || isLinkable;
     }
-
     return isLinkable;
   }
 

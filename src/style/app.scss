@@ -1,5 +1,5 @@
 @import '_typography';
-@import '~govuk-frontend/govuk/all';
+@import 'govuk-frontend/govuk/all';
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
@@ -270,7 +270,7 @@ select::-ms-expand {
 }
 
 .form-hint {
-  font-size: 14px;
+  font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
   font-family: "nta", Arial, sans-serif;
@@ -340,6 +340,13 @@ select::-ms-expand {
     font-size: 19px;
     margin-bottom: 25px;
     white-space: normal;
+  }
+
+  .qm-service-message {
+    strong {
+      font-size: 19px;
+      line-height: 25px;
+    }
   }
 
   ul {
@@ -417,6 +424,15 @@ form.check-your-answers table td .markdown p {
   }
 }
 
+header {
+  .govuk-skip-link {
+    &:link, &:visited {
+      color: #fff;
+    }
+  }
+}
+
+
 .show-condition-grey-bar {
   border-left: 10px solid #bfc1c3;
   padding-left: 15px;
@@ -457,4 +473,27 @@ button:focus {
   a:focus {
     background-color: #ffdd00 !important;
   }
+}
+
+
+/** Error Summary 
+* Make border color consistent with other error messages for HMCTS
+*/
+.query-container .error-summary {
+  border-color: #d4351c;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.qm-qualifying-question__divider {
+  margin-bottom: 10px;
+  font-size: 19px;
+}
+
+.qm-confirmation markdown * {
+  font-size: 36px;
+  font-weight: 400;
+  color: #FFF;
 }

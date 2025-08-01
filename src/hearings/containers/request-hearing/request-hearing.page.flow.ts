@@ -1,4 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { HearingConditions } from '../../models/hearingConditions';
@@ -15,10 +16,14 @@ export abstract class RequestHearingPageFlow {
   public hearingListMainModel: HearingListMainModel;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
+  public hearingRequestToCompareMainModel: HearingRequestMainModel;
   public hearingCondition: HearingConditions;
+  protected jurisdictionId: string;
+  protected caseReference: string;
 
   public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
                      protected readonly hearingsService: HearingsService,
+                     protected readonly featureToggleService: FeatureToggleService,
                      protected readonly route?: ActivatedRoute) {
     this.navigationSub = this.hearingsService.navigateAction$.subscribe(
       (action: ACTION) => this.executeAction(action)
@@ -26,9 +31,12 @@ export abstract class RequestHearingPageFlow {
     this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
       (hearingState) => {
         this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
-        this.serviceHearingValuesModel = hearingState.hearingValues.serviceHearingValuesModel;
-        this.hearingRequestMainModel = hearingState.hearingRequest.hearingRequestMainModel;
+        this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
+        this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+        this.hearingRequestToCompareMainModel = { ...hearingState.hearingRequestToCompare.hearingRequestMainModel };
         this.hearingCondition = hearingState.hearingConditions;
+        this.jurisdictionId = this.hearingListMainModel.jurisdictionId;
+        this.caseReference = this.hearingListMainModel.caseRef;
       });
   }
 
@@ -52,12 +60,22 @@ export abstract class RequestHearingPageFlow {
         break;
       case ACTION.SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+        this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+        this.hearingsService.propertiesUpdatedOnPageVisit = null;
         break;
       case ACTION.VIEW_EDIT_REASON:
         this.hearingStore.dispatch(new fromHearingStore.ViewEditSubmitHearingReason(this.hearingRequestMainModel));
         break;
       case ACTION.VIEW_EDIT_SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.ViewEditSubmitHearingRequest(this.hearingRequestMainModel));
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequest());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingConditions());
+        this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
+        this.hearingsService.propertiesUpdatedOnPageVisit = null;
         break;
       default:
         throw new Error('Invalid navigate action');
@@ -65,12 +83,8 @@ export abstract class RequestHearingPageFlow {
   }
 
   public unsubscribe(): void {
-    if (this.navigationSub) {
-      this.navigationSub.unsubscribe();
-    }
-    if (this.hearingStateSub) {
-      this.hearingStateSub.unsubscribe();
-    }
+    this.navigationSub?.unsubscribe();
+    this.hearingStateSub?.unsubscribe();
   }
 
   protected abstract executeAction(action: ACTION): void;

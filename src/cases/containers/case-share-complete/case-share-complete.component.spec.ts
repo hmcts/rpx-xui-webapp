@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -7,6 +7,13 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromCasesFeature from '../../store';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('CaseShareCompleteComponent', () => {
   let component: CaseShareCompleteComponent;
@@ -24,25 +31,20 @@ describe('CaseShareCompleteComponent', () => {
   }];
   let mockStore: any;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-
   beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     mockStore.pipe.and.returnValue(of(SHARED_CASE));
 
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [CaseShareCompleteComponent],
+      declarations: [CaseShareCompleteComponent, RpxTranslateMockPipe],
       imports: [RouterTestingModule],
       providers: [
         LoadingService,
-        {
-          provide: Store,
-          useValue: mockStore
-        },
-        {
-          provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
-        }
+        { provide: Store, useValue: mockStore },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
+        { provide: Store, useValue: mockStore },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(CaseShareCompleteComponent);

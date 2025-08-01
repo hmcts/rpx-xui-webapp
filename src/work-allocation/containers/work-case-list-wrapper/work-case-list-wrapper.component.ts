@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { UserInfo } from '../../../app/models';
+import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import * as fromActions from '../../../app/store';
-import { Actions, Role, RoleCategory } from '../../../role-access/models';
+import { Actions, Role } from '../../../role-access/models';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants } from '../../components/constants';
@@ -20,7 +20,6 @@ import { Caseworker } from '../../interfaces/common';
 import { Case, CaseFieldConfig, CaseServiceConfig, InvokedCaseAction } from '../../models/cases';
 import { SortField } from '../../models/common';
 import { Location, PaginationParameter, SearchCaseRequest, SortParameter } from '../../models/dtos';
-import { CheckReleaseVersionService } from '../../services/check-release-version.service';
 import {
   CaseworkerDataService,
   LocationDataService,
@@ -28,7 +27,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeName, handleFatalErrors, servicesMap, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   templateUrl: 'work-case-list-wrapper.component.html'
@@ -40,6 +39,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public sortedBy: SortField;
   public locations$: Observable<Location[]>;
   public waSupportedJurisdictions$: Observable<string[]>;
+  public waSupportedDetailedServices$: Observable<HMCTSServiceDetails[]>;
   public supportedJurisdictions: string[];
   public selectedServices: string[] = ['IA'];
   public pagination: PaginationParameter;
@@ -87,9 +87,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
-    protected store: Store<fromActions.State>,
-    protected checkReleaseVersionService: CheckReleaseVersionService
-  ) {}
+    protected store: Store<fromActions.State>
+  ) { }
 
   public get cases(): Case[] {
     return this.pCases;
@@ -169,13 +168,29 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) =>
       userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
     ));
+
+    // for all case lists other than all work
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
     this.waSupportedJurisdictions$ = combineLatest(
       [userRoles$,
         waJurisdictions$]
     ).pipe(
       map((jurisdictions) => {
-        return jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
+        const areasOfJurisdiction = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
+        const uniqueJurisdictionsValue = [...new Set(areasOfJurisdiction)];
+        return uniqueJurisdictionsValue;
+      }));
+
+    // for all work cases (need detailed service information)
+    const waDetailedJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
+    this.waSupportedDetailedServices$ = combineLatest(
+      [userRoles$,
+        waDetailedJurisdictions$]
+    ).pipe(
+      map((jurisdictions) => {
+        const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
+        this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
+        return fullServiceDetails.detailedWAServices;
       }));
   }
 
@@ -200,7 +215,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public setupCaseWorkers(): void {
     const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getCaseworkersForServices(jurisdictions)
+      this.caseworkerService.getUsersFromServices(jurisdictions)
     ));
     this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
       this.rolesService.getValidRoles(jurisdictions)
@@ -405,7 +420,9 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   protected setUpLocationsAndJurisdictions(): void {
-    this.locations$ = this.locationService.getLocations();
     this.loadSupportedJurisdictions();
+    this.locations$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
+      this.locationService.getLocations(jurisdictions)
+    ));
   }
 }

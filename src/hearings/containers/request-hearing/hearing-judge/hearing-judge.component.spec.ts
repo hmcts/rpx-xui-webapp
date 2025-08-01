@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingJudgeNamesListComponent } from '../../../components';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingJudgeSelectionEnum, MemberType, RadioOptions, RequirementType } from '../../../models/hearings.enum';
@@ -13,6 +14,7 @@ import { JudicialUserModel } from '../../../models/judicialUser.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingJudgeComponent } from './hearing-judge.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HearingJudgeComponent', () => {
   let component: HearingJudgeComponent;
@@ -21,6 +23,20 @@ describe('HearingJudgeComponent', () => {
   const childComponent = jasmine.createSpyObj('HearingJudgeNamesListComponent', ['isExcludeJudgeInputValid']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const judgeInfo: JudicialUserModel = {
+    title: 'Mr',
+    knownAs: 'Hearing Judge',
+    surname: 'Jacky',
+    fullName: 'Jacky Collins',
+    emailId: 'jacky.collins@judicial.com',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    initials: 'JC',
+    postNominals: 'JP',
+    personalCode: 'P100001',
+    isJudge: '',
+    isMagistrate: '',
+    isPanelMember: ''
+  };
   const judgeTypes: LovRefDataModel[] = [
     {
       key: 'Tribunal',
@@ -68,8 +84,9 @@ describe('HearingJudgeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
-      declarations: [HearingJudgeComponent, HearingJudgeNamesListComponent],
+      declarations: [HearingJudgeComponent, HearingJudgeNamesListComponent, MockRpxTranslatePipe],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
@@ -84,9 +101,10 @@ describe('HearingJudgeComponent', () => {
             },
             fragment: of('point-to-me')
           }
-        }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingJudgeComponent);
@@ -124,18 +142,6 @@ describe('HearingJudgeComponent', () => {
   });
 
   it('should check RadioButton selection', () => {
-    const judgeInfo: JudicialUserModel = {
-      emailId: 'jacky.collins@judicial.com',
-      fullName: 'Jacky Collins',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Hearing Judge',
-      personalCode: 'P100001',
-      surname: 'Jacky',
-      title: 'Mr'
-    };
     component.showSpecificJudge(RadioOptions.YES);
     expect(component.specificJudgeSelection).toBe(RadioOptions.YES);
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
@@ -154,20 +160,26 @@ describe('HearingJudgeComponent', () => {
     expect(childComponent.isExcludeJudgeInputValid).toHaveBeenCalled();
   });
 
-  it('should check prepareHearingRequestData', () => {
-    const judgeInfo: JudicialUserModel = {
-      emailId: 'jacky.collins@judicial.com',
-      fullName: 'Jacky Collins',
-      idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Hearing Judge',
-      personalCode: 'P100001',
-      surname: 'Jacky',
-      title: 'Mr'
-    };
+  it('should not allow the same judge name in include and exclude list', () => {
+    component.showSpecificJudge(RadioOptions.YES);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
+    component.excludedJudge.judgeList = [judgeInfo];
+    component.isFormValid();
+    component.checkSameJudgeSelectionError();
+    expect(component.selectJudgeNameError).toBe(HearingJudgeSelectionEnum.SameJudgeInIncludeExcludeList);
+    expect(component.isFormValid()).toBeFalsy();
+  });
 
+  it('should not validate the same judge name in include and exclude list when no specific judge option selected', () => {
+    component.showSpecificJudge(RadioOptions.NO);
+    component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
+    component.excludedJudge.judgeList = [judgeInfo];
+    component.isFormValid();
+    component.checkSameJudgeSelectionError();
+    expect(component.selectJudgeNameError).toBe(null);
+  });
+
+  it('should check prepareHearingRequestData', () => {
     component.hearingJudgeForm.controls.specificJudge.setValue(RadioOptions.YES);
     component.hearingJudgeForm.controls.judgeName.setValue(judgeInfo);
     component.prepareHearingRequestData();
@@ -205,28 +217,32 @@ describe('HearingJudgeComponent', () => {
     component.setFormData();
     expect(component.excludedJudgeList.length).toBe(0);
     const personalCodeJudgeList: JudicialUserModel[] = [{
-      emailId: 'jacky.collins@judicial.com',
+      title: 'Mr',
+      knownAs: 'Jacky Collins',
+      surname: 'Jacky Collins',
       fullName: 'Jacky Collins',
+      emailId: 'jacky.collins@judicial.com',
       idamId: '1102839232',
+      initials: 'JC',
+      postNominals: 'JP',
+      personalCode: 'P100001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Jacky Collins',
-      personalCode: 'P100001',
-      surname: 'Jacky Collins',
-      title: 'Mr'
+      isPanelMember: ''
     },
     {
-      emailId: 'jammie.williams@judicial.com',
+      title: 'Mr',
+      knownAs: 'Jammie Williams',
+      surname: 'Jammie Williams',
       fullName: 'Jammie Williams',
+      emailId: 'jammie.williams@judicial.com',
       idamId: '1102839233',
+      initials: 'JW',
+      postNominals: 'JP',
+      personalCode: 'P0000002',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: '',
-      knownAs: 'Jammie Williams',
-      personalCode: 'P0000002',
-      surname: 'Jammie Williams',
-      title: 'Mr'
+      isPanelMember: ''
     }];
     component.specificJudgeSelection = RadioOptions.YES;
     component.hearingJudgeFormInfo.includedJudges = ['P0000001'];

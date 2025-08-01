@@ -4,7 +4,6 @@ Feature: WA Release 2: My work - My tasks - Task assignment
     Background: Mock and browser setup
         Given I init MockApp
        
-
     Scenario Outline:  Task Manage links for "<UserType>" action "<action>"
         Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -20,10 +19,18 @@ Feature: WA Release 2: My work - My tasks - Task assignment
             | Permissions | Count |
             | Manage      | 100   |
             | Read        | 40    |
-      
-        Given I set MOCK task details for WA release2
-            | case_name        | case_category      | location_name |
-            | Allwork test scr | auto test category | London QA lab |
+        Given I set MOCK tasks with attributes for view "My tasks"
+            | index | permissions                | assignee            | case_name | location_name   | task_title       | due_date | hearing_date | created_date | case_category        |
+            | 0 | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab | test auto task 1 | -1 | 20 | -10 | auto test category |
+            | 1     | Manage                     | 1234-1234-1234-1231 | case 2    | test location 2 | test auto task 2 | 0        | 21           | -10          | auto test category 2 |
+            | 2     | Read                       | 1234-1234-1234-1231 | case 3    | test location 3 | test auto task 3 | 1        | 22           | -10          | auto test category 3 |
+            | 3 | Manage,Read,Execute,reassign,unassign,assign,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab   | test auto task 1 | -1  | 20 | -10 | auto test category   |
+            | 4 | Manage,Read,Execute,Cancel | 1234-1234-1234-1231 | Allwork test scr | London QA lab   | test auto task 1 | -1  | 20 | -10 | auto test category   |
+            | 5 | Read                       | 1234-1234-1234-1231 | case 6           | test location 6 | test auto task 6 | -30 | 30 | -40 | auto test category 6 |
+
+        # Given I set MOCK task details for WA release2
+        #     | case_name        | case_category      | location_name |
+        #     | Allwork test scr | auto test category | London QA lab |
 
         Given I start MockApp
         Given I navigate to home page

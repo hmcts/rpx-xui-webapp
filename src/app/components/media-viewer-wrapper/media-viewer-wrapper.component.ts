@@ -3,6 +3,7 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
+import { Title } from '@angular/platform-browser';
 
 const MEDIA_VIEWER = 'media-viewer-info';
 
@@ -23,14 +24,16 @@ export class MediaViewerWrapperComponent implements OnInit {
 
   public icpJurisdictions$: Observable<string[]>;
   public icpEnabled$: Observable<boolean>;
+  public enableRedactSearch$: Observable<boolean>;
 
   public constructor(
         private readonly windowService: WindowService,
         private readonly featureToggleService: FeatureToggleService,
-        private readonly sessionStorageService: SessionStorageService
+        private readonly sessionStorageService: SessionStorageService,
+        private readonly titleService: Title
   ) {}
 
-  public async ngOnInit() {
+  public ngOnInit(): void {
     const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);
     let sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
 
@@ -43,13 +46,13 @@ export class MediaViewerWrapperComponent implements OnInit {
 
     if (sessionStorageMedia) {
       const media: {
-                document_binary_url: string
-                document_filename: string
-                content_type: string
-                annotation_api_url?: string
-                case_id?: string
-                case_jurisdiction?: string
-            } = JSON.parse(sessionStorageMedia);
+        document_binary_url: string;
+        document_filename: string;
+        content_type: string;
+        annotation_api_url?: string;
+        case_id?: string;
+        case_jurisdiction?: string;
+      } = JSON.parse(sessionStorageMedia);
       this.mediaURL = media.document_binary_url;
       this.mediaFilename = media.document_filename;
       this.mediaContentType = media.content_type;
@@ -60,6 +63,9 @@ export class MediaViewerWrapperComponent implements OnInit {
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
+    this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
+
+    this.titleService.setTitle(this.mediaFilename + ' - View Document');
   }
 
   /**

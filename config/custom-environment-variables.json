@@ -7,10 +7,7 @@
     "roles": "COOKIES_ROLES"
   },
   "logging": "LOGGING",
-  "now": {
-    "__name": "NOW",
-    "__format": "json"
-  },
+  "now": "NOW",
   "maxLogLine": "MAX_LOG_LINE",
   "stub": {
     "__name": "STUB",
@@ -38,20 +35,29 @@
       "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "hearingsJurisdictions": "HEARINGS_JURISDICTIONS",
       "sscs": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
-        "caseTypes": "Benefit"
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_SSCS"
       },
       "privatelaw": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW",
-        "caseTypes": "PRLAPPS"
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_PRIVATELAW"
       },
       "civil": {
         "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
-        "caseTypes": "CIVIL"
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_CIVIL"
       },
-      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API"
+      "ia": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_IAC"
+      },
+      "employment": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
+      },
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
+      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
@@ -80,6 +86,10 @@
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
+      "serviceOverride": {
+        "__name": "SERVICES_IDAM_SERVICE_OVERRIDE",
+        "__format": "json"
+      },
       "iss": "SERVICES_IDAM_ISS_URL"
     },
     "location_api": "SERVICES_LOCATION_API",
@@ -103,7 +113,11 @@
     "s2s": "SERVICES_S2S",
     "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
     "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
-    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH"
+    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH",
+    "translation": "SERVICES_TRANSLATION_API_URL",
+    "lau": {
+      "specificChallengedAccessApi": "SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH"
+    }
   },
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
@@ -112,6 +126,7 @@
   "secrets": {
     "rpx": {
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "appinsights-connection-string-mc": "APPINSIGHTS_CONNECTION_STRING",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
@@ -120,7 +135,9 @@
       "system-user-password": "SYSTEM_USER_PASSWORD"
     }
   },
+  "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
   "jurisdictions": "JURISDICTIONS",
+  "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
   "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
@@ -155,23 +172,35 @@
     },
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "workAllocationEnabled": {
       "__name": "FEATURE_WORKALLOCATION_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
-    "updatedTaskPermissionsEnabled": {
-      "__name": "FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED",
-      "__format":"json"
+    "jrdELinksV2Enabled": {
+      "__name": "FEATURE_JRD_E_LINKS_V2_ENABLED",
+      "__format": "json"
+    },
+    "lauSpecificChallengedEnabled": {
+      "__name": "FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED",
+      "__format": "json"
     },
     "substantiveRoleEnabled": {
       "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
-      "__format":"json"
+      "__format": "json"
     },
     "accessManagementEnabled": {
       "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
-      "__format":"json"
+      "__format": "json"
+    },
+    "compressionEnabled": {
+      "__name": "FEATURE_COMPRESSION_ENABLED",
+      "__format": "json"
+    },
+    "queryIdamServiceOverride": {
+      "__name": "FEATURE_QUERY_IDAM_SERVICE_OVERRIDE",
+      "__format": "json"
     }
   },
   "helmet": {
@@ -192,5 +221,6 @@
     "consumerVersion": "PACT_CONSUMER_VERSION",
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"
-  }
+  },
+  "headerConfig": "HEADER_CONFIG"
 }

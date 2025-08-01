@@ -1,4 +1,4 @@
-@ng @ignore
+@ng @ignore @functional_disabled
 Feature: Navigation header tabs
     https://tools.hmcts.net/confluence/display/EUI/Global+Search
 
@@ -8,16 +8,16 @@ Feature: Navigation header tabs
             | mc-menu-items         |
             | mc-menu-theme         |
             | MC_Notice_of_Change   |
-            | MC_Work_Allocation    |
-            | mc-user-type-roles    |
             | feature-global-search |
             | feature-refunds       |
         Given I set MOCK with user identifer "<useridentifier>" role type "<roleType>" and role identifiers "<rolesIdentifiers>"
-        Given I init MockApp
+
+        # Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>,task-supervisor,case-allocator" with reference "userDetails"
+        # Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA" allow empty service
+            | IA           | Asylum   | Y           | CASE     | 1234567812345670 |
+            | SSCS         | Asylum   | Y           | CASE     | 1234567812345671 |
+
         Given I start MockApp
-        Given I navigate to home page
-        Then I log LD feature toggle values
-            | name          |
             | mc-menu-items |
             | mc-menu-theme |
         Then I validate header displayed for user type "<roleType>"

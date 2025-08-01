@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../app/services';
-import { Location, LocationByEPIMMSModel, LocationsByRegion, Region } from '../models/dtos';
+import { Location, LocationByEpimmsModel, LocationsByRegion, Region } from '../models/dtos';
 
 @Injectable({ providedIn: 'root' })
 export class LocationDataService {
@@ -17,12 +17,16 @@ export class LocationDataService {
   public static regionsKey: string = 'regions';
   public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
 
-  public getLocations(): Observable<Location[]> {
+  public getLocations(jurisdictions?: string[]): Observable<Location[]> {
     if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {
       const locations = JSON.parse(this.sessionStorageService.getItem(LocationDataService.allLocationsKey));
       return of(locations as Location[]);
     }
-    return this.http.get<Location[]>(`${LocationDataService.locationUrl}`).pipe(
+    const options = {
+      params: new HttpParams()
+        .set('serviceCodes', jurisdictions.join())
+    };
+    return this.http.get<Location[]>(`${LocationDataService.locationUrl}`, options).pipe(
       tap((allLocations) => this.sessionStorageService.setItem(LocationDataService.allLocationsKey, JSON.stringify(allLocations)))
     );
   }
@@ -37,7 +41,7 @@ export class LocationDataService {
     );
   }
 
-  public getSpecificLocations(locationIds: string[], locationServices: string[]): Observable<LocationByEPIMMSModel[]> {
+  public getSpecificLocations(locationIds: string[], locationServices: string[]): Observable<LocationByEpimmsModel[]> {
     if (!locationIds || locationIds.length === 0) {
       return of([]);
     }
@@ -48,7 +52,7 @@ export class LocationDataService {
         .set('serviceCodes', serviceCodes.join())
     };
     // note: may be better way of searching by epimms_id in future - previously getting location by epimms id was mocked
-    return this.http.get<LocationByEPIMMSModel[]>(`${LocationDataService.fullLocationUrl}`, options).pipe(map(
+    return this.http.get<LocationByEpimmsModel[]>(`${LocationDataService.fullLocationUrl}`, options).pipe(map(
       (allLocations) => allLocations.filter((location) => locationIds.includes(location.epimms_id))));
   }
 

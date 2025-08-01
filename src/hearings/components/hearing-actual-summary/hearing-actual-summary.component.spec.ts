@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -7,11 +7,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
 import { HearingActualSummaryComponent } from './hearing-actual-summary.component';
+import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
@@ -395,10 +398,11 @@ describe('HearingActualSummaryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingActualSummaryComponent,
-        HearingAnswersPipe, ConvertToValuePipe
+        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe
       ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         {
@@ -413,9 +417,11 @@ describe('HearingActualSummaryComponent', () => {
             },
             fragment: of('point-to-me')
           }
-        }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        },
+        DatePipe, FormatTranslatorService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
     mockStore = TestBed.inject(Store);
@@ -424,12 +430,45 @@ describe('HearingActualSummaryComponent', () => {
     component = fixture.componentInstance;
     component.hearingActualsMainModel = hearingActualsMainModel;
     component.hearingState$ = new Observable();
+    component.hearingStageOptions = HEARING_TYPES;
     router = TestBed.inject(Router);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should set hearing type description', () => {
+    component.hearingActualsMainModel = {
+      ...hearingActualsMainModel,
+      hearingActuals: {
+        ...hearingActualsMainModel.hearingActuals,
+        hearingOutcome: {
+          ...hearingActualsMainModel.hearingActuals.hearingOutcome,
+          hearingType: 'BBA3-SUB'
+        }
+      }
+    };
+    fixture.detectChanges();
+    expect(component.hearingTypeDescription).toEqual('Substantive');
+  });
+
+  it('should return hearing start time', () => {
+    expect(component.actualHearingDate()).toEqual('2021-03-12T09:00:00.000Z');
+  });
+
+  it('should return true for multi days hearing', () => {
+    expect(component.isMultiDayHearing).toEqual(true);
+  });
+
+  it('should return multi day hearing days', () => {
+    expect(component.actualMultiDaysHearingDates()).toEqual('12 Mar 2021 - 14 Mar 2021');
+  });
+
+  it('should set empty hearing type description', () => {
+    fixture.detectChanges();
+    expect(component.hearingTypeDescription).toEqual('');
   });
 
   afterEach(() => {

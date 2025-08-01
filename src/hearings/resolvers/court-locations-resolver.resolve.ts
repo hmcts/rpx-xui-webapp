@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
+
 import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { LocationsDataService } from '../services/locations-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourtLocationsDataResolver implements Resolve<LocationModel> {
+export class CourtLocationsDataResolver {
   constructor(
     protected readonly locationsDataService: LocationsDataService,
     protected readonly hearingStore: Store<fromHearingStore.State>
   ) {}
+
+  private serviceCode: string;
 
   public resolve(): Observable<LocationModel> {
     return this.getLocationId$()
@@ -29,6 +31,7 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
 
   public getLocationId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
+      tap((value) => this.serviceCode = value?.hearingRequestMainModel?.caseDetails?.hmctsServiceCode),
       map((hearingRequest) =>
         hearingRequest.hearingRequestMainModel
         && hearingRequest.hearingRequestMainModel.hearingResponse
@@ -40,7 +43,7 @@ export class CourtLocationsDataResolver implements Resolve<LocationModel> {
 
   public getCourtLocationData$(locationId: string): Observable<LocationModel> {
     if (locationId) {
-      return this.locationsDataService.getLocationById(locationId).pipe(
+      return this.locationsDataService.getLocationById(locationId, this.serviceCode).pipe(
         catchError(() => {
           return [];
         })

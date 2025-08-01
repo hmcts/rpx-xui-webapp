@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ContactDetailsComponent } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
+import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { GetHelpComponent } from '..';
 
@@ -10,15 +11,37 @@ describe('GetHelpComponent', () => {
   let component: GetHelpComponent;
   let fixture: ComponentFixture<GetHelpComponent>;
   let mockStore: any;
+  const userDetails = {
+    sessionTimeout: {
+      idleModalDisplayTime: 10,
+      totalIdleTime: 1
+    },
+    canShareCases: true,
+    userInfo: {
+      id: 'someId',
+      forename: 'foreName',
+      surname: 'surName',
+      email: 'email@email.com',
+      active: true,
+      roles: ['pui-case-manager']
+    }
+  };
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: (key: string) => key === 'Get help' ? 'Get help' : key, getTranslation$: (phrase: string) => phrase === 'Get help' ? of('Get help') : of(phrase) });
 
   beforeEach(waitForAsync(() => {
+    mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
+    mockStore.pipe.and.returnValue(of(userDetails));
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [GetHelpComponent, ContactDetailsComponent],
+      declarations: [GetHelpComponent, ContactDetailsComponent, RpxTranslatePipe],
       providers: [
         {
           provide: Store,
           useValue: mockStore
+        },
+        {
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub
         }
       ]
     })
@@ -97,9 +120,12 @@ describe('GetHelpComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(GetHelpComponent);
       component = fixture.componentInstance;
+
       /* component.caseManager = true;
       component.userDetails$ = jasmine.createSpyObj('userDetails$', ['subscribe']);
       fixture.detectChanges(); */
+      // component.userDetails$ = jasmine.createSpyObj('userDetails$', ['subscribe']);
+      fixture.detectChanges();
     });
 
     describe('Verify HTML content on Get help page', () => {

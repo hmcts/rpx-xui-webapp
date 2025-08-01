@@ -3,22 +3,22 @@
   <main class="govuk-main-wrapper govuk-main-wrapper--l" id="content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl" id="cookies">Get help</h1>
-        <p class="govuk-body">When contacting us, you should provide:</p>
+        <h1 class="govuk-heading-xl" id="cookies">{{'Get help' | rpxTranslate}}</h1>
+        <p class="govuk-body">{{'When contacting us, you should provide:' | rpxTranslate}}</p>
         <ul class="govuk-list govuk-list--bullet">
-          <li>your user ID (email address)</li>
-          <li>your organisation name</li>
-          <li>the URL you're trying to access</li>
-          <li>a brief description of the problem</li>
-          <li>a screenshot of the problem (if emailing)</li>
+          <li>{{'your user ID (email address)' | rpxTranslate}}</li>
+          <li>{{'your organisation name' | rpxTranslate}}</li>
+          <li>{{'the URL you\'re trying to access' | rpxTranslate}}</li>
+          <li>{{'a brief description of the problem' | rpxTranslate}}</li>
+          <li>{{'a screenshot of the problem (if emailing)' | rpxTranslate}}</li>
         </ul>
         <ng-container *ngIf="caseManager">
-          <h3 class="govuk-heading-m">MyHMCTS services</h3>
+          <h3 class="govuk-heading-m">{{'MyHMCTS services' | rpxTranslate}}</h3>
           <div class="email">
-            <span class="govuk-!-font-weight-bold">Email: </span>
-            <a href="mailto:MyHMCTSsupport@justice.gov.uk">MyHMCTSsupport@justice.gov.uk</a>
+            <span class="govuk-!-font-weight-bold">{{'Email:' | rpxTranslate}} </span>
+            <a href="mailto:MyHMCTSsupport@justice.gov.uk">MyHMCTSsupport&#64;justice.gov.uk</a>
           </div>
-          <div>Contact us for help with registering your organisation or managing your account.</div>
+          <div>{{'Contact us for help with registering your organisation or managing your account.' | rpxTranslate}}</div>
         </ng-container>
         <xuilib-contact-details *ngFor="let help of helpContactDetails" [data]="help"></xuilib-contact-details>
       </div>

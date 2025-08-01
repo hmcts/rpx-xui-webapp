@@ -9,6 +9,7 @@ import { CancelHearingMessages } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-cancel-hearing',
@@ -24,6 +25,7 @@ export class CancelHearingComponent implements OnInit {
   public caseId: string;
   public caseHearing: HearingListModel;
   public showSpinner$: Observable<boolean>;
+  public cancelActioned: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -31,7 +33,8 @@ export class CancelHearingComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
-    private readonly loadingService: LoadingService) {
+    private readonly loadingService: LoadingService,
+    private readonly loggerService: LoggerService) {
     this.route.params.subscribe((params) => {
       this.hearingId = params.hearingId;
     });
@@ -97,13 +100,22 @@ export class CancelHearingComponent implements OnInit {
       this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(
         () => {
           this.validationErrors = null;
-          return this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']);
+          this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
+            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));
         },
         () => {
+          this.cancelActioned = false;
           this.validationErrors = [{ id: 'cancel-request-error', message: cancellationErrorMessage }];
         }
       );
+      if (!this.validationErrors || (this.validationErrors && this.validationErrors.length === 0)) {
+        this.cancelActioned = true;
+      }
     }
+  }
+
+  public buttonDisabled(): boolean {
+    return this.cancelActioned;
   }
 
   public getChosenReasons(): LovRefDataModel[] {

@@ -3,17 +3,17 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
+
 import { http } from '../lib/http';
 import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { Role } from '../roleAccess/models/roleType';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { ASSIGN, CANCEL, CLAIM, CLAIM_AND_GO, COMPLETE, GO, REASSIGN, RELEASE, TaskPermission } from './constants/actions';
 import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
-import { Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
-import { PersonRole } from './interfaces/person';
-import { RoleCaseData } from './interfaces/roleCaseData';
-
 import { Case } from './interfaces/case';
+import { CachedCaseworker, Caseworker, CaseworkerApi, CaseworkersByService, Location, LocationApi } from './interfaces/common';
+import { RoleCaseData } from './interfaces/roleCaseData';
+import { PersonRole } from './interfaces/person';
 import {
   applySearchFilter,
   assignActionsToTasks,
@@ -26,6 +26,8 @@ import {
   getActionsByPermissions,
   getActionsByRefinedPermissions,
   getActionsFromMatrix,
+  getAppropriateLocation,
+  getAppropriateService,
   getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseName,
@@ -41,13 +43,15 @@ import {
   mapCaseworkerData,
   mapCaseworkerLocation,
   mapRoleType,
+  mapUsersToCachedCaseworkers,
   prepareGetTaskUrl,
   preparePaginationUrl,
   preparePostTaskUrlAction,
   prepareRoleApiRequest,
   prepareSearchCaseUrl,
   prepareSearchTaskUrl,
-  prepareServiceRoleApiRequest
+  prepareServiceRoleApiRequest,
+  searchAndReturnRefinedUsers
 } from './util';
 
 import * as util from './util';
@@ -345,12 +349,15 @@ describe('workAllocation.utils', () => {
         },
         roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
           'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
-          'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator'],
+          'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator', 'regional-centre-admin'],
         validAt: Date.UTC,
         roleType: ['ORGANISATION']
-      };
+      } as any;
       const payload = prepareRoleApiRequest(jurisdictions, locationId);
       expect(payload).to.deep.equal(expectedResult);
+      expectedResult.attributes = { baseLocation: [locationId] };
+      const allRolesPayload = prepareRoleApiRequest(jurisdictions, locationId, true);
+      expect(allRolesPayload).to.deep.equal(expectedResult);
     });
   });
 
@@ -359,8 +366,17 @@ describe('workAllocation.utils', () => {
       const BASE_URL: string = 'base';
       const TASK_ID: string = '123456';
       const ACTION: string = 'fixit';
-      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION);
+      const MODE: string = 'EXUI_CASE-EVENT_COMPLETION';
+      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
       expect(url).to.equal('base/task/123456/fixit');
+    });
+    it('should correctly format with a baseUrl, taskId, and action', () => {
+      const BASE_URL: string = 'base';
+      const TASK_ID: string = '123456';
+      const ACTION: string = 'complete';
+      const MODE: string = 'EXUI_USER_COMPLETION';
+      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
+      expect(url).to.equal('base/task/123456/complete?completion_process=EXUI_USER_COMPLETION');
     });
   });
 
@@ -853,14 +869,14 @@ describe('workAllocation.utils', () => {
 
   describe('applySearchFilter', () => {
     it('PersonRole BOTH', () => {
-      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.LEGAL_OPERATIONS };
       const result = applySearchFilter(person, PersonRole.ALL, 'name');
       expect(result).to.equal(true);
     });
 
     it('PersonRole CASEWORKER', () => {
-      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
-      const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
+      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.LEGAL_OPERATIONS };
+      const result = applySearchFilter(person, PersonRole.LEGAL_OPERATIONS, 'name');
       expect(result).to.equal(true);
     });
 
@@ -872,12 +888,12 @@ describe('workAllocation.utils', () => {
 
     it('PersonRole CASEWORKER no match', () => {
       const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.JUDICIAL };
-      const result = applySearchFilter(person, PersonRole.CASEWORKER, 'name');
+      const result = applySearchFilter(person, PersonRole.LEGAL_OPERATIONS, 'name');
       expect(result).to.equal(false);
     });
 
     it('PersonRole JUDICIAL no match', () => {
-      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.CASEWORKER };
+      const person = { id: '123', name: 'some name', email: 'name@email.com', domain: PersonRole.LEGAL_OPERATIONS };
       const result = applySearchFilter(person, PersonRole.JUDICIAL, 'name');
       expect(result).to.equal(false);
     });
@@ -1082,6 +1098,162 @@ describe('workAllocation.utils', () => {
       expect(mappedCaseData[0].jurisdiction).to.equal(expectedRoleCaseData[0].jurisdiction);
       expect(mappedCaseData[0].jurisdictionId).to.equal(expectedRoleCaseData[0].jurisdictionId);
       expect(mappedCaseData[0].location_id).to.equal(expectedRoleCaseData[0].location_id);
+    });
+  });
+
+  describe('mapUsersToCachedCaseworkers', () => {
+    // note not making it a case as would have to fill in multiple unnecessary properties
+    const mockUsers: any[] = [
+      {
+        staff_profile: {
+          id: '123',
+          email_id: 'a@b.com',
+          first_name: 'Test',
+          last_name: 'User',
+          base_location: [
+            {
+              location_id: '1',
+              location: 'testlocation',
+              is_primary: true,
+              services: ['IA', 'CIVIL']
+            }
+          ]
+        },
+        ccd_service_names: ['IA', 'CIVIL']
+      },
+      {
+        staff_profile: {
+          id: '124',
+          email_id: 'c@b.com',
+          first_name: 'Second',
+          last_name: 'User',
+          base_location: [
+            {
+              location_id: '2',
+              location: 'testlocation2',
+              is_primary: true,
+              services: ['IA']
+            },
+            {
+              location_id: '3',
+              location: 'testlocation3',
+              is_primary: false,
+              services: ['PRIVATELAW']
+            }
+          ]
+        },
+        ccd_service_names: ['PRIVATELAW', 'IA']
+      }
+    ];
+    const mockRoleAssignment: RoleAssignment[] = [
+      {
+        id: '1',
+        actorId: '123',
+        roleName: 'example-role',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        attributes: {
+          caseId: '123',
+          baseLocation: '001',
+          isNew: true
+        }
+      },
+      {
+        id: '2',
+        actorId: '124',
+        roleName: 'example-role',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'ADMIN',
+        attributes: {
+          baseLocation: '001',
+          isNew: true,
+          // note: below just confirms jurisdiction is not checked
+          jurisdiction: 'IA'
+        }
+      },
+      {
+        id: '3',
+        actorId: '124',
+        roleName: 'example-role-2',
+        endTime: new Date('01-01-2022'),
+        beginTime: new Date('01-01-2021'),
+        roleCategory: 'LEGAL_OPERATIONS',
+        attributes: {
+          caseId: '456',
+          baseLocation: '001',
+          isNew: true
+        }
+      }
+    ];
+
+    const mockCachedCaseworkers: CachedCaseworker[] = [
+      {
+        email: 'a@b.com',
+        firstName: 'Test',
+        idamId: '123',
+        lastName: 'User',
+        locations: [
+          {
+            id: '1',
+            locationName: 'testlocation',
+            services: ['IA', 'CIVIL']
+          }
+        ],
+        roleCategory: 'LEGAL_OPERATIONS',
+        services: ['IA', 'CIVIL']
+      },
+      {
+        email: 'c@b.com',
+        firstName: 'Second',
+        idamId: '124',
+        lastName: 'User',
+        locations: [
+          {
+            id: '2',
+            locationName: 'testlocation2',
+            services: ['IA']
+          }
+        ],
+        roleCategory: 'ADMIN',
+        services: ['PRIVATELAW', 'IA']
+      }
+    ];
+
+    it('should return empty list if there are no cached caseworkers', () => {
+      expect(mapUsersToCachedCaseworkers([], [])).to.deep.equal([]);
+      expect(mapUsersToCachedCaseworkers([], mockRoleAssignment)).to.deep.equal([]);
+      expect(mapUsersToCachedCaseworkers([], mockRoleAssignment)).to.deep.equal([]);
+      expect(mapUsersToCachedCaseworkers([], [])).to.deep.equal([]);
+    });
+
+    it('should return cached caseworkers from data (regardless of if there is no jurisdiction', () => {
+      const mappedCaseworkers = mapUsersToCachedCaseworkers(mockUsers, mockRoleAssignment);
+      expect(mappedCaseworkers).to.deep.equal(mockCachedCaseworkers);
+    });
+
+    it('should correctly get the users role category', () => {
+      expect(util.getUserRoleCategory(mockRoleAssignment, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.equal('LEGAL_OPERATIONS');
+      expect(util.getUserRoleCategory(mockRoleAssignment, mockUsers[1].staff_profile, mockUsers[1].ccd_service_names)).to.equal('ADMIN');
+      const specificMockRole = [{ actorId: '123', roleCategory: 'CTSC', attributes: { jurisdiction: 'ia' } } as RoleAssignment];
+      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, mockUsers[0].ccd_service_names)).to.equal('CTSC');
+      // checks that if service of role does not match, role cateogry not set
+      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
+      specificMockRole[0].attributes = {};
+      // checks that if role not service specific, role category is set
+      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal('CTSC');
+      specificMockRole[0].roleCategory = undefined;
+      expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
+    });
+
+    it('should correctly get the users location', () => {
+      expect(util.mapCachedCaseworkerLocation(mockUsers[0].staff_profile.base_location)).to.deep.equal(mockCachedCaseworkers[0].locations);
+      expect(util.mapCachedCaseworkerLocation(mockUsers[1].staff_profile.base_location)).to.deep.equal(mockCachedCaseworkers[1].locations);
+      const mockBaseLocations = mockUsers[1].staff_profile.base_location;
+      mockBaseLocations[0].is_primary = false;
+      mockBaseLocations[1].is_primary = true;
+      expect(util.mapCachedCaseworkerLocation(mockBaseLocations)).to.deep.equal([{ id: '3', locationName: 'testlocation3', services: ['PRIVATELAW'] }]);
     });
   });
 
@@ -1351,7 +1523,75 @@ describe('workAllocation.utils', () => {
       expect(mapRoleType(PersonRole.ALL)).to.deep.equal('');
       expect(mapRoleType(PersonRole.JUDICIAL)).to.deep.equal(RoleCategory.JUDICIAL);
       expect(mapRoleType(PersonRole.ADMIN)).to.deep.equal(RoleCategory.ADMIN);
-      expect(mapRoleType(PersonRole.CASEWORKER)).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
+      expect(mapRoleType(PersonRole.LEGAL_OPERATIONS)).to.deep.equal(RoleCategory.LEGAL_OPERATIONS);
+    });
+  });
+
+  describe('searchAndReturnRefinedUsers', () => {
+    it('should correctly search through the cached caseworkers', () => {
+      const cachedCaseworkers = [{
+        email: 'IAUser@test.com',
+        firstName: 'IA',
+        idamId: '1',
+        lastName: 'User',
+        locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
+        roleCategory: 'ADMIN',
+        services: ['IA', 'CIVIL']
+      },
+      {
+        email: 'PLUser@test.com',
+        firstName: 'PL',
+        idamId: '2',
+        lastName: 'User',
+        locations: [
+          { id: 'c', locationName: 'PL location', services: undefined }
+        ],
+        roleCategory: 'CTSC',
+        services: ['PRIVATELAW']
+      }];
+      const searchedCaseworkers = [{
+        email: 'IAUser@test.com',
+        firstName: 'IA',
+        idamId: '1',
+        lastName: 'User',
+        location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+        roleCategory: 'ADMIN',
+        service: 'CIVIL'
+      },
+      {
+        email: 'PLUser@test.com',
+        firstName: 'PL',
+        idamId: '2',
+        lastName: 'User',
+        location: { id: 'c', locationName: 'PL location', services: undefined },
+        roleCategory: 'CTSC',
+        service: 'PRIVATELAW'
+      }];
+      expect(searchAndReturnRefinedUsers(['CIVIL', 'PRIVATELAW'], 'User', cachedCaseworkers)).to.deep.equal(searchedCaseworkers);
+      searchedCaseworkers[0].service = 'IA';
+      expect(searchAndReturnRefinedUsers(['IA', 'PRIVATELAW'], 'User', cachedCaseworkers)).to.deep.equal(searchedCaseworkers);
+      expect(searchAndReturnRefinedUsers(['IA', 'PRIVATELAW'], 'IA', cachedCaseworkers)).to.deep.equal([searchedCaseworkers[0]]);
+    });
+  });
+
+  describe('getAppropriateService', () => {
+    it('should get an appropriate service for the search', () => {
+      expect(getAppropriateService(['IA', 'CIVIL'], ['CIVIL', 'PRIVATELAW'])).to.deep.equal('CIVIL');
+      expect(getAppropriateService(['IA', 'CIVIL'], ['CIVIL', 'IA'])).to.deep.equal('CIVIL');
+    });
+  });
+
+  describe('getAppropriateLocation', () => {
+    it('should get an appropriate location for the search', () => {
+      const firstMockLocations = [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }];
+      const secondMockLocations = [
+        { id: 'c', locationName: 'PL location', services: undefined },
+        { id: 'a', locationName: 'IA location', services: undefined }
+      ];
+      expect(getAppropriateLocation(['IA', 'CIVIL'], firstMockLocations)).to.deep.equal(firstMockLocations[0]);
+      expect(getAppropriateLocation(['IA'], firstMockLocations)).to.deep.equal(firstMockLocations[0]);
+      expect(getAppropriateLocation(['IA', 'CIVIL'], secondMockLocations)).to.deep.equal(secondMockLocations[0]);
+      expect(getAppropriateLocation(['PRIVATELAW'], secondMockLocations)).to.deep.equal(secondMockLocations[0]);
     });
   });
 
@@ -1849,14 +2089,14 @@ describe('workAllocation.utils', () => {
       let specificRoleAssignments: RoleAssignment[];
       let newRoleAssignment: RoleAssignment[];
       describe('filterMyAccessRoleAssignments', () => {
-        it('should filter role assignments having specific assess', () => {
+        it('should filter role assignments having specific access', () => {
           specificRoleAssignments = filterMyAccessRoleAssignments(roleAssignments);
           expect(specificRoleAssignments.length).to.equal(2);
         });
       });
 
       describe('getAccessGrantedRoleAssignments', () => {
-        it('should filter role assignments having specific assess granted', () => {
+        it('should filter role assignments having specific access granted', () => {
           newRoleAssignment = getAccessGrantedRoleAssignments(roleAssignments);
           expect(newRoleAssignment.length).to.equal(1);
         });

@@ -1,13 +1,13 @@
 import { waitForAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import {
   Actions, AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole,
-  RoleCategory
+  DurationOfRole
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';
@@ -22,7 +22,7 @@ describe('ChooseDurationComponent', () => {
     assignmentId: 'a123456',
     state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
     typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-    allocateTo: AllocateTo.RESERVE_TO_ME,
+    allocateTo: AllocateTo.ALLOCATE_TO_ME,
     personToBeRemoved: {
       id: 'p111111',
       name: 'test1',

@@ -11,7 +11,7 @@ import * as fromCaseCreate from '../../store/reducers';
 @Component({
   selector: 'exui-filter-case',
   template: `
-    <exui-page-wrapper [title]="'Create Case'">
+    <exui-page-wrapper [title]="'Create Case' | rpxTranslate">
       <div class="width-50">
         <exui-ccd-connector
           *exuiFeatureToggle="'ccdCaseCreate'"
@@ -32,7 +32,7 @@ export class CaseFilterComponent implements OnInit {
   public startButtonText: string;
   public caseCreatFilterBindings: ActionBindingModel[];
   public fromCasesFeature: any;
-  constructor(private readonly store: Store<fromCaseCreate.State>) {}
+  constructor(public readonly store: Store<fromCaseCreate.State>) {}
 
   public ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;

@@ -12,6 +12,7 @@
 node_modules
 api/node_modules
 api/.nyc_output
+api/.yarn
 
 
 # profiling files
@@ -34,6 +35,7 @@ speed-measure-plugin.json
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+.last-run.json
 
 # misc
 /.sass-cache
@@ -63,6 +65,7 @@ local-only-tools
 /test/reports/
 reports/
 functional-output/
+mochawesome-report/
 
 /local-only-tools
 
@@ -90,3 +93,13 @@ ignore/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+/infrastructure/.terraform/
+.angular/cache/*
+.yarn/install-state.gz
+
+.nx/cache/
+
+#playwright
+test-results/
+

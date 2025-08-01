@@ -1,10 +1,17 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocEmailFieldComponent } from './noc-email-field.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocEmailFieldComponent', () => {
   const FORM_GROUP: FormGroup = new FormGroup({});
@@ -40,7 +47,8 @@ describe('NocEmailFieldComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [
-        NocEmailFieldComponent
+        NocEmailFieldComponent,
+        RpxTranslateMockPipe
       ],
       imports: [
         ReactiveFormsModule,

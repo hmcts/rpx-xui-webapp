@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import { RoleCategory } from '../../models';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
@@ -66,7 +66,7 @@ export class RejectedRequestViewComponent implements OnInit {
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
-        this.caseworkerDataService.getCaseworkersForServices(services).subscribe(
+        this.caseworkerDataService.getUsersFromServices(services).subscribe(
           (caseworkers) => {
             const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
             if (caseworker) {

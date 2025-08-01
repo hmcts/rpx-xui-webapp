@@ -1,4 +1,4 @@
-@ng  @wa2
+@ng  @wa2 @task_action
 Feature: WA Release 2: Task actions
 
     Background: Mock and browser setup
@@ -35,10 +35,11 @@ Feature: WA Release 2: Task actions
         Then I validate task actions in manage link for task at row 1
             | Action                      |
             | Assign to me                |
-            | Assign to me and go to case |
+            | Assign to me and go to task |
         Then I validate task actions in manage link for task at row 2
             | Action |
-
+            | Assign to me                |
+            | Assign to me and go to task |
         Examples:
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |

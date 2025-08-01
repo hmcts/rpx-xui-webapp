@@ -48,6 +48,25 @@ describe('RequestHearingPageFlow', () => {
         partyDetails: []
       }
     },
+    hearingRequestToCompare: {
+      hearingRequestMainModel: {
+        requestDetails: null,
+        hearingDetails: {
+          duration: 1,
+          hearingType: '',
+          hearingLocations: [],
+          hearingWindow: null,
+          panelRequirements: null,
+          autolistFlag: false,
+          hearingPriorityType: '',
+          hearingInWelshFlag: true,
+          amendReasonCodes: null,
+          hearingChannels: [],
+          listingAutoChangeReasonCode: null
+        },
+        partyDetails: []
+      }
+    },
     hearingConditions: null
   };
   let requestHearingPageFlow;
@@ -56,10 +75,11 @@ describe('RequestHearingPageFlow', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
 
   beforeEach(() => {
     mockStore.pipe.and.returnValue(of(hearingState));
-    requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService);
+    requestHearingPageFlow = new RequestHearingPageFlowSpec(mockStore, hearingsService, mockFeatureToggleService);
   });
 
   it('should navigate continue', () => {
@@ -75,6 +95,11 @@ describe('RequestHearingPageFlow', () => {
   it('should navigate submit', () => {
     requestHearingPageFlow.navigateAction(ACTION.SUBMIT);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequest()));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValues()));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingConditions()));
+    expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toBeNull();
   });
 
   it('should navigate to view edit reason page', () => {
@@ -85,6 +110,11 @@ describe('RequestHearingPageFlow', () => {
   it('should navigate to view edit submit page', () => {
     requestHearingPageFlow.navigateAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromHearingStore.ViewEditSubmitHearingRequest(hearingState.hearingRequest.hearingRequestMainModel as HearingRequestMainModel));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingRequest()));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingValues()));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.ResetHearingConditions()));
+    expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
+    expect(hearingsService.propertiesUpdatedOnPageVisit).toBeNull();
   });
 
   afterEach(() => {

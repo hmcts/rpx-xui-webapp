@@ -1,7 +1,7 @@
 <exui-page-wrapper
   [backLink]="'/cases'"
-  [fnTitle]="'Share a case'"
-  [title]="'Add recipient'">
+  [fnTitle]="'Share a case' | rpxTranslate"
+  [title]="'Add recipient' | rpxTranslate">
   <xuilib-share-case
     [shareCases$] = "shareCases$"
     [users]="orgUsers$ | async"
@@ -11,5 +11,4 @@
     [confirmLink]="'/cases/case-share-confirm'"
   >
   </xuilib-share-case>
-
 </exui-page-wrapper>

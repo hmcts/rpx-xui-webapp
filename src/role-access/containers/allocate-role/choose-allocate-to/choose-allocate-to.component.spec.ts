@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { ChooseRadioOptionComponent } from '../../../components';
@@ -11,8 +12,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole,
-  RoleCategory
+  DurationOfRole
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseAllocateToComponent } from './choose-allocate-to.component';
@@ -30,7 +30,7 @@ describe('ChooseAllocateToComponent', () => {
     assignmentId: 'a123456',
     state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
     typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-    allocateTo: AllocateTo.RESERVE_TO_ME,
+    allocateTo: AllocateTo.ALLOCATE_TO_ME,
     personToBeRemoved: {
       id: 'p111111',
       name: 'test1',
@@ -84,7 +84,7 @@ describe('ChooseAllocateToComponent', () => {
   it('should set data in ngOnInit', () => {
     component.ngOnInit();
     expect(component.typeOfRole).toEqual({ id: 'lead-judge', name: 'Lead judge' });
-    expect(component.allocateTo).toBe('Reserve to me');
+    expect(component.allocateTo).toBe('Allocate to me');
     expect(component.caption).toBe('Allocate a Lead judge');
   });
 
@@ -100,7 +100,7 @@ describe('ChooseAllocateToComponent', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     component.dispatchEvent(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseAllocateToAndGo({
-      allocateTo: AllocateTo.RESERVE_TO_ME,
+      allocateTo: AllocateTo.ALLOCATE_TO_ME,
       allocateRoleState: 3
     }));
   });

@@ -63,9 +63,42 @@ describe('CaseTaskUtil', () => {
     expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
   });
 
+  it('should return task id appended to only url as querystring not to text', () => {
+    const taskToCheck = task;
+    taskToCheck.description = 'Click link to proceed to next step [test link next step (testing)](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123)';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('Click link to proceed to next step [test link next step (testing)](/cases/case-details/1547652071308205/trigger/editAppealAfterSubmit?abc=123&tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6)');
+  });
+
   it('should return empty string if there is no task description', () => {
     const taskToCheck = task;
     taskToCheck.description = null;
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('');
+  });
+
+  it('should return fragment appended to url after taskId', () => {
+    const taskToCheck = task;
+    taskToCheck.description = '[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}#Referrals)';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('[Review the Referral](/cases/case-details/${[CASE_REFERENCE]}?tid=0d22d838-b25a-11eb-a18c-f2d58a9b7bc6#Referrals)');
+  });
+
+  it('should return fragment appended to url after taskId', () => {
+    const taskToCheck = task;
+    taskToCheck.description = 'Review orders on the orders tab';
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
+    expect(appendedTaskDescription).toEqual('Review orders on the orders tab');
+  });
+
+  it('should return blank if null being passed as task', () => {
+    const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(null);
+    expect(appendedTaskDescription).toEqual('');
+  });
+
+  it('should return blank if description being passed as blank', () => {
+    const taskToCheck = task;
+    taskToCheck.description = '';
     const appendedTaskDescription = appendTaskIdAsQueryStringToTaskDescription(taskToCheck);
     expect(appendedTaskDescription).toEqual('');
   });

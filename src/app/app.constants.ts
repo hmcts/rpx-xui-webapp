@@ -6,16 +6,33 @@ const featureNames = {
   waServiceConfig: 'wa-service-config',
   waLandingPageRoles: 'wa-landing-page-roles',
   waAccess: 'wa-access',
-  currentWAFeature: 'mc-work-allocation-active-feature',
-  updatedTaskPermissionsFeature: 'updated-task-permission',
-  workAllocation: 'MC_Work_Allocation',
   noticeOfChange: 'MC_Notice_of_Change',
-  waMvpPaginationFeature: 'mc-mvp-wa-pagination',
-  userTypeRoles: 'mc-user-type-roles',
   booking: 'mc-booking-active',
-  mcHearingsFeature: 'mc-hearings-jurisdictions',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs'
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
+  secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',
+  icpEnabled: 'icp-enabled',
+  icpJurisdictions: 'icp-jurisdictions',
+  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
+  accessManagementMode: 'access-management-mode',
+  cdamExclusionList: 'mc-cdam-exclusion-list'
 };
+
+function featureToAttributeName(key: string): string {
+  return key.split('-').join('_');
+}
+
+export const featureToAttributeMap = new Map<string, string>([
+  [featureNames.waServiceConfig, featureToAttributeName(featureNames.waServiceConfig)],
+  [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
+  [featureNames.waAccess, featureToAttributeName(featureNames.waAccess)],
+  [featureNames.booking, featureToAttributeName(featureNames.booking)],
+  [featureNames.secureDocumentStoreEnabled, 'document_management_secure_enabled'], // should refactor this
+  [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
+  [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
+  [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
+  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
+]);
 
 const footerDataNavigation = {
   items: [
@@ -62,7 +79,7 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_BLUE,
     email: 'contactprobate@justice.gov.uk',
     phone: '0300 303 0648',
-    openingTimes: 'Monday to Friday, 9:30am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 9am to 1pm (Closed on bank holidays)'
   },
   {
     title: 'Divorce',
@@ -83,10 +100,10 @@ const helpContactDetails: ContactDetailsDataModel[] = [
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactia@justice.gov.uk',
     phone: '0300 123 1711',
-    openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+    openingTimes: 'Monday to Friday, 8:30am to 5pm (excluding public holidays)'
   },
   {
-    title: 'Family Public Law and Adoption',
+    title: 'Family Public Law',
     badgeColour: BadgeColour.BADGE_RED,
     email: 'contactfpl@justice.gov.uk',
     phone: '0330 808 4424',
@@ -95,9 +112,66 @@ const helpContactDetails: ContactDetailsDataModel[] = [
   {
     title: 'Employment Tribunal',
     badgeColour: BadgeColour.BADGE_RED,
-    email: 'etreform@justice.gov.uk',
-    phone: 'England and Wales: 0330 123 1024, Scotland: 0300 790 6234',
+    contactDetails: {
+      name: 'Employment Tribunals Offices and Venues - GOV.UK',
+      contactLink: 'https://www.gov.uk/guidance/employment-tribunal-offices-and-venues'
+    },
+    phone: 'England and Wales: 0300 123 1024, Scotland: 0300 790 6234',
     openingTimes: 'Monday to Friday, 9am to 5pm (excluding public holidays)'
+  },
+  {
+    title: 'SSCS (England and Wales)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'contactsscs@justice.gov.uk',
+    phone: '0300 123 1142',
+    openingTimes: 'Monday to Friday, 9am to 4pm'
+  },
+  {
+    title: 'SSCS (Scotland)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'SSCSA-Glasgow@justice.gov.uk',
+    phone: '0300 790 6234',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  },
+  {
+    title: 'SSCS Infected Blood (England, Wales, Northern Ireland & Overseas)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'ContactIBCAppeals@justice.gov.uk',
+    phone: '0300 123 1142',
+    openingTimes: 'Monday to Friday, 9am to 4pm'
+  },
+  {
+    title: 'SSCS Benefits & Infected Blood Compensation (Scotland)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'SSCSA-Glasgow@justice.gov.uk',
+    phone: '0300 790 6234',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm, Last Thursday of every month, closed 10:30am-11:30am'
+  },
+  {
+    title: 'SSCS Benefits & Infected Blood Compensation (Welsh speakers)',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'ymholiadaucymraeg@justice.gov.uk',
+    phone: '0300 303 5170',
+    openingTimes: 'Monday to Friday, 9am to 4pm'
+  },
+  {
+    title: 'For damages general enquires is:',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'DamagesClaims@justice.gov.uk',
+    phone: '0300 123 1056',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
+  },
+  {
+    title: 'For damages tech support:',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'DCPTechSupport@justice.gov.uk'
+  },
+  {
+    title: 'OCMC',
+    badgeColour: BadgeColour.BADGE_RED,
+    email: 'contactocmc@justice.gov.uk',
+    phone: '0300 123 7050',
+    openingTimes: 'Monday to Friday, 8:30am to 5pm'
   }
 ];
 
@@ -127,10 +201,12 @@ const caseDetailsUrl: string = '/cases/case-details/';
 
 const accessViewUrl: string = '/access-view/';
 
-const serviceMessagesFeatureToggleKey: string = 'mc-service-messages';
+const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';
+const iaJudgeRole: string = 'caseworker-ia-iacjudge';
+const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 
 const activityTrackerMode: string = 'mc-activity-tracker-mode';
 
@@ -148,15 +224,16 @@ export class AppConstants {
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static IA_JUDGE_ROLE = iaJudgeRole;
+  public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static ACTIVITY_TRACKER_MODE = activityTrackerMode;
+  public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
-export const LD_FLAG_MC_APPLICATION_THEMES: string = 'mc-application-themes';
-export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw'];
-export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge'];
-export const ADMIN_ROLE_LIST: string[] = ['admin'];
-export const CTSC_ROLE_LIST: string[] = ['ctsc'];
-export const SERVICE_OPTIONS_LIST = [{ key: 'IA', label: 'Immigration and Asylum' }, { key: 'SSCS', label: 'Social security and child support' }];
+export const LEGAL_OPS_ROLE_LIST: string[] = ['caseworker-ia-caseofficer', 'caseworker-ia', 'caseworker-ia-admofficer', 'task-supervisor', 'caseworker-civil', 'caseworker-privatelaw', 'hmcts-legal-operations'];
+export const JUDICIAL_ROLE_LIST: string[] = ['caseworker-ia-iacjudge', 'caseworker-privatelaw-judge', 'judge', 'hmcts-judiciary', 'judiciary', 'panelmember'];
+export const ADMIN_ROLE_LIST: string[] = ['hmcts-admin'];
+export const CTSC_ROLE_LIST: string[] = ['hmcts-ctsc'];
 export const PUI_CASE_MANAGER = 'pui-case-manager';

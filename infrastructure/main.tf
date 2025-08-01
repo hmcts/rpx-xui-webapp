@@ -102,3 +102,75 @@ resource "azurerm_key_vault_secret" "app_insights_connection_string" {
   value        = module.application_insights.connection_string
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
+
+# Welsh Language Usage Reporting
+data "azurerm_key_vault_secret" "welsh_report_email" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = var.welsh_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+resource "azurerm_monitor_action_group" "welsh_usage_alerts" {
+  count               = var.welsh_reporting_enabled ? 1 : 0
+  name                = "${local.app_full_name}-${var.welsh_action_group_name}-${var.env}"
+  resource_group_name = azurerm_resource_group.rg.name
+  short_name          = "welsh-rpt"
+
+  email_receiver {
+    name          = "welsh-team"
+    email_address = data.azurerm_key_vault_secret.welsh_report_email.0.value
+  }
+
+  tags = var.common_tags
+}
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
+  count               = var.welsh_reporting_enabled ? 1 : 0
+  name                = "${local.app_full_name}-welsh-usage-${var.env}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  action {
+    action_group = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]
+  }
+
+  data_source_id = azurerm_application_insights.appinsight.id
+  description    = "Monthly Welsh language usage report"
+  enabled        = var.welsh_reporting_enabled
+  
+  query = <<-QUERY
+    let FilteredRequests = requests
+    | where timestamp >= startofmonth(ago(1M))
+    | where timestamp < startofmonth(now())
+    | where url has "/api/translation/cy"
+    | extend day = bin(timestamp, 1d);
+    let UniqueSessionsPerDay = FilteredRequests
+    | where isnotempty(session_Id)
+    | summarize by day, session_Id
+    | summarize SessionCount = count() by day;
+    let HasNoSession = FilteredRequests
+    | where isempty(session_Id)
+    | summarize HasMissingSessions = count() by day
+    | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
+    UniqueSessionsPerDay
+    | join kind=fullouter HasNoSession on day
+    | extend 
+        SessionCount = coalesce(SessionCount, 0),
+        NoSessionAddition = coalesce(NoSessionAddition, 0)
+    | extend TotalSessions = SessionCount + NoSessionAddition
+    | project day, TotalSessions
+    | order by day asc
+    | render columnchart
+  QUERY
+
+  severity    = 3
+  frequency   = "P1M"
+  time_window = "P1M"
+
+  trigger {
+    operator  = "GreaterThanOrEqual"
+    threshold = 0
+  }
+
+  tags = var.common_tags
+}

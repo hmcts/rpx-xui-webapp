@@ -180,6 +180,7 @@ test('check form validations are functioning ', async ({ page }) => {
   await page.getByRole('group', { name: 'Date Time' }).getByLabel('Month').fill('12');
   await page.getByRole('group', { name: 'Date Time' }).getByLabel('Year').click();
   await page.getByRole('group', { name: 'Date Time' }).getByLabel('Year').fill('2024');
+  await expect(page.getByText('The data entered is not valid')).toBeVisible();
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('textbox', { name: 'Money GBP' }).click();
   await page.getByRole('textbox', { name: 'Money GBP' }).fill('12');

@@ -67,13 +67,10 @@ export class DurationHelperService {
    * @return object representing date validity
    */
   public checkDates(
-    startDate: string,
     endDate: string
   ): CheckDatesResult {
-    const isStartDateValid = moment(startDate, this.dateFormat, true).isValid();
     const isEndDateValid = moment(endDate, this.dateFormat, true).isValid();
     return {
-      isStartDateValid,
       isEndDateValid
     };
   }

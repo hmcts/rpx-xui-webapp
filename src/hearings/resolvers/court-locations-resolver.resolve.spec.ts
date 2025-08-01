@@ -1,13 +1,14 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LocationByEPIMMSModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';
 import { LocationsDataService } from '../services/locations-data.service';
 import { CourtLocationsDataResolver } from './court-locations-resolver.resolve';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CourtLocationsData Resolver', () => {
   let locationsDataService: LocationsDataService;
@@ -32,15 +33,14 @@ describe('CourtLocationsData Resolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule
-      ],
+      imports: [RouterTestingModule.withRoutes([])],
       providers: [
         provideMockStore({ initialState }),
         CourtLocationsDataResolver,
         LocationsDataService,
-        { provide: APP_BASE_HREF, useValue: '/' }
+        { provide: APP_BASE_HREF, useValue: '/' },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }
     );
@@ -53,7 +53,7 @@ describe('CourtLocationsData Resolver', () => {
   });
 
   it('resolves reference data', inject([CourtLocationsDataResolver], (service: CourtLocationsDataResolver) => {
-    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(dataRef as unknown as LocationByEPIMMSModel[]));
+    spyOn(locationsDataService, 'getLocationById').and.returnValue(of(dataRef as unknown as LocationByEpimmsModel[]));
     spyOn(service, 'getLocationId$').and.returnValue(of('12345'));
     service.resolve().subscribe((refData: LocationModel) => {
       expect(service.getLocationId$).toHaveBeenCalled();

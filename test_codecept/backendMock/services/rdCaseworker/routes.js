@@ -1,19 +1,13 @@
 
-
-const express = require('express')
+const express = require('express');
 
 const router = express.Router({ mergeParams: true });
-const service = require('./index')
+const service = require('./index');
 
-const userApiData = require('../userApiData')
+const userApiData = require('../userApiData');
 
-
-
-router.post('/users/fetchUsersById', (req, res) => {
-    // throw new Error('/users/fetchUsersById not implemented')
-    res.send(service.getUsersById(req.body.userIds))
-    // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
-
+router.get('/usersByServiceName', (req, res) => {
+  res.send(service.getUsersByService(req.query.ccd_service_names));
 });
 
 module.exports = router;

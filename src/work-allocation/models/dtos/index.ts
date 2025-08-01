@@ -1,4 +1,4 @@
-import { RoleCategory } from '../../../role-access/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 export interface Assignee {
   userId: string;
@@ -44,7 +44,7 @@ export interface Location extends LocationSummary {
   services: string[];
 }
 
-export interface LocationByEPIMMSModel {
+export interface LocationByEpimmsModel {
   epimms_id: string;
   site_name: string;
   court_name?: string;

@@ -4,22 +4,29 @@ import { ActivatedRoute } from '@angular/router';
 import { ErrorMessage } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
+import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
+import { initialState } from '../../../hearing.test.data';
 import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel';
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
-  CaseFlagType,
   CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HearingResult,
   HMCLocationType, HMCStatus, LaCaseStatus, ListingStatus, MemberType,
   PartyType, RequirementType,
   UnavailabilityType
 } from '../../../models/hearings.enum';
-import { LocationByEPIMMSModel } from '../../../models/location.model';
+import { HearingWindowModel } from '../../../models/hearingWindow.model';
+import { LocationByEpimmsModel } from '../../../models/location.model';
+import { PartyDetailsModel } from '../../../models/partyDetails.model';
+import { PartyFlagsModel } from '../../../models/partyFlags.model';
 import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
+import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'exui-hearing-parties-title',
@@ -139,7 +146,15 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: 'POR'
+          interpreterLanguage: 'POR',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042',
+            'PF0015'
+          ]
         },
         unavailabilityRanges: [
           {
@@ -159,7 +174,10 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'DWP',
           lastName: null,
           preferredHearingChannel: 'inPerson',
-          interpreterLanguage: null
+          interpreterLanguage: null,
+          reasonableAdjustments: [
+            'RA0005'
+          ]
         },
         organisationDetails: {
           name: 'DWP',
@@ -177,7 +195,7 @@ describe('HearingRequirementsComponent', () => {
     caseFlags: {
       flags: [
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
@@ -185,7 +203,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0032',
           flagId: 'RA0053',
@@ -193,7 +211,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0002',
           flagId: 'RA0013',
@@ -201,7 +219,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0003',
           flagId: 'RA0016',
@@ -209,7 +227,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'RA0008',
           flagId: 'RA0042',
@@ -217,7 +235,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0015',
@@ -225,7 +243,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P1',
+          partyId: 'P1',
           partyName: 'Jane Smith',
           flagParentId: 'PF0001',
           flagId: 'PF0002',
@@ -233,7 +251,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'DWP',
           flagParentId: 'RA0001',
           flagId: 'RA0005',
@@ -241,7 +259,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'DWP',
           flagParentId: 'PF0001',
           flagId: 'PF0011',
@@ -249,7 +267,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0002',
@@ -257,7 +275,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0006',
@@ -265,7 +283,7 @@ describe('HearingRequirementsComponent', () => {
           flagStatus: 'ACTIVE'
         },
         {
-          partyID: 'P2',
+          partyId: 'P2',
           partyName: 'Jane Smith vs DWP',
           flagParentId: 'CF0001',
           flagId: 'CF0007',
@@ -533,7 +551,7 @@ describe('HearingRequirementsComponent', () => {
       hearingRequestToCompare: {
         hearingRequestMainModel: {
           requestDetails: {
-            timeStamp: null,
+            timestamp: null,
             versionNumber: 1
           },
           hearingDetails: {
@@ -671,7 +689,7 @@ describe('HearingRequirementsComponent', () => {
           requestDetails: {
             hearingRequestID: '1000000',
             status: 'LISTED',
-            timeStamp: '2021-11-30T09:00:00.000Z',
+            timestamp: '2021-11-30T09:00:00.000Z',
             versionNumber: 1,
             cancellationReasonCodes: ['withdraw', 'struck']
           },
@@ -736,9 +754,9 @@ describe('HearingRequirementsComponent', () => {
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: {
-              dateRangeStart: '2022-12-12T09:00:00.000Z',
-              dateRangeEnd: '2022-12-12T09:00:00.000Z',
-              firstDateTimeMustBe: ''
+              dateRangeStart: '2022-11-23T09:00:00.000Z',
+              dateRangeEnd: '2022-11-30T09:00:00.000Z',
+              firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
             },
             privateHearingRequiredFlag: false,
             panelRequirements: null,
@@ -2166,7 +2184,34 @@ describe('HearingRequirementsComponent', () => {
     }
   ];
 
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
+    {
+      partyId: 'P1',
+      partyName: 'Jane Smith',
+      flagParentId: 'RA0008',
+      flagId: 'RA0042',
+      flagDescription: 'Sign language interpreter required',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyId: 'P2',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0006',
+      flagDescription: 'Potential fraud',
+      flagStatus: 'ACTIVE'
+    },
+    {
+      partyId: 'P3',
+      partyName: 'Jane Smith vs DWP',
+      flagParentId: 'CF0001',
+      flagId: 'CF0007',
+      flagDescription: 'Urgent flag',
+      flagStatus: 'ACTIVE'
+    }
+  ];
+
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
@@ -2195,14 +2240,16 @@ describe('HearingRequirementsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const locationsDataService = new LocationsDataService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent],
+      declarations: [HearingRequirementsComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState: initialStateImmutable }),
         { provide: HearingsService, useValue: hearingsService },
         { provide: LocationsDataService, useValue: locationsDataService },
+        { provide: LoggerService, useValue: loggerServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -2221,7 +2268,6 @@ describe('HearingRequirementsComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
-    component.caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
     fixture.detectChanges();
   });
@@ -2235,7 +2281,7 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues(component.referenceId));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
   });
 
   it('should window onblur', () => {
@@ -2252,6 +2298,186 @@ describe('HearingRequirementsComponent', () => {
     spyOn(component.hearingStateSub, 'unsubscribe');
     component.ngOnDestroy();
     expect(component.hearingStateSub.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(2);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to case flags but not party name', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to case flags and party name', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to party names', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(1);
+  });
+
+  it('should set the case flags from in-memory object when there are changes to party names', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: null,
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.reasonableAdjustmentFlags.length).toEqual(0);
+  });
+
+  it('should not set reasonable adjustments warning message', () => {
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: true,
+        hearingWindowChangesRequired: true,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(false);
+  });
+
+  it('should set reasonable adjustments warning message', () => {
+    const partyDetails = [
+      {
+        partyID: 'P1',
+        partyName: 'Jane and Smith',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Miss',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0098'
+          ],
+          interpreterLanguage: 'PF0015'
+        }
+      }
+    ];
+    component.hearingRequestToCompareMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      partyDetails: partyDetails
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      parties: partyDetails
+    };
+    component.hearingCondition = {
+      mode: 'view-edit'
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: true,
+        nonReasonableAdjustmentChangesRequired: false,
+        partyDetailsChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false
+      }
+    };
+    component.ngOnInit();
+    expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(true);
   });
 
   it('should initialize hearing request from hearing values', () => {
@@ -2276,6 +2502,151 @@ describe('HearingRequirementsComponent', () => {
           dateRangeEnd: '2022-11-30T09:00:00.000Z',
           firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
         },
+        privateHearingRequiredFlag: false,
+        panelRequirements: {
+          roleType: [
+            'tj',
+            'dtj',
+            'rtj'
+          ],
+          panelPreferences: [],
+          panelSpecialisms: [
+            'BBA3-DQPM',
+            'BBA3-MQPM2-003',
+            'BBA3-MQPM2-004',
+            'BBA3-FQPM',
+            'BBA3-RMM'
+          ]
+        },
+        autolistFlag: false,
+        hearingPriorityType: 'standard',
+        numberOfPhysicalAttendees: 2,
+        hearingInWelshFlag: false,
+        facilitiesRequired: [],
+        listingComments: '',
+        hearingRequester: '',
+        leadJudgeContractType: '',
+        amendReasonCodes: null,
+        listingAutoChangeReasonCode: null
+      },
+      caseDetails: {
+        hmctsServiceCode: 'BBA3',
+        caseRef: '1111222233334444',
+        requestTimeStamp: null,
+        hearingID: null,
+        caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+        hmctsInternalCaseName: 'Jane vs DWP',
+        publicCaseName: 'Jane vs DWP',
+        caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
+        caseCategories: [
+          {
+            categoryType: CategoryType.CaseType,
+            categoryValue: 'BBA3-002'
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002CC',
+            categoryParent: 'BBA3-002'
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002GC',
+            categoryParent: 'BBA3-002'
+          }, {
+            categoryType: CategoryType.CaseSubType,
+            categoryValue: 'BBA3-002RC',
+            categoryParent: 'BBA3-002'
+          }
+        ],
+        caseManagementLocationCode: '196538',
+        caserestrictedFlag: false,
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+        externalCaseReference: ''
+      },
+      partyDetails: [{
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: [
+            'RA0042',
+            'RA0053',
+            'RA0013',
+            'RA0016',
+            'RA0042'],
+          interpreterLanguage: 'POR'
+        },
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
+      }, {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        partyName: 'DWP',
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+          reasonableAdjustments: ['RA0005'],
+          interpreterLanguage: null
+        },
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000'
+        },
+        unavailabilityRanges: [{
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY
+        }]
+      }]
+    };
+    const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
+    component.initializeHearingRequestFromHearingValues();
+    fixture.detectChanges();
+    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(expectedHearingRequestMainModel));
+  });
+
+  it('should set hearingWindow from serviceHearingValuesModel if it is null in hearingRequestMainModel', () => {
+    // Arrange
+    component.serviceHearingValuesModel = serviceHearingValuesModel;
+
+    // Act
+    component.initializeHearingRequestFromHearingValues();
+
+    // Assert
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(serviceHearingValuesModel.hearingWindow);
+  });
+
+  it('should set hearingWindow from hearingRequestMainModel if it is not null', () => {
+    // Arrange
+    const mockHearingWindow: HearingWindowModel = { dateRangeStart: '2023-12-15T09:00:00.000Z' };
+    const expectedHearingRequestMainModel: HearingRequestMainModel = {
+      hearingDetails: {
+        duration: 45,
+        hearingType: 'Final',
+        hearingChannels: [],
+        hearingLocations: [
+          {
+            locationId: '196538',
+            locationType: HMCLocationType.COURT
+          },
+          {
+            locationId: '234850',
+            locationType: HMCLocationType.COURT
+          }
+        ],
+        hearingIsLinkedFlag: false,
+        hearingWindow: mockHearingWindow,
         privateHearingRequiredFlag: false,
         panelRequirements: {
           roleType: [
@@ -2384,13 +2755,465 @@ describe('HearingRequirementsComponent', () => {
         }
       }]
     };
-    const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
+    component.hearingRequestMainModel = expectedHearingRequestMainModel;
+
+    // Act
     component.initializeHearingRequestFromHearingValues();
-    fixture.detectChanges();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.InitializeHearingRequest(expectedHearingRequestMainModel));
+
+    // Assert
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(expectedHearingRequestMainModel.hearingDetails.hearingWindow);
+  });
+
+  it('should return an empty array when partyDetails is empty', () => {
+    // Arrange
+    const partyDetails: PartyDetailsModel[] = [];
+
+    // Act
+    const result = component.combinePartiesWithIndOrOrg(partyDetails);
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it('should remove language interpreter flag from reasonable adjustments', () => {
+    // Arrange
+    const partyDetails: PartyDetailsModel[] = [{
+      partyID: 'P1',
+      partyType: PartyType.IND,
+      partyRole: 'appellant',
+      partyName: 'Jane Smith',
+      unavailabilityRanges: [{
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }],
+      individualDetails: {
+        title: 'Mrs',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: [
+          'RA0042',
+          'RA0053',
+          CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
+          'RA0013',
+          'RA0016',
+          'RA0042'
+        ],
+        interpreterLanguage: 'POR'
+      }
+    }, {
+      partyID: 'P2',
+      partyType: PartyType.ORG,
+      partyRole: 'claimant',
+      partyName: 'DWP',
+      unavailabilityRanges: [{
+        unavailableFromDate: '2021-12-20T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY
+      }],
+      individualDetails: {
+        title: null,
+        firstName: 'DWP',
+        lastName: null,
+        preferredHearingChannel: 'byVideo',
+        reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
+        interpreterLanguage: null
+      },
+      organisationDetails: {
+        name: 'DWP',
+        organisationType: 'GOV',
+        cftOrganisationID: 'O100000'
+      }
+    }];
+
+    // Act
+    const result = component.combinePartiesWithIndOrOrg(partyDetails);
+
+    // Assert
+    expect(result.length).toEqual(2);
+    const transformedPartyDetails = _.cloneDeep(partyDetails);
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
+      'RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'
+    ];
+    transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
+    expect(result).toEqual(transformedPartyDetails);
+  });
+
+  it('should dispatch InitializeHearingRequest action', () => {
+    // Arrange
+    spyOn(component.hearingStore, 'dispatch');
+
+    // Act
+    component.initializeHearingRequestFromHearingValues();
+
+    // Assert
+    expect(component.hearingStore.dispatch).toHaveBeenCalled();
   });
 
   afterEach(() => {
     fixture.destroy();
+  });
+
+  it('should check data for mismatched Party Ids, and display errors if found', () => {
+    component.hearingCondition = {
+      mode: 'create'
+    };
+    const serviceHearingValuesModel: ServiceHearingValuesModel = {
+      hmctsServiceID: 'BBA3',
+      hmctsInternalCaseName: 'Jane vs DWP',
+      publicCaseName: 'Jane vs DWP',
+      autoListFlag: false,
+      hearingType: 'Final',
+      hearingChannels: [],
+      caseCategories: [
+        {
+          categoryType: CategoryType.CaseType,
+          categoryValue: 'BBA3-002'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002CC',
+          categoryParent: 'BBA3-002'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002GC',
+          categoryParent: 'BBA3-002'
+        }, {
+          categoryType: CategoryType.CaseSubType,
+          categoryValue: 'BBA3-002RC',
+          categoryParent: 'BBA3-002'
+        }
+      ],
+      caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
+      caserestrictedFlag: false,
+      externalCaseReference: '',
+      caseManagementLocationCode: '196538',
+      caseSLAStartDate: '2021-05-05T09:00:00.000Z',
+      hearingWindow: {
+        dateRangeStart: '2022-11-23T09:00:00.000Z',
+        dateRangeEnd: '2022-11-30T09:00:00.000Z',
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+      },
+      duration: 45,
+      hearingPriorityType: 'standard',
+      numberOfPhysicalAttendees: 2,
+      hearingInWelshFlag: false,
+      hearingLocations: [{
+        locationId: '196538',
+        locationType: HMCLocationType.COURT
+      },
+      {
+        locationId: '234850',
+        locationType: HMCLocationType.COURT
+      }
+      ],
+      caseAdditionalSecurityFlag: false,
+      facilitiesRequired: [],
+      listingComments: '',
+      hearingRequester: '',
+      privateHearingRequiredFlag: false,
+      caseInterpreterRequiredFlag: false,
+      leadJudgeContractType: '',
+      judiciary: {
+        roleType: [
+          ''
+        ],
+        authorisationTypes: [
+          ''
+        ],
+        authorisationSubType: [
+          ''
+        ],
+        panelComposition: [
+          {
+            memberType: '',
+            count: 1
+          }
+        ],
+        judiciaryPreferences: [
+          {
+            memberID: 'p1000000',
+            memberType: MemberType.JUDGE,
+            requirementType: RequirementType.EXCLUDE
+          }
+        ],
+        judiciarySpecialisms: [
+          ''
+        ]
+      },
+      hearingIsLinkedFlag: false,
+      panelRequirements: {
+        roleType: [
+          'tj',
+          'dtj',
+          'rtj'
+        ],
+        panelPreferences: [],
+        panelSpecialisms: [
+          'BBA3-DQPM',
+          'BBA3-MQPM2-003',
+          'BBA3-MQPM2-004',
+          'BBA3-FQPM',
+          'BBA3-RMM'
+        ]
+      },
+      parties: [
+        {
+          partyID: 'diff-party-id-1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          partyName: 'Jane Smith',
+          individualDetails: {
+            title: 'Mrs',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'inPerson',
+            interpreterLanguage: 'POR',
+            reasonableAdjustments: [
+              'RA0042',
+              'RA0053',
+              'RA0013',
+              'RA0016',
+              'RA0042',
+              'PF0015'
+            ]
+          },
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2021-12-10T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY
+            }
+          ]
+        },
+        {
+          partyID: 'P2',
+          partyType: PartyType.ORG,
+          partyRole: 'claimant',
+          partyName: 'DWP',
+          individualDetails: {
+            title: null,
+            firstName: 'DWP',
+            lastName: null,
+            preferredHearingChannel: 'inPerson',
+            interpreterLanguage: null,
+            reasonableAdjustments: [
+              'RA0005'
+            ]
+          },
+          organisationDetails: {
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000'
+          },
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2021-12-20T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY
+            }
+          ]
+        }],
+      caseFlags: {
+        flags: [
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'RA0008',
+            flagId: 'RA0042',
+            flagDescription: 'Sign language interpreter required',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'RA0032',
+            flagId: 'RA0053',
+            flagDescription: 'Hearing loop required',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'RA0002',
+            flagId: 'RA0013',
+            flagDescription: 'Larger font size',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'RA0003',
+            flagId: 'RA0016',
+            flagDescription: 'Reading documents for customer',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'RA0008',
+            flagId: 'RA0042',
+            flagDescription: 'Sign Language Interpreter',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'PF0001',
+            flagId: 'PF0015',
+            flagDescription: 'Language Interpreter',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P1',
+            partyName: 'Jane Smith',
+            flagParentId: 'PF0001',
+            flagId: 'PF0002',
+            flagDescription: 'Vulnerable user',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P2',
+            partyName: 'DWP',
+            flagParentId: 'RA0001',
+            flagId: 'RA0005',
+            flagDescription: 'Physical access and facilities',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P2',
+            partyName: 'DWP',
+            flagParentId: 'PF0001',
+            flagId: 'PF0011',
+            flagDescription: 'Banning order',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P2',
+            partyName: 'Jane Smith vs DWP',
+            flagParentId: 'CF0001',
+            flagId: 'CF0002',
+            flagDescription: 'Complex Case',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P2',
+            partyName: 'Jane Smith vs DWP',
+            flagParentId: 'CF0001',
+            flagId: 'CF0006',
+            flagDescription: 'Potential fraud',
+            flagStatus: 'ACTIVE'
+          },
+          {
+            partyId: 'P2',
+            partyName: 'Jane Smith vs DWP',
+            flagParentId: 'CF0001',
+            flagId: 'CF0007',
+            flagDescription: 'Urgent flag',
+            flagStatus: 'ACTIVE'
+          }
+        ],
+        flagAmendURL: '/'
+      },
+      screenFlow: [
+        {
+          screenName: 'hearing-requirements',
+          navigation: [
+            {
+              resultValue: 'hearing-facilities'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-facilities',
+          navigation: [
+            {
+              resultValue: 'hearing-stage'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-stage',
+          navigation: [
+            {
+              resultValue: 'hearing-attendance'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-attendance',
+          navigation: [
+            {
+              resultValue: 'hearing-venue'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-venue',
+          conditionKey: 'regionId',
+          navigation: [
+            {
+              conditionOperator: 'INCLUDE',
+              conditionValue: '7',
+              resultValue: 'hearing-welsh'
+            },
+            {
+              conditionOperator: 'NOT INCLUDE',
+              conditionValue: '7',
+              resultValue: 'hearing-judge'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-welsh',
+          navigation: [
+            {
+              resultValue: 'hearing-judge'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-judge',
+          navigation: [
+            {
+              resultValue: 'hearing-panel'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-panel',
+          navigation: [
+            {
+              resultValue: 'hearing-timing'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-timing',
+          navigation: [
+            {
+              resultValue: 'hearing-additional-instructions'
+            }
+          ]
+        },
+        {
+          screenName: 'hearing-additional-instructions',
+          navigation: [
+            {
+              resultValue: 'hearing-create-edit-summary'
+            }
+          ]
+        }
+      ],
+      vocabulary: [
+        {
+          word1: ''
+        }
+      ]
+    };
+    component.serviceHearingValuesModel = serviceHearingValuesModel;
+    component.ngOnInit();
+    expect(component.showMismatchErrorMessage).toBeTruthy();
+    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: 'The Party IDs for this request appear mismatched, please reload and start the request again.' });
   });
 });

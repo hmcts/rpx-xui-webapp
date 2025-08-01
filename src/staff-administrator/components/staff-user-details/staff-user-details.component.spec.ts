@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -16,6 +16,7 @@ import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staf
 import { StaffDataAccessService } from '../../services/staff-data-access/staff-data-access.service';
 import { StaffStatusComponent } from './staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './staff-user-details.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: ''
@@ -35,7 +36,7 @@ describe('StaffUserDetailsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
-      'mockStaffDataAccessService', ['updateUser']
+      'mockStaffDataAccessService', ['updateUser', 'fetchSingleUserById']
     );
 
     mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
@@ -47,6 +48,7 @@ describe('StaffUserDetailsComponent', () => {
     );
 
     testStaffUserData = {
+      case_worker_id: '123',
       email_id: 'email@test.hmcts',
       first_name: 'Kevin',
       last_name: 'Silver',
@@ -92,15 +94,13 @@ describe('StaffUserDetailsComponent', () => {
         StaffStatusComponent,
         StubComponent
       ],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([
-          { path: 'service-down', component: StubComponent },
-          { path: 'staff/user-details/:id/update', component: StubComponent },
-          { path: 'staff/user-details/:id/copy', component: StubComponent },
-          { path: 'staff/add-user', component: StubComponent }
-        ])
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [RouterTestingModule.withRoutes([
+        { path: 'service-down', component: StubComponent },
+        { path: 'staff/user-details/:id/update', component: StubComponent },
+        { path: 'staff/user-details/:id/copy', component: StubComponent },
+        { path: 'staff/add-user', component: StubComponent }
+      ])],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         {
@@ -172,9 +172,10 @@ describe('StaffUserDetailsComponent', () => {
           }
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
-        { provide: InfoMessageCommService, useValue: mockMessageService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        { provide: InfoMessageCommService, useValue: mockMessageService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));
@@ -220,6 +221,10 @@ describe('StaffUserDetailsComponent', () => {
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
     expect(component.userDetails.suspended).toBe(false);
     mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+    const suspendedStaffUser = testStaffUserData;
+    suspendedStaffUser.up_idam_status = StaffUserIDAMStatus.SUSPENDED;
+    suspendedStaffUser.suspended = true;
+    mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(suspendedStaffUser)));
     component.updateUserStatus();
 
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
@@ -243,7 +248,7 @@ describe('StaffUserDetailsComponent', () => {
   it('should call onCopyUser when clicking copy primary button for suspended user', fakeAsync(() => {
     spyOn(component, 'onCopyUser').and.callThrough();
     spyOn(router, 'navigateByUrl').and.callThrough();
-    component.userDetails.suspended = true;
+    component.userDetails.up_idam_status = StaffUserIDAMStatus.SUSPENDED;
     fixture.detectChanges();
     const primaryActionButton = fixture.debugElement.query(By.css('#primaryActionButton'));
     primaryActionButton.triggerEventHandler('click', null);
@@ -294,25 +299,18 @@ describe('StaffUserDetailsComponent', () => {
     );
   });
 
-  // it('should have a disabled button if suspended is true', () => {
-  //   const restoreOrSuspendedButton = fixture.debugElement.query(By.css('#user-suspended-restore-button'));
-  //   expect(component.userDetails.suspended).toBe(false);
-  //   expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toBeNull();
-  //   component.userDetails.suspended = true;
-  //   fixture.detectChanges();
-  //   expect(restoreOrSuspendedButton.nativeElement.getAttribute('disabled')).toEqual('');
-  // });
-
-  it('should not make a api call if user is suspended when calling updateUserStatus', () => {
+  it('should make an api call if user is suspended when calling updateUserStatus', () => {
     mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+    mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
     component.userDetails.suspended = true;
     component.updateUserStatus();
-    expect(mockStaffDataAccessService.updateUser).not.toHaveBeenCalled();
+    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
   });
 
   describe('resendInvite', () => {
     it('Should show success message on sending activation email', () => {
       mockStaffDataAccessService.updateUser.and.returnValue(of({ case_worker_id: '123' }));
+      mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
       component.resendInvite();
       fixture.detectChanges();
       const staffUser = new StaffUser();
@@ -327,6 +325,7 @@ describe('StaffUserDetailsComponent', () => {
 
     it('should show error message on failure in sending activation emails', () => {
       mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 500 }));
+      mockStaffDataAccessService.fetchSingleUserById.and.returnValue(of(StaffUser.from(testStaffUserData)));
       component.resendInvite();
       fixture.detectChanges();
       const staffUser = new StaffUser();

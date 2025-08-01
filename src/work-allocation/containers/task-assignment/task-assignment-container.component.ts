@@ -1,17 +1,12 @@
-import { Location as AngularLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
-import { CheckReleaseVersionService } from 'src/work-allocation/services/check-release-version.service';
 
-import { AppUtils } from '../../../app/app-utils';
-import { ErrorMessage, UserInfo, UserRole } from '../../../app/models';
-import { RoleCategory } from '../../../role-access/models';
+import { ErrorMessage, UserInfo } from '../../../app/models';
 import { ConfigConstants } from '../../components/constants';
-import { CONFIG_CONSTANTS_NOT_RELEASE4 } from '../../components/constants/config.constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
 import { Caseworker, Location } from '../../models/dtos';
@@ -52,21 +47,14 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly angularLocation: AngularLocation,
-    private readonly sessionStorageService: SessionStorageService,
-    private checkReleaseVersionService: CheckReleaseVersionService
+    private readonly sessionStorageService: SessionStorageService
   ) {}
 
   public get fields(): FieldConfig[] {
-    let fields = [];
-    if (this.showAssigneeColumn) {
-      fields = (this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps);
-    } else {
-      this.checkReleaseVersionService.isRelease4().subscribe((isRelease4) => {
-        fields = (isRelease4 ? ConfigConstants.AllWorkTasksForLegalOps : CONFIG_CONSTANTS_NOT_RELEASE4.AllWorkTasksForLegalOps);
-      });
-    }
-    return fields;
+    return this.showAssigneeColumn ?
+      (this.isJudicial ?
+        ConfigConstants.TaskActionsWithAssigneeForJudicial :ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
+      ConfigConstants.AllWorkTasksForLegalOps;
   }
 
   private get returnUrl(): string {
@@ -109,7 +97,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+      // EXUI-2907 - Role category is used instead of roles
+      return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
     return false;
   }
@@ -153,7 +142,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     if (role === RoleCategory.JUDICIAL) {
       return PersonRole.JUDICIAL;
     } else if (role === RoleCategory.LEGAL_OPERATIONS) {
-      return PersonRole.CASEWORKER;
+      return PersonRole.LEGAL_OPERATIONS;
     } else if (role === RoleCategory.ADMIN) {
       return PersonRole.ADMIN;
     }

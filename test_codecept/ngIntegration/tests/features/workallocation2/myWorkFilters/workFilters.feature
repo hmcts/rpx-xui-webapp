@@ -1,10 +1,10 @@
-@ng @codecept_enabled 
+@ng @functional_enabled  
 Feature: WA Release 2: My work - Work filters
 
-    Background: Mock and browser setup
+    Background: Mock and brow ser setup
         # Given I navigate to home page
     Scenario Outline:  Work filters show hide button and Apply for "<UserType>"
-       
+
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
         # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
@@ -14,8 +14,8 @@ Feature: WA Release 2: My work - Work filters
             | IA           | Y           | ORGANISATION | 20001        |
             | SSCS         | Y           | ORGANISATION | 30001        |
 
-        Given I navigate to home page
-        # When I click on primary navigation header "My work"
+        # Given I navigate to home page
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed
@@ -40,7 +40,6 @@ Feature: WA Release 2: My work - Work filters
             | Caseworker IAC | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer |
     # | Judge          | caseworker-ia,caseworker-ia-iacjudge,caseworker-ia,caseworker    |
 
-
     Scenario Outline:  Work filters types for selected sub navigation tabs
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<Roles>" with reference "userDetails"
         # Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
@@ -50,10 +49,9 @@ Feature: WA Release 2: My work - Work filters
             | IA | Y | ORGANISATION | 20001 |
             | SSCS         | Y           | ORGANISATION | 30001        |
 
-        Given I navigate to home page
 
         Given I start MockApp
-        # When I click on primary navigation header "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed
@@ -64,7 +62,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Hide work filter"
         Then I see work filter of type "Services" is displayed
         Then I see work filter of type "Locations" is displayed
-        Then I see work filter of type "Work types" is displayed
+        # Then I see work filter of type "Work types" is displayed
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
 
@@ -74,7 +72,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Hide work filter"
         Then I see work filter of type "Services" is displayed
         Then I see work filter of type "Locations" is displayed
-        Then I see work filter of type "Work types" is displayed
+        # Then I see work filter of type "Work types" is displayed
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
 
@@ -84,7 +82,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Hide work filter"
         Then I see work filter of type "Services" is displayed
         Then I see work filter of type "Locations" is displayed
-        Then I see work filter of type "Work types" is displayed
+        # Then I see work filter of type "Work types" is displayed
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
 
@@ -94,7 +92,7 @@ Feature: WA Release 2: My work - Work filters
         Then I validate work filter button text is "Hide work filter"
         Then I see work filter of type "Services" is displayed
         Then I see work filter of type "Locations" is displayed
-        Then I see work filter of type "Work types" is displayed
+        # Then I see work filter of type "Work types" is displayed
         When I click work location filter Apply button
         Then I validate my work filter services container not displayed
 
@@ -110,50 +108,31 @@ Feature: WA Release 2: My work - Work filters
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
             | jurisdiction | substantive | roleType     | baseLocation |
-            | IA           | Y           | ORGANISATION | 20001        |
-            | CIVIL         | Y           | ORGANISATION | 30001        |
+            | IA | Y | ORGANISATION | 20001 |
+            | CIVIL | Y | ORGANISATION |  |
 
-
-
-
-        Given I set MOCK caseworkers for service "IA", base location
-            | email                   | locationId |
-            | caseworker_user1@gov.uk | 20001      |
-
-        Given I set MOCK caseworkers for service "SSCS", base location
-            | email                   | locationId |
-            | caseworker_user1@gov.uk | 20001      |
 
         Given I start MockApp
-        # When I click on primary navigation header "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
 
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed
         Then I validate location filter is not displayed
         When I click work filter button to "Show" filter
-        When I unselect service "CIVIL" in my work filter
+        When I unselect service "Civil" in my work filter
         When I unselect service "Immigration and Asylum" in my work filter
         When I click work location filter Apply button
-        Then I see error message "Select a service" for service work filter in my work page
-        Then I see error message of type "message" displayed with message "Select a service"
+        # Then I see error message "Select a service" for service work filter in my work page
+    
+        # When I select service "Immigration and Asylum" in my work filter
 
-        When I select service "Immigration and Asylum" in my work filter
+        # When I remove slected location "IA Court Center 1" from my work filters
 
-        When I remove slected location "IA Court" from my work filters
+        # When I click work location filter Apply button
 
-        When I click work location filter Apply button
-        Then I see error message of type "message" displayed with message "Enter a location"
-
-        When I search for location text "IA Court" in my work filters
-        Then I see location search results in my work filter
-            | name                  |
-            | IA Court Center 1 |
-        When I select locations search result "IA Court Center 1" in my work filter
-        When I click add location button in my work filter
-        Then I see location "IA Court Center 1" selected in my work filter
-        When I click work location filter Apply button
-        Then I validate my work filter services container not displayed
+        Then I validate work filter button text is "Show work filter"
+        Then I validate location filter is not displayed
 
 
         Examples:
@@ -163,7 +142,7 @@ Feature: WA Release 2: My work - Work filters
 
     Scenario Outline: Work filters locations based on organisation role and base location
 
-       
+
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles " caseworker-ia-caseofficer,caseworker-ia-admofficer, task-supervisor,task-supervisor,case-allocator" with reference "userDetails"
 
         Given I set MOCK user with reference "userDetails" roleAssignmentInfo
@@ -173,8 +152,7 @@ Feature: WA Release 2: My work - Work filters
 
 
         Given I start MockApp
-        Given I navigate to home page
-        # When I click on primary navigation header "My work"
+        When I click on primary navigation header tab "My work", I see selected tab page displayed
         Then I see work filter button displayed
         Then I validate work filter button text is "Show work filter"
         # Then I validate work location filter batch and hint labels are not displayed

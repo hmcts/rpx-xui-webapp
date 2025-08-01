@@ -1,7 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import {
+  GovUkErrorMessageComponent,
+  GovUkFieldsetComponent,
+  GovUkLabelComponent,
+  RoleCategory
+} from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services';
@@ -10,19 +16,26 @@ import { SpecificAccessDurationComponent } from './specific-access-duration.comp
 describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;
   let fixture: ComponentFixture<SpecificAccessDurationComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-        ExuiCommonLibModule,
         FormsModule,
         ReactiveFormsModule,
         StoreModule.forRoot({})
       ],
-      declarations: [SpecificAccessDurationComponent],
+      declarations: [
+        SpecificAccessDurationComponent,
+        GovUkFieldsetComponent,
+        GovUkErrorMessageComponent,
+        GovUkLabelComponent
+      ],
       providers: [
         FormBuilder,
-        { provide: DurationHelperService, useClass: DurationHelperService }
+        { provide: DurationHelperService, useClass: DurationHelperService },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
       ]
     });
   }));
@@ -36,9 +49,6 @@ describe('SpecificAccessDurationComponent', () => {
   describe('setFormControlRefs', () => {
     it('should assign form control objects to component properties as expected', () => {
       const expectedType = 'object';
-      expect(typeof component.startDateDayCtrl).toEqual(expectedType);
-      expect(typeof component.startDateMonthCtrl).toEqual(expectedType);
-      expect(typeof component.startDateYearCtrl).toEqual(expectedType);
       expect(typeof component.endDateDayCtrl).toEqual(expectedType);
       expect(typeof component.endDateMonthCtrl).toEqual(expectedType);
       expect(typeof component.endDateYearCtrl).toEqual(expectedType);
@@ -93,7 +103,7 @@ describe('SpecificAccessDurationComponent', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
@@ -134,7 +144,7 @@ describe('SpecificAccessDurationComponent', () => {
         taskId: 'd3f939d2-d4f3-11ec-8d51-b6ad61ebbb09',
         requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
         jurisdiction: 'IA',
-        roleCategory: 'LEGAL_OPERATIONS',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-ops',
         person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         specificAccessFormData: {
@@ -150,12 +160,9 @@ describe('SpecificAccessDurationComponent', () => {
         }
       };
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
       component.formGroup = new FormGroup({});
 
       component.selectSpecificAccessDuration(specificAccessState);
@@ -216,102 +223,65 @@ describe('SpecificAccessDurationComponent', () => {
 
     it('should return a Period object for ANOTHER_PERIOD duration type', () => {
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
-      date = new Date(2025, 6, 7);
+      date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
-      date = new Date(2025, 6, 8);
+      date = new Date(2035, 6, 8);
       date.setUTCHours(23, 59, 59, 999);
       expect(period.endDate).toEqual(date);
     });
 
     it('should return a Period object for ANOTHER_PERIOD duration type for the same start and end date', () => {
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(7);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
       expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
-      date = new Date(2025, 6, 7);
+      date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
-      date = new Date(2025, 6, 7);
+      date = new Date(2035, 6, 7);
       date.setUTCHours(23, 59, 59, 999);
       expect(period.endDate).toEqual(date);
     });
 
     it('should return control values when getRawData called', () => {
       // fake form group and form control values
-      component.startDateDayCtrl = new FormControl(7);
-      component.startDateMonthCtrl = new FormControl(7);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(8);
       component.endDateMonthCtrl = new FormControl(7);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.formGroup = new FormGroup({});
 
       const period = component.getRawData();
       expect(period.endDate.day).toEqual(8);
       expect(period.endDate.month).toEqual(7);
-      expect(period.endDate.year).toEqual(2025);
-      expect(period.startDate.day).toEqual(7);
-      expect(period.startDate.month).toEqual(7);
-      expect(period.startDate.year).toEqual(2025);
-      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      expect(period.endDate.year).toEqual(2035);
+      expect(period.hasOwnProperty('endDate')).toEqual(true);
     });
 
     it('should display invalid date messages', () => {
-      component.startDateDayCtrl = new FormControl(99);
-      component.startDateMonthCtrl = new FormControl(99);
-      component.startDateYearCtrl = new FormControl(2025);
-
       component.endDateDayCtrl = new FormControl(99);
       component.endDateMonthCtrl = new FormControl(99);
-      component.endDateYearCtrl = new FormControl(2025);
+      component.endDateYearCtrl = new FormControl(2035);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid Start date'] });
       expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['Invalid End date'] });
     });
 
-    it('should display start date in past error message', () => {
-      component.startDateDayCtrl = new FormControl(1);
-      component.startDateMonthCtrl = new FormControl(1);
-      component.startDateYearCtrl = new FormControl(2021);
-
-      component.endDateDayCtrl = new FormControl(2);
-      component.endDateMonthCtrl = new FormControl(1);
-      component.endDateYearCtrl = new FormControl(2021);
-
-      component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.startDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access start date must not be in the past'] });
-    });
-
     it('should display end date must be after start date message', () => {
-      component.startDateDayCtrl = new FormControl(2);
-      component.startDateMonthCtrl = new FormControl(1);
-      component.startDateYearCtrl = new FormControl(2021);
-
       component.endDateDayCtrl = new FormControl(1);
       component.endDateMonthCtrl = new FormControl(1);
       component.endDateYearCtrl = new FormControl(2021);

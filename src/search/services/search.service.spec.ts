@@ -1,9 +1,10 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { GlobalSearchService } from '../../../api/interfaces/globalSearchService';
+import { HMCTSServiceDetails } from '../../app/models';
 import { SearchStatePersistenceKey } from '../enums';
 import { SearchParameters, SearchRequest, SearchResult } from '../models';
 import { SearchService } from './search.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Search Service', () => {
   let service: SearchService;
@@ -21,11 +22,11 @@ describe('Search Service', () => {
       }
     };
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
+      imports: [],
       providers: [
-        SearchService
+        SearchService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
     service = TestBed.inject(SearchService);
@@ -42,7 +43,7 @@ describe('Search Service', () => {
   });
 
   it('should get global search services', () => {
-    const dummyResponse: GlobalSearchService[] = [
+    const dummyResponse: HMCTSServiceDetails[] = [
       { serviceId: 'TEST', serviceName: 'Test service' }
     ];
     service.getServices().subscribe((response) => {

@@ -1,14 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Subscription, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserDetails } from '../../../../app/models';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
-import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, RoleCategory, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import { AllocateRoleService } from '../../../services';
@@ -74,7 +74,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
       );
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
-        this.caseworkerDataService.getCaseworkersForServices(services).subscribe(
+        this.caseworkerDataService.getUsersFromServices(services).subscribe(
           (caseworkers) => {
             const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.specificAccessStateData.actorId);
             if (caseworker) {

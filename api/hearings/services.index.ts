@@ -13,6 +13,7 @@ import {
   ServiceLinkedCasesModel
 } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
+import { trackTrace } from '../lib/appInsights';
 
 const logger: JUILogger = log4jui.getLogger('hearing-service-api');
 
@@ -25,19 +26,44 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceHearingValues`;
   try {
-    const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req);
-    let dataByDefault = data;
-    // If service don't supply the screenFlow pre-set the default screen flow from ExUI
-    if (!data.screenFlow) {
-      dataByDefault = {
-        ...data,
-        screenFlow: DEFAULT_SCREEN_FLOW
-      };
+    const serviceResponse = await sendPost(markupPath, reqBody, req, next);
+    if (serviceResponse) {
+      const { status, data }: { status: number, data: ServiceHearingValuesModel } = serviceResponse;
+      let dataByDefault = mapDataByDefault(data);
+      // If service don't supply the screenFlow pre-set the default screen flow from ExUI
+      if (!data.screenFlow) {
+        dataByDefault = {
+          ...data,
+          screenFlow: DEFAULT_SCREEN_FLOW
+        };
+      }
+      res.status(status).send(dataByDefault);
     }
-    res.status(status).send(dataByDefault);
   } catch (error) {
+    trackTrace('Error calling serviceHearingValues', error);
     next(error);
   }
+}
+
+export function mapDataByDefault(data: ServiceHearingValuesModel): ServiceHearingValuesModel {
+  // There is an inconsistency with the PartyFlagsModel data provided by the services
+  // i.e., PrL provides partyId and CIVIL provides partyID
+  // Resolving this to copy over partyID into partyId
+  if (data?.caseFlags?.flags?.length > 0) {
+    return {
+      ...data,
+      caseFlags: {
+        ...data.caseFlags,
+        flags: data.caseFlags.flags.map((flag) => (
+          {
+            ...flag,
+            partyId: flag.partyID ? flag.partyID : flag.partyId
+          }
+        ))
+      }
+    };
+  }
+  return data;
 }
 
 /**
@@ -49,7 +75,7 @@ export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -84,7 +110,7 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req);
+    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
     const currentCase: ServiceLinkedCasesModel = {
       caseReference: reqBody.caseReference,
       caseName: reqBody.caseName,
@@ -112,7 +138,7 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
   }
 }
 
-function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {
+export function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {
   const aggregateResult = [];
   allResults.forEach((result) => {
     const { status, value }: {status: string, value: any} = result;
@@ -134,7 +160,7 @@ function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): 
   return aggregateResult;
 }
 
-function getServicePath(jurisdictionId): string {
+export function getServicePath(jurisdictionId): string {
   if (isJurisdictionSupported(jurisdictionId)) {
     const configPath = `services.hearings.${jurisdictionId.toLowerCase()}.serviceApi`;
     return getConfigValue(configPath);
@@ -143,7 +169,7 @@ function getServicePath(jurisdictionId): string {
   return '';
 }
 
-function isJurisdictionSupported(jurisdictionId): boolean {
+export function isJurisdictionSupported(jurisdictionId): boolean {
   const supportedJurisdictions = getConfigValue(HEARINGS_SUPPORTED_JURISDICTIONS);
   return supportedJurisdictions.includes(jurisdictionId);
 }

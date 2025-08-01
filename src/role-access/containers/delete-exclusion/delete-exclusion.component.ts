@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { RoleCategory } from 'api/roleAccess/models/allocate-role.enum';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { first, mergeMap } from 'rxjs/operators';
@@ -77,7 +77,7 @@ export class DeleteExclusionComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
-      this.caseworkerDataService.getCaseworkersForServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
+      this.caseworkerDataService.getUsersFromServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
         const caseworker = caseworkers.find((givenCaseworker) => givenCaseworker.idamId === this.roleExclusion.actorId);
         this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
         this.answers = [];

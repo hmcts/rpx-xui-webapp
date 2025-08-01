@@ -13,20 +13,26 @@ export const appendTaskIdAsQueryStringToTaskDescription = (task: Task): string =
   // So, instead of modifying the url, we decided that the safest approach is to
   // append task id as a querystring.
 
-  if (task) {
-    const taskDescription = task.description;
-    if (taskDescription && taskDescription.includes(')')) {
-      const markdownList = taskDescription.split(')');
-      let newTaskDescription = '';
-      markdownList.forEach((markdown) => {
-        if (markdown) {
-          const taskIdQueryString = markdown.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
+  if (task?.description?.includes(')')) {
+    const markdownList = task.description.split(')');
+    let newTaskDescription = '';
+    markdownList.forEach((markdown) => {
+      if (markdown) {
+        const taskIdQueryString = markdown.includes('?') ? `&tid=${task.id}` : `?tid=${task.id}`;
+        if (markdown.includes('#')) {
+          const hashText = markdown.substring(markdown.indexOf('#'));
+          const taskDescription = markdown.slice(0, markdown.indexOf('#'));
+          newTaskDescription += `${taskDescription}${taskIdQueryString}${hashText})`;
+        } else if (markdown.includes('/')) {
           newTaskDescription += `${markdown}${taskIdQueryString})`;
+        } else {
+          newTaskDescription += `${markdown})`;
         }
-      });
-      return newTaskDescription;
-    }
+      }
+    });
+    return newTaskDescription;
+  } else if (task?.description) {
+    return task?.description;
   }
-
   return '';
 };

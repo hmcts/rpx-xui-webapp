@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { AppUtils } from '../../../app/app-utils';
-import { AppConstants } from '../../../app/app.constants';
-import { UserInfo, UserRole } from '../../../app/models';
+import { UserInfo } from '../../../app/models';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -28,22 +24,19 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
   templateUrl: 'task-action-container.component.html'
 })
 export class TaskActionContainerComponent implements OnInit {
-  public tasks: any [];
+  public tasks: any[];
   public sortedBy: any;
   public routeData: RouteData;
   protected userDetailsKey: string = 'userDetails';
   public isJudicial: boolean;
-  public isUpdatedTaskPermissions$: Observable<boolean>;
-  public updatedTaskPermission: boolean;
   constructor(
     private readonly taskService: WorkAllocationTaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: AllocateRoleService,
-    private readonly featureToggleService: FeatureToggleService
-  ) {}
+    private readonly roleService: AllocateRoleService
+  ) { }
 
   public get fields(): FieldConfig[] {
     return this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps;
@@ -85,22 +78,18 @@ export class TaskActionContainerComponent implements OnInit {
       this.tasks[0].assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworkers.caseworkers, this.tasks[0].assignee);
       if (!this.tasks[0].assigneeName) {
         this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe((judicialDetails) => {
-          this.tasks[0].assigneeName = judicialDetails[0].known_as;
+          this.tasks[0].assigneeName = judicialDetails[0].full_name;
         });
       }
     }
-
-    this.isUpdatedTaskPermissions$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.updatedTaskPermissionsFeature, null);
-    this.isUpdatedTaskPermissions$.pipe(filter((v) => !!v)).subscribe((value) => {
-      this.updatedTaskPermission = value;
-    });
   }
 
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
-      return AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+      // EXUI-2907 - Role category is used instead of roles
+      return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
     return false;
   }
@@ -116,15 +105,13 @@ export class TaskActionContainerComponent implements OnInit {
         break;
       case TaskActionType.Unassign:
         action = ACTION.UNCLAIM;
-        if (this.updatedTaskPermission) {
-          const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
-          let userId: string;
-          if (userInfoStr) {
-            const userInfo: UserInfo = JSON.parse(userInfoStr);
-            userId = userInfo.id ? userInfo.id : userInfo.uid;
-            if (this.tasks[0].assignee !== userId) {
-              action = ACTION.UNASSIGN;
-            }
+        const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
+        let userId: string;
+        if (userInfoStr) {
+          const userInfo: UserInfo = JSON.parse(userInfoStr);
+          userId = userInfo.id ? userInfo.id : userInfo.uid;
+          if (this.tasks[0].assignee !== userId) {
+            action = ACTION.UNASSIGN;
           }
         }
         break;

@@ -1,20 +1,20 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { UserRole } from '../../../../app/models';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
 import {
   AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  RoleCategory
+  AllocateRoleState
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const firstRoleOptions = [{ optionId: 'lead-judge', optionValue: 'Lead judge' },
   { optionId: 'hearing-judge', optionValue: 'Hearing judge' }];
@@ -35,10 +35,7 @@ describe('ChooseRoleComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseRoleComponent],
-      imports: [
-        HttpClientTestingModule,
-        ReactiveFormsModule
-      ],
+      imports: [ReactiveFormsModule],
       providers: [
         { provide: Store, useValue: mockStore },
         {
@@ -50,7 +47,9 @@ describe('ChooseRoleComponent', () => {
               }
             }
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     })
       .compileComponents();
@@ -66,7 +65,7 @@ describe('ChooseRoleComponent', () => {
 
   it('should correctly navigate on click of continue', () => {
     const navEvent = AllocateRoleNavigationEvent.CONTINUE;
-    component.dispatchEvent(navEvent, RoleCategory.JUDICIAL, UserRole.Judicial);
+    component.dispatchEvent(navEvent);
     expect(mockStore.dispatch).toHaveBeenCalled();
   });
 
@@ -79,42 +78,33 @@ describe('ChooseRoleComponent', () => {
 
   it('should navigationHandler with error', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
-    const userRole: UserRole = UserRole.Judicial;
-    component.radioOptionControl.setValue(null);
-    component.navigationHandler(navEvent, roleCategory, userRole);
+    component.navigationHandler(navEvent);
     expect(component.radioOptionControl.errors).toBeTruthy();
   });
 
   it('should navigationHandler with success', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
-    const userRole: UserRole = UserRole.Judicial;
     component.radioOptionControl.setValue('Lead judge');
     spyOn(component, 'dispatchEvent');
-    component.navigationHandler(navEvent, roleCategory, userRole);
-    expect(component.dispatchEvent).toHaveBeenCalledWith(navEvent, roleCategory, userRole);
+    component.navigationHandler(navEvent);
+    expect(component.dispatchEvent).toHaveBeenCalledWith(navEvent);
   });
 
   it('should dispatchEvent for legal ops assign judicial role', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
-    const userRole: UserRole = UserRole.LegalOps;
     component.radioOptionControl.setValue('Lead judge');
-    component.dispatchEvent(navEvent, roleCategory, userRole);
+    component.dispatchEvent(navEvent);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
 
   it('should dispatchEvent for legal ops user assign legal ops', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
-    const userRole: UserRole = UserRole.LegalOps;
     component.radioOptionControl.setValue('Lead judge');
-    component.dispatchEvent(navEvent, roleCategory, userRole);
+    component.dispatchEvent(navEvent);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
@@ -124,10 +114,8 @@ describe('ChooseRoleComponent', () => {
 
   it('should dispatchEvent for judicial user assign judicial role', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.JUDICIAL;
-    const userRole: UserRole = UserRole.Judicial;
     component.radioOptionControl.setValue('Lead judge');
-    component.dispatchEvent(navEvent, roleCategory, userRole);
+    component.dispatchEvent(navEvent);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
@@ -137,10 +125,8 @@ describe('ChooseRoleComponent', () => {
 
   it('should dispatchEvent for CTSC user assign ctsc role', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.CTSC;
-    const userRole: UserRole = UserRole.CTSC;
     component.radioOptionControl.setValue('Lead judge');
-    component.dispatchEvent(navEvent, roleCategory, userRole);
+    component.dispatchEvent(navEvent);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
@@ -150,27 +136,23 @@ describe('ChooseRoleComponent', () => {
 
   it('should dispatchEvent for CTSC user assign judicial role', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.CTSC;
-    const userRole: UserRole = UserRole.Judicial;
     component.radioOptionControl.setValue('Lead judge');
-    component.dispatchEvent(navEvent, roleCategory, userRole);
+    component.dispatchEvent(navEvent);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
 
   it('should dispatchEvent for judicial user assign legal ops user', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
-    const roleCategory: RoleCategory = RoleCategory.LEGAL_OPERATIONS;
-    const userRole: UserRole = UserRole.Judicial;
     component.radioOptionControl.setValue('Lead judge');
-    component.dispatchEvent(navEvent, roleCategory, userRole);
+    component.dispatchEvent(navEvent);
     fixture.detectChanges();
     expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
       typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.SEARCH_PERSON
+      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
     }));
   });
 

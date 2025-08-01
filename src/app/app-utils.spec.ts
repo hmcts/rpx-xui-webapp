@@ -238,6 +238,11 @@ describe('getUserRole', () => {
     const role = AppUtils.convertDomainToLabel(UserRole.Admin);
     expect(role).toBe('Admin');
   });
+
+  it('should return the CTSC domain from the user list', () => {
+    const role = AppUtils.convertDomainToLabel(UserRole.Ctsc);
+    expect(role).toBe('CTSC');
+  });
 });
 
 describe('setThemeBasedOnUserType', () => {
@@ -263,26 +268,6 @@ describe('setThemeBasedOnUserType', () => {
     expect(theme.appTitle.name).toEqual('Manage cases');
     expect(theme.backgroundColor).toEqual('#202020');
     expect(theme.logo).toEqual('myhmcts');
-  });
-});
-
-describe('getUserType', () => {
-  it('Solicitor', () => {
-    const userRole = { solicitor: ['role1'] };
-    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
-    expect(userType).toEqual('Solicitor');
-  });
-
-  it('Judicial', () => {
-    const userRole = { judicial: ['role1'] };
-    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
-    expect(userType).toEqual('Judicial');
-  });
-
-  it('LegalOps', () => {
-    const userRole = { legalOps: ['role1'] };
-    const userType = AppUtils.getUserType(['role1', 'role3'], userRole);
-    expect(userType).toEqual('LegalOps');
   });
 });
 
@@ -333,7 +318,7 @@ describe('getFilterPersistenceByRoleType', () => {
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);
       USER_2.roleAssignmentInfo[0].bookable = false;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
-      USER_2.userInfo.roleCategory = RoleCategory.CASEWORKER;
+      USER_2.userInfo.roleCategory = RoleCategory.LEGAL_OPERATIONS;
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(false);
     });
   });

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { caseRefVisibilityStates, checkAnswerVisibilityStates, nocErrorVisibilityStates, nocSubmitSuccessStates, qAndAVisibilityStates } from '../../constants';
@@ -8,6 +9,7 @@ import * as fromFeature from '../../store';
 import { NocCaseRefComponent } from '../noc-case-ref/noc-case-ref.component';
 import { NocCheckAndSubmitComponent } from '../noc-check-and-submit/noc-check-and-submit.component';
 import { NocQAndAComponent } from '../noc-q-and-a/noc-q-and-a.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-noc-home',
@@ -38,7 +40,9 @@ export class NocHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromFeature.State>,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly location: Location,
+    private readonly loggerService: LoggerService,
   ) {}
 
   public ngOnInit() {
@@ -63,9 +67,14 @@ export class NocHomeComponent implements OnInit, OnDestroy {
         switch (this.nocNavigationCurrentState) {
           case NocState.START:
           case NocState.CASE_REF_VALIDATION_FAILURE:
-            this.router.navigateByUrl('').then(() => {
-              return;
-            });
+            try {
+              this.location.back();
+            } catch (err) {
+              this.loggerService.error('Error navigating back, trying fallback route.', err);
+              this.router.navigateByUrl('').catch((err) => {
+                this.loggerService.error('Error navigating to \'\' ', err);
+              });
+            }
             break;
           case NocState.QUESTION:
           case NocState.CASE_REF_SUBMISSION_FAILURE:

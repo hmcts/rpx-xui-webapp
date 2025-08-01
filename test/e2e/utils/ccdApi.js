@@ -1,24 +1,24 @@
-var Request = require('../utils/request');
-var BrowserWaits = require('../support/customWaits');
+const Request = require('../utils/request');
+const BrowserWaits = require('../support/customWaits');
 const CucumberReportLogger = require('../support/reportLogger');
 Button = require('../features/pageObjects/webdriver-components/button.js');
 
 class CcdApi {
   constructor() {
-    this.userName = 'lukesuperuserxui@mailnesia.com';
+    this.userName = 'lukesuperuserxui_new@mailnesia.com';
     this.password = 'Monday01';
   }
 
   async getCaseCreationpagesApiRes() {
-    try{
+    try {
       return await BrowserWaits.retryWithActionCallback(async () => {
         await Request.withSession(this.userName, this.password);
-        let reqPath = 'data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false';
+        const reqPath = 'data/internal/case-types/xuiTestCaseType/event-triggers/createCase?ignore-warning=false';
         const response = await Request.get(reqPath, { experimental: true });
         expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
         return response.data;
       });
-    }catch(err){
+    } catch (err){
       CucumberReportLogger.AddMessage('Error occured, will attempt again in 5sec '+err);
       await BrowserWaits.waitForSeconds(5);
       throw new Error(err);
@@ -59,7 +59,7 @@ class CcdApi {
     try {
       return await BrowserWaits.retryWithActionCallback(async () => {
         await Request.withSession(this.userName, this.password);
-        let reqData = { size: 25 };
+        const reqData = { size: 25 };
         const response = await Request.post(reqURL, reqData, { experimental: true });
         expect(response.status, `${reqURL} ccd api faild status code: ${response.status}`).to.eql(200);
         return response.data;
@@ -74,9 +74,9 @@ class CcdApi {
   async getCaseResultsResponse() {
     try {
       return await BrowserWaits.retryWithActionCallback(async () => {
-        let caseId = await this._getCaseId();
+        const caseId = await this._getCaseId();
         await Request.withSession(this.userName, this.password);
-        let reqPath = `data/internal/cases/${caseId}`;
+        const reqPath = `data/internal/cases/${caseId}`;
         console.log('search case URL ::' + reqPath);
         const response = await Request.get(reqPath, { experimental: true });
         expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);

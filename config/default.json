@@ -1,4 +1,4 @@
-{
+  {
   "environment": "production",
   "cookies": {
     "token": "__auth__",
@@ -33,9 +33,9 @@
       "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
     },
     "hearings": {
-      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL,IA",
       "sscs": {
-        "serviceApi": "http://sscs-hearings-api-prod.service.core-compute-prod.internal",
+        "serviceApi": "http://sscs-tribunals-api-prod.service.core-compute-prod.internal",
         "caseTypes": "Benefit"
       },
       "privatelaw": {
@@ -46,7 +46,16 @@
         "serviceApi": "http://civil-service-prod.service.core-compute-prod.internal",
         "caseTypes": "CIVIL"
       },
-      "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal"
+      "ia": {
+        "serviceApi": "http://ia-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "Asylum,Bail"
+      },
+      "employment": {
+        "serviceApi": "http://et-hearings-api-prod.service.core-compute-prod.internal",
+        "caseTypes": "ET_EnglandWales,ET_Scotland,ET_EnglandWales_Multiple,ET_Scotland_Multiple"
+      },
+      "hmcApi": "http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal",
+      "enableHearingDataSourceHeaders": false
     },
     "documents": {
       "api": "http://dm-store-prod.service.core-compute-prod.internal"
@@ -73,6 +82,7 @@
       "idamLoginUrl": "https://hmcts-access.service.gov.uk",
       "indexUrl": "/",
       "oauthCallbackUrl": "oauth2/callback",
+      "serviceOverride": false,
       "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts"
     },
     "location_api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal",
@@ -96,39 +106,31 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
     "payment_return_url": "https://paymentoutcome-web.prod.platform.hmcts.net",
-    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal"
+    "translation": "http://ts-translation-service-prod.service.core-compute-prod.internal",
+    "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal",
+    "lau": {
+      "specificChallengedAccessApi": "http://lau-case-backend-prod.service.core-compute-prod.internal"
+    }
   },
   "protocol": "https",
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW",
+  "caseworkerPageSize": "30000",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
+  "staffSupportedJurisdictions": "ST_CIC,CIVIL,EMPLOYMENT,PRIVATELAW,PUBLICLAW,IA,SSCS,DIVORCE,FR",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
     { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
-    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] }
+    { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
+    { "service": "SSCS", "serviceCodes": ["BBA3"] },
+    { "service": "ST_CIC", "serviceCodes": ["BBA2"] },
+    { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] },
+    { "service": "DIVORCE", "serviceCodes": ["ABA1"] },
+    { "service": "FR", "serviceCodes": ["ABA2"] }
   ],
-  "waSupportedServiceandCaseTypes": {
-    "IA": {
-        "caseTypes": "Asylum",
-        "releaseVersion": "3.5"
-      },
-    "CIVIL": {
-        "caseTypes": "CIVIL,GENERALAPPLICATION",
-        "releaseVersion": "3.5"
-      },
-    "PRIVATELAW": {
-        "caseTypes": "PRIVATELAW,PRLAPPS",
-        "releaseVersion": "3.5"
-      },
-    "PUBLICLAW": {
-       "caseTypes": "PUBLICLAW",
-       "releaseVersion": "3.5"
-      }
-      
-  }, 
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",
@@ -163,60 +165,21 @@
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
-    "helmetEnabled": false,
+    "helmetEnabled": true,
     "termsAndConditionsEnabled": false,
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
-    "updatedTaskPermissionsEnabled": true,
+    "jrdELinksV2Enabled": false,
+    "lauSpecificChallengedEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,
-    "accessManagementEnabled": true
+    "accessManagementEnabled": true,
+    "compressionEnabled": false,
+    "queryIdamServiceOverride": true
   },
   "helmet": {
-    "contentSecurityPolicy": {
-      "directives": {
-        "defaultSrc": ["'self'"],
-        "fontSrc": ["'self'", "https://fonts.gstatic.com", "data:"],
-        "styleSrc": [
-          "'self'",
-          "'unsafe-inline'",
-          "https://fonts.googleapis.com",
-          "https://fonts.gstatic.com",
-          "http://tagmanager.google.com/"
-        ],
-        "scriptSrc": [
-          "'self'",
-          "'unsafe-inline'",
-          "'unsafe-eval'",
-          "*.google-analytics.com",
-          "*.googletagmanager.com",
-          "az416426.vo.msecnd.net"
-        ],
-        "connectSrc": [
-          "'self'",
-          "*.gov.uk",
-          "dc.services.visualstudio.com",
-          "*.launchdarkly.com",
-          "*.google-analytics.com"
-        ],
-        "mediaSrc": ["'self'"],
-        "objectSrc": ["'self'"],
-        "frameAncestors": ["'none'"],
-        "imgSrc": [
-          "'self'",
-          "data:",
-          "https://*.google-analytics.com",
-          "https://*.googletagmanager.com",
-          "https://raw.githubusercontent.com/hmcts/",
-          "http://stats.g.doubleclick.net/",
-          "http://ssl.gstatic.com/",
-          "http://www.gstatic.com/",
-          "https://fonts.gstatic.com"
-        ]
-      }
-    },
     "referrerPolicy": {
       "policy": "origin"
     },

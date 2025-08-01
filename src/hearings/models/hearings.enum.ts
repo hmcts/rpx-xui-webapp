@@ -156,7 +156,7 @@ export enum HearingDateEnum {
   DisplayTime = 'HH:mm',
   DisplayMonth = 'DD MMMM YYYY',
   DefaultFormat = 'DD-MM-YYYY',
-  RequestFailedDateAndTime = 'DD MMMM YYYY HH:MM:SS',
+  RequestFailedDateAndTime = 'DD MMMM YYYY HH:mm:ss',
   DateAndTimeInZoneZ = 'YYYY-MM-DDTHH:mm:ssZ',
   InvalidDate = 'Invalid date'
 }
@@ -183,7 +183,8 @@ export enum HearingJudgeSelectionEnum {
   SelectOneJudgeError = 'Select at least one judge type',
   SelectionError = 'Select the option that applies',
   ExcludeJudge = 'Exclude judge before continue',
-  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included'
+  ExcludeFullNameJudge = 'Enter a full name for a specific judge, or delete the name to stop the judge being included',
+  SameJudgeInIncludeExcludeList = 'You cannot select same judge name in include and exclude list'
 }
 
 export enum HearingLinkedSelectionEnum {
@@ -201,14 +202,11 @@ export enum HearingDatePriorityEnum {
   TotalLengthError = 'Enter a valid length of hearing, it must be between 5 minutes and 6 hours each day',
   PriorityError = 'Select the priority level of the hearing',
   PriorityDateError = 'Select if the hearing needs to take place on a specific date',
-  DateRangeError = 'Enter a valid date range for the hearing to take place on',
-  EitherDateRangeError = 'Enter either earliest hearing date or latest hearing date',
-  WeekendError = 'Hearing date cannot be on the weekend',
-  InValidHearingDateError = 'Enter a valid hearing date',
+  EitherDateRangeError = 'Enter valid earliest and latest hearing dates',
+  InvalidHearingDateError = 'Enter a valid hearing date',
   DatePastError = 'The hearing dates cannot be in the past',
-  WeekDayError = 'Date range must include a weekday',
+  LatestEndDatePastError = 'Latest end date cannot be in the past',
   EarliestHearingDateError = 'The earliest start date must be before the latest end date',
-  NotEnoughDaysInDateRangeError = 'There are not enough days in the date range for the hearing'
 }
 
 export enum HearingStageResultEnum {
@@ -219,6 +217,7 @@ export enum HearingStageResultEnum {
 export enum HearingErrorMessage {
   ENTER_A_VALID_LOCATION = 'Enter a valid location',
   ENTER_A_LOCATION = 'Enter a location',
+  ADD_A_LOCATION = 'Add a location',
 }
 
 export enum HearingDatePriorityConstEnum {
@@ -274,6 +273,7 @@ export enum HearingLinkMessages {
 export enum AnswerSource {
   CASE_NAME,
   CASE_NUMBER,
+  HEARING_ID,
   Type,
   TYPE_FROM_REQUEST,
   STATUS,
@@ -284,6 +284,7 @@ export enum AnswerSource {
   DATE_RESPONSE_SUBMITTED_MULTI_DAY,
   DATE_RESPONSE_RECEIVED,
   CASE_FLAGS,
+  REASONABLE_ADJUSTMENT_FLAGS,
   ROOM_ID,
   ADDITIONAL_SECURITY_REQUIRED,
   ADDITIONAL_FACILITIES_REQUIRED,
@@ -314,21 +315,35 @@ export enum AnswerSource {
   ADDITIONAL_INSTRUCTION,
   REASON_FOR_ACTUAL_CANCELLATION,
   REASON_FOR_REQUEST_CANCELLATION,
-  LINKED_HEARINGS
+  LINKED_HEARINGS,
+  REASONABLE_ADJUSTMENTS,
+  PRIVATE_HEARING_REQUIRED,
+  CASE_RESTRICTION,
+  PUBLIC_CASE_NAME
 }
 
 export enum IsHiddenSource {
   WELSH_LOCATION,
   JUDGE_EXCLUSION,
+  JUDGE_DETAILS_EXCLUSION,
   PANEL_INCLUSION,
   PANEL_EXCLUSION,
   PANEL_DETAILS_EXCLUSION,
   PANEL_ROLES,
+  PANEL_MEMBER_ROLES,
   PAPER_HEARING,
   JUDGE_TYPES,
   JUDGE_NAME,
   LISTED,
   LISTED_HEARING_VIEWER,
+  HEARING_REQUIREMENTS_EXCLUSION,
+  HEARING_FACILITIES_EXCLUSION,
+  HEARING_STAGE_EXCLUSION,
+  HEARING_TIMING_EXCLUSION,
+  HEARING_VENUE_EXCLUSION,
+  LINKED_HEARINGS_EXCLUSION,
+  PARTICIPANT_ATTENDANCE_EXCLUSION,
+  ADDITIONAL_INSTRUCTION_EXCLUSION,
   NOT_LISTED
 }
 
@@ -339,6 +354,15 @@ export enum Mode {
   VIEW_EDIT = 'view-edit',
   LINK_HEARINGS = 'link-hearings',
   MANAGE_HEARINGS = 'manage-hearings',
+}
+
+export enum HearingRequestPageRouteNames {
+  HEARING_CREATE_EDIT_SUMMARY = 'hearing-create-edit-summary',
+  HEARING_VIEW_EDIT_SUMMARY = 'hearing-view-edit-summary',
+  HEARING_VIEW_SUMMARY = 'hearing-view-summary',
+  HEARING_EDIT_SUMMARY = 'hearing-edit-summary',
+  HEARING_CHANGE_REASON = 'hearing-change-reason',
+  HEARING_CONFIRMATION = 'hearing-confirmation'
 }
 
 export enum ControlTypeEnum {
@@ -377,4 +401,19 @@ export enum HearingActualsTimingErrorMessages {
   PAUSE_TIME_BEFORE_RESUME_TIME = 'Pause time must be before resume time',
   PAUSE_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Pause time must be between the hearing start and finish times',
   RESUME_TIME_BETWEEN_START_TIME_AND_FINISH_TIMES = 'Resume time must be between the hearing start and finish times',
+}
+
+export enum HearingScreensEnum {
+  HEARING_REQUIREMENTS = 'hearing-requirements',
+  HEARING_FACILITIES = 'hearing-facilities',
+  HEARING_STAGE = 'hearing-stage',
+  HEARING_ATTENDANCE = 'hearing-attendance',
+  REGION_ID = 'regionId',
+  HEARING_VENUE = 'hearing-venue',
+  HEARING_WELSH = 'hearing-welsh',
+  HEARING_JUDGE = 'hearing-judge',
+  HEARING_TIMING = 'hearing-timing',
+  HEARING_LINK = 'hearing-link',
+  HEARING_PANEL = 'hearing-panel',
+  HEARING_ADDITIONAL_INSTRUCTIONS = 'hearing-additional-instructions'
 }

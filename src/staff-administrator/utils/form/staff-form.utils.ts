@@ -60,7 +60,7 @@ export const buildCheckboxArray = (options: StaffFilterOption[], min: number, ma
   return formArray;
 };
 
-export const getFormValidationErrorMessages = (formGroup: FormGroup): MultipleErrorMessage[] => {
+export const getFormValidationErrorMessages = (formGroup: FormGroup, wrongLocations: string[]): MultipleErrorMessage[] => {
   const errors: MultipleErrorMessage[] = [];
   Object.keys(formGroup.controls).forEach((controlName) => {
     const control = formGroup.controls[controlName];
@@ -75,6 +75,9 @@ export const getFormValidationErrorMessages = (formGroup: FormGroup): MultipleEr
         }
       });
     }
+    if (controlName === 'base_locations' && wrongLocations.length > 0) {
+      errors.push({ name: controlName, error: setLocationErrorMessages(wrongLocations) });
+    }
   });
   return errors;
 };
@@ -86,6 +89,17 @@ export const groupItemsByGroupSize = <T>(items: T[], groupSize: number): T[][] =
     groups.push(group);
   }
   return groups;
+};
+
+export const setLocationErrorMessages = (wrongLocations: string[]): string => {
+  let locationString = wrongLocations[0];
+  for (let i = 1; i < wrongLocations.length; i++) {
+    locationString = locationString + ', ' + wrongLocations[i];
+  }
+  const error = wrongLocations.length === 1 ?
+    `There is a problem. Location ${locationString} is not valid for the services selected` :
+    `There is a problem. Locations ${locationString} are not valid for the services selected`;
+  return error;
 };
 
 export const getServiceNameFromSkillId = (skillId: string, skillGroupOptions: GroupOptions[]): string => {

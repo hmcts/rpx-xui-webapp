@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Person, PersonRole } from '@hmcts/rpx-xui-common-lib';
+import { ActivatedRoute } from '@angular/router';
+import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
@@ -13,7 +14,6 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  RoleCategory,
   SpecificRole
 } from '../../../models';
 import * as fromFeature from '../../../store';
@@ -27,9 +27,9 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public allocateAction = 'Allocate';
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
   @Input() public navEvent: AllocateRoleNavigation;
+  @Input() public existingUsers: string[] = [];
   public domain = PersonRole.JUDICIAL;
   public title: string;
-  public assignedUser: string;
   public userIncluded: boolean = true;
   public boldTitle: string = 'Find the person';
   public formGroup: FormGroup = new FormGroup({});
@@ -40,8 +40,9 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public subscription: Subscription;
   public roleType: SpecificRole;
   public services: string;
+  public assignedUser: string;
 
-  constructor(private readonly store: Store<fromFeature.State>) {}
+  constructor(private readonly store: Store<fromFeature.State>, private route: ActivatedRoute) {}
 
   public ngOnInit(): void {
     this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
@@ -50,7 +51,7 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
     if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
-      this.domain = PersonRole.CASEWORKER;
+      this.domain = PersonRole.LEGAL_OPERATIONS;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {
       this.domain = PersonRole.ADMIN;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.CTSC) {
@@ -61,7 +62,14 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
     this.person = allocateRoleStateData.person;
     // hide user when allocate as user can select allocate to me
     this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
-    this.assignedUser = allocateRoleStateData.personToBeRemoved ? allocateRoleStateData.personToBeRemoved.id : null;
+    // Set assigned user from state data.
+    this.assignedUser = allocateRoleStateData && allocateRoleStateData.personToBeRemoved && allocateRoleStateData.personToBeRemoved.id;
+
+    // Add assigned user to existingUsers array if both are given
+    if (this.existingUsers && this.existingUsers.length > 0 && this.assignedUser) {
+      this.existingUsers.push(this.assignedUser);
+    }
+
     this.roleType = allocateRoleStateData.typeOfRole;
     this.services = allocateRoleStateData.jurisdiction;
   }

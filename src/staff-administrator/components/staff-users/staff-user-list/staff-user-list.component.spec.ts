@@ -1,15 +1,17 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { RpxTranslationConfig, RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { StaffUsersFilterResult } from '../../../models/staff-users-filter-result.model';
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 import { StaffUserListComponent } from './staff-user-list.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('StaffUserListComponent', () => {
   let component: StaffUserListComponent;
@@ -23,17 +25,19 @@ describe('StaffUserListComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [StaffUserListComponent],
-      imports: [
-        HttpClientTestingModule,
-        CdkTableModule,
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [CdkTableModule,
         RouterTestingModule,
         NgxPaginationModule,
-        ExuiCommonLibModule
-      ],
+        ExuiCommonLibModule,
+        RpxTranslationModule.forChild()],
       providers: [
-        { provide: StaffDataFilterService, useValue: mockStaffDataFilterService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        RpxTranslationService,
+        RpxTranslationConfig,
+        { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));

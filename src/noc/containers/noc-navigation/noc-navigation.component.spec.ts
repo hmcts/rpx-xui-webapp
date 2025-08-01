@@ -1,3 +1,4 @@
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -5,6 +6,13 @@ import * as fromRoot from '../../../app/store/reducers';
 import { NocNavigationEvent } from '../../models';
 import * as fromNocStore from '../../store';
 import { NocNavigationComponent } from './noc-navigation.component';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocNavigationComponent', () => {
   let fixture: ComponentFixture<NocNavigationComponent>;
@@ -21,7 +29,8 @@ describe('NocNavigationComponent', () => {
         })
       ],
       declarations: [
-        NocNavigationComponent
+        NocNavigationComponent,
+        RpxTranslateMockPipe
       ]
     }).compileComponents();
 

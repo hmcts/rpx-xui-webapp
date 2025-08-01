@@ -5,7 +5,7 @@
 </p>
 <dl class="govuk-summary-list govuk-summary-list--no-border">
   <!-- Display priority label:  Judges will be able to see only URGENT priority labels; others can see all priority labels (URGENT/HIGH/LOW)-->
-  <div *ngIf="(isRelease4 && (isUserJudicial && isTaskUrgent)) || !isUserJudicial" class="govuk-summary-list__row">
+  <div *ngIf="(isUserJudicial && isTaskUrgent) || !isUserJudicial" class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             <span class="row-padding">Priority</span>
         </dt>
@@ -21,8 +21,8 @@
             <span class="row-padding">{{getDueDateTitle()}}</span>
         </dt>
         <dd class="govuk-summary-list__value">
-            <span *ngIf="isUserJudicial">{{task.created_date | date:'d MMMM yyyy'}}</span>
-            <span *ngIf="!isUserJudicial">{{task.due_date | date:'d MMMM yyyy'}}</span>
+            <span *ngIf="userRoleCategory && userRoleCategory === 'JUDICIAL'">{{task.created_date | date:'d MMMM yyyy'}}</span>
+            <span *ngIf="userRoleCategory && userRoleCategory !== 'JUDICIAL'">{{task.due_date | date:'d MMMM yyyy'}}</span>
         </dd>
     </div>
     <div class="govuk-summary-list__row">

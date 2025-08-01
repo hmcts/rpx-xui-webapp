@@ -6,12 +6,11 @@ import { PactTestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
+import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search', port: 8000 });
-
-const taskPermissions = ['Read', 'Execute', 'Manage', 'Refer', 'Own', ' Cancel'];
 
 describe('Task management api, Search task', () => {
   const RESPONSE_BODY = {
@@ -38,7 +37,9 @@ describe('Task management api, Search task', () => {
         'case_category': somethingLike('refusalOfHumanRights'),
         'case_name': somethingLike('Bob Smith'),
         'warnings': somethingLike(false),
-        'permissions': taskPermissions
+        'permissions': {
+          'values': eachLike('Read')
+        }
       },
       {
         'id': somethingLike('fda422de-b381-43ff-94ea-eea5790188a3'),
@@ -61,7 +62,9 @@ describe('Task management api, Search task', () => {
         'case_category': somethingLike('refusalOfHumanRights'),
         'case_name': somethingLike('John Doe'),
         'warnings': somethingLike(true),
-        'permissions': taskPermissions
+        'permissions': {
+          'values': eachLike('Create')
+        }
       }
     ]
   };
@@ -178,7 +181,8 @@ function assertResponses(dto: any) {
   expect(dto.tasks[0].task_title).to.be.equal('Review the appeal');
   expect(dto.tasks[0].dueDate).to.be.equal('2021-06-30T16:53:10+0100');
   expect(dto.tasks[0].assignee).to.be.equal('10bac6bf-80a7-4c81-b2db-516aba826be6');
-  expect(dto.tasks[0].permissions).to.include.members(taskPermissions);
+  expect(dto.tasks[0].permissions.values[0]).to.be.equal('read');
+  expect(dto.tasks[1].permissions.values[0]).to.be.equal('create');
 
   expect(dto.tasks[0].actions[0].id).to.equal('go');
   expect(dto.tasks[0].actions[0].title).to.equal('Go to task');

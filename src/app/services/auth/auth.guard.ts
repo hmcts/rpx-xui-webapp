@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard {
   constructor(
     public authService: AuthService,
     private readonly sessionStorage: SessionStorageService,
@@ -48,19 +48,18 @@ export class AuthGuard implements CanActivate {
     const currentPathIsRoot = !currentLocationPathName.match(currentPathIsNotEmpty);
 
     const userInfoStr = this.sessionStorage.getItem('userDetails');
-    let isFeePaidJudgeUser = false;
 
-    if (userInfoStr && this.getJSONObject(userInfoStr)) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
-      isFeePaidJudgeUser = userInfo.roles.includes('fee-paid-judge');
-    }
     if (currentPathIsRoot && userInfoStr && this.getJSONObject(userInfoStr)) {
-      const redirectUrl = isFeePaidJudgeUser ? '/booking' : this.sessionStorage.getItem('redirectUrl', true);
+      const redirectUrl = this.sessionStorage.getItem('redirectUrl', true);
       if (!redirectUrl) {
         return;
       }
 
-      this.authService.setWindowLocationHref(redirectUrl);
+      if (window.location.pathname !== redirectUrl) {
+        this.authService.setWindowLocationHref(redirectUrl);
+      } else {
+        return;
+      }
     }
   }
 }

@@ -1,8 +1,7 @@
-import logger from '@pact-foundation/pact-node/src/logger';
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-
+import * as log4jui from '../lib/log4jui';
 import { deleteSpecificAccessRoles, restoreDeletedRole } from '../accessManagement';
 import { sendDelete } from '../common/crudService';
 import { getConfigValue } from '../configuration';
@@ -14,6 +13,9 @@ import { createSpecificAccessDenyRole, deleteSpecificAccessRequestedRole } from 
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { postTaskCompletionForAccess } from '../workAllocation';
+import { logAccessRequest } from '../services/lau';
+
+const logger = log4jui.getLogger('specificAccessOrchastrator');
 
 export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, res, next: NextFunction): Promise<any> {
   let createAmRoleResponse: AxiosResponse;
@@ -56,11 +58,13 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       if (req && req.session && req.session.passport && req.session.passport.user.userinfo) {
         await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       }
+      //do not await. This is a fire and forget call
+      logAccessRequest(req, true);
       return res.status(status).send(data);
     }
   } catch (error) {
     next(error);
-    return res.status(error.status).send(error);
+    return error;
   }
 }
 
@@ -148,6 +152,10 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
     if (!taskResponse || taskResponse.status !== 204) {
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
+
+    //do not await. This is a fire and forget call
+    logAccessRequest(req, false);
+
     return res.send(taskResponse.data).status(taskResponse.status);
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));

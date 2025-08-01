@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
-import { RoleCategory } from '../../../../booking/models';
 import {
   Actions,
   AllocateRoleNavigation,
@@ -95,7 +95,7 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) ||
       allocateRoleStateData.action === Actions.Reallocate) {
       this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
-    } else if (allocateRoleStateData.allocateTo === AllocateTo.RESERVE_TO_ME) {
+    } else if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ME) {
       if (personDetails) {
         this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
       }

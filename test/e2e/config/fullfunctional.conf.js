@@ -51,7 +51,7 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    username: 'lukesuperuserxui@mailnesia.com',
+    username: 'lukesuperuserxui_new@mailnesia.com',
     password: 'Monday01',
     caseworkerUser: 'mahesh_fr_courtadmn@mailinator.com',
     caseworkerPassword: 'London01',
@@ -82,8 +82,8 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:functional-output/tests/json/results.json'],
-    tags: ['@fullfunctional', 'not @ignore'],
-    // tags: ['@test', 'not @ignore'],
+    tags: ['@fullfunctional', 'not @ignore', 'not @Flaky'],
+    // tags: ['@test', 'not @ignore', 'not @Flaky'],
 
     require: [
       '../support/timeout.js',

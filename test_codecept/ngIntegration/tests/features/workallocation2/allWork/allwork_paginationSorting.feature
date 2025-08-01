@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4804 @codecept_enabled
+@ng @known_bug @EUI-4804 @functional_enabled 
 Feature: WA Release 2: All work to pagination sorting (EUI-4804)
         For EUI-4366
         Bug EUI-4804

@@ -1,75 +1,81 @@
 {
-  "/api/*": {
+  "/api": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/auth/*": {
+  "/auth": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/aggregated/*": {
+  "/aggregated": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/am/*": {
+  "/am": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/documents/*": {
+  "/documents": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/hearing-recordings/*": {
+  "/hearing-recordings": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/documentsv2/*": {
+  "/documentsv2": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/workallocation/*": {
+  "/workallocation": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/external/*": {
+  "/external": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/em-anno/*": {
+  "/em-anno": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/icp/*": {
+  "/icp": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/print/*": {
+  "/print": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/payments/*": {
+  "/payments": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/data/*": {
+  "/data": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
   "/socket.io/*": {
+    "target": "http://localhost:3001",
+    "secure": false,
+    "ws": true,
+    "logLevel": "debug"
+  },
+  "/activity/*": {
     "target": "http://localhost:3001",
     "secure": false,
     "ws": true,
@@ -85,37 +91,37 @@
     "secure": false,
     "logLevel": "debug"
   },
-  "/doc-assembly/*": {
+  "/doc-assembly": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/refdata/location/*": {
+  "/refdata/location": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/am/role-assignments/*": {
+  "/am/role-assignments": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/categoriesAndDocuments/*": {
+  "/categoriesAndDocuments": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/documentData/caseref/*": {
+  "/documentData/caseref": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/refdata/commondata/*": {
+  "/refdata/commondata": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"
   },
-  "/getLinkedCases/*": {
+  "/getLinkedCases": {
     "target": "http://localhost:3001",
     "secure": false,
     "logLevel": "debug"

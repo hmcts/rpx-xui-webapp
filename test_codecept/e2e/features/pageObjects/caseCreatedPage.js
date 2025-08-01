@@ -1,9 +1,7 @@
 const BrowserWaits = require('../../../e2e/support/customWaits');
 class CaseCreatedPage {
-
   constructor() {
     this.header = element(by.xpath('//h1'));
-
   }
 
   async getPageHeader(){
@@ -13,7 +11,7 @@ class CaseCreatedPage {
   async amOnPage(){
     return await BrowserWaits.retryWithActionCallback(async () => {
       return this.header.isDisplayed();
-    }); 
+    });
   }
 }
 

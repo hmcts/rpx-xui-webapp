@@ -2,16 +2,17 @@
 Feature: Work access page, feature toggle and route guards
 
     Scenario Outline: Before completing booking ui journey
-        Given I set MOCK with user "<UserIdentifier>" and roles "<Roles>" with reference "userDetails"
-        Given I set Mock user with ref "userDetails", ORGANISATION roles for services "IA"
-            | bookable        | <bookable> |
-            | substantive     | Y          |
-            | baseLocation | 20001      |
+        Given I set MOCK with user "BOOKING_UI-FT-ON" and userInfo with roles "caseworker-ia-iacjudge,caseworker-ia,caseworker,fee-paid-judge" with reference "userDetails"
+         |roleCategory|
+            |JUDICIAL|
+        
+        Given I set MOCK user with reference "userDetails" roleAssignmentInfo
+            | bookable   | isCaseAllocator | substantive | jurisdiction | roleName       | roleCategory | contractType |
+            | <bookable> | true            | N           | CIVIL,IA     | fee-paid-judge | JUDICIAL     | Fee-Paid     |
 
 
         Given I start MockApp
         When I navigate to home page
-        Given I navigate page route "get-help", wait for locator "exui-get-help"
         Given I navigate page route "booking", wait for locator "<expectedLocator>"
 
         Examples:

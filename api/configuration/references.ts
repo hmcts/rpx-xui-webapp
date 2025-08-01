@@ -11,6 +11,8 @@
 export const S2S_SECRET = 'secrets.rpx.mc-s2s-client-secret';
 export const REDIS_CLOUD_URL = 'secrets.rpx.webapp-redis-connection-string';
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-mc';
+export const APP_INSIGHTS_CONNECTION_STRING = 'secrets.rpx.appinsights-connection-string-mc';
+
 export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id';
 
 export const COOKIES_TOKEN = 'cookies.token';
@@ -30,6 +32,7 @@ export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmen
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
 export const SERVICES_ROLE_ASSIGNMENT_API_PATH = 'services.role_assignment.roleApi';
 export const SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH = 'services.role_assignment.roleMappingApi';
+export const SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH = 'services.lau.specificChallengedAccessApi';
 
 export const SERVICES_CASE_CASEWORKER_REF_PATH = 'services.case.caseworkerApi';
 export const SERVICES_CASE_JUDICIALWORKER_REF_PATH = 'services.case.judicialworkerApi';
@@ -40,6 +43,7 @@ export const SERVICES_JUDICIAL_BOOKING_API_PATH = 'services.judicialBookingApi';
 
 export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
 export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
+export const SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS = 'services.hearings.enableHearingDataSourceHeaders';
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';
 export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api';
@@ -55,6 +59,7 @@ export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID';
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl';
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss';
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl';
+export const SERVICES_IDAM_SERVICE_OVERRIDE = 'services.idam.serviceOverride';
 
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
@@ -64,7 +69,6 @@ export const SERVICES_PAYMENTS_URL = 'services.payments';
 export const SERVICES_PAYMENT_RETURN_URL = 'services.payment_return_url';
 
 export const GLOBAL_SEARCH_SERVICES = 'globalSearchServices';
-export const WA_SUPPORTED_SERVICE_CASETYPES = 'waSupportedServiceandCaseTypes';
 
 export const SERVICES_PRD_API_URL = 'services.prd.api';
 export const SERVICES_PRD_LOCATION_API = 'services.prd.locationApi';
@@ -75,6 +79,8 @@ export const SERVICES_REFUNDS_API_URL = 'services.refunds';
 export const SERVICES_NOTIFICATIONS_API_URL = 'services.notifications';
 export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 
+export const SERVICES_TRANSLATION_API_URL = 'services.translation';
+
 export const PROTOCOL = 'protocol';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
@@ -83,9 +89,13 @@ export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
 
+export const CASEWORKER_PAGE_SIZE = 'caseworkerPageSize';
+
 export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
+
+export const STAFF_SUPPORTED_JURISDICTIONS = 'staffSupportedJurisdictions';
 
 export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJurisdictions';
 
@@ -114,9 +124,14 @@ export const FEATURE_REDIS_ENABLED = 'redisEnabled';
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled';
 export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
 export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
+export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
+export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
-export const FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED = 'updatedTaskPermissionsEnabled';
+
+export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
+
+export const FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED = 'lauSpecificChallengedEnabled';
 
 export const HELMET = 'helmet';
 

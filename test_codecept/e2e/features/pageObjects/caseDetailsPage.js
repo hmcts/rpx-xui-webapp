@@ -1,59 +1,68 @@
 
-const { LOG_LEVELS } = require("../../support/constants");
-const BrowserWaits = require("../../support/customWaits");
-const CucumberReporter = require("../../../codeceptCommon/reportLogger");
+const { LOG_LEVELS } = require('../../support/constants');
+const BrowserWaits = require('../../support/customWaits');
+const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
-const MessageBanner = require("./messageBanner");
+const MessageBanner = require('./messageBanner');
 class CaseDetailsPage{
+  constructor(){
+    this.caseDetailsContainer = $('exui-case-details-home');
+    this.tabsContainer = $('mat-tab-header .mat-tab-label-container');
 
-    constructor(){
-        this.caseDetailsContainer = $("exui-case-details-home");
-        this.tabsContainer = $("mat-tab-header .mat-tab-label-container");
-        
-        this.messageBanner = new MessageBanner();
+    this.messageBanner = new MessageBanner();
+  }
+
+  async isDisplayed(){
+    return this.caseDetailsContainer.isPresent();
+  }
+
+  async amOnPage(){
+    try {
+      await BrowserWaits.waitForElement(this.caseDetailsContainer);
+      return true;
+    } catch (err){
+      CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
+      return false;
     }
+  }
 
-    async isDisplayed(){
-        return this.caseDetailsContainer.isPresent();
-    }
+  async waitForTabHeader(){
+    await BrowserWaits.waitForElement(this.tabsContainer);
+  }
 
-    async amOnPage(){
-        try{
-            await BrowserWaits.waitForElement(this.caseDetailsContainer);
-            return true;
-        }catch(err){
-            CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
-            return false;
-        }
-    }
+  async isTabWithLabelPresent(tabLabel){
+    await this.waitForTabHeader();
+    const tabElement = this.getTabElementWithLabel(tabLabel);
+    return await tabElement.isPresent();
+  }
 
-    async waitForTabHeader(){
-        await BrowserWaits.waitForElement(this.tabsContainer);
-    }
+  async isTabWithLabelSelected(tabLabel){
+    await this.waitForTabHeader();
+    const tabElement = this.getTabElementWithLabel(tabLabel);
+    return (await tabElement.getAttribute('class')).includes('mat-tab-label-active');
+  }
 
-    async isTabWithLabelPresent(tabLabel){
-        await this.waitForTabHeader();
-        const tabElement = this.getTabElementWithLabel(tabLabel);
-        return await tabElement.isPresent();
-    }
+  async clickTabWithLabel(tabLabel){
+    await this.waitForTabHeader();
+    const tabElement = this.getTabElementWithLabel(tabLabel);
+    await tabElement.click();
+  }
 
-    async isTabWithLabelSelected(tabLabel){
-        await this.waitForTabHeader();
-        const tabElement = this.getTabElementWithLabel(tabLabel);
-        return (await tabElement.getAttribute('class')).includes('mat-tab-label-active');
-    }
+  getTabElementWithLabel(tabLabel){
+    return element(by.xpath(`//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`));
+  }
 
-    async clickTabWithLabel(tabLabel){
-        await this.waitForTabHeader();
-        const tabElement = this.getTabElementWithLabel(tabLabel);
-        await tabElement.click();
-    }
+  async openLinkedDocument() {
+    const documentLink = $('tr.complex-panel-simple-field ccd-read-document-field a');
+    await BrowserWaits.waitForElement(documentLink);
+    await documentLink.click();
+  }
 
-    getTabElementWithLabel(tabLabel){
-        return element(by.xpath(`//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`));
-    }
-
-
+  async openDummyFile() {
+    const dummyLink = $('#case-viewer-field-read--DocumentUrl a');
+    await BrowserWaits.waitForElement(dummyLink);
+    await dummyLink.click();
+  }
 }
 
 module.exports = new CaseDetailsPage();

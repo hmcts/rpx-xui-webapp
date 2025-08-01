@@ -12,8 +12,7 @@ import {
   specificAccessInformationVisibilityStates,
   specificAccessReviewVisibilityStates
 } from '../../../constants';
-import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
-import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
+import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessNavigation } from '../../../models';
 import * as fromFeature from '../../../store';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
@@ -22,6 +21,7 @@ import {
   SpecificAccessInformationComponent
 } from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
+import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
   selector: 'exui-specific-access-home',
@@ -50,7 +50,6 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   public role: CaseRole;
 
   private specificAccessStateDataSub: Subscription;
-  public specificAccessReviewStateData: SpecificAccessStateData;
   public navigationCurrentState: SpecificAccessState;
   public navEvent: SpecificAccessNavigation;
   public specificAccessReviewVisibilityStates = specificAccessReviewVisibilityStates;
@@ -63,7 +62,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromFeature.State>,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly loggerService: LoggerService
   ) {}
 
   public ngOnInit(): void {
@@ -168,21 +168,19 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
         break;
       }
 
-      case SpecificAccessNavigationEvent.RETURNTOMYTASKS: {
-        this.router.navigateByUrl('/work/my-work/list');
+      case SpecificAccessNavigationEvent.RETURNTOMYTASKS:
+        this.router.navigateByUrl('/work/my-work/list')
+          .catch((err) => this.loggerService.error('Error navigating to /work/my-work/list ', err));
         break;
-      }
-      case SpecificAccessNavigationEvent.RETURNTOTASKSTAB: {
-        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`);
+
+      case SpecificAccessNavigationEvent.RETURNTOTASKSTAB:
+      case SpecificAccessNavigationEvent.CANCEL:
+        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`)
+          .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/caseId/tasks ', err));
         break;
-      }
-      case SpecificAccessNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/tasks`);
-        break;
-      }
-      default: {
+
+      default:
         throw new Error('Invalid specific access navigation event');
-      }
     }
   }
 

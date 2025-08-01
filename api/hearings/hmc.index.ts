@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_HMC_HEARINGS_COMPONENT_API } from '../configuration/references';
-import { EnhancedRequest } from '../lib/models';
+import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS, SERVICES_HMC_HEARINGS_COMPONENT_API, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
@@ -11,8 +11,11 @@ import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel
 } from './models/linkHearings.model';
+import { trackTrace } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
+const logger: JUILogger = log4jui.getLogger('hmc-index');
 
 /**
  * getHearings from case ID
@@ -57,9 +60,14 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
-    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req, next);
+    trackTrace('submitting hearing request');
+    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
+    logger.error('SubmitHearingRequest error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
+    if (error.status >= 400 && error.status < 600) {
+      trackTrace(`SubmitHearingRequest error: (${error.status}) : ${JSON.stringify(error.data)}`);
+    }
     next(error);
   }
 }
@@ -131,9 +139,10 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.params.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
-    const { status }: { status: number } = await handlePost(markupPath, null, req, next);
+    const { status }: { status: number } = await handlePost(markupPath, null, req);
     res.status(status).send(null);
   } catch (error) {
+    logger.error('submitHearingActuals error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
     next(error);
   }
 }
@@ -159,9 +168,10 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
+    logger.error('postLinkedHearingGroup error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
     next(error);
   }
 }
@@ -194,4 +204,13 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
   } catch (error) {
     next(error);
   }
+}
+
+export function injectHearingsHeaders(req: EnhancedRequest, res: Response, next: NextFunction) {
+  if (getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true') {
+    req.headers['Role-Assignment-Url'] = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+    req.headers['Data-Store-Url'] = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
+  }
+
+  next();
 }

@@ -1,7 +1,8 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -11,6 +12,14 @@ import { NocNavigationEvent, NocState } from '../../models';
 import * as fromNocStore from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocHomeComponent } from './noc-home.component';
+import { LoggerService } from '../../../app/services/logger/logger.service';
+
+@Pipe({ name: 'rpxTranslate' })
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
 
 describe('NocHomeComponent', () => {
   let fixture: ComponentFixture<NocHomeComponent>;
@@ -23,6 +32,10 @@ describe('NocHomeComponent', () => {
     'navigateByUrl'
   ]);
 
+  const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -34,14 +47,14 @@ describe('NocHomeComponent', () => {
         NO_ERRORS_SCHEMA
       ],
       declarations: [
-        ...fromContainers.containers
+        ...fromContainers.containers,
+        RpxTranslateMockPipe
       ],
       providers: [
         provideMockStore(),
-        {
-          provide: Router,
-          useValue: routerMock
-        }
+        { provide: Router, useValue: routerMock },
+        { provide: LoggerService, useValue: loggerServiceMock },
+        { provide: Location, useValue: locationMock }
       ]
     }).compileComponents();
 
@@ -80,11 +93,46 @@ describe('NocHomeComponent', () => {
       expect(expected).toBeFalsy();
     });
 
-    it('should navigate to home page when click back button if on start page', () => {
-      routerMock.navigateByUrl.and.returnValue(Promise.resolve(true));
-      component.nocNavigationCurrentState = NocState.START;
+    it('should navigate back on BACK event and START state', () => {
       component.navigationHandler(NocNavigationEvent.BACK);
-      expect(routerMock.navigateByUrl).toHaveBeenCalled();
+      component.nocNavigationCurrentState = NocState.START;
+
+      expect(locationMock.back).toHaveBeenCalled();
+      expect(loggerServiceMock.error).not.toHaveBeenCalled();
+      expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+    });
+
+    it('should navigate to fallback route if Location back fails', () => {
+      component.nocNavigationCurrentState = NocState.START;
+      locationMock.back.and.throwError('Back navigation failed');
+      routerMock.navigateByUrl.and.returnValue(Promise.resolve(true));
+
+      component.navigationHandler(NocNavigationEvent.BACK);
+
+      expect(locationMock.back).toHaveBeenCalled();
+      expect(loggerServiceMock.error).toHaveBeenCalledWith(
+        'Error navigating back, trying fallback route.',
+        jasmine.any(Error)
+      );
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('');
+    });
+
+    it('should log an error if fallback route navigation fails', async () => {
+      component.nocNavigationCurrentState = NocState.START;
+      locationMock.back.and.throwError('Back navigation failed');
+      routerMock.navigateByUrl.and.returnValue(Promise.reject('Navigation failed'));
+
+      await component.navigationHandler(NocNavigationEvent.BACK);
+
+      expect(locationMock.back).toHaveBeenCalled();
+      expect(loggerServiceMock.error).toHaveBeenCalledWith(
+        'Error navigating back, trying fallback route.',
+        jasmine.any(Error)
+      );
+      expect(loggerServiceMock.error).toHaveBeenCalledWith(
+        'Error navigating to \'\' ',
+        'Navigation failed'
+      );
     });
 
     it('should navigate to case ref page when click back button if on question page', () => {

@@ -8,6 +8,8 @@ export class DefaultErrorHandler implements ErrorHandler {
   ) {}
 
   public handleError(error: Error) {
+    console.error('Handling error with DefaultErrorHandler.');
+    console.error(error);
     this.loggerService.error(error);
   }
 }

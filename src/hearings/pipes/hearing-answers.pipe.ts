@@ -8,6 +8,7 @@ import { AnswerConverter } from '../converters/answer.converter';
 import { CaseFlagAnswerConverter } from '../converters/case-flag.answer.converter';
 import { CaseNameAnswerConverter } from '../converters/case-name.answer.converter';
 import { CaseNumberAnswerConverter } from '../converters/case-number.answer.converter';
+import { CaseRestrictedAnswerConverter } from '../converters/case-restriction.converter';
 import { CourtLocationAnswerConverter } from '../converters/court-location.answer.converter';
 import { DateRequestFailedAnswerConverter } from '../converters/date-request-failed.answer.converter';
 import { DateRequestSubmittedAnswerConverter } from '../converters/date-request-submitted.answer.converter';
@@ -38,8 +39,11 @@ import { PanelRolesAnswerConverter } from '../converters/panel-roles.answer.conv
 import { ParticipantAttendenceAnswerConverter } from '../converters/participant-attendence.answer.converter';
 import { ParticipantChannelAttendenceAnswerConverter } from '../converters/participant-channel-attendance.converter';
 import { PartyChannelsAnswerConverter } from '../converters/party-channels-answer.converter';
+import { PrivateHearingAnswerConverter } from '../converters/private-hearing-required.converter';
+import { PublicCaseNameAnswerConverter } from '../converters/public-case-name.answer.converter';
 import { ReasonForActualCancellationAnswerConverter } from '../converters/reason-for-actual-cancellation.answer.converter';
 import { ReasonForRequestCancellationAnswerConverter } from '../converters/reason-for-request-cancellation.answer.converter';
+import { ReasonableAdjustmentFlagsAnswerConverter } from '../converters/reasonable-adjustment-flags.answer.converter';
 import { RoomIdAnswerConverter } from '../converters/room-id.answer.converter';
 import { StageAnswerConverter } from '../converters/stage.answer.converter';
 import { StatusAnswerConverter } from '../converters/status.answer.converter';
@@ -49,6 +53,7 @@ import { VenueAnswerConverter } from '../converters/venue.answer.converter';
 import { AnswerSource } from '../models/hearings.enum';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
+import { HearingIdAnswerConverter } from '../converters/hearing-id.converter';
 
 @Pipe({
   name: 'transformAnswer'
@@ -62,6 +67,9 @@ export class HearingAnswersPipe implements PipeTransform {
     switch (answerSource) {
       case AnswerSource.CASE_NAME:
         converter = new CaseNameAnswerConverter();
+        break;
+      case AnswerSource.HEARING_ID:
+        converter = new HearingIdAnswerConverter();
         break;
       case AnswerSource.CASE_NUMBER:
         converter = new CaseNumberAnswerConverter();
@@ -95,6 +103,9 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.CASE_FLAGS:
         converter = new CaseFlagAnswerConverter(this.route);
+        break;
+      case AnswerSource.REASONABLE_ADJUSTMENT_FLAGS:
+        converter = new ReasonableAdjustmentFlagsAnswerConverter(this.route);
         break;
       case AnswerSource.ADDITIONAL_SECURITY_REQUIRED:
         converter = new AdditionalSecurityAnswerConverter();
@@ -188,6 +199,15 @@ export class HearingAnswersPipe implements PipeTransform {
         break;
       case AnswerSource.LINKED_HEARINGS:
         converter = new LinkedHearingsAnswerConverter();
+        break;
+      case AnswerSource.PRIVATE_HEARING_REQUIRED:
+        converter = new PrivateHearingAnswerConverter();
+        break;
+      case AnswerSource.PUBLIC_CASE_NAME:
+        converter = new PublicCaseNameAnswerConverter();
+        break;
+      case AnswerSource.CASE_RESTRICTION:
+        converter = new CaseRestrictedAnswerConverter();
         break;
       default:
         break;

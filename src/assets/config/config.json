@@ -15,11 +15,16 @@
     "oauth2_client_id": "ccd_gateway",
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
     "remote_document_management_url": ".*(\/documents)",
+    "documentSecureModeCaseTypeExclusions": "DIVORCE,DIVORCE_BulkAction,DIVORCE_ExceptionRecord,DIVORCE_NOTICE_OF_ACTING,NFD_BulkAction,NFD,NFD_ExceptionRecord,CARE_SUPERVISION_EPO,PRLAPPS,Caveat,GrantOfRepresentation,LegacySearch,PROBATE_ExceptionRecord,StandingSearch,WillLodgement,CriminalInjuriesCompensation,Benefit,SSCS_ExceptionRecord,CareStandards,MentalHeath,PrimaryHealthLists,SpecialEducationalNeeds,DisabilityDiscrimination,Asylum,Bail,ET_EnglandWales,ET_Scotland,ET_Scotland_Multiple,ET_EnglandWales_Multiple",
     "payments_url": "/payments",
     "pay_bulk_scan_url": "/pay-bulkscan",
     "activity_batch_collection_delay_ms": 1,
     "activity_next_poll_request_ms": 30000,
     "activity_retry": 30,
+    "timeouts_case_retrieval": [
+      18, 17
+    ],
+    "timeouts_case_retrieval_artificial_delay": 0,
     "activity_url": "/activity",
     "activity_max_request_per_batch": 25,
     "print_service_url": "/print",
@@ -31,14 +36,16 @@
     "refunds_url": "api/refund",
     "notification_url": "api/notification",
     "access_management_mode": false,
-    "access_management_basic_view_mock_mode": false,
     "location_ref_api_url": "/refdata/location",
     "cam_role_assignments_api_url": "/am/role-assignments",
     "categories_and_documents_url": "/categoriesAndDocuments",
     "document_data_url": "/documentData/caseref",
     "rd_common_data_api_url": "/refdata/commondata",
     "case_data_store_api_url": "/getLinkedCases",
-    "case_flags_refdata_api_url": "/refdata/commondata/caseflags/service-id=:sid"
+    "case_flags_refdata_api_url": "/refdata/commondata/caseflags/service-id=:sid",
+    "events_to_hide": [
+      "queryManagementRespondQuery"
+    ]
   },
   "urls": {
     "idam": {

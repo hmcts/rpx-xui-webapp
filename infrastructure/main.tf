@@ -110,15 +110,22 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+locals {
+  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+}
+
 resource "azurerm_monitor_action_group" "welsh_usage_alerts" {
   count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-${var.welsh_action_group_name}-${var.env}"
   resource_group_name = azurerm_resource_group.rg.name
   short_name          = "welsh-rpt"
 
-  email_receiver {
-    name          = "welsh-team"
-    email_address = data.azurerm_key_vault_secret.welsh_report_email.0.value
+  dynamic "email_receiver" {
+    for_each = local.welsh_emails
+    content {
+      name          = "welsh-team-${email_receiver.key + 1}"
+      email_address = trimspace(email_receiver.value)
+    }
   }
 
   tags = var.common_tags
@@ -137,13 +144,17 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   data_source_id = azurerm_application_insights.appinsight.id
   description    = "Monthly Welsh language usage report"
   enabled        = var.welsh_reporting_enabled
-  
+
+  # Note: This query is configured to execute daily, but it will only produce results on the first day of each month.
+  # This ensures that the alert is triggered and the email is sent out just once per month.
   query = <<-QUERY
+    let runQuery = dayofmonth(now()) == 6;
+    let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+    let endTime = startofmonth(now());
     let FilteredRequests = requests
-    | where timestamp >= startofmonth(ago(1M))
-    | where timestamp < startofmonth(now())
+    | where runQuery and timestamp between (startTime .. endTime)
     | where url has "/api/translation/cy"
-    | extend day = bin(timestamp, 1d);
+    | extend day = startofday(timestamp);
     let UniqueSessionsPerDay = FilteredRequests
     | where isnotempty(session_Id)
     | summarize by day, session_Id
@@ -152,23 +163,30 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
     | where isempty(session_Id)
     | summarize HasMissingSessions = count() by day
     | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-    UniqueSessionsPerDay
+    let MainResults = UniqueSessionsPerDay
     | join kind=fullouter HasNoSession on day
-    | extend 
+    | extend
         SessionCount = coalesce(SessionCount, 0),
         NoSessionAddition = coalesce(NoSessionAddition, 0)
     | extend TotalSessions = SessionCount + NoSessionAddition
+    | project day, TotalSessions;
+    let FinalResults = MainResults
+    | union (print day = startTime, TotalSessions = 0)
+    | summarize TotalSessions = max(TotalSessions) by day
+    | order by day asc;
+    FinalResults
+    | extend HasData = isnotempty(day)
+    | where HasData or toscalar(FinalResults | count) == 0
     | project day, TotalSessions
-    | order by day asc
     | render columnchart
   QUERY
 
   severity    = 3
-  frequency   = 5
-  time_window = 2880
+  frequency   = 6
+  time_window = 1440
 
   trigger {
-    operator  = "GreaterThanOrEqual"
+    operator  = "GreaterThan"
     threshold = 0
   }
 

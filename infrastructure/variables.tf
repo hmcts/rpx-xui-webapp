@@ -45,7 +45,7 @@ variable "redis_capacity" {
 variable "welsh_reporting_enabled" {
   type        = bool
   description = "Enable Welsh language usage reporting"
-  default     = true
+  default     = false
 }
 
 variable "welsh_action_group_name" {
@@ -55,7 +55,7 @@ variable "welsh_action_group_name" {
 }
 
 variable "welsh_email_address_key" {
-  description = "Email address key in azure Key Vault for Welsh reporting."
+  description = "Email address key in azure Key Vault for Welsh reporting. Can contain multiple emails separated by commas."
   type        = string
   default     = "welsh-report-email"
 }

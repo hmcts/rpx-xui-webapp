@@ -139,11 +139,12 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   enabled        = var.welsh_reporting_enabled
   
   query = <<-QUERY
+    let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+    let endTime = startofmonth(now());
     let FilteredRequests = requests
-    | where timestamp >= startofmonth(ago(1M))
-    | where timestamp < startofmonth(now())
+    | where timestamp between (startTime .. endTime)
     | where url has "/api/translation/cy"
-    | extend day = bin(timestamp, 1d);
+    | extend day = startofday(timestamp);
     let UniqueSessionsPerDay = FilteredRequests
     | where isnotempty(session_Id)
     | summarize by day, session_Id

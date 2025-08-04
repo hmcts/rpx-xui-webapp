@@ -31,7 +31,7 @@ import { getNewUsersByServiceName } from './workAllocation';
 
 function loadIndexHtml(): string {
   // production build output
-  let p = path.join(__dirname, '..', 'rpx-exui', 'index.html');
+  let p = path.join(__dirname, '..', 'index.html');
   if (!existsSync(p)) {
     // running from sources - use the template inside src/
     p = path.join(__dirname, '..', 'src', 'index.html');
@@ -111,6 +111,10 @@ export async function createApp() {
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
   app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  const staticRoot = path.join(__dirname, '..');
+  app.use(
+    express.static(staticRoot, { index: false })
+  );
   app.use('/*', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
     res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);

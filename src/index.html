@@ -5,8 +5,41 @@
   <title>HMCTS Manage cases</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- expose the nonce for runtime style tags -->
+
+  <!-- ▸ expose the per‑request nonce -->
   <meta name="csp-nonce" content="{{cspNonce}}">
+
+  <!-- ▸ MONKEY‑PATCH – must run before any vendor script -->
+  <script nonce="{{cspNonce}}">
+    (function () {
+      /** Read the nonce we just printed in <meta> */
+      const n = document.querySelector('meta[name="csp-nonce"]')?.content;
+      if (!n) { return; }
+
+      /* Patch document.createElement so future <style> elements receive the nonce */
+      const origCreate = Document.prototype.createElement;
+      Document.prototype.createElement = function (tagName, options) {
+        const el = origCreate.call(this, tagName, options);
+        if (tagName && tagName.toLowerCase() === 'style') {
+          el.setAttribute('nonce', n);
+        }
+        return el;
+      };
+
+      /* OPTIONAL – catch <style> inserted via appendChild / innerHTML */
+      const guard = (node) => {
+        if (node.nodeType === 1 && node.tagName === 'STYLE' && !node.hasAttribute('nonce')) {
+          node.setAttribute('nonce', n);
+        }
+        return node;
+      };
+      const origAppend = Node.prototype.appendChild;
+      Node.prototype.appendChild = function (node) { return origAppend.call(this, guard(node)); };
+      const origInsert = Node.prototype.insertBefore;
+      Node.prototype.insertBefore = function (nNode, rNode) { return origInsert.call(this, guard(nNode), rNode); };
+    })();
+  </script>
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="govuk-template__body js-enabled">

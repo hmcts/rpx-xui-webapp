@@ -49,6 +49,7 @@ export function reducer(
   state = initialSearchState,
   action: fromCases.CaseSearchAction
 ): SearchState {
+  // tslint:disable-next-line:switch-default
   switch (action.type) {
     case fromCases.APPLY_SEARCH_FILTER:
     case fromCases.APPLY_SEARCH_FILTER_FOR_ES: {

@@ -124,21 +124,11 @@ resource "azurerm_monitor_action_group" "welsh_usage_alerts" {
   tags = var.common_tags
 }
 
-resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
+resource "azurerm_application_insights_analytics_item" "welsh_usage_query" {
   count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-welsh-usage-${var.env}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  action {
-    action_group = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]
-  }
-
-  data_source_id = azurerm_application_insights.appinsight.id
-  description    = "Monthly Welsh language usage report"
-  enabled        = var.welsh_reporting_enabled
-  
-  query = <<-QUERY
+  name                = "Welsh Language Usage Report"
+  application_insights_id = azurerm_application_insights.appinsight.id
+  content             = <<-QUERY
     let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
     let endTime = startofmonth(now());
     let FilteredRequests = requests
@@ -163,6 +153,28 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
     | order by day asc
     | render columnchart
   QUERY
+  scope               = "shared"
+  type                = "query"
+  function_alias      = "WelshUsageReport"
+  
+  tags = var.common_tags
+}
+
+resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
+  count               = var.welsh_reporting_enabled ? 1 : 0
+  name                = "${local.app_full_name}-welsh-usage-${var.env}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  action {
+    action_group = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]
+  }
+
+  data_source_id = azurerm_application_insights.appinsight.id
+  description    = "Monthly Welsh language usage report"
+  enabled        = var.welsh_reporting_enabled
+  
+  query = "WelshUsageReport"
 
   severity    = 3
   time_window = 2880

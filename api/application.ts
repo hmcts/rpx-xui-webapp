@@ -57,7 +57,6 @@ export async function createApp() {
     app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
-    app.use(helmet.xssFilter());
     app.use(
       csp({
         defaultCsp: SECURITY_POLICY,

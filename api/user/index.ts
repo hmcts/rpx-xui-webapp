@@ -83,24 +83,12 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     const id = userInfo.id ? userInfo.id : userInfo.uid;
     const path = `${baseUrl}/am/role-assignments/actors/${id}`;
     const headers = setHeaders(req);
-    if (req.session.roleRequestEtag) {
-      // add the last etag (note: could re-use more etags but requires storing of more data)
-      headers['If-None-Match'] = req.session.roleRequestEtag;
-    }
     delete headers.accept;
     try {
       const response: AxiosResponse = await http.get(path, { headers });
-      const activeRoleAssignments = getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date());
-      req.session.roleAssignmentResponse = activeRoleAssignments;
-      userRoleAssignments = setUserRoles(userInfo, req, id);
-      req.session.roleRequestEtag = response?.headers?.etag;
+      const roleAssignments = [...getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date())];
+      userRoleAssignments = setUserRoles(userInfo, req, id, roleAssignments);
     } catch (error) {
-      if (error.status === 304) {
-        // as user role assignments are not returned use session to send expected results
-        trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, { functionCall: 'refreshRoleAssignmentForUser' });
-        userRoleAssignments = setUserRoles(userInfo, req, id);
-        return userRoleAssignments;
-      }
       let err = error;
       if (typeof error === 'object' && error !== null) {
         err = JSON.stringify(error);
@@ -113,10 +101,10 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
   return userRoleAssignments;
 }
 
-export function setUserRoles(userInfo: UserInfo, req: any, userId: string): any[] {
+export function setUserRoles(userInfo: UserInfo, req: any, userId: string, roleAssignments: RoleAssignment[]): any[] {
   userInfo.roles = userInfo.roles ? userInfo.roles : [];
   trackTrace(`user ${userId} prior roles ${JSON.stringify(userInfo.roles.slice(0, 50))} before addition`);
-  const activeRoleAssignments = req.session.roleAssignmentResponse;
+  const activeRoleAssignments = roleAssignments;
   const userRoleAssignments = getRoleAssignmentInfo(activeRoleAssignments);
   const amRoles = getOrganisationRoles(activeRoleAssignments);
   trackTrace(`user ${userId} roles: ${JSON.stringify(amRoles.slice(0, 50))}`, { functionCall: 'refreshRoleAssignmentForUser' });
@@ -155,7 +143,7 @@ export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filt
 }
 
 export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]): LocationInfo[] {
-  const roleAssignmentInfo = [];
+  const roleAssignmentInfo: LocationInfo[] = [];
   roleAssignmentResponse?.forEach((roleAssignment) => {
     const isCaseAllocator = isCurrentUserCaseAllocator(roleAssignment);
     const attributes = { ...roleAssignment?.attributes };
@@ -167,14 +155,10 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
     attributes.endTime = roleAssignment?.endTime;
     roleAssignmentInfo.push(attributes);
   });
-  return roleAssignmentInfo;
+  return [...roleAssignmentInfo]; // Ensure a new array is returned to avoid memory leaks.
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
-  const refreshRoleAssignments = req?.query?.refreshRoleAssignments
-    ? req.query.refreshRoleAssignments === 'true' : false;
-  const roleAssignmentInfo =
-    req?.session?.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
-      : await refreshRoleAssignmentForUser(userInfo, req);
+  const roleAssignmentInfo = await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

@@ -7,7 +7,7 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
-import { refreshRoleAssignmentForUser } from '../user';
+import { getUserRoleAssignments, refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { CaseRole } from '../workAllocation/interfaces/caseRole';
 import { getMyAccessMappedCaseList } from '../workAllocation/util';
@@ -137,8 +137,9 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
 export async function getMyAccessNewCount(req, resp, next) {
   try {
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
-    const roleAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
-    const cases = await getMyAccessMappedCaseList(roleAssignments, req);
+    const userInfo = req.session.passport.user.userinfo;
+    const roleAssignments = getUserRoleAssignments(userInfo, req);
+    const cases = await getMyAccessMappedCaseList(await roleAssignments, req);
     const newAssignments = cases.filter((item) => item.isNew);
 
     return resp.status(200).send({ count: newAssignments.length });
@@ -150,8 +151,9 @@ export async function getMyAccessNewCount(req, resp, next) {
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
-    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    const challengedAccessRequest = currentUserAssignments.find((roleAssignment) => roleAssignment.attributes
+    const userInfo = req.session.passport.user.userinfo;
+    const currentUserAssignments = getUserRoleAssignments(userInfo, req);
+    const challengedAccessRequest = (await currentUserAssignments).find((roleAssignment) => roleAssignment.attributes
       && roleAssignment.attributes.caseId === req.params.caseId
       && roleAssignment.attributes.isNew);
 

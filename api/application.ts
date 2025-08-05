@@ -111,10 +111,21 @@ export async function createApp() {
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
   app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  // Serve /index.html through the same nonce injector
+  // This is to ensure that <MC URL>/index.html works with CSP
+  app.get('/index.html', (req, res) => {
+    const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+    res
+      .type('html')
+      .set('Cache-Control', 'no-store, max-age=0')
+      .send(html);
+  });
   const staticRoot = path.join(__dirname, '..');
+  // runs for every incoming request in the order middleware are declared
   app.use(
     express.static(staticRoot, { index: false })
   );
+  // Catch-all handler for every URL that the static middleware didn’t serve
   app.use('/*', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
     res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);

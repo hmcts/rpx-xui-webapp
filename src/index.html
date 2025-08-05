@@ -11,32 +11,41 @@
 
   <!-- ▸ MONKEY‑PATCH – must run before any vendor script -->
   <script nonce="{{cspNonce}}">
-    (function () {
-      /** Read the nonce we just printed in <meta> */
+    (() => {
       const n = document.querySelector('meta[name="csp-nonce"]')?.content;
       if (!n) { return; }
 
-      /* Patch document.createElement so future <style> elements receive the nonce */
+      /* ── 1  patch createElement ───────────────────────────── */
       const origCreate = Document.prototype.createElement;
-      Document.prototype.createElement = function (tagName, options) {
-        const el = origCreate.call(this, tagName, options);
-        if (tagName && tagName.toLowerCase() === 'style') {
-          el.setAttribute('nonce', n);
-        }
+      Document.prototype.createElement = function (tag, opts) {
+        const el = origCreate.call(this, tag, opts);
+        if (tag && tag.toLowerCase() === 'style') { el.setAttribute('nonce', n); }
         return el;
       };
 
-      /* OPTIONAL – catch <style> inserted via appendChild / innerHTML */
-      const guard = (node) => {
-        if (node.nodeType === 1 && node.tagName === 'STYLE' && !node.hasAttribute('nonce')) {
-          node.setAttribute('nonce', n);
+      /* helper that stamps every <style> in a subtree */
+      const stampStyles = (root) =>
+        root.querySelectorAll?.('style').forEach((s) => {
+          if (!s.hasAttribute('nonce')) { s.setAttribute('nonce', n); }
+        });
+
+      /* ── 2  wrap appendChild / insertBefore ───────────────── */
+      const wrap = (fn) => function (node, ref) {
+        if (node.nodeType === 1 && node.tagName === 'STYLE') {
+          if (!node.hasAttribute('nonce')) { node.setAttribute('nonce', n); }
+        } else {
+          stampStyles(node);          // handles DocumentFragment, innerHTML trees
         }
-        return node;
+        return fn.call(this, node, ref);
       };
-      const origAppend = Node.prototype.appendChild;
-      Node.prototype.appendChild = function (node) { return origAppend.call(this, guard(node)); };
-      const origInsert = Node.prototype.insertBefore;
-      Node.prototype.insertBefore = function (nNode, rNode) { return origInsert.call(this, guard(nNode), rNode); };
+      Node.prototype.appendChild = wrap(Node.prototype.appendChild);
+      Node.prototype.insertBefore = wrap(Node.prototype.insertBefore);
+
+      /* ── 3  OPTIONAL: MutationObserver for late innerHTML / insertAdjacentHTML ── */
+      const mo = new MutationObserver((records) => {
+        records.forEach((r) => r.addedNodes.forEach(stampStyles));
+      });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
     })();
   </script>
 

@@ -2,14 +2,14 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getWorkAllocationAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_work_types', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_get_work_types', port: 8000 });
 
 describe('Task management api, work types', () => {
   const RESPONSE_BODY = {
@@ -28,19 +28,19 @@ describe('Task management api, work types', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-
       const interaction = {
-        state: 'retrieve work types by userId',
+        states: [{ description: 'retrieve work types by userId' }],
         uponReceiving: 'retrieve all work types',
         withRequest: {
           method: 'GET',
           path: '/work-types',
-          query: 'filter-by-user=true',
+          query: {
+            'filter-by-user': 'true'
+          },
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
-            // 'content-Type': 'application/json'
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json'
           }
         },
         willRespondWith: {
@@ -49,7 +49,6 @@ describe('Task management api, work types', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -59,39 +58,37 @@ describe('Task management api, work types', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getWorkAllocationAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getWorkAllocationAPIOverrides(mockServer.url);
 
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getTypesOfWork } = requireReloaded('../../../../workAllocation/index');
+        const { getTypesOfWork } = requireReloaded('../../../../workAllocation/index');
 
-      const req = mockReq({
-        headers: {
-          Authorization: 'Bearer someAuthorizationToken',
-          ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
-          // 'content-Type': 'application/json',
+        const req = mockReq({
+          headers: {
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json'
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getTypesOfWork(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getTypesOfWork(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

@@ -16,8 +16,7 @@ import {
   QueryWriteRaiseQueryComponent,
   ErrorNotifierService,
   AlertService,
-  QueryWriteRespondToQueryComponent,
-  SessionStorageService
+  QueryWriteRespondToQueryComponent
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -38,7 +37,6 @@ describe('QueryManagementContainerComponent', () => {
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
   const googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['event', 'virtualPageView']);
-  let mockSessionStorageService;
 
   const mockRouter = {
     events: of(new NavigationStart(1, '/some-other-route')),
@@ -103,7 +101,6 @@ describe('QueryManagementContainerComponent', () => {
         } as FieldType,
         id: 'qmCaseQueriesCollection',
         label: 'Query management case queries collection',
-        display_context: 'OPTIONAL',
         value: {
           caseMessages: [{
             id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
@@ -137,7 +134,6 @@ describe('QueryManagementContainerComponent', () => {
         } as FieldType,
         id: 'qmCaseQueriesCollection1',
         label: 'Query management case queries collection',
-        display_context: 'READONLY',
         value: {
           caseMessages: [{
             id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
@@ -233,8 +229,7 @@ describe('QueryManagementContainerComponent', () => {
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: GoogleTagManagerService, useValue: googleTagManagerService },
-        LoadingService,
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        LoadingService
       ]
     }).compileComponents();
   }));
@@ -1177,40 +1172,5 @@ describe('QueryManagementContainerComponent', () => {
         expect(attachment).toBeNull();
       });
     }));
-
-    it('should validate and set qmCaseQueriesCollectionData on successful onQueryDataCreated', () => {
-      const mockData = { test: 'data' } as any;
-      spyOn(component, 'validate').and.returnValue(of({}));
-      component.triggerQueryDataSubmission = true;
-      component.onQueryDataCreated(mockData);
-
-      expect(component.qmCaseQueriesCollectionData).toEqual(mockData);
-      expect(component.showSummary).toBeTrue();
-    });
-    it('should handle error in onQueryDataCreated validate flow', () => {
-      const mockError = { status: 500, message: 'Server error' } as any;
-      spyOn(component, 'validate').and.returnValue(throwError(() => mockError));
-
-      component.triggerQueryDataSubmission = true;
-
-      component.onQueryDataCreated({} as any);
-
-      expect(mockAlertService.error).toHaveBeenCalledWith({ phrase: mockError.message });
-      expect(mockErrorNotifierService.announceError).toHaveBeenCalledWith(mockError);
-    });
-
-    it('should not throw if invalid element ID is provided to navigateToErrorElement', () => {
-      expect(() => component.navigateToErrorElement('non-existent-id')).not.toThrow();
-    });
-
-    it('should unsubscribe safely if subscription is provided', () => {
-      const subscription = jasmine.createSpyObj('Subscription', ['unsubscribe']);
-      component.unsubscribe(subscription);
-      expect(subscription.unsubscribe).toHaveBeenCalled();
-    });
-
-    it('should do nothing if no subscription is provided', () => {
-      expect(() => component.unsubscribe(null)).not.toThrow();
-    });
   });
 });

@@ -3099,12 +3099,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.26-welsh-translation-qm":
-  version: 7.2.26-welsh-translation-qm
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.26-welsh-translation-qm"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.30-welsh-translation-qm":
+  version: 7.2.30-welsh-translation-qm
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.30-welsh-translation-qm"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c9c8b7b2f79fef84e3860c9eef50ebc9adf61c9ea851fc4aff8d67d436ca9a315ff6e7dcf87e6bc4f961f32eff5cb471caa06ac0984318f2a3e699cc15d677f8
+  checksum: 10/e697750b6a0f3d7720dd9fc807e94d0ce74458c6ab51c6824dbe7db80c043f080b8cf7a12680e99fffa52a88f7dce4dc79aa48e190afe23cda5e81f39133ab6c
   languageName: node
   linkType: hard
 
@@ -21883,7 +21883,7 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.26-welsh-translation-qm"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.30-welsh-translation-qm"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.3"

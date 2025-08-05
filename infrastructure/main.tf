@@ -102,3 +102,38 @@ resource "azurerm_key_vault_secret" "app_insights_connection_string" {
   value        = module.application_insights.connection_string
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
+
+resource "azurerm_application_insights_analytics_item" "welsh_translation_usage_query" {
+  name                    = "Welsh Translation Usage - Monthly Sessions"
+  application_insights_id = module.application_insights.id
+  type                    = "query"
+  scope                   = "shared"
+  
+  content = <<-EOT
+    let startTime = startofmonth(datetime_add('month', -1, startofmonth(now()))); 
+    let endTime = startofmonth(now()); 
+    let FilteredRequests = requests 
+    | where timestamp between (startTime .. endTime) 
+    | where url has "/api/translation/cy" 
+    | extend day = startofday(timestamp); 
+    let UniqueSessionsPerDay = FilteredRequests 
+    | where isnotempty(session_Id) 
+    | summarize by day, session_Id 
+    | summarize SessionCount = count() by day; 
+    let HasNoSession = FilteredRequests 
+    | where isempty(session_Id) 
+    | summarize HasMissingSessions = count() by day 
+    | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0); 
+    UniqueSessionsPerDay 
+    | join kind=fullouter HasNoSession on day 
+    | extend 
+        SessionCount = coalesce(SessionCount, 0), 
+        NoSessionAddition = coalesce(NoSessionAddition, 0) 
+    | extend TotalSessions = SessionCount + NoSessionAddition 
+    | project day, TotalSessions 
+    | order by day asc 
+    | render columnchart
+  EOT
+
+  tags = var.common_tags
+}

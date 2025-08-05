@@ -19,3 +19,8 @@ output "appInsightsConnectionString" {
   value     = azurerm_application_insights.appinsight.connection_string
   sensitive = true
 }
+
+output "welshTranslationQueryId" {
+  value       = azurerm_application_insights_analytics_item.welsh_translation_usage_query.id
+  description = "ID of the Welsh Translation Usage saved query in Application Insights"
+}

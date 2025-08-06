@@ -110,15 +110,22 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+locals {
+  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+}
+
 resource "azurerm_monitor_action_group" "welsh_usage_alerts" {
   count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-${var.welsh_action_group_name}-${var.env}"
   resource_group_name = azurerm_resource_group.rg.name
   short_name          = "welsh-rpt"
 
-  email_receiver {
-    name          = "welsh-team"
-    email_address = data.azurerm_key_vault_secret.welsh_report_email.0.value
+  dynamic "email_receiver" {
+    for_each = local.welsh_emails
+    content {
+      name          = "welsh-team-${email_receiver.key + 1}"
+      email_address = trimspace(email_receiver.value)
+    }
   }
 
   tags = var.common_tags

@@ -25,7 +25,7 @@ def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
-def branchesToSync = ['demo', 'perftest', 'ithc']
+def branchesToSync = ['demo', 'perftest']
 
 def secrets = [
   'rpx-${env}': [

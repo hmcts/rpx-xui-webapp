@@ -124,42 +124,6 @@ resource "azurerm_monitor_action_group" "welsh_usage_alerts" {
   tags = var.common_tags
 }
 
-resource "azurerm_application_insights_analytics_item" "welsh_usage_query" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "Welsh Language Usage Report"
-  application_insights_id = azurerm_application_insights.appinsight.id
-  content             = <<-QUERY
-    let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-    let endTime = startofmonth(now());
-    let FilteredRequests = requests
-    | where timestamp between (startTime .. endTime)
-    | where url has "/api/translation/cy"
-    | extend day = startofday(timestamp);
-    let UniqueSessionsPerDay = FilteredRequests
-    | where isnotempty(session_Id)
-    | summarize by day, session_Id
-    | summarize SessionCount = count() by day;
-    let HasNoSession = FilteredRequests
-    | where isempty(session_Id)
-    | summarize HasMissingSessions = count() by day
-    | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-    UniqueSessionsPerDay
-    | join kind=fullouter HasNoSession on day
-    | extend 
-        SessionCount = coalesce(SessionCount, 0),
-        NoSessionAddition = coalesce(NoSessionAddition, 0)
-    | extend TotalSessions = SessionCount + NoSessionAddition
-    | project day, TotalSessions
-    | order by day asc
-    | render columnchart
-  QUERY
-  scope               = "shared"
-  type                = "query"
-  function_alias      = "WelshUsageReport"
-  
-  tags = var.common_tags
-}
-
 resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-welsh-usage-${var.env}"
@@ -173,15 +137,42 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   data_source_id = azurerm_application_insights.appinsight.id
   description    = "Monthly Welsh language usage report"
   enabled        = var.welsh_reporting_enabled
-  
-  query = "WelshUsageReport"
+
+  # Note: This query is configured to execute daily, but it will only produce results on the first day of each month.
+  # This ensures that the alert is triggered and the email is sent out just once per month.
+  query = <<-QUERY
+    let runQuery = dayofmonth(now()) == 1;
+    let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+    let endTime = startofmonth(now());
+    let FilteredRequests = requests
+    | where runQuery and timestamp between (startTime .. endTime)
+    | where url has "/api/translation/cy"
+    | extend day = startofday(timestamp);
+    let UniqueSessionsPerDay = FilteredRequests
+    | where isnotempty(session_Id)
+    | summarize by day, session_Id
+    | summarize SessionCount = count() by day;
+    let HasNoSession = FilteredRequests
+    | where isempty(session_Id)
+    | summarize HasMissingSessions = count() by day
+    | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
+    UniqueSessionsPerDay
+    | join kind=fullouter HasNoSession on day
+    | extend
+        SessionCount = coalesce(SessionCount, 0),
+        NoSessionAddition = coalesce(NoSessionAddition, 0)
+    | extend TotalSessions = SessionCount + NoSessionAddition
+    | project day, TotalSessions
+    | order by day asc
+    | render columnchart
+  QUERY
 
   severity    = 3
-  time_window = 2880
-  frequency   = 43200
+  frequency   = 1440
+  time_window = 1440
 
   trigger {
-    operator  = "GreaterThanOrEqual"
+    operator  = "GreaterThan"
     threshold = 0
   }
 

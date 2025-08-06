@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { HearingLinksStateData } from '../../../models/hearingLinksStateData.model';
 import { ACTION, HearingLinkMessages } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesModel } from '../../../models/linkHearings.model';
@@ -20,6 +20,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private caseLinkingReasons: LovRefDataByServiceModel;
   public caseId: string;
+  public jurisdictionId: string;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
   public validationErrors: { id: string, message: string }[] = [];
@@ -35,6 +36,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
               protected readonly route: ActivatedRoute) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.caseId = this.hearingListMainModel.caseRef || '';
+    this.jurisdictionId = '';
     this.caseName = this.serviceHearingValuesModel.hmctsInternalCaseName || '';
   }
 
@@ -43,10 +45,11 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
       hearingLink: ['', Validators.required]
     });
     this.initialiseFromHearingValues();
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
-      caseReference: this.caseId,
-      hearingId: ''
-    }));
+    this.hearingStore.select(fromHearingStore.caseInfoSelector).pipe(
+      tap((caseInfo) => {
+        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, hearingId: '' }));
+      })
+    ).subscribe();
     this.generateLinkedCasesWithReasonDescription();
   }
 
@@ -72,7 +75,9 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
         }
         this.showSpinner = false;
       },
-      error: () => this.router.navigate(['/hearings/error'])
+      error: () => {
+        this.router.navigate(['/hearings/error']);
+      }
     });
   }
 

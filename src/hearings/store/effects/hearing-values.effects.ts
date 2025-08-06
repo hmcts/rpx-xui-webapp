@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingValuesActions from '../../../hearings/store/actions/hearing-values.action';
@@ -21,16 +21,15 @@ export class HearingValuesEffects {
 
   public loadHearingValue$ = createEffect(() => this.actions$.pipe(
     ofType(hearingValuesActions.LOAD_HEARING_VALUES),
-    map((action: hearingValuesActions.LoadHearingValues) => action.payload),
-    switchMap((payload) => {
-      const caseInfo = JSON.parse(this.sessionStorage.getItem('caseInfo'));
-      const jurisdictionId = caseInfo && caseInfo.jurisdiction;
-      return this.hearingsService.loadHearingValues(jurisdictionId, payload).pipe(
+    withLatestFrom(this.hearingStore.select(fromHearingReducers.caseInfoSelector)),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    switchMap(([action, caseInfo]) => {
+      return this.hearingsService.loadHearingValues(caseInfo?.jurisdictionId, caseInfo?.caseReference).pipe(
         map(
           (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
         catchError((error) => {
           this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-          return HearingValuesEffects.handleError(error, payload);
+          return HearingValuesEffects.handleError(error, caseInfo.caseReference);
         })
       );
     })

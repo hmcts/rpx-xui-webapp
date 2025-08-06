@@ -3,15 +3,15 @@ plugins {
     id 'application'
 }
 
-sourceCompatibility = 11
-targetCompatibility = 17
+sourceCompatibility = 21
+targetCompatibility = 21
 
 // tag::repositories[]
 repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url 'https://jitpack.io'
+        url = 'https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1'
     }
 }
 // end::repositories[]
@@ -19,7 +19,7 @@ repositories {
 // tag::dependencies[]
 dependencies {
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.17'
-    testImplementation 'com.github.hmcts:fortify-client:1.4.7:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.4.9:all'
 }
 // end::dependencies[]
 

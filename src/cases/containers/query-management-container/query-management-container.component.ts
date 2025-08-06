@@ -19,16 +19,22 @@ import {
   AlertService,
   CallbackErrorsContext,
   HttpError,
-  CaseQueriesCollection
+  CaseQueriesCollection,
+  CaseEventData,
+  CaseViewTrigger,
+  QmCaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, LoadingService } from '@hmcts/rpx-xui-common-lib';
-import { map, take } from 'rxjs/operators';
+import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { map, switchMap, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
+import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
+import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -37,7 +43,9 @@ import * as fromRoot from '../../../app/store';
 })
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
+  private readonly LD_SERVICE_MESSAGE = 'qm-service-messages';
   private readonly RAISE_A_QUERY_NAME = 'Raise a new query';
+  private readonly FOLLOW_UP_ON_EXISTING_QUERY = 'Follow-up on an existing query';
   public static readonly RAISE_A_QUERY_QUESTION_OPTION = 'raiseAQuery';
 
   private static readonly QUERY_ITEM_QUALIFYING_QUESTION_DETAIL = '1';
@@ -54,6 +62,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public static readonly TRIGGER_TEXT_CONTINUE = 'Ignore Warning and Continue';
   public static readonly TRIGGER_TEXT_START = 'Continue';
 
+  public static readonly CONFIRMATION_MESSAGE_BODY = 'Our team will read your query and respond.';
+  public static readonly CONFIRMATION_MESSAGE_HEAD = 'Your query has been sent to HMCTS';
+  public readonly CIVIL_JURISDICTION = 'CIVIL';
+
   private queryItemId: string;
   public caseId: string;
   public queryCreateContext: QueryCreateContext;
@@ -69,11 +81,16 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qualifyingQuestionsControl: FormControl;
   public eventDataError: boolean = false;
   public eventTrigger$: Observable<CaseEventTrigger>;
-  public roleName: string;
+  public callbackConfirmationMessageText: { [key: string]: string } = {};
+
+  public callbackConfirmationHeadeText: string;
+  public attachmentHintText$: Observable<string | null>;
+  public serviceMessage$: Observable<string | null>;
 
   public caseDetails: CaseView;
   private readonly CASE_QUERIES_COLLECTION_ID = 'CaseQueriesCollection';
   public readonly FIELD_TYPE_COMPLEX = 'Complex';
+  public static readonly DISPLAY_CONTEXT_READONLY = 'READONLY';
 
   public eventTrigger: CaseEventTrigger;
   public eventData: CaseEventTrigger;
@@ -81,16 +98,27 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private routerEventsSubscription: Subscription;
   private targetRoutePrefix = '/query-management/query/';
   public showForm: boolean;
+  public jurisdictionId: string;
 
   public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
   public triggerText: string;
   public ignoreWarning: boolean;
+  public triggerQueryDataSubmission: boolean;
+  public isQueryDataValidated: boolean;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   public showSpinner$: Observable<boolean>;
 
   public caseQueriesCollections: CaseQueriesCollection[];
+
+  public selectedQualifyingQuestion: QualifyingQuestion;
+
+  public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
+  public caseData: CaseEventData;
+  private caseViewTrigger: CaseViewTrigger;
+
+  private validateCaseSubscription: Subscription;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -103,23 +131,27 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     private readonly qualifyingQuestionService: QualifyingQuestionService,
     private readonly errorNotifierService: ErrorNotifierService,
     private readonly alertService: AlertService,
-    private readonly loadingService: LoadingService
+    private readonly loadingService: LoadingService,
+    private googleTagManagerService: GoogleTagManagerService
   ) {}
 
   public ngOnInit(): void {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
+    this.jurisdictionId = this.activatedRoute.snapshot?.data?.case?.case_type?.jurisdiction?.id;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
     this.showSpinner$ = this.loadingService.isLoading as any;
+    this.serviceMessage$ = this.getServiceMessage();
 
     this.formGroup = new FormGroup({
       subject: new FormControl(null),
       body: new FormControl(null, Validators.required),
       isHearingRelated: new FormControl(null),
       hearingDate: new FormControl(null),
-      attachments: new FormControl([] as Document[])
+      attachments: new FormControl([] as Document[]),
+      closeQuery: new FormControl(false)
     });
 
     if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
@@ -143,6 +175,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     if (this.routerEventsSubscription) {
       this.routerEventsSubscription.unsubscribe();
     }
+    this.validateCaseSubscription?.unsubscribe();
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
@@ -157,11 +190,19 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public showResponseForm(): void {
     this.showSummary = false;
+    this.triggerQueryDataSubmission = false;
+    // this.eventTrigger = this.eventTrigger;
   }
 
   public showConfirmationPage(): void {
     this.showSummary = false;
     this.showConfirmation = true;
+  }
+
+  public callbackConfirmationMessage(event: { body: string; header: string }): void {
+    this.callbackConfirmationMessageText = {
+      body: event?.body || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_BODY,
+      header: event?.header || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_HEAD };
   }
 
   public submitForm(): void {
@@ -191,6 +232,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       } else {
         this.router.navigateByUrl(this.qualifyingQuestion.url);
       }
+
+      if (this.selectedQualifyingQuestion) {
+        this.logSelection(this.selectedQualifyingQuestion);
+      }
     }
   }
 
@@ -204,13 +249,51 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     }
 
     this.eventData = this.eventTrigger;
-    this.showSummary = true;
     this.submitted = true;
     this.validateForm();
-    this.showSummary = this.errorMessages?.length === 0;
+
+    if (this.errorMessages?.length === 0 && this.eventData) {
+      this.triggerQueryDataSubmission = true;
+    }
+
     // Reset hearing date if isHearingRelated
     if (!this.formGroup.get('isHearingRelated').value) {
       this.formGroup.get('hearingDate').setValue(null);
+    }
+  }
+
+  public onQueryDataCreated(data: QmCaseQueriesCollection): void {
+    if (data && this.triggerQueryDataSubmission) {
+      const queryData = {
+        data,
+        event: {
+          id: this.eventData?.id,
+          summary: '',
+          description: this.eventData?.description
+        },
+        event_token: this.eventData?.event_token,
+        ignore_warning: false
+      };
+      const validate$ = this.validate(queryData);
+      this.validateCaseSubscription = validate$.subscribe({
+        next: () => {
+          this.showSummary= true;
+          this.qmCaseQueriesCollectionData = data;
+        },
+        error: (error: HttpError) => {
+          if (error.status !== 401 && error.status !== 403) {
+            this.errorNotifierService.announceError(error);
+            this.alertService.error({ phrase: error.message });
+            console.error('Error occurred while fetching event data:', error);
+            this.callbackErrorsSubject.next(error);
+          } else {
+            this.eventDataError = true;
+            this.addError('Something unexpected happened. Please try again later.', 'eventDataError');
+          }
+
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        }
+      });
     }
   }
 
@@ -337,16 +420,122 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
-        this.caseId = caseView.case_id;
+        const caseId = caseView.case_id;
+        const placeholder = '${[CASE_REFERENCE]}';
+        // Normalize caseView case_type id to uppercase
+        const caseTypeKey = caseView.case_type.id.toUpperCase();
 
-        // Safely access the qualifying questions for the current case type
-        const qualifyingQuestions: QualifyingQuestion[] = caseTypeQualifyingQuestions?.[caseView.case_type.id] || [];
+        // Build a normalised map: all keys uppercase
+        const normalisedMap = {};
+        Object.keys(caseTypeQualifyingQuestions).forEach((key) => {
+          normalisedMap[key.toUpperCase()] = caseTypeQualifyingQuestions[key];
+        });
+
+        // Find the correct qualifying questions
+        const qualifyingQuestions = (normalisedMap[caseTypeKey] ?? []).map((question) => {
+          const url = question.url?.replace(placeholder, caseId);
+          let markdown = question.markdown;
+          if (markdown?.includes(placeholder)) {
+            markdown = Utils.replaceAll(markdown, placeholder, caseId);
+          }
+          return { ...question, url, markdown };
+        });
 
         // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${this.caseId}#Queries`);
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${this.caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${caseId}#Queries`);
+        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
 
         return qualifyingQuestions;
+      })
+    );
+  }
+
+  public getAttachmentHintText(): Observable<string | null> {
+    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(
+      this.LD_SERVICE_MESSAGE,
+      { attachment: [] }
+    );
+
+    return combineLatest([
+      this.caseNotifier.caseView,
+      hintText$
+    ]).pipe(
+      map(([caseView, hintText]: [CaseView, ServiceAttachmentHintTextResponse]) => {
+        const jurisdictionId = caseView.case_type.jurisdiction.id;
+        const caseTypeId = caseView.case_type.id;
+        const messages = hintText?.attachment || [];
+
+        // Return empty string if jurisdiction is 'CIVIL' and queryCreateContext is 'RESPOND'
+        if (jurisdictionId.toUpperCase() === this.CIVIL_JURISDICTION.toUpperCase() && this.queryCreateContext === QueryCreateContext.RESPOND) {
+          return '';
+        }
+
+        const filteredMessages = messages.filter((msg) => {
+          if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
+            return false;
+          }
+
+          const caseTypeMatches = msg.caseType === caseTypeId;
+          const onlyJurisdictionMatches = !msg.caseType && msg.jurisdiction === jurisdictionId;
+
+          return caseTypeMatches || onlyJurisdictionMatches;
+        });
+
+        const defaultHintText = messages.filter((msg) => !msg.jurisdiction && !msg.caseType && msg.hintText);
+        const relevantHintText = filteredMessages.length > 0 ? filteredMessages : defaultHintText;
+
+        if (relevantHintText.length === 0) {
+          return null;
+        }
+
+        return relevantHintText.map((msg) => msg.hintText).join('\n\n');
+      })
+    );
+  }
+
+  private getServiceMessage(): Observable<string | null> {
+    const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, { messages: [] });
+
+    return combineLatest([
+      this.caseNotifier.caseView,
+      serviceMessages$
+    ]).pipe(
+      map(([caseView, serviceMessages]: [CaseView, ServiceMessagesResponse]) => {
+        const jurisdictionId = caseView.case_type.jurisdiction.id;
+        const caseTypeId = caseView.case_type.id;
+        const messages = serviceMessages?.messages || [];
+
+        const filteredMessages = messages.filter((msg) => {
+          if (msg.jurisdiction && msg.jurisdiction !== jurisdictionId) {
+            return false;
+          }
+
+          const caseTypeMatches = msg.caseType === caseTypeId;
+          const onlyJurisdictionMatches = !msg.caseType && msg.jurisdiction === jurisdictionId;
+          const isGeneric = !msg.caseType && !msg.jurisdiction;
+
+          if (!(caseTypeMatches || onlyJurisdictionMatches || isGeneric)) {
+            return false;
+          }
+
+          const pages = msg.pages?.split(',').map((page) => page.trim().toUpperCase()) || [];
+
+          if (this.queryItemId && this.queryItemId === QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
+            return pages.includes('RAISE');
+          }
+
+          return false;
+        });
+
+        if (filteredMessages.length === 0) {
+          return null;
+        }
+
+        const combinedMarkdown = filteredMessages
+          .map((msg) => msg.markdown)
+          .join('\n\n');
+
+        return combinedMarkdown;
       })
     );
   }
@@ -374,9 +563,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public async navigateToCaseTaskTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'tasks' }
-    );
+    await this.router.navigate(['cases', 'case-details', this.caseId, 'tasks']);
   }
 
   public hasRespondedToQueryTask(value: boolean): void {
@@ -384,77 +571,80 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.showForm = !value;
   }
 
-  private getEventTrigger():void {
-    const loadingToken = this.loadingService.register();
-    this.caseNotifier.caseView.pipe(take(1)).subscribe((caseDetails) => {
-      this.caseDetails = caseDetails;
+  public logSelection(qualifyingQuestion: QualifyingQuestion) {
+    const isQualifyingQuestions =
+    this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name;
 
-      if (this.queryCreateContext !== QueryCreateContext.RESPOND) {
-        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RAISE_A_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      } else {
-        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID, this.caseDetails.case_id);
-      }
+    const url = isQualifyingQuestions
+      ? qualifyingQuestion.url.replace('${[CASE_REFERENCE]}', this.caseId)
+      : `/query-management/query/${this.caseId}`;
 
-      this.eventTrigger$.subscribe({
-        next: (eventTrigger) => {
-          this.eventTrigger = eventTrigger;
-          this.showForm = true;
-          this.loadingService.unregister(loadingToken);
-
-          if (this.queryCreateContext === QueryCreateContext.NEW_QUERY){
-            this.caseQueriesCollectionsCount();
-          }
-
-          if (this.queryCreateContext === QueryCreateContext.FOLLOWUP || this.queryCreateContext === QueryCreateContext.RESPOND) {
-            this.processFilteredMessages();
-          }
-        },
-        error: (err: HttpError) => {
-          this.loadingService.unregister(loadingToken);
-          if (err.status !== 401 && err.status !== 403) {
-            this.errorNotifierService.announceError(err);
-            this.alertService.error({ phrase: err.message });
-            console.error('Error occurred while fetching event data:', err);
-            this.callbackErrorsSubject.next(err);
-            if (!this.ignoreWarning) {
-              this.showContinueButton = false;
-              this.showForm = false;
-            } else {
-              this.showForm = true;
-            }
-          } else {
-            this.eventDataError = true;
-            this.addError('Something unexpected happened. Please try again later.', 'evenDataError');
-          }
-          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-        }
-      });
-    });
+    const eventParams = {
+      caseTypeId: this.caseId,
+      caseJurisdiction: this.jurisdictionId,
+      name: qualifyingQuestion.name,
+      url,
+      selectionType: this.getQuestionType(qualifyingQuestion.name)
+    };
+    this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
   }
 
-  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-  // When creating a New Query, if caseQueriesCollections is more than one, then  the method getUserDetailsRoleName()
-  private caseQueriesCollectionsCount() {
-    const numberOfCaseQueriesCollections = this.eventTrigger?.case_fields?.filter(
-      (caseField) =>
-        caseField.field_type.id === this.CASE_QUERIES_COLLECTION_ID &&
-        caseField.field_type.type === this.FIELD_TYPE_COMPLEX
-    )?.length || 0;
-    if (numberOfCaseQueriesCollections > 1) {
-      this.getUserDetailsRoleName();
+  public onQuestionSelected(qualifyingQuestion: QualifyingQuestion): void {
+    this.selectedQualifyingQuestion = qualifyingQuestion;
+  }
+
+  private getQuestionType(name: string): string {
+    if (name === this.RAISE_A_QUERY_NAME) {
+      return 'raiseNewQuery';
     }
+    if (name === this.FOLLOW_UP_ON_EXISTING_QUERY) {
+      return 'followUpOnExistingQuery';
+    }
+    return 'qualifyingQuestion';
   }
 
-  // Workaround for multiple qmCaseQueriesCollections that are not to be appearing in the eventData
-  private getUserDetailsRoleName(): void {
-    this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
-      const matchedRoleAssignment = user.roleAssignmentInfo?.find(
-        (m) => m.caseId === this.caseDetails.case_id
-      );
-      if (matchedRoleAssignment) {
-        this.roleName = matchedRoleAssignment.roleName;
-      } else {
-        this.roleName = '';
+  private getEventTrigger(): void {
+    const loadingToken = this.loadingService.register();
+
+    this.caseNotifier.fetchAndRefresh(this.caseId).pipe(
+      take(1),
+      switchMap((caseDetails) => {
+        this.caseDetails = caseDetails;
+
+        const eventId = this.queryCreateContext !== QueryCreateContext.RESPOND
+          ? this.RAISE_A_QUERY_EVENT_TRIGGER_ID
+          : this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID;
+
+        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, eventId, caseDetails.case_id);
+        return this.eventTrigger$;
+      })
+    ).subscribe({
+      next: (eventTrigger) => {
+        this.eventTrigger = eventTrigger;
+        this.showForm = true;
+        this.loadingService.unregister(loadingToken);
+
+        if ([QueryCreateContext.FOLLOWUP, QueryCreateContext.RESPOND].includes(this.queryCreateContext)) {
+          this.processFilteredMessages();
+        }
+      },
+      error: (err: HttpError) => {
+        this.loadingService.unregister(loadingToken);
+
+        if (err.status !== 401 && err.status !== 403) {
+          this.errorNotifierService.announceError(err);
+          this.alertService.error({ phrase: err.message });
+          console.error('Error occurred while fetching event data:', err);
+          this.callbackErrorsSubject.next(err);
+
+          this.showContinueButton = false;
+          this.showForm = this.ignoreWarning;
+        } else {
+          this.eventDataError = true;
+          this.addError('Something unexpected happened. Please try again later.', 'eventDataError');
+        }
+
+        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       }
     });
   }
@@ -518,11 +708,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   private extractCaseQueriesFromCaseField(caseField: CaseField) {
-    const { field_type, value } = caseField;
+    const { field_type, value, display_context } = caseField;
 
     // Handle Complex type fields
     if (field_type.type === QueryManagementContainerComponent.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && this.isNonEmptyObject(value)) {
+      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && display_context !== QueryManagementContainerComponent.DISPLAY_CONTEXT_READONLY && this.isNonEmptyObject(value)) {
         return value;
       }
       return null;
@@ -546,5 +736,12 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  public validate(data): Observable<any> {
+    return this.casesService.validateCase(
+      this.caseDetails.case_type.id,
+      data,
+      this.RAISE_A_QUERY_EVENT_TRIGGER_ID) as any;
   }
 }

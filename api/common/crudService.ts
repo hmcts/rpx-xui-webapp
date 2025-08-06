@@ -20,21 +20,21 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
     const headers = setHeaders(req);
     return await http.get(path, { headers });
   } catch (e) {
-    console.error('handleGet: ' + path, e.statusText, e.statusText, JSON.stringify(e.data));
+    logger.error('handleGet: ' + e.status + ' ' + path, e.statusText, e.statusText, JSON.stringify(e.data));
     next(e);
   }
 }
 
 export async function sendGet(path: string, req: EnhancedRequest, customHeaders: { [x: string]: string } = {}): Promise<AxiosResponse> {
   try {
-    logger.info('send get request to:', path);
+    logger.info('sendGet to:', path);
     const headers = {
       ...setHeaders(req),
       ...customHeaders
     };
     return await http.get(path, { headers });
   } catch (e) {
-    logger.error(e.status, e.statusText, JSON.stringify(e.data));
+    logger.error('sendGet: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
     throw e;
   }
 }
@@ -46,24 +46,24 @@ export async function sendGet(path: string, req: EnhancedRequest, customHeaders:
  * @param next
  * @returns {Promise<AxiosResponse>}
  */
-export async function handlePost<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-  try {
-    logger.info('handle post:', path);
-    const headers = setHeaders(req);
-    return await http.post(path, body, { headers });
-  } catch (e) {
-    next(e);
-  }
+export async function handlePost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+  logger.info('handlePost:', path);
+  const headers = setHeaders(req);
+  return await http.post(path, body, { headers });
 }
 
-export async function sendPost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+export async function sendPost<T>(path: string, body: T, req: EnhancedRequest, next?: NextFunction): Promise<AxiosResponse> {
   try {
-    logger.info('send post request to:', path);
+    logger.info('sendPost to:', path);
     const headers = setHeaders(req);
     return await http.post(path, body, { headers });
   } catch (e) {
-    logger.error(e.status, e.statusText, JSON.stringify(e.data));
-    throw e;
+    logger.error('sendPost: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
+    if (next) {
+      next(e);
+    } else {
+      throw e;
+    }
   }
 }
 

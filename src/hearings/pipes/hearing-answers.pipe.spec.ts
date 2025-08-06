@@ -12,13 +12,13 @@ import {
   partySubChannelsRefData
 } from '../hearing.test.data';
 import { AnswerSource, RadioOptions } from '../models/hearings.enum';
-import { LocationByEPIMMSModel } from '../models/location.model';
+import { LocationByEpimmsModel } from '../models/location.model';
 import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
 describe('HearingAnswersPipe', () => {
-  const FOUND_LOCATIONS: LocationByEPIMMSModel[] = [{
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
     epimms_id: '196538',
     site_name: 'Liverpool Social Security and Child Support Tribunal',
     court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
@@ -314,6 +314,13 @@ describe('HearingAnswersPipe', () => {
   it('should transform case restriction', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_RESTRICTION, of(STATE), 0);
     const answer = 'No';
+    const expected = cold('(b|)', { b: answer });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should transform hearingId', () => {
+    const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_ID, of(STATE), 0);
+    const answer = '1000000';
     const expected = cold('(b|)', { b: answer });
     expect(result$).toBeObservable(expected);
   });

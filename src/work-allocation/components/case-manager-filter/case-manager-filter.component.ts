@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { FilterService } from '@hmcts/rpx-xui-common-lib';
+import { FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
 import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { LocationByEPIMMSModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { PersonRole } from '../../../../api/workAllocation/interfaces/person';
 import { AppUtils } from '../../../app/app-utils';
 import { HMCTSServiceDetails } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
@@ -109,8 +108,8 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
           label: PersonRole.JUDICIAL
         },
         {
-          key: PersonRole.CASEWORKER,
-          label: PersonRole.CASEWORKER
+          key: PersonRole.LEGAL_OPERATIONS,
+          label: PersonRole.LEGAL_OPERATIONS
         },
         {
           key: PersonRole.ADMIN,
@@ -193,7 +192,7 @@ export class CaseManagerFilterComponent implements OnInit, OnDestroy {
       ).subscribe((f: FilterSetting) => {
         const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
           if (field.name === 'location') {
-            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEPIMMSModel).epimms_id : '';
+            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';
             return { ...acc, [field.name]: value };
           }
           return { ...acc, [field.name]: field.value[0] };

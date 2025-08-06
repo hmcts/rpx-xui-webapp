@@ -21,6 +21,14 @@
     <h1 class="govuk-heading-m">{{ 'Hearing details' | rpxTranslate }}</h1>
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Case Reference</dt>
+        <dd class="govuk-summary-list__value">{{hearingActualsCaseRef | caseReference}}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Hearing Id</dt>
+        <dd class="govuk-summary-list__value">{{hearingRequestID}}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">{{getHearingDateText()}}</dt>
         <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
       </div>
@@ -104,9 +112,9 @@
                 <br>
                 <div class="hearing-table-row">
                   <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      <span class="govuk-heading-m govuk-!-margin-bottom-0">{{ 'Hearing timings' | rpxTranslate }}</span>
-                    </dt>
+                    <div class="govuk-summary-list__key">
+                      <h2 class="govuk-heading-m govuk-!-margin-bottom-0">{{ 'Hearing timings' | rpxTranslate }}</h2>
+                    </div>
                     <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
@@ -141,9 +149,9 @@
                 <br>
                 <div class="hearing-table-row">
                   <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                      <span class="govuk-heading-m govuk-!-margin-bottom-0">{{ 'Participants' | rpxTranslate }}</span>
-                    </dt>
+                    <div class="govuk-summary-list__key">
+                      <h2 class="govuk-heading-m govuk-!-margin-bottom-0">{{ 'Participants' | rpxTranslate }}</h2>
+                    </div>
                     <dd class="govuk-summary-list__value"></dd>
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">

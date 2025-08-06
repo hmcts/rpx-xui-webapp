@@ -19,7 +19,6 @@ import { CaseViewerContainerComponent } from './containers/case-viewer-container
 import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
 import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
-import { RestrictedCaseAccessGuard } from './guards/restricted-case-access-guard';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -134,7 +133,6 @@ export const ROUTES: Routes = [
       {
         path: 'restricted-case-access/:cid',
         component: RestrictedCaseAccessContainerComponent,
-        canActivate: [RestrictedCaseAccessGuard],
         data: {
           title: 'Restricted case access'
         }

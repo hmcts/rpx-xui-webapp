@@ -2264,6 +2264,12 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
   }
 };
 
+export const caseInfoStore = {
+  caseReference: '1111222233334444',
+  jurisdictionId: '',
+  hearingId: ''
+};
+
 export const initialState = {
   hearings: {
     hearingList: {
@@ -2291,13 +2297,15 @@ export const initialState = {
     },
     hearingValues: {
       serviceHearingValuesModel,
+      caseInfo: caseInfoStore,
       lastError: null
     },
     hearingRequestToCompare: {
       hearingRequestMainModel: {
         requestDetails: {
           timestamp: null,
-          versionNumber: 1
+          versionNumber: 1,
+          hearingRequestID: '1000000'
         },
         hearingDetails: {
           duration: 60,
@@ -2940,6 +2948,7 @@ export const initialStateImmutable = {
     },
     hearingValues: {
       serviceHearingValuesModel,
+      caseInfo: caseInfoStore,
       lastError: null
     },
     hearingRequestToCompare: {

@@ -610,7 +610,7 @@ describe('CaseHearingsListComponent', () => {
   let fixture: ComponentFixture<CaseHearingsListComponent>;
   let mockStore: Store<fromHearingStore.State>;
   const featureToggleServiceMock = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(mockedHttpClient);
 
@@ -665,6 +665,7 @@ describe('CaseHearingsListComponent', () => {
     component.actions = [Actions.DELETE];
     featureToggleServiceMock.isEnabled.and.returnValue(of(false));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(false));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     fixture.detectChanges();
   });
 
@@ -857,6 +858,7 @@ describe('CaseHearingsListComponent', () => {
   it('should show view details actions if feature toggle is on', () => {
     featureToggleServiceMock.isEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     component.status = EXUISectionStatusEnum.UPCOMING;
     component.actions = [Actions.CREATE, Actions.DELETE, Actions.UPDATE, Actions.READ];
     component.ngOnInit();
@@ -918,15 +920,15 @@ describe('CaseHearingsListComponent', () => {
     // AWAITING_LISTING
     component.viewDetails(UPCOMING_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100001', '/hearings/view/hearing-view-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100001', '/hearings/view/hearing-view-summary', '1111222233334444');
     // LISTED
     component.viewDetails(UPCOMING_HEARING_LIST[2]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100003', '/hearings/view/hearing-view-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100003', '/hearings/view/hearing-view-summary', '1111222233334444');
     // UPDATE_REQUESTED
     component.viewDetails(UPCOMING_HEARING_LIST[3]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100004', '/hearings/view/hearing-view-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100004', '/hearings/view/hearing-view-summary', '1111222233334444');
     // CANCELLATION_REQUESTED
     component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
@@ -938,14 +940,14 @@ describe('CaseHearingsListComponent', () => {
     // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010', '1111222233334444');
     component.viewDetails(UPCOMING_HEARING_LIST[7]);
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100009', '/hearings/view/hearing-view-actuals-summary/h100009');
     // ADJOURNED
     component.viewDetails(PAST_HEARING_LIST[2]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100011', '/hearings/view/hearing-adjourned-summary/h100011');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100011', '/hearings/view/hearing-adjourned-summary/h100011', '1111222233334444');
     // FAILURE
     component.viewDetails(UPCOMING_HEARING_LIST[5]);
     fixture.detectChanges();

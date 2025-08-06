@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
-import { AppUtils } from '../../../app/app-utils';
-import { UserInfo, UserRole } from '../../../app/models';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { Utils } from '../../../cases/utils/utils';
@@ -81,7 +81,7 @@ export class CaseTaskComponent implements OnInit {
     }, task.description);
   }
 
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
     this.manageOptions = this.task.actions;
   }
 
@@ -95,7 +95,7 @@ export class CaseTaskComponent implements OnInit {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
       this.userRoleCategory = userInfo.roleCategory;
-      this.isUserJudicial = AppUtils.getUserRole(userInfo.roles) === UserRole.Judicial;
+      this.isUserJudicial = this.userRoleCategory === RoleCategory.JUDICIAL;
       return task.assignee && task.assignee === userId;
     }
     return false;

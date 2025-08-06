@@ -5,6 +5,12 @@ import { HttpError } from '../../../models/httpError.model';
 import * as fromHearingValuesActions from '../actions/hearing-values.action';
 import * as fromHearingValuesReducer from './hearing-values.reducer';
 
+const CASE_INFO_STORE_VALUE = {
+  jurisdictionId: '',
+  caseReference: '',
+  hearingId: ''
+};
+
 const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hmctsServiceID: 'BBA3',
   hearingChannels: [],
@@ -148,6 +154,7 @@ describe('Hearing Values Reducer', () => {
       it('should call error response action', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
+          caseInfo: null,
           lastError: {
             status: 403,
             errors: null,
@@ -170,11 +177,13 @@ describe('Hearing Values Reducer', () => {
         };
         const currState: HearingValuesStateData = {
           serviceHearingValuesModel: SERVICE_HEARING_VALUES,
+          caseInfo: CASE_INFO_STORE_VALUE,
           lastError: null
         };
 
         const finalState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
+          caseInfo: { jurisdictionId: '', caseReference: '', hearingId: '' },
           lastError: ERROR_403
         };
 
@@ -189,6 +198,7 @@ describe('Hearing Values Reducer', () => {
       it('should set correct object', () => {
         const initialHearingValuesState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
+          caseInfo: null,
           lastError: {
             status: 403,
             errors: null,

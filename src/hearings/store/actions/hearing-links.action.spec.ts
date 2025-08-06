@@ -7,7 +7,7 @@ describe('Hearing Links Actions', () => {
   });
 
   it('should load service linked cases', () => {
-    const action = new fromHearingLinksAction.LoadServiceLinkedCases({ caseReference: '1111222233334444', hearingId: 'h1000000' });
+    const action = new fromHearingLinksAction.LoadServiceLinkedCases({ jurisdictionId: 'JURISDICTION', caseReference: '1111222233334444', hearingId: 'h1000000' });
     expect(action.type).toBe(fromHearingLinksAction.LOAD_SERVICE_LINKED_CASES);
   });
 

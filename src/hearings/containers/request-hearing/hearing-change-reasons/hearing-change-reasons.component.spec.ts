@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +14,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HearingChangeReasonsComponent', () => {
   let component: HearingChangeReasonsComponent;
@@ -23,7 +24,7 @@ describe('HearingChangeReasonsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
-  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled']);
+  const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
 
   const reasons: LovRefDataModel[] = [
     {
@@ -66,8 +67,9 @@ describe('HearingChangeReasonsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
       declarations: [HearingChangeReasonsComponent, MockRpxTranslatePipe],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
         {
           provide: HearingsService,
@@ -100,9 +102,10 @@ describe('HearingChangeReasonsComponent', () => {
           provide: HearingsFeatureService,
           useValue: hearingsFeatureServiceMock
         },
-        FormBuilder
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        FormBuilder,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
       .compileComponents();
   }));
@@ -118,6 +121,7 @@ describe('HearingChangeReasonsComponent', () => {
     mockStore.pipe.and.returnValue(of(initialState.hearings.hearingList));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
+    hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     fixture.detectChanges();
   });
 

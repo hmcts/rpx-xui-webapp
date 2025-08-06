@@ -2,6 +2,7 @@
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-body-lead">{{ status | rpxTranslate }}</th>
+    <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Hearing Id' | rpxTranslate }}</th>
     <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Hearing date' | rpxTranslate }}</th>
     <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Status' | rpxTranslate }}</th>
     <th *ngIf="(hearingList$ | async)?.length" class="govuk-table__header">{{ 'Actions' | rpxTranslate }}</th>
@@ -17,9 +18,9 @@
     <td class="govuk-table__header govuk-table-width-30-percent gds-font">{{ hearing.hearingType | convertToValue: hearingStageOptions }}
       <img *ngIf="hasUpdateAction && isManageLinksEnabled(hearing.hearingGroupRequestId)" src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle" alt="Linked">
     </td>
+    <td class="govuk-table__cell govuk-table-width-15-percent gds-font">{{ hearing.hearingID ? hearing.hearingID: '' }}</td>
     <td
-      class="govuk-table__cell govuk-table-width-15-percent gds-font">
-      {{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
+      class="govuk-table__cell govuk-table-width-15-percent gds-font">{{ hearing.earliestHearingStartDateTime ? (hearing.earliestHearingStartDateTime | date:'d MMMM yyyy') : '' }}
       <img *ngIf="hearing.hearingDaySchedule && hearing.hearingDaySchedule.length > 1" src="../../../../assets/img/calendar-logo.svg" width="20px;" class="align-middle status-icon" alt="Linked">
     </td>
     <td class="govuk-table__cell govuk-table-width-25-percent gds-font">
@@ -29,9 +30,10 @@
     <td class="govuk-table__cell govuk-table-width-30-percent">
       <div *ngIf="hasUpdateAction" class="div-action">
         <ng-container *ngIf="!isAwaitingActual(hearing.exuiDisplayStatus) && !isNonCancellable(hearing.exuiDisplayStatus)">
-          <a id="link-view-or-edit-{{hearing.hearingID}}"
-             href="javascript:void(0)"
-             (click)="viewAndEdit(hearing.hearingID)">{{ 'View or edit' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a *ngIf="!(isHearingAmendmentsEnabled)" id="link-view-or-edit-{{hearing.hearingID}}" href="javascript:void(0)"
+             (click)="viewAndEdit(hearing.hearingID)">{{ 'View or edit' | rpxTranslate }}</a>
+          <a *ngIf="isHearingAmendmentsEnabled" id="link-view-details-{{hearing.hearingID}}" href="javascript:void(0)"
+             (click)="viewAndEdit(hearing.hearingID)">{{ 'View details' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
         </ng-container>
         <ng-container *ngIf="isAwaitingActual(hearing.exuiDisplayStatus)">
           <a id="link-add-or-edit-{{hearing.hearingID}}"

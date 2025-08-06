@@ -72,8 +72,9 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
       const user = caseworkers.find((caseworker) => caseworker.idamId === id);
       const userWithAccess = this.usersWithAccess.find((user) => user.actorId === id);
       if (!user) {
+        // EXUI-2907 - Multiple users check for judicial
         if (userWithAccess.roleCategory === 'JUDICIAL') {
-          await this.judicialRefDataService.searchJudicialUserByIdamID([id])
+          this.judicialRefDataService.searchJudicialUserByIdamID([id])
             .pipe(
               tap((judge) => {
                 if (judge && judge.length > 0) {

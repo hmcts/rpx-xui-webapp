@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { combineLatest, of, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { combineLatest, of, Observable, Subject } from 'rxjs';
+import { catchError, filter, map, takeUntil } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models/user-details.model';
@@ -12,8 +12,8 @@ import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WAFeatureConfig } from '../../../work-allocation/models/common/service-config.model';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
-import { FeatureVariation } from '../../models/feature-variation.model';
 import { Utils } from '../../utils/utils';
+import { HearingJurisdictionConfigService } from '../../../app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
@@ -27,6 +27,7 @@ export class CaseViewerContainerComponent implements OnInit {
   public appendedTabs$: Observable<CaseTab[]>;
   public userRoles$: Observable<string[]>;
   private retryCount: number;
+  private readonly destroy$ = new Subject<void>();
   private waDefaultServiceConfig: any = {
     'configurations': [
       {
@@ -122,8 +123,10 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
+    protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
     private readonly loggerService: LoggerService,
-    private readonly waService: WASupportedJurisdictionsService) {
+    private readonly waService: WASupportedJurisdictionsService,
+    private readonly router: Router){
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
     );
@@ -146,12 +149,21 @@ export class CaseViewerContainerComponent implements OnInit {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.retryCount = 0;
     this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
-    let noOfUserRoles = 0;
-    this.userRoles$.subscribe((userRoles) => {
-      noOfUserRoles = userRoles?.length ?? 0;
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      if (event.url.indexOf(`/cases/case-details/${this.caseDetails.case_id}`) === -1){
+        window.location.href = `/cases/case-details/${event.url.split('/')[3]}`;
+      }
+    });
+    this.userRoles$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((userRoles) => {
+      const noOfUserRoles = userRoles?.length ?? 0;
       if (noOfUserRoles === 0 && this.retryCount < 3) {
         this.retryCount++;
-        this.loggerService.log('case-viewer-container - userRoles length is null or undefined or 0 so calling LoadUserDetails.  Retry count: ', this.retryCount);
+        this.loggerService.log('case-viewer-container - userRoles length is null or undefined or 0 so calling LoadUserDetails. Retry count: ', this.retryCount);
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
       } else {
         this.setPrependedCaseViewTabs();
@@ -181,7 +193,7 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private setAppendedCaseViewTabs(): void {
     combineLatest([
-      this.featureToggleService.getValueOnce<FeatureVariation[]>(AppConstants.FEATURE_NAMES.mcHearingsFeature, []),
+      this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig(),
       this.userRoles$
     ]).pipe(
       map(([featureVariations, userRoles]) => {
@@ -198,5 +210,10 @@ export class CaseViewerContainerComponent implements OnInit {
     ).subscribe((tabs) => {
       this.appendedTabs$ = of(tabs);
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

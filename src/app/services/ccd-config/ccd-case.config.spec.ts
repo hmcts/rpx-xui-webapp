@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
@@ -9,6 +9,7 @@ import { AppConfig } from './ccd-case.config';
 import { InitialisationSyncService } from './initialisation-sync-service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 import { LoggerService } from '../logger/logger.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 class MockConfigService {
   private readonly config;
@@ -50,10 +51,7 @@ describe('AppConfiguration', () => {
   });
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        HttpClientTestingModule
-      ],
+      imports: [StoreModule.forRoot({})],
       providers: [
         { provide: Window, useValue: mockWindow },
         AppConfig,
@@ -61,7 +59,9 @@ describe('AppConfiguration', () => {
         { provide: AppConfigService, useClass: MockConfigService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: EnvironmentService, useValue: mockEnvironmentService },
-        { provide: LoggerService, useValue: mockLoggerService }
+        { provide: LoggerService, useValue: mockLoggerService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
     const iss = TestBed.inject(InitialisationSyncService);
@@ -142,7 +142,7 @@ describe('AppConfiguration', () => {
   }));
 
   it('should have getCreateOrUpdateDraftsUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getCreateOrUpdateDraftsUrl('')).toBe('undefined/internal/case-types//drafts/');
+    expect(service.getCreateOrUpdateDraftsUrl('')).toBe('undefined/internal/case-types//drafts');
   }));
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {

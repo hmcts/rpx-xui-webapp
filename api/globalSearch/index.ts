@@ -7,18 +7,19 @@ import {
   SERVICES_LOCATION_REF_API_URL
 } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
-import { EnhancedRequest } from '../lib/models';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { toTitleCase } from '../utils';
-
+import * as log4jui from '../lib/log4jui';
 /**
  * Get global search services
  * api/globalsearch/services
  */
 
 const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
+const logger: JUILogger = log4jui.getLogger('global-search');
 
 export async function getServices(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
@@ -47,11 +48,12 @@ export async function getServices(req: EnhancedRequest, res: Response, next: Nex
  * api/globalsearch/results
  */
 export async function getSearchResults(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
+  const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalSearch`;
   try {
-    const path = `${getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)}/globalSearch`;
-    const response = await handlePost(path, req.body, req, next);
+    const response = await handlePost(path, req.body, req);
     return res.status(response.status).send(response.data);
   } catch (error) {
+    logger.error('getSearchResults error: ' + error.status + ' ' + path, error.statusText, JSON.stringify(error.data));
     next(error);
   }
 }
@@ -70,8 +72,10 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSServ
   const globalSearchServices: HMCTSServiceDetails[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
     // search for the service name based on the globalSearchServiceId
-    const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase()) : null;
-    if (jurisdiction?.length > 0) {
+    const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => {
+      return x && (x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase());
+    }) : null;
+    if (jurisdiction && jurisdiction.length > 0) {
       // handle Civil service which has different service_short_description
       if (jurisdiction.length > 1) {
         globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });

@@ -3113,12 +3113,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.29":
-  version: 7.2.29
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.29"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.30-mv-redactions":
+  version: 7.2.30-mv-redactions
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.30-mv-redactions"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/43978c5405b3a05add40c28723e63ebf737375f12998bde62b036b8e2145e0fe56d15778fcd7a30548f2698082374d62a64733aed89ca6a50bc2409b778a03d3
+  checksum: 10/00de0a01bdc697a0182bac74c852688baccf737ed55a06fc48ffd74ad2fc94dde6c64b74a30ae88cf9d8750cf49ee356651a52d420dbc8a79d7b7cd0056b2f62
   languageName: node
   linkType: hard
 
@@ -3141,9 +3141,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.3":
-  version: 4.1.3
-  resolution: "@hmcts/media-viewer@npm:4.1.3"
+"@hmcts/media-viewer@npm:4.1.3-redactions-rc3":
+  version: 4.1.3-redactions-rc3
+  resolution: "@hmcts/media-viewer@npm:4.1.3-redactions-rc3"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3162,7 +3162,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/a1b647543f8da431fd9039b8faa336d24b3cdc534bca6d8025830f04de9d9552dea001b39fba1f1fb85f92e34fd6782ea7dc50500358288a3cc91061e23ac298
+  checksum: 10/b48a6d13bd8c35fb19a2b7c91953ceec590e028c86397fce9d20ae4eab7ac3733413a49e1b078e7dd60bd0e166f5ece4b6f85e5c6698fb9772daedc5ba11d91d
   languageName: node
   linkType: hard
 
@@ -21904,10 +21904,10 @@ __metadata:
     "@cucumber/cucumber": "npm:^11.0.0"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.29"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.30-mv-redactions"
     "@hmcts/ccpay-web-component": "npm:6.2.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.3"
+    "@hmcts/media-viewer": "npm:4.1.3-redactions-rc3"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5"

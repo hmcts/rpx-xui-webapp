@@ -1,5 +1,5 @@
 
-@ng @tabs_testing @functional_enabled 
+@ng @tabs_testing @functional_enabled
 Feature: WA Release 2: Case details Tasks tab
 
     Requirements from

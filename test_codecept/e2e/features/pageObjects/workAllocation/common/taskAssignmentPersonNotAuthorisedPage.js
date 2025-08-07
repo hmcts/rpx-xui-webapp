@@ -1,9 +1,16 @@
+const { $ } = require('../../../../../helpers/globals');
 
 class TaskAssignmentPersonNotAuthorised{
-  constructor(){
-    this.container = $('exui-task-assignment-person-not-authorised');
-    this.message = $('exui-task-assignment-person-not-authorised h1');
-    this.backButton = $('exui-task-assignment-person-not-authorised button');
+  get container() {
+    return $('exui-task-assignment-person-not-authorised');
+  }
+
+  get message() {
+    return $('exui-task-assignment-person-not-authorised h1');
+  }
+
+  get backButton() {
+    return $('exui-task-assignment-person-not-authorised button');
   }
 }
 

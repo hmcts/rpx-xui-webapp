@@ -1,15 +1,15 @@
-
+const { $, isPresent } = require('../../../helpers/globals');
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 class MediaViewerPage{
-  constructor(){
-    this.mediaViewerContainer = $('exui-media-viewer');
+  get mediaViewerContainer() {
+    return $('exui-media-viewer');
   }
 
   async isDisplayed(){
-    return this.mediaViewerContainer.isPresent();
+    return isPresent(this.mediaViewerContainer);
   }
 
   async amOnPage(){
@@ -42,7 +42,7 @@ class MediaViewerPage{
   async verifyRedactionCreated() {
     const redactionBox = $('div.rectangle');
     await BrowserWaits.waitForElement(redactionBox);
-    return await redactionBox.isPresent();
+    return await isPresent(redactionBox);
   }
 
   async verifyRedactionWorking() {
@@ -62,7 +62,7 @@ class MediaViewerPage{
     await BrowserWaits.waitForElement(newBookmark);
     await newBookmark.click();
     await BrowserWaits.waitForElement(bookmarkRibbon);
-    return await bookmarkRibbon.isPresent();
+    return await isPresent(bookmarkRibbon);
   }
 
   async verifyCommentWorking(page) {
@@ -86,7 +86,7 @@ class MediaViewerPage{
     await saveButton.click();
 
     await BrowserWaits.waitForElement(savedComment);
-    const isCommentVisible = await savedComment.isPresent();
+    const isCommentVisible = await isPresent(savedComment);
 
     return isCommentVisible;
   }

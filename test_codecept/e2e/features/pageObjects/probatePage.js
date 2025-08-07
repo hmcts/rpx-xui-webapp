@@ -1,3 +1,4 @@
+const { $ } = require('../../../helpers/globals');
 Button = require('./webdriver-components/button.js');
 TextField = require('./webdriver-components/textField.js');
 Dropdown = require('./webdriver-components/dropdown.js');
@@ -5,53 +6,56 @@ Dropdown = require('./webdriver-components/dropdown.js');
 class ProbatePage {
   constructor() {
     this.header = '#content h1';
-    this.continueButton = new Button('button[type=submit]');
-    this.firmName =element(by.css('#solsSolicitorFirmName'));
-    this.postCodeTextField = element(by.css('#solsSolicitorAddress_solsSolicitorAddress_postcodeInput'));
-    //this.findAddress = new Button('#postcodeLookup > button');
-    this.addressList = '#solsSolicitorAddress_solsSolicitorAddress_addressList';
-    this.reference = element(by.css('#solsSolicitorAppReference'));
-    this.emailAddress = element(by.css('#solsSolicitorEmail'));
-    //this.saveandContinueButton = new Button('#content button:nth-child(2)');
-    this.findAddress = new Button('button[type=button]');
-    this.saveandContinueButton = new Button('button[type=submit]');
-    this.selectanAddressDropdown=new Dropdown('#solsSolicitorAddress_solsSolicitorAddress_addressList');
   }
 
-  async getPageHeader(){
-    return await $(this.header).getText();
+  get continueButton() { return new Button('button[type="submit"]'); }
+  get saveandContinueButton() { return new Button('button[type="submit"]'); }
+
+  get firmName() { return $('#solsSolicitorFirmName'); }
+
+  get postCodeTextField() { return $('#solsSolicitorAddress_solsSolicitorAddress_postcodeInput'); }
+  get addressList() { return $('#solsSolicitorAddress_solsSolicitorAddress_addressList'); }
+  get selectanAddressDropdown() { return new Dropdown('#solsSolicitorAddress_solsSolicitorAddress_addressList'); }
+
+  get reference() { return $('#solsSolicitorAppReference'); }
+  get emailAddress() { return $('#solsSolicitorEmail'); }
+
+  get findAddress() { return new Button('button[type="button"]'); }
+
+  async getPageHeader() {
+    return await $(this.header).textContent();
   }
 
   async enterProbateValues() {
-    await this.firmName.sendKeys('Rajesh');
-    await this.postCodeTextField.sendKeys('SW20 0BX');
+    await this.firmName.fill('Rajesh');
+    await this.postCodeTextField.fill('SW20 0BX');
     await this.findAddress.click();
-    await this.reference.sendKeys('Rajesh12345');
-    await this.emailAddress.sendKeys('Rajesh1234@gmail.com');
+    await this.reference.fill('Rajesh12345');
+    await this.emailAddress.fill('Rajesh1234@gmail.com');
   }
 
-  async enterFirmName(value){
-    await this.firmName.sendKeys('Rajesh');
+  async enterFirmName(value) {
+    await this.firmName.fill('Rajesh');
   }
 
-  async enterPostCodeTextField(value){
-    await this.postCodeTextField.sendKeys('SW20 0BX');
+  async enterPostCodeTextField(value) {
+    await this.postCodeTextField.fill('SW20 0BX');
     await this.findAddress.click();
   }
 
-  async enterReference(value){
-    await this.reference.sendKeys('Rajesh12345');
+  async enterReference(value) {
+    await this.reference.fill('Rajesh12345');
   }
 
-  async enterEmailAddress(value){
-    await this.emailAddress.sendKeys('Rajesh1234@gmail.com');
+  async enterEmailAddress(value) {
+    await this.emailAddress.fill('Rajesh1234@gmail.com');
   }
 
-  async selectanAddress(){
+  async selectanAddress() {
     await this.selectanAddressDropdown.selectFromDropdownByIndex(3);
   }
 
-  async amOnPage(){
+  async amOnPage() {
     const header = await this.getPageHeader();
     return header === 'Apply for probate';
   }

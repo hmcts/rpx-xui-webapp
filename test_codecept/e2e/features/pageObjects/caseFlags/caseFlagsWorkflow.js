@@ -1,3 +1,4 @@
+const { elementByXpath } = require('../../../../helpers/globals');
 
 const SelectFlagLocationPage = require('./selectFlagLocationPage');
 const SelectFlagTypePage = require('./selectFlagTypePage');
@@ -15,7 +16,6 @@ const ConfirmFlagStatusPage = require('./confirmFlagStatusPage');
 const UpdateFlagAddTranslationPage = require('./updateFlagAddTranslationPage');
 class CaseFlagsWorkflow{
   constructor(){
-    this.nextButton = element(by.xpath('//button[contains(text(),\'Next\')]'));
     this.pages = {
       'Where should this flag be added?': new SelectFlagLocationPage(),
       'Select flag type': new SelectFlagTypePage(),
@@ -31,6 +31,10 @@ class CaseFlagsWorkflow{
       'Add translations to flag': new UpdateFlagAddTranslationPage()
 
     };
+  }
+
+  get nextButton() {
+    return elementByXpath('//button[contains(text(),\'Next\')]');
   }
 
   addAndGetSelectFlagTypePage(flagType){

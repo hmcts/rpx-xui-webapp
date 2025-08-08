@@ -9,13 +9,33 @@ const checkYourAnswersPage = require('./common/checkYourAnswersPage');
 
 class AllocateRoleWorkFlow{
   constructor(){
-    this.workFlowContainer = new WorkFlowContainer();
-
-    this.chooseRolesPage = new ChooseRadioOptionComponent(this.workFlowContainer.container);
-    this.chooseHowToAllocateRolePage = new ChooseRadioOptionComponent(this.workFlowContainer.container.$('exui-choose-allocate-to'));
-    this.findPersonPage = new FindPersonComponent(this.workFlowContainer.container);
-    this.durationOfRolePage = new ChooseDuration(this.workFlowContainer.container);
     this.checkYourAnswers = checkYourAnswersPage;
+  }
+
+  get workFlowContainer() {
+    return this._wfContainer ??= new WorkFlowContainer();
+  }
+
+  get chooseRolesPage() {
+    return this._chooseRolesPage ??=
+      new ChooseRadioOptionComponent(this.workFlowContainer.container);
+  }
+
+  get chooseHowToAllocateRolePage() {
+    return this._chooseHowToAllocateRolePage ??=
+      new ChooseRadioOptionComponent(
+        this.workFlowContainer.container.locator('exui-choose-allocate-to')
+      );
+  }
+
+  get findPersonPage() {
+    return this._findPersonPage ??=
+      new FindPersonComponent(this.workFlowContainer.container);
+  }
+
+  get durationOfRolePage() {
+    return this._durationOfRolePage ??=
+      new ChooseDuration(this.workFlowContainer.container);
   }
 }
 

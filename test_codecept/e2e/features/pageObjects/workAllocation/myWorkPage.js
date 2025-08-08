@@ -1,77 +1,141 @@
-const TaskList = require('./taskListTable');
-const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
-
-const TaskMessageBanner = require('../messageBanner');
+const { $, $$, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
-const { constant } = require('lodash');
+const BrowserWaits = require('../../../support/customWaits');
+const TaskMessageBanner = require('../messageBanner');
+const TaskList = require('./taskListTable');
 
 class MyWorkPage extends TaskList {
   constructor() {
     super();
-    this.pageHeader = $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
-    this.showHideWorkFilterBtn = element(by.xpath('//button[contains(text(),\'work filter\')]'));
-    this.showHideFilterBadge = element(by.xpath('//button[contains(text(),\'work filter\')]/following-sibling::span[contains(text(),\'Filtered view\')]'));
-    this.showHideFilterHint = element(by.xpath('//button[contains(text(),\'work filter\')]/following-sibling::span[contains(text(),\'All of your work may not be visible.\')]'));
-
-    this.genericFilterContainer = $('xuilib-generic-filter');
-    // this.workFilterLocationContainers = $$('.xui-generic-filter #checkbox_locations .govuk-checkboxes__item');
-
-    //Services filters
-    this.workFilterServicesContainer = $('.xui-generic-filter#services');
-    this.workFilterServicesHeader = $('.xui-generic-filter#services h3');
-    this.workFilterServiceCheckboxeItems = $$('.xui-generic-filter#services .govuk-checkboxes__item');
-    this.workFilterServiceErrorMessage = $('.xui-generic-filter#services #services-error');
-    //Locations filters
-    this.workFiltersLocationsContainer = $('.xui-generic-filter#locations');
-    this.workFilterSearchLocationInput = $('.xui-generic-filter#locations exui-search-location input');
-    this.workFilterLocationSearchResults = $$('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
-    this.addLocationButton = $('.xui-generic-filter#locations xuilib-find-location .location-picker-custom a');
-
-    this.selectedLocations = $$('.xui-generic-filter#locations xuilib-find-location .location-picker-custom .location-selection a');
-    this.workFilterlocationErrorMessage = $('.xui-generic-filter#locations #locations-error');
-
-    //Work type filters
-    this.workFilterWorkTypesContainer = $('.xui-generic-filter#types-of-work');
-    this.workFilterTypesOfWork = $$('.xui-generic-filter #checkbox_types-of-work .govuk-checkboxes__item');
-
-    this.workFilterApplyBtn = $('xuilib-generic-filter #applyFilter');
-    this.workFilterRestBtn = $('xuilib-generic-filter #cancelFilter');
-    //end of work filter locators
-
-    this.subNavListContainer = $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
-
-    this.myTasksContaine = $('exui-my-tasks');
-    this.availableTasksContainer = $('exui-available-tasks');
-
-    this.bannerMessageContainer = $('exui-info-message ');
-    this.infoMessages = $$('exui-info-message .hmcts-banner__message');
-
-    this.taskInfoMessageBanner = new TaskMessageBanner('exui-work-allocation-home exui-task-home');
   }
 
-  async waitForWorkFilterToDisplay(){
+  get taskInfoMessageBanner() {
+    return new TaskMessageBanner('exui-work-allocation-home exui-task-home');
+  }
+
+  get pageHeader() {
+    return $('exui-work-allocation-home exui-task-home h3.govuk-heading-xl');
+  }
+
+  get showHideWorkFilterBtn() {
+    return elementByXpath("//button[contains(text(),'work filter')]");
+  }
+
+  get showHideFilterBadge() {
+    return elementByXpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'Filtered view')]");
+  }
+
+  get showHideFilterHint() {
+    return elementByXpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]");
+  }
+
+  get genericFilterContainer() {
+    return $('xuilib-generic-filter');
+  }
+
+  // Services filters
+  get workFilterServicesContainer() {
+    return $('.xui-generic-filter#services');
+  }
+
+  get workFilterServicesHeader() {
+    return $('.xui-generic-filter#services h3');
+  }
+
+  get workFilterServiceCheckboxeItems() {
+    return $$('.xui-generic-filter#services .govuk-checkboxes__item');
+  }
+
+  get workFilterServiceErrorMessage() {
+    return $('.xui-generic-filter#services #services-error');
+  }
+
+  // Locations filters
+  get workFiltersLocationsContainer() {
+    return $('.xui-generic-filter#locations');
+  }
+
+  get workFilterSearchLocationInput() {
+    return $('.xui-generic-filter#locations exui-search-location input');
+  }
+
+  get workFilterLocationSearchResults() {
+    return $$('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
+  }
+
+  get addLocationButton() {
+    return $('.xui-generic-filter#locations xuilib-find-location .location-picker-custom a');
+  }
+
+  get selectedLocations() {
+    return $$('.xui-generic-filter#locations xuilib-find-location .location-picker-custom .location-selection a');
+  }
+
+  get workFilterlocationErrorMessage() {
+    return $('.xui-generic-filter#locations #locations-error');
+  }
+
+  // Work type filters
+  get workFilterWorkTypesContainer() {
+    return $('.xui-generic-filter#types-of-work');
+  }
+
+  get workFilterTypesOfWork() {
+    return $$('.xui-generic-filter #checkbox_types-of-work .govuk-checkboxes__item');
+  }
+
+  get workFilterApplyBtn() {
+    return $('xuilib-generic-filter #applyFilter');
+  }
+
+  get workFilterRestBtn() {
+    return $('xuilib-generic-filter #cancelFilter');
+  }
+
+  // Sub navigation & main sections
+  get subNavListContainer() {
+    return $('xuilib-hmcts-sub-navigation .hmcts-sub-navigation__list');
+  }
+
+  get myTasksContaine() {
+    return $('exui-my-tasks');
+  }
+
+  get availableTasksContainer() {
+    return $('exui-available-tasks');
+  }
+
+  get bannerMessageContainer() {
+    return $('exui-info-message');
+  }
+
+  get infoMessages() {
+    return $$('exui-info-message .hmcts-banner__message');
+  }
+
+  async waitForWorkFilterToDisplay() {
     await BrowserWaits.waitForElement(this.genericFilterContainer);
   }
 
-  getSubNavigationTabElement(tabLabel){
-    return element(by.xpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`));
+  getSubNavigationTabElement(tabLabel) {
+    return elementByXpath(`//exui-task-home//a[contains(text(),'${tabLabel}')]`);
   }
 
-  async isSubNavigationTabPresent(tabLabel){
-    return await this.getSubNavigationTabElement(tabLabel).isPresent();
+  async isSubNavigationTabPresent(tabLabel) {
+    return await isPresent(this.getSubNavigationTabElement(tabLabel));
   }
 
-  async clickSubNavigationTab(tabLabel){
+  async clickSubNavigationTab(tabLabel) {
     await BrowserWaits.waitForElement(this.subNavListContainer);
     await this.getSubNavigationTabElement(tabLabel).click();
   }
 
-  async isSubNavigationTabSelected(tabLabel){
+  async isSubNavigationTabSelected(tabLabel) {
     return this.getSubNavigationTabElement(tabLabel).getAttribute('aria-current') !== null;
   }
 
-  async getWorkFilterLocationsCount(){
+  async getWorkFilterLocationsCount() {
     return await this.workFilterLocationContainers.count();
   }
 
@@ -79,46 +143,46 @@ class MyWorkPage extends TaskList {
     return await this.workFilterTypesOfWork.count();
   }
 
-  async OpenWorkFilter(){
-    const isOpen = await this.genericFilterContainer.isPresent() && await this.genericFilterContainer.isDisplayed();
+  async OpenWorkFilter() {
+    const isOpen = await isPresent(this.genericFilterContainer) && await this.genericFilterContainer.isVisible();
 
-    if (!isOpen){
+    if (!isOpen) {
       await this.showHideWorkFilterBtn.click();
     }
   }
 
   async CloseWorkFilter() {
-    const isOpen = await this.genericFilterContainer.isPresent() && await this.genericFilterContainer.isDisplayed();
+    const isOpen = await isPresent(this.genericFilterContainer) && await this.genericFilterContainer.isVisible();
 
     if (isOpen) {
       await this.showHideWorkFilterBtn.click();
     }
   }
 
-  async clickWorkFilterLoctionInputWithLabel(locationLabel){
-    await element(by.xpath(`//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`)).click();
+  async clickWorkFilterLoctionInputWithLabel(locationLabel) {
+    await elementByXpath(`//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`).click();
   }
 
-  async selectWorkFilterLocationAtPosition(locationAtPos){
+  async selectWorkFilterLocationAtPosition(locationAtPos) {
     const locCount = await this.getWorkFilterLocationsCount();
-    if (locationAtPos > locCount || locationAtPos <= 0){
+    if (locationAtPos > locCount || locationAtPos <= 0) {
       throw Error('location pos is out of bound');
     }
 
-    const locInput = await this.workFilterLocationContainers.get(locationAtPos - 1);
-    if (!(await locInput.isSelected())){
+    const locInput = await this.workFilterLocationContainers.nth(locationAtPos - 1);
+    if (!(await locInput.isChecked())) {
       await locInput.click();
     }
   }
 
-  async getListOfSelectedLocations(){
+  async getListOfSelectedLocations() {
     const selectedLocations = [];
     const locationsCount = await this.getWorkFilterLocationsCount();
-    for (let i = 0; i < locationsCount; i++){
-      const locElement = await this.workFilterLocationContainers.get(i);
-      const isLocationSelected = await locElement.$('input').isSelected();
-      if (isLocationSelected){
-        selectedLocations.push(await locElement.$('label').getText());
+    for (let i = 0; i < locationsCount; i++) {
+      const locElement = await this.workFilterLocationContainers.nth(i);
+      const isLocationSelected = await locElement.locator('input').isChecked();
+      if (isLocationSelected) {
+        selectedLocations.push(await getText(locElement.locator('label')));
       }
     }
     return selectedLocations;
@@ -128,10 +192,10 @@ class MyWorkPage extends TaskList {
     const selectedLocations = [];
     const locationsCount = await this.getWorkFilterTypesOfCount();
     for (let i = 0; i < locationsCount; i++) {
-      const locElement = await this.workFilterTypesOfWork.get(i);
-      const isLocationSelected = await locElement.$('input').isSelected();
+      const locElement = await this.workFilterTypesOfWork.nth(i);
+      const isLocationSelected = await locElement.locator('input').isChecked();
       if (isLocationSelected) {
-        selectedLocations.push(await locElement.$('label').getText());
+        selectedLocations.push(await getText(locElement.locator('label')));
       }
     }
     return selectedLocations;
@@ -140,14 +204,18 @@ class MyWorkPage extends TaskList {
   async amOnPage() {
     try {
       await BrowserWaits.waitForSpinnerToDissappear();
-      await this.pageHeader.wait(20);
-      await BrowserWaits.waitForConditionAsync(async () => {
-        const pageHeaderTitle = await this.pageHeader.getText();
-        return pageHeaderTitle.includes('My work');
-      });
+
+      await this.pageHeader.waitFor({ state: 'visible', timeout: 20_000 });
+
+      await BrowserWaits.waitForConditionAsync(
+        async () => (await getText(this.pageHeader)).includes('My work'),
+        20_000
+      );
+
       return true;
-    } catch (err){
-      cucumberReporter.AddMessage('My work page not displayed '+err.stack, LOG_LEVELS.Error);
+    } catch (err) {
+      cucumberReporter.AddMessage('My work page not displayed ' + err.stack,
+        LOG_LEVELS.Error);
       return false;
     }
   }
@@ -163,7 +231,7 @@ class MyWorkPage extends TaskList {
   }
 
   async amOnMyTasksTab() {
-    return await this.myTasksContaine.isDisplayed();
+    return await this.myTasksContaine.isVisible();
   }
 
   async isMyTasksDisplayed() {
@@ -209,19 +277,19 @@ class MyWorkPage extends TaskList {
     return false;
   }
 
-  async getWorkFilterServicesList(){
+  async getWorkFilterServicesList() {
     const servicesCheckBoxItemsCount = await this.workFilterServiceCheckboxeItems.count();
     const returnValues = [];
-    for (let i = 0; i < servicesCheckBoxItemsCount; i++){
-      const checkBoxItem = await this.workFilterServiceCheckboxeItems.get(i);
-      returnValues.push(await checkBoxItem.$('label').getText());
+    for (let i = 0; i < servicesCheckBoxItemsCount; i++) {
+      const checkBoxItem = await this.workFilterServiceCheckboxeItems.nth(i);
+      returnValues.push(await getText(checkBoxItem.locator('label')));
     }
     return returnValues;
   }
 
-  async selectWorkFilterService(service){
+  async selectWorkFilterService(service) {
     const serviceCheckBox = await this.getServiceCheckBox(service);
-    const isChecked = await serviceCheckBox.isSelected();
+    const isChecked = await serviceCheckBox.isChecked();
     if (!isChecked) {
       await serviceCheckBox.click();
     }
@@ -229,67 +297,67 @@ class MyWorkPage extends TaskList {
 
   async unselectWorkFilterService(service) {
     const serviceCheckBox = await this.getServiceCheckBox(service);
-    const isChecked = await serviceCheckBox.isSelected();
+    const isChecked = await serviceCheckBox.isChecked();
     if (isChecked) {
       await serviceCheckBox.click();
     }
   }
 
-  async isWorkFilterServiceSelected(service){
+  async isWorkFilterServiceSelected(service) {
     const serviceCheckBox = await this.getServiceCheckBox(service);
-    return serviceCheckBox.isSelected();
+    return serviceCheckBox.isChecked();
   }
 
   async getServiceCheckBox(service) {
     const servicesCheckBoxItemsCount = await this.workFilterServiceCheckboxeItems.count();
     let serviceCheckBox = null;
     for (let i = 0; i < servicesCheckBoxItemsCount; i++) {
-      const checkBoxItem = await this.workFilterServiceCheckboxeItems.get(i);
-      const serviceName = await checkBoxItem.$('label').getText();
+      const checkBoxItem = await this.workFilterServiceCheckboxeItems.nth(i);
+      const serviceName = await getText(checkBoxItem.locator('label'));
       if (serviceName.includes(service)) {
-        serviceCheckBox = checkBoxItem.$('input');
+        serviceCheckBox = checkBoxItem.locator('input');
         break;
       }
     }
-    if (!serviceCheckBox){
+    if (!serviceCheckBox) {
       throw new Error(`Services check box with label ${service} is not found`);
     }
     return serviceCheckBox;
   }
 
-  async getWorkFilterLocationSearchResults(){
+  async getWorkFilterLocationSearchResults() {
     const count = await this.workFilterLocationSearchResults.count();
     const locations = [];
-    for (let i = 0; i < count; i++){
-      const loc = await await this.workFilterLocationSearchResults.get(i);
-      locations.push(await loc.getText());
+    for (let i = 0; i < count; i++) {
+      const loc = await await this.workFilterLocationSearchResults.nth(i);
+      locations.push(await getText(loc));
     }
     return locations;
   }
 
-  async selectWorkFilterLocationSearchResult(location){
-    const locationResult = element(by.xpath(`//div[contains(@class,'cdk-overlay-container')]//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`));
+  async selectWorkFilterLocationSearchResult(location) {
+    const locationResult = elementByXpath(`//div[contains(@class,'cdk-overlay-container')]//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`);
     await locationResult.click();
   }
 
-  async getWorkFilterSelectedLocations(){
+  async getWorkFilterSelectedLocations() {
     const count = await this.selectedLocations.count();
     const returnValue = [];
-    for (let i = 0; i < count; i++){
-      const e = await this.selectedLocations.get(i);
-      returnValue.push(await e.getText());
+    for (let i = 0; i < count; i++) {
+      const e = await this.selectedLocations.nth(i);
+      returnValue.push(await getText(e));
     }
     return returnValue;
   }
 
-  async clickSelectedLocationFromWorkFilter(location){
+  async clickSelectedLocationFromWorkFilter(location) {
     const count = await this.selectedLocations.count();
     const actualLocations = [];
-    for (let i = 0; i < count; i++){
-      const e = await this.selectedLocations.get(i);
-      const locationName = await e.getText();
+    for (let i = 0; i < count; i++) {
+      const e = await this.selectedLocations.nth(i);
+      const locationName = await getText(e);
       actualLocations.push(locationName);
-      if (locationName.includes(location)){
+      if (locationName.includes(location)) {
         await e.click();
         return;
       }
@@ -300,14 +368,14 @@ class MyWorkPage extends TaskList {
   async clearAllSelectedLocations() {
     let count = await this.selectedLocations.count();
 
-    while (count > 0){
-      const e = await this.selectedLocations.get(0);
+    while (count > 0) {
+      const e = await this.selectedLocations.nth(0);
       await e.click();
       count = await this.selectedLocations.count();
     }
   }
 
-  getFilterContainer(filterType){
+  getFilterContainer(filterType) {
     const filterTypeNormalized = filterType.toLowerCase().split(' ').join('');
 
     let filterContainer = null;
@@ -323,19 +391,19 @@ class MyWorkPage extends TaskList {
     return filterContainer;
   }
 
-  async isWorkFilterOfTypeDisplayed(filterType){
+  async isWorkFilterOfTypeDisplayed(filterType) {
     const filterContainer = this.getFilterContainer(filterType);
 
-    return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
+    return (await isPresent(filterContainer)) && (await filterContainer.isVisible());
   }
 
-  async isWorkFilterOfTypeDisplayed(filterType){
+  async isWorkFilterOfTypeDisplayed(filterType) {
     const filterTypeNormalized = filterType.toLowerCase().split(' ').join('');
 
     let filterContainer = null;
-    if (filterTypeNormalized.includes('service')){
+    if (filterTypeNormalized.includes('service')) {
       filterContainer = this.workFilterServicesContainer;
-    } else if (filterTypeNormalized.includes('location')){
+    } else if (filterTypeNormalized.includes('location')) {
       filterContainer = this.workFiltersLocationsContainer;
     } else if (filterTypeNormalized.includes('worktype')) {
       filterContainer = this.workFilterWorkTypesContainer;
@@ -343,7 +411,7 @@ class MyWorkPage extends TaskList {
       throw new Error(`${filterType} is not implemented in test. Please check Page object myWorkPage.js`);
     }
 
-    return (await filterContainer.isPresent()) && (await filterContainer.isDisplayed());
+    return (await isPresent(filterContainer)) && (await filterContainer.isVisible());
   }
 }
 

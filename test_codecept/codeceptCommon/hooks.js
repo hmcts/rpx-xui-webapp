@@ -21,7 +21,7 @@ let featureLogFile = null;
 
 global.scenarioData = {};
 
-function overrideConsoleLogforWorkersThreads(){
+function overrideConsoleLogforWorkersThreads() {
   const consoleLogRef = console.log;
   const consoleErrorRef = console.error;
   global.console.log = function (message) {
@@ -52,7 +52,7 @@ function overrideConsoleLogforWorkersThreads(){
   };
 }
 
-function setFeatureLogFile(test){
+function setFeatureLogFile(test) {
   const fileName = getFeatureFileName(test);
   const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`;
   featureLogFile = `${folderName}/${fileName}.txt`;
@@ -62,12 +62,12 @@ function setFeatureLogFile(test){
   codeceptMochawesomeLog.featureLogFilePath = featureLogFile;
 }
 
-function getFeatureFileName(test){
+function getFeatureFileName(test) {
   const filePathSplit = test.file.split('/');
   return filePathSplit[filePathSplit.length - 1];
 }
 
-function clearFeatureLogFile(test){
+function clearFeatureLogFile(test) {
   const fileName = getFeatureFileName(test);
   const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`;
   if (!fs.existsSync(folderName)) {
@@ -76,7 +76,7 @@ function clearFeatureLogFile(test){
   fs.writeFileSync(`${folderName}/${fileName}.txt`, 'Test initialised');
 }
 
-function logsTestStats(status, completedTests, workerStats){
+function logsTestStats(status, completedTests, workerStats) {
   const folderName = `${__dirname}/../../functional-output/tests/featureStats-${testType}.log`;
   if (!fs.existsSync(folderName)) {
     fs.mkdirSync(folderName);
@@ -95,7 +95,7 @@ function logsTestStats(status, completedTests, workerStats){
   }
 }
 
-function featureLogsMessage(test, message){
+function featureLogsMessage(test, message) {
   const fileName = getFeatureFileName(test);
   const folderName = `${__dirname}/../../functional-output/tests/featureRunLogs-${testType}`;
   if (!fs.existsSync(folderName)) {
@@ -127,23 +127,23 @@ module.exports = async function () {
 
   event.dispatcher.on(event.test.after, async function (test) {
     output.print(`Test ${test.state} : ${test.title}`);
-    await mockClient.logMessage(`************ Test status|${test.title}:${test.state }`);
+    await mockClient.logMessage(`************ Test status|${test.title}:${test.state}`);
 
     actor().flushLogsToReport();
 
     const authCookies = idamLogin.authToken;
-    if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2e'){
+    if (test.state === 'failed' && process.env.TEST_TYPE !== 'e2e') {
       const mockSessiondataResponse = await mockClient.getUserSesionData(authCookies);
       featureLogsMessage(test, `${JSON.stringify(mockSessiondataResponse.data, null, 2)}`);
       codeceptMochawesomeLog.AddJson(authCookies);
     }
 
-    if (test.state === 'failed' || true){
+    if (test.state === 'failed' || true) {
       codeceptMochawesomeLog.AddMessage('*************** Browser error logs ***************');
 
       let errorLogs = await actor().grabBrowserLogs();
       errorLogs = errorLogs.filter((error) => error._event.type.includes('error'));
-      for (const error of errorLogs){
+      for (const error of errorLogs) {
         codeceptMochawesomeLog.AddMessage(`${error._event.type}:${error._event.location.url} =>  ${error._event.text} `);
       }
     }
@@ -176,11 +176,11 @@ module.exports = async function () {
     const log = `=== BDD) ${bddStep.keyword} ${bddStep.text}`;
     codeceptMochawesomeLog.AddMessage(log);
 
-    if (bddStep.text.trim() === 'I see case details tab label "Hearings" is displayed is "true"'){
+    if (bddStep.text.trim() === 'I see case details tab label "Hearings" is displayed is "true"') {
       await new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(true);
-        }, 300*60);
+        }, 300 * 60);
       });
     }
   });
@@ -205,15 +205,15 @@ module.exports = async function () {
   // });
 };
 
-async function attachBrowserLogs(){
+async function attachBrowserLogs() {
   const logs = await browser.getBrowserLogs();
-  for (const log of logs){
-    if (log._type !== 'error'){
+  for (const log of logs) {
+    if (log._type !== 'error') {
       continue;
     }
     codeceptMochawesomeLog.AddMessage(`Error: ${log._text}`);
-    for (const stacktraceLocation of log._stackTraceLocations){
-      if (stacktraceLocation.url.includes('.js')){
+    for (const stacktraceLocation of log._stackTraceLocations) {
+      if (stacktraceLocation.url.includes('.js')) {
         continue;
       }
       codeceptMochawesomeLog.AddMessage(`       ${stacktraceLocation.url}:${stacktraceLocation.lineNumber}`);

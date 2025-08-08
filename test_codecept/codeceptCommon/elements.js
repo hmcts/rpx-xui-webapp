@@ -298,7 +298,7 @@ class Element {
 
   async wait(waitInSec){
     reportLogger.AddMessage('ELEMENT_WAIT: ' + JSON.stringify(this.selector) +' at '+this.__getCallingFunctionName());
-    const waitTime = waitInSec ? waitInSec : 20;
+    const waitTime = waitInSec ? waitInSec : 40;
     let isPresentStatus = null;
     let elapsedWait = 0;
     do {

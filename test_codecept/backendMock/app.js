@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const minimist = require('minimist');
 const fs = require('fs');
 const path = require('path');
@@ -39,12 +40,32 @@ const workFlowRouter = require('./services/workFlow/routes');
 
 const users = require('./services/users');
 const userApiData = require('./services/userApiData');
+
+const tolerantJson = express.json({
+  type: ['application/json'],   // only when Content-Type is JSON
+  strict: false,
+  verify: (req, res, buf) => {
+    if (!buf.length) req.body = {}; // {} instead of empty buffer
+  }
+});
+
+if (process.env.MOCK_ALREADY_RUNNING === 'true') {
+  module.exports = {         // dummy stub with the same API
+    startServer: () => Promise.resolve(),
+    stopServer: () => Promise.resolve()
+  };
+  return;                    // skip the real implementation
+}
+
 class MockApp {
   constructor() {
     this.logMessageCallback = null;
     this.logJSONCallback = null;
     this.routesLogFile = `${__dirname}/RUNTIME_ROUTES.txt`;
     this.uniqueRoutesCalled = new Set();
+
+    this.server = null;   // the live Server object
+    this.starting = null;   // Promise while first worker is binding
   }
 
   init(clientPortStart) {
@@ -65,20 +86,45 @@ class MockApp {
   }
 
   async startServer() {
+    try {
+      const probe = await new Promise((ok, fail) => {
+        const s = require('net').createServer()
+          .once('error', fail)      // EADDRINUSE if busy
+          .once('listening', () => { s.close(); ok(); })
+          .listen(8080, '::');
+      });
+    } catch (err) {
+      if (err.code === 'EADDRINUSE') {
+        console.log('[mock] 8080 already bound – assume primary running');
+        return;
+      }
+      throw err;
+    }
+
+    if (this.server) return this.server;
+    if (this.starting) return this.starting;
     const app = express();
     app.disable('etag');
 
+    app.use(
+      cors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      })
+    );
+
     app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(bodyParser.json());
     app.use(cookieParser());
-    app.use(express.json({ type: '*/*' }));
+    app.use(tolerantJson);
 
     app.use((req, res, next) => {
       // console.log(`${req.method} : ${req.url}`);
 
       res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
       const authToken = req.headers.authorization;
-      if (authToken){
+      if (authToken) {
         const token = authToken.replace('Bearer ', '');
         userApiData.logSessionRequest(token, req);
       }
@@ -116,6 +162,14 @@ class MockApp {
     app.use('/documentsv2', evidenceManagementRoutes);
     app.use('/workflow', workFlowRouter);
 
+    app.get('/external/configuration-ui/', (req, res) => {
+      res.json({
+        launchDarklyClientId: 'local-test',
+        appInsightsKey: '',
+        buildVersion: 'test-run'
+      });
+    });
+
     app.get('/activity/cases/:caseId/activity', (req, res) => {
       res.send({});
     });
@@ -124,7 +178,7 @@ class MockApp {
       const reqBody = req.body;
       const savePhrasesPath = path.resolve(__dirname, '../../functional-output/translations.txt');
       const resposne = { translations: {} };
-      for (const phrase of reqBody.phrases){
+      for (const phrase of reqBody.phrases) {
         fs.appendFileSync(savePhrasesPath, `\n${phrase}`);
         resposne.translations[phrase] = { translation: `WELSH[${phrase}]` };
       }
@@ -132,11 +186,20 @@ class MockApp {
       res.send(resposne);
     });
 
-    // await this.stopServer();
-    this.server = await app.listen(8080);
-
-    console.log('mock server started on port : ' + 8080);
-    // return "Mock started successfully"
+    console.log('mock server starting on :8080');
+    this.starting = new Promise((resolve, reject) => {
+      const srv = app.listen(8080, '::', () => {
+        console.log('[mock] server listening on 8080');
+        this.server = srv;   // ready for next calls
+        this.starting = null;  // clear “starting” flag
+        resolve(srv);
+      });
+      srv.on('error', (err) => {
+        this.starting = null;
+        reject(err);
+      });
+    });
+    return this.starting;
   }
 
   async stopServer() {

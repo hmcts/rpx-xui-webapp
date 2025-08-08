@@ -14,7 +14,7 @@ function getPageObject(page) {
 
 Then('I am on hearings workflow page {string}', async function (page) {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await getPageObject(page).isDisplayed(), `${page} not displayed`).to.be.true;
+    expect(await getPageObject(page).pageContainer.isVisible(), `${page} not displayed`).to.be.true;
   });
 });
 

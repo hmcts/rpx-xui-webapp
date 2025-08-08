@@ -1,7 +1,6 @@
 
 const reassignTaskWorkFlow = require('../workAllocation/reassignTaskWorkflow');
 const reallocateWorkflowPage = require('../workAllocation/workFlow');
-const BrowserWaits = require('../../../support/customWaits');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 class workFlowUtil{
@@ -34,7 +33,7 @@ class workFlowUtil{
     } catch (e){
       reportLogger.AddMessage(e);
     }
-    expect(await workFlowPageObject.workFlowContainer.isDisplayed(), `${workflow} workflow container not displayed`).to.be.true;
+    expect(await workFlowPageObject.workFlowContainer.isVisible(), `${workflow} workflow container not displayed`).to.be.true;
   }
 }
 

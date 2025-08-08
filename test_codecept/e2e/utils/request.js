@@ -1,6 +1,5 @@
 
 const axios = require('axios');
-const { promise } = require('protractor');
 const config = require('./config/config');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';

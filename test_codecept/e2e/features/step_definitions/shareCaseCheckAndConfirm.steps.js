@@ -2,9 +2,6 @@
 const ShareCaseCheckAndConfirmPage = require('../pageObjects/shareCaseCheckAndConfirmPage');
 const BrowserWaits = require('../../support/customWaits');
 
-const { defineSupportCode } = require('cucumber');
-const { browser } = require('protractor');
-
 const shareCaseCheckAndConfirmPage = new ShareCaseCheckAndConfirmPage();
 
 //Share Case Confirm Selection Steps

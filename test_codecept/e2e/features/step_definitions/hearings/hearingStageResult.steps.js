@@ -2,7 +2,7 @@
 const hearingStageAndResultUpdatePage = require('../../pageObjects/hearings/editHearingStageAndResultPage');
 
 Then('I see Hearing stage and result update page', async function(){
-  expect(await hearingStageAndResultUpdatePage.container.isDisplayed()).to.be.true;
+  expect(await hearingStageAndResultUpdatePage.container.isVisible()).to.be.true;
 });
 
 When('In Hearing stage and result page, I set {string} to {string}', async function (field, value) {

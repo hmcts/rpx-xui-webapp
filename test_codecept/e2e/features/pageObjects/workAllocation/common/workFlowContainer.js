@@ -1,8 +1,15 @@
-
-const BrowserWaits = require('../../../../support/customWaits');
+const { $, getText, isPresent } = require('../../../../../helpers/globals');
 
 class WorkFlowContainer{
-  constructor() {
+  get container() {
+    return $('.govuk-main-wrapper');
+  }
+
+  get backLink() {
+    return $('a.govuk-back-link');
+  }
+
+  get continueButton() {
     const continueButtons = [
       '.page .govuk-button-group button ',
       '.page .govuk-button-group button.govuk-button[type="submit"]',
@@ -10,30 +17,29 @@ class WorkFlowContainer{
       'exui-task-container-assignment button[type = "submit"]',
       'exui-task-assignment-choose-role button[type="submit"]'
     ];
+    return $(continueButtons.join());
+  }
 
+  get cancelLink() {
     const cancelLinks = [
       '.govuk-button-group p>a',
       '#main-content p>a',
       'exui-task-action-container p a#cancel-link',
       'exui-task-container-assignment p>a'
     ];
-
-    this.container = $('.govuk-main-wrapper');
-    this.backLink = $('a.govuk-back-link');
-    this.continueButton = $(continueButtons.join());
-    this.cancelLink = $(cancelLinks.join());
+    return $(cancelLinks.join());
   }
 
   async isDisplayed(){
-    return await this.container.isDisplayed();
+    return await this.container.isVisible();
   }
 
   async isContinueButtonDisplayed() {
-    return await this.continueButton.idPresent() && await this.continueButton.isDisplayed();
+    return await isPresent(this.continueButton) && await this.continueButton.isVisible();
   }
 
   async getContinueButtonLabel() {
-    return await this.continueButton.getText();
+    return await getText(this.continueButton);
   }
 
   async clickContinue() {
@@ -41,11 +47,11 @@ class WorkFlowContainer{
   }
 
   async isCancelLinkDisplayed() {
-    return await this.cancelLink.isPresent() && await this.cancelLink.isDisplayed();
+    return await isPresent(this.cancelLink) && await this.cancelLink.isVisible();
   }
 
   async getCancelLinkLabel() {
-    return await this.cancelLink.getText();
+    return await getText(this.cancelLink);
   }
 
   async clickCancelLink() {

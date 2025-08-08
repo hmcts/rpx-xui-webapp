@@ -4,7 +4,7 @@ const browserWaits = require('../../../support/customWaits');
 
 Then('I am on linked hearing page {string}', async function(page){
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await linkHearingWorkflowPage.pages[page].isDisplayed()).to.be.true;
+    expect(await linkHearingWorkflowPage.pages[page].isVisible()).to.be.true;
   });
 });
 
@@ -38,8 +38,8 @@ When('In link hearing How should these linked hearings be heard? page, I select 
 
 Then('I see link hearings confirmatin page with message {string}', async function(message){
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await linkHearingWorkflowPage.confirmationBanner.isDisplayed()).to.be.true;
-    expect(await linkHearingWorkflowPage.confirmationBanner.getText()).to.includes(message);
+    expect(await linkHearingWorkflowPage.confirmationBanner.isVisible()).to.be.true;
+    expect(await linkHearingWorkflowPage.confirmationBanner.textContent()).to.includes(message);
   });
 });
 

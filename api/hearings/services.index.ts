@@ -37,7 +37,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
       const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
       let dataByDefault = mapDataByDefault(data);
       const forceNewDefaultScreenFlow = retrieveForceNewDefaultScreenFlow();
-      logger.info(`forceNewDefaultScreenFlow: ${forceNewDefaultScreenFlow}`);
+      console.log(`forceNewDefaultScreenFlow: ${forceNewDefaultScreenFlow}`);
       if (forceNewDefaultScreenFlow) {
         logger.info('In forceDefaultScreenFlow...');
         dataByDefault = forceDefaultScreenFlow(data);
@@ -78,9 +78,9 @@ export function toBoolean(value: unknown): boolean {
 }
 
 export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
-  logger.info('data.screenFlow', data.screenFlow);
+  console.log('data.screenFlow', data.screenFlow);
   if (!data.screenFlow) {
-    logger.info('data.screenFlow is undefined, using DEFAULT_SCREEN_FLOW_NEW');
+    console.log('data.screenFlow is undefined, using DEFAULT_SCREEN_FLOW_NEW');
     return {
       ...data,
       screenFlow: DEFAULT_SCREEN_FLOW_NEW
@@ -96,7 +96,7 @@ export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
 }
 
 export function replaceScreenFlow(screenFlow: ScreenNavigationModel[], followingScreen: string): ScreenNavigationModel[] {
-  logger.info('replaceScreenFlow called with followingScreen:', followingScreen);
+  console.log('replaceScreenFlow called with followingScreen:', followingScreen);
   // Define the sequence to be replaced
   const toReplaceSequence = ['hearing-venue', 'hearing-welsh', 'hearing-judge', 'hearing-panel'];
 

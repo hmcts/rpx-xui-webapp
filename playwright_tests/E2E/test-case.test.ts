@@ -7,6 +7,11 @@ import { waitForSpecificResponse } from './helpers/responseListenerHelper';
 import { createCase } from './steps/create-xui-case-poc-steps';
 import { submitEvent } from './steps/submit-update-case-event-steps';
 import { createTestCaseErrorValidation } from './steps/create-xui-case-test-case-type-dev-steps';
+import { registerCorsChecker } from './helpers/corsSmoke';
+
+test.beforeEach(async ({ page }) => {
+  registerCorsChecker(page);
+});
 
 test('Validate next steps drop down', async ({ page }) => {
   const response = waitForSpecificResponse(

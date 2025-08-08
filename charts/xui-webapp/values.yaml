@@ -35,6 +35,8 @@ nodejs:
     MC_NO_PROXY: localhost
     NOW: false
     STUB: false
+    # Whitelist - most involve acceptable access-control-allow-origin so are unneccessary
+    CORS_ALLOWED_ORIGINS: https://www.googletagmanager.com,https://region1.google-analytics.com,https://uksouth-0.in.applicationinsights.azure.com,https://clientstream.launchdarkly.com,https://app.launchdarkly.com,https://events.launchdarkly.com,https://gateway.ccd.platform.hmcts.net,https://js.monitor.azure.com,https://www.google-analytics.com,https://manage-case.platform.hmcts.net
     # Health Endpoints
     HEALTH_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net/health
     HEALTH_CCD_ACTIVITY_API: http://ccd-case-activity-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health

@@ -1,7 +1,7 @@
-const { defineSupportCode } = require('cucumber');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
+
 const mockClient = require('../../../../backendMock/client/index');
 const mockService = require('../../../../backendMock/client/serviceMock');
 
@@ -12,7 +12,7 @@ const nodeAppMock = require('../../../mockData/nodeApp/mockData');
 
 const waMockData = require('../../../mockData/workAllocation/mockData');
 
-const headerPage = require('../../../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../../../e2e/features/pageObjects/headerPage')(); }
 const SoftAssert = require('../../../util/softAssert');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
@@ -418,7 +418,7 @@ Then('I validate primary navigation tabs for user {string} in release {string}',
   await BrowserUtil.stepWithRetry(async () => {
     const softAssert = new SoftAssert(this);
     const tabsExpected = testData.appFeatures.primaryTabs[userType][release];
-    const tabsActual = await headerPage.getPrimaryTabsDisplayed();
+    const tabsActual = await headerPage().getPrimaryTabsDisplayed();
     for (let i = 0; i < tabsExpected.length; i++) {
       const tabExpected = tabsExpected[i];
       softAssert.setScenario('Is tab displayed ' + tabExpected);
@@ -434,7 +434,7 @@ Then('I validate primary navigation main items for user {string} in release {str
   await BrowserUtil.stepWithRetry(async () => {
     const softAssert = new SoftAssert(this);
     const tabsExpected = testData.appFeatures.primaryTabsMainItems[userType][release];
-    const tabsActual = await headerPage.getPrimaryTabsDisplayed();
+    const tabsActual = await headerPage().getPrimaryTabsDisplayed();
     for (let i = 0; i < tabsExpected.length; i++) {
       const tabExpected = tabsExpected[i];
       softAssert.setScenario('Is tab displayed ' + tabExpected);
@@ -450,7 +450,7 @@ Then('I validate primary navigation right side items for user {string} in releas
   await BrowserUtil.stepWithRetry(async () => {
     const softAssert = new SoftAssert(this);
     const tabsExpected = testData.appFeatures.primaryTabsRightSideItems[userType][release];
-    const tabsActual = await headerPage.getPrimaryTabsDisplayed();
+    const tabsActual = await headerPage().getPrimaryTabsDisplayed();
     for (let i = 0; i < tabsExpected.length; i++) {
       const tabExpected = tabsExpected[i];
       softAssert.setScenario('Is tab displayed ' + tabExpected);

@@ -50,6 +50,10 @@ class ApplicationServer {
   }
 
   async start() {
+    if (process.env.SSR_ALREADY_RUNNING === 'true') {
+      console.log('[localServer] SSR already up – skipping second listen()');
+      return;
+    }
     if (!this.app) {
       await this.initialize();
     }

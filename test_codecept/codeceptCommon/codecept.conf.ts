@@ -16,6 +16,8 @@ const statsReporter = require('./statsReporter');
 
 setDefaultResultOrder('ipv4first');
 
+const externalServers = process.env.EXTERNAL_SERVERS === 'true';
+
 let executionResult = 'passed';
 
 const appWithMockBackend = null;
@@ -29,12 +31,16 @@ console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
 console.log(`headless : ${!head}`);
 
-const pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? 'preview' : 'master';
-const local = process.env.LOCAL && process.env.LOCAL.includes('true');
+const TEST_URL = process.env.TEST_URL || '';
+const pipelineBranch = externalServers //   running against localhost
+  ? 'local' //   value won’t be used later
+  : (TEST_URL.includes('pr-') || TEST_URL.includes('manage-case.aat.platform.hmcts.net')
+    ? 'preview'
+    : 'master');
 let features = '';
-if (testType === 'e2e' || testType === 'smoke'){
+if (testType === 'e2e' || testType === 'smoke') {
   features = '../e2e/features/app/**/*.feature';
-} else if (testType === 'ngIntegration'){
+} else if (testType === 'ngIntegration') {
   features = '../ngIntegration/tests/features/**/*.feature';
 } else {
   throw new Error(`Unrecognized test type ${testType}`);
@@ -43,9 +49,9 @@ if (testType === 'e2e' || testType === 'smoke'){
 const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`);
 
-let bddTags = testType === 'ngIntegration' ? 'functional_enabled':'fullFunctional';
+let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
 
-if (pipelineBranch === 'master' && testType === 'ngIntegration'){
+if (pipelineBranch === 'master' && testType === 'ngIntegration') {
   bddTags = 'AAT_only';
   process.env.LAUNCH_DARKLY_CLIENT_ID = '645baeea2787d812993d9d70';
 }
@@ -102,7 +108,9 @@ exports.config = {
 
     // },
     Playwright: {
-      url: 'https://manage-case.aat.platform.hmcts.net',
+      url: externalServers
+        ? 'http://localhost:3000'   // use local build + mock
+        : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
       show: head,
       waitForNavigation: 'domcontentloaded',
@@ -203,7 +211,7 @@ exports.config = {
   },
   bootstrap: async () => {
     share({ users: [], reuseCounter: 0 });
-    if (!parallel){
+    if (!parallel) {
       await setup();
     }
   },
@@ -221,6 +229,26 @@ exports.config = {
   teardownAll: async () => {
     if (parallel) {
       await teardown();
+
+      // ─── remove mock session files (core API) ──────────────────
+      const dirs = [
+        path.resolve(__dirname, '../../.sessions'),
+        path.resolve(__dirname, '../../api/.sessions')   // DEBUG-mode folder
+      ];
+
+      for (const dir of dirs) {
+        try {
+          // recursive delete, no error if dir is missing
+          fs.rmSync(dir, { recursive: true, force: true });
+
+          // Re-create the empty folder so the next run doesn’t crash
+          fs.mkdirSync(dir, { recursive: true });
+          console.log('[mock] cleaned', dir);
+        } catch (e) {
+          console.warn('[mock] could not clean', dir, e.message);
+        }
+      }
+
       exitWithStatus();
     }
   }
@@ -232,17 +260,17 @@ function exitWithStatus() {
   process.exit(executionResult === 'passed' ? 0 : 1);
 }
 
-async function setup(){
-  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')){
+async function setup() {
+  if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.startServer(debugMode);
     await applicationServer.initialize();
     await applicationServer.start();
   }
 }
 
-async function teardown(){
+async function teardown() {
   console.log('Tests execution completed');
-  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
+  if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
     await applicationServer.stop();
   }
@@ -252,7 +280,7 @@ async function teardown(){
   // process.exit(1);
 }
 
-async function mochawesomeGenerateReport(){
+async function mochawesomeGenerateReport() {
   const report = await merge({
     files: [`${functional_output_dir}/*.json`]
   });
@@ -266,7 +294,7 @@ async function mochawesomeGenerateReport(){
   return report.stats.failures > 0 ? 'FAIL' : 'PASS';
 }
 
-async function generateCucumberReport(){
+async function generateCucumberReport() {
   console.log('Generating cucumber report');
 
   await new Promise((resolve, reject) => {
@@ -310,11 +338,11 @@ function processCucumberJsonReports() {
         for (const element of obj.elements) {
           for (const step of element.steps) {
             executionOutcomes[step.result.status] = step.result.status;
-            if (executionResult === 'passed'){
+            if (executionResult === 'passed') {
               executionResult = step.result.status;
             }
             for (const embedd of step.embeddings) {
-              if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')){
+              if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')) {
                 embedd.data = new Buffer(embedd.data, 'base64').toString('ascii');
               }
             }
@@ -325,6 +353,5 @@ function processCucumberJsonReports() {
     }
   }
   console.log(executionOutcomes);
-
   return executionResult;
 }

@@ -214,7 +214,8 @@ describe('PanelRolesAnswerConverter', () => {
   it('should transform hearing panel exclusion', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-002']
+      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-002'],
+      roleType: ['BBA3-DQPM']
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = 'Disability Qualified Panel Member<br>Medically Qualified Panel Member - Carer';

@@ -1,7 +1,5 @@
 const CookieBanner = require('../pageObjects/common/cookieBanner');
 
-const { defineSupportCode } = require('cucumber');
-
 When('I click \'Accept additional cookies\'', async function () {
   await CookieBanner.acceptCookies();
 });

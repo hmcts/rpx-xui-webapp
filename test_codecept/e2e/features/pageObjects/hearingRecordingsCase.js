@@ -1,20 +1,21 @@
-
-const BrowserWaits = require('../../support/customWaits');
-
+const { $, elementByXpath, isPresent } = require('../../../helpers/globals');
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
-const CcdFields = require('./common/ccdFields');
+const BrowserWaits = require('../../support/customWaits');
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
+const CcdFields = require('./common/ccdFields');
+
 class HearingRecordingsCase {
-  constructor() {
-    this.ccdFields = new CcdFields();
-    this.addNewBtn = element(by.xpath('//button[contains(text(),\'Add new\')]'));
-    this.continueBtn = element(by.xpath('//button[contains(text(),\'Continue\')]'));
-    this.submitBtn = element(by.xpath('//button[contains(text(),\'Submit\')]'));
-    this.hearingFilesTabBtn = element(by.xpath('//div[contains(text(),\'Case Hearing Files\')]'));
-    this.hearingFilesTabContainer = $('.mat-tab-body-content .CaseFiles');
-    this.fileLink = element(by.xpath('//a[contains(text(),\'dummy.pdf\')]'));
-    this.fileText = element(by.xpath('//span[contains(text(),\'Dumm\')]'));
-  }
+  get ccdFields() { return new CcdFields(); }
+
+  get addNewBtn() { return elementByXpath("//button[contains(text(),'Add new')]"); }
+  get continueBtn() { return elementByXpath("//button[contains(text(),'Continue')]"); }
+  get submitBtn() { return elementByXpath("//button[contains(text(),'Submit')]"); }
+
+  get hearingFilesTabBtn() { return elementByXpath("//div[contains(text(),'Case Hearing Files')]"); }
+  get hearingFilesTabContainer() { return $('.mat-tab-body-content .CaseFiles'); }
+
+  get fileLink() { return elementByXpath("//a[contains(text(),'dummy.pdf')]"); }
+  get fileText() { return elementByXpath("//span[contains(text(),'Dumm')]"); }
 
   async createCase() {
     await BrowserWaits.waitForSeconds(3);
@@ -49,7 +50,7 @@ class HearingRecordingsCase {
 
   async checkFile() {
     await BrowserWaits.waitForSeconds(5);
-    return await this.fileText.isPresent();
+    return await isPresent(this.fileText);
   }
 }
 

@@ -2,10 +2,6 @@
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 const BrowserWaits = require('../../support/customWaits');
-const SoftAssert = require('../../../ngIntegration/util/softAssert');
-const browserUtil = require('../../../ngIntegration/util/browserUtil');
-
-const { DataTableArgument } = require('codeceptjs');
 
 const hearingTabPage = require('../pageObjects/hearings/hearingsTabPage');
 const createHearingWorkflow = require('../pageObjects/hearings/createHearingWorkflow/createhearingWorkflow');
@@ -17,11 +13,11 @@ Then('I see hearings tab displayed', async function () {
 });
 
 Then('I see Request a hearing button in hearings tab page', async function () {
-  expect(await hearingTabPage.requesthearingBtn.isDisplayed()).to.be.true;
+  expect(await hearingTabPage.requesthearingBtn.isVisible()).to.be.true;
 });
 
 Then('I do not see Request a hearing button in hearings tab page', async function () {
-  expect(await hearingTabPage.requesthearingBtn.isDisplayed()).to.be.false;
+  expect(await hearingTabPage.requesthearingBtn.isVisible()).to.be.false;
 });
 
 When('I click Request a hearing button', async function(){

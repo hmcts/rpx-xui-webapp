@@ -1,21 +1,19 @@
 'use strict';
 
-const loginPage = require('../pageObjects/loginLogoutObjects');
-const headerPage = require('../pageObjects/headerPage');
+const {
+  $, $$, navigate, waitForElement, currentUrl, isPresent, getText
+} = require('../../../helpers/globals'); 
 
-const { defineSupportCode } = require('cucumber');
-const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
+const loginPage = require('../pageObjects/loginLogoutObjects');
+function headerPage () { return require('../pageObjects/headerPage')(); }
+
+const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
 const BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
-const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const testConfig = require('../../config/appTestConfig');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
-
-async function waitForElement(el) {
-  return element(`.${el}`).isDisplayed();
-}
 
 let invalidCredentialsCounter = 0;
 let testCounter = 0;
@@ -33,11 +31,11 @@ async function loginattemptCheckAndRelogin(username, password, world) {
       await loginPage.emailAddress.waitForElementdetach();
       // await BrowserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
       await BrowserWaits.waitForCondition(async () => {
-        const isEmailFieldDisplayed = await loginPage.emailAddress.isPresent();
+        const isEmailFieldDisplayed = await isPresent(loginPage.emailAddress);
         const credentialsErrorPresent = await loginPage.isLoginCredentialsErrorDisplayed();
         const isEmailValuePresent = false;
         if (isEmailFieldDisplayed){
-          const isEmailValuePresent = (await loginPage.emailAddress.getText()) !== '';
+          const isEmailValuePresent = (await getText(loginPage.emailAddress)) !== '';
         }
         let errorMessage = '';
         if (credentialsErrorPresent){
@@ -49,7 +47,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
           errorMessage = errorMessage +' : ' +testCounter+' login page refresh ';
         }
 
-        const currentUrl = await browser.getCurrentUrl();
+        const currentUrl = await currentUrl();
         if (!isEmailFieldDisplayed && currentUrl.includes('idam-web-public')){
           errorMessage = errorMessage + ':' +testCounter+' Unknown IDAM service error occured. See attached screenshot ';
         }
@@ -77,11 +75,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
 
         console.log(err + ' : Login re attempt ' + loginAttemptRetryCounter);
         console.log(err);
-        await browser.driver.manage()
-          .deleteAllCookies();
+        await resolvePage().context().clearCookies();
         const baseUrl = process.env.TEST_URL || 'http://localhost:3000/';
 
-        await browser.get(baseUrl);
+        await navigate(baseUrl);
         await BrowserWaits.waitForElement(loginPage.emailAddress);
         await loginPage.loginWithCredentials(username, password);
         loginAttemptRetryCounter++;
@@ -100,46 +97,46 @@ let secondAttemptFailedLogins = 0;
 When('I navigate to Expert UI Url', async function () {
   await BrowserWaits.retryWithActionCallback(async function(){
     CucumberReportLogger.AddMessage('App base url : ' + config.config.baseUrl, LOG_LEVELS.Info);
-    await browser.get(config.config.baseUrl);
+    await navigate(config.config.baseUrl);
     await BrowserWaits.waitForElement(loginPage.signinTitle);
     await BrowserWaits.waitForElement(loginPage.signinBtn);
 
-    expect(await loginPage.signinBtn.isDisplayed()).to.be.true;
+    expect(await loginPage.signinBtn.isVisible()).to.be.true;
   }).catch((err) => {
     throw err;
   });
 });
 
 Then(/^I should see failure error summary$/, async function () {
-  await $('.heading-large').wait(20);
-  await expect(loginPage.failure_error_heading.isDisplayed()).to.eventually.be.true;
-  await expect(loginPage.failure_error_heading.getText())
+  await $('.heading-large').waitFor(20);
+  await expect(loginPage.failure_error_heading.isVisible()).to.eventually.be.true;
+  await expect(getText(loginPage.failure_error_heading))
     .to
     .eventually
     .contains('Incorrect email or password');
-  browser.sleep(SHORT_DELAY);
+  BrowserWaits.waitForSeconds(SHORT_DELAY);
 });
 
 Then(/^I am on Idam login page$/, async function () {
-  await loginPage.signinTitle.wait();
-  await expect(loginPage.signinTitle.isDisplayed()).to.eventually.be.true;
-  await expect(await loginPage.signinTitle.getText())
+  await loginPage.signinTitle.waitFor();
+  await expect(loginPage.signinTitle.isVisible()).to.eventually.be.true;
+  await expect(await getText(loginPage.signinTitle))
     .to
     .contains('Sign in');
-  await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
-  await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
-  browser.sleep(SHORT_DELAY);
+  await expect(loginPage.emailAddress.isVisible()).to.eventually.be.true;
+  await expect(loginPage.password.isVisible()).to.eventually.be.true;
+  BrowserWaits.waitForSeconds(SHORT_DELAY);
 });
 
 When(/^I enter an valid email-address and password to login$/, async function () {
   CucumberReportLogger.AddMessage(`Login user  is ${this.config.username}`);
 
-  await loginPage.emailAddress.sendKeys(this.config.username); //replace username and password
-  browser.sleep(MID_DELAY);
-  await loginPage.password.sendKeys(this.config.password);
+  await loginPage.emailAddress.fill(this.config.username); //replace username and password
+  BrowserWaits.waitForSeconds(MID_DELAY);
+  await loginPage.password.fill(this.config.password);
   // browser.sleep(SHORT_DELAY);
   await loginPage.signinBtn.click();
-  browser.sleep(SHORT_DELAY);
+  BrowserWaits.waitForSeconds(SHORT_DELAY);
 
   loginAttempts++;
   await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
@@ -152,22 +149,22 @@ When(/^I enter an Invalid email-address and password to login$/, async function 
 Given(/^I should be redirected to the Idam login page$/, async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await BrowserWaits.waitForElement(loginPage.signinTitle);
-    await expect(loginPage.signinTitle.getText())
+    await expect(getText(loginPage.signinTitle))
       .to
       .eventually
       .contains('Sign in');
   });
-  browser.sleep(LONG_DELAY);
+  BrowserWaits.waitForSeconds(LONG_DELAY);
 });
 
 Then(/^I select the sign out link$/, async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
-    await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
+    await expect(loginPage.signOutlink.isVisible()).to.eventually.be.true;
     await BrowserWaits.waitForElementClickable(loginPage.signOutlink);
     await loginPage.signOutlink.click();
 
     await BrowserWaits.waitForElement(loginPage.signinTitle);
-    expect(await loginPage.signinTitle.isDisplayed()).to.be.true;
+    expect(await loginPage.signinTitle.isVisible()).to.be.true;
   });
 });
 
@@ -178,12 +175,12 @@ Then('I should be redirected to EUI dashboard page', async function () {
     try {
       // await BrowserUtil.waitForLD();
       await BrowserWaits.waitForElement($('exui-header .hmcts-primary-navigation__item'));
-      await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
+      await expect(loginPage.dashboard_header.isVisible()).to.eventually.be.true;
 
-      const cookies = await browser.driver.manage().getCookies();
+      const cookies = await resolvePage().context().cookies();
       reportLogger.AddMessage(JSON.stringify(cookies, null, 2));
     } catch (err){
-      await browser.get(config.config.baseUrl);
+      await navigate(config.config.baseUrl);
       throw new Error(err);
     }
   });
@@ -272,35 +269,35 @@ Given('I am logged into Expert UI with valid Case Worker user details', async fu
 });
 
 Given(/^I am logged into Expert UI with Probate user details$/, async function () {
-  browser.sleep(MID_DELAY);
+  BrowserWaits.waitForSeconds(MID_DELAY);
   CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.probate_username}`);
 
-  await loginPage.emailAddress.sendKeys(config.config.params.probate_username);
-  browser.sleep(MID_DELAY);
-  await loginPage.password.sendKeys(config.config.params.probate_password);
+  await loginPage.emailAddress.fill(config.config.params.probate_username);
+  BrowserWaits.waitForSeconds(MID_DELAY);
+  await loginPage.password.fill(config.config.params.probate_password);
   await loginPage.clickSignIn();
-  browser.sleep(LONG_DELAY);
+  BrowserWaits.waitForSeconds(LONG_DELAY);
 
   loginAttempts++;
   await loginattemptCheckAndRelogin(config.config.params.probate_username, config.config.params.probate_password, this);
 });
 
 Given('I am logged into Expert UI as IA {string}', async function (usertype) {
-  browser.sleep(MID_DELAY);
+  BrowserWaits.waitForSeconds(MID_DELAY);
   CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.ia_users_credentials[usertype].username}`);
 
-  await loginPage.emailAddress.sendKeys(config.config.params.ia_users_credentials[usertype].username);
-  browser.sleep(MID_DELAY);
-  await loginPage.password.sendKeys(config.config.params.ia_users_credentials[usertype].password);
+  await loginPage.emailAddress.fill(config.config.params.ia_users_credentials[usertype].username);
+  BrowserWaits.waitForSeconds(MID_DELAY);
+  await loginPage.password.fill(config.config.params.ia_users_credentials[usertype].password);
   await loginPage.clickSignIn();
-  browser.sleep(LONG_DELAY);
+  BrowserWaits.waitForSeconds(LONG_DELAY);
   loginAttempts++;
   await loginattemptCheckAndRelogin(config.config.params.username, config.config.params.password, this);
 });
 
 Then('I should see the expected banner for IA {string}', async function (usertype) {
-  const bannerElementBgColor = await headerPage.headerBanner.getAttribute('style');
-  const navItems = await headerPage.primaryNavBar_NavItems.getText();
+  const bannerElementBgColor = await headerPage().getHeaderBanner().getAttribute('style');
+  const navItems = await headerPage().getPrimaryNavBarNavItems().getText();
   if (usertype === 'judge') {
     // expect(bannerElementBgColor).to.equal('background-color: rgb(141, 15, 14);');
     expect(navItems).to.not.include('Create case');
@@ -357,7 +354,7 @@ Given('I am logged into Expert UI with test user identified as {string}', async 
 
   // await BrowserWaits.retryWithActionCallback(async () => {
   //   await BrowserWaits.waitForSpinnerToDissappear();
-  //   await headerPage.clickAppLogoLink();
+  //   await headerPage().clickAppLogoLink();
   // });
 });
 
@@ -375,10 +372,9 @@ Given('I am logged into Expert UI with hrs testes user details', async function 
 });
 
 Given(/^I navigate to Expert UI Url direct link$/, async function () {
-  await browser.driver.manage()
-    .deleteAllCookies();
+  await resolvePage().context().clearCookies();
   const baseUrl = process.env.TEST_URL || 'http://localhost:3000/';
-  await browser.get(baseUrl + '/cases/case-filter');
+  await navigate(baseUrl + '/cases/case-filter');
 });
 
 Then(/^I should be redirected back to Login page after direct link$/, async function () {
@@ -387,6 +383,6 @@ Then(/^I should be redirected back to Login page after direct link$/, async func
     .to
     .eventually
     .contains('Sign in');
-  browser.sleep(LONG_DELAY);
+  BrowserWaits.waitForSeconds(LONG_DELAY);
 });
 

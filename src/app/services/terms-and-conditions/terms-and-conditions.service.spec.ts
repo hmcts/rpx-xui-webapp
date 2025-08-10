@@ -22,7 +22,7 @@ describe('TermsConditionsService', () => {
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(service).toBeInstanceOf(TermsConditionsService);
   });
 
   describe('getTermsConditions', () => {

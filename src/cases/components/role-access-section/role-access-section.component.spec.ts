@@ -98,7 +98,7 @@ describe('RoleAccessSectionComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(component).toBeInstanceOf(RoleAccessSectionComponent);
   });
 
   describe('Component initialization', () => {

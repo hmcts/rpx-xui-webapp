@@ -65,7 +65,8 @@ describe('AbstractFormFieldComponent', () => {
 
   describe('Component Initialization', () => {
     it('should create', () => {
-      expect(component).toBeTruthy();
+      expect(component).toBeInstanceOf(TestFormFieldComponent);
+      expect(component.answerValue).toBeDefined();
     });
 
     it('should initialize with default answerValue as empty string', () => {
@@ -253,7 +254,7 @@ describe('AbstractFormFieldComponent', () => {
       expect(component.answerValue).toBeUndefined();
     });
 
-    it('should not throw error when answerValue$ is undefined', () => {
+    it('should throw error when answerValue$ is undefined', () => {
       component.answerValue$ = undefined;
       
       expect(() => component['setAnswer']()).toThrow();

@@ -1,4 +1,4 @@
-import { Component, DebugElement, Directive, Input, NO_ERRORS_SCHEMA, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Component, DebugElement, Directive, Input, NO_ERRORS_SCHEMA, TemplateRef, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -233,7 +233,7 @@ describe('CaseFilterComponent', () => {
     it('should use ViewEncapsulation.None', () => {
       // Get the component's constructor metadata
       const componentMetadata = (CaseFilterComponent as any).ɵcmp;
-      expect(componentMetadata.encapsulation).toBe(2); // ViewEncapsulation.None is 2
+      expect(componentMetadata.encapsulation).toBe(ViewEncapsulation.None);
     });
   });
 

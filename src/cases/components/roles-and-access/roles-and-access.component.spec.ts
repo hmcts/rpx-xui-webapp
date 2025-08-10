@@ -136,7 +136,8 @@ describe('RolesAndAccessComponent', () => {
 
   describe('Component Initialization', () => {
     it('should create', () => {
-      expect(component).toBeTruthy();
+      expect(component).toBeInstanceOf(RolesAndAccessComponent);
+      expect(component.caseDetails).toBeDefined();
     });
 
     it('should initialize with default values', () => {
@@ -579,7 +580,7 @@ describe('RolesAndAccessComponent', () => {
       const roles = [{ actorId: 'user1' }];
       const result = component['checkSetNamedRoles'](roles, true);
 
-      expect(result[0].name).toBe('null null');
+      expect(result[0].name).toBe('');
     });
 
     it('should handle caseworker with missing names', () => {
@@ -595,7 +596,7 @@ describe('RolesAndAccessComponent', () => {
       const roles = [{ actorId: 'user1' }];
       const result = component['checkSetNamedRoles'](roles, true);
 
-      expect(result[0].name).toBe('undefined undefined');
+      expect(result[0].name).toBe('');
     });
   });
 

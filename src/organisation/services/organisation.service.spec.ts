@@ -22,6 +22,7 @@ describe('OrganisationService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+    expect(service).toBeInstanceOf(OrganisationService);
   });
 
   describe('fetchOrganisation', () => {
@@ -72,7 +73,9 @@ describe('OrganisationService', () => {
       service.fetchOrganisation().subscribe(
         () => fail('should have failed with error'),
         (error) => {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(HttpErrorResponse);
+          expect(error.status).toBe(500);
+          expect(error.statusText).toBe('Internal Server Error');
           done();
         }
       );
@@ -166,7 +169,7 @@ describe('OrganisationService', () => {
 
     it('should handle error with null error property', (done) => {
       const httpError = new HttpErrorResponse({
-        error: null,
+        error: undefined,
         status: 400,
         statusText: 'Bad Request'
       });
@@ -177,7 +180,7 @@ describe('OrganisationService', () => {
           expect(error).toBe('error please try again later.');
           expect(consoleErrorSpy).toHaveBeenCalledWith(
             'Backend returned code 400, body was:',
-            null
+            undefined
           );
           done();
         }
@@ -197,7 +200,7 @@ describe('OrganisationService', () => {
           expect(error).toBe('error please try again later.');
           expect(consoleErrorSpy).toHaveBeenCalledWith(
             'Backend returned code 403, body was:',
-            null
+            undefined
           );
           done();
         }
@@ -225,6 +228,8 @@ describe('OrganisationService', () => {
 
   describe('ENVIRONMENT constant', () => {
     it('should have correct orgUri', () => {
+      expect(ENVIRONMENT).toBeDefined();
+      expect(typeof ENVIRONMENT.orgUri).toBe('string');
       expect(ENVIRONMENT.orgUri).toBe('/api/organisation');
     });
   });

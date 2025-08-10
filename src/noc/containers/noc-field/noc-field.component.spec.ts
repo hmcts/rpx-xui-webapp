@@ -91,11 +91,19 @@ describe('NocFieldComponent', () => {
   describe('Component Initialization', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
+      expect(component.questionField).toEqual(jasmine.objectContaining(mockNocQuestion));
     });
 
     it('should have correct template structure', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('div')).toBeTruthy();
+      fixture.detectChanges();
+  
+      // Test for the specific container element that holds the ViewContainerRef
+      const containerElement = fixture.debugElement.query(By.css('[data-testid="field-container"]'));
+      expect(containerElement).toBeTruthy();
+      
+      // if using a template reference variable
+      const templateRef = fixture.debugElement.query(By.css('ng-template[fieldContainer]'));
+      expect(templateRef).toBeTruthy();
     });
 
     it('should inherit from AbstractFieldWriteComponent', () => {

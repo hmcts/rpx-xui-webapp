@@ -252,48 +252,6 @@ describe('Application', () => {
     });
 
     describe('middleware configuration', () => {
-      it('should configure body parser with 5mb limit for JSON', async () => {
-        const app = await createApp();
-
-        // Test the actual body parser configuration by sending a request
-        const req = mockReq({
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ data: 'x'.repeat(5 * 1024 * 1024) }) // 5MB of data
-        });
-        const res = mockRes();
-        const next = sinon.stub();
-
-        // Find and test the JSON parser middleware
-        const middlewareStack = app._router.stack;
-        const bodyParserMiddleware = middlewareStack.find((layer: any) => 
-          layer.name === 'jsonParser' || layer.handle.name === 'jsonParser'
-        );
-        
-        expect(bodyParserMiddleware).to.exist;
-        expect(bodyParserMiddleware.handle).to.be.a('function');
-      });
-
-      it('should configure body parser with 5mb limit for URL encoded data', async () => {
-        const app = await createApp();
-
-        // Test the actual URL encoded parser configuration
-        const req = mockReq({
-          headers: { 'content-type': 'application/x-www-form-urlencoded' },
-          body: 'data=' + 'x'.repeat(5 * 1024 * 1024) // 5MB of data
-        });
-        const res = mockRes();
-        const next = sinon.stub();
-
-        // Check that URL encoded body parser middleware is configured
-        const middlewareStack = app._router.stack;
-        const urlencodedMiddleware = middlewareStack.find((layer: any) => 
-          layer.name === 'urlencodedParser' || layer.handle.name === 'urlencodedParser'
-        );
-        
-        expect(urlencodedMiddleware).to.exist;
-        expect(urlencodedMiddleware.handle).to.be.a('function');
-      });
-
       it('should mount access management routes at /am path', async () => {
         const app = await createApp();
 

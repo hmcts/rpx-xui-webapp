@@ -8,11 +8,13 @@ import * as configIndex from './index';
 import * as menuConfigs from './menuConfigs/configs';
 import * as hearingConfigs from './hearingConfigs/configs';
 import { router } from './uiConfigRouter';
+import * as chaiAsPromised from 'chai-as-promised';
 
 // Access the module to clear cache
 const uiConfigModule = require('./uiConfigRouter');
 
 chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 describe('uiConfigRouter', () => {
   let sandbox: sinon.SinonSandbox;
@@ -38,6 +40,9 @@ describe('uiConfigRouter', () => {
     // Store original env
     originalPreviewId = process.env.PREVIEW_DEPLOYMENT_ID;
 
+    // Clear module cache to reset cached configs before each test
+    delete require.cache[require.resolve('./uiConfigRouter')];
+
     getConfigValueStub = sandbox.stub(configIndex, 'getConfigValue');
     showFeatureStub = sandbox.stub(configIndex, 'showFeature');
     setupMenuConfigStub = sandbox.stub(menuConfigs, 'setupMenuConfig');
@@ -55,8 +60,6 @@ describe('uiConfigRouter', () => {
     } else {
       process.env.PREVIEW_DEPLOYMENT_ID = originalPreviewId;
     }
-    // Clear module cache to reset cached configs
-    delete require.cache[require.resolve('./uiConfigRouter')];
   });
 
   describe('router', () => {
@@ -77,8 +80,9 @@ describe('uiConfigRouter', () => {
     let routeHandler: any;
 
     beforeEach(() => {
-      // Get the route handler
-      routeHandler = router.stack[0].route.stack[0].handle;
+      // Get the fresh route handler after cache clear
+      const freshRouter = require('./uiConfigRouter').router;
+      routeHandler = freshRouter.stack[0].route.stack[0].handle;
     });
 
     it('should return configuration with all required fields', async () => {
@@ -123,8 +127,9 @@ describe('uiConfigRouter', () => {
     });
 
     it('should handle missing config values gracefully', async () => {
-      // All config values return undefined
+      // All config values return undefined except idamLoginUrl which is required for environment detection
       getConfigValueStub.returns(undefined);
+      getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
       showFeatureStub.returns(undefined);
 
       await routeHandler(req, res, next);
@@ -134,7 +139,7 @@ describe('uiConfigRouter', () => {
       expect(responseData).to.have.property('accessManagementEnabled', undefined);
       expect(responseData).to.have.property('ccdGatewayUrl', undefined);
       expect(responseData).to.have.property('clientId', undefined);
-      expect(responseData).to.have.property('idamWeb', undefined);
+      expect(responseData).to.have.property('idamWeb', 'https://prod.idam.com');
       expect(responseData).to.have.property('launchDarklyClientId', undefined);
       expect(responseData).to.have.property('oAuthCallback', undefined);
       expect(responseData).to.have.property('oidcEnabled', undefined);
@@ -148,10 +153,6 @@ describe('uiConfigRouter', () => {
     });
 
     it('should handle errors in setupMenuConfig', async () => {
-      delete require.cache[require.resolve('./uiConfigRouter')];
-      const freshRouter = require('./uiConfigRouter').router;
-      const freshRouteHandler = freshRouter.stack[0].route.stack[0].handle;
-      
       getConfigValueStub.returns('default-value');
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
       
@@ -159,31 +160,19 @@ describe('uiConfigRouter', () => {
       setupMenuConfigStub.resetBehavior();
       setupMenuConfigStub.throws(new Error('Menu config error'));
 
-      try {
-        await freshRouteHandler(req, res, next);
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error.message).to.equal('Menu config error');
-      }
+      await expect(routeHandler(req, res, next))
+        .to.be.rejectedWith('Menu config error');
     });
 
     it('should handle errors in setupHearingConfigs', async () => {
-      delete require.cache[require.resolve('./uiConfigRouter')];
-      const freshRouter = require('./uiConfigRouter').router;
-      const freshRouteHandler = freshRouter.stack[0].route.stack[0].handle;
-      
       getConfigValueStub.returns('default-value');
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
       
       setupHearingConfigsStub.resetBehavior();
       setupHearingConfigsStub.throws(new Error('Hearing config error'));
 
-      try {
-        await freshRouteHandler(req, res, next);
-        expect.fail('Should have thrown an error');
-      } catch (error) {
-        expect(error.message).to.equal('Hearing config error');
-      }
+      await expect(routeHandler(req, res, next))
+        .to.be.rejectedWith('Hearing config error');
     });
   });
 
@@ -191,10 +180,6 @@ describe('uiConfigRouter', () => {
     let routeHandler: any;
 
     beforeEach(() => {
-      setupMenuConfigStub.resetHistory();
-      setupHearingConfigsStub.resetHistory();
-      
-      delete require.cache[require.resolve('./uiConfigRouter')];
       const freshRouter = require('./uiConfigRouter').router;
       routeHandler = freshRouter.stack[0].route.stack[0].handle;
     });
@@ -279,16 +264,12 @@ describe('uiConfigRouter', () => {
 
   describe('caching behavior', () => {
     it('should cache menu and hearing configs after first call', async () => {
-      delete require.cache[require.resolve('./uiConfigRouter')];
       const freshRouter = require('./uiConfigRouter').router;
       const routeHandler = freshRouter.stack[0].route.stack[0].handle;
       
       delete process.env.PREVIEW_DEPLOYMENT_ID;
       getConfigValueStub.returns('default-value');
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.example.com');
-
-      setupMenuConfigStub.resetHistory();
-      setupHearingConfigsStub.resetHistory();
 
       // First call - should call setup functions
       await routeHandler(req, res, next);

@@ -548,12 +548,10 @@ describe('Challenged Access', (): void => {
 
       httpPostStub.onFirstCall().resolves(queryResponse);
 
-      try {
-        await challengedAccessUpdateAttributes(req, res, next);
-      } catch (error) {
-        // This should cause an error when trying to access [0] on empty array
-        expect(next).to.have.been.called;
-      }
+      await challengedAccessUpdateAttributes(req, res, next);
+
+      expect(next).to.have.been.calledOnce;
+      expect(next.firstCall.args[0]).to.be.an('error');
     });
 
     it('should use current timestamp for notes', async () => {

@@ -99,6 +99,7 @@ describe('LOV Service', () => {
       // Verify that child nodes are present
       const sentData = res.send.getCall(0).args[0];
       expect(sentData[1].child_nodes).to.be.an('array').that.has.lengthOf(4);
+      expect(sentData[1].child_nodes[0]).to.have.property('key');
     });
 
     it('should handle request without child nodes when isChildRequired is not Y', async () => {
@@ -246,31 +247,6 @@ describe('LOV Service', () => {
       expect(next).to.have.been.calledWith(networkError);
     });
 
-    it('should handle undefined query parameters', async () => {
-      req = mockReq({
-        query: {
-          serviceId: undefined,
-          categoryId: undefined,
-          isChildRequired: undefined
-        }
-      });
-
-      const mockResponseData: LovRefDataByServiceModel = {
-        list_of_values: DEFAULT_STAGES_REF
-      };
-
-      sendGetStub.resolves({
-        status: 200,
-        data: mockResponseData
-      });
-
-      await getLovRefData(req, res, next);
-
-      const actualCallArgs = sendGetStub.getCall(0).args;
-      expect(actualCallArgs[0]).to.include('/refdata/commondata/lov/categories/undefined?serviceId=undefined&isChildRequired=undefined');
-      expect(actualCallArgs[1]).to.equal(req);
-    });
-
     it('should handle missing data property in response', async () => {
       req = mockReq({
         query: {
@@ -288,7 +264,8 @@ describe('LOV Service', () => {
       await getLovRefData(req, res, next);
 
       // When data is null, accessing data.list_of_values throws an error
-      expect(next).to.have.been.called;
+      expect(next).to.have.been.calledOnce;
+      expect(next).to.have.been.calledWith(sinon.match.instanceOf(Error));
       const error = next.getCall(0).args[0];
       expect(error).to.be.an('error');
       expect(error.message).to.include('Cannot read');

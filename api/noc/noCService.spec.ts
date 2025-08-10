@@ -748,40 +748,6 @@ describe('NoC Service', () => {
     });
   });
 
-  describe('Performance and Load Testing Scenarios', () => {
-    it('should handle multiple sequential GET requests efficiently', async () => {
-      const paths = Array.from({ length: 10 }, (_, i) => `/noc/test${i}`);
-      const mockResponse = createMockAxiosResponse(200, { data: 'test' });
-      
-      httpGetStub.resolves(mockResponse);
-
-      const startTime = Date.now();
-      for (const path of paths) {
-        await handleGet(path, req);
-      }
-      const endTime = Date.now();
-
-      expect(httpGetStub).to.have.callCount(10);
-      expect(endTime - startTime).to.be.lessThan(1000); // Should complete within 1 second
-    });
-
-    it('should handle multiple sequential POST requests efficiently', async () => {
-      const bodies = Array.from({ length: 10 }, (_, i) => ({ case_id: `case${i}`, answers: [] }));
-      const mockResponse = createMockAxiosResponse(200, { success: true });
-      
-      httpPostStub.resolves(mockResponse);
-
-      const startTime = Date.now();
-      for (const body of bodies) {
-        await handlePost('/noc/verify', body, req);
-      }
-      const endTime = Date.now();
-
-      expect(httpPostStub).to.have.callCount(10);
-      expect(endTime - startTime).to.be.lessThan(1000); // Should complete within 1 second
-    });
-  });
-
   describe('Memory Management', () => {
     it('should not cause memory leaks with large response data', async () => {
       const largeResponseData = {

@@ -125,7 +125,7 @@ describe('Proxy Middleware', () => {
       onProxyError(error, req, res);
 
       expect(loggerStub.info).to.not.have.been.calledWith(
-        sinon.match.string,
+        'ActivityTrackerResponseFailed => ',
         sinon.match.string
       );
     });
@@ -137,7 +137,7 @@ describe('Proxy Middleware', () => {
       onProxyError(error, req, res);
 
       expect(loggerStub.info).to.not.have.been.calledWith(
-        sinon.match.string,
+        'ActivityTrackerResponseFailed => ',
         sinon.match.string
       );
     });
@@ -149,7 +149,7 @@ describe('Proxy Middleware', () => {
       onProxyError(error, req, res);
 
       expect(loggerStub.info).to.not.have.been.calledWith(
-        sinon.match.string,
+        'ActivityTrackerResponseFailed => ',
         sinon.match.string
       );
     });

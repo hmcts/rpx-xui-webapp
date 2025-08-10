@@ -29,7 +29,7 @@ describe('CaseTasksResolverService', () => {
           name: 'Kimberly Julian',
           reference: '1620409659381330'
         },
-        dueDate: new Date('2021-05-05T16:00:00.000+0000'),
+        dueDate: new Date('2029-05-05T16:00:00.000+0000'),
         name: 'Review FTPA application',
         state: 'assigned'
       },
@@ -47,7 +47,7 @@ describe('CaseTasksResolverService', () => {
           name: 'James Carter',
           reference: '1620409659381330'
         },
-        dueDate: new Date('2021-05-12T16:00:00.000+0000'),
+        dueDate: new Date('2029-05-12T16:00:00.000+0000'),
         name: 'Review FTPA application',
         state: 'unassigned'
       }
@@ -277,7 +277,7 @@ describe('CaseTasksResolverService', () => {
               name: 'Test Case',
               reference: '9999999999999999'
             },
-            dueDate: new Date('2021-06-01T00:00:00.000Z'),
+            dueDate: new Date('2029-06-01T00:00:00.000Z'),
             name: 'Another Task',
             state: 'pending'
           }

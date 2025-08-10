@@ -292,7 +292,7 @@ describe('Person Service', () => {
         await postFindPersonSearch(req, res);
 
         expect(res.status).to.have.been.calledWith(400);
-        expect(res.send).to.have.been.called;
+        expect(res.send).to.have.been.calledWith(undefined);
       });
 
       it('should transform judicial response data correctly', async () => {
@@ -399,6 +399,7 @@ describe('Person Service', () => {
         await postFindPersonSearch(req, res);
 
         expect(httpPostStub).to.not.have.been.called;
+        expect(applySearchFilterStub.firstCall.args[1]).to.equal('Admin');
         expect(applySearchFilterStub).to.have.been.called;
         expect(res.status).to.have.been.calledWith(200);
         expect(res.send).to.have.been.calledWith([]);
@@ -411,6 +412,7 @@ describe('Person Service', () => {
         await postFindPersonSearch(req, res);
 
         expect(httpPostStub).to.not.have.been.called;
+        expect(applySearchFilterStub.firstCall.args[1]).to.equal('CTSC');
         expect(applySearchFilterStub).to.have.been.called;
         expect(res.status).to.have.been.calledWith(200);
         expect(res.send).to.have.been.calledWith([]);
@@ -423,6 +425,7 @@ describe('Person Service', () => {
         await postFindPersonSearch(req, res);
 
         expect(httpPostStub).to.not.have.been.called;
+        expect(applySearchFilterStub.firstCall.args[1]).to.equal('All');
         expect(applySearchFilterStub).to.have.been.called;
         expect(res.status).to.have.been.calledWith(200);
         expect(res.send).to.have.been.calledWith([]);

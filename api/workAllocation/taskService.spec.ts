@@ -306,7 +306,6 @@ describe('workAllocation.taskService', () => {
       await handleTaskSearch(path, null, req);
       
       expect(spy).to.have.been.calledWith(path, null, sinon.match.object);
-      expect(spy).to.have.been.calledWith(path, null, sinon.match.object);
     });
   });
 

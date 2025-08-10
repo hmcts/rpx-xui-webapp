@@ -1055,8 +1055,8 @@ describe('workAllocation', () => {
         task_system: 'WA',
         security_classification: 'PUBLIC',
         task_title: 'Test Task',
-        created_date: '2023-01-01',
-        due_date: '2023-01-31',
+        created_date: '2029-01-01',
+        due_date: '2029-01-31',
         location: 'loc123',
         jurisdiction: 'Family',
         region: 'North',
@@ -1067,7 +1067,7 @@ describe('workAllocation', () => {
         actions: [],
         execution_type: 'Case Management',
         assignee: 'user123',
-        dueDate: '2023-01-31',
+        dueDate: '2029-01-31',
         taskName: 'Test Task',
         caseName: 'Test Case',
         caseCategory: 'Family',
@@ -1087,8 +1087,8 @@ describe('workAllocation', () => {
         role_category: 'JUDICIAL',
         jurisdiction: 'Family',
         location_id: 'loc123',
-        startDate: '2023-01-01',
-        endDate: '2023-12-31',
+        startDate: '2029-01-01',
+        endDate: '2029-12-31',
         assignee: 'user123'
       }]);
       
@@ -1208,7 +1208,7 @@ describe('workAllocation', () => {
         const mockTask = {
           task: {
             id: '123456',
-            due_date: '2023-12-01T10:00:00Z',
+            due_date: '2029-12-01T10:00:00Z',
             name: 'Test Task'
           }
         };
@@ -1223,7 +1223,7 @@ describe('workAllocation', () => {
         
         expect(response.send).to.have.been.calledWith(sinon.match({
           task: sinon.match({
-            dueDate: '2023-12-01T10:00:00Z'
+            dueDate: '2029-12-01T10:00:00Z'
           })
         }));
       });

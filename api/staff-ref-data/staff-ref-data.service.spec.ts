@@ -80,7 +80,8 @@ describe('StaffRefDataService', () => {
 
       await service.getUserTypes(req, res, next);
 
-      expect(mockRealStaffRefDataAPI.getUserTypes).to.have.been.called;
+      expect(mockRealStaffRefDataAPI.getUserTypes).to.have.been.calledOnceWith(req, res, next);
+      expect(next).to.not.have.been.called;
     });
   });
 
@@ -98,7 +99,8 @@ describe('StaffRefDataService', () => {
 
       await service.getJobTitles(req, res, next);
 
-      expect(mockRealStaffRefDataAPI.getJobTitles).to.have.been.called;
+      expect(mockRealStaffRefDataAPI.getJobTitles).to.have.been.calledOnceWith(req, res, next);
+      expect(next).to.not.have.been.called;
     });
   });
 

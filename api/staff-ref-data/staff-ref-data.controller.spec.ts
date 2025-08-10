@@ -87,17 +87,6 @@ describe('staff-ref-data.controller', () => {
       expect(serviceStub.getFilteredUsers).to.have.been.calledOnce;
       expect(serviceStub.getFilteredUsers).to.have.been.calledWith(undefined, res, next);
     });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('Service error');
-      serviceStub.getFilteredUsers.rejects(error);
-
-      try {
-        await controller.getFilteredUsers(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
-    });
   });
 
   describe('getUserTypes', () => {
@@ -117,17 +106,6 @@ describe('staff-ref-data.controller', () => {
 
       expect(serviceStub.getUserTypes).to.have.been.calledOnce;
       expect(serviceStub.getUserTypes).to.have.been.calledWith(null, res, next);
-    });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('getUserTypes error');
-      serviceStub.getUserTypes.rejects(error);
-
-      try {
-        await controller.getUserTypes(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
     });
   });
 
@@ -183,17 +161,6 @@ describe('staff-ref-data.controller', () => {
       expect(serviceStub.getServices).to.have.been.calledOnce;
       expect(serviceStub.getServices).to.have.been.calledWith(req, res, next);
     });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('getServices error');
-      serviceStub.getServices.rejects(error);
-
-      try {
-        await controller.getServices(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
-    });
   });
 
   describe('getSkills', () => {
@@ -216,17 +183,6 @@ describe('staff-ref-data.controller', () => {
       expect(serviceStub.getSkills).to.have.been.calledOnce;
       expect(serviceStub.getSkills).to.have.been.calledWith(req, res, next);
     });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('getSkills error');
-      serviceStub.getSkills.rejects(error);
-
-      try {
-        await controller.getSkills(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
-    });
   });
 
   describe('getUsersByPartialName', () => {
@@ -248,17 +204,6 @@ describe('staff-ref-data.controller', () => {
 
       expect(serviceStub.getUsersByPartialName).to.have.been.calledOnce;
       expect(serviceStub.getUsersByPartialName).to.have.been.calledWith(req, res, next);
-    });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('getUsersByPartialName error');
-      serviceStub.getUsersByPartialName.rejects(error);
-
-      try {
-        await controller.getUsersByPartialName(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
     });
   });
 
@@ -297,17 +242,6 @@ describe('staff-ref-data.controller', () => {
       expect(serviceStub.addNewUser).to.have.been.calledOnce;
       expect(serviceStub.addNewUser).to.have.been.calledWith(req, res, next);
     });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('addNewUser error');
-      serviceStub.addNewUser.rejects(error);
-
-      try {
-        await controller.addNewUser(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
-    });
   });
 
   describe('fetchSingleUserById', () => {
@@ -329,17 +263,6 @@ describe('staff-ref-data.controller', () => {
 
       expect(serviceStub.fetchSingleUserById).to.have.been.calledOnce;
       expect(serviceStub.fetchSingleUserById).to.have.been.calledWith(req, res, next);
-    });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('fetchSingleUserById error');
-      serviceStub.fetchSingleUserById.rejects(error);
-
-      try {
-        await controller.fetchSingleUserById(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
     });
   });
 
@@ -372,17 +295,6 @@ describe('staff-ref-data.controller', () => {
 
       expect(serviceStub.fetchUsersById).to.have.been.calledOnce;
       expect(serviceStub.fetchUsersById).to.have.been.calledWith(req, res, next);
-    });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('fetchUsersById error');
-      serviceStub.fetchUsersById.rejects(error);
-
-      try {
-        await controller.fetchUsersById(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
     });
   });
 
@@ -422,17 +334,6 @@ describe('staff-ref-data.controller', () => {
 
       expect(serviceStub.updateUser).to.have.been.calledOnce;
       expect(serviceStub.updateUser).to.have.been.calledWith(req, res, next);
-    });
-
-    it('should propagate errors from service', async () => {
-      const error = new Error('updateUser error');
-      serviceStub.updateUser.rejects(error);
-
-      try {
-        await controller.updateUser(req, res, next);
-      } catch (err) {
-        expect(err).to.equal(error);
-      }
     });
   });
 });

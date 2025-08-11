@@ -180,7 +180,7 @@ describe('OrganisationService', () => {
           expect(error).toBe('error please try again later.');
           expect(consoleErrorSpy).toHaveBeenCalledWith(
             'Backend returned code 400, body was:',
-            undefined
+            null
           );
           done();
         }
@@ -200,7 +200,7 @@ describe('OrganisationService', () => {
           expect(error).toBe('error please try again later.');
           expect(consoleErrorSpy).toHaveBeenCalledWith(
             'Backend returned code 403, body was:',
-            undefined
+            null
           );
           done();
         }

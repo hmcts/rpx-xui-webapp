@@ -35,7 +35,7 @@ describe('TermsConditionsService', () => {
 
       mockHttpClient.get.and.returnValue(of(mockTCDocument));
 
-      service.getTermsConditions().subscribe(result => {
+      service.getTermsConditions().subscribe((result) => {
         expect(result).toEqual(mockTCDocument);
         expect(mockHttpClient.get).toHaveBeenCalledWith('api/termsAndConditions');
         expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
@@ -89,7 +89,7 @@ describe('TermsConditionsService', () => {
     it('should return true when feature is enabled', (done) => {
       mockHttpClient.get.and.returnValue(of(true));
 
-      service.isTermsConditionsFeatureEnabled().subscribe(result => {
+      service.isTermsConditionsFeatureEnabled().subscribe((result) => {
         expect(result).toBe(true);
         expect(mockHttpClient.get).toHaveBeenCalledWith('api/configuration?configurationKey=termsAndConditionsEnabled');
         expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
@@ -100,7 +100,7 @@ describe('TermsConditionsService', () => {
     it('should return false when feature is disabled', (done) => {
       mockHttpClient.get.and.returnValue(of(false));
 
-      service.isTermsConditionsFeatureEnabled().subscribe(result => {
+      service.isTermsConditionsFeatureEnabled().subscribe((result) => {
         expect(result).toBe(false);
         expect(mockHttpClient.get).toHaveBeenCalledWith('api/configuration?configurationKey=termsAndConditionsEnabled');
         done();
@@ -177,7 +177,7 @@ describe('TermsConditionsService', () => {
       const totalCalls = 3;
 
       for (let i = 0; i < totalCalls; i++) {
-        service.getTermsConditions().subscribe(result => {
+        service.getTermsConditions().subscribe((result) => {
           expect(result).toEqual(mockTCDocument);
           callCount++;
           if (callCount === totalCalls) {
@@ -200,7 +200,7 @@ describe('TermsConditionsService', () => {
 
       // First call succeeds
       mockHttpClient.get.and.returnValue(of(mockTCDocument));
-      service.getTermsConditions().subscribe(result => {
+      service.getTermsConditions().subscribe((result) => {
         expect(result).toEqual(mockTCDocument);
         callCount++;
 
@@ -214,7 +214,7 @@ describe('TermsConditionsService', () => {
 
             // Third call succeeds again
             mockHttpClient.get.and.returnValue(of(mockTCDocument));
-            service.getTermsConditions().subscribe(result => {
+            service.getTermsConditions().subscribe((result) => {
               expect(result).toEqual(mockTCDocument);
               expect(mockHttpClient.get).toHaveBeenCalledTimes(3);
               done();
@@ -235,7 +235,7 @@ describe('TermsConditionsService', () => {
 
       mockHttpClient.get.and.returnValue(of(emptyTCDocument));
 
-      service.getTermsConditions().subscribe(result => {
+      service.getTermsConditions().subscribe((result) => {
         expect(result).toEqual(emptyTCDocument);
         expect(result.content).toBe('');
         expect(result.version).toBe(0);
@@ -247,7 +247,7 @@ describe('TermsConditionsService', () => {
     it('should handle null response from terms and conditions endpoint', (done) => {
       mockHttpClient.get.and.returnValue(of(null));
 
-      service.getTermsConditions().subscribe(result => {
+      service.getTermsConditions().subscribe((result) => {
         expect(result).toBeNull();
         done();
       });
@@ -256,7 +256,7 @@ describe('TermsConditionsService', () => {
     it('should handle undefined response from feature flag endpoint', (done) => {
       mockHttpClient.get.and.returnValue(of(undefined));
 
-      service.isTermsConditionsFeatureEnabled().subscribe(result => {
+      service.isTermsConditionsFeatureEnabled().subscribe((result) => {
         expect(result).toBeUndefined();
         done();
       });
@@ -271,7 +271,7 @@ describe('TermsConditionsService', () => {
 
       mockHttpClient.get.and.returnValue(of(partialTCDocument));
 
-      service.getTermsConditions().subscribe(result => {
+      service.getTermsConditions().subscribe((result) => {
         expect(result.content).toBe('Some content');
         expect(result.version).toBe(1.0);
         expect(result.mimeType).toBeUndefined();

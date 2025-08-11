@@ -74,10 +74,10 @@ describe('FooterComponent', () => {
     it('should update terms and conditions link when feature is enabled', () => {
       component.navigationData = mockNavigationData;
       mockStore.pipe.and.returnValue(of(true));
-      
+
       component.ngOnInit();
-      
-      const tAndCItem = component.navigationData.items.find(item => item.text === 'Terms and conditions');
+
+      const tAndCItem = component.navigationData.items.find((item) => item.text === 'Terms and conditions');
       expect(tAndCItem.href).toBe('/terms-and-conditions');
       expect(mockStore.pipe).toHaveBeenCalled();
     });
@@ -85,10 +85,10 @@ describe('FooterComponent', () => {
     it('should update terms and conditions link when feature is disabled', () => {
       component.navigationData = mockNavigationData;
       mockStore.pipe.and.returnValue(of(false));
-      
+
       component.ngOnInit();
-      
-      const tAndCItem = component.navigationData.items.find(item => item.text === 'Terms and conditions');
+
+      const tAndCItem = component.navigationData.items.find((item) => item.text === 'Terms and conditions');
       expect(tAndCItem.href).toBe('/legacy-terms-and-conditions');
       expect(mockStore.pipe).toHaveBeenCalled();
     });
@@ -100,7 +100,7 @@ describe('FooterComponent', () => {
           { text: 'Cookies', href: '/cookies' }
         ]
       };
-      
+
       expect(() => component.ngOnInit()).not.toThrow();
       expect(mockStore.pipe).not.toHaveBeenCalled();
     });
@@ -108,9 +108,9 @@ describe('FooterComponent', () => {
     it('should handle undefined navigation data', () => {
       component.navigationData = { items: undefined };
       spyOn(component, 'getNavigationItemForTandC').and.returnValue(null);
-      
+
       component.ngOnInit();
-      
+
       expect(component.getNavigationItemForTandC).toHaveBeenCalledWith(undefined);
       expect(mockStore.pipe).not.toHaveBeenCalled();
     });
@@ -118,9 +118,9 @@ describe('FooterComponent', () => {
     it('should handle null navigation data', () => {
       component.navigationData = { items: null };
       spyOn(component, 'getNavigationItemForTandC').and.returnValue(null);
-      
+
       component.ngOnInit();
-      
+
       expect(component.getNavigationItemForTandC).toHaveBeenCalledWith(null);
       expect(mockStore.pipe).not.toHaveBeenCalled();
     });
@@ -133,9 +133,9 @@ describe('FooterComponent', () => {
         { text: 'Terms and conditions', href: '/terms' },
         { text: 'Cookies', href: '/cookies' }
       ];
-      
+
       const result = component.getNavigationItemForTandC(navigationItems);
-      
+
       expect(result).toEqual({ text: 'Terms and conditions', href: '/terms' });
     });
 
@@ -144,17 +144,17 @@ describe('FooterComponent', () => {
         { text: 'Privacy policy', href: '/privacy' },
         { text: 'Cookies', href: '/cookies' }
       ];
-      
+
       const result = component.getNavigationItemForTandC(navigationItems);
-      
+
       expect(result).toBeNull();
     });
 
     it('should return null when navigation items array is empty', () => {
       const navigationItems: NavigationItems[] = [];
-      
+
       const result = component.getNavigationItemForTandC(navigationItems);
-      
+
       expect(result).toBeNull();
     });
 
@@ -171,9 +171,9 @@ describe('FooterComponent', () => {
         { text: 'Terms and conditions', href: '/terms1' },
         { text: 'Terms and conditions', href: '/terms2' }
       ];
-      
+
       const result = component.getNavigationItemForTandC(navigationItems);
-      
+
       expect(result).toEqual({ text: 'Terms and conditions', href: '/terms2' });
     });
   });
@@ -184,30 +184,30 @@ describe('FooterComponent', () => {
       const mockObservable = jasmine.createSpyObj('Observable', ['subscribe']);
       mockObservable.subscribe.and.returnValue(mockSubscription);
       mockStore.pipe.and.returnValue(mockObservable);
-      
+
       component.navigationData = mockNavigationData;
       component.ngOnInit();
-      
+
       expect(mockObservable.subscribe).toHaveBeenCalledWith(jasmine.any(Function));
     });
 
     it('should update navigation item href in subscription callback', () => {
       component.navigationData = mockNavigationData;
       let subscriptionCallback: (value: boolean) => void;
-      
+
       const mockObservable = jasmine.createSpyObj('Observable', ['subscribe']);
       mockObservable.subscribe.and.callFake((callback: (value: boolean) => void) => {
         subscriptionCallback = callback;
         return jasmine.createSpyObj('Subscription', ['unsubscribe']);
       });
       mockStore.pipe.and.returnValue(mockObservable);
-      
+
       component.ngOnInit();
-      
+
       subscriptionCallback(true);
-      const tAndCItem = component.navigationData.items.find(item => item.text === 'Terms and conditions');
+      const tAndCItem = component.navigationData.items.find((item) => item.text === 'Terms and conditions');
       expect(tAndCItem.href).toBe('/terms-and-conditions');
-      
+
       subscriptionCallback(false);
       expect(tAndCItem.href).toBe('/legacy-terms-and-conditions');
     });

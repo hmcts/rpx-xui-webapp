@@ -218,10 +218,10 @@ describe('AbstractFormFieldComponent', () => {
 
     it('should handle multiple emissions from answerValue$', () => {
       const values = ['first', 'second', 'third'];
-      let emitIndex = 0;
+      const emitIndex = 0;
       
-      component.answerValue$ = new Observable(subscriber => {
-        values.forEach(value => subscriber.next(value));
+      component.answerValue$ = new Observable((subscriber) => {
+        values.forEach((value) => subscriber.next(value));
         subscriber.complete();
       });
       
@@ -264,7 +264,7 @@ describe('AbstractFormFieldComponent', () => {
       const values = ['a', 'b', 'c'];
       let currentIndex = 0;
       
-      component.answerValue$ = new Observable(subscriber => {
+      component.answerValue$ = new Observable((subscriber) => {
         const interval = setInterval(() => {
           if (currentIndex < values.length) {
             subscriber.next(values[currentIndex]);

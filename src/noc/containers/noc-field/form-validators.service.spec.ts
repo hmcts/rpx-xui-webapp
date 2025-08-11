@@ -20,9 +20,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(result.hasError('pattern')).toBeFalsy();
         control.setValue('abc');
         expect(control.hasError('pattern')).toBeTruthy();
@@ -37,9 +37,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         control.setValue(' leading space');
         expect(control.hasError('pattern')).toBeTruthy();
         control.setValue('trailing space ');
@@ -56,9 +56,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         control.setValue('abc');
         expect(control.hasError('minlength')).toBeTruthy();
         control.setValue('abcde');
@@ -73,9 +73,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         control.setValue('short');
         expect(control.hasError('maxlength')).toBeFalsy();
         control.setValue('this is too long');
@@ -92,9 +92,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         // Test all validators together
         control.setValue('12');
         expect(control.hasError('minlength')).toBeTruthy();
@@ -115,9 +115,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         control.setValue('invalid-email');
         expect(control.hasError('email')).toBeTruthy();
         control.setValue('user@example.com');
@@ -134,9 +134,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'numberValidator').and.returnValue(Validators.pattern(/^\d+$/));
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(NocValidators.numberValidator).toHaveBeenCalled();
       });
     });
@@ -150,9 +150,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'postcodeValidator').and.returnValue(Validators.pattern(/^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/));
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(NocValidators.postcodeValidator).toHaveBeenCalled();
       });
     });
@@ -166,9 +166,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'phoneUKValidator').and.returnValue(Validators.pattern(/^\+?44/));
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(NocValidators.phoneUKValidator).toHaveBeenCalled();
       });
     });
@@ -182,9 +182,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'dateValidator').and.returnValue(Validators.pattern(/^\d{4}-\d{2}-\d{2}$/));
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(NocValidators.dateValidator).toHaveBeenCalled();
       });
     });
@@ -198,9 +198,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'dateTimeValidator').and.returnValue(Validators.pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/));
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(NocValidators.dateTimeValidator).toHaveBeenCalled();
       });
     });
@@ -214,9 +214,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         spyOn(NocValidators, 'timeValidator').and.returnValue(Validators.pattern(/^\d{2}:\d{2}:\d{2}$/));
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(NocValidators.timeValidator).toHaveBeenCalled();
       });
     });
@@ -230,9 +230,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const existingValidator = Validators.required;
         const control = new FormControl('', existingValidator);
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         // Check that required validator is still applied
         control.setValue('');
         expect(control.hasError('required')).toBeTruthy();
@@ -246,9 +246,9 @@ describe('FormValidatorsService', () => {
         } as NocQuestion;
         const control = new FormControl('');
         const initialValidators = control.validator;
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(result).toBe(control);
         expect(control.validator).toBe(initialValidators);
       });
@@ -260,9 +260,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         // Should not add any validators for unknown type
         control.setValue('any value');
         expect(control.valid).toBeTruthy();
@@ -275,9 +275,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('');
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         expect(result).toBe(control);
       });
 
@@ -290,9 +290,9 @@ describe('FormValidatorsService', () => {
           }
         } as NocQuestion;
         const control = new FormControl('', Validators.required);
-        
+
         const result = service.addValidators(nocQuestion, control);
-        
+
         // Test that all validators work together
         control.setValue('');
         expect(control.hasError('required')).toBeTruthy();

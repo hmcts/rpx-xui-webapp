@@ -33,7 +33,7 @@ class MockPageWrapperComponent {}
 })
 class MockFeatureToggleDirective {
   @Input('exuiFeatureToggle') featureName: string;
-  
+
   constructor(
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef
@@ -112,25 +112,25 @@ describe('CaseFilterComponent', () => {
 
     it('should initialize caseCreatFilterBindings with correct action bindings', () => {
       component.ngOnInit();
-      
+
       expect(component.caseCreatFilterBindings).toBeDefined();
       expect(component.caseCreatFilterBindings.length).toBe(2);
-      
+
       const expectedBindings: ActionBindingModel[] = [
         { type: 'selectionSubmitted', action: 'CaseCreateFilterApply' },
         { type: 'selectionChanged', action: 'CaseCreateFilterChanged' }
       ];
-      
+
       expect(component.caseCreatFilterBindings).toEqual(expectedBindings);
     });
 
     it('should initialize caseCreatFilterBindings with correct types and actions', () => {
       component.ngOnInit();
-      
+
       const firstBinding = component.caseCreatFilterBindings[0];
       expect(firstBinding.type).toBe('selectionSubmitted');
       expect(firstBinding.action).toBe('CaseCreateFilterApply');
-      
+
       const secondBinding = component.caseCreatFilterBindings[1];
       expect(secondBinding.type).toBe('selectionChanged');
       expect(secondBinding.action).toBe('CaseCreateFilterChanged');
@@ -150,7 +150,7 @@ describe('CaseFilterComponent', () => {
 
     it('should set the page title to "Create Case"', () => {
       const pageWrapper = debugElement.query(By.css('exui-page-wrapper'));
-      expect(pageWrapper.attributes['title']).toBe('Create Case');
+      expect(pageWrapper.attributes.title).toBe('Create Case');
     });
 
     it('should render the container div with width-50 class', () => {
@@ -200,7 +200,7 @@ describe('CaseFilterComponent', () => {
     it('should bind eventsBindings correctly after initialization', () => {
       component.ngOnInit();
       fixture.detectChanges();
-      
+
       expect(component.caseCreatFilterBindings).toEqual([
         { type: 'selectionSubmitted', action: 'CaseCreateFilterApply' },
         { type: 'selectionChanged', action: 'CaseCreateFilterChanged' }
@@ -210,10 +210,10 @@ describe('CaseFilterComponent', () => {
     it('should maintain binding references after change detection', () => {
       component.ngOnInit();
       fixture.detectChanges();
-      
+
       const initialBindings = component.caseCreatFilterBindings;
       fixture.detectChanges();
-      
+
       expect(component.caseCreatFilterBindings).toBe(initialBindings);
     });
   });
@@ -222,10 +222,10 @@ describe('CaseFilterComponent', () => {
     it('should handle multiple ngOnInit calls safely', () => {
       component.ngOnInit();
       const firstBindings = component.caseCreatFilterBindings;
-      
+
       component.ngOnInit();
       const secondBindings = component.caseCreatFilterBindings;
-      
+
       expect(firstBindings).not.toBe(secondBindings);
       expect(component.caseCreatFilterBindings.length).toBe(2);
     });

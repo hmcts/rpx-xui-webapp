@@ -89,7 +89,7 @@ describe('MyAccessComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
-    
+
     // TODO: CAM_BOOKING 0 not neeed
     // component.isPaginationEnabled$ = of(false);
     router = TestBed.inject(Router);
@@ -107,12 +107,12 @@ describe('MyAccessComponent', () => {
     mockJurisdictionsService.getJurisdictions.and.returnValue(of([]));
     mockRolesService.getRoles.and.returnValue(of([]));
     mockRolesService.getValidRoles.and.returnValue(of([]));
-    
+
     fixture.detectChanges();
-    
+
     // Ensure the ViewChild component is available
     component = wrapper.appComponentRef;
-    
+
     // If ViewChild is still not available, wait for next tick
     if (!component) {
       fixture.detectChanges();
@@ -132,7 +132,7 @@ describe('MyAccessComponent', () => {
   it('should have all column headers', () => {
     expect(component).toBeDefined();
     expect(component.fields).toBeDefined();
-    
+
     const element = fixture.debugElement.nativeElement;
     const headerCells = element.querySelectorAll('.govuk-table__header');
     const fields = component.fields;
@@ -159,7 +159,7 @@ describe('MyAccessComponent', () => {
 
   it('should show the footer when there are no cases xx', () => {
     expect(component).toBeDefined();
-    
+
     // Create a spy on the cases getter
     spyOnProperty(component, 'cases', 'get').and.returnValue([]);
     fixture.detectChanges();
@@ -212,7 +212,7 @@ describe('MyAccessComponent', () => {
         active: true
       };
       const mockUserRole = UserRole.LegalOps;
-      
+
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(mockUserInfo));
       spyOn(AppUtils, 'getUserRole').and.returnValue(mockUserRole);
       spyOn(component, 'getSortParameter').and.returnValue({ sort_by: 'case_name', sort_order: 'asc' });
@@ -241,7 +241,7 @@ describe('MyAccessComponent', () => {
         active: true
       };
       const mockUserRole = UserRole.LegalOps;
-      
+
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(mockUserInfo));
       spyOn(AppUtils, 'getUserRole').and.returnValue(mockUserRole);
       spyOn(component, 'getSortParameter').and.returnValue({ sort_by: 'case_name', sort_order: 'asc' });
@@ -275,7 +275,7 @@ describe('MyAccessComponent', () => {
 
     beforeEach(() => {
       httpClient = TestBed.inject(HttpClient);
-      
+
       mockCase = {
         id: 'case123',
         case_id: 'case123',
@@ -299,7 +299,7 @@ describe('MyAccessComponent', () => {
           requestedRoles: []
         };
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes').and.returnValue(of(mockResponse));
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(CasesService.updateChallengedAccessRequestAttributes).toHaveBeenCalledWith(
@@ -315,7 +315,7 @@ describe('MyAccessComponent', () => {
           requestedRoles: []
         };
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes').and.returnValue(of(mockResponse));
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(mockCase.isNew).toBe(false);
@@ -327,7 +327,7 @@ describe('MyAccessComponent', () => {
       it('should not update when isNew is false', () => {
         mockCase.isNew = false;
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes');
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(CasesService.updateChallengedAccessRequestAttributes).not.toHaveBeenCalled();
@@ -345,7 +345,7 @@ describe('MyAccessComponent', () => {
           requestedRoles: []
         };
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes').and.returnValue(of(mockResponse));
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(CasesService.updateSpecificAccessRequestAttributes).toHaveBeenCalledWith(
@@ -361,7 +361,7 @@ describe('MyAccessComponent', () => {
           requestedRoles: []
         };
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes').and.returnValue(of(mockResponse));
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(mockCase.isNew).toBe(false);
@@ -370,7 +370,7 @@ describe('MyAccessComponent', () => {
       it('should not update when startDate is Pending', () => {
         mockCase.startDate = 'Pending';
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes');
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(CasesService.updateSpecificAccessRequestAttributes).not.toHaveBeenCalled();
@@ -382,7 +382,7 @@ describe('MyAccessComponent', () => {
       it('should not update when isNew is false', () => {
         mockCase.isNew = false;
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes');
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(CasesService.updateSpecificAccessRequestAttributes).not.toHaveBeenCalled();
@@ -394,7 +394,7 @@ describe('MyAccessComponent', () => {
         mockCase.role = 'other-role';
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes');
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes');
-        
+
         component.onItemClickHandler(mockCase);
 
         expect(CasesService.updateChallengedAccessRequestAttributes).not.toHaveBeenCalled();
@@ -404,7 +404,7 @@ describe('MyAccessComponent', () => {
       it('should handle null case gracefully', () => {
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes');
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes');
-        
+
         // The component will throw an error when accessing item.isNew on null
         expect(() => component.onItemClickHandler(null)).toThrow();
 
@@ -415,7 +415,7 @@ describe('MyAccessComponent', () => {
       it('should handle undefined case gracefully', () => {
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes');
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes');
-        
+
         // The component will throw an error when accessing item.isNew on undefined
         expect(() => component.onItemClickHandler(undefined)).toThrow();
 

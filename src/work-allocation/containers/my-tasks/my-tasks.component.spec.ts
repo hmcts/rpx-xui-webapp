@@ -58,9 +58,9 @@ describe('MyTasksComponent', () => {
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
-  const rpxTranslationServiceStub = () => ({ 
-    language: 'en', 
-    translate: () => { }, 
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: () => { },
     getTranslation: (phrase: string) => phrase,
     getTranslation$: (phrase: string) => of(phrase)
   });

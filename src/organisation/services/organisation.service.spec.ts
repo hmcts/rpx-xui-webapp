@@ -34,7 +34,7 @@ describe('OrganisationService', () => {
       };
       mockHttpClient.get.and.returnValue(of(mockOrganisationData));
 
-      service.fetchOrganisation().subscribe(data => {
+      service.fetchOrganisation().subscribe((data) => {
         expect(data).toEqual(mockOrganisationData);
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.orgUri}`);
         expect(mockHttpClient.get).toHaveBeenCalledWith('/api/organisation');
@@ -45,7 +45,7 @@ describe('OrganisationService', () => {
     it('should handle empty response', (done) => {
       mockHttpClient.get.and.returnValue(of({}));
 
-      service.fetchOrganisation().subscribe(data => {
+      service.fetchOrganisation().subscribe((data) => {
         expect(data).toEqual({});
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.orgUri}`);
         done();
@@ -55,7 +55,7 @@ describe('OrganisationService', () => {
     it('should handle null response', (done) => {
       mockHttpClient.get.and.returnValue(of(null));
 
-      service.fetchOrganisation().subscribe(data => {
+      service.fetchOrganisation().subscribe((data) => {
         expect(data).toBeNull();
         expect(mockHttpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.orgUri}`);
         done();

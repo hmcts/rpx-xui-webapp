@@ -190,20 +190,20 @@ describe('NocFieldComponent', () => {
     it('should set all required inputs on created component', () => {
       component.ngAfterViewInit();
 
-      expect(mockComponentInstance['questionField']).toBeTruthy();
-      expect(mockComponentInstance['questionField'].question_id).toBe(mockNocQuestion.question_id);
-      expect(mockComponentInstance['answerValue$']).toBe(component.answerValue$);
-      expect(mockComponentInstance['formGroup']).toBe(component.formGroup);
-      expect(mockComponentInstance['registerControl']).toBeTruthy();
-      expect(mockComponentInstance['idPrefix']).toBe(component.idPrefix);
+      expect(mockComponentInstance.questionField).toBeTruthy();
+      expect(mockComponentInstance.questionField.question_id).toBe(mockNocQuestion.question_id);
+      expect(mockComponentInstance.answerValue$).toBe(component.answerValue$);
+      expect(mockComponentInstance.formGroup).toBe(component.formGroup);
+      expect(mockComponentInstance.registerControl).toBeTruthy();
+      expect(mockComponentInstance.idPrefix).toBe(component.idPrefix);
     });
 
     it('should use defaultControlRegister when registerControl is not provided', () => {
       component.registerControl = undefined;
       component.ngAfterViewInit();
 
-      expect(mockComponentInstance['registerControl']).toBeTruthy();
-      expect(typeof mockComponentInstance['registerControl']).toBe('function');
+      expect(mockComponentInstance.registerControl).toBeTruthy();
+      expect(typeof mockComponentInstance.registerControl).toBe('function');
     });
 
     it('should use provided registerControl when available', () => {
@@ -211,7 +211,7 @@ describe('NocFieldComponent', () => {
       component.registerControl = customRegisterControl;
       component.ngAfterViewInit();
 
-      expect(mockComponentInstance['registerControl']).toBe(customRegisterControl);
+      expect(mockComponentInstance.registerControl).toBe(customRegisterControl);
     });
 
     it('should insert component view into container', () => {
@@ -254,7 +254,7 @@ describe('NocFieldComponent', () => {
       
       component.ngAfterViewInit();
 
-      expect(mockComponentInstance['answerValue$']).toBeUndefined();
+      expect(mockComponentInstance.answerValue$).toBeUndefined();
     });
 
     it('should handle undefined formGroup', () => {
@@ -262,7 +262,7 @@ describe('NocFieldComponent', () => {
       
       component.ngAfterViewInit();
 
-      expect(mockComponentInstance['formGroup']).toBeUndefined();
+      expect(mockComponentInstance.formGroup).toBeUndefined();
     });
 
     it('should handle empty idPrefix', () => {
@@ -270,13 +270,13 @@ describe('NocFieldComponent', () => {
       
       component.ngAfterViewInit();
 
-      expect(mockComponentInstance['idPrefix']).toBe('');
+      expect(mockComponentInstance.idPrefix).toBe('');
     });
 
     it('should transform questionField using plainToClassFromExist', () => {
       component.ngAfterViewInit();
 
-      const transformedQuestion = mockComponentInstance['questionField'];
+      const transformedQuestion = mockComponentInstance.questionField;
       expect(transformedQuestion).toBeTruthy();
       expect(transformedQuestion.constructor.name).toBe('NocQuestion');
       expect(transformedQuestion.question_id).toBe(mockNocQuestion.question_id);

@@ -60,8 +60,12 @@ describe('CCD Connector Component', () => {
       { type: 'submitted', action: 'ApplyChange' }
     ];
     component.fromFeatureStore = {
-      CreateCaseReset: class { constructor(public payload: any) {} },
-      ApplyChange: class { constructor(public payload: any) {} }
+      CreateCaseReset: class {
+        constructor(public payload: any) {}
+      },
+      ApplyChange: class {
+        constructor(public payload: any) {}
+      }
     };
     fixture.detectChanges();
   });
@@ -98,8 +102,12 @@ describe('CCD Connector Component', () => {
         { type: 'cancelled', action: 'CreateCaseReset' }
       ];
       hostComponent.fromFeatureStore = {
-        CreateCaseReset: class { constructor(public payload: any) {} },
-        ApplyChange: class { constructor(public payload: any) {} }
+        CreateCaseReset: class {
+          constructor(public payload: any) {}
+        },
+        ApplyChange: class {
+          constructor(public payload: any) {}
+        }
       };
       hostFixture.detectChanges();
       component = hostFixture.debugElement.children[0].componentInstance;
@@ -273,8 +281,12 @@ describe('CCD Connector Component', () => {
         { type: 'cancelled', action: 'CreateCaseReset' }
       ];
       hostComponent.fromFeatureStore = {
-        CreateCaseReset: class { constructor(public payload: any) {} },
-        ApplyChange: class { constructor(public payload: any) {} }
+        CreateCaseReset: class {
+          constructor(public payload: any) {}
+        },
+        ApplyChange: class {
+          constructor(public payload: any) {}
+        }
       };
       hostFixture.detectChanges();
       component = hostFixture.debugElement.children[0].componentInstance;

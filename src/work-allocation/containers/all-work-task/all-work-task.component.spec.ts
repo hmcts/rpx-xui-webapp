@@ -267,7 +267,7 @@ describe('AllWorkTaskComponent', () => {
       
       component.loadCaseWorkersAndLocations();
       
-      component.waSupportedDetailedServices$.subscribe(services => {
+      component.waSupportedDetailedServices$.subscribe((services) => {
         expect(services).toBeTruthy();
         // The supportedJurisdictions are set by the setServiceList method
         // which extracts serviceIds from the detailed services
@@ -290,7 +290,7 @@ describe('AllWorkTaskComponent', () => {
       
       component.loadCaseWorkersAndLocations();
       
-      component.waSupportedDetailedServices$.subscribe(services => {
+      component.waSupportedDetailedServices$.subscribe((services) => {
         expect(services).toBeTruthy();
         expect(component.supportedJurisdictions).toEqual(['IA']);
       });
@@ -312,7 +312,7 @@ describe('AllWorkTaskComponent', () => {
       
       component.loadCaseWorkersAndLocations();
       
-      component.waSupportedDetailedServices$.subscribe(services => {
+      component.waSupportedDetailedServices$.subscribe((services) => {
         expect(services).toEqual(mockDetailedServices);
       });
     });
@@ -341,7 +341,7 @@ describe('AllWorkTaskComponent', () => {
       component.selectedServices = [];
       const searchRequest = component.getSearchTaskRequestPagination();
       
-      const jurisdictionParam = searchRequest.search_parameters.find(p => p.key === 'jurisdiction');
+      const jurisdictionParam = searchRequest.search_parameters.find((p) => p.key === 'jurisdiction');
       expect(jurisdictionParam).toBeUndefined();
     });
 

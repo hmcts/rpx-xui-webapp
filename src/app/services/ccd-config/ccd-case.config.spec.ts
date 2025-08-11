@@ -797,9 +797,15 @@ describe('AppConfiguration with specific config values', () => {
     mockEnvironmentServiceConfig = jasmine.createSpyObj('EnvironmentService', ['get', 'getDeploymentEnv']);
     mockEnvironmentServiceConfig.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
     mockEnvironmentServiceConfig.get.and.callFake((key: string) => {
-      if (key === 'paymentReturnUrl') return 'https://payment-return.test.com';
-      if (key === 'ccdGatewayUrl') return 'https://gateway.test.com';
-      if (key === 'accessManagementEnabled') return false;
+      if (key === 'paymentReturnUrl') {
+        return 'https://payment-return.test.com';
+      }
+      if (key === 'ccdGatewayUrl') {
+        return 'https://gateway.test.com';
+      }
+      if (key === 'accessManagementEnabled') {
+        return false;
+      }
       return 'default-value';
     });
 
@@ -888,9 +894,15 @@ describe('AppConfiguration with specific config values', () => {
     
     // Change environment to true, but config is still false
     mockEnvironmentServiceConfig.get.and.callFake((key: string) => {
-      if (key === 'accessManagementEnabled') return true;
-      if (key === 'paymentReturnUrl') return 'https://payment-return.test.com';
-      if (key === 'ccdGatewayUrl') return 'https://gateway.test.com';
+      if (key === 'accessManagementEnabled') {
+        return true;
+      }
+      if (key === 'paymentReturnUrl') {
+        return 'https://payment-return.test.com';
+      }
+      if (key === 'ccdGatewayUrl') {
+        return 'https://gateway.test.com';
+      }
       return 'default-value';
     });
     // Still false because config.access_management_mode is false (from feature toggle)

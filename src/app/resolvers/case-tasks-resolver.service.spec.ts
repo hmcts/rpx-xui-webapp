@@ -12,7 +12,7 @@ describe('CaseTasksResolverService', () => {
   let service: CaseTasksResolverService;
   let httpClient: HttpClient;
   let router: Router;
-  
+
   const TASKS: TaskList = {
     tasks: [
       {
@@ -84,7 +84,7 @@ describe('CaseTasksResolverService', () => {
     it('should return a list of tasks', (done) => {
       mockParamMap.set('cid', '1620409659381330');
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
-      
+
       service.resolve(activatedRoute).subscribe((tasks: TaskList) => {
         expect(tasks.tasks.length).toBe(2);
         expect(httpClient.get).toHaveBeenCalledWith(
@@ -98,7 +98,7 @@ describe('CaseTasksResolverService', () => {
       const caseId = '9876543210123456';
       mockParamMap.set('cid', caseId);
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
-      
+
       service.resolve(activatedRoute).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledWith(
           `/workallocation/case/task/${caseId}`
@@ -111,7 +111,7 @@ describe('CaseTasksResolverService', () => {
       mockParamMap.set('cid', '1620409659381330');
       const emptyTaskList: TaskList = { tasks: [] };
       spyOn(httpClient, 'get').and.returnValue(of(emptyTaskList));
-      
+
       service.resolve(activatedRoute).subscribe((tasks: TaskList) => {
         expect(tasks.tasks.length).toBe(0);
         done();
@@ -121,7 +121,7 @@ describe('CaseTasksResolverService', () => {
     it('should handle null case ID', (done) => {
       mockParamMap.set('cid', null);
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
-      
+
       service.resolve(activatedRoute).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledWith(
           '/workallocation/case/task/null'
@@ -133,7 +133,7 @@ describe('CaseTasksResolverService', () => {
     it('should handle undefined case ID', (done) => {
       // Don't set cid in paramMap, so it returns undefined
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
-      
+
       service.resolve(activatedRoute).subscribe(() => {
         expect(httpClient.get).toHaveBeenCalledWith(
           '/workallocation/case/task/undefined'
@@ -151,7 +151,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle 400 Bad Request error', (done) => {
         const error = { status: 400 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -165,7 +165,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle 401 Unauthorized error', (done) => {
         const error = { status: 401 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -179,7 +179,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle 403 Forbidden error', (done) => {
         const error = { status: 403 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -193,7 +193,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle 404 Not Found error', (done) => {
         const error = { status: 404 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -208,7 +208,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle 500 Internal Server Error', (done) => {
         const error = { status: 500 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -222,7 +222,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle 503 Service Unavailable error', (done) => {
         const error = { status: 503 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -236,7 +236,7 @@ describe('CaseTasksResolverService', () => {
       it('should handle error without status code', (done) => {
         const error = { message: 'Network error' };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         service.resolve(activatedRoute).subscribe({
           next: () => fail('should have errored'),
           error: () => fail('should have been caught'),
@@ -251,9 +251,9 @@ describe('CaseTasksResolverService', () => {
       it('should return EMPTY observable after error handling', (done) => {
         const error = { status: 500 };
         spyOn(httpClient, 'get').and.returnValue(throwError(error));
-        
+
         const result = service.resolve(activatedRoute);
-        
+
         result.subscribe({
           next: () => fail('should not emit any value'),
           error: () => fail('should not emit error'),
@@ -267,7 +267,7 @@ describe('CaseTasksResolverService', () => {
 
     it('should only emit the first value when multiple values are emitted', (done) => {
       mockParamMap.set('cid', '1620409659381330');
-      const secondTaskList: TaskList = { 
+      const secondTaskList: TaskList = {
         tasks: [
           {
             assignee: { userId: 'user789' },
@@ -281,14 +281,14 @@ describe('CaseTasksResolverService', () => {
             name: 'Another Task',
             state: 'pending'
           }
-        ] 
+        ]
       };
       let emissionCount = 0;
-      
+
       spyOn(httpClient, 'get').and.returnValue(
         of(TASKS, secondTaskList)
       );
-      
+
       service.resolve(activatedRoute).subscribe({
         next: (tasks: TaskList) => {
           emissionCount++;

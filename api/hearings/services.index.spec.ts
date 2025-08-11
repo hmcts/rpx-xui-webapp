@@ -7,7 +7,11 @@ import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
 import {
-  DEFAULT_SCREEN_FLOW, HEARING_JUDGE, HEARING_PANEL, HEARING_PANEL_REQUIRED, HEARING_PANEL_SELECTOR,
+  DEFAULT_SCREEN_FLOW_NEW,
+  HEARING_JUDGE,
+  HEARING_PANEL,
+  HEARING_PANEL_REQUIRED,
+  HEARING_PANEL_SELECTOR,
   HEARING_VENUE,
   HEARING_WELSH,
   replaceResultValue
@@ -234,7 +238,7 @@ describe('Hearings Services', () => {
       await servicesIndex.loadServiceHearingValues(req, res, next);
 
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
-      expect(sentData.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW);
+      expect(sentData.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
       // expect(sentData.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
     });
 
@@ -753,7 +757,7 @@ describe('retrieveForceNewDefaultScreenFlow', () => {
 
         const result = forceDefaultScreenFlow(data);
 
-        expect(result.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW);
+        expect(result.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
       });
 
       it('should maintiain the screen flow when entered screen flow does not match the pattern screenFlow exists', () => {

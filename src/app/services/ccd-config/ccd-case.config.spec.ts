@@ -169,7 +169,7 @@ describe('AppConfiguration', () => {
   }));
 
   it('should have getCreateOrUpdateDraftsUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getCreateOrUpdateDraftsUrl('')).toBe('undefined/internal/case-types//drafts');
+    expect(service.getCreateOrUpdateDraftsUrl('')).toBe('test-case-data/internal/case-types//drafts');
   }));
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {
@@ -303,7 +303,7 @@ describe('AppConfiguration', () => {
 
   describe('getBannersUrl', () => {
     it('should return formatted banners url', inject([AppConfig], (service: AppConfig) => {
-      expect(service.getBannersUrl()).toBe('test-case-data/internal/banners/');
+      expect(service.getBannersUrl()).toBe('test-case-data/internal/banners');
     }));
   });
 
@@ -899,9 +899,9 @@ describe('AppConfiguration with specific config values', () => {
 
   it('should generate correct derived URLs', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCaseHistoryUrl('1234', '5678')).toBe('https://casedata.test.com/internal/cases/1234/events/5678');
-    expect(service.getCreateOrUpdateDraftsUrl('CIVIL')).toBe('https://casedata.test.com/internal/case-types/CIVIL/drafts/');
+    expect(service.getCreateOrUpdateDraftsUrl('CIVIL')).toBe('https://casedata.test.com/internal/case-types/CIVIL/drafts');
     expect(service.getViewOrDeleteDraftsUrl('draft999')).toBe('https://casedata.test.com/drafts/draft999');
-    expect(service.getBannersUrl()).toBe('https://casedata.test.com/internal/banners/');
+    expect(service.getBannersUrl()).toBe('https://casedata.test.com/internal/banners');
     expect(service.getActivityUrl()).toBe('https://gateway.test.com/activity');
   }));
 });

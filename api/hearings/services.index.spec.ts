@@ -7,6 +7,7 @@ import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { SERVICE_HEARING_VALUES } from './data/serviceHearingValues.mock.data';
 import {
+  DEFAULT_SCREEN_FLOW,
   DEFAULT_SCREEN_FLOW_NEW,
   HEARING_JUDGE,
   HEARING_PANEL,
@@ -238,7 +239,7 @@ describe('Hearings Services', () => {
       await servicesIndex.loadServiceHearingValues(req, res, next);
 
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
-      expect(sentData.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
+      expect(sentData.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW);
       // expect(sentData.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
     });
 

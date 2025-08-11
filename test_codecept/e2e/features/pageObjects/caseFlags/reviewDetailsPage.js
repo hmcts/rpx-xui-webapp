@@ -1,18 +1,19 @@
-
+const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 class ReviewDetailsPage{
-  constructor() {
-    this.container = $('ccd-case-edit-submit');
+
+  get container() {
+    return $('ccd-case-edit-submit');
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async clickChangeLinkForField(field) {
     const fieldLocators = this.getRowElementLocators(field);
-    const changeLinkForField = element(by.xpath(fieldLocators.changeLinkElement));
+    const changeLinkForField = elementByXpath(fieldLocators.changeLinkElement);
     await changeLinkForField.click();
   }
 
@@ -41,19 +42,19 @@ class ReviewDetailsPage{
   async validateSummaryFieldWithValueDisplayed(field, value, isChangeLinkDisplayed) {
     const fieldLevelLocators = this.getRowElementLocators(field);
     await reportLogger.AddMessage(`${JSON.stringify(fieldLevelLocators, null, 2)}`);
-    expect(await element(by.xpath(fieldLevelLocators.nameElement)).isDisplayed(), `field ${field} not displayed`).to.be.true;
+    expect(await elementByXpath(fieldLevelLocators.nameElement).first().isVisible(), `field ${field} not displayed`).to.be.true;
     const valuesList = value.split(',');
     for (const val of valuesList) {
-      expect(await element(by.xpath(fieldLevelLocators.valueElement)).getText(), `field ${field} value ${val} not included`).includes(val.trim());
+      expect(await getText(elementByXpath(fieldLevelLocators.valueElement).first()), `field ${field} value ${val} not included`).includes(val.trim());
     }
 
-    expect(await element(by.xpath(fieldLevelLocators.changeLinkElement)).isDisplayed()).to.equal(isChangeLinkDisplayed);
+    expect(await elementByXpath(fieldLevelLocators.changeLinkElement).first()).isVisible().to.equal(isChangeLinkDisplayed);
   }
 
   async validateSummaryFieldNotDisplayed(field) {
     const fieldLevelLocators = this.getRowElementLocators(field);
     await reportLogger.AddMessage(`${JSON.stringify(fieldLevelLocators, null, 2)}`);
-    expect(await element(by.xpath(fieldLevelLocators.nameElement)).isDisplayed(), `field ${field} is displayed`).to.be.false;
+    expect(await elementByXpath(fieldLevelLocators.nameElement).first().isVisible(), `field ${field} is displayed`).to.be.false;
   }
 }
 

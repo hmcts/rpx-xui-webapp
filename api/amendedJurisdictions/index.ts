@@ -6,48 +6,14 @@ const jurisdictions = /aggregated\/.+jurisdictions\?/;
 /**
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
- * and reducing the data size by only keeping the required fields
  */
-export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any => {
+export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   if (!Array.isArray(data)
         || !jurisdictions.test(req.url)) {
     return data;
   }
-
   const filters = getConfigValue(JURISDICTIONS);
-  const filteredJurisdictions = [...data]
-    .filter((o) => filters.includes(o.id))
-    .map((jurisdiction) => {
-      const result: any = {
-        id: jurisdiction.id
-      };
-
-      if (jurisdiction.name !== undefined) {
-        result.name = jurisdiction.name;
-      }
-
-      if (jurisdiction.caseTypes !== undefined) {
-        result.caseTypes = jurisdiction.caseTypes.map((caseType) => {
-          const mappedCaseType: any = {
-            id: caseType.id,
-            name: caseType.name
-          };
-
-          if (caseType.states) {
-            mappedCaseType.states = caseType.states.map((state) => ({
-              id: state.id,
-              name: state.name
-            }));
-          }
-
-          return mappedCaseType;
-        });
-      }
-
-      return result;
-    });
-
-  req.session.jurisdictions = filteredJurisdictions;
+  req.session.jurisdictions = [...data].filter((o) => filters.includes(o.id));
   return req.session.jurisdictions;
 };
 

@@ -9,12 +9,12 @@ import * as crudService from '../../common/crudService';
 import * as configuration from '../../configuration';
 import { getLovRefData } from './index';
 import { LovRefDataByServiceModel } from './models/lovRefData.model';
-import {
-  DEFAULT_JUDGE_TYPES_REF,
-  DEFAULT_STAGES_REF,
+import { 
+  DEFAULT_JUDGE_TYPES_REF, 
+  DEFAULT_STAGES_REF, 
   DEFAULT_PRIORITIES_REF,
   DEFAULT_PARTYCHANNEL_REF,
-  ALL_REF_DATA
+  ALL_REF_DATA 
 } from './data/lov.mock.data';
 
 chai.use(sinonChai);
@@ -31,9 +31,9 @@ describe('LOV Service', () => {
     sandbox = sinon.createSandbox();
     next = sandbox.stub();
     res = mockRes();
-
+    
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
-
+    
     sendGetStub = sandbox.stub(crudService, 'sendGet');
   });
 
@@ -163,7 +163,7 @@ describe('LOV Service', () => {
       });
 
       const error = new Error('Not Found');
-      error.status = 404;
+      error['status'] = 404;
       sendGetStub.rejects(error);
 
       await getLovRefData(req, res, next);

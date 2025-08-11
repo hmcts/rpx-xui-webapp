@@ -5886,7 +5886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sideway/address@npm:^4.1.3":
+"@sideway/address@npm:^4.1.3, @sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
   dependencies:
@@ -10463,13 +10463,6 @@ __metadata:
   version: 1.0.8
   resolution: "damerau-levenshtein@npm:1.0.8"
   checksum: 10/f4eba1c90170f96be25d95fa3857141b5f81e254f7e4d530da929217b19990ea9a0390fc53d3c1cafac9152fda78e722ea4894f765cf6216be413b5af1fbf821
-  languageName: node
-  linkType: hard
-
-"dasherize@npm:2.0.0":
-  version: 2.0.0
-  resolution: "dasherize@npm:2.0.0"
-  checksum: 10/c7e62f03d31070939d60a358e2df43ebc5001b167cf80f37bdecedb2001e2b93cc9eabd9cd9dad52ae4372ddb1a064798cd075b9d5cb9fde4adbae7073bbfe3b
   languageName: node
   linkType: hard
 

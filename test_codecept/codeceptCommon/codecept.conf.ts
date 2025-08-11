@@ -251,7 +251,6 @@ exports.config = {
   bootstrapAll: async () => {
     global.scenarioData = {};
     const path = require('path');
-    console.log(path, 'path Connnnnnnnnooooor')
     require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 
     if (parallel) {

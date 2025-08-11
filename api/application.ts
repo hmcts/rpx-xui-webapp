@@ -48,7 +48,6 @@ export async function createApp() {
   const app = express();
 
   const logger: JUILogger = log4jui.getLogger('Application');
-
   if (showFeature(FEATURE_HELMET_ENABLED)) {
     app.use(helmet(getConfigValue(HELMET)));
     app.use(helmet.noSniff());
@@ -109,7 +108,7 @@ export async function createApp() {
   app.use('/api', routes);
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true }, ignoreMethods: ['GET'] }));
+  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
   // Serve /index.html through the same nonce injector
   // This is to ensure that <MC URL>/index.html works with CSP
   app.get('/index.html', (req, res) => {

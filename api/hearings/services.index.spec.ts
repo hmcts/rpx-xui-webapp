@@ -753,7 +753,7 @@ describe('retrieveForceNewDefaultScreenFlow', () => {
 
         const result = forceDefaultScreenFlow(data);
 
-        expect(result.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW_NEW);
+        expect(result.screenFlow).to.deep.equal(DEFAULT_SCREEN_FLOW);
       });
 
       it('should maintiain the screen flow when entered screen flow does not match the pattern screenFlow exists', () => {

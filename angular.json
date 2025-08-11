@@ -188,18 +188,6 @@
       "projectType": "application",
       "prefix": "",
       "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "rpx-exui:serveTest"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "rpx-exui:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {

@@ -1,5 +1,5 @@
 
-const headerPage = require('../../pageObjects/headerPage');
+function headerPage () { return require('../../pageObjects/headerPage')(); }
 const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const BrowserWaits = require('../../../support/customWaits');
 const allWorkPage = require('../../pageObjects/workAllocation/allWorkPage');
@@ -14,19 +14,19 @@ const { DataTableArgument } = require('codeceptjs');
 When('I navigate to My work sub navigation tab {string}', async function (secondaryNavTab) {
   await BrowserWaits.retryWithActionCallback(async () => {
     try {
-      await headerPage.clickPrimaryNavigationWithLabel('My work');
+      await headerPage().clickPrimaryNavigationWithLabel('My work');
       await BrowserWaits.waitForSeconds(2);
       await BrowserWaits.waitForSpinnerToDissappear();
       await myWorkPage.clickSubNavigationTab(secondaryNavTab);
     } catch (err){
-      await headerPage.refreshBrowser();
+      await headerPage().refreshBrowser();
       throw new Error(err);
     }
   });
 });
 
 When('I navigate to All work sub navigation tab {string}', async function (secondaryNavTab) {
-  await headerPage.clickPrimaryNavigationWithLabel('All work');
+  await headerPage().clickPrimaryNavigationWithLabel('All work');
 
   await BrowserWaits.retryWithActionCallback(async () => {
     await allWorkPage.clickSubNavigationTab(secondaryNavTab);

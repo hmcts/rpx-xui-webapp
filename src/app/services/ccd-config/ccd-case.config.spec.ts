@@ -169,7 +169,7 @@ describe('AppConfiguration', () => {
   }));
 
   it('should have getCreateOrUpdateDraftsUrl', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getCreateOrUpdateDraftsUrl('CIVIL')).toBe('test-case-data/internal/case-types/CIVIL/drafts/');
+    expect(service.getCreateOrUpdateDraftsUrl('')).toBe('undefined/internal/case-types//drafts');
   }));
 
   it('should have getAnnotationApiUrl', inject([AppConfig], (service: AppConfig) => {

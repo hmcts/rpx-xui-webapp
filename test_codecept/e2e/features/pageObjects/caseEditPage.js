@@ -1,32 +1,34 @@
-const CcdApi = require('../../utils/ccdApi');
-const BrowserWaits = require('../../support/customWaits');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
-Button = require('./webdriver-components/button.js');
-const RuntimeTestData = require('../../support/runtimeTestData');
-const CaseListPage = require('../pageObjects/CaseListPage');
+const { $, $$, currentUrl, elementByCss, elementByXpath, elementsByXpath, isPresent } = require('../../../helpers/globals');
+const BrowserWaits = require('../../support/customWaits');
 const { LOG_LEVELS } = require('../../support/constants');
+const RuntimeTestData = require('../../support/runtimeTestData');
+const CcdApi = require('../../utils/ccdApi');
+const CaseListPage = require('../pageObjects/CaseListPage');
+Button = require('./webdriver-components/button.js');
+
 class caseEditPage {
   constructor() {
     this.userName = 'lukesuperuserxui_new@mailnesia.com';
     this.password = 'Monday01';
-    this.searchResultsTopPagination = $('ccd-search-result .pagination-top');
-    this.ccdCaseEdit = $('ccd-case-edit');
-    this.continueButton = new Button('button[type=submit]');
     this.checkURanswerPageData;
-
-    this.validationErrorContainer = $('ccd-case-edit-page .govuk-error-summary');
 
     this.caseListPage = new CaseListPage();
 
     this.caseEventApiResponse = null;
   }
 
-  async isValidationErrorDisplayed(){
-    return await this.validationErrorContainer.isPresent();
+  get searchResultsTopPagination() { return $('ccd-search-result .pagination-top'); }
+  get ccdCaseEdit() { return $('ccd-case-edit'); }
+  get continueButton() { return new Button('button[type=submit]'); }
+  get validationErrorContainer() { return $('ccd-case-edit-page .govuk-error-summary'); }
+
+  async isValidationErrorDisplayed() {
+    return await isPresent(this.validationErrorContainer);
   }
 
   async getValidationErrorMessageDisplayed() {
-    return await this.validationErrorContainer.getText();
+    return await this.validationErrorContainer.textContent();
   }
 
   async validateWorkbasketInputs(reqPath) {
@@ -38,13 +40,13 @@ class caseEditPage {
           for (let i = 0; i < workBasketFields.workbasketInputs.length; i++) {
             WBfieldIdPresent = $(`#${workBasketFields.workbasketInputs[i].field.id}`);
             await BrowserWaits.waitForElement(WBfieldIdPresent);
-            expect(await WBfieldIdPresent.isPresent(), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
+            expect(await isPresent(WBfieldIdPresent), `Case creation ${WBfieldIdPresent} field should be present`).to.be.true;
           }
         }
-      } catch (err){
+      } catch (err) {
         const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype;
-        for (const caseType of RuntimeTestData.workbasketInputs.casetypes){
-          if (caseType !== caseTypeToSelect){
+        for (const caseType of RuntimeTestData.workbasketInputs.casetypes) {
+          if (caseType !== caseTypeToSelect) {
             await this.caseListPage.selectCaseType(caseType);
             break;
           }
@@ -63,7 +65,7 @@ class caseEditPage {
       for (let i = 0; i < searchInputFields.searchInputs.length; i++) {
         SIfieldIdPresent = $(`#${searchInputFields.searchInputs[i].field.id}`);
         await BrowserWaits.waitForElement(SIfieldIdPresent);
-        expect(await SIfieldIdPresent.isPresent(), `Case creation ${SIfieldIdPresent} field should be present`).to.be.true;
+        expect(await isPresent(SIfieldIdPresent), `Case creation ${SIfieldIdPresent} field should be present`).to.be.true;
       }
     }
   }
@@ -81,7 +83,7 @@ class caseEditPage {
         var selectionFieldsCount = await selectionRadioFields.count();
         // console.log("selectionFieldsCount" + selectionFieldsCount);
         for (let i = 0; i < selectionFieldsCount; i++) {
-          const fixedListValue = await selectionRadioFields.get(i).getText();
+          const fixedListValue = await selectionRadioFields.nth(i).textContent();
           webResList.push(fixedListValue);
         }
         expect(APIResList.sort()).to.eql(webResList.sort());
@@ -110,10 +112,10 @@ class caseEditPage {
     const count = await thLable.count();
     const caseResultsThTitle = [];
     if (count) {
-      for (let i = index? index : 0; i < count; i++) {
-        const thText = thLable.get(i).$$('.search-result-column-label');
-        const text = await thText.getText();
-        if (text.length !== 0){
+      for (let i = index ? index : 0; i < count; i++) {
+        const thText = thLable.nth(i).locator('.search-result-column-label');
+        const text = await getText(thText);
+        if (text.length !== 0) {
           caseResultsThTitle.push(`${text}`);
         }
       }
@@ -133,8 +135,8 @@ class caseEditPage {
     const tabsCount = await thLable.count();
     if (caseDetailsRes) {
       for (let i = 0; i < tabsCount; i++) {
-        const thText = thLable.get(i).$('.mat-tab-label-content');
-        const tabText = await thText.getText();
+        const thText = thLable.nth(i).locator('.mat-tab-label-content');
+        const tabText = await thText.textContent();
         const tab = await caseDetailsRes.tabs.find((tab) => tab.label == tabText);
         const tabStatus = tab.label == tabText;
         expect(true, `${tab.label} is not present in the web`).to.eql(tabStatus);
@@ -149,19 +151,19 @@ class caseEditPage {
     const numberOfTabs = await tabHeaders.count();
 
     for (let tabIndex = 0; tabIndex < numberOfTabs; tabIndex++) {
-      const tabHeader = tabHeaders.get(tabIndex);
-      const tabName = await tabHeader.getText();
+      const tabHeader = tabHeaders.nth(tabIndex);
+      const tabName = await tabHeader.textContent();
       await tabHeader.click();
       await BrowserWaits.waitForSeconds(1);
 
       const fieldCount = await this.caseDetailsTabs.count();
       const tab = await caseDetailsRes.tabs.find((tab) => tab.label == tabName);
       for (let count = 0; count < fieldCount; count++) {
-        const complexFieldTable = await this.caseDetailsTabs.get(count).element(by.xpath('./*'));
-        const thCF = complexFieldTable.$$('tr th');
-        const tdCF = complexFieldTable.$$('tr td');
-        const webTableLabel = await thCF.getText();
-        const value = await tdCF.getText();
+        const complexFieldTable = await this.caseDetailsTabs.nth(count).locator('./*');
+        const thCF = complexFieldTable.locator('tr th');
+        const tdCF = complexFieldTable.locator('tr td');
+        const webTableLabel = await thCF.textContent();
+        const value = await tdCF.textContent();
         const field = await tab.fields.find((tab) => tab.label == webTableLabel);
         if (field.value && value && field.value.length > 0) {
           const resKeyVal = await this._getKeyVal(field);
@@ -189,15 +191,15 @@ class caseEditPage {
 
   async clickNextStepTriggerActions() {
     await BrowserWaits.waitForElement(this.ccdCaseEdit);
-    expect(this.ccdCaseEdit.isPresent()).to.be.equal;
+    expect(isPresent(this.ccdCaseEdit)).to.be.equal;
   }
 
   _getOptionSelectorWithText(optionText) {
-    return by.xpath('//option[text() = \'' + optionText + '\']');
+    return elementByXpath('//option[text() = \'' + optionText + '\']');
   }
 
   async wizardPageFormFieldValidations(pageNo) {
-    if (!this.caseEventApiResponse){
+    if (!this.caseEventApiResponse) {
       this.caseEventApiResponse = await CcdApi.getCaseCreationpagesApiRes();
     }
     const wizardPage = this.caseEventApiResponse;
@@ -236,11 +238,11 @@ class caseEditPage {
   }
 
   async validateSummeryPageLinks() {
-    const checkURanswerPage = element.all(by.xpath('//table[@class=\'form-table\']/tbody/tr'));
+    const checkURanswerPage = elementsByXpath('//table[@class=\'form-table\']/tbody/tr');
     await BrowserWaits.waitForElement($('ccd-case-edit-submit form table tbody tr'));
     const tdCount = await checkURanswerPage.count();
     for (let count = 0; count < tdCount; count++) {
-      const trxpath = element(by.xpath(`//table[@class='form-table']/tbody/tr[${count + 1}]/td[2]/a`));
+      const trxpath = elementByXpath(`//table[@class='form-table']/tbody/tr[${count + 1}]/td[2]/a`);
       const tagName = await trxpath.getTagName();
       expect(tagName).to.eql('a');
     }
@@ -248,20 +250,17 @@ class caseEditPage {
 
   async validateCheckYouranswerPage(createCaseFormData) {
     this.checkURanswerPageData = this.checkURanswerPageData ? this.checkURanswerPageData : [];
-    const checkURanswerPage = element.all(by.xpath('//table[@class=\'form-table\']/tbody/tr'));
+    const checkURanswerPage = elementsByXpath('//table[@class=\'form-table\']/tbody/tr');
     await BrowserWaits.waitForElement($('ccd-case-edit-submit form table tbody tr'));
     const trCount = await checkURanswerPage.count();
     if (trCount >= 0) {
       for (let count = 0; count < trCount; count++) {
-        const th = await checkURanswerPage.get(count).element(by.xpath('./*'));
-        const trxpath = element(by.xpath(`//table[@class='form-table']/tbody/tr[${count + 1}]/td`));
-        const dl = await checkURanswerPage.get(count).element(by.css('td ccd-field-read dl')).isPresent();
-        const tdInsideTable = await checkURanswerPage.get(count).element(by.css('td ccd-field-read ccd-read-multi-select-list-field table')).isPresent();
+        const th = await checkURanswerPage.nth(count).elementByXpath('./*');
+        const trxpath = elementByXpath(`//table[@class='form-table']/tbody/tr[${count + 1}]/td`);
+        const dl = await isPresent(checkURanswerPage.nth(count).elementByCss('td ccd-field-read dl'));
+        const tdInsideTable = await isPresent(checkURanswerPage.nth(count).elementByCss('td ccd-field-read ccd-read-multi-select-list-field table'));
         if (!dl && !tdInsideTable) {
-          this.checkURanswerPageData.push({ [await th.getText()]: await trxpath.getText() });
-        }
-        if (tdInsideTable) {
-          const tableTR = checkURanswerPage.get(count).$$('td ccd-field-read ccd-read-multi-select-list-field table tr');
+          this.checkURanswerPageData.push({ [await th.textContent()]: await trxpath.textContent() });
         }
         if (dl) {
           await this._dlData(count);
@@ -284,16 +283,16 @@ class caseEditPage {
   }
 
   async _dlData(count) {
-    const checkURanswerPage = element.all(by.xpath('//table[@class=\'form-table\']/tbody/tr'));
-    const dd = checkURanswerPage.get(count).$$('td ccd-field-read dl dd');
-    const dt = checkURanswerPage.get(count).$$('td ccd-field-read dl dt');
+    const checkURanswerPage = elementsByXpath('//table[@class=\'form-table\']/tbody/tr');
+    const dd = checkURanswerPage.nth(count).locator('td ccd-field-read dl dd');
+    const dt = checkURanswerPage.nth(count).locator('td ccd-field-read dl dt');
     for (let dtCount = 0; dtCount < await dt.count(); dtCount++) {
-      const isDisplayed = await await dd.get(dtCount).isDisplayed();
-      if (!isDisplayed){
+      const isDisplayed = await await dd.nth(dtCount).isVisible();
+      if (!isDisplayed) {
         continue;
       }
-      const ddValue = await dd.get(dtCount).getText();
-      const dtLabel = await dt.get(dtCount).getText();
+      const ddValue = await dd.nth(dtCount).textContent();
+      const dtLabel = await dt.nth(dtCount).textContent();
       this.checkURanswerPageData.push({ [dtLabel]: ddValue });
     }
   }
@@ -309,32 +308,32 @@ class caseEditPage {
     //     $('button[type=submit]').getWebElement())
     await this.continueButton.click();
     const e = $('#TextField');
-    const errormsg = await $('ccd-write-text-field .error-message').getText();
+    const errormsg = await $('ccd-write-text-field .error-message').textContent();
     expect(errormsg.trim()).to.eql('Text Field is required');
   }
 
   async eventPageDisplayShowCondition() {
     const currentPageElement = $('ccd-case-edit-page');
     await BrowserWaits.waitForElement(currentPageElement);
-    await $('#TextField').sendKeys('test text value');
+    await $('#TextField').fill('test text value');
 
-    const selectionFields = $('#Gender').$$('.multiple-choice input');
-    await selectionFields.get(0).click();
+    const selectionFields = $('#Gender').locator('.multiple-choice input');
+    await selectionFields.nth(0).click();
 
-    const continieElement = element(by.xpath('//button[@type= "submit"]'));
+    const continieElement = elementByXpath('//button[@type= "submit"]');
     // await browser.executeScript('arguments[0].scrollIntoView()',
     //     continieElement.getWebElement())
 
     await BrowserWaits.waitForElement(continieElement);
     await BrowserWaits.waitForElementClickable(continieElement);
-    const thisPageUrl = await browser.getCurrentUrl();
+    const thisPageUrl = await currentUrl();
     console.log('Submitting : ' + thisPageUrl);
 
     await BrowserWaits.retryWithActionCallback(async () => {
       await continieElement.click();
       await BrowserWaits.waitForPageNavigation(thisPageUrl);
-      const page3 = await element(by.css('ccd-case-edit-page h1'));
-      expect(await page3.getText()).to.contains('Page 3');
+      const page3 = await elementByCss('ccd-case-edit-page h1');
+      expect(await page3.textContent()).to.contains('Page 3');
     });
   }
 

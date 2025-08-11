@@ -178,7 +178,7 @@
     "accessManagementEnabled": true,
     "compressionEnabled": false,
     "queryIdamServiceOverride": true,
-    "forceNewDefaultScreenFlow": true
+    "forceNewDefaultScreenFlow": false
   },
   "helmet": {
     "referrerPolicy": {

@@ -511,7 +511,7 @@ describe('AppConfiguration with different deployment environments', () => {
     it('should initialize with AAT environment configuration', inject([AppConfig], (service: AppConfig) => {
       expect(service).toBeTruthy();
       expect(mockEnvironmentServiceForEnv.getDeploymentEnv).toHaveBeenCalled();
-      expect(service['deploymentEnv']).toBe(DeploymentEnvironmentEnum.AAT);
+      expect((service as any).deploymentEnv).toBe(DeploymentEnvironmentEnum.AAT);
     }));
 
     it('should return AAT specific WA service config', fakeAsync(inject([AppConfig], (service: AppConfig) => {
@@ -545,7 +545,7 @@ describe('AppConfiguration with different deployment environments', () => {
     it('should initialize with DEMO environment configuration', inject([AppConfig], (service: AppConfig) => {
       expect(service).toBeTruthy();
       expect(mockEnvironmentServiceForEnv.getDeploymentEnv).toHaveBeenCalled();
-      expect(service['deploymentEnv']).toBe(DeploymentEnvironmentEnum.DEMO);
+      expect((service as any).deploymentEnv).toBe(DeploymentEnvironmentEnum.DEMO);
     }));
   });
 
@@ -573,7 +573,7 @@ describe('AppConfiguration with different deployment environments', () => {
     it('should initialize with LOCAL environment configuration', inject([AppConfig], (service: AppConfig) => {
       expect(service).toBeTruthy();
       expect(mockEnvironmentServiceForEnv.getDeploymentEnv).toHaveBeenCalled();
-      expect(service['deploymentEnv']).toBe(DeploymentEnvironmentEnum.LOCAL);
+      expect((service as any).deploymentEnv).toBe(DeploymentEnvironmentEnum.LOCAL);
     }));
   });
 });
@@ -681,7 +681,7 @@ describe('AppConfiguration edge cases and error scenarios', () => {
     beforeEach(() => {
       mockFeatureToggleServiceAsync = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
       mockFeatureToggleServiceAsync.isEnabled.and.returnValue(of(false));
-      
+
       TestBed.configureTestingModule({
         imports: [StoreModule.forRoot({})],
         providers: [
@@ -701,20 +701,20 @@ describe('AppConfiguration edge cases and error scenarios', () => {
     it('should handle feature toggle values changing over time', fakeAsync(() => {
       const changingValue$ = of(false);
       mockFeatureToggleServiceAsync.getValue.and.returnValue(changingValue$);
-      
+
       service = TestBed.inject(AppConfig);
       const iss = TestBed.inject(InitialisationSyncService);
       iss.initialisationComplete(true);
-      
+
       tick(5000);
       expect(service.initialisationComplete).toBeTruthy();
     }));
 
-    it('should not mark initialization complete when initialisation sync is false', inject([AppConfig, InitialisationSyncService], 
+    it('should not mark initialization complete when initialisation sync is false', inject([AppConfig, InitialisationSyncService],
       (appConfig: AppConfig, initSync: InitialisationSyncService) => {
         initSync.initialisationComplete(false);
         expect(appConfig.initialisationComplete).toBeFalsy();
-    }));
+      }));
   });
 });
 
@@ -891,7 +891,7 @@ describe('AppConfiguration with specific config values', () => {
     tick(5000);
     // Initially both config and environment are false
     expect(service.getAccessManagementMode()).toBe(false);
-    
+
     // Change environment to true, but config is still false
     mockEnvironmentServiceConfig.get.and.callFake((key: string) => {
       if (key === 'accessManagementEnabled') {

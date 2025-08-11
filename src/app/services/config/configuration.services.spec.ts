@@ -85,12 +85,12 @@ describe('Configuration Service', () => {
     service.setConfiguration();
 
     expect(store.pipe).toHaveBeenCalled();
-    expect(service['configuration']).toEqual(mockConfig);
+    expect((service as any).configuration).toEqual(mockConfig);
   });
 
   it('should return feature toggle configuration', () => {
     const mockFeatures = { feature1: true, feature2: false };
-    service['configuration'] = { features: mockFeatures };
+    (service as any).configuration = { features: mockFeatures };
 
     const result = service.getFeatureToggle();
 
@@ -99,7 +99,7 @@ describe('Configuration Service', () => {
 
   it('should return editor configuration', () => {
     const mockEditorConfig = { someEditorSetting: 'value' };
-    service['configuration'] = { caseEditorConfig: mockEditorConfig };
+    (service as any).configuration = { caseEditorConfig: mockEditorConfig };
 
     const result = service.getEditorConfiguration();
 
@@ -108,7 +108,7 @@ describe('Configuration Service', () => {
 
   it('should return routes configuration', () => {
     const mockRoutesConfig = { api: '/api/v1', auth: '/auth' };
-    service['configuration'] = { urls: mockRoutesConfig };
+    (service as any).configuration = { urls: mockRoutesConfig };
 
     const result = service.getRoutesConfig();
 

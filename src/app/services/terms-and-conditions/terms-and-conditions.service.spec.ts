@@ -284,7 +284,7 @@ describe('TermsConditionsService', () => {
     it('should use injected HttpClient instance', () => {
       expect(service).toBeDefined();
       expect(mockHttpClient).toBeDefined();
-      
+
       // Verify that the service uses the mocked HttpClient
       service.getTermsConditions();
       expect(mockHttpClient.get).toHaveBeenCalled();
@@ -292,17 +292,17 @@ describe('TermsConditionsService', () => {
 
     it('should have the correct configuration key', () => {
       // Access the private field through bracket notation for testing
-      expect(service['configuration']).toBe('termsAndConditionsEnabled');
+      expect((service as any).configuration).toBe('termsAndConditionsEnabled');
     });
 
     it('should maintain the same HttpClient instance across multiple method calls', () => {
-      const firstHttpClient = service['http'];
-      
+      const firstHttpClient = (service as any).http;
+
       service.getTermsConditions();
       service.isTermsConditionsFeatureEnabled();
-      
-      const secondHttpClient = service['http'];
-      
+
+      const secondHttpClient = (service as any).http;
+
       expect(firstHttpClient).toBe(secondHttpClient);
       expect(mockHttpClient.get).toHaveBeenCalledTimes(2);
     });

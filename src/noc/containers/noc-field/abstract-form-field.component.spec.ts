@@ -30,7 +30,7 @@ describe('AbstractFormFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestFormFieldComponent);
     component = fixture.componentInstance;
-    
+
     // Initialize mock data
     mockFormGroup = new FormGroup({});
     mockQuestionField = {
@@ -52,10 +52,10 @@ describe('AbstractFormFieldComponent', () => {
       answer_field: 'test-answer-field',
       question_id: 'test-question-id'
     } as NocQuestion;
-    
+
     component.questionField = mockQuestionField;
     component.formGroup = mockFormGroup;
-    
+
     fixture.detectChanges();
   });
 
@@ -103,27 +103,27 @@ describe('AbstractFormFieldComponent', () => {
 
     it('should return null when formGroup is not provided', () => {
       component.formGroup = undefined;
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(mockFormControl);
-      
+
       expect(result).toBeNull();
     });
 
     it('should return existing control if it already exists in formGroup', () => {
       const existingControl = new FormControl('existing-value');
       mockFormGroup.addControl(mockQuestionField.question_id, existingControl);
-      
-      const registerFn = component['defaultControlRegister']();
+
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(mockFormControl);
-      
+
       expect(result).toBe(existingControl);
       expect(result).not.toBe(mockFormControl);
     });
 
     it('should add new control to formGroup if it does not exist', () => {
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(mockFormControl);
-      
+
       expect(result).toBe(mockFormControl);
       expect(mockFormGroup.contains(mockQuestionField.question_id)).toBe(true);
       expect(mockFormGroup.get(mockQuestionField.question_id)).toBe(mockFormControl);
@@ -131,10 +131,10 @@ describe('AbstractFormFieldComponent', () => {
 
     it('should call addValidators when adding new control', () => {
       spyOn(component, 'addValidators');
-      
-      const registerFn = component['defaultControlRegister']();
+
+      const registerFn = (component as any).defaultControlRegister();
       registerFn(mockFormControl);
-      
+
       expect(component.addValidators).toHaveBeenCalledWith(mockQuestionField, mockFormControl);
     });
 
@@ -142,26 +142,26 @@ describe('AbstractFormFieldComponent', () => {
       const existingControl = new FormControl('existing-value');
       mockFormGroup.addControl(mockQuestionField.question_id, existingControl);
       spyOn(component, 'addValidators');
-      
-      const registerFn = component['defaultControlRegister']();
+
+      const registerFn = (component as any).defaultControlRegister();
       registerFn(mockFormControl);
-      
+
       expect(component.addValidators).not.toHaveBeenCalled();
     });
 
     it('should handle null formGroup without errors', () => {
       component.formGroup = null;
-      const registerFn = component['defaultControlRegister']();
-      
+      const registerFn = (component as any).defaultControlRegister();
+
       expect(() => registerFn(mockFormControl)).not.toThrow();
       expect(registerFn(mockFormControl)).toBeNull();
     });
 
     it('should work with different control types', () => {
       const customControl = new FormControl('', Validators.required);
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(customControl);
-      
+
       expect(result).toBe(customControl);
       expect(mockFormGroup.get(mockQuestionField.question_id)).toBe(customControl);
     });
@@ -171,9 +171,9 @@ describe('AbstractFormFieldComponent', () => {
     it('should be called but not add validators by default', () => {
       const control = new FormControl('');
       const initialValidators = control.validator;
-      
+
       component.addValidators(mockQuestionField, control);
-      
+
       expect(control.validator).toBe(initialValidators);
     });
 
@@ -187,8 +187,8 @@ describe('AbstractFormFieldComponent', () => {
           }
         }
       }
-      
-      const testComponent = new TestComponentWithValidators();
+
+      const testComponent: any = new TestComponentWithValidators();
       const control = new FormControl('');
       const questionWithMin = {
         ...mockQuestionField,
@@ -198,9 +198,9 @@ describe('AbstractFormFieldComponent', () => {
         }
       };
       testComponent.questionField = questionWithMin;
-      
-      testComponent['addValidators'](questionWithMin, control);
-      
+
+      testComponent.addValidators(questionWithMin, control);
+
       control.setValue('abc');
       expect(control.hasError('minlength')).toBe(true);
     });
@@ -210,60 +210,60 @@ describe('AbstractFormFieldComponent', () => {
     it('should subscribe to answerValue$ and update answerValue', () => {
       const testValue = 'test-answer-value';
       component.answerValue$ = of(testValue);
-      
-      component['setAnswer']();
-      
+
+      (component as any).setAnswer();
+
       expect(component.answerValue).toBe(testValue);
     });
 
     it('should handle multiple emissions from answerValue$', () => {
       const values = ['first', 'second', 'third'];
       const emitIndex = 0;
-      
+
       component.answerValue$ = new Observable((subscriber) => {
         values.forEach((value) => subscriber.next(value));
         subscriber.complete();
       });
-      
-      component['setAnswer']();
-      
+
+      (component as any).setAnswer();
+
       expect(component.answerValue).toBe('third');
     });
 
     it('should handle empty string values', () => {
       component.answerValue$ = of('');
-      
-      component['setAnswer']();
-      
+
+      (component as any).setAnswer();
+
       expect(component.answerValue).toBe('');
     });
 
     it('should handle null values', () => {
       component.answerValue$ = of(null);
-      
-      component['setAnswer']();
-      
+
+      (component as any).setAnswer();
+
       expect(component.answerValue).toBeNull();
     });
 
     it('should handle undefined values', () => {
       component.answerValue$ = of(undefined);
-      
-      component['setAnswer']();
-      
+
+      (component as any).setAnswer();
+
       expect(component.answerValue).toBeUndefined();
     });
 
     it('should throw error when answerValue$ is undefined', () => {
       component.answerValue$ = undefined;
-      
-      expect(() => component['setAnswer']()).toThrow();
+
+      expect(() => (component as any).setAnswer()).toThrow();
     });
 
     it('should update answerValue for each emission', (done) => {
       const values = ['a', 'b', 'c'];
       let currentIndex = 0;
-      
+
       component.answerValue$ = new Observable((subscriber) => {
         const interval = setInterval(() => {
           if (currentIndex < values.length) {
@@ -275,9 +275,9 @@ describe('AbstractFormFieldComponent', () => {
           }
         }, 10);
       });
-      
-      component['setAnswer']();
-      
+
+      (component as any).setAnswer();
+
       // Wait for all emissions
       setTimeout(() => {
         expect(component.answerValue).toBe('c');
@@ -293,10 +293,10 @@ describe('AbstractFormFieldComponent', () => {
           return `Question: ${this.questionField?.question_text}`;
         }
       }
-      
+
       const extended = new ExtendedComponent();
       extended.questionField = mockQuestionField;
-      
+
       expect(extended.customMethod()).toBe('Question: Test Question');
     });
 
@@ -305,16 +305,16 @@ describe('AbstractFormFieldComponent', () => {
       expect(component.questionField).toBeDefined();
       expect(component.formGroup).toBeDefined();
       expect(component.answerValue).toBeDefined();
-      
+
       // Protected methods should exist
-      expect(component['defaultControlRegister']).toBeDefined();
-      expect(component['addValidators']).toBeDefined();
-      expect(component['setAnswer']).toBeDefined();
-      
+      expect((component as any).defaultControlRegister).toBeDefined();
+      expect((component as any).addValidators).toBeDefined();
+      expect((component as any).setAnswer).toBeDefined();
+
       // Optional properties should be accessible (even if undefined)
       component.answerValue$ = of('test');
-      expect(component.answerValue$).toBeDefined();
-      
+      expect((component as any).answerValue$).toBeDefined();
+
       const testControl = <T extends AbstractControl>(control: T): T => control;
       component.registerControl = testControl;
       expect(component.registerControl).toBeDefined();
@@ -327,11 +327,11 @@ describe('AbstractFormFieldComponent', () => {
         ...mockQuestionField,
         question_id: 'question-id-with-special-chars!@#$%'
       };
-      
+
       const control = new FormControl('');
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(control);
-      
+
       expect(result).toBe(control);
       expect(mockFormGroup.contains('question-id-with-special-chars!@#$%')).toBe(true);
     });
@@ -342,11 +342,11 @@ describe('AbstractFormFieldComponent', () => {
         ...mockQuestionField,
         question_id: longId
       };
-      
+
       const control = new FormControl('');
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(control);
-      
+
       expect(result).toBe(control);
       expect(mockFormGroup.contains(longId)).toBe(true);
     });
@@ -356,11 +356,11 @@ describe('AbstractFormFieldComponent', () => {
         ...mockQuestionField,
         question_id: ''
       };
-      
+
       const control = new FormControl('');
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const result = registerFn(control);
-      
+
       expect(result).toBe(control);
       expect(mockFormGroup.contains('')).toBe(true);
     });

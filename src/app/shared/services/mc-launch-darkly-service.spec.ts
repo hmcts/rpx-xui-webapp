@@ -36,7 +36,7 @@ describe('McLaunchDarklyService', () => {
     it('should be called during construction', () => {
       spyOn<any>(McLaunchDarklyService.prototype, 'rootGuard');
       service = TestBed.inject(McLaunchDarklyService);
-      expect(McLaunchDarklyService.prototype['rootGuard']).toHaveBeenCalledWith(LaunchDarklyService);
+      expect((McLaunchDarklyService.prototype as any).rootGuard).toHaveBeenCalledWith(LaunchDarklyService);
     });
 
     it('should not throw error when no parent instance exists', () => {

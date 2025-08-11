@@ -98,7 +98,7 @@ describe('AllWorkTaskComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AllWorkTaskComponent);
     component = fixture.componentInstance;
-    
+
     const tasks: Task[] = getMockTasks();
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
@@ -190,9 +190,9 @@ describe('AllWorkTaskComponent', () => {
   describe('ngOnInit', () => {
     it('should initialize component and load data', () => {
       const loadCaseWorkersSpy = spyOn(component, 'loadCaseWorkersAndLocations').and.stub();
-      
+
       component.ngOnInit();
-      
+
       expect(loadCaseWorkersSpy).toHaveBeenCalled();
     });
   });
@@ -255,18 +255,18 @@ describe('AllWorkTaskComponent', () => {
           { roleName: 'other-role', jurisdiction: 'CIVIL', roleType: 'type' }
         ]
       };
-      
+
       // Update the mock to return multiple services
       mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(of([
         { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
         { serviceId: 'SSCS', serviceName: 'Social Security' },
         { serviceId: 'CIVIL', serviceName: 'Civil' }
       ]));
-      
+
       storeMock.pipe.and.returnValue(of(mockUserDetails));
-      
+
       component.loadCaseWorkersAndLocations();
-      
+
       component.waSupportedDetailedServices$.subscribe((services) => {
         expect(services).toBeTruthy();
         // The supportedJurisdictions are set by the setServiceList method
@@ -281,15 +281,15 @@ describe('AllWorkTaskComponent', () => {
         ...USER_DETAILS,
         roleAssignmentInfo: null
       };
-      
+
       const mockDetailedServices: HMCTSServiceDetails[] = [
         { serviceId: 'IA', serviceName: 'Immigration and Asylum' }
       ];
-      
+
       storeMock.pipe.and.returnValue(of(mockUserDetails));
-      
+
       component.loadCaseWorkersAndLocations();
-      
+
       component.waSupportedDetailedServices$.subscribe((services) => {
         expect(services).toBeTruthy();
         expect(component.supportedJurisdictions).toEqual(['IA']);
@@ -303,15 +303,15 @@ describe('AllWorkTaskComponent', () => {
           { roleName: 'task-supervisor', jurisdiction: null, roleType: 'type' }
         ]
       };
-      
+
       const mockDetailedServices: HMCTSServiceDetails[] = [
         { serviceId: 'IA', serviceName: 'Immigration and Asylum' }
       ];
-      
+
       storeMock.pipe.and.returnValue(of(mockUserDetails));
-      
+
       component.loadCaseWorkersAndLocations();
-      
+
       component.waSupportedDetailedServices$.subscribe((services) => {
         expect(services).toEqual(mockDetailedServices);
       });
@@ -321,9 +321,9 @@ describe('AllWorkTaskComponent', () => {
   describe('getSearchTaskRequestPagination with edge cases', () => {
     it('should handle null userDetails in session storage', () => {
       mockSessionStorageService.getItem.and.returnValue(null);
-      
+
       const result = component.getSearchTaskRequestPagination();
-      
+
       expect(result).toBeUndefined();
     });
 
@@ -337,10 +337,10 @@ describe('AllWorkTaskComponent', () => {
         roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
-      
+
       component.selectedServices = [];
       const searchRequest = component.getSearchTaskRequestPagination();
-      
+
       const jurisdictionParam = searchRequest.search_parameters.find((p) => p.key === 'jurisdiction');
       expect(jurisdictionParam).toBeUndefined();
     });
@@ -355,16 +355,16 @@ describe('AllWorkTaskComponent', () => {
         roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
-      
+
       // Set all filter values
       component.selectedServices = ['IA', 'SSCS'];
-      component['selectedPerson'] = 'person123';
+      (component as any).selectedPerson = 'person123';
       (component as any).selectedLocation = { id: 'loc123', locationName: 'Test Location', services: [] };
-      component['selectedTaskType'] = 'JUDICIAL';
-      component['selectedTaskName'] = 'task123';
-      
+      (component as any).selectedTaskType = 'JUDICIAL';
+      (component as any).selectedTaskName = 'task123';
+
       const searchRequest = component.getSearchTaskRequestPagination();
-      
+
       expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA', 'SSCS'] });
       expect(searchRequest.search_parameters).toContain({ key: 'user', operator: 'IN', values: ['person123'] });
       expect(searchRequest.search_parameters).toContain({ key: 'location', operator: 'IN', values: ['loc123'] });
@@ -376,9 +376,9 @@ describe('AllWorkTaskComponent', () => {
   describe('onPaginationEvent', () => {
     it('should call onPaginationHandler with correct page number', () => {
       spyOn(component, 'onPaginationHandler');
-      
+
       component.onPaginationEvent(3);
-      
+
       expect(component.onPaginationHandler).toHaveBeenCalledWith(3);
     });
   });
@@ -386,7 +386,7 @@ describe('AllWorkTaskComponent', () => {
   describe('onSelectionChanged', () => {
     it('should update all selection properties and load tasks', () => {
       spyOn<any>(component, 'loadBasedOnFilter');
-      
+
       const selection = {
         findTaskNameControl: null,
         location: 'loc456',
@@ -396,21 +396,21 @@ describe('AllWorkTaskComponent', () => {
         taskType: 'ADMIN',
         taskName: { task_type_id: 'task456', task_type_name: 'Test Task' }
       };
-      
+
       component.onSelectionChanged(selection);
-      
+
       expect((component as any).selectedLocation.id).toBe('loc456');
-      expect(component.selectedServices).toEqual(['CIVIL']);
-      expect(component['selectedTaskCategory']).toBe('Specific');
-      expect(component['selectedPerson']).toBe('person789');
-      expect(component['selectedTaskType']).toBe('ADMIN');
-      expect(component['selectedTaskName']).toBe('task456');
-      expect(component['loadBasedOnFilter']).toHaveBeenCalled();
+      expect((component as any).selectedServices).toEqual(['CIVIL']);
+      expect((component as any).selectedTaskCategory).toBe('Specific');
+      expect((component as any).selectedPerson).toBe('person789');
+      expect((component as any).selectedTaskType).toBe('ADMIN');
+      expect((component as any).selectedTaskName).toBe('task456');
+      expect((component as any).loadBasedOnFilter).toHaveBeenCalled();
     });
 
     it('should handle null person in selection', () => {
       spyOn<any>(component, 'loadBasedOnFilter');
-      
+
       const selection = {
         findTaskNameControl: null,
         location: 'loc456',
@@ -420,11 +420,11 @@ describe('AllWorkTaskComponent', () => {
         taskType: 'ADMIN',
         taskName: null
       };
-      
+
       component.onSelectionChanged(selection);
-      
-      expect(component['selectedPerson']).toBeNull();
-      expect(component['selectedTaskName']).toBeNull();
+
+      expect((component as any).selectedPerson).toBeNull();
+      expect((component as any).selectedTaskName).toBeNull();
     });
   });
 
@@ -435,9 +435,9 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'IA', serviceName: 'Immigration' },
           { serviceId: 'SSCS', serviceName: 'Social Security' }
         ];
-        
-        const result = component['setServiceList']([null], detailedServices);
-        
+
+        const result = (component as any).setServiceList([null], detailedServices);
+
         expect(result).toEqual(detailedServices);
         expect(component.supportedJurisdictions).toEqual(['IA', 'SSCS']);
       });
@@ -447,9 +447,9 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'IA', serviceName: 'Immigration' },
           { serviceId: 'SSCS', serviceName: 'Social Security' }
         ];
-        
-        const result = component['setServiceList'](['IA', 'CIVIL'], detailedServices);
-        
+
+        const result = (component as any).setServiceList(['IA', 'CIVIL'], detailedServices);
+
         expect(result).toEqual([
           { serviceId: 'IA', serviceName: 'Immigration' },
           { serviceId: 'CIVIL', serviceName: 'CIVIL' }
@@ -460,30 +460,30 @@ describe('AllWorkTaskComponent', () => {
         const detailedServices: HMCTSServiceDetails[] = [
           { serviceId: 'IA', serviceName: 'Immigration' }
         ];
-        
-        const result = component['setServiceList']([], detailedServices);
-        
+
+        const result = (component as any).setServiceList([], detailedServices);
+
         expect(result).toEqual(detailedServices);
       });
     });
 
     describe('loadBasedOnFilter', () => {
       it('should reset to page 1 if initial filter has run', () => {
-        component['hasInitialFilterRan'] = true;
+        (component as any).hasInitialFilterRan = true;
         spyOn(component, 'onPaginationHandler');
-        
-        component['loadBasedOnFilter']();
-        
+
+        (component as any).loadBasedOnFilter();
+
         expect(component.onPaginationHandler).toHaveBeenCalledWith(1);
       });
 
       it('should load tasks directly on first run', () => {
-        component['hasInitialFilterRan'] = false;
+        (component as any).hasInitialFilterRan = false;
         spyOn(component, 'loadTasks');
-        
-        component['loadBasedOnFilter']();
-        
-        expect(component['hasInitialFilterRan']).toBe(true);
+
+        (component as any).loadBasedOnFilter();
+
+        expect((component as any).hasInitialFilterRan).toBe(true);
         expect(component.loadTasks).toHaveBeenCalled();
       });
     });
@@ -491,104 +491,104 @@ describe('AllWorkTaskComponent', () => {
     describe('getLocationParameter', () => {
       it('should return null when selectedLocation is ALL', () => {
         (component as any).selectedLocation = { id: FilterConstants.Options.Locations.ALL.id, locationName: 'All', services: [] };
-        
-        const result = component['getLocationParameter']();
-        
+
+        const result = (component as any).getLocationParameter();
+
         expect(result.values).toEqual(['loc123']);
       });
 
       it('should return selected location when not ALL', () => {
         (component as any).selectedLocation = { id: 'loc789', locationName: 'Specific', services: [] };
-        
-        const result = component['getLocationParameter']();
-        
+
+        const result = (component as any).getLocationParameter();
+
         expect(result).toEqual({ key: 'location', operator: 'IN', values: ['loc789'] });
       });
 
       it('should handle empty location id', () => {
         (component as any).selectedLocation = { id: '', locationName: 'Empty', services: [] };
-        component.locations = [];
-        
-        const result = component['getLocationParameter']();
-        
+        (component as any).locations = [];
+
+        const result = (component as any).getLocationParameter();
+
         expect(result).toBeNull();
       });
     });
 
     describe('getStateParameter', () => {
       it('should return unassigned state for available tasks', () => {
-        component['selectedTaskCategory'] = 'None / Available tasks';
-        
-        const result = component['getStateParameter']();
-        
+        (component as any).selectedTaskCategory = 'None / Available tasks';
+
+        const result = (component as any).getStateParameter();
+
         expect(result).toEqual({ key: 'state', operator: 'IN', values: ['unassigned'] });
       });
 
       it('should return assigned state for non-all, non-available tasks', () => {
-        component['selectedTaskCategory'] = 'My tasks';
-        
-        const result = component['getStateParameter']();
-        
+        (component as any).selectedTaskCategory = 'My tasks';
+
+        const result = (component as any).getStateParameter();
+
         expect(result).toEqual({ key: 'state', operator: 'IN', values: ['assigned'] });
       });
 
       it('should return both states for all tasks', () => {
-        component['selectedTaskCategory'] = 'All';
-        
-        const result = component['getStateParameter']();
-        
+        (component as any).selectedTaskCategory = 'All';
+
+        const result = (component as any).getStateParameter();
+
         expect(result).toEqual({ key: 'state', operator: 'IN', values: ['assigned', 'unassigned'] });
       });
     });
 
     describe('getTaskTypeParameter', () => {
       it('should return task type parameter when not All', () => {
-        component['selectedTaskType'] = 'JUDICIAL';
-        
-        const result = component['getTaskTypeParameter']();
-        
+        (component as any).selectedTaskType = 'JUDICIAL';
+
+        const result = (component as any).getTaskTypeParameter();
+
         expect(result).toEqual({ key: 'role_category', operator: 'IN', values: ['JUDICIAL'] });
       });
 
       it('should return undefined for All task type', () => {
-        component['selectedTaskType'] = 'All';
-        
-        const result = component['getTaskTypeParameter']();
-        
+        (component as any).selectedTaskType = 'All';
+
+        const result = (component as any).getTaskTypeParameter();
+
         expect(result).toBeUndefined();
       });
 
       it('should return undefined for empty task type', () => {
-        component['selectedTaskType'] = '';
-        
-        const result = component['getTaskTypeParameter']();
-        
+        (component as any).selectedTaskType = '';
+
+        const result = (component as any).getTaskTypeParameter();
+
         expect(result).toBeUndefined();
       });
     });
 
     describe('getTaskNameParameter', () => {
       it('should return task name parameter when selected', () => {
-        component['selectedTaskName'] = 'reviewAppeal';
-        
-        const result = component['getTaskNameParameter']();
-        
+        (component as any).selectedTaskName = 'reviewAppeal';
+
+        const result = (component as any).getTaskNameParameter();
+
         expect(result).toEqual({ key: 'task_type', operator: 'IN', values: ['reviewAppeal'] });
       });
 
       it('should return undefined for empty task name', () => {
-        component['selectedTaskName'] = '';
-        
-        const result = component['getTaskNameParameter']();
-        
+        (component as any).selectedTaskName = '';
+
+        const result = (component as any).getTaskNameParameter();
+
         expect(result).toBeUndefined();
       });
 
       it('should return undefined for null task name', () => {
-        component['selectedTaskName'] = null;
-        
-        const result = component['getTaskNameParameter']();
-        
+        (component as any).selectedTaskName = null;
+
+        const result = (component as any).getTaskNameParameter();
+
         expect(result).toBeUndefined();
       });
     });
@@ -616,7 +616,7 @@ describe('AllWorkTaskComponent', () => {
     const mockFilterService = jasmine.createSpyObj('FilterService', ['persist', 'getStream', 'get']);
     const mockRpxTranslationService = jasmine.createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']);
     const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
-    
+
     let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
     beforeEach(waitForAsync(() => {
       storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
@@ -672,7 +672,7 @@ describe('AllWorkTaskComponent', () => {
 
     it(`onPaginationEvent with error response code ${scr.statusCode}`, () => {
       const navigateSpy = spyOn(router, 'navigate');
-      
+
       // Ensure session storage returns valid user data
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
         id: 'someId',
@@ -683,10 +683,10 @@ describe('AllWorkTaskComponent', () => {
         roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
-      
+
       // Call onPaginationEvent which should trigger the search and error handling
       component.onPaginationEvent(1);
-      
+
       // The navigation should happen after the error is caught
       expect(navigateSpy).toHaveBeenCalledWith([scr.routeUrl]);
     });

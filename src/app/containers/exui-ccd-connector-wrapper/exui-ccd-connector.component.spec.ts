@@ -115,14 +115,14 @@ describe('CCD Connector Component', () => {
     });
 
     it('should set up event subscriptions when ccdComponent exists', () => {
-      expect(component.subscriptions['submitted']).toBeDefined();
-      expect(component.subscriptions['cancelled']).toBeDefined();
+      expect((component.subscriptions as any).submitted).toBeDefined();
+      expect((component.subscriptions as any).cancelled).toBeDefined();
     });
 
     it('should create dispatchers when ccdComponent exists', () => {
       expect(component.dispatcherContainer).toBeDefined();
-      expect(component.dispatcherContainer['submitted']).toBeDefined();
-      expect(component.dispatcherContainer['cancelled']).toBeDefined();
+      expect((component.dispatcherContainer as any).submitted).toBeDefined();
+      expect((component.dispatcherContainer as any).cancelled).toBeDefined();
     });
 
     it('should set hostBindingValue when ccdComponent exists', () => {
@@ -132,7 +132,7 @@ describe('CCD Connector Component', () => {
     it('should dispatch action when event is emitted', () => {
       const testData = { caseId: '123', data: { field: 'value' } };
       mockCcdComponent.submitted.emit(testData);
-      
+
       expect(mockStore.dispatch).toHaveBeenCalled();
       const dispatchedAction = mockStore.dispatch.calls.mostRecent().args[0] as any;
       expect(dispatchedAction.constructor.name).toBe('ApplyChange');
@@ -142,10 +142,10 @@ describe('CCD Connector Component', () => {
     it('should handle multiple event emissions', () => {
       const submittedData = { caseId: '123' };
       const cancelledData = { reason: 'user cancelled' };
-      
+
       mockCcdComponent.submitted.emit(submittedData);
       mockCcdComponent.cancelled.emit(cancelledData);
-      
+
       expect(mockStore.dispatch).toHaveBeenCalledTimes(2);
     });
   });
@@ -154,7 +154,7 @@ describe('CCD Connector Component', () => {
     it('should not set up subscriptions when ccdComponent is missing', () => {
       component.ccdComponent = null;
       component.ngAfterContentInit();
-      
+
       expect(component.subscriptions).toEqual([]);
       expect(component.dispatcherContainer).toBeUndefined();
       expect(component.hostBindingValue).toBeUndefined();
@@ -164,18 +164,18 @@ describe('CCD Connector Component', () => {
   describe('createDispatchers', () => {
     it('should create dispatcher functions for each event binding', () => {
       component.createDispatchers();
-      
+
       expect(component.dispatcherContainer).toBeDefined();
-      expect(typeof component.dispatcherContainer['cancelled']).toBe('function');
-      expect(typeof component.dispatcherContainer['submitted']).toBe('function');
+      expect(typeof (component.dispatcherContainer as any).cancelled).toBe('function');
+      expect(typeof (component.dispatcherContainer as any).submitted).toBe('function');
     });
 
     it('should dispatch correct action when dispatcher is called', () => {
       component.createDispatchers();
       const testPayload = { test: 'data' };
-      
-      component.dispatcherContainer['submitted'](testPayload);
-      
+
+      (component.dispatcherContainer as any).submitted(testPayload);
+
       expect(mockStore.dispatch).toHaveBeenCalled();
       const dispatchedAction = mockStore.dispatch.calls.mostRecent().args[0] as any;
       expect(dispatchedAction.constructor.name).toBe('ApplyChange');
@@ -185,7 +185,7 @@ describe('CCD Connector Component', () => {
     it('should handle empty eventsBindings array', () => {
       component.eventsBindings = [];
       component.createDispatchers();
-      
+
       expect(component.dispatcherContainer).toEqual({});
     });
   });
@@ -194,7 +194,7 @@ describe('CCD Connector Component', () => {
     it('should create a deep copy of an object', () => {
       const original = { a: 1, b: { c: 2 } };
       const cloned = component.deepClone(original);
-      
+
       expect(cloned).toEqual(original);
       expect(cloned).not.toBe(original);
       expect(cloned.b).not.toBe(original.b);
@@ -206,7 +206,7 @@ describe('CCD Connector Component', () => {
         normalProp: 'value'
       };
       const cloned = component.deepClone(original);
-      
+
       expect(cloned.formGroup).toEqual({ value: 'test' });
       expect(cloned.normalProp).toBe('value');
     });
@@ -214,7 +214,7 @@ describe('CCD Connector Component', () => {
     it('should handle objects with null properties', () => {
       const original = { a: null, b: undefined, c: 'value' };
       const cloned = component.deepClone(original);
-      
+
       // JSON.parse/stringify removes undefined properties
       expect(cloned).toEqual({ a: null, c: 'value' });
       expect(cloned).not.toBe(original);
@@ -223,7 +223,7 @@ describe('CCD Connector Component', () => {
     it('should handle arrays', () => {
       const original = [1, 2, { a: 3 }];
       const cloned = component.deepClone(original);
-      
+
       expect(cloned).toEqual(original);
       expect(cloned).not.toBe(original);
     });
@@ -239,9 +239,9 @@ describe('CCD Connector Component', () => {
           }
         }
       };
-      
+
       const result = component.simplifyFormGroup(obj);
-      
+
       expect(result.level1.formGroup).toEqual({ value: 'nested' });
       expect(result.level1.level2.formGroup).toEqual({ value: 'deeper' });
     });
@@ -249,7 +249,7 @@ describe('CCD Connector Component', () => {
     it('should handle objects without formGroup property', () => {
       const obj = { a: 1, b: { c: 2 } };
       const result = component.simplifyFormGroup(obj);
-      
+
       expect(result).toEqual(obj);
     });
 
@@ -257,16 +257,16 @@ describe('CCD Connector Component', () => {
       const obj = {
         formGroup: { value: undefined, other: 'prop' }
       };
-      
+
       const result = component.simplifyFormGroup(obj);
-      
+
       expect(result.formGroup).toEqual({ value: undefined });
     });
 
     it('should handle circular references by throwing during JSON.stringify', () => {
       const obj: any = { a: 1 };
       obj.circular = obj;
-      
+
       expect(() => component.deepClone(obj)).toThrow();
     });
   });
@@ -295,14 +295,14 @@ describe('CCD Connector Component', () => {
     it('should unsubscribe from all subscriptions', () => {
       const unsubscribeSpy1 = jasmine.createSpy('unsubscribe');
       const unsubscribeSpy2 = jasmine.createSpy('unsubscribe');
-      
+
       component.subscriptions = [];
-      component.subscriptions['submitted'] = { unsubscribe: unsubscribeSpy1 } as any;
-      component.subscriptions['cancelled'] = { unsubscribe: unsubscribeSpy2 } as any;
+      (component.subscriptions as any).submitted = { unsubscribe: unsubscribeSpy1 };
+      (component.subscriptions as any).cancelled = { unsubscribe: unsubscribeSpy2 };
       component.subscriptions.length = 2; // Make the array-like object pass the length check
-      
+
       component.ngOnDestroy();
-      
+
       expect(unsubscribeSpy1).toHaveBeenCalled();
       expect(unsubscribeSpy2).toHaveBeenCalled();
     });
@@ -310,20 +310,20 @@ describe('CCD Connector Component', () => {
     it('should handle empty subscriptions array', () => {
       component.subscriptions = [];
       component.subscriptions.length = 0;
-      
+
       expect(() => component.ngOnDestroy()).not.toThrow();
     });
 
     it('should handle missing subscriptions for some event types', () => {
       const unsubscribeSpy = jasmine.createSpy('unsubscribe');
       component.subscriptions = [];
-      component.subscriptions['submitted'] = { unsubscribe: unsubscribeSpy } as any;
+      (component.subscriptions as any).submitted = { unsubscribe: unsubscribeSpy };
       component.subscriptions.length = 1;
       // Override eventsBindings to only include 'submitted' event
       component.eventsBindings = [{ type: 'submitted', action: 'ApplyChange' }];
-      
+
       component.ngOnDestroy();
-      
+
       expect(unsubscribeSpy).toHaveBeenCalled();
     });
   });
@@ -331,30 +331,30 @@ describe('CCD Connector Component', () => {
   describe('edge cases and error handling', () => {
     it('should handle dispatcher being called with no arguments', () => {
       component.createDispatchers();
-      
-      component.dispatcherContainer['submitted']({});
-      
+
+      (component.dispatcherContainer as any).submitted({});
+
       expect(mockStore.dispatch).toHaveBeenCalled();
     });
 
     it('should handle null eventsBindings', () => {
       component.eventsBindings = null;
-      
+
       expect(() => component.createDispatchers()).toThrow();
     });
 
     it('should handle undefined fromFeatureStore actions', () => {
       component.fromFeatureStore = {};
       component.createDispatchers();
-      
-      expect(() => component.dispatcherContainer['submitted']({})).toThrowError(TypeError);
+
+      expect(() => (component.dispatcherContainer as any).submitted({})).toThrowError(TypeError);
     });
 
     it('should handle store dispatch errors', () => {
       mockStore.dispatch.and.throwError('Dispatch error');
       component.createDispatchers();
-      
-      expect(() => component.dispatcherContainer['submitted']({})).toThrowError();
+
+      expect(() => (component.dispatcherContainer as any).submitted({})).toThrowError();
     });
   });
 });

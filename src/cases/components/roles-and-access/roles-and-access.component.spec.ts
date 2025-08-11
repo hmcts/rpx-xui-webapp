@@ -192,13 +192,13 @@ describe('RolesAndAccessComponent', () => {
 
       expect(component.legalOpsRoles.length).toBe(1);
       expect(component.legalOpsRoles[0].roleCategory).toBe(RoleCategory.LEGAL_OPERATIONS);
-      
+
       expect(component.adminRoles.length).toBe(1);
       expect(component.adminRoles[0].roleCategory).toBe(RoleCategory.ADMIN);
-      
+
       expect(component.ctscRoles.length).toBe(1);
       expect(component.ctscRoles[0].roleCategory).toBe(RoleCategory.CTSC);
-      
+
       expect(component.judicialRoles.length).toBe(1);
       expect(component.judicialRoles[0].roleCategory).toBe(RoleCategory.JUDICIAL);
     });
@@ -536,7 +536,7 @@ describe('RolesAndAccessComponent', () => {
         { actorId: 'user2' }
       ];
 
-      const result = component['checkSetNamedRoles'](roles, true);
+      const result = (component as any).checkSetNamedRoles(roles, true);
 
       expect(result[0].name).toBe('John Doe');
       expect(result[1].name).toBe('Jane Smith');
@@ -547,7 +547,7 @@ describe('RolesAndAccessComponent', () => {
         { actorId: 'user1', name: 'Existing Name' }
       ];
 
-      const result = component['checkSetNamedRoles'](roles, false);
+      const result = (component as any).checkSetNamedRoles(roles, false);
 
       expect(result[0].name).toBe('Existing Name');
     });
@@ -557,13 +557,13 @@ describe('RolesAndAccessComponent', () => {
         { actorId: 'unknown-user' }
       ];
 
-      const result = component['checkSetNamedRoles'](roles, true);
+      const result = (component as any).checkSetNamedRoles(roles, true);
 
       expect(result[0].name).toBeUndefined();
     });
 
     it('should handle empty roles array', () => {
-      const result = component['checkSetNamedRoles']([], true);
+      const result = (component as any).checkSetNamedRoles([], true);
       expect(result).toEqual([]);
     });
 
@@ -578,7 +578,7 @@ describe('RolesAndAccessComponent', () => {
       }];
 
       const roles = [{ actorId: 'user1' }];
-      const result = component['checkSetNamedRoles'](roles, true);
+      const result = (component as any).checkSetNamedRoles(roles, true);
 
       expect(result[0].name).toBe('null null');
     });
@@ -594,7 +594,7 @@ describe('RolesAndAccessComponent', () => {
       }];
 
       const roles = [{ actorId: 'user1' }];
-      const result = component['checkSetNamedRoles'](roles, true);
+      const result = (component as any).checkSetNamedRoles(roles, true);
 
       expect(result[0].name).toBe('undefined undefined');
     });
@@ -632,7 +632,7 @@ describe('RolesAndAccessComponent', () => {
       ] as CaseRole[];
 
       component.roles = incompleteRoles;
-      
+
       expect(component.legalOpsRoles.length).toBe(0);
       expect(component.adminRoles.length).toBe(1);
     });

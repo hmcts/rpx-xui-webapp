@@ -80,7 +80,7 @@ describe('NocFieldComponent', () => {
     component.formGroup = new FormGroup({});
     component.answerValue$ = of('test-answer');
     component.idPrefix = 'prefix-';
-    
+
     // Define parentInjector on mock
     Object.defineProperty(mockViewContainerRef, 'parentInjector', {
       get: () => mockInjector,
@@ -103,13 +103,13 @@ describe('NocFieldComponent', () => {
       const mockComponentFactory = {
         create: jasmine.createSpy('create').and.returnValue(mockComponentRef)
       } as any;
-      
+
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
       spyOn(Injector, 'create').and.returnValue(mockInjector);
-      
+
       fixture.detectChanges();
-  
+
       const containerElement = fixture.debugElement.query(By.css('div'));
       expect(containerElement).toBeTruthy();
 
@@ -118,14 +118,14 @@ describe('NocFieldComponent', () => {
 
     it('should inherit from AbstractFieldWriteComponent', () => {
       expect(component.id).toBeDefined();
-      expect(component['defaultControlRegister']).toBeDefined();
+      expect((component as any).defaultControlRegister).toBeDefined();
     });
   });
 
   describe('addValidators', () => {
     it('should call formValidatorsService.addValidators', () => {
       const control = new FormControl();
-      component['addValidators'](mockNocQuestion, control);
+      (component as any).addValidators(mockNocQuestion, control);
 
       expect(mockFormValidatorsService.addValidators).toHaveBeenCalledWith(mockNocQuestion, control);
     });
@@ -138,7 +138,7 @@ describe('NocFieldComponent', () => {
 
     beforeEach(() => {
       mockComponentInstance = {};
-      
+
       mockComponentRef = {
         instance: mockComponentInstance,
         hostView: {},
@@ -160,7 +160,7 @@ describe('NocFieldComponent', () => {
 
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
-      
+
       // Mock Injector.create as a static method
       spyOn(Injector, 'create').and.returnValue(mockInjector);
     });
@@ -251,7 +251,7 @@ describe('NocFieldComponent', () => {
 
     it('should handle undefined answerValue$', () => {
       component.answerValue$ = undefined;
-      
+
       component.ngAfterViewInit();
 
       expect(mockComponentInstance.answerValue$).toBeUndefined();
@@ -259,7 +259,7 @@ describe('NocFieldComponent', () => {
 
     it('should handle undefined formGroup', () => {
       component.formGroup = undefined;
-      
+
       component.ngAfterViewInit();
 
       expect(mockComponentInstance.formGroup).toBeUndefined();
@@ -267,7 +267,7 @@ describe('NocFieldComponent', () => {
 
     it('should handle empty idPrefix', () => {
       component.idPrefix = '';
-      
+
       component.ngAfterViewInit();
 
       expect(mockComponentInstance.idPrefix).toBe('');
@@ -326,14 +326,14 @@ describe('NocFieldComponent', () => {
       };
 
       component.questionField = complexQuestion;
-      
+
       expect(() => component.ngAfterViewInit()).not.toThrow();
     });
 
     it('should handle formGroup with existing controls', () => {
       const existingControl = new FormControl('existing-value');
       component.formGroup.addControl('existing-control', existingControl);
-      
+
       component.ngAfterViewInit();
 
       expect(component.formGroup.contains('existing-control')).toBe(true);
@@ -358,43 +358,43 @@ describe('NocFieldComponent', () => {
     });
 
     it('should have access to defaultControlRegister from AbstractFormFieldComponent', () => {
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       expect(typeof registerFn).toBe('function');
     });
 
     it('should handle defaultControlRegister with no formGroup', () => {
       component.formGroup = null;
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const control = new FormControl();
-      
+
       const result = registerFn(control);
-      
+
       expect(result).toBeNull();
     });
 
     it('should handle defaultControlRegister with existing control', () => {
       const existingControl = new FormControl('existing');
       component.formGroup.addControl(mockNocQuestion.question_id, existingControl);
-      
-      const registerFn = component['defaultControlRegister']();
+
+      const registerFn = (component as any).defaultControlRegister();
       const newControl = new FormControl();
-      
+
       const result = registerFn(newControl);
-      
+
       expect(result).toBe(existingControl);
       expect(mockFormValidatorsService.addValidators).not.toHaveBeenCalled();
     });
 
     it('should handle defaultControlRegister with new control', () => {
-      const registerFn = component['defaultControlRegister']();
+      const registerFn = (component as any).defaultControlRegister();
       const newControl = new FormControl();
-      
+
       spyOn<any>(component, 'addValidators');
-      
+
       const result = registerFn(newControl);
-      
+
       expect(result).toBe(newControl);
-      expect(component['addValidators']).toHaveBeenCalledWith(mockNocQuestion, newControl);
+      expect((component as any).addValidators).toHaveBeenCalledWith(mockNocQuestion, newControl);
       expect(component.formGroup.contains(mockNocQuestion.question_id)).toBe(true);
     });
   });

@@ -260,9 +260,9 @@ describe('TaskAssignmentContainerComponent2', () => {
         roleCategory: 'JUDICIAL'
       }));
       mockRouter.url = '/work/task1111111/reassign';
-      
+
       component.ngOnInit();
-      
+
       expect(component.isJudicial).toBe(true);
     });
 
@@ -352,34 +352,34 @@ describe('TaskAssignmentContainerComponent2', () => {
     it('should return TaskActionsWithAssigneeForJudicial when showAssigneeColumn is true and user is judicial', () => {
       window.history.pushState({ showAssigneeColumn: true }, '', '');
       component.isJudicial = true;
-      
+
       const fields = component.fields;
-      
+
       expect(fields).toBe(ConfigConstants.TaskActionsWithAssigneeForJudicial);
     });
 
     it('should return TaskActionsWithAssigneeForLegalOps when showAssigneeColumn is true and user is not judicial', () => {
       window.history.pushState({ showAssigneeColumn: true }, '', '');
       component.isJudicial = false;
-      
+
       const fields = component.fields;
-      
+
       expect(fields).toBe(ConfigConstants.TaskActionsWithAssigneeForLegalOps);
     });
 
     it('should return AllWorkTasksForLegalOps when showAssigneeColumn is false', () => {
       window.history.pushState({ showAssigneeColumn: false }, '', '');
-      
+
       const fields = component.fields;
-      
+
       expect(fields).toEqual(ConfigConstants.AllWorkTasksForLegalOps);
     });
 
     it('should handle when window.history.state is null', () => {
       window.history.pushState(null, '', '');
-      
+
       const fields = component.fields;
-      
+
       expect(fields).toEqual(ConfigConstants.AllWorkTasksForLegalOps);
     });
   });
@@ -387,33 +387,33 @@ describe('TaskAssignmentContainerComponent2', () => {
   describe('returnUrl getter', () => {
     it('should return the returnUrl from window.history.state', () => {
       window.history.pushState({ returnUrl: '/my-work/list' }, '', '');
-      
-      const returnUrl = component['returnUrl'];
-      
+
+      const returnUrl = (component as any).returnUrl;
+
       expect(returnUrl).toBe('/my-work/list');
     });
 
     it('should truncate URL at # character', () => {
       window.history.pushState({ returnUrl: '/all-work/tasks#manage_123' }, '', '');
-      
-      const returnUrl = component['returnUrl'];
-      
+
+      const returnUrl = (component as any).returnUrl;
+
       expect(returnUrl).toBe('/all-work/tasks');
     });
 
     it('should return empty string when window.history.state is null', () => {
       window.history.pushState(null, '', '');
-      
-      const returnUrl = component['returnUrl'];
-      
+
+      const returnUrl = (component as any).returnUrl;
+
       expect(returnUrl).toBe('');
     });
 
     it('should return empty string when returnUrl is undefined', () => {
       window.history.pushState({}, '', '');
-      
-      const returnUrl = component['returnUrl'];
-      
+
+      const returnUrl = (component as any).returnUrl;
+
       expect(returnUrl).toBe('');
     });
   });
@@ -421,33 +421,33 @@ describe('TaskAssignmentContainerComponent2', () => {
   describe('showAssigneeColumn getter', () => {
     it('should return true when showAssigneeColumn is true in history state', () => {
       window.history.pushState({ showAssigneeColumn: true }, '', '');
-      
-      const showAssigneeColumn = component['showAssigneeColumn'];
-      
+
+      const showAssigneeColumn = (component as any).showAssigneeColumn;
+
       expect(showAssigneeColumn).toBe(true);
     });
 
     it('should return false when showAssigneeColumn is false in history state', () => {
       window.history.pushState({ showAssigneeColumn: false }, '', '');
-      
-      const showAssigneeColumn = component['showAssigneeColumn'];
-      
+
+      const showAssigneeColumn = (component as any).showAssigneeColumn;
+
       expect(showAssigneeColumn).toBe(false);
     });
 
     it('should return false when showAssigneeColumn is not in history state', () => {
       window.history.pushState({}, '', '');
-      
-      const showAssigneeColumn = component['showAssigneeColumn'];
-      
+
+      const showAssigneeColumn = (component as any).showAssigneeColumn;
+
       expect(showAssigneeColumn).toBe(false);
     });
 
     it('should return false when window.history.state is null', () => {
       window.history.pushState(null, '', '');
-      
-      const showAssigneeColumn = component['showAssigneeColumn'];
-      
+
+      const showAssigneeColumn = (component as any).showAssigneeColumn;
+
       expect(showAssigneeColumn).toBe(false);
     });
   });
@@ -460,17 +460,17 @@ describe('TaskAssignmentContainerComponent2', () => {
         email: 'test@example.com',
         domain: PersonRole.JUDICIAL
       };
-      
+
       component.selectedPerson(person);
-      
+
       expect(component.person).toBe(person);
     });
 
     it('should handle undefined person', () => {
       component.person = SELECTED_PERSON;
-      
+
       component.selectedPerson(undefined);
-      
+
       expect(component.person).toBeUndefined();
     });
   });
@@ -480,9 +480,9 @@ describe('TaskAssignmentContainerComponent2', () => {
       mockRouter.navigate.calls.reset();
       const findPersonControl = new FormControl({ name: 'test' });
       component.formGroup.addControl('findPersonControl', findPersonControl);
-      
+
       component.assign();
-      
+
       expect(component.formGroup.errors).toEqual({ invalid: true });
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
@@ -490,15 +490,15 @@ describe('TaskAssignmentContainerComponent2', () => {
     it('should set form errors when findPersonControl value is null', () => {
       const findPersonControl = new FormControl(null);
       component.formGroup.addControl('findPersonControl', findPersonControl);
-      
+
       component.assign();
-      
+
       expect(component.formGroup.errors).toEqual({ invalid: true });
     });
 
     it('should set form errors when formGroup has no controls', () => {
       component.assign();
-      
+
       expect(component.formGroup.errors).toEqual({ invalid: true });
     });
 
@@ -508,9 +508,9 @@ describe('TaskAssignmentContainerComponent2', () => {
       component.verb = TaskActionType.Assign;
       component.taskId = 'task456';
       component.rootPath = 'tasks';
-      
+
       component.assign();
-      
+
       expect(mockRouter.navigate).toHaveBeenCalledWith(
         ['tasks', 'task456', 'assign', 'confirm'],
         jasmine.any(Object)
@@ -527,17 +527,17 @@ describe('TaskAssignmentContainerComponent2', () => {
         email: 'john.doe@example.com',
         location: { id: 'loc1', locationName: 'Location 1' }
       } as any;
-      
+
       component.onCaseworkerChanged(caseworker);
-      
+
       expect(component.caseworker).toBe(caseworker);
     });
 
     it('should handle null caseworker', () => {
       component.caseworker = {} as any;
-      
+
       component.onCaseworkerChanged(null);
-      
+
       expect(component.caseworker).toBeNull();
     });
   });
@@ -546,9 +546,9 @@ describe('TaskAssignmentContainerComponent2', () => {
     it('should focus on element with given id', () => {
       const mockElement = jasmine.createSpyObj('HTMLElement', ['focus']);
       spyOn(document, 'getElementById').and.returnValue(mockElement);
-      
+
       component.setFocusOn('test-element');
-      
+
       expect(document.getElementById).toHaveBeenCalledWith('test-element');
       expect(mockElement.focus).toHaveBeenCalled();
     });
@@ -556,32 +556,32 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('setDomain', () => {
     it('should return JUDICIAL role for JUDICIAL category', () => {
-      const result = component['setDomain']('JUDICIAL' as any);
-      
+      const result = (component as any).setDomain('JUDICIAL' as any);
+
       expect(result).toBe(PersonRole.JUDICIAL);
     });
 
     it('should return LEGAL_OPERATIONS role for LEGAL_OPERATIONS category', () => {
-      const result = component['setDomain']('LEGAL_OPERATIONS' as any);
-      
+      const result = (component as any).setDomain('LEGAL_OPERATIONS' as any);
+
       expect(result).toBe(PersonRole.LEGAL_OPERATIONS);
     });
 
     it('should return ADMIN role for ADMIN category', () => {
-      const result = component['setDomain']('ADMIN' as any);
-      
+      const result = (component as any).setDomain('ADMIN' as any);
+
       expect(result).toBe(PersonRole.ADMIN);
     });
 
     it('should return ALL role for unknown category', () => {
-      const result = component['setDomain']('UNKNOWN' as any);
-      
+      const result = (component as any).setDomain('UNKNOWN' as any);
+
       expect(result).toBe(PersonRole.ALL);
     });
 
     it('should return ALL role for null category', () => {
-      const result = component['setDomain'](null);
-      
+      const result = (component as any).setDomain(null);
+
       expect(result).toBe(PersonRole.ALL);
     });
   });
@@ -590,21 +590,21 @@ describe('TaskAssignmentContainerComponent2', () => {
     it('should unsubscribe from assignTask subscription if it exists', () => {
       const mockSubscription = jasmine.createSpyObj('Subscription', ['unsubscribe']);
       (component as any).assignTask = mockSubscription;
-      
+
       component.ngOnDestroy();
-      
+
       expect(mockSubscription.unsubscribe).toHaveBeenCalled();
     });
 
     it('should not throw error when assignTask is null', () => {
       (component as any).assignTask = null;
-      
+
       expect(() => component.ngOnDestroy()).not.toThrow();
     });
 
     it('should not throw error when assignTask is undefined', () => {
       (component as any).assignTask = undefined;
-      
+
       expect(() => component.ngOnDestroy()).not.toThrow();
     });
   });
@@ -612,9 +612,9 @@ describe('TaskAssignmentContainerComponent2', () => {
   describe('isCurrentUserJudicial with edge cases', () => {
     it('should return false when sessionStorage returns null', () => {
       mockSessionStorageService.getItem.and.returnValue(null);
-      
+
       const result = component.isCurrentUserJudicial();
-      
+
       expect(result).toBe(false);
     });
 
@@ -626,9 +626,9 @@ describe('TaskAssignmentContainerComponent2', () => {
         email: 'john.smith@email.com'
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-      
+
       const result = component.isCurrentUserJudicial();
-      
+
       expect(result).toBe(false);
     });
 
@@ -637,15 +637,15 @@ describe('TaskAssignmentContainerComponent2', () => {
         roleCategory: 'LEGAL_OPERATIONS'
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
-      
+
       const result = component.isCurrentUserJudicial();
-      
+
       expect(result).toBe(false);
     });
 
     it('should handle invalid JSON in sessionStorage', () => {
       mockSessionStorageService.getItem.and.returnValue('invalid json');
-      
+
       expect(() => component.isCurrentUserJudicial()).toThrow();
     });
   });
@@ -669,9 +669,9 @@ describe('TaskAssignmentContainerComponent2', () => {
         description: 'An error occurred',
         fieldId: 'field1'
       };
-      
+
       component.error = errorMessage;
-      
+
       expect(component.error).toEqual(errorMessage);
     });
   });
@@ -683,7 +683,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         mockRouter,
         mockSessionStorageService
       );
-      
+
       expect(newComponent.error).toBeNull();
       expect(newComponent.showManage).toBe(false);
       expect(newComponent.domain).toBe(PersonRole.ALL);

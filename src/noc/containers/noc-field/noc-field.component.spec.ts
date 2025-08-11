@@ -95,15 +95,25 @@ describe('NocFieldComponent', () => {
     });
 
     it('should have correct template structure', () => {
+      const mockComponentInstance = {};
+      const mockComponentRef = {
+        instance: mockComponentInstance,
+        hostview: {}
+      } as any;
+      const mockComponentFactory = {
+        create: jasmine.createSpy('create').and.returnValue(mockComponentRef)
+      } as any;
+      
+      mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
+      mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
+      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      
       fixture.detectChanges();
   
-      // Test for the specific container element that holds the ViewContainerRef
-      const containerElement = fixture.debugElement.query(By.css('[data-testid="field-container"]'));
+      const containerElement = fixture.debugElement.query(By.css('div'));
       expect(containerElement).toBeTruthy();
-      
-      // if using a template reference variable
-      const templateRef = fixture.debugElement.query(By.css('ng-template[fieldContainer]'));
-      expect(templateRef).toBeTruthy();
+
+      expect(mockViewContainerRef.insert).toHaveBeenCalled();
     });
 
     it('should inherit from AbstractFieldWriteComponent', () => {

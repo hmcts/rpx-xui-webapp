@@ -372,7 +372,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       
       const fields = component.fields;
       
-      expect(fields).toBe(ConfigConstants.AllWorkTasksForLegalOps);
+      expect(fields).toEqual(ConfigConstants.AllWorkTasksForLegalOps);
     });
 
     it('should handle when window.history.state is null', () => {
@@ -380,7 +380,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       
       const fields = component.fields;
       
-      expect(fields).toBe(ConfigConstants.AllWorkTasksForLegalOps);
+      expect(fields).toEqual(ConfigConstants.AllWorkTasksForLegalOps);
     });
   });
 

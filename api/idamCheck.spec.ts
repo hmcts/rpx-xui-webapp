@@ -204,7 +204,7 @@ describe('idamCheck', () => {
       expect(httpGetStub).to.have.been.calledOnceWith(mockWellKnownEndpoint);
       expect(consoleLogStub).to.have.been.calledOnceWith('idam api must be up to start');
       expect(processExitStub).to.have.been.calledOnceWith(1);
-      
+
       // Verify that both reject and resolve are called (due to stubbed process.exit)
       // Note: We don't check the exact error value due to potential type conversion issues
       expect(rejectStub).to.have.been.calledOnce;

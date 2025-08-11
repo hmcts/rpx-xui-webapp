@@ -172,7 +172,7 @@ describe('Health Check', (): void => {
     it('should add health check to app without optional features', () => {
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(loggerInfoStub).to.have.been.calledWith('config', sinon.match.object);
@@ -184,7 +184,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_TERMS_AND_CONDITIONS_URL);
@@ -200,7 +200,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(getConfigValueStub).not.to.have.been.calledWith(SERVICES_TERMS_AND_CONDITIONS_URL);
@@ -211,7 +211,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(xuiNodeOnStub).to.have.been.calledTwice;
@@ -224,7 +224,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(xuiNodeOnStub).not.to.have.been.called;
@@ -241,7 +241,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       redisReadyCallback(mockRedisClient);
@@ -261,7 +261,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       let rawHealthCheckFunction: () => any;
@@ -289,7 +289,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       let rawHealthCheckFunction: () => any;
@@ -317,7 +317,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       redisErrorCallback(mockError);
@@ -331,7 +331,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_TERMS_AND_CONDITIONS_URL);
@@ -339,11 +339,10 @@ describe('Health Check', (): void => {
       expect(healthCheckAddToStub).to.have.been.calledOnceWith(mockApp, sinon.match.object);
     });
 
-
     it('should log config object before adding to app', () => {
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       expect(loggerInfoStub).to.have.been.calledWith('config', sinon.match.object);
@@ -362,7 +361,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       let rawHealthCheckFunction: () => any;
@@ -372,7 +371,7 @@ describe('Health Check', (): void => {
       });
 
       redisReadyCallback(null);
-      
+
       // The actual implementation throws an error when trying to access .connected on null
       expect(() => rawHealthCheckFunction()).to.throw();
     });
@@ -387,7 +386,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       let rawHealthCheckFunction: () => any;
@@ -397,7 +396,7 @@ describe('Health Check', (): void => {
       });
 
       redisReadyCallback(undefined);
-      
+
       // The actual implementation throws an error when trying to access .connected on undefined
       expect(() => rawHealthCheckFunction()).to.throw();
     });
@@ -413,7 +412,7 @@ describe('Health Check', (): void => {
 
       delete require.cache[require.resolve('./index')];
       const healthModule = require('./index');
-      
+
       healthModule.addReformHealthCheck(mockApp);
 
       let rawHealthCheckFunction: () => any;

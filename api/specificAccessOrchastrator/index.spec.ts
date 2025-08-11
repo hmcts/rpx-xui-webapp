@@ -56,9 +56,9 @@ describe('postCreateTask', () => {
     (error as any).status = 500;
     sandbox.restore();
     sandbox.stub(http, 'post').rejects(error);
-    
+
     const response = await postCreateTask(req, next, createTask);
-    
+
     expect(next).to.have.been.calledWith(error);
     expect(response).to.deep.equal(error);
   });
@@ -132,9 +132,9 @@ describe('orchestrationSpecificAccessRequest', () => {
     postSpy.onCall(0).resolves({
       data: { error: 'Bad request' }, status: 400
     });
-    
+
     await orchestrationSpecificAccessRequest(req, res, next);
-    
+
     expect(res.status).to.have.been.calledWith(400);
     expect(res.send).to.have.been.calledWith({ data: { error: 'Bad request' }, status: 400 });
   });
@@ -142,14 +142,14 @@ describe('orchestrationSpecificAccessRequest', () => {
   it('should handle non-204 response from task creation', async () => {
     sandbox.restore();
     const postSpy = sandbox.stub(http, 'post');
-    const deleteSpy = sandbox.stub(commonCrudService, 'sendDelete').resolves({ 
+    const deleteSpy = sandbox.stub(commonCrudService, 'sendDelete').resolves({
       status: 204,
       data: null,
       statusText: 'No Content',
       headers: {},
       config: {}
     } as any);
-    
+
     const data = {
       roleAssignmentResponse: {
         roleRequest: {
@@ -166,12 +166,12 @@ describe('orchestrationSpecificAccessRequest', () => {
         }]
       }
     };
-    
+
     postSpy.onCall(0).resolves({ data, status: 201 });
     postSpy.onCall(1).resolves({ status: 400, data: 'Task creation failed' });
-    
+
     await orchestrationSpecificAccessRequest(req, res, next);
-    
+
     expect(deleteSpy).to.have.been.called;
     expect(res.status).to.have.been.calledWith(400);
   });
@@ -179,14 +179,14 @@ describe('orchestrationSpecificAccessRequest', () => {
   it('should handle failed role deletion after task creation failure', async () => {
     sandbox.restore();
     const postSpy = sandbox.stub(http, 'post');
-    const deleteSpy = sandbox.stub(commonCrudService, 'sendDelete').resolves({ 
-      status: 500, 
+    const deleteSpy = sandbox.stub(commonCrudService, 'sendDelete').resolves({
+      status: 500,
       data: 'Delete failed',
       statusText: 'Internal Server Error',
       headers: {},
       config: {}
     } as any);
-    
+
     const data = {
       roleAssignmentResponse: {
         roleRequest: {
@@ -203,12 +203,12 @@ describe('orchestrationSpecificAccessRequest', () => {
         }]
       }
     };
-    
+
     postSpy.onCall(0).resolves({ data, status: 201 });
     postSpy.onCall(1).resolves({ status: 400, data: 'Task creation failed' });
-    
+
     await orchestrationSpecificAccessRequest(req, res, next);
-    
+
     expect(res.status).to.have.been.calledWith(500);
     expect(res.send).to.have.been.calledWith({ status: 500, data: 'Delete failed', statusText: 'Internal Server Error', headers: {}, config: {} });
   });
@@ -216,7 +216,7 @@ describe('orchestrationSpecificAccessRequest', () => {
   it('should refresh role assignment and log access request on success', async () => {
     const refreshStub = sandbox.stub(user, 'refreshRoleAssignmentForUser').resolves();
     const logStub = sandbox.stub(lau, 'logAccessRequest').resolves();
-    
+
     req.session = {
       passport: {
         user: {
@@ -226,16 +226,16 @@ describe('orchestrationSpecificAccessRequest', () => {
         }
       }
     };
-    
+
     await orchestrationSpecificAccessRequest(req, res, next);
-    
+
     expect(refreshStub).to.have.been.calledWith({ id: 'userId123' }, req);
     expect(logStub).to.have.been.calledWith(req, true);
   });
 
   it('should handle errors in orchestrationSpecificAccessRequest', async () => {
     sandbox.restore();
-    
+
     // Set up successful AM role creation
     const postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
@@ -252,14 +252,14 @@ describe('orchestrationSpecificAccessRequest', () => {
             }
           }]
         }
-      }, 
+      },
       status: 201
     });
     postSpy.onCall(1).resolves({ status: 204 });
-    
+
     const testError = new Error('Unexpected error');
     sandbox.stub(user, 'refreshRoleAssignmentForUser').rejects(testError);
-    
+
     req.session = {
       passport: {
         user: {
@@ -269,9 +269,9 @@ describe('orchestrationSpecificAccessRequest', () => {
         }
       }
     };
-    
+
     const result = await orchestrationSpecificAccessRequest(req, res, next);
-    
+
     expect(next).to.have.been.calledWith(testError);
     expect(result).to.deep.equal(testError);
   });
@@ -298,9 +298,9 @@ describe('specificAccessRequestCreateAmRole', () => {
   it('should create AM role successfully', async () => {
     const mockResponse = { data: { id: 'created123' }, status: 201 };
     sandbox.stub(http, 'post').resolves(mockResponse);
-    
+
     const response = await specificAccessRequestCreateAmRole(req, res);
-    
+
     expect(response).to.deep.equal(mockResponse);
   });
 
@@ -308,9 +308,9 @@ describe('specificAccessRequestCreateAmRole', () => {
     const error = new Error('Failed to create role');
     (error as any).status = 400;
     sandbox.stub(http, 'post').rejects(error);
-    
+
     await specificAccessRequestCreateAmRole(req, res);
-    
+
     expect(res.status).to.have.been.calledWith(400);
     expect(res.send).to.have.been.calledWith(error);
   });
@@ -357,16 +357,16 @@ describe('orchestrationRequestMoreInformation', () => {
       headers: {},
       config: {}
     } as any;
-    
+
     const mockTaskResponse = { status: 204, data: {}, statusText: 'No Content', headers: {}, config: {} } as any;
-    
+
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockDenyRoleResponse);
     sandbox.stub(roleAccess, 'deleteSpecificAccessRequestedRole').resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} } as any);
     sandbox.stub(workAllocation, 'postTaskCompletionForAccess').resolves(mockTaskResponse);
     sandbox.stub(lau, 'logAccessRequest').resolves();
-    
+
     const result = await orchestrationRequestMoreInformation(req, res, next);
-    
+
     expect(res.send).to.have.been.calledWith({});
     expect(res.status).to.have.been.calledWith(204);
   });
@@ -374,17 +374,17 @@ describe('orchestrationRequestMoreInformation', () => {
   it('should handle non-201 response from createSpecificAccessDenyRole', async () => {
     const mockResponse = { status: 400, data: 'Bad request', statusText: 'Bad Request', headers: {}, config: {} } as any;
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockResponse);
-    
+
     const result = await orchestrationRequestMoreInformation(req, res, next);
-    
+
     expect(res.status).to.have.been.calledWith(400);
   });
 
   it('should handle null response from createSpecificAccessDenyRole', async () => {
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(null);
-    
+
     const result = await orchestrationRequestMoreInformation(req, res, next);
-    
+
     expect(res.status).to.have.been.calledWith(400);
   });
 
@@ -402,15 +402,15 @@ describe('orchestrationRequestMoreInformation', () => {
       headers: {},
       config: {}
     } as any;
-    
+
     const mockDeleteResponse = { status: 500, data: 'Delete failed', statusText: 'Internal Server Error', headers: {}, config: {} } as any;
-    
+
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockDenyRoleResponse);
     sandbox.stub(roleAccess, 'deleteSpecificAccessRequestedRole').resolves(mockDeleteResponse);
     const deleteSpecificAccessRolesStub = sandbox.stub(accessManagement, 'deleteSpecificAccessRoles').resolves(res);
-    
+
     await orchestrationRequestMoreInformation(req, res, next);
-    
+
     expect(deleteSpecificAccessRolesStub).to.have.been.calledWith(
       req, res, next, mockDeleteResponse, mockDenyRoleResponse.data.roleAssignmentResponse.requestedRoles
     );
@@ -430,16 +430,16 @@ describe('orchestrationRequestMoreInformation', () => {
       headers: {},
       config: {}
     } as any;
-    
+
     const mockTaskResponse = { status: 500, data: 'Task completion failed', statusText: 'Internal Server Error', headers: {}, config: {} } as any;
-    
+
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockDenyRoleResponse);
     sandbox.stub(roleAccess, 'deleteSpecificAccessRequestedRole').resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} } as any);
     sandbox.stub(workAllocation, 'postTaskCompletionForAccess').resolves(mockTaskResponse);
     const restoreDeletedRoleStub = sandbox.stub(accessManagement, 'restoreDeletedRole').resolves(res);
-    
+
     await orchestrationRequestMoreInformation(req, res, next);
-    
+
     expect(restoreDeletedRoleStub).to.have.been.calledWith(
       req, res, next, mockTaskResponse, mockDenyRoleResponse.data.roleAssignmentResponse.requestedRoles
     );
@@ -450,9 +450,9 @@ describe('orchestrationRequestMoreInformation', () => {
     (error as any).status = 500;
     (error as any).statusText = 'Internal Server Error';
     (error as any).data = { message: 'Error details' };
-    
+
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').rejects(error);
-    
+
     try {
       await orchestrationRequestMoreInformation(req, res, next);
       expect.fail('Should have thrown an error');
@@ -537,29 +537,29 @@ describe('specificAccessRequestUpdateAttributes', () => {
         }
       }]
     };
-    
+
     req.body = {
       caseId: 'case123',
       attributesToUpdate: {
         isNew: true
       }
     };
-    
+
     postSpy.restore();
     spyDelete.restore();
-    
+
     postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({ data: deniedData, status: 200 });
     postSpy.onCall(1).resolves({ status: 201 });
-    
+
     const refreshStub = sandbox.stub(user, 'refreshRoleAssignmentForUser').resolves();
-    
+
     await specificAccessRequestUpdateAttributes(req, res, next);
-    
+
     expect(postSpy).to.have.been.calledTwice;
     const secondCall = postSpy.getCall(1);
     const roleAssignmentUpdate = secondCall.args[1];
-    
+
     expect(roleAssignmentUpdate.roleRequest.assignerId).to.equal('someId');
     expect(roleAssignmentUpdate.roleRequest.process).to.equal('specific-access');
     expect(roleAssignmentUpdate.roleRequest.reference).to.equal('case123/case-worker/someId');
@@ -573,13 +573,13 @@ describe('specificAccessRequestUpdateAttributes', () => {
   it('should use uid when id is not available', async () => {
     req.session.passport.user.userinfo = { uid: 'uidValue' };
     req.body = { caseId: 'case123' };
-    
+
     postSpy.restore();
     postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({ data, status: 200 });
-    
+
     await specificAccessRequestUpdateAttributes(req, res, next);
-    
+
     const queryCall = postSpy.getCall(0);
     expect(queryCall.args[1].actorId).to.deep.equal(['uidValue']);
   });
@@ -588,9 +588,9 @@ describe('specificAccessRequestUpdateAttributes', () => {
     const error = new Error('Query failed');
     postSpy.restore();
     sandbox.stub(http, 'post').rejects(error);
-    
+
     await specificAccessRequestUpdateAttributes(req, res, next);
-    
+
     expect(next).to.have.been.calledWith(error);
   });
 });

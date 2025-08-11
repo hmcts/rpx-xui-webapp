@@ -73,10 +73,10 @@ describe('RealStaffRefDataAPI', () => {
     sendPostStub = sandbox.stub(crudService, 'sendPost');
     sendPutStub = sandbox.stub(crudService, 'sendPut');
     getConfigValueStub = sandbox.stub(config, 'getConfigValue');
-    
+
     getConfigValueStub.withArgs(SERVICES_CASE_CASEWORKER_REF_PATH).returns(mockBaseUrl);
     getConfigValueStub.withArgs(SERVICE_REF_DATA_MAPPING).returns(mockServiceRefData);
-    
+
     // Create instance after stubbing config
     realStaffRefDataAPI = new RealStaffRefDataAPI();
   });
@@ -89,10 +89,10 @@ describe('RealStaffRefDataAPI', () => {
     it('should successfully get filtered users with pagination', async () => {
       const mockUsers: StaffUser[] = [mockStaffUser];
       const mockHeaders = { 'total-records': '50' };
-      
+
       req.query = { service: 'Family', location: 'Birmingham' };
       req.headers = { 'page-size': '10', 'page-number': '2' };
-      
+
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
@@ -123,10 +123,10 @@ describe('RealStaffRefDataAPI', () => {
     it('should use default pagination values when headers are not provided', async () => {
       const mockUsers: StaffUser[] = [mockStaffUser];
       const mockHeaders = { 'total-records': '100' };
-      
+
       req.query = {};
       req.headers = {};
-      
+
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
@@ -189,7 +189,7 @@ describe('RealStaffRefDataAPI', () => {
         req
       );
       expect(res.status).to.have.been.calledWith(200);
-      
+
       const sentData = res.send.firstCall.args[0];
       expect(sentData).to.be.an('array');
       expect(sentData).to.have.lengthOf(3);
@@ -245,7 +245,7 @@ describe('RealStaffRefDataAPI', () => {
         req
       );
       expect(res.status).to.have.been.calledWith(200);
-      
+
       const sentData = res.send.firstCall.args[0];
       expect(sentData).to.be.an('array');
       expect(sentData).to.have.lengthOf(3);
@@ -287,7 +287,7 @@ describe('RealStaffRefDataAPI', () => {
         req
       );
       expect(res.status).to.have.been.calledWith(200);
-      
+
       const sentData = res.send.firstCall.args[0];
       expect(sentData).to.be.an('array');
       expect(sentData).to.have.lengthOf(3);
@@ -351,7 +351,7 @@ describe('RealStaffRefDataAPI', () => {
         req
       );
       expect(res.status).to.have.been.calledWith(200);
-      
+
       const sentData = res.send.firstCall.args[0];
       expect(sentData).to.be.an('array');
       expect(sentData).to.have.lengthOf(2);
@@ -397,10 +397,10 @@ describe('RealStaffRefDataAPI', () => {
     it('should successfully search users by partial name', async () => {
       const mockUsers: StaffUser[] = [mockStaffUser];
       const mockHeaders = { 'total-records': '25' };
-      
+
       req.query = { search: 'John' };
       req.headers = { 'page-size': '15', 'page-number': '3' };
-      
+
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
@@ -429,10 +429,10 @@ describe('RealStaffRefDataAPI', () => {
     it('should handle empty search parameter', async () => {
       const mockUsers: StaffUser[] = [];
       const mockHeaders = { 'total-records': '0' };
-      
+
       req.query = {};
       req.headers = {};
-      
+
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
@@ -513,9 +513,9 @@ describe('RealStaffRefDataAPI', () => {
         first_name: 'Jane',
         last_name: 'Smith'
       };
-      
+
       req.body = newUser;
-      
+
       sendPostStub.resolves({
         status: 201,
         data: { ...newUser, id: '123' }
@@ -549,9 +549,9 @@ describe('RealStaffRefDataAPI', () => {
     it('should successfully fetch users by ID', async () => {
       const userIds = ['user1', 'user2', 'user3'];
       const mockUsers: StaffUser[] = [mockStaffUser];
-      
+
       req.body = userIds;
-      
+
       sendPostStub.resolves({
         status: 200,
         data: mockUsers
@@ -570,7 +570,7 @@ describe('RealStaffRefDataAPI', () => {
 
     it('should handle empty body', async () => {
       req.body = [];
-      
+
       sendPostStub.resolves({
         status: 200,
         data: []
@@ -595,7 +595,7 @@ describe('RealStaffRefDataAPI', () => {
   describe('fetchSingleUserById', () => {
     it('should successfully fetch a single user by ID', async () => {
       req.query = { id: 'user123' };
-      
+
       sendGetStub.resolves({
         status: 200,
         data: mockStaffUser
@@ -613,7 +613,7 @@ describe('RealStaffRefDataAPI', () => {
 
     it('should handle missing ID parameter', async () => {
       req.query = {};
-      
+
       sendGetStub.resolves({
         status: 404,
         data: null
@@ -644,9 +644,9 @@ describe('RealStaffRefDataAPI', () => {
         ...mockStaffUser,
         first_name: 'Updated'
       };
-      
+
       req.body = updatedUser;
-      
+
       sendPutStub.resolves({
         status: 200,
         data: updatedUser

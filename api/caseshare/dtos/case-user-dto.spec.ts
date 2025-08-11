@@ -112,7 +112,7 @@ describe('CaseUserDTO', () => {
         pendingShares: [],
         sharedWith: [],
         pendingUnshares: []
-      } as SharedCase & { 
+      } as SharedCase & {
         pendingShares: UserDetails[],
         sharedWith: UserDetails[],
         pendingUnshares: UserDetails[]

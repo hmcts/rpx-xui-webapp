@@ -22,7 +22,7 @@ describe('PRD Judicial Service', () => {
   let searchJudicialUserByPersonalCodes;
   let searchJudicialUserByIdamId;
   let getJudicialUsersSearch;
-  
+
   const mockPrdUrl = 'http://mock-prd-api';
 
   before(() => {
@@ -33,18 +33,18 @@ describe('PRD Judicial Service', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     next = sandbox.stub();
-    
+
     const configuration = require('../../configuration');
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
     showFeatureStub = sandbox.stub(configuration, 'showFeature');
     getConfigValueStub.returns(mockPrdUrl);
-    
+
     const httpModule = require('../../lib/http');
     const proxyModule = require('../../lib/proxy');
     httpPostStub = sandbox.stub(httpModule.http, 'post');
     setHeadersStub = sandbox.stub(proxyModule, 'setHeaders');
     setHeadersStub.returns({ 'content-type': 'application/json' });
-    
+
     const judicialModule = require('./');
     searchJudicialUserByPersonalCodes = judicialModule.searchJudicialUserByPersonalCodes;
     searchJudicialUserByIdamId = judicialModule.searchJudicialUserByIdamId;
@@ -85,7 +85,7 @@ describe('PRD Judicial Service', () => {
         req.body,
         { headers: { 'content-type': 'application/json' } }
       );
-      
+
       const expectedResult = mockResponse.data.map(transformToJudicialUserModel);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(expectedResult);
@@ -109,7 +109,7 @@ describe('PRD Judicial Service', () => {
         req.body,
         { headers: { 'content-type': 'application/json' } }
       );
-      
+
       const expectedResult = mockResponse.data.map(transformToJudicialUserModel);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(expectedResult);
@@ -207,7 +207,7 @@ describe('PRD Judicial Service', () => {
         req.body,
         { headers: { 'content-type': 'application/json' } }
       );
-      
+
       const expectedResult = mockResponse.data.map(transformToJudicialUserModel);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(expectedResult);
@@ -318,7 +318,7 @@ describe('PRD Judicial Service', () => {
         req.body,
         { headers: { 'content-type': 'application/json' } }
       );
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
       expect(next).to.not.have.been.called;
@@ -341,7 +341,7 @@ describe('PRD Judicial Service', () => {
         req.body,
         { headers: { 'content-type': 'application/json' } }
       );
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
       expect(next).to.not.have.been.called;

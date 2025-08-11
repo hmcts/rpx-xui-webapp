@@ -27,7 +27,7 @@ describe('Auth Module', () => {
   let axiosGetStub: sinon.SinonStub;
   let clientStub: any;
   let getLoggerStub: sinon.SinonStub;
-  
+
   let successCallback: any;
   let failureCallback: any;
   let getXuiNodeMiddleware: any;
@@ -259,7 +259,7 @@ describe('Auth Module', () => {
       getConfigValueStub.withArgs('loginRoleMatcher').returns(mockConfig.loginRoleMatcher);
       getConfigValueStub.withArgs('services.idam.serviceOverride').returns(mockConfig.idamServiceOverride);
       getConfigValueStub.withArgs('now').returns(false);
-      
+
       showFeatureStub.withArgs('secureCookieEnabled').returns(true);
       showFeatureStub.withArgs('redisEnabled').returns(false);
       showFeatureStub.withArgs('oidcEnabled').returns(true);
@@ -270,7 +270,7 @@ describe('Auth Module', () => {
 
     it('should configure xuiNode with correct options for OIDC', async () => {
       const configArg = await assertStubCalledOnceAndGetConfig(getXuiNodeMiddleware);
-      
+
       assertAuthConfiguration(configArg, 'oidc');
       expect(configArg.auth.oauth2).to.be.undefined;
     });
@@ -279,7 +279,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('oidcEnabled').returns(false);
 
       const configArg = await assertStubCalledOnceAndGetConfig(getXuiNodeMiddleware);
-      
+
       assertAuthConfiguration(configArg, 'oauth2');
       expect(configArg.auth.oidc).to.be.undefined;
     });
@@ -288,7 +288,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('redisEnabled').returns(true);
 
       const configArg = await assertStubCalledOnceAndGetConfig(getXuiNodeMiddleware);
-      
+
       assertRedisStoreConfiguration(configArg);
     });
 
@@ -296,7 +296,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('redisEnabled').returns(false);
 
       const configArg = await assertStubCalledOnceAndGetConfig(getXuiNodeMiddleware);
-      
+
       assertFileStoreConfiguration(configArg, '.sessions');
     });
 
@@ -305,7 +305,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('redisEnabled').returns(false);
 
       const configArg = await assertStubCalledOnceAndGetConfig(getXuiNodeMiddleware);
-      
+
       assertFileStoreConfiguration(configArg, '/tmp/sessions');
     });
 
@@ -314,7 +314,7 @@ describe('Auth Module', () => {
 
       const configArg = xuiNodeConfigureStub.firstCall.args[0];
       const routeCredential = configArg.auth.oidc.routeCredential;
-      
+
       expect(routeCredential.userName).to.equal(mockConfig.userName);
       expect(routeCredential.password).to.equal(mockConfig.password);
       expect(routeCredential.scope).to.equal('openid profile roles manage-user create-user search-user');
@@ -328,7 +328,7 @@ describe('Auth Module', () => {
 
       const configArg = xuiNodeConfigureStub.firstCall.args[0];
       const s2sConfig = configArg.auth.s2s;
-      
+
       expect(s2sConfig.microservice).to.equal(mockConfig.microservice);
       expect(s2sConfig.s2sEndpointUrl).to.equal(`${mockConfig.s2sPath}/lease`);
       expect(s2sConfig.s2sSecret).to.equal(mockConfig.s2sSecret);
@@ -347,7 +347,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('queryIdamServiceOverride').returns(true);
       const mockToken = 'test-token';
       const mockServiceOverride = 'dynamic-override';
-      
+
       axiosPostStub.resolves({
         data: { access_token: mockToken }
       });
@@ -360,14 +360,14 @@ describe('Auth Module', () => {
       expect(loggerStub.info).to.have.been.calledWith('Querying IDAM service override');
       expect(axiosPostStub).to.have.been.calledOnce;
       expect(axiosGetStub).to.have.been.calledOnce;
-      
+
       const configArg = xuiNodeConfigureStub.firstCall.args[0];
       expect(configArg.auth.oidc.serviceOverride).to.equal(mockServiceOverride);
     });
 
     it('should fallback to config value when IDAM service override query fails', async () => {
       showFeatureStub.withArgs('queryIdamServiceOverride').returns(true);
-      
+
       axiosPostStub.resolves({
         data: { access_token: 'test-token' }
       });
@@ -379,14 +379,14 @@ describe('Auth Module', () => {
         'Error retrieving service override from API, falling back to config value',
         sinon.match.instanceOf(Error)
       );
-      
+
       const configArg = xuiNodeConfigureStub.firstCall.args[0];
       expect(configArg.auth.oidc.serviceOverride).to.equal(mockConfig.idamServiceOverride);
     });
 
     it('should handle token fetch failure when querying service override', async () => {
       showFeatureStub.withArgs('queryIdamServiceOverride').returns(true);
-      
+
       axiosPostStub.rejects(new Error('Token fetch failed'));
 
       await getXuiNodeMiddleware();
@@ -400,7 +400,7 @@ describe('Auth Module', () => {
 
     it('should handle missing access token in response', async () => {
       showFeatureStub.withArgs('queryIdamServiceOverride').returns(true);
-      
+
       axiosPostStub.resolves({
         data: {} // No access_token
       });
@@ -418,7 +418,7 @@ describe('Auth Module', () => {
 
       const configArg = xuiNodeConfigureStub.firstCall.args[0];
       const cookieSettings = configArg.session.fileStore.cookie;
-      
+
       expect(cookieSettings.httpOnly).to.be.true;
       expect(cookieSettings.sameSite).to.equal('Lax');
       expect(cookieSettings.secure).to.be.true; // secure cookies enabled

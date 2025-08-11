@@ -68,7 +68,7 @@ describe('workAllocation.caseService', () => {
       { id: 1, role: 'Lead Judge', status: 'Open', caseType: 'A' },
       { id: 2, role: 'Hearing Judge', status: 'Closed', caseType: 'B' },
       { id: 3, role: 'Case Manager', status: 'Open', caseType: 'A' },
-      { id: 4, role: 'Other', status: 'Open', caseType: 'C' },
+      { id: 4, role: 'Other', status: 'Open', caseType: 'C' }
     ];
 
     it('should return all cases if parameters is null', () => {
@@ -92,7 +92,7 @@ describe('workAllocation.caseService', () => {
       expect(result).to.deep.equal([
         mockCases[0],
         mockCases[2],
-        mockCases[3],
+        mockCases[3]
       ]);
     });
 
@@ -101,7 +101,7 @@ describe('workAllocation.caseService', () => {
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
       expect(result).to.deep.equal([
         mockCases[0],
-        mockCases[1],
+        mockCases[1]
       ]);
     });
 
@@ -109,7 +109,7 @@ describe('workAllocation.caseService', () => {
       const params = [{ key: 'role', values: 'Case Manager' }];
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
       expect(result).to.deep.equal([
-        mockCases[2],
+        mockCases[2]
       ]);
     });
 
@@ -122,12 +122,12 @@ describe('workAllocation.caseService', () => {
     it('should filter by multiple parameters (AND logic)', () => {
       const params = [
         { key: 'status', values: 'Open' },
-        { key: 'caseType', values: 'A' },
+        { key: 'caseType', values: 'A' }
       ];
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
       expect(result).to.deep.equal([
         mockCases[0],
-        mockCases[2],
+        mockCases[2]
       ]);
     });
 

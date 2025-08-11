@@ -49,7 +49,7 @@ describe('removeCacheHeaders', () => {
 
   it('should remove all cache headers in the expected order', () => {
     removeCacheHeaders(req, res, next);
-    
+
     const callOrder = res.removeHeader.getCalls().map((call: any) => call.args[0]);
     expect(callOrder).to.deep.equal([
       'Cache-Control',

@@ -70,8 +70,8 @@ describe('uiConfigRouter', () => {
 
     it('should register GET / route', () => {
       const routes = router.stack
-        .filter(layer => layer.route)
-        .map(layer => layer.route.path);
+        .filter((layer) => layer.route)
+        .map((layer) => layer.route.path);
       expect(routes).to.include('/');
     });
   });
@@ -89,7 +89,7 @@ describe('uiConfigRouter', () => {
       // Setup stubs - set default return value first
       getConfigValueStub.returns('default-value');
       showFeatureStub.returns(false);
-      
+
       // Configure stubs to return mock URLs and values for testing
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
       getConfigValueStub.withArgs('services.ccd.componentApi').returns('https://ccd.api.com');
@@ -155,7 +155,7 @@ describe('uiConfigRouter', () => {
     it('should handle errors in setupMenuConfig', async () => {
       getConfigValueStub.returns('default-value');
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
-      
+
       // Reset the stub to ensure it throws
       setupMenuConfigStub.resetBehavior();
       setupMenuConfigStub.throws(new Error('Menu config error'));
@@ -167,7 +167,7 @@ describe('uiConfigRouter', () => {
     it('should handle errors in setupHearingConfigs', async () => {
       getConfigValueStub.returns('default-value');
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
-      
+
       setupHearingConfigsStub.resetBehavior();
       setupHearingConfigsStub.throws(new Error('Hearing config error'));
 
@@ -266,7 +266,7 @@ describe('uiConfigRouter', () => {
     it('should cache menu and hearing configs after first call', async () => {
       const freshRouter = require('./uiConfigRouter').router;
       const routeHandler = freshRouter.stack[0].route.stack[0].handle;
-      
+
       delete process.env.PREVIEW_DEPLOYMENT_ID;
       getConfigValueStub.returns('default-value');
       getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.example.com');
@@ -284,7 +284,7 @@ describe('uiConfigRouter', () => {
 
       // Second call - should use cached values
       await routeHandler(req, res, next);
-      
+
       // Setup functions should still only be called once
       expect(setupMenuConfigStub).to.have.been.calledOnce;
       expect(setupHearingConfigsStub).to.have.been.calledOnce;

@@ -180,10 +180,10 @@ describe('Redis Health', () => {
     });
 
     it('should return false when app.locals.redisClient is null', async () => {
-      createAppStub.resolves({ 
-        locals: { 
-          redisClient: null 
-        } 
+      createAppStub.resolves({
+        locals: {
+          redisClient: null
+        }
       });
 
       const result = await redisHealth();
@@ -194,10 +194,10 @@ describe('Redis Health', () => {
     });
 
     it('should return false when app.locals.redisClient is undefined', async () => {
-      createAppStub.resolves({ 
-        locals: { 
-          redisClient: undefined 
-        } 
+      createAppStub.resolves({
+        locals: {
+          redisClient: undefined
+        }
       });
 
       const result = await redisHealth();
@@ -230,16 +230,16 @@ describe('Redis Health', () => {
         // If createApp rejection is not caught, that's also acceptable behavior
         expect(error.message).to.equal('Application creation failed');
       }
-      
+
       expect(createAppStub).to.have.been.calledOnce;
       expect(loggerErrorStub).to.not.have.been.called;
     });
 
     it('should return false when Redis client is not an object', async () => {
-      createAppStub.resolves({ 
-        locals: { 
-          redisClient: 'not an object' 
-        } 
+      createAppStub.resolves({
+        locals: {
+          redisClient: 'not an object'
+        }
       });
 
       const result = await redisHealth();
@@ -250,10 +250,10 @@ describe('Redis Health', () => {
     });
 
     it('should return false when Redis client does not have ping method', async () => {
-      createAppStub.resolves({ 
-        locals: { 
+      createAppStub.resolves({
+        locals: {
           redisClient: {} // Object without ping method
-        } 
+        }
       });
 
       const result = await redisHealth();

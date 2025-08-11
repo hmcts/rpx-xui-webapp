@@ -15,7 +15,7 @@ describe('StaffRefDataService', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    
+
     mockRealStaffRefDataAPI = {
       getFilteredUsers: sandbox.stub(),
       getUserTypes: sandbox.stub(),

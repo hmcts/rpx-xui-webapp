@@ -209,9 +209,9 @@ describe('staff-ref-data.controller', () => {
 
   describe('addNewUser', () => {
     it('should call staffRefDataService.addNewUser with correct parameters', async () => {
-      req.body = { 
-        firstName: 'John', 
-        lastName: 'Doe', 
+      req.body = {
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john.doe@example.com',
         userType: 'caseworker'
       };
@@ -301,8 +301,8 @@ describe('staff-ref-data.controller', () => {
   describe('updateUser', () => {
     it('should call staffRefDataService.updateUser with correct parameters', async () => {
       req.params = { id: 'user123' };
-      req.body = { 
-        firstName: 'Jane', 
+      req.body = {
+        firstName: 'Jane',
         lastName: 'Smith',
         skills: ['skill1', 'skill2']
       };

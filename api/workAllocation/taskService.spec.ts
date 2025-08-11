@@ -65,9 +65,9 @@ describe('workAllocation.taskService', () => {
         'Content-Type': 'text/html'
       };
       setHeadersStub.returns(mockHeaders);
-      
+
       await handleTaskGet(path, req);
-      
+
       expect(setHeadersStub).to.have.been.calledWith(req);
       const expectedHeaders = {
         'Authorization': 'Bearer token',
@@ -81,7 +81,7 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').rejects(error);
       const path = '/task/123456';
       const req = mockReq();
-      
+
       try {
         await handleTaskGet(path, req);
         expect.fail('Should have thrown an error');
@@ -95,7 +95,7 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').rejects(error);
       const path = '/task/nonexistent';
       const req = mockReq();
-      
+
       try {
         await handleTaskGet(path, req);
         expect.fail('Should have thrown an error');
@@ -109,7 +109,7 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').rejects(error);
       const path = '/task/123456';
       const req = mockReq();
-      
+
       try {
         await handleTaskGet(path, req);
         expect.fail('Should have thrown an error');
@@ -123,9 +123,9 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').resolves({ status: 200, data: mockTaskData });
       const path = '/task/search';
       const req = mockReq();
-      
+
       const response = await handleTaskGet(path, req);
-      
+
       expect(response).to.deep.equal(mockTaskData);
     });
   });
@@ -144,9 +144,9 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/task/roles';
       const req = mockReq();
-      
+
       const response = await handleTaskRolesGet(path, req);
-      
+
       expect(response).to.equal(mockResponse); // Returns the entire response
       expect(spy).to.have.been.calledWith(path, { headers: sinon.match.object });
     });
@@ -161,9 +161,9 @@ describe('workAllocation.taskService', () => {
         'User-Agent': 'test-agent'
       };
       setHeadersStub.returns(mockHeaders);
-      
+
       await handleTaskRolesGet(path, req);
-      
+
       expect(setHeadersStub).to.have.been.calledWith(req);
       const expectedHeaders = {
         'Authorization': 'Bearer token123',
@@ -178,7 +178,7 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').rejects(error);
       const path = '/task/roles';
       const req = mockReq();
-      
+
       try {
         await handleTaskRolesGet(path, req);
         expect.fail('Should have thrown an error');
@@ -192,7 +192,7 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').rejects(error);
       const path = '/task/roles';
       const req = mockReq();
-      
+
       try {
         await handleTaskRolesGet(path, req);
         expect.fail('Should have thrown an error');
@@ -206,9 +206,9 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'get').resolves(emptyResponse);
       const path = '/task/roles';
       const req = mockReq();
-      
+
       const response = await handleTaskRolesGet(path, req);
-      
+
       expect(response).to.deep.equal(emptyResponse);
     });
   });
@@ -241,9 +241,9 @@ describe('workAllocation.taskService', () => {
       const req = mockReq();
       const mockHeaders = { 'Authorization': 'Bearer token' };
       setHeadersStub.returns(mockHeaders);
-      
+
       await handleTaskSearch(path, payload, req);
-      
+
       expect(setHeadersStub).to.have.been.calledWith(req);
       expect(spy).to.have.been.calledWith(path, payload, { headers: mockHeaders });
     });
@@ -264,9 +264,9 @@ describe('workAllocation.taskService', () => {
         paginationParameters: { pageNumber: 0, pageSize: 25 }
       };
       const req = mockReq();
-      
+
       const response = await handleTaskSearch(path, complexPayload, req);
-      
+
       expect(response).to.deep.equal(mockSearchResponse);
       expect(spy).to.have.been.calledWith(path, complexPayload, sinon.match.object);
     });
@@ -277,9 +277,9 @@ describe('workAllocation.taskService', () => {
       const path = '/task/search';
       const payload = { search: 'nonexistent' };
       const req = mockReq();
-      
+
       const response = await handleTaskSearch(path, payload, req);
-      
+
       expect(response).to.deep.equal(emptyResponse);
     });
 
@@ -289,7 +289,7 @@ describe('workAllocation.taskService', () => {
       const path = '/task/search';
       const payload = { invalidField: 'value' };
       const req = mockReq();
-      
+
       try {
         await handleTaskSearch(path, payload, req);
         expect.fail('Should have thrown an error');
@@ -302,9 +302,9 @@ describe('workAllocation.taskService', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const path = '/task/search';
       const req = mockReq();
-      
+
       await handleTaskSearch(path, null, req);
-      
+
       expect(spy).to.have.been.calledWith(path, null, sinon.match.object);
     });
   });
@@ -333,9 +333,9 @@ describe('workAllocation.taskService', () => {
       const path = '/task/123456/complete';
       const payload = { completion: { completionOptions: { result: 'completed' } } };
       const req = mockReq();
-      
+
       const response = await handleTaskPost(path, payload, req);
-      
+
       expect(handlePostStub).to.have.been.calledWith(path, payload, req);
       expect(response).to.equal(res);
     });
@@ -348,9 +348,9 @@ describe('workAllocation.taskService', () => {
         userId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3'
       };
       const req = mockReq();
-      
+
       const response = await handleTaskPost(path, assignPayload, req);
-      
+
       expect(response).to.deep.equal(assignResponse);
       expect(handlePostStub).to.have.been.calledWith(path, assignPayload, req);
     });
@@ -360,9 +360,9 @@ describe('workAllocation.taskService', () => {
       handlePostStub.resolves(unassignResponse);
       const path = '/task/0d22d836-b25a-11eb-a18c-f2d58a9b7ba1/unassign';
       const req = mockReq();
-      
+
       const response = await handleTaskPost(path, {}, req);
-      
+
       expect(response).to.deep.equal(unassignResponse);
     });
 
@@ -377,9 +377,9 @@ describe('workAllocation.taskService', () => {
         }
       };
       const req = mockReq();
-      
+
       const response = await handleTaskPost(path, completePayload, req);
-      
+
       expect(response).to.deep.equal(completeResponse);
     });
 
@@ -388,9 +388,9 @@ describe('workAllocation.taskService', () => {
       handlePostStub.resolves(claimResponse);
       const path = '/task/0d22d836-b25a-11eb-a18c-f2d58a9b7ba1/claim';
       const req = mockReq();
-      
+
       const response = await handleTaskPost(path, {}, req);
-      
+
       expect(response).to.deep.equal(claimResponse);
     });
 
@@ -404,9 +404,9 @@ describe('workAllocation.taskService', () => {
         }
       };
       const req = mockReq();
-      
+
       const response = await handleTaskPost(path, cancelPayload, req);
-      
+
       expect(response).to.deep.equal(cancelResponse);
     });
 
@@ -416,7 +416,7 @@ describe('workAllocation.taskService', () => {
       const path = '/task/123456/assign';
       const payload = { assignee: { invalid: 'data' } };
       const req = mockReq();
-      
+
       try {
         await handleTaskPost(path, payload, req);
         expect.fail('Should have thrown an error');
@@ -431,7 +431,7 @@ describe('workAllocation.taskService', () => {
       const path = '/task/123456/assign';
       const payload = { assignee: { name: 'john', id: 4 } };
       const req = mockReq();
-      
+
       try {
         await handleTaskPost(path, payload, req);
         expect.fail('Should have thrown an error');

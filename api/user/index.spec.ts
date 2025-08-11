@@ -219,9 +219,9 @@ describe('Index', () => {
 
     it('should return empty object with 200 status when no passport user exists', async () => {
       req.session = {};
-      
+
       await getUserDetails(req, res, next);
-      
+
       expect(res.send).to.have.been.calledWith({});
       expect(res.status).to.have.been.calledWith(200);
     });
@@ -235,9 +235,9 @@ describe('Index', () => {
         }
       };
       sandbox.stub(userUtils, 'userDetailsValid').returns(false);
-      
+
       await getUserDetails(req, res, next);
-      
+
       expect(res.send).to.have.been.calledWith('User details are invalid. This needs to be investigated');
       expect(res.status).to.have.been.calledWith(400);
     });
@@ -259,13 +259,13 @@ describe('Index', () => {
         pattern: 'caseworker'
       });
       sandbox.stub(utils, 'containsDangerousCode').returns(true);
-      
+
       const getUserRoleAssignmentsStub = sandbox.stub();
       getUserRoleAssignmentsStub.resolves([]);
       sandbox.stub({ getUserRoleAssignments }, 'getUserRoleAssignments').value(getUserRoleAssignmentsStub);
-      
+
       await getUserDetails(req, res, next);
-      
+
       expect(res.send).to.have.been.calledWith('Invalid bearer token');
       expect(res.status).to.have.been.calledWith(400);
     });
@@ -279,7 +279,7 @@ describe('Index', () => {
         roleName: 'case-worker',
         roleCategory: 'LEGAL_OPERATIONS'
       }];
-      
+
       req.session = {
         passport: {
           user: {
@@ -300,24 +300,24 @@ describe('Index', () => {
           attributes: {}
         }]
       };
-      
+
       sandbox.stub(userUtils, 'userDetailsValid').returns(true);
       const getConfigStub = sandbox.stub(config, 'getConfigValue');
       getConfigStub.withArgs('sessionTimeouts').returns([{ roleId: 'caseworker', idleMinutes: 20 }]);
       getConfigStub.withArgs('caseSharePermissions').returns('pui-case-manager,pui-organisation-manager');
-      
+
       sandbox.stub(nodeLib, 'getUserSessionTimeout').returns({
         idleModalDisplayTime: 10,
         totalIdleTime: 20,
         pattern: 'caseworker'
       });
       sandbox.stub(utils, 'containsDangerousCode').returns(false);
-      
+
       await getUserDetails(req, res, next);
-      
+
       expect(res.send).to.have.been.calledOnce;
       const callArgs = res.send.getCall(0).args[0];
-      
+
       // Verify the response structure and values
       expect(callArgs).to.have.property('canShareCases', true);
       expect(callArgs).to.have.property('sessionTimeout');
@@ -329,7 +329,7 @@ describe('Index', () => {
         id: 'test-user',
         token: 'Bearer valid-token'
       });
-      
+
       // Verify that original roles are present
       expect(callArgs.userInfo.roles).to.include('caseworker');
       expect(callArgs.userInfo.roles).to.include('pui-case-manager');
@@ -345,14 +345,13 @@ describe('Index', () => {
           }
         }
       };
-      
+
       sandbox.stub(userUtils, 'userDetailsValid').throws(error);
-      
+
       await getUserDetails(req, res, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
-
   });
 
   describe('getSyntheticRoles', () => {
@@ -380,7 +379,7 @@ describe('Index', () => {
           attributes: {}
         }
       ];
-      
+
       const result = getSyntheticRoles(roleAssignments);
       expect(result).to.deep.equal([]);
     });
@@ -404,7 +403,7 @@ describe('Index', () => {
           attributes: {}
         }
       ];
-      
+
       const result = getSyntheticRoles(roleAssignments);
       expect(result).to.deep.equal(['ia-case-worker', 'civil-judge']);
     });
@@ -428,7 +427,7 @@ describe('Index', () => {
           attributes: {}
         }
       ];
-      
+
       const result = getSyntheticRoles(roleAssignments);
       expect(result).to.deep.equal(['ia-case-worker']);
     });
@@ -436,7 +435,7 @@ describe('Index', () => {
     it('should filter out expired role assignments', () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      
+
       const roleAssignments = [
         {
           id: '1',
@@ -448,7 +447,7 @@ describe('Index', () => {
           attributes: {}
         }
       ];
-      
+
       const result = getSyntheticRoles(roleAssignments);
       expect(result).to.deep.equal([]);
     });
@@ -516,14 +515,14 @@ describe('Index', () => {
         },
         headers: { etag: 'etag123' }
       };
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({ 'Content-Type': 'application/json' });
       sandbox.stub(http, 'get').resolves(mockResponse);
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = await refreshRoleAssignmentForUser(mockUserInfo, req);
-      
+
       // setUserRoles returns the transformed role assignment info
       expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(1);
@@ -537,15 +536,15 @@ describe('Index', () => {
         data: { roleAssignmentResponse: [] },
         headers: {}
       };
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       const httpGetStub = sandbox.stub(http, 'get').resolves(mockResponse);
-      
+
       // setUserRoles is called internally and doesn't need to be stubbed
-      
+
       await refreshRoleAssignmentForUser(mockUserInfo, req);
-      
+
       expect(httpGetStub).to.have.been.calledWith(
         'http://role-assignment-api/am/role-assignments/actors/user456'
       );
@@ -554,20 +553,20 @@ describe('Index', () => {
     it('should add If-None-Match header when etag exists in session', async () => {
       const mockUserInfo = { id: 'user123', roles: ['caseworker'] };
       req.session.roleRequestEtag = 'existing-etag';
-      
+
       const mockResponse = {
         data: { roleAssignmentResponse: [] },
         headers: {}
       };
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       const setHeadersStub = sandbox.stub(proxy, 'setHeaders').returns({ accept: 'application/json' });
       const httpGetStub = sandbox.stub(http, 'get').resolves(mockResponse);
-      
+
       // setUserRoles is called internally and doesn't need to be stubbed
-      
+
       await refreshRoleAssignmentForUser(mockUserInfo, req);
-      
+
       const expectedHeaders = { 'If-None-Match': 'existing-etag' };
       expect(httpGetStub).to.have.been.calledWith(
         sinon.match.string,
@@ -578,7 +577,7 @@ describe('Index', () => {
     it('should handle 304 Not Modified response', async () => {
       const mockUserInfo = { id: 'user123', roles: ['caseworker'] };
       const error304 = { status: 304 };
-      
+
       // Set up cached role assignments in session
       req.session.roleAssignmentResponse = [{
         id: '1',
@@ -586,14 +585,14 @@ describe('Index', () => {
         roleType: 'ORGANISATION',
         attributes: {}
       }];
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(http, 'get').rejects(error304);
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = await refreshRoleAssignmentForUser(mockUserInfo, req);
-      
+
       // Should return the transformed cached data
       expect(result).to.be.an('array');
       expect(result[0]).to.include({ roleName: 'cached-role' });
@@ -602,13 +601,13 @@ describe('Index', () => {
     it('should handle other errors and return empty array', async () => {
       const mockUserInfo = { id: 'user123', roles: ['caseworker'] };
       const error = new Error('Network error');
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(http, 'get').rejects(error);
-      
+
       const result = await refreshRoleAssignmentForUser(mockUserInfo, req);
-      
+
       expect(result).to.deep.equal([]);
     });
   });
@@ -636,7 +635,7 @@ describe('Index', () => {
         { roleCategory: null },
         { roleCategory: 'ADMIN' }
       ];
-      
+
       const result = extractRoleCategories(roleAssignments);
       expect(result).to.deep.equal(['JUDICIAL', 'LEGAL_OPERATIONS', 'ADMIN']);
     });
@@ -647,7 +646,7 @@ describe('Index', () => {
         { roleCategory: 'JUDICIAL' },
         {}
       ];
-      
+
       const result = extractRoleCategories(roleAssignments);
       expect(result).to.deep.equal(['JUDICIAL']);
     });
@@ -689,11 +688,11 @@ describe('Index', () => {
           }
         }
       ];
-      
+
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(true);
-      
+
       const result = getRoleAssignmentInfo(mockRoleAssignments);
-      
+
       expect(result).to.have.lengthOf(1);
       expect(result[0]).to.deep.include({
         jurisdiction: 'IA',
@@ -716,11 +715,11 @@ describe('Index', () => {
           attributes: {}
         }
       ];
-      
+
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = getRoleAssignmentInfo(mockRoleAssignments);
-      
+
       expect(result).to.have.lengthOf(1);
       expect(result[0]).to.deep.include({
         isCaseAllocator: false,
@@ -751,11 +750,11 @@ describe('Index', () => {
       ];
       req.session.roleAssignmentResponse = cachedRoleAssignments;
       req.query.refreshRoleAssignments = 'false';
-      
+
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = await getUserRoleAssignments({ id: 'user123' }, req);
-      
+
       // Should return transformed role assignment info
       expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(1);
@@ -767,11 +766,11 @@ describe('Index', () => {
         { id: '1', roleName: 'cached-role' }
       ];
       req.session.roleAssignmentResponse = cachedRoleAssignments;
-      
+
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = await getUserRoleAssignments({ id: 'user123' }, req);
-      
+
       // Should return transformed role assignment info
       expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(1);
@@ -780,7 +779,7 @@ describe('Index', () => {
 
     it('should refresh role assignments when refreshRoleAssignments is true', async () => {
       req.query.refreshRoleAssignments = 'true';
-      
+
       const mockResponse = {
         data: {
           roleAssignmentResponse: [
@@ -794,14 +793,14 @@ describe('Index', () => {
         },
         headers: { etag: 'new-etag' }
       };
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(http, 'get').resolves(mockResponse);
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = await getUserRoleAssignments({ id: 'user123' }, req);
-      
+
       expect(result).to.be.an('array');
       expect(result[0]).to.include({ roleName: 'fresh-role' });
     });
@@ -820,14 +819,14 @@ describe('Index', () => {
         },
         headers: {}
       };
-      
+
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
       sandbox.stub(http, 'get').resolves(mockResponse);
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
-      
+
       const result = await getUserRoleAssignments({ id: 'user123' }, req);
-      
+
       expect(result).to.be.an('array');
       expect(result[0]).to.include({ roleName: 'fresh-role' });
     });

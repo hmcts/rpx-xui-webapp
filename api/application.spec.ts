@@ -39,15 +39,15 @@ describe('Application', () => {
     showFeatureStub.withArgs('helmetEnabled').returns(options.helmetEnabled || false);
     showFeatureStub.withArgs('compressionEnabled').returns(options.compressionEnabled || false);
     showFeatureStub.returns(false); // default for other features
-    
+
     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
     getConfigStub.withArgs('sessionSecret').returns('test-session-secret-12345');
     getConfigStub.withArgs('protocol').returns('https');
-    getConfigStub.withArgs('HELMET').returns({ 
+    getConfigStub.withArgs('HELMET').returns({
       contentSecurityPolicy: {
         directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"]
+          defaultSrc: ['\'self\''],
+          scriptSrc: ['\'self\'', '\'unsafe-inline\'']
         }
       },
       hsts: {
@@ -57,27 +57,27 @@ describe('Application', () => {
       }
     });
     getConfigStub.returns('default-config-value'); // default fallback
-    
+
     sandbox.stub(require('./lib/log4jui'), 'getLogger').returns(mockLogger);
     sandbox.stub(require('./lib/tunnel'), 'init').returns(undefined);
     sandbox.stub(require('./health'), 'addReformHealthCheck').returns(undefined);
-    
+
     // Handle XUI middleware based on options
     if (options.xuiMiddlewareRejects) {
       sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').rejects(new Error('XUI middleware initialization failed'));
     } else {
       sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').resolves((req: any, res: any, next: any) => next());
     }
-    
+
     sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
-    
+
     // Handle IDAM check based on options
     if (options.idamCheckRejects) {
       sandbox.stub(require('./idamCheck'), 'idamCheck').rejects(new Error('IDAM service unavailable'));
     } else {
       sandbox.stub(require('./idamCheck'), 'idamCheck').resolves({ status: 'UP' });
     }
-    
+
     // Handle work allocation based on options
     if (options.workAllocationRejects) {
       sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').rejects(new Error('Work allocation service error'));
@@ -87,25 +87,24 @@ describe('Application', () => {
         { id: 'user2', name: 'Test User 2', roles: ['judicial'] }
       ]);
     }
-    
+
     const mockRouter = (req: any, res: any, next: any) => next();
     sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
     sandbox.stub(require('./routes'), 'default').value(mockRouter);
     sandbox.stub(require('./openRoutes'), 'default').value(mockRouter);
     sandbox.stub(require('./workAllocation/routes'), 'default').value(mockRouter);
-    
+
     // Mock CSP if helmet is enabled
     if (options.helmetEnabled) {
       sandbox.stub(require('@hmcts/rpx-xui-node-lib'), 'getContentSecurityPolicy')
         .returns((req: any, res: any, next: any) => {
-          res.setHeader('Content-Security-Policy', "default-src 'self'");
+          res.setHeader('Content-Security-Policy', 'default-src \'self\'');
           next();
         });
     }
-    
+
     return { showFeatureStub, getConfigStub };
   }
-
 
   describe('createApp function', () => {
     describe('basic functionality', () => {
@@ -124,9 +123,9 @@ describe('Application', () => {
       it('should handle errors during app creation when IDAM check fails', async () => {
         sandbox.restore();
         setupDefaultStubs({ idamCheckRejects: true });
-        
+
         const app = await createApp();
-        
+
         expect(app).to.exist; // App should still be created
         const idamCheck = require('./idamCheck').idamCheck;
         expect(idamCheck).to.have.been.calledOnce;
@@ -135,9 +134,9 @@ describe('Application', () => {
       it('should handle errors when work allocation service fails', async () => {
         sandbox.restore();
         setupDefaultStubs({ workAllocationRejects: true });
-        
+
         const app = await createApp();
-        
+
         expect(app).to.exist;
         const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
         expect(getNewUsers).to.have.been.called;
@@ -145,10 +144,10 @@ describe('Application', () => {
 
       it('should propagate errors when XUI middleware initialization fails', async () => {
         sandbox.restore();
-        
+
         // Create a specific error to verify it propagates correctly
         const middlewareError = new Error('Failed to initialize authentication middleware');
-        
+
         // Set up stubs with the specific error
         sandbox.stub(require('./configuration'), 'showFeature').returns(false);
         sandbox.stub(require('./configuration'), 'getConfigValue').returns('test-value');
@@ -159,13 +158,13 @@ describe('Application', () => {
         sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
         sandbox.stub(require('./idamCheck'), 'idamCheck').resolves();
         sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves();
-        
+
         const mockRouter = (req: any, res: any, next: any) => next();
         sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
         sandbox.stub(require('./routes'), 'default').value(mockRouter);
         sandbox.stub(require('./openRoutes'), 'default').value(mockRouter);
         sandbox.stub(require('./workAllocation/routes'), 'default').value(mockRouter);
-        
+
         try {
           await createApp();
           expect.fail('Should have thrown an error');
@@ -179,9 +178,9 @@ describe('Application', () => {
       it('should handle concurrent promise rejections gracefully', async () => {
         sandbox.restore();
         setupDefaultStubs({ idamCheckRejects: true, workAllocationRejects: true });
-        
+
         const app = await createApp();
-        
+
         expect(app).to.exist;
         // Both promises should have been called despite failures
         const idamCheck = require('./idamCheck').idamCheck;
@@ -257,18 +256,18 @@ describe('Application', () => {
 
         // Verify that the route is mounted at the correct path
         const middlewareStack = app._router.stack;
-        const amRoute = middlewareStack.find((layer: any) => 
+        const amRoute = middlewareStack.find((layer: any) =>
           layer.regexp && layer.regexp.test('/am')
         );
-        
+
         expect(amRoute).to.exist;
         expect(amRoute.handle).to.be.a('function');
-        
+
         // Test that the route handler is invoked
         const req = mockReq({ url: '/am/test', method: 'GET' });
         const res = mockRes();
         const next = sinon.stub();
-        
+
         amRoute.handle(req, res, next);
         expect(next).to.have.been.called;
       });
@@ -277,18 +276,18 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const apiRoute = middlewareStack.find((layer: any) => 
+        const apiRoute = middlewareStack.find((layer: any) =>
           layer.regexp && layer.regexp.test('/api')
         );
-        
+
         expect(apiRoute).to.exist;
         expect(apiRoute.handle).to.be.a('function');
-        
+
         // Test that the route handler is invoked
         const req = mockReq({ url: '/api/cases', method: 'GET' });
         const res = mockRes();
         const next = sinon.stub();
-        
+
         apiRoute.handle(req, res, next);
         expect(next).to.have.been.called;
       });
@@ -297,18 +296,18 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const externalRoute = middlewareStack.find((layer: any) => 
+        const externalRoute = middlewareStack.find((layer: any) =>
           layer.regexp && layer.regexp.test('/external')
         );
-        
+
         expect(externalRoute).to.exist;
         expect(externalRoute.handle).to.be.a('function');
-        
+
         // Test that the route handler is invoked
         const req = mockReq({ url: '/external/redirect', method: 'GET' });
         const res = mockRes();
         const next = sinon.stub();
-        
+
         externalRoute.handle(req, res, next);
         expect(next).to.have.been.called;
       });
@@ -317,18 +316,18 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const workAllocationRoute = middlewareStack.find((layer: any) => 
+        const workAllocationRoute = middlewareStack.find((layer: any) =>
           layer.regexp && layer.regexp.test('/workallocation')
         );
-        
+
         expect(workAllocationRoute).to.exist;
         expect(workAllocationRoute.handle).to.be.a('function');
-        
+
         // Test that the route handler is invoked
         const req = mockReq({ url: '/workallocation/cases', method: 'GET' });
         const res = mockRes();
         const next = sinon.stub();
-        
+
         workAllocationRoute.handle(req, res, next);
         expect(next).to.have.been.called;
       });
@@ -338,40 +337,40 @@ describe('Application', () => {
 
         // Check that CSRF middleware is in the stack
         const middlewareStack = app._router.stack;
-        const csrfMiddleware = middlewareStack.find((layer: any) => 
-          layer.name === 'csrf' || 
+        const csrfMiddleware = middlewareStack.find((layer: any) =>
+          layer.name === 'csrf' ||
           layer.handle.name === 'csrf' ||
           (layer.handle && layer.handle.toString().includes('csrf'))
         );
-        
+
         expect(csrfMiddleware).to.exist;
         expect(csrfMiddleware.handle).to.be.a('function');
       });
 
       it('should configure cookie parser with session secret', async () => {
         const getConfigValue = require('./configuration').getConfigValue;
-        
+
         const app = await createApp();
 
         // Verify cookie parser is configured in middleware stack
         const middlewareStack = app._router.stack;
-        const cookieParserMiddleware = middlewareStack.find((layer: any) => 
+        const cookieParserMiddleware = middlewareStack.find((layer: any) =>
           layer.name === 'cookieParser' || layer.handle.name === 'cookieParser'
         );
-        
+
         expect(cookieParserMiddleware).to.exist;
         expect(cookieParserMiddleware.handle).to.be.a('function');
-        
+
         // Verify session secret was retrieved
         expect(getConfigValue).to.have.been.calledWith('sessionSecret');
-        
+
         // Test cookie parser functionality
-        const req = mockReq({ 
+        const req = mockReq({
           headers: { cookie: 'test=value; session=abc123' }
         });
         const res = mockRes();
         const next = sinon.stub();
-        
+
         cookieParserMiddleware.handle(req, res, next);
         expect(next).to.have.been.called;
       });
@@ -381,19 +380,19 @@ describe('Application', () => {
       it('should configure helmet middleware when feature is enabled', async () => {
         sandbox.restore();
         const { showFeatureStub } = setupDefaultStubs({ helmetEnabled: true });
-        
+
         const app = await createApp();
 
         expect(app).to.exist;
         expect(showFeatureStub).to.have.been.calledWith('helmetEnabled');
-        
+
         // Verify that x-powered-by headers are disabled
         expect(app.get('x-powered-by')).to.be.false;
         expect(app.get('X-Powered-By')).to.be.false;
-        
+
         // Verify that helmet middleware is present in the middleware stack
         const middlewareStack = app._router.stack;
-        const helmetMiddleware = middlewareStack.filter((layer: any) => 
+        const helmetMiddleware = middlewareStack.filter((layer: any) =>
           layer.handle && layer.handle.name && (
             layer.handle.name.includes('helmet') ||
             layer.handle.name === 'hidePoweredBy' ||
@@ -402,26 +401,26 @@ describe('Application', () => {
             layer.handle.name === 'xssFilter'
           )
         );
-        
+
         expect(helmetMiddleware.length).to.be.greaterThan(0);
       });
 
       it('should skip helmet configuration when feature is disabled', async () => {
         sandbox.restore();
         const { showFeatureStub } = setupDefaultStubs({ helmetEnabled: false });
-        
+
         const app = await createApp();
 
         expect(app).to.exist;
         expect(showFeatureStub).to.have.been.calledWith('helmetEnabled');
-        
+
         // Verify that x-powered-by headers are NOT disabled (Express default behavior)
         expect(app.get('x-powered-by')).to.not.be.false;
         expect(app.get('X-Powered-By')).to.not.be.false;
-        
+
         // Verify that helmet middleware is NOT configured in the middleware stack
         const middlewareStack = app._router.stack;
-        const helmetMiddleware = middlewareStack.filter((layer: any) => 
+        const helmetMiddleware = middlewareStack.filter((layer: any) =>
           layer.handle && layer.handle.name && (
             layer.handle.name.includes('helmet') ||
             layer.handle.name === 'hidePoweredBy' ||
@@ -430,14 +429,14 @@ describe('Application', () => {
             layer.handle.name === 'xssFilter'
           )
         );
-        
+
         expect(helmetMiddleware.length).to.equal(0);
       });
 
       it('should configure compression when feature is enabled', async () => {
         sandbox.restore();
         const { showFeatureStub } = setupDefaultStubs({ compressionEnabled: true });
-        
+
         const app = await createApp();
 
         expect(app).to.exist;
@@ -447,7 +446,7 @@ describe('Application', () => {
       it('should disable x-powered-by headers when helmet enabled', async () => {
         sandbox.restore();
         const { showFeatureStub } = setupDefaultStubs({ helmetEnabled: true });
-        
+
         const app = await createApp();
 
         expect(app.get('x-powered-by')).to.be.false;
@@ -467,7 +466,7 @@ describe('Application', () => {
           sandbox.restore();
           setupDefaultStubs({ helmetEnabled: true });
           app = await createApp();
-          
+
           mockReq = {};
           mockRes = {
             header: sinon.spy(),
@@ -480,8 +479,8 @@ describe('Application', () => {
 
         it('should set CORS and security headers via custom middleware', async () => {
           const middlewareStack = app._router.stack;
-          const customHeadersMiddleware = middlewareStack.find((layer: any) => 
-            layer.handle && 
+          const customHeadersMiddleware = middlewareStack.find((layer: any) =>
+            layer.handle &&
             layer.handle.toString().includes('Access-Control-Allow-Headers')
           );
 
@@ -490,18 +489,18 @@ describe('Application', () => {
           customHeadersMiddleware.handle(mockReq, mockRes, nextSpy);
 
           expect(mockRes.header).to.have.been.calledWith(
-            'Access-Control-Allow-Headers', 
+            'Access-Control-Allow-Headers',
             'Origin, X-Requested-With, Content-Type, Accept, Authorization'
           );
           expect(mockRes.header).to.have.been.calledWith('Access-Control-Allow-Credentials', 'true');
           expect(mockRes.header).to.have.been.calledWith(
-            'Access-Control-Allow-Methods', 
+            'Access-Control-Allow-Methods',
             'GET, POST, PUT, DELETE, OPTIONS'
           );
 
           expect(mockRes.setHeader).to.have.been.calledWith('X-Robots-Tag', 'noindex');
           expect(mockRes.setHeader).to.have.been.calledWith(
-            'Cache-Control', 
+            'Cache-Control',
             'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate'
           );
 
@@ -510,9 +509,9 @@ describe('Application', () => {
 
         it('should serve robots.txt with correct content and headers', async () => {
           const robotsReq = { url: '/robots.txt', method: 'GET' };
-          
+
           const middlewareStack = app._router.stack;
-          const robotsRoute = middlewareStack.find((layer: any) => 
+          const robotsRoute = middlewareStack.find((layer: any) =>
             layer.route && layer.route.path === '/robots.txt'
           );
 
@@ -526,9 +525,9 @@ describe('Application', () => {
 
         it('should serve sitemap.xml with correct content and headers', async () => {
           const sitemapReq = { url: '/sitemap.xml', method: 'GET' };
-          
+
           const middlewareStack = app._router.stack;
-          const sitemapRoute = middlewareStack.find((layer: any) => 
+          const sitemapRoute = middlewareStack.find((layer: any) =>
             layer.route && layer.route.path === '/sitemap.xml'
           );
 
@@ -546,11 +545,11 @@ describe('Application', () => {
           const appWithoutHelmet = await createApp();
 
           const middlewareStack = appWithoutHelmet._router.stack;
-          
-          const robotsRoute = middlewareStack.find((layer: any) => 
+
+          const robotsRoute = middlewareStack.find((layer: any) =>
             layer.route && layer.route.path === '/robots.txt'
           );
-          const sitemapRoute = middlewareStack.find((layer: any) => 
+          const sitemapRoute = middlewareStack.find((layer: any) =>
             layer.route && layer.route.path === '/sitemap.xml'
           );
 
@@ -564,8 +563,8 @@ describe('Application', () => {
           const appWithoutHelmet = await createApp();
 
           const middlewareStack = appWithoutHelmet._router.stack;
-          const customHeadersMiddleware = middlewareStack.find((layer: any) => 
-            layer.handle && 
+          const customHeadersMiddleware = middlewareStack.find((layer: any) =>
+            layer.handle &&
             layer.handle.toString().includes('Access-Control-Allow-Headers')
           );
 

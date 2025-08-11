@@ -167,7 +167,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...originalError,
-        data: { 
+        data: {
           ...originalError.response.data,
           code: 'generic-error'
         }
@@ -188,7 +188,7 @@ describe('NoC API', (): void => {
       const networkError = new Error('Network Error');
       const transformedError = {
         ...networkError,
-        data: { 
+        data: {
           message: 'Network Error',
           code: 'generic-error'
         }
@@ -210,7 +210,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...timeoutError,
-        data: { 
+        data: {
           message: 'timeout of 30000ms exceeded',
           code: 'generic-error'
         }
@@ -320,7 +320,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...invalidCaseError,
-        data: { 
+        data: {
           ...invalidCaseError.response.data,
           code: 'case-id-invalid'
         }
@@ -346,7 +346,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...litigantError,
-        data: { 
+        data: {
           ...litigantError.response.data,
           code: 'answers-not-identify-litigant'
         }
@@ -370,7 +370,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...serviceError,
-        data: { 
+        data: {
           ...serviceError.response.data,
           code: 'generic-error'
         }
@@ -487,7 +487,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...progressError,
-        data: { 
+        data: {
           ...progressError.response.data,
           code: 'noc-in-progress'
         }
@@ -514,7 +514,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...invalidCaseError,
-        data: { 
+        data: {
           ...invalidCaseError.response.data,
           code: 'case-id-invalid'
         }
@@ -541,7 +541,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...multipleRequestsError,
-        data: { 
+        data: {
           ...multipleRequestsError.response.data,
           code: 'more-than-one-litigant'
         }
@@ -568,7 +568,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...anotherNocError,
-        data: { 
+        data: {
           ...anotherNocError.response.data,
           code: 'noc-in-progress'
         }
@@ -592,7 +592,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...unauthorizedError,
-        data: { 
+        data: {
           ...unauthorizedError.response.data,
           code: 'generic-error'
         }
@@ -616,7 +616,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...forbiddenError,
-        data: { 
+        data: {
           ...forbiddenError.response.data,
           code: 'generic-error'
         }
@@ -638,7 +638,7 @@ describe('NoC API', (): void => {
       };
       const transformedError = {
         ...timeoutError,
-        data: { 
+        data: {
           message: 'Connection timeout',
           code: 'generic-error'
         }
@@ -665,7 +665,7 @@ describe('NoC API', (): void => {
     it('should handle very long case IDs', async () => {
       const longCaseId = '1234567890123456789012345678901234567890';
       req.query.caseId = longCaseId;
-      
+
       const mockResponse = createMockResponse(200, { questions: [] });
       handleGetStub.resolves(mockResponse);
 
@@ -677,7 +677,7 @@ describe('NoC API', (): void => {
     it('should handle special characters in case ID', async () => {
       const specialCaseId = '1234-5678-9012-3456';
       req.query.caseId = specialCaseId;
-      
+
       const mockResponse = createMockResponse(200, { questions: [] });
       handleGetStub.resolves(mockResponse);
 
@@ -689,7 +689,7 @@ describe('NoC API', (): void => {
     it('should handle multiple query parameters in case ID', async () => {
       const caseIdWithQuery = '1234567890123456&extra=param';
       req.query.caseId = caseIdWithQuery;
-      
+
       const mockResponse = createMockResponse(200, { questions: [] });
       handleGetStub.resolves(mockResponse);
 
@@ -731,7 +731,7 @@ describe('NoC API', (): void => {
         answers: []
       };
       req.body = complexRequest;
-      
+
       const mockResponse = createMockResponse(200, { status: 'success' });
       handlePostStub.resolves(mockResponse);
 

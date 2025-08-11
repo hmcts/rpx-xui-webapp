@@ -23,7 +23,7 @@ describe('Case Flag', () => {
     req = mockReq();
     res = mockRes();
     next = sandbox.stub();
-    
+
     handleGetStub = sandbox.stub(crudService, 'handleGet');
   });
 
@@ -35,12 +35,12 @@ describe('Case Flag', () => {
     it('should successfully fetch case flag reference data with valid serviceId', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 200,
         data: CASE_FLAG_REFERENCE_VALUES
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -59,12 +59,12 @@ describe('Case Flag', () => {
     it('should handle empty response data', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 200,
         data: []
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -76,12 +76,12 @@ describe('Case Flag', () => {
 
     it('should handle missing serviceId in query parameters', async () => {
       req.query = {};
-      
+
       const mockResponse = {
         status: 200,
         data: CASE_FLAG_REFERENCE_VALUES
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -98,12 +98,12 @@ describe('Case Flag', () => {
 
     it('should handle empty serviceId in query parameters', async () => {
       req.query = { serviceId: '' };
-      
+
       const mockResponse = {
         status: 200,
         data: CASE_FLAG_REFERENCE_VALUES
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -121,12 +121,12 @@ describe('Case Flag', () => {
     it('should handle 404 not found response', async () => {
       const serviceId = 'INVALID';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 404,
         data: { error: 'Service not found' }
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -139,12 +139,12 @@ describe('Case Flag', () => {
     it('should handle 400 bad request response', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 400,
         data: { error: 'Bad Request', message: 'Invalid service ID format' }
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -157,12 +157,12 @@ describe('Case Flag', () => {
     it('should handle 500 internal server error response', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 500,
         data: { error: 'Internal Server Error' }
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -175,7 +175,7 @@ describe('Case Flag', () => {
     it('should handle errors thrown by handleGet and call next', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const error = new Error('Network error');
       handleGetStub.rejects(error);
 
@@ -186,16 +186,15 @@ describe('Case Flag', () => {
       expect(res.send).to.not.have.been.called;
     });
 
-
     it('should construct correct URL with special characters in serviceId', async () => {
       const serviceId = 'AAA7-TEST&SERVICE';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 200,
         data: CASE_FLAG_REFERENCE_VALUES
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -212,12 +211,12 @@ describe('Case Flag', () => {
     it('should handle null data in response', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 200,
         data: null
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -230,12 +229,12 @@ describe('Case Flag', () => {
     it('should handle undefined data in response', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const mockResponse = {
         status: 200,
         data: undefined
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -247,12 +246,12 @@ describe('Case Flag', () => {
 
     it('should handle multiple serviceIds in query parameters', async () => {
       req.query = { serviceId: ['AAA7', 'BBB8'] };
-      
+
       const mockResponse = {
         status: 200,
         data: CASE_FLAG_REFERENCE_VALUES
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -270,17 +269,17 @@ describe('Case Flag', () => {
     it('should handle partial response data structure', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const partialData = [{
         name: 'Partial Flag',
         flagCode: 'PF001'
       }];
-      
+
       const mockResponse = {
         status: 200,
         data: partialData
       };
-      
+
       handleGetStub.resolves(mockResponse);
 
       await getCaseFlagRefData(req, res, next);
@@ -293,7 +292,7 @@ describe('Case Flag', () => {
     it('should handle timeout errors gracefully', async () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
-      
+
       const timeoutError = new Error('Request timeout');
       timeoutError.name = 'TimeoutError';
       handleGetStub.rejects(timeoutError);

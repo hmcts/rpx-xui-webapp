@@ -90,7 +90,7 @@ describe('Menu Configuration', () => {
 
       it('should not modify the original base config', () => {
         const originalBaseConfig = JSON.parse(JSON.stringify(mockBaseConfig));
-        
+
         setupMenuConfig('prod');
 
         expect(baseConfigModule.baseConfig).to.deep.equal(originalBaseConfig);
@@ -109,11 +109,11 @@ describe('Menu Configuration', () => {
       it('should merge roles for existing items', () => {
         const result = setupMenuConfig('aat');
 
-        const myWorkItem = result['(judge)|(judiciary)|(panelmember)'].find(item => item.text === 'My work');
+        const myWorkItem = result['(judge)|(judiciary)|(panelmember)'].find((item) => item.text === 'My work');
         expect(myWorkItem.roles).to.include.members([
-          'caseworker-civil', 
-          'caseworker-ia-iacjudge', 
-          'caseworker-sscs-judge', 
+          'caseworker-civil',
+          'caseworker-ia-iacjudge',
+          'caseworker-sscs-judge',
           'caseworker-sscs-panelmember'
         ]);
       });
@@ -121,7 +121,7 @@ describe('Menu Configuration', () => {
       it('should add new items that do not exist in base config', () => {
         const result = setupMenuConfig('aat');
 
-        const nocItem = result['(pui-case-manager)'].find(item => item.text === 'Notice of change');
+        const nocItem = result['(pui-case-manager)'].find((item) => item.text === 'Notice of change');
         expect(nocItem).to.exist;
         expect(nocItem.roles).to.deep.equal(['caseworker-civil', 'caseworker-civil-solictor']);
       });
@@ -136,7 +136,7 @@ describe('Menu Configuration', () => {
       it('should preserve original base config structure', () => {
         const result = setupMenuConfig('aat');
 
-        const myWorkItem = result['(judge)|(judiciary)|(panelmember)'].find(item => item.text === 'My work');
+        const myWorkItem = result['(judge)|(judiciary)|(panelmember)'].find((item) => item.text === 'My work');
         expect(myWorkItem.href).to.equal('/work/my-work/list');
         expect(myWorkItem.active).to.equal(true);
       });
@@ -187,7 +187,7 @@ describe('Menu Configuration', () => {
     describe('edge cases', () => {
       it('should handle empty base config', () => {
         sandbox.stub(baseConfigModule, 'baseConfig').value({});
-        
+
         const result = setupMenuConfig('aat');
 
         expect(result).to.deep.equal(mockAatDifferences);
@@ -195,7 +195,7 @@ describe('Menu Configuration', () => {
 
       it('should handle empty aat differences', () => {
         sandbox.stub(aatDiffsModule, 'aatDifferences').value({});
-        
+
         const result = setupMenuConfig('aat');
 
         // Should still apply role regex changes but no merging
@@ -208,7 +208,7 @@ describe('Menu Configuration', () => {
           '(admin)': [{ text: 'Admin panel', roles: ['admin'] }]
         };
         sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfigWithoutJudge);
-        
+
         const result = setupMenuConfig('aat');
 
         expect(result).to.have.property('(admin)');
@@ -239,7 +239,7 @@ describe('Menu Configuration', () => {
       // Test through setupMenuConfig since replaceRolesRegex is internal
       sandbox.stub(baseConfigModule, 'baseConfig').value(testConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value({});
-      
+
       const result = setupMenuConfig('aat');
 
       expect(result).to.have.property('(judge)|(judiciary)|(panelmember)');
@@ -254,7 +254,7 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(testConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value({});
-      
+
       const result = setupMenuConfig('aat');
 
       expect(result).to.have.property('existing-key');
@@ -286,10 +286,10 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
-      const mergedItem = result['test-key'].find(item => item.text === 'My work');
+      const mergedItem = result['test-key'].find((item) => item.text === 'My work');
       expect(mergedItem.roles).to.include.members(['role1', 'role2', 'role3', 'role4']);
       expect(mergedItem.href).to.equal('/work');
       expect(mergedItem.active).to.equal(true);
@@ -317,11 +317,11 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
       expect(result['test-key']).to.have.length(2);
-      expect(result['test-key'].find(item => item.text === 'New item')).to.exist;
+      expect(result['test-key'].find((item) => item.text === 'New item')).to.exist;
     });
 
     it('should create new keys when they do not exist in base config', () => {
@@ -335,7 +335,7 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
       expect(result).to.have.property('existing-key');
@@ -365,10 +365,10 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
-      const mergedItem = result['test-key'].find(item => item.text === 'My work');
+      const mergedItem = result['test-key'].find((item) => item.text === 'My work');
       expect(mergedItem.roles).to.have.length(3);
       expect(mergedItem.roles).to.include.members(['role1', 'role2', 'role3']);
     });
@@ -395,11 +395,11 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
       expect(result['test-key']).to.have.length(2);
-      expect(result['test-key'].find(item => item.text === 'No roles item')).to.exist;
+      expect(result['test-key'].find((item) => item.text === 'No roles item')).to.exist;
     });
 
     it('should handle base items without roles property', () => {
@@ -424,7 +424,7 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
       // Should add new item since base item has no roles property
@@ -447,7 +447,7 @@ describe('Menu Configuration', () => {
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
       sandbox.stub(aatDiffsModule, 'aatDifferences').value(aatDiffs);
-      
+
       const result = setupMenuConfig('aat');
 
       expect(result['test-key']).to.have.length(1);

@@ -206,7 +206,7 @@ describe('Proxy Middleware', () => {
 
     it('should register with different source paths', () => {
       config.source = '/api/different';
-      
+
       applyProxy(mockApp, config);
 
       expect(mockApp.use).to.have.been.calledWith(

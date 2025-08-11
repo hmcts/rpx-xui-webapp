@@ -71,7 +71,7 @@ describe('Challenged Access', (): void => {
       });
       res = mockRes();
       getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_API_PATH).returns('http://role-assignment-api');
-      setHeadersStub.returns({ 
+      setHeadersStub.returns({
         'content-type': 'application/json',
         'accept': 'application/json',
         'authorization': 'Bearer token'
@@ -114,7 +114,7 @@ describe('Challenged Access', (): void => {
       expect(httpPostStub).to.have.been.calledOnce;
       expect(httpPostStub.firstCall.args[0]).to.equal('http://role-assignment-api/am/role-assignments');
       expect(httpPostStub.firstCall.args[1]).to.deep.equal(req.body);
-      
+
       // Verify accept header was removed
       const headers = httpPostStub.firstCall.args[2].headers;
       expect(headers).to.not.have.property('accept');
@@ -266,7 +266,7 @@ describe('Challenged Access', (): void => {
       });
       res = mockRes();
       getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_API_PATH).returns('http://role-assignment-api');
-      setHeadersStub.returns({ 
+      setHeadersStub.returns({
         'content-type': 'application/json',
         'accept': 'application/json',
         'authorization': 'Bearer token'
@@ -307,7 +307,7 @@ describe('Challenged Access', (): void => {
 
       // Verify update call
       expect(httpPostStub.secondCall.args[0]).to.equal('http://role-assignment-api/am/role-assignments');
-      
+
       const updatePayload = httpPostStub.secondCall.args[1];
       expect(updatePayload.roleRequest.assignerId).to.equal('user-123');
       expect(updatePayload.roleRequest.process).to.equal('challenged-access');
@@ -363,7 +363,7 @@ describe('Challenged Access', (): void => {
 
       // Verify query uses uid
       expect(httpPostStub.firstCall.args[1].actorId).to.deep.equal(['user-uid-456']);
-      
+
       // Verify update uses uid
       const updatePayload = httpPostStub.secondCall.args[1];
       expect(updatePayload.roleRequest.assignerId).to.equal('user-uid-456');
@@ -510,7 +510,7 @@ describe('Challenged Access', (): void => {
 
       const updatePayload = httpPostStub.secondCall.args[1];
       const updatedRole = updatePayload.requestedRoles[0];
-      
+
       expect(updatedRole.attributes).to.deep.equal({
         caseId: 'case-123',
         jurisdiction: 'IA',
@@ -556,7 +556,7 @@ describe('Challenged Access', (): void => {
 
     it('should use current timestamp for notes', async () => {
       const before = new Date();
-      
+
       const queryResponse = {
         status: 200,
         data: {

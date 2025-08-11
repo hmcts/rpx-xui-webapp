@@ -40,7 +40,7 @@ describe('NoC Service', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    
+
     // Mock request object
     req = mockReq({
       headers: {
@@ -73,7 +73,7 @@ describe('NoC Service', () => {
     // Mock HTTP methods
     httpGetStub = sandbox.stub(http, 'get');
     httpPostStub = sandbox.stub(http, 'post');
-    
+
     // Mock setHeaders utility
     setHeadersStub = sandbox.stub(proxy, 'setHeaders').returns(mockHeaders);
   });
@@ -84,7 +84,7 @@ describe('NoC Service', () => {
 
   describe('handleGet', () => {
     const mockNoCPath = '/noc/noc-questions?case_id=1234567890123456';
-    
+
     const mockNoCQuestionsResponse = {
       questions: [
         {
@@ -346,7 +346,7 @@ describe('NoC Service', () => {
 
   describe('handlePost', () => {
     const mockNoCPath = '/noc/verify-noc-answers';
-    
+
     const mockRequestBody = {
       case_id: '1234567890123456',
       answers: [
@@ -689,7 +689,7 @@ describe('NoC Service', () => {
       const path2 = '/noc/questions2';
       const mockResponse1 = createMockAxiosResponse(200, { questions: ['q1'] });
       const mockResponse2 = createMockAxiosResponse(200, { questions: ['q2'] });
-      
+
       httpGetStub.onFirstCall().resolves(mockResponse1);
       httpGetStub.onSecondCall().resolves(mockResponse2);
 
@@ -708,7 +708,7 @@ describe('NoC Service', () => {
       const body2 = { case_id: '222', answers: [] };
       const mockResponse1 = createMockAxiosResponse(200, { result: 'success1' });
       const mockResponse2 = createMockAxiosResponse(200, { result: 'success2' });
-      
+
       httpPostStub.onFirstCall().resolves(mockResponse1);
       httpPostStub.onSecondCall().resolves(mockResponse2);
 
@@ -757,7 +757,7 @@ describe('NoC Service', () => {
           answers: Array.from({ length: 10 }, (_, j) => `Answer ${j}`.repeat(50))
         }))
       };
-      
+
       const mockResponse = createMockAxiosResponse(200, largeResponseData);
       httpGetStub.resolves(mockResponse);
 
@@ -765,7 +765,7 @@ describe('NoC Service', () => {
 
       expect(result.status).to.equal(200);
       expect(result.data.questions).to.have.length(1000);
-      
+
       // Simulate cleanup
       delete result.data;
       expect(result.data).to.be.undefined;
@@ -776,7 +776,7 @@ describe('NoC Service', () => {
         case_id: '1234567890123456',
         answers: Array.from({ length: 1000 }, (_, i) => ({
           question_id: `question_${i}`,
-          value: `Very long answer that repeats many times `.repeat(50)
+          value: 'Very long answer that repeats many times '.repeat(50)
         })),
         metadata: {
           additionalData: Array.from({ length: 500 }, (_, i) => ({

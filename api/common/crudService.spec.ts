@@ -29,25 +29,25 @@ describe('crudService', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-    
+
     mockLogger = {
       info: sandbox.stub(),
       error: sandbox.stub(),
       warn: sandbox.stub(),
       debug: sandbox.stub()
     };
-    
+
     // Stub log4jui.getLogger BEFORE importing the module to ensure our mock is used
     sandbox.stub(log4jui, 'getLogger').returns(mockLogger);
-    
+
     sandbox.stub(proxyLib, 'setHeaders').returns({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer token'
     });
-    
+
     // Clear the module cache to ensure fresh import
     delete require.cache[require.resolve('./crudService')];
-    
+
     // Re-import the module after mocks are set up
     crudService = require('./crudService');
   });
@@ -69,9 +69,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'get').resolves(res);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.handleGet(crudPath, req, next);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle get:', crudPath);
     });
@@ -85,9 +85,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.handleGet(crudPath, req, next);
-      
+
       expect(mockLogger.error).to.have.been.calledOnce;
       expect(mockLogger.error).to.have.been.calledWith(
         'handleGet: 404 /crud/12345',
@@ -106,9 +106,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.handleGet(crudPath, req, next);
-      
+
       expect(mockLogger.error).to.have.been.calledOnce;
       expect(mockLogger.error.args[0][0]).to.include('handleGet: undefined');
       expect(next).to.have.been.calledWith(error);
@@ -126,9 +126,9 @@ describe('crudService', () => {
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       await crudService.handlePost(crudPath, dummyData, req);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handlePost:', crudPath);
     });
@@ -136,9 +136,9 @@ describe('crudService', () => {
     it('should pass headers from setHeaders', async () => {
       const postStub = sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       await crudService.handlePost(crudPath, dummyData, req);
-      
+
       expect(postStub).to.have.been.calledWith(crudPath, dummyData, {
         headers: {
           'Content-Type': 'application/json',
@@ -161,9 +161,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'put').resolves(res);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.handlePut(crudPath, dummyData, req, next);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle put:', crudPath);
     });
@@ -173,9 +173,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.handlePut(crudPath, dummyData, req, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -194,9 +194,9 @@ describe('crudService', () => {
       const crudPath = '/crud/12345';
       const next = sinon.stub();
       const body = { id: '123' };
-      
+
       await crudService.handleDelete(crudPath, body, req, next);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle delete:', crudPath);
     });
@@ -206,9 +206,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.handleDelete(crudPath, {}, req, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -218,9 +218,9 @@ describe('crudService', () => {
       const getStub = sandbox.stub(http, 'get').resolves(res);
       const crudPath = '/crud/12345';
       const customHeaders = { 'X-Custom': 'header' };
-      
+
       const response = await crudService.sendGet(crudPath, req, customHeaders);
-      
+
       expect(response.data).to.equal('ok');
       expect(getStub).to.have.been.calledWith(crudPath, {
         headers: {
@@ -234,9 +234,9 @@ describe('crudService', () => {
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'get').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       await crudService.sendGet(crudPath, req);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('sendGet to:', crudPath);
     });
@@ -249,7 +249,7 @@ describe('crudService', () => {
       };
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
-      
+
       try {
         await crudService.sendGet(crudPath, req);
         expect.fail('Should have thrown error');
@@ -269,18 +269,18 @@ describe('crudService', () => {
     it('should make a post request', async () => {
       sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       const response = await crudService.sendPost(crudPath, dummyData, req);
-      
+
       expect(response.data).to.equal('ok');
     });
 
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       await crudService.sendPost(crudPath, dummyData, req);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('sendPost to:', crudPath);
     });
@@ -294,9 +294,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345';
       const next = sinon.stub();
-      
+
       await crudService.sendPost(crudPath, dummyData, req, next);
-      
+
       expect(mockLogger.error).to.have.been.calledOnce;
       expect(mockLogger.error).to.have.been.calledWith(
         'sendPost: 400 /crud/12345',
@@ -314,7 +314,7 @@ describe('crudService', () => {
       };
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345';
-      
+
       try {
         await crudService.sendPost(crudPath, dummyData, req);
         expect.fail('Should have thrown error');
@@ -330,9 +330,9 @@ describe('crudService', () => {
       const postStub = sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345/blob';
       const next = sinon.stub();
-      
+
       const response = await crudService.handlePostBlob(crudPath, dummyData, req, next);
-      
+
       expect(response.data).to.equal('ok');
       expect(postStub).to.have.been.calledWith(crudPath, dummyData, {
         headers: {
@@ -347,9 +347,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'post').resolves(res);
       const crudPath = '/crud/12345/blob';
       const next = sinon.stub();
-      
+
       await crudService.handlePostBlob(crudPath, dummyData, req, next);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle post blob:', crudPath);
     });
@@ -359,9 +359,9 @@ describe('crudService', () => {
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345/blob';
       const next = sinon.stub();
-      
+
       await crudService.handlePostBlob(crudPath, dummyData, req, next);
-      
+
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -370,18 +370,18 @@ describe('crudService', () => {
     it('should make a put request', async () => {
       sandbox.stub(http, 'put').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       const response = await crudService.sendPut(crudPath, dummyData, req);
-      
+
       expect(response.data).to.equal('ok');
     });
 
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'put').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       await crudService.sendPut(crudPath, dummyData, req);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('send put request to:', crudPath);
     });
@@ -394,7 +394,7 @@ describe('crudService', () => {
       };
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
-      
+
       try {
         await crudService.sendPut(crudPath, dummyData, req);
         expect.fail('Should have thrown error');
@@ -417,7 +417,7 @@ describe('crudService', () => {
       };
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
-      
+
       try {
         await crudService.sendPut(crudPath, dummyData, req);
         expect.fail('Should have thrown error');
@@ -427,7 +427,7 @@ describe('crudService', () => {
         expect(mockLogger.error).to.have.been.calledWith(
           422,
           'Unprocessable Entity',
-          undefined  // JSON.stringify(undefined) returns undefined (not a string)
+          undefined // JSON.stringify(undefined) returns undefined (not a string)
         );
       }
     });
@@ -438,16 +438,16 @@ describe('crudService', () => {
       const deleteStub = sandbox.stub(http, 'delete').resolves(res);
       const crudPath = '/crud/12345';
       const body = { id: '12345' };
-      
+
       // Mock setHeaders to return headers with accept
       (proxyLib.setHeaders as sinon.SinonStub).returns({
         'Content-Type': 'application/json',
         'Authorization': 'Bearer token',
         'accept': 'application/json'
       });
-      
+
       const response = await crudService.sendDelete(crudPath, body, req);
-      
+
       expect(response.data).to.equal('ok');
       expect(deleteStub).to.have.been.calledWith(crudPath, {
         data: body,
@@ -461,9 +461,9 @@ describe('crudService', () => {
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'delete').resolves(res);
       const crudPath = '/crud/12345';
-      
+
       await crudService.sendDelete(crudPath, {}, req);
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('send delete request to:', crudPath);
     });
@@ -476,7 +476,7 @@ describe('crudService', () => {
       };
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
-      
+
       try {
         await crudService.sendDelete(crudPath, {}, req);
         expect.fail('Should have thrown error');
@@ -499,7 +499,7 @@ describe('crudService', () => {
       };
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
-      
+
       try {
         await crudService.sendDelete(crudPath, {}, req);
         expect.fail('Should have thrown error');

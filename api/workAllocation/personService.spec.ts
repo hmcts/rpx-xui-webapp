@@ -81,7 +81,7 @@ describe('Person Service', () => {
       });
       getServiceRefDataMappingListStub.returns(mockServiceRefDataMapping);
       setHeadersStub.returns({ 'content-type': 'application/json' });
-      
+
       // Make sure req.headers is initialized
       req.headers = req.headers || {};
     });
@@ -164,7 +164,7 @@ describe('Person Service', () => {
         expect(setHeadersStub).to.have.been.calledWith(req);
         // Should call API 4 times (2 service codes for IA + 2 service codes for CIVIL)
         expect(httpPostStub).to.have.callCount(4);
-        
+
         // Verify the calls contain the correct parameters
         expect(httpPostStub.firstCall.args[1]).to.deep.equal({
           searchString: 'John',
@@ -199,7 +199,7 @@ describe('Person Service', () => {
 
         // Should call API 4 times (2 service codes for IA + 2 service codes for CIVIL)
         expect(httpPostStub).to.have.callCount(4);
-        
+
         // Verify service codes are used correctly
         const firstCall = httpPostStub.getCall(0);
         const secondCall = httpPostStub.getCall(1);
@@ -313,7 +313,7 @@ describe('Person Service', () => {
 
         expect(res.status).to.have.been.calledWith(200);
         expect(res.send).to.have.been.called;
-        
+
         // Check that the response contains the transformed data
         const responseData = res.send.getCall(0).args[0];
         expect(responseData).to.be.an('array');

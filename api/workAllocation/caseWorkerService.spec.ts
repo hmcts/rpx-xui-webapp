@@ -49,9 +49,9 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/users';
       const req = mockReq();
-      
+
       const data = await handleUsersGet(path, req);
-      
+
       expect(data).to.deep.equal(mockUsers);
       expect(http.get).to.have.been.calledOnce;
       expect(http.get).to.have.been.calledWith(path, { headers: sinon.match.object });
@@ -62,7 +62,7 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').rejects(error);
       const path = '/users';
       const req = mockReq();
-      
+
       await expect(handleUsersGet(path, req)).to.be.rejectedWith(error);
     });
   });
@@ -74,9 +74,9 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/new-users';
       const headers = { 'Authorization': 'Bearer custom-token' };
-      
+
       const data = await handleNewUsersGet(path, headers);
-      
+
       expect(data).to.deep.equal(mockUsers);
       expect(http.get).to.have.been.calledOnce;
       expect(http.get).to.have.been.calledWith(path, { headers });
@@ -87,9 +87,9 @@ describe('CaseWorker Service', () => {
       const mockResponse = { status: 200, data: mockUsers };
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/new-users';
-      
+
       const data = await handleNewUsersGet(path, null);
-      
+
       expect(data).to.deep.equal(mockUsers);
       expect(http.get).to.have.been.calledWith(path, { headers: null });
     });
@@ -151,7 +151,7 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').rejects(error);
       const path = '/getCaseWorkers';
       const req = mockReq();
-      
+
       await expect(handleCaseWorkerGetAll(path, req)).to.be.rejectedWith(error);
     });
 
@@ -160,7 +160,7 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').rejects(error);
       const path = '/getCaseWorkersForLocation';
       const req = mockReq();
-      
+
       await expect(handleCaseWorkerForLocation(path, req)).to.be.rejectedWith(error);
     });
 
@@ -169,7 +169,7 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').rejects(error);
       const path = '/getCaseWorkersForService';
       const req = mockReq();
-      
+
       await expect(handleCaseWorkerForService(path, req)).to.be.rejectedWith(error);
     });
 
@@ -178,7 +178,7 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').rejects(error);
       const path = '/handleCaseWorkerForLocationAndService';
       const req = mockReq();
-      
+
       await expect(handleCaseWorkerForLocationAndService(path, req)).to.be.rejectedWith(error);
     });
 
@@ -187,7 +187,7 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'get').rejects(error);
       const path = '/handleCaseWorkerDetails';
       const req = mockReq();
-      
+
       await expect(handleCaseWorkerDetails(path, req)).to.be.rejectedWith(error);
     });
   });
@@ -199,9 +199,9 @@ describe('CaseWorker Service', () => {
       const path = '/search';
       const payload = { query: 'test' };
       const req = mockReq();
-      
+
       const response = await handlePostSearch(path, payload, req);
-      
+
       expect(response).to.deep.equal(mockResponse);
       expect(http.post).to.have.been.calledOnce;
       expect(http.post).to.have.been.calledWith(path, payload, { headers: sinon.match.object });
@@ -213,9 +213,9 @@ describe('CaseWorker Service', () => {
       const path = '/search';
       const payload = 'string payload';
       const req = mockReq();
-      
+
       const response = await handlePostSearch(path, payload, req);
-      
+
       expect(response).to.deep.equal(mockResponse);
       expect(http.post).to.have.been.calledWith(path, payload, { headers: sinon.match.object });
     });
@@ -226,7 +226,7 @@ describe('CaseWorker Service', () => {
       const path = '/search';
       const payload = { query: 'test' };
       const req = mockReq();
-      
+
       await expect(handlePostSearch(path, payload, req)).to.be.rejectedWith(error);
     });
   });
@@ -243,9 +243,9 @@ describe('CaseWorker Service', () => {
       const path = '/role-assignments';
       const payload = { jurisdiction: 'SSCS' };
       const req = mockReq();
-      
+
       const response = await handlePostRoleAssignments(path, payload, req);
-      
+
       expect(response).to.deep.equal(mockResponse);
       expect(http.post).to.have.been.calledOnce;
       const callArgs = (http.post as sinon.SinonStub).getCall(0).args;
@@ -267,9 +267,9 @@ describe('CaseWorker Service', () => {
       const path = '/role-assignments';
       const payload = { jurisdiction: 'SSCS' };
       const req = mockReq();
-      
+
       const response = await handlePostRoleAssignments(path, payload, req);
-      
+
       // Verify the function completes successfully even with MAX_RECORDS
       expect(response).to.deep.equal(mockResponse);
       expect(response.data.roleAssignmentResponse).to.have.length(100000);
@@ -286,9 +286,9 @@ describe('CaseWorker Service', () => {
       const path = '/role-assignments';
       const payload = {};
       const req = mockReq();
-      
+
       const response = await handlePostRoleAssignments(path, payload, req);
-      
+
       expect(response.data.roleAssignmentResponse).to.be.empty;
     });
   });
@@ -305,9 +305,9 @@ describe('CaseWorker Service', () => {
       const path = '/role-assignments';
       const payload = { jurisdiction: 'SSCS' };
       const headers = { 'Authorization': 'Bearer token' };
-      
+
       const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
-      
+
       expect(response).to.deep.equal(mockResponse);
       expect(http.post).to.have.been.calledWith(path, payload, { headers });
     });
@@ -324,9 +324,9 @@ describe('CaseWorker Service', () => {
       const path = '/role-assignments';
       const payload = { jurisdiction: 'SSCS' };
       const headers = {};
-      
+
       const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
-      
+
       // Verify the function completes successfully even with MAX_RECORDS
       expect(response).to.deep.equal(mockResponse);
       expect(response.data.roleAssignmentResponse).to.have.length(100000);
@@ -336,13 +336,13 @@ describe('CaseWorker Service', () => {
   describe('handleCaseWorkersForServicesPost', () => {
     it('should make multiple post requests for each payload', async () => {
       const payloads = [
-        { 
+        {
           attributes: { jurisdiction: ['SSCS'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
           validAt: new Date().toISOString()
         },
-        { 
+        {
           attributes: { jurisdiction: ['IA'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
@@ -358,9 +358,9 @@ describe('CaseWorker Service', () => {
       httpStub.onCall(1).resolves(mockResponses[1]);
       const path = '/caseworkers';
       const req = mockReq();
-      
+
       const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-      
+
       expect(result).to.have.length(2);
       expect(result[0]).to.deep.equal({ jurisdiction: 'SSCS', data: mockResponses[0].data });
       expect(result[1]).to.deep.equal({ jurisdiction: 'IA', data: mockResponses[1].data });
@@ -371,15 +371,15 @@ describe('CaseWorker Service', () => {
       const payloads: any[] = [];
       const path = '/caseworkers';
       const req = mockReq();
-      
+
       const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-      
+
       expect(result).to.be.empty;
     });
 
     it('should handle response with MAX_RECORDS (100000 items) for any service', async () => {
       const payloads = [
-        { 
+        {
           attributes: { jurisdiction: ['SSCS'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
@@ -394,9 +394,9 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/caseworkers';
       const req = mockReq();
-      
+
       const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-      
+
       // Verify the function completes successfully even with MAX_RECORDS
       expect(result).to.have.length(1);
       expect(result[0].jurisdiction).to.equal('SSCS');
@@ -405,13 +405,13 @@ describe('CaseWorker Service', () => {
 
     it('should handle post request error in loop', async () => {
       const payloads = [
-        { 
+        {
           attributes: { jurisdiction: ['SSCS'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
           validAt: new Date().toISOString()
         },
-        { 
+        {
           attributes: { jurisdiction: ['IA'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
@@ -423,7 +423,7 @@ describe('CaseWorker Service', () => {
       httpStub.onCall(1).rejects(new Error('Service error'));
       const path = '/caseworkers';
       const req = mockReq();
-      
+
       await expect(handleCaseWorkersForServicesPost(path, payloads, req)).to.be.rejectedWith('Service error');
     });
   });
@@ -443,9 +443,9 @@ describe('CaseWorker Service', () => {
       httpStub.onCall(1).resolves(mockResponses[1]);
       const path = '/caseworkers/ref-data';
       const req = mockReq();
-      
+
       const result = await handlePostCaseWorkersRefData(path, userIdsByJurisdiction, req);
-      
+
       expect(result).to.have.length(2);
       expect(result[0]).to.deep.equal({ jurisdiction: 'SSCS', data: mockResponses[0].data });
       expect(result[1]).to.deep.equal({ jurisdiction: 'IA', data: mockResponses[1].data });
@@ -464,9 +464,9 @@ describe('CaseWorker Service', () => {
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/caseworkers/ref-data';
       const req = mockReq();
-      
+
       const result = await handlePostCaseWorkersRefData(path, userIdsByJurisdiction, req);
-      
+
       expect(result).to.have.length(1);
       expect(result[0].jurisdiction).to.equal('SSCS');
       expect(http.post).to.have.been.calledOnce;
@@ -480,9 +480,9 @@ describe('CaseWorker Service', () => {
       const path = '/caseworkers/ref-data';
       const req = mockReq();
       sandbox.stub(http, 'post');
-      
+
       const result = await handlePostCaseWorkersRefData(path, userIdsByJurisdiction, req);
-      
+
       expect(result).to.be.empty;
       expect(http.post).to.not.have.been.called;
     });
@@ -495,9 +495,9 @@ describe('CaseWorker Service', () => {
       const path = '/judicial-workers/ref-data';
       const userIds = ['user1', 'user2'];
       const req = mockReq();
-      
+
       const response = await handlePostJudicialWorkersRefData(path, userIds, req);
-      
+
       expect(response).to.deep.equal(mockResponse);
       expect(http.post).to.have.been.calledOnce;
       expect(http.post).to.have.been.calledWith(path, { userIds }, { headers: sinon.match.object });
@@ -509,9 +509,9 @@ describe('CaseWorker Service', () => {
       const path = '/judicial-workers/ref-data';
       const userIds = [];
       const req = mockReq();
-      
+
       const response = await handlePostJudicialWorkersRefData(path, userIds, req);
-      
+
       expect(response.data).to.be.empty;
       expect(http.post).to.have.been.calledWith(path, { userIds: [] }, { headers: sinon.match.object });
     });
@@ -522,9 +522,9 @@ describe('CaseWorker Service', () => {
       const path = '/judicial-workers/ref-data';
       const userIds = null;
       const req = mockReq();
-      
+
       await handlePostJudicialWorkersRefData(path, userIds, req);
-      
+
       expect(http.post).to.have.been.calledWith(path, { userIds: null }, { headers: sinon.match.object });
     });
   });
@@ -538,9 +538,9 @@ describe('CaseWorker Service', () => {
           { actorId: 'user3', roleId: 'role3' }
         ]
       };
-      
+
       const userIds = getUserIdsFromRoleApiResponse(response);
-      
+
       expect(userIds).to.deep.equal(['user1', 'user2', 'user3']);
     });
 
@@ -552,45 +552,45 @@ describe('CaseWorker Service', () => {
           { actorId: 'user2', roleId: 'role3' }
         ]
       };
-      
+
       const userIds = getUserIdsFromRoleApiResponse(response);
-      
+
       expect(userIds).to.deep.equal(['user1', 'user1', 'user2']);
     });
 
     it('should return empty array for null response', () => {
       const userIds = getUserIdsFromRoleApiResponse(null);
-      
+
       expect(userIds).to.be.empty;
     });
 
     it('should return empty array for undefined response', () => {
       const userIds = getUserIdsFromRoleApiResponse(undefined);
-      
+
       expect(userIds).to.be.empty;
     });
 
     it('should return empty array when roleAssignmentResponse is missing', () => {
       const response = { someOtherField: 'value' };
-      
+
       const userIds = getUserIdsFromRoleApiResponse(response);
-      
+
       expect(userIds).to.be.empty;
     });
 
     it('should return empty array when roleAssignmentResponse is null', () => {
       const response = { roleAssignmentResponse: null };
-      
+
       const userIds = getUserIdsFromRoleApiResponse(response);
-      
+
       expect(userIds).to.be.empty;
     });
 
     it('should handle empty roleAssignmentResponse', () => {
       const response = { roleAssignmentResponse: [] };
-      
+
       const userIds = getUserIdsFromRoleApiResponse(response);
-      
+
       expect(userIds).to.be.empty;
     });
   });
@@ -616,9 +616,9 @@ describe('CaseWorker Service', () => {
           }
         }
       ];
-      
+
       const result = getUserIdsFromJurisdictionRoleResponse(response);
-      
+
       expect(result).to.have.length(2);
       expect(result[0]).to.deep.equal({ jurisdiction: 'SSCS', userIds: ['user1', 'user2'] });
       expect(result[1]).to.deep.equal({ jurisdiction: 'IA', userIds: ['user3'] });
@@ -626,9 +626,9 @@ describe('CaseWorker Service', () => {
 
     it('should handle empty response array', () => {
       const response = [];
-      
+
       const result = getUserIdsFromJurisdictionRoleResponse(response);
-      
+
       expect(result).to.be.empty;
     });
 
@@ -641,22 +641,21 @@ describe('CaseWorker Service', () => {
           }
         }
       ];
-      
+
       const result = getUserIdsFromJurisdictionRoleResponse(response);
-      
+
       expect(result).to.have.length(1);
       expect(result[0]).to.deep.equal({ jurisdiction: 'SSCS', userIds: [] });
     });
 
     it('should handle null or undefined data fields', () => {
-
       const response = [
         {
           jurisdiction: 'SSCS',
           data: null
         }
       ];
-      
+
       expect(() => getUserIdsFromJurisdictionRoleResponse(response)).to.throw();
     });
   });

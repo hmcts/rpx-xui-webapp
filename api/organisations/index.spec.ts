@@ -414,7 +414,7 @@ describe('Organisations API', () => {
       const testError = new Error('Callback error');
 
       getConfigValueStub.withArgs(SERVICES_PRD_API_URL).returns(mockPrdApiUrl);
-      
+
       handleGetStub.callsFake((path, req, errorCallback) => {
         errorCallback(testError);
         return Promise.reject(testError);

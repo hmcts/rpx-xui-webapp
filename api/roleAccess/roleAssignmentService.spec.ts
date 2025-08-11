@@ -6,9 +6,9 @@ import * as config from '../configuration';
 import * as proxyLib from '../lib/proxy';
 import * as utils from '../utils';
 import * as roleUtils from './utils';
-import { 
-  getAllRoles, 
-  getSubstantiveRoles, 
+import {
+  getAllRoles,
+  getSubstantiveRoles,
   getPossibleRoles,
   getRoleByAssignmentId,
   getRolesByCaseId
@@ -379,7 +379,7 @@ describe('roleAssignmentService', () => {
       const result = await getSubstantiveRoles(req);
 
       expect(result).to.have.lengthOf(2);
-      expect(result.every(role => role.roleId !== 'admin')).to.be.true;
+      expect(result.every((role) => role.roleId !== 'admin')).to.be.true;
     });
 
     it('should filter roles without CASE roleType', async () => {

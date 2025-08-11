@@ -30,29 +30,29 @@ describe('WA Supported Jurisdictions', () => {
     delete require.cache[require.resolve('../configuration')];
     delete require.cache[require.resolve('../utils')];
     delete require.cache[require.resolve('../configuration/references')];
-    
+
     sandbox = sinon.createSandbox();
-    
+
     config = require('../configuration');
     getConfigValueStub = sandbox.stub(config, 'getConfigValue');
     getConfigValueStub.withArgs('services.locationref.api').returns('http://test-api');
     getConfigValueStub.withArgs('waSupportedJurisdictions').returns('IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC');
-    
+
     // require the modules after stubbing
     http = require('../lib/http');
     proxy = require('../lib/proxy');
     utils = require('../utils');
     waSupportedJurisdictions = require('./index');
-    
+
     toTitleCaseStub = sandbox.stub(utils, 'toTitleCase');
-    
+
     res = mockRes();
     req = mockReq({});
     next = sandbox.stub();
     httpGetStub = sandbox.stub(http.http, 'get');
     setHeadersStub = sandbox.stub(proxy, 'setHeaders');
     consoleLogStub = sandbox.stub(console, 'log');
-    
+
     res.send.returns(res);
     res.status.returns(res);
   });
@@ -95,13 +95,13 @@ describe('WA Supported Jurisdictions', () => {
         'http://test-api/refdata/location/orgServices',
         { headers: { 'Content-Type': 'application/json' } }
       );
-      
+
       expect(res.send).to.have.been.called;
       const actualServices = res.send.getCall(0).args[0];
-      
+
       expect(actualServices).to.be.an('array');
       expect(actualServices.length).to.be.greaterThan(0);
-      
+
       expect(res.status).to.have.been.calledWith(200);
       expect(next).not.to.have.been.called;
     });
@@ -141,7 +141,7 @@ describe('WA Supported Jurisdictions', () => {
   describe('getWASupportedJurisdictions', () => {
     it('should get supported jurisdictions', async() => {
       await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
-      
+
       const response = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC'];
       expect(res.send).to.have.been.calledWith(response);
       expect(res.status).to.have.been.calledWith(200);
@@ -171,7 +171,7 @@ describe('WA Supported Jurisdictions', () => {
   describe('getWASupportedJurisdictionsList', () => {
     it('should get only the list of supported jurisdictions', () => {
       const jurisdictionList = waSupportedJurisdictions.getWASupportedJurisdictionsList();
-      
+
       expect(jurisdictionList).to.deep.equal(['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC']);
       expect(consoleLogStub).not.to.have.been.called;
     });
@@ -198,7 +198,7 @@ describe('WA Supported Jurisdictions', () => {
   describe('generateServices', () => {
     it('should generate services from ref data', () => {
       toTitleCaseStub.withArgs('CIVIL').returns('Civil');
-      
+
       const refData: any[] = [
         {
           ccd_service_name: 'IA',
@@ -399,14 +399,14 @@ describe('WA Supported Jurisdictions', () => {
 
   describe('router', () => {
     it('should have /detail route configured', () => {
-      const detailRoute = waSupportedJurisdictions.router.stack.find(layer => layer.route && layer.route.path === '/detail');
+      const detailRoute = waSupportedJurisdictions.router.stack.find((layer) => layer.route && layer.route.path === '/detail');
       expect(detailRoute).to.exist;
       expect(detailRoute.route.path).to.equal('/detail');
       expect(detailRoute.route.stack).to.have.length.greaterThan(0);
     });
 
     it('should have /get route configured', () => {
-      const getRoute = waSupportedJurisdictions.router.stack.find(layer => layer.route && layer.route.path === '/get');
+      const getRoute = waSupportedJurisdictions.router.stack.find((layer) => layer.route && layer.route.path === '/get');
       expect(getRoute).to.exist;
       expect(getRoute.route.path).to.equal('/get');
       expect(getRoute.route.stack).to.have.length.greaterThan(0);

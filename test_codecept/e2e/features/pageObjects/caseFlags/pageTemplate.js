@@ -1,9 +1,12 @@
+const { $ } = require('../../../../helpers/globals');
 
 class TemplatePage {
-  constructor() {
-    this.container = $('app-company-house-details');
+  get container() {
+    return $('app-company-house-details');
+  }
 
-    this.fieldMapping = {
+  get fieldMapping() {
+    return {
       'Enter the name of the organisation': $('#company-name')
     };
   }
@@ -11,7 +14,7 @@ class TemplatePage {
   async inputValue(field, value) {
     switch (field) {
       case 'Enter the name of the organisation':
-        await this.fieldMapping[field].sendKeys(value);
+        await this.fieldMapping[field].fill(value);
         break;
       default:
         throw new Error(`${field} not configured in test pageObject`);

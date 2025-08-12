@@ -1,13 +1,9 @@
-
-const BrowserWaits = require('../../../support/customWaits');
-
-const WorkFlowContainer = require('./common/workFlowContainer');
-
+const { $ } = require('../../../../helpers/globals');
 const ChooseRadioOptionComponent = require('../common/chooseRadioOptionComponent');
-const FindPersonComponent = require('./common/findPersonComponent');
-
-const describeExclusionPage = require('./describeExclusionPage');
 const checkYourAnswersPage = require('./common/checkYourAnswersPage');
+const FindPersonComponent = require('./common/findPersonComponent');
+const WorkFlowContainer = require('./common/workFlowContainer');
+const describeExclusionPage = require('./describeExclusionPage');
 
 class ExclusionRoleWorkFlow {
   constructor() {
@@ -15,10 +11,13 @@ class ExclusionRoleWorkFlow {
 
     this.chooseWhoExclusion = new ChooseRadioOptionComponent('exui-exclusion-navigation exui-choose-exclusion');
     this.choosePersonRole = new ChooseRadioOptionComponent('exui-exclusion-navigation exui-choose-person-role');
-    this.findPersonPage = new FindPersonComponent($('exui-exclusion-navigation'));
     this.describeExclusion = describeExclusionPage;
 
     this.checkYourAnswers = checkYourAnswersPage;
+  }
+
+  get findPersonPage() {
+    return new FindPersonComponent($('exui-exclusion-navigation'));
   }
 }
 

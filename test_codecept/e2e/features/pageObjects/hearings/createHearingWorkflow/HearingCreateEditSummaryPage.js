@@ -1,21 +1,17 @@
-const reportLogger = require('../../../../../codeceptCommon/reportLogger');
+const { $, elementByXpath, getText } = require('../../../../../helpers/globals');
 
 class HearingCreateEditSummaryPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-create-edit-summary');
-
-    this.fieldMapping = {
-
-    };
+  get pageContainer() {
+    return $('exui-hearing-create-edit-summary');
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async clickChangeLinkForField(field){
     const fieldLocators = this.getRowElementLocators(field);
-    const changeLinkForField = element(by.xpath(fieldLocators.changeLinkElement));
+    const changeLinkForField = elementByXpath(fieldLocators.changeLinkElement);
     await changeLinkForField.click();
   }
 
@@ -32,17 +28,17 @@ class HearingCreateEditSummaryPage {
 
     const sectionElementLocator = `//exui-hearing-summary//h2[contains(text(),'${section}')]`;
 
-    expect(await element(by.xpath(fieldLevelLocators.nameElement)).isDisplayed(), `field ${field} not displayed`).to.be.true;
+    expect(await elementByXpath(fieldLevelLocators.nameElement).first().isVisible(), `field ${field} not displayed`).to.be.true;
     const valuesList = value.split(',');
     for (const val of valuesList){
-      expect(await element(by.xpath(fieldLevelLocators.valueElement)).getText(), `field ${field} value ${val} not included`).includes(val.trim());
+      expect(await getText(elementByXpath(fieldLevelLocators.valueElement).first()), `field ${field} value ${val} not included`).includes(val.trim());
     }
 
     if (section.trim() !== '') {
-      expect(await element(by.xpath(sectionElementLocator)).isDisplayed(), `hearing section ${section} not displayed`).to.be.true;
-      expect(await element(by.xpath(fieldLevelLocators.changeLinkElement)).isDisplayed(), `hearing field ${field} change link not displayed`).to.be.true;
+      expect(await elementByXpath(sectionElementLocator).isVisible(), `hearing section ${section} not displayed`).to.be.true;
+      expect(await elementByXpath(fieldLevelLocators.changeLinkElement).first().isVisible(), `hearing field ${field} change link not displayed`).to.be.true;
     } else {
-      expect(await element(by.xpath(fieldLevelLocators.changeLinkElement)).isDisplayed(), `case field ${field} change link displayed`).to.be.false;
+      expect(await elementByXpath(fieldLevelLocators.changeLinkElement).first().isVisible(), `case field ${field} change link displayed`).to.be.false;
     }
   }
 }

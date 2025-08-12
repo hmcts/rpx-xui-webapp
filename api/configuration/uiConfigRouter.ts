@@ -2,7 +2,7 @@ import * as express from 'express';
 import { getConfigValue, showFeature } from './index';
 import { setupMenuConfig } from './menuConfigs/configs';
 import {
-  FEATURE_ACCESS_MANAGEMENT_ENABLED, FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW,
+  FEATURE_ACCESS_MANAGEMENT_ENABLED,
   FEATURE_OIDC_ENABLED,
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
   LAUNCH_DARKLY_CLIENT_ID,
@@ -70,8 +70,8 @@ async function uiConfigurationRouter(req, res) {
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     headerConfig: getHeaderConfig(),
-    hearingJurisdictionConfig: getHearingJurisdictions(),
-    forceNewDefaultScreenFlow: showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW)
+    hearingJurisdictionConfig: getHearingJurisdictions()
+    // forceNewDefaultScreenFlow: showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW)
   });
 }
 

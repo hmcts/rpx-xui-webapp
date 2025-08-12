@@ -2948,12 +2948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.33-qm-extra-space-fix":
-  version: 7.2.33-qm-extra-space-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.33-qm-extra-space-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.33-welsh-translation-qm":
+  version: 7.2.33-welsh-translation-qm
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.33-welsh-translation-qm"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/247dee119cc793da652401a4303a3394416666deedb4ad8e6536bf7be089bfc78a9c0267d846acec38ad148d1f08a8d3012cf183c19cd97915faf387ba2ba617
+  checksum: 10/73f6173d4ccc95a457505df9583f2d95189cbc79a74e590999ce519c7121e67fd14949bfe63d09d6cc4b945f0fcf0d0724c0605943fae8d7ed41be97d7b09a96
   languageName: node
   linkType: hard
 
@@ -20371,7 +20371,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.33-qm-extra-space-fix"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.33-welsh-translation-qm"
     "@hmcts/ccpay-web-component": "npm:6.2.16"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.3"

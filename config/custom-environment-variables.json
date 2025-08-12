@@ -203,7 +203,7 @@
       "__format": "json"
     },
     "forceNewDefaultScreenFlow": {
-      "__name": "FORCE_NEW_DEFAULT_SCREEN_FLOW",
+      "__name": "FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW",
       "__format": "json"
     }
   },

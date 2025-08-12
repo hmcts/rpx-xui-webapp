@@ -1,28 +1,28 @@
+const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 
-class StaffUIUserDEtailsPage{
-  constructor(){
-    this.container = $('exui-staff-user-details');
-    this.heading = $('exui-staff-user-details h2');
-    this.summaryListRows = $$('exui-staff-user-details .govuk-summary-list .govuk-summary-list__row');
+class StaffUIUserDEtailsPage {
+  get container() { return $('exui-staff-user-details'); }
 
-    this.copyButton = element(by.xpath('//div[contains(@class, \'govuk-button-group\')]//button[contains(text(),\'Copy\')]'));
-    this.updateButton = element(by.xpath('//div[contains(@class, \'govuk-button-group\')]//button[contains(text(),\'Update\')]'));
-    this.restoreButton = element(by.xpath('//div[contains(@class, \'govuk-button-group\')]//button[contains(text(),\'Restore\')]'));
-  }
+  get heading() { return $('exui-staff-user-details h2'); }
+  get summaryListRows() { return $$('exui-staff-user-details .govuk-summary-list .govuk-summary-list__row'); }
 
-  async isDisplayed(){
+  get copyButton() { return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Copy")]'); }
+  get updateButton() { return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Update")]'); }
+  get restoreButton() { return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Restore")]'); }
+
+  async isDisplayed() {
     await this.container.wait();
-    return await this.container.isDisplayed();
+    return await this.container.isVisible();
   }
 
-  async getUserDetails(){
+  async getUserDetails() {
     const userDetails = {};
     const count = await this.summaryListRows.count();
 
-    for (let i = 0; i < count; i++){
-      const row = this.summaryListRows.get(i);
-      const name = await row.$('.govuk-summary-list__key').getText();
-      const value = await row.$('.govuk-summary-list__value').getText();
+    for (let i = 0; i < count; i++) {
+      const row = this.summaryListRows.nth(i);
+      const name = await getText(row.locator('.govuk-summary-list__key'));
+      const value = await getText(row.locator('.govuk-summary-list__value'));
       userDetails[name] = value;
     }
     return userDetails;

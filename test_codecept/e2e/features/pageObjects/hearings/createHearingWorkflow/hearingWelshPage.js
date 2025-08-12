@@ -1,9 +1,13 @@
-class HearingWelshPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-welsh');
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 
-    this.fieldMapping = {
-      'Does this hearing need to be in Welsh?': element(by.xpath('//exui-hearing-welsh//h1[contains(text(),\'Does this hearing need to be in Welsh?\')]'))
+class HearingWelshPage {
+  get pageContainer() {
+    return $('exui-hearing-welsh');
+  }
+
+  get fieldMapping() {
+    return {
+      'Does this hearing need to be in Welsh?': elementByXpath('//exui-hearing-welsh//h1[contains(text(),\'Does this hearing need to be in Welsh?\')]')
     };
   }
 
@@ -11,7 +15,7 @@ class HearingWelshPage {
     switch (field) {
       case 'Does this hearing need to be in Welsh?':
         const div = value === 'Yes' ? 'div[1]' : 'div[2]';
-        const ele = element(by.xpath(`//exui-hearing-welsh/div/form/div/fieldset/div[2]/${div}/label[contains(text(),'${value}')]/../input`));
+        const ele = elementByXpath(`//exui-hearing-welsh/div/form/div/fieldset/div[2]/${div}/label[contains(text(),'${value}')]/../input`);
         await ele.click();
         break;
       default:
@@ -20,7 +24,7 @@ class HearingWelshPage {
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 }
 

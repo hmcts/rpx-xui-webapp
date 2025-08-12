@@ -1,14 +1,17 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class UpdateFlagAddTranslationPage {
-  constructor() {
-    this.container = $('ccd-update-flag-add-translation-form');
 
-    this.fieldMapping = {
-      'Other description': element(by.xpath('//label[contains(text(),\'Other description\')]/..//textarea')),
-      'Other description (Welsh)': element(by.xpath('//label[contains(text(),\'Other description (Welsh)\')]/..//textarea')),
-      'Flag comments': element(by.xpath('//label[contains(text(),\'Flag comments\')]/..//textarea')),
-      'Flag comments (Welsh)': element(by.xpath('//label[contains(text(),\'Flag comments (Welsh)\')]/..//textarea'))
+  get container() {
+    return $('ccd-update-flag-add-translation-form');
+  }
 
+  get fieldMapping() {
+    return {
+      'Other description': elementByXpath('//label[contains(text(),\'Other description\')]/..//textarea'),
+      'Other description (Welsh)': elementByXpath('//label[contains(text(),\'Other description (Welsh)\')]/..//textarea'),
+      'Flag comments': elementByXpath('//label[contains(text(),\'Flag comments\')]/..//textarea'),
+      'Flag comments (Welsh)': elementByXpath('//label[contains(text(),\'Flag comments (Welsh)\')]/..//textarea')
     };
   }
 
@@ -18,7 +21,7 @@ class UpdateFlagAddTranslationPage {
       case 'Other description (Welsh)':
       case 'Flag comments':
       case 'Flag comments (Welsh)':
-        await this.fieldMapping[field].sendKeys(value);
+        await this.fieldMapping[field].fill(value);
         break;
       default:
         throw new Error(`${field} not configured in test pageObject`);

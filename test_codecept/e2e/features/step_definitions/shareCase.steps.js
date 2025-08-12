@@ -4,9 +4,6 @@ const ShareCaseCheckAndConfirmPage = require('../pageObjects/shareCaseCheckAndCo
 
 const BrowserWaits = require('../../support/customWaits');
 
-const { defineSupportCode } = require('cucumber');
-const { browser } = require('protractor');
-
 const shareCasePage = new ShareCasePage();
 const shareCaseCheckAndConfirmPage = new ShareCaseCheckAndConfirmPage();
 

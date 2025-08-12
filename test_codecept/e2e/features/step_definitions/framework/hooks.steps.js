@@ -1,3 +1,4 @@
+console.log('[Hook] ⚠️ Secondary hook running (not setting page):', __dirname);
 
 Before(async () => {
   // global.scenarioData = {}

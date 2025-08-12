@@ -1,20 +1,38 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class ChallengedAccessRequestPage{
-  constructor(){
-    this.container = $('ccd-case-challenged-access-request');
-    this.header = $('h1.govuk-fieldset__heading');
+  constructor(){}
 
-    this.caseReferenceInput = $('#case-reference');
-    this.otherReasonTextArea = $('#other-reason');
+  get container() {
+    return $('ccd-case-challenged-access-request');
+  }
 
-    this.submitBtn = $('ccd-case-challenged-access-request div.govuk-button-group button');
-    this.cancelLink = $('ccd-case-challenged-access-request div.govuk-button-group a');
+  get header() {
+    return $('h1.govuk-fieldset__heading');
+  }
 
-    this.challengedAccessSuccessContainer = $('ccd-case-challenged-access-success');
+  get caseReferenceInput() {
+    return $('#case-reference');
+  }
+
+  get otherReasonTextArea() {
+    return $('#other-reason');
+  }
+
+  get submitBtn() {
+    return $('ccd-case-challenged-access-request div.govuk-button-group button');
+  }
+
+  get cancelLink() {
+    return $('ccd-case-challenged-access-request div.govuk-button-group a');
+  }
+
+  get challengedAccessSuccessContainer() {
+    return $('ccd-case-challenged-access-success');
   }
 
   getRadioInputWithLabel(label){
-    return element(by.xpath(`//ccd-case-challenged-access-request//label[contains(@class,'govuk-radios__label')][contains(text(),'${label}')]/../input`));
+    return elementByXpath(`//ccd-case-challenged-access-request//label[contains(@class,'govuk-radios__label')][contains(text(),'${label}')]/../input`);
   }
 
   async selectRadioOption(option){

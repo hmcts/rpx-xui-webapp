@@ -3,7 +3,7 @@ const MockApp = require('../../../nodeMock/app');
 const BrowserUtil = require('../../util/browserUtil');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
-const headerPage = require('../../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
 const taskManagerPage = require('../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
 const tasklistPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const taskAssignmentPage = require('../../../e2e/features/pageObjects/workAllocation/taskAssignmentPage');
@@ -84,7 +84,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('My Tasks - Reassign page errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     // expect(await tasklistPage.amOnPage()).to.be.true;
@@ -101,9 +101,9 @@ describe('Unhappy path task actions: ', function () {
             res.send(workAllocationMockData.getMyTasks(10));
           });
         });
-        await headerPage.clickManageCases();
+        await headerPage().clickManageCases();
         await setErrorRespondeCodeOnApi('GET', endPoint.url, responseCode);
-        await headerPage.clickTaskList();
+        await headerPage().clickTaskList();
         await tasklistPage.amOnPage();
         expect(await tasklistPage.isMyTasksDisplayed(), 'Default My tasks tab page not displayed').to.be.true;
 
@@ -125,7 +125,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('My Tasks - Reassign submit errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     for (const responseCode of testErrorResponseCodes) {
@@ -134,8 +134,8 @@ describe('Unhappy path task actions: ', function () {
           res.send(workAllocationMockData.getMyTasks(10));
         });
       });
-      await headerPage.clickManageCases();
-      await headerPage.clickTaskList();
+      await headerPage().clickManageCases();
+      await headerPage().clickTaskList();
       await tasklistPage.amOnPage();
       expect(await tasklistPage.isMyTasksDisplayed(), 'Default My tasks tab page not displayed').to.be.true;
 
@@ -167,7 +167,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('Available - action link page errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     // expect(await tasklistPage.amOnPage()).to.be.true;
@@ -178,9 +178,9 @@ describe('Unhappy path task actions: ', function () {
             res.send(workAllocationMockData.getAvailableTasks(10));
           });
         });
-        await headerPage.clickManageCases();
+        await headerPage().clickManageCases();
         await setErrorRespondeCodeOnApi('GET', '/workallocation/task/:taskId', responseCode);
-        await headerPage.clickTaskList();
+        await headerPage().clickTaskList();
         await tasklistPage.amOnPage();
         await tasklistPage.clickAvailableTasks();
 
@@ -206,7 +206,7 @@ describe('Unhappy path task actions: ', function () {
 
   it('Task Manager - action link page errors', async function () {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
-    await headerPage.waitForPrimaryNavDisplay();
+    await headerPage().waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
 
     // expect(await tasklistPage.amOnPage()).to.be.true;
@@ -217,9 +217,9 @@ describe('Unhappy path task actions: ', function () {
             res.send(workAllocationMockData.getAvailableTasks(10));
           });
         });
-        await headerPage.clickManageCases();
+        await headerPage().clickManageCases();
         await setErrorRespondeCodeOnApi('GET', '/workallocation/task/:taskId', responseCode);
-        await headerPage.clickTaskList();
+        await headerPage().clickTaskList();
         await tasklistPage.amOnPage();
         await tasklistPage.clickAvailableTasks();
 

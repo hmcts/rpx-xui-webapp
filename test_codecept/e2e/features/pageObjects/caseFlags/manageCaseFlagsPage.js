@@ -1,11 +1,24 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class ManageCaseFlagsPage {
-  constructor() {
-    this.container = $('ccd-manage-case-flags');
+  get container() {
+    return $('ccd-manage-case-flags');
+  }
 
-    this.fieldMapping = {
-      'Manage case flags': element(by.xpath('//ccd-manage-case-flags//h1[contains(text(),\'Manage case flags\')]')),
-      'Manage case flags1': element(by.xpath('//ccd-manage-case-flags//h1'))
+  get h1ManageCaseFlags() {
+    return elementByXpath(
+      '//ccd-manage-case-flags//h1[contains(text(),"Manage case flags")]'
+    );
+  }
+
+  get h1Any() {
+    return elementByXpath('//ccd-manage-case-flags//h1');
+  }
+
+  get fieldMapping() {
+    return {
+      'Manage case flags': this.h1ManageCaseFlags,
+      'Manage case flags1': this.h1Any
     };
   }
 
@@ -13,7 +26,7 @@ class ManageCaseFlagsPage {
     switch (field) {
       case 'Manage case flag':
         const flagDetails = value.split('-');
-        const ele = element(by.xpath(`//ccd-manage-case-flags//label[contains(text(),'${flagDetails[0].trim()}')]/span[contains(text(),'${flagDetails[1].trim()}')]`));
+        const ele = elementByXpath(`//ccd-manage-case-flags//label[contains(text(),'${flagDetails[0].trim()}')]/span[contains(text(),'${flagDetails[1].trim()}')]`);
         await ele.click();
         break;
       default:

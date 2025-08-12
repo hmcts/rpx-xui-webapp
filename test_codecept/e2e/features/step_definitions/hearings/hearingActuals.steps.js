@@ -1,11 +1,11 @@
-
+const { elementByXpath } = require('../../../../helpers/globals');
 const hearingActualsPage = require('../../pageObjects/hearings/hearingActualsPage');
 const browserWaits = require('../../../support/customWaits');
 const hearingStartFinishTimesPage = require('../../pageObjects/hearings/hearingStartAndFinishTimesPage');
 
 Then('I see hearing actuals page', async function () {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await hearingActualsPage.container.isDisplayed()).to.be.true;
+    expect(await hearingActualsPage.container.isVisible()).to.be.true;
   });
 });
 
@@ -15,12 +15,12 @@ Then('I see hearing actuals page with details', async function (datatable) {
     const expectedField = row.field;
     const expectedValue = row.value;
 
-    const expectedFieldEle = element(by.xpath(hearingActualsPage.getTableKeyElementXpath(expectedField)));
-    const expectedValueEle = element(by.xpath(hearingActualsPage.getTableValueElementXpath(expectedField)));
+    const expectedFieldEle = elementByXpath(hearingActualsPage.getTableKeyElementXpath(expectedField));
+    const expectedValueEle = elementByXpath(hearingActualsPage.getTableValueElementXpath(expectedField));
 
     await browserWaits.retryWithActionCallback(async () => {
-      expect(await expectedFieldEle.isDisplayed()).to.be.true;
-      expect(await expectedValueEle.getText()).to.includes(expectedValue);
+      expect(await expectedFieldEle.isVisible()).to.be.true;
+      expect(await expectedValueEle.textContent()).to.includes(expectedValue);
     });
   }
 });
@@ -31,18 +31,18 @@ Then('I validate hearing actuals details in CYA', async function (datatable){
     const expectedField = row.field;
     const expectedValue = row.value;
 
-    const expectedFieldEle = element(by.xpath(hearingActualsPage.getTableKeyElementXpath(expectedField)));
-    const expectedValueEle = element(by.xpath(hearingActualsPage.getTableValueElementXpath(expectedField)));
+    const expectedFieldEle = elementByXpath(hearingActualsPage.getTableKeyElementXpath(expectedField));
+    const expectedValueEle = elementByXpath(hearingActualsPage.getTableValueElementXpath(expectedField));
 
     await browserWaits.retryWithActionCallback(async () => {
-      expect(await expectedFieldEle.isDisplayed()).to.be.true;
-      expect(await expectedValueEle.getText()).to.includes(expectedValue);
+      expect(await expectedFieldEle.isVisible()).to.be.true;
+      expect(await expectedValueEle.textContent()).to.includes(expectedValue);
     });
   }
 });
 
 Then('I see hearing actuals update link', async function () {
-  expect(await hearingActualsPage.hearingStageAndResultUpdateLink.isDisplayed()).to.be.true;
+  expect(await hearingActualsPage.hearingStageAndResultUpdateLink.isVisible()).to.be.true;
 });
 
 When('I click hearing actuals update link', async function () {
@@ -55,7 +55,7 @@ Then('In hearing actuals page, I click continue', async function () {
 
 Then('I am hearing actuals check your answers page', async function () {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await hearingActualsPage.checkYourAnswersHeader.isDisplayed()).to.be.true;
+    expect(await hearingActualsPage.checkYourAnswersHeader.isVisible()).to.be.true;
   });
 });
 
@@ -66,7 +66,7 @@ When('I click Submit hearing details button in hearing actuals CYA', async funct
 When('In hearing actual, I see hearings for date {string}', async function (hearingDate) {
   const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate);
 
-  await browserWaits.waitForElement(element(by.xpath(hearingDateObj.hearingDateDetailsSummary)));
+  await browserWaits.waitForElement(elementByXpath(hearingDateObj.hearingDateDetailsSummary));
   expect(await hearingDateObj.isDisplayed()).to.be.true;
 });
 
@@ -109,7 +109,7 @@ When('In hearing actual for date {string}, I click action link {string} for fiel
 });
 
 Then('In hearing actuals, I see hearing start and finsih times page', async function(){
-  expect(await hearingStartFinishTimesPage.container.isDisplayed()).to.be.true;
+  expect(await hearingStartFinishTimesPage.container.isVisible()).to.be.true;
 });
 
 When('In hearing actuals start finish times page, I select radio option {string} for Do you need to record times the hearing was paused?', async function (option) {

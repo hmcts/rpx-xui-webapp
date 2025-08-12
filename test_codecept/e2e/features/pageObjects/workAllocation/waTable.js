@@ -1,38 +1,67 @@
-const c = require('config');
-const { constants } = require('karma');
-
-const browserUtil = require('../../../../ngIntegration/util/browserUtil');
-const BrowserWaits = require('../../../support/customWaits');
-const ArrayUtil = require('../../../utils/ArrayUtil');
-const Spinner = require('../../pageObjects/common/spinner');
-
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
+const { $, $$, elementByXpath, elementsByXpath, isPresent } = require('../../../../helpers/globals');
+const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 const { LOG_LEVELS } = require('../../../support/constants');
+const BrowserWaits = require('../../../support/customWaits');
+const Spinner = require('../../pageObjects/common/spinner');
 
 class WAListTable {
   constructor(baseCssLocator) {
     this.baseCssLocator = baseCssLocator;
-
-    this.table = $(this.baseCssLocator);
-    this.tableRows = $$(`${this.baseCssLocator} table tbody>tr:not(.actions-row)`);
-    this.tableHeaderColumns = $$(`${this.baseCssLocator} table thead th`);
-    this.tableFooter = $(`${this.baseCssLocator} table tfoot td`);
-    this.actionsRows = $$(`${this.baseCssLocator} table tbody>tr.actions-row`);
-    this.selectedActioRow = $(`${this.baseCssLocator} table tbody>tr.actions-row.selected`);
-
-    this.selectedActions = $$(`${this.baseCssLocator} table tbody>tr.actions-row.selected .task-action a`);
-
-    this.displayedActionRow = $('tr.actions-row[aria-hidden=false]');
-
-    this.paginationContainer = $('ccd-pagination .ngx-pagination');
-    this.paginationResultText = $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`);
-    this.pagePreviousLink = $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
-    this.pageNextLink = $(`${this.baseCssLocator} pagination-template .pagination-next a`);
-
-    this.resetSortButton = $(`${this.baseCssLocator} .reset-sort-button button`);
-
     this.spinner = new Spinner();
+  }
+
+  get table() {
+    return $(this.baseCssLocator);
+  }
+
+  get tableRows() {
+    return $$(`${this.baseCssLocator} table tbody > tr:not(.actions-row)`);
+  }
+
+  get tableHeaderColumns() {
+    return $$(`${this.baseCssLocator} table thead th`);
+  }
+
+  get tableFooter() {
+    return $(`${this.baseCssLocator} table tfoot td`);
+  }
+
+  get actionsRows() {
+    return $$(`${this.baseCssLocator} table tbody > tr.actions-row`);
+  }
+
+  get selectedActionRow() {
+    return $(`${this.baseCssLocator} table tbody > tr.actions-row.selected`);
+  }
+
+  get selectedActions() {
+    return $$(`${this.baseCssLocator} table tbody > tr.actions-row.selected .task-action a`);
+  }
+
+  get displayedActionRow() {
+    return $(`tr.actions-row[aria-hidden=false]`);
+  }
+
+  get paginationContainer() {
+    return $(`ccd-pagination .ngx-pagination`);
+  }
+
+  get paginationResultText() {
+    return $(`${this.baseCssLocator} .task-list-header div, ${this.baseCssLocator} .pagination-top`).first();
+  }
+
+  get pagePreviousLink() {
+    return $(`${this.baseCssLocator} pagination-template .pagination-previous a`);
+  }
+
+  get pageNextLink() {
+    return $(`${this.baseCssLocator} pagination-template .pagination-next a`);
+  }
+
+  get resetSortButton() {
+    return $(`${this.baseCssLocator} .reset-sort-button button`);
   }
 
   async isSpinnerDisplayed() {
@@ -47,14 +76,14 @@ class WAListTable {
     await BrowserWaits.waitForElement(this.table);
     await BrowserWaits.waitForConditionAsync(async () => {
       const tableRowsCount = await this.tableRows.count();
-      const isTableFooterDispayed = await this.tableFooter.isDisplayed();
+      const isTableFooterDispayed = await this.tableFooter.isVisible();
       // cucumberReporter.AddMessage(`Waiting for WA list table condition : row count is ${tableRowsCount} or table foorter displayed ${isTableFooterDispayed}`, LOG_LEVELS.Info);
       return tableRowsCount > 0 || isTableFooterDispayed;
     }, BrowserWaits.waitTime);
   }
 
   async isTableDisplayed() {
-    return await this.table.isPresent();
+    return await isPresent(this.table);
   }
 
   async getColumnCount() {
@@ -66,35 +95,37 @@ class WAListTable {
     return await this.tableRows.count();
   }
 
-  async getHeaderColumnWidth(headerName){
+  async getHeaderColumnWidth(headerName) {
     let headerElement = null;
     try {
-      headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]/..`));
+      headerElement = elementByXpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]/..`);
       const dim = await headerElement.getSize();
       return dim.width;
-    } catch (err){
+    } catch (err) {
       console.log(err);
       console.log('retrying with header element as non-clickable element');
-      headerElement = element(by.xpath(`//${this.baseCssLocator}//table//thead//th//h1[contains(text(),'${headerName}')]/..`));
+      headerElement = elementByXpath(`//${this.baseCssLocator}//table//thead//th//h1[contains(text(),'${headerName}')]/..`);
       const dim = await headerElement.getSize();
       return dim.width;
     }
   }
 
   getHeaderElementWithName(headerName) {
-    return element(by.xpath(`//${ this.baseCssLocator }//table//thead//th//button[contains(text(),'${headerName}')]`));
+    return elementByXpath(`//${this.baseCssLocator}//table//thead//th//button[contains(text(),'${headerName}')]`);
   }
 
   getHeaderSortElementWithName(headerName) {
-    return element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).withChild(by.xpath(`//button[contains(text(),'${headerName}')]`));
+    return $(
+      `${this.baseCssLocator} table thead th:has(button:has-text("${headerName}"))`
+    );
   }
 
   getNonClickableHeaderElementWithName(headerName) {
-    return element(by.xpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`));
+    return elementByXpath(`//${this.baseCssLocator}//table//thead//th[contains(text(),'${headerName}')]`);
   }
 
   async getHeaderPositionWithName(headerName) {
-    const headerNames = await element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).getTextFromAll();
+    const headerNames = await $(`${this.baseCssLocator} table thead th`).allInnerTexts();
     for (let i = 0; i < headerNames.length; i++) {
       if (headerNames[i].includes(headerName)) {
         return i + 1;
@@ -105,14 +136,14 @@ class WAListTable {
 
   async getColumnHeaderNames() {
     await this.waitForTable();
-    const headers = await element(by.xpath(`//${this.baseCssLocator}//table//thead//th`)).getTextFromAll();
+    const headers = await $(`${this.baseCssLocator} table thead th`).allInnerTexts();
 
     return headers;
   }
 
   async clickColumnHeader(headerName) {
     const headerElement = await this.getHeaderElementWithName(headerName);
-    expect(await headerElement.isPresent(), `Column with header name ${headerName} not present`).to.be.true;
+    expect(await isPresent(headerElement), `Column with header name ${headerName} not present`).to.be.true;
     await browserUtil.scrollToElement(headerElement);
     await headerElement.click();
   }
@@ -123,7 +154,7 @@ class WAListTable {
   }
 
   async isTableFooterDisplayed() {
-    return await this.tableFooter.isDisplayed();
+    return await this.tableFooter.isVisible();
   }
 
   async getTableFooterMessage() {
@@ -131,43 +162,43 @@ class WAListTable {
     if (!tableFooterDisplayStatus) {
       throw new Error('Table footer not displayed');
     }
-    return await this.tableFooter.getText();
+    return await this.tableFooter.textContent();
   }
 
   async getTableRowAt(position) {
     await BrowserWaits.waitForConditionAsync(async () => {
       return await this.tableRows.count() > 0;
     });
-    return await this.tableRows.get(position - 1);
+    return await this.tableRows.nth(position - 1);
   }
 
   async getColumnValueAt(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    if (columnPos === -1){
+    if (columnPos === -1) {
       throw new Error(`${columnName} is not displayed in table`);
     }
-    const columnValue = await waRow.$(`td:nth-of-type(${columnPos})`).getText();
+    const columnValue = await waRow.locator(`td:nth-of-type(${columnPos})`).textContent();
     return columnValue;
   }
 
   async isColValALink(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    const isLink = await waRow.$(`td:nth-of-type(${columnPos}) exui-url-field`).isPresent();
+    const isLink = await isPresent(waRow.locator(`td:nth-of-type(${columnPos}) exui-url-field`));
     return isLink;
   }
 
   async clickColLink(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    await waRow.$(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
+    await waRow.locator(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
   }
 
   async getColumnValueElementAt(columnName, atPos) {
     const waRow = await this.getTableRowAt(atPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
-    return waRow.$(`td:nth-of-type(${columnPos})`);
+    return waRow.locator(`td:nth-of-type(${columnPos})`);
   }
 
   async getRowWithColumnValue(columnName, columnValue) {
@@ -184,15 +215,15 @@ class WAListTable {
   async isManageLinkPresent(position) {
     return await browserUtil.stepWithRetry(async () => {
       const row = await this.getTableRowAt(position);
-      return await row.$('button[id^="manage_"]').isPresent();
+      return await isPresent(row.locator('button[id^="manage_"]'));
     });
   }
 
   async clickManageLinkForRowAt(position) {
     await BrowserWaits.retryWithActionCallback(async () => {
       const row = await this.getTableRowAt(position);
-      const rowManageLink = row.$('button[id^="manage_"]');
-      await browser.scrollToElement(rowManageLink);
+      const rowManageLink = row.locator('button[id^="manage_"]');
+      await rowManageLink.scrollIntoViewIfNeeded();
       await rowManageLink.click();
       if (!(await this.isManageLinkOpenAtPos(position))) {
         throw new Error('Manage link not open. retying action');
@@ -201,11 +232,10 @@ class WAListTable {
   }
 
   async isManageLinkOpenAtPos(position) {
-    const waRows = element.all(by.xpath('//tr[(contains(@class,\'actions-row\'))]'));
-    const row = await waRows.get(position - 1);
+    const waRows = elementsByXpath('//tr[(contains(@class,\'actions-row\'))]');
+    const row = await waRows.nth(position - 1);
     try {
-      return await row.isDisplayed();
-      return true;
+      return await row.isVisible();
     } catch (err) {
       return false;
     }
@@ -213,28 +243,28 @@ class WAListTable {
 
   async isRowActionPresent(rowAction) {
     await BrowserWaits.waitForElement(this.displayedActionRow);
-    const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`));
-    return await actionLink.isPresent();
+    const actionLink = this.displayedActionRow.locator(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`);
+    return await isPresent(actionLink);
   }
 
   async clickRowAction(action) {
     expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
-    await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.getText()}`, LOG_LEVELS.Debug);
-    const actionLink = this.displayedActionRow.element(by.xpath(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`));
-    await browser.scrollToElement(actionLink);
+    await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.textContent()}`, LOG_LEVELS.Debug);
+    const actionLink = this.displayedActionRow.locator(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`).first();
+    await actionLink.scrollIntoViewIfNeeded();
     await actionLink.click();
   }
 
   async isRowActionRowForRowDisplayed(position) {
-    return await this.displayedActionRow.isPresent();
+    return await isPresent(this.displayedActionRow);
   }
 
   async getCountOfDisplayedActionsRows() {
     const actionRowsCount = await this.actionsRows.count();
     let displayedActionRows = 0;
     for (let rowCtr = 0; rowCtr < actionRowsCount; rowCtr++) {
-      const actionRow = await this.actionsRows.get(rowCtr);
-      if (await actionRow.isDisplayed()) {
+      const actionRow = await this.actionsRows.nth(rowCtr);
+      if (await actionRow.isVisible()) {
         displayedActionRows++;
       }
     }
@@ -242,7 +272,7 @@ class WAListTable {
   }
 
   async getTableRow(index) {
-    return await this.tableRows.get(index);
+    return await this.tableRows.nth(index);
   }
 
   async isRowActionBarDisplayed() {
@@ -256,32 +286,32 @@ class WAListTable {
   }
 
   async isRowActionBarDisplayedForAtPos(row) {
-    const waRow = await this.actionsRows.get(row - 1);
+    const waRow = await this.actionsRows.nth(row - 1);
     await BrowserWaits.waitForSeconds(1);
-    return await waRow.isDisplayed();
+    return await waRow.isVisible();
   }
 
   async getPaginationResultText() {
-    return await this.paginationResultText.getText();
+    return await this.paginationResultText.textContent();
   }
 
   async isPaginationPageNumEnabled(pageNum) {
-    const pageNumWithoutLink = element(by.xpath(`//${ this.baseCssLocator }//pagination-template//li//span[contains(text(),'${pageNum}')]`));
-    const pageNumWithLink = element(by.xpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+    const pageNumWithoutLink = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//span[contains(text(),'${pageNum}')]`);
+    const pageNumWithLink = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
 
-    return (await pageNumWithLink.isPresent()) && (await pageNumWithoutLink.isPresent());
+    return (await isPresent(pageNumWithLink)) && (await isPresent(pageNumWithoutLink));
   }
 
   async clickPaginationPageNum(pageNum) {
     if (!(await this.isPaginationPageNumEnabled(pageNum))) {
       throw new Error('Page num is not present or not enabled: ' + pageNum);
     }
-    const pageNumWithLink = element(by.xpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${pageNum}')]`));
+    const pageNumWithLink = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
     await pageNumWithLink.click();
   }
 
   async getRowActions() {
-    return await this.selectedActioRow.getText();
+    return await this.selectedActioRow.textContent();
   }
 
   async clickPaginationLink(linkText) {
@@ -291,7 +321,7 @@ class WAListTable {
     } else if (linkText.toLowerCase() === 'previous') {
       linkElement = this.pagePreviousLink;
     } else {
-      linkElement = element(by.xpath(`//${this.baseCssLocator }//pagination-template//li//a//span[contains(text(),'${linkText}')]`));
+      linkElement = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${linkText}')]`);
     }
 
     await BrowserWaits.waitForElement(linkElement);
@@ -301,58 +331,55 @@ class WAListTable {
   }
 
   async isPaginationControlDisplayed() {
-    const isPresent = await this.paginationContainer.isPresent();
+    const isPresentBool = await isPresent(this.paginationContainer);
     let isDisplayed = false;
 
-    if (isPresent){
-      isDisplayed = await this.paginationContainer.isDisplayed();
+    if (isPresentBool) {
+      isDisplayed = await this.paginationContainer.isVisible();
     }
-    return isPresent && isDisplayed;
+    return isPresentBool && isDisplayed;
   }
 
   async getTableDisplayValuesAtRow(rowNum) {
     const displayValuesObject = {};
     const columnHeaders = await this.getColumnHeaderNames();
 
-    for (const column of columnHeaders){
+    for (const column of columnHeaders) {
       displayValuesObject[column] = await this.getColumnValueAt(column, rowNum);
     }
     return displayValuesObject;
   }
 
-  async isResetSortButtonDisplayed(){
-    return await this.resetSortButton.isPresent();
+  async isResetSortButtonDisplayed() {
+    return await isPresent(this.resetSortButton);
   }
 
-  async clickResetSortButton(){
+  async clickResetSortButton() {
     await this.resetSortButton.click();
   }
 
-  async isHeaderSortable(headerName){
+  async isHeaderSortable(headerName) {
     const headerElementClickable = this.getHeaderElementWithName(headerName);
-    const headerElementNonClickable = this.getNonClickableHeaderElementWithName(headerName);
-    const isClickableElementPresent = await headerElementClickable.isPresent();
-    const isNonClickableElementPresent = await headerElementNonClickable.isPresent();
 
-    const isDisplayed = await headerElementClickable.isDisplayed();
+    const isDisplayed = await headerElementClickable.isVisible();
 
     return isDisplayed;
   }
 
-  async getRowActionLinksTexts(){
+  async getRowActionLinksTexts() {
     const links = await this.getRowActionLinks();
     const linkTexts = [];
-    for (const link of links){
-      linkTexts.push(await link.getText());
+    for (const link of links) {
+      linkTexts.push(await link.textContent());
     }
     return linkTexts;
   }
 
-  async getRowActionLinks(){
+  async getRowActionLinks() {
     const linksCount = await this.selectedActions.count();
     const links = [];
-    for (let i = 0; i < linksCount; i++){
-      const e = await await this.selectedActions.get(i);
+    for (let i = 0; i < linksCount; i++) {
+      const e = await await this.selectedActions.nth(i);
       links.push(e);
     }
     return links;

@@ -1,7 +1,11 @@
 import { NextFunction, Response } from 'express';
 import { sendGet, sendPost } from '../common/crudService';
 import { getConfigValue, showFeature } from '../configuration';
-import { FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW, HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import {
+  FEATURE_ACCESS_MANAGEMENT_ENABLED,
+  FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW,
+  HEARINGS_SUPPORTED_JURISDICTIONS
+} from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import {
@@ -37,9 +41,9 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
       const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
       let dataByDefault = mapDataByDefault(data);
       const forceNewDefaultScreenFlow = retrieveForceNewDefaultScreenFlow();
-      trackTrace(`forceNewDefaultScreenFlow: ${forceNewDefaultScreenFlow}`);
+      trackTrace(`services.indes.ts --> forceNewDefaultScreenFlow: ${forceNewDefaultScreenFlow}`);
       if (forceNewDefaultScreenFlow) {
-        trackTrace('In forceDefaultScreenFlow...');
+        trackTrace('services.indes.ts --> In forceDefaultScreenFlow...');
         dataByDefault = forceDefaultScreenFlow(data);
       } else {
         if (!data.screenFlow) {
@@ -60,6 +64,9 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
 
 export function retrieveForceNewDefaultScreenFlow():boolean {
   try {
+    trackTrace('services.indes.ts --> retrieveForceNewDefaultScreenFlow called');
+    trackTrace('services.indes.ts --> showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW) --> ' + showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW).valueOf());
+    trackTrace('services.indes.ts --> showFeature(FEATURE_ACCESS_MANAGEMENT_ENABLED) --> ' + showFeature(FEATURE_ACCESS_MANAGEMENT_ENABLED).valueOf());
     const result = showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW);
     return toBoolean(result);
   } catch {
@@ -68,19 +75,23 @@ export function retrieveForceNewDefaultScreenFlow():boolean {
 }
 
 export function toBoolean(value: unknown): boolean {
+  trackTrace('services.indes.ts --> toBoolean called with value: ' + value);
   if (typeof value === 'boolean') {
+    trackTrace('services.indes.ts --> toBoolean returning boolean value: ' + value);
     return value;
   }
   if (typeof value === 'string') {
+    trackTrace('services.indes.ts --> toBoolean returning string value: ' + value);
     return value.toLowerCase() === 'true';
   }
+  trackTrace('services.indes.ts --> fallback returning false');
   return false;
 }
 
 export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
-  trackTrace('data.screenFlow', data.screenFlow);
+  trackTrace('services.indes.ts --> data.screenFlow', data.screenFlow);
   if (!data.screenFlow) {
-    trackTrace('data.screenFlow is undefined, using DEFAULT_SCREEN_FLOW_NEW');
+    trackTrace('services.indes.ts --> data.screenFlow is undefined, using DEFAULT_SCREEN_FLOW_NEW');
     return {
       ...data,
       screenFlow: DEFAULT_SCREEN_FLOW_NEW
@@ -96,7 +107,7 @@ export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
 }
 
 export function replaceScreenFlow(screenFlow: ScreenNavigationModel[], followingScreen: string): ScreenNavigationModel[] {
-  trackTrace('replaceScreenFlow called with followingScreen:');
+  trackTrace('services.indes.ts --> replaceScreenFlow called with followingScreen:');
   // Define the sequence to be replaced
   const toReplaceSequence = ['hearing-venue', 'hearing-welsh', 'hearing-judge', 'hearing-panel'];
 

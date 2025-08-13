@@ -1,34 +1,34 @@
+const { $ } = require('../../../helpers/globals');
 Button = require('./webdriver-components/button.js');
 TextField = require('./webdriver-components/textField.js');
 
 class FrUserPage {
   constructor() {
     this.header = '#content h1';
-    this.continueButton = new Button('button[type=submit]');
-    this.firmName =element(by.css('#solsSolicitorFirmName'));
-    this.postCodeTextField = element(by.css('#solsSolicitorAddress_solsSolicitorAddress_postcodeInput'));
-    //this.findAddress = new Button('#postcodeLookup > button');
-    this.addressList = '#solsSolicitorAddress_solsSolicitorAddress_addressList';
-    this.reference = element(by.css('#solsSolicitorAppReference'));
-    this.emailAddress = element(by.css('#solsSolicitorEmail'));
-    //this.saveandContinueButton = new Button('#content button:nth-child(2)');
-    this.findAddress = new Button('button[type=button]');
-    this.saveandContinueButton = new Button('button[type=submit]');
   }
 
-  async getPageHeader(){
-    return await $(this.header).getText();
+  get continueButton() { return new Button('button[type=submit]'); }
+  get firmName() { return $('#solsSolicitorFirmName'); }
+  get postCodeTextField() { return $('#solsSolicitorAddress_solsSolicitorAddress_postcodeInput'); }
+  get addressList() { return $('#solsSolicitorAddress_solsSolicitorAddress_addressList'); }
+  get reference() { return $('#solsSolicitorAppReference'); }
+  get emailAddress() { return $('#solsSolicitorEmail'); }
+  get findAddress() { return new Button('button[type=button]'); }
+  get saveandContinueButton() { return new Button('button[type=submit]'); }
+
+  async getPageHeader() {
+    return await $(this.header).textContent();
   }
 
   async enterProbateValues() {
-    await this.firmName.sendKeys('Rajesh');
-    await this.postCodeTextField.sendKeys('SW20 0BX');
+    await this.firmName.fill('Rajesh');
+    await this.postCodeTextField.fill('SW20 0BX');
     await this.findAddress.click();
-    await this.reference.sendKeys('Rajesh12345');
-    await this.emailAddress.sendKeys('Rajesh1234@gmail.com');
+    await this.reference.fill('Rajesh12345');
+    await this.emailAddress.fill('Rajesh1234@gmail.com');
   }
 
-  async amOnPage(){
+  async amOnPage() {
     const header = await this.getPageHeader();
     return header === 'Consent Order Application';
   }

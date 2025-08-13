@@ -33,6 +33,13 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
             name: caseType.name
           };
 
+          if (caseType.events) {
+            mappedCaseType.events = caseType.events.map((event) => ({
+              id: event.id,
+              name: event.name
+            }));
+          }
+
           if (caseType.states) {
             mappedCaseType.states = caseType.states.map((state) => ({
               id: state.id,

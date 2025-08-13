@@ -46,7 +46,7 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response) 
           : HEADER_ACCEPT_V1;
         const headers = setHeaders(req);
         const body = { searchString, serviceCode };
-        trackTrace(`postFindPersonSearch headers: ${headers}`);
+        trackTrace(`postFindPersonSearch headers: ${JSON.stringify(headers)}`);
         const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, body, { headers });
         searchResult = response.data ? [...response.data, ...searchResult] : searchResult;
       }

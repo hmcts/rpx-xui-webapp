@@ -8,7 +8,7 @@ import { getServiceRefDataMappingList } from '../ref-data/ref-data-utils';
 import { PERSON } from './constants/mock.data';
 import { PersonRole } from './interfaces/person';
 import { applySearchFilter } from './util';
-import { trackTrace } from 'lib/appInsights';
+import { trackTrace } from '../lib/appInsights';
 
 const HEADER_ACCEPT_V1 = 'application/json';
 const HEADER_ACCEPT_V2 = 'application/vnd.jrd.api+json;Version=2.0';

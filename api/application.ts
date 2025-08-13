@@ -26,75 +26,68 @@ import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { getNewUsersByServiceName } from './workAllocation';
 
-export async function createApp() {
-  const app = express();
+export const app = express();
+const logger: JUILogger = log4jui.getLogger('Application');
 
-  const logger: JUILogger = log4jui.getLogger('Application');
-
-  if (showFeature(FEATURE_HELMET_ENABLED)) {
-    app.use(helmet(getConfigValue(HELMET)));
-    app.use(helmet.noSniff());
-    app.use(helmet.frameguard({ action: 'deny' }));
-    app.use(helmet.referrerPolicy({ policy: ['origin'] }));
-    app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
-    app.use(helmet.hidePoweredBy());
-    app.use(helmet.hsts({ maxAge: 28800000 }));
-    app.use(helmet.xssFilter());
-    app.use(getContentSecurityPolicy(helmet));
-    app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-      res.setHeader('X-Robots-Tag', 'noindex');
-      res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
-      next();
-    });
-    app.get('/robots.txt', (req, res) => {
-      res.type('text/plain');
-      res.send('User-agent: *\nDisallow: /');
-    });
-    app.get('/sitemap.xml', (req, res) => {
-      res.type('text/xml');
-      res.send('User-agent: *\nDisallow: /');
-    });
-    app.disable('x-powered-by');
-    app.disable('X-Powered-By');
-  }
-
-  app.use(cookieParser(getConfigValue(SESSION_SECRET)));
-
-  if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
-    app.use(compression());
-  }
-
-  // TODO: remove tunnel and configurations
-  tunnel.init();
-  /**
- * Add Reform Standard health checks.
- */
-  health.addReformHealthCheck(app);
-
-  const xuiNodeMiddleware = await getXuiNodeMiddleware();
-  app.use(xuiNodeMiddleware);
-
-  // applyProxy needs to be used before bodyParser
-  initProxy(app);
-
-  app.use(bodyParser.json({ limit: '5mb' }));
-  app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
-
-  app.use('/am', amRoutes);
-  app.use('/api', routes);
-  app.use('/external', openRoutes);
-  app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
-
-  logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
-
-  new Promise(idamCheck).then(() => 'IDAM is up and running');
-  // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
-  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
-
-  return app;
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  app.use(helmet(getConfigValue(HELMET)));
+  app.use(helmet.noSniff());
+  app.use(helmet.frameguard({ action: 'deny' }));
+  app.use(helmet.referrerPolicy({ policy: ['origin'] }));
+  app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
+  app.use(helmet.hidePoweredBy());
+  app.use(helmet.hsts({ maxAge: 28800000 }));
+  app.use(helmet.xssFilter());
+  app.use(getContentSecurityPolicy(helmet));
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('X-Robots-Tag', 'noindex');
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+    next();
+  });
+  app.get('/robots.txt', (req, res) => {
+    res.type('text/plain');
+    res.send('User-agent: *\nDisallow: /');
+  });
+  app.get('/sitemap.xml', (req, res) => {
+    res.type('text/xml');
+    res.send('User-agent: *\nDisallow: /');
+  });
+  app.disable('x-powered-by');
+  app.disable('X-Powered-By');
 }
 
+app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+
+if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
+  app.use(compression());
+}
+
+// TODO: remove tunnel and configurations
+tunnel.init();
+/**
+ * Add Reform Standard health checks.
+ */
+health.addReformHealthCheck(app);
+
+app.use(getXuiNodeMiddleware());
+
+// applyProxy needs to be used before bodyParser
+initProxy(app);
+
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
+
+app.use('/am', amRoutes);
+app.use('/api', routes);
+app.use('/external', openRoutes);
+app.use('/workallocation', workAllocationRouter);
+app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
+
+logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
+
+new Promise(idamCheck).then(() => 'IDAM is up and running');
+// EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
+new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');

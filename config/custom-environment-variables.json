@@ -197,6 +197,11 @@
     "compressionEnabled": {
       "__name": "FEATURE_COMPRESSION_ENABLED",
       "__format": "json"
+    },
+
+    "forceNewDefaultScreenFlow": {
+      "__name": "FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW",
+      "__format": "json"
     }
   },
   "helmet": {
@@ -209,10 +214,6 @@
   },
   "sessionTimeouts": {
     "__name": "SESSION_TIMEOUTS",
-    "__format": "json"
-  },
-  "forceNewDefaultScreenFlow": {
-    "__name": "FORCE_NEW_DEFAULT_SCREEN_FLOW",
     "__format": "json"
   },
   "pact": {

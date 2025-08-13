@@ -198,6 +198,10 @@
       "__name": "FEATURE_COMPRESSION_ENABLED",
       "__format": "json"
     },
+    "queryIdamServiceOverride": {
+      "__name": "FEATURE_QUERY_IDAM_SERVICE_OVERRIDE",
+      "__format": "json"
+    },
 
     "forceNewDefaultScreenFlow": {
       "__name": "FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW",

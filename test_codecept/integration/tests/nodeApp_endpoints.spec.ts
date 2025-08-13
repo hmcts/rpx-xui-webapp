@@ -13,7 +13,7 @@ describe('nodeApp endpoint', () => {
   // const userName = 'peterxuisuperuser@mailnesia.com';
   // const password = 'Monday01';
 
-  beforeEach(function () {
+  beforeEach(function ()  {
     this.timeout(120000);
 
     setTestContext(this);
@@ -51,7 +51,7 @@ describe('nodeApp endpoint', () => {
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
     expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
-    if (actualLocationObjKeys.roleAssignmentInfo.length > 0) {
+    if (actualLocationObjKeys.roleAssignmentInfo.length > 0){
       const actualRoleAssignmentObjKeys = Object.keys(actualLocationObjKeys.roleAssignmentInfo[0]);
       console.log(actualRoleAssignmentObjKeys);
       console.log(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));

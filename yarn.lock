@@ -2955,12 +2955,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.32":
-  version: 7.2.32
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.32"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.32-javascript-void-removal":
+  version: 7.2.32-javascript-void-removal
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.32-javascript-void-removal"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b11799aa7c3f266d5ca5eebffa747c9d8535f255ea5c7051292bd2b66da15705296089c521ce7d5124f18d6bacca89bf0e77740347265a467bccae12f8c2c40b
+  checksum: 10/32a3653bdb78db7b1f867efedf8f27c209b2db96c34afc07e36746e3978d94db87868a6376510e7b7ebc68387a862a3a124eeeb46cc9c6ba4b5210eb1301a190
   languageName: node
   linkType: hard
 
@@ -3052,16 +3052,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.5":
-  version: 2.1.5
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.5"
+"@hmcts/rpx-xui-common-lib@npm:2.1.5-javascript-void-removal":
+  version: 2.1.5-javascript-void-removal
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.5-javascript-void-removal"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/11ceb13ad80de4c846e19db3fefae131f54b47790aec3b1e16457e220caea50c977f45d3df7a11e236ed7e54d5b4d7440b164f26c4af31e2b900c3b98777439d
+  checksum: 10/8693a551bf86e39bc441be9ac833617cc45a2b261427176c6a5e2890c792c59a378464de9016f8ffd44b7577ad51c29e7c6e6fceff7bf690fee56f3cd62aee42
   languageName: node
   linkType: hard
 
@@ -20335,13 +20335,13 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.32"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.32-javascript-void-removal"
     "@hmcts/ccpay-web-component": "npm:6.2.16"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.3"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.5"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.5-javascript-void-removal"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-new-csp-9"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature:  Hearings CR84: Hearing View details
 
     Scenario Outline:  Hearings tab for "<UserIdentifier>" role "<UserRole>"

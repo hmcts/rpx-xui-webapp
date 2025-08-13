@@ -1,20 +1,28 @@
+const { $, elementByXpath, selectOption } = require('../../../../helpers/globals');
 
 class EditHearingStageAndResultPage{
-  constructor(){
-    this.container = $('exui-hearing-stage-result');
+  get container() {
+    return $('exui-hearing-stage-result');
+  }
 
-    this.hearingStageSelect = $('#hearing-stage');
-    this.hearingResultRadios = element(by.xpath('//h1[contains(text(),"Hearing result")]/../../div[contains(@class,"govuk-radios")]'));
+  get hearingStageSelect() {
+    return $('#hearing-stage');
+  }
 
-    this.saveAndContinueButton = element(by.xpath('//button[contains(text(),\'Save and continue\')]'));
+  get hearingResultRadios() {
+    return elementByXpath('//h1[contains(text(),"Hearing result")]/../../div[contains(@class,"govuk-radios")]');
+  }
+
+  get saveAndContinueButton() {
+    return elementByXpath('//button[contains(text(),\'Save and continue\')]');
   }
 
   async selectHearingStage(stage){
-    await this.hearingStageSelect.select(stage);
+    await selectOption(this.hearingStageSelect, { label: stage });
   }
 
   async selectHearingResult(result){
-    const e = element(by.xpath(`//h1[contains(text(),'Hearing result')]/../..//label[contains(text(),'${result}')]/../input`));
+    const e = elementByXpath(`//h1[contains(text(),'Hearing result')]/../..//label[contains(text(),'${result}')]/../input`);
     await e.click();
   }
 }

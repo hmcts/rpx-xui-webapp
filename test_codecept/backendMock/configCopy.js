@@ -5,24 +5,45 @@ const { spawn } = require('child_process');
 
 // ─── cheap on-disk lock ─────────────────────────────────────────
 const LOCK = path.resolve(__dirname, '../../.ssr.lock');
+let   lockFd = null;
+let   ssr    = null; 
 
-function acquireLock () {
+function acquireLock() {
   try {
     // exclusive create, throws EEXIST when someone else holds the lock
-    const fd = fs.openSync(LOCK, 'wx');
-    return fd;
+    lockFd = fs.openSync(LOCK, 'wx');
+    return lockFd;
   } catch (e) {
     if (e.code !== 'EEXIST') throw e;
     return null;           // another worker owns the lock
   }
 }
 
-function releaseLock (fd) {
-  if (fd) {
-    fs.closeSync(fd);
+function releaseLock() {
+  if (lockFd !== null) {
+    fs.closeSync(lockFd);
     fs.unlinkSync(LOCK);
+    lockFd = null;
   }
 }
+
+function cleanup(trigger = 0) {
+  try {
+    if (ssr) ssr.kill('SIGTERM');
+    releaseLock();
+  } finally {
+    // If invoked by a signal, ensure a clean exit
+    if (typeof trigger === 'string') process.exit(0);
+  }
+}
+
+// run cleanup for every relevant termination path
+process.on('exit', cleanup);
+['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach(sig =>
+  process.once(sig, () => cleanup(sig))
+);
+process.once('uncaughtException',  err => { console.error(err); cleanup(1); });
+process.once('unhandledRejection', err => { console.error(err); cleanup(1); });
 
 //
 // ──────────────────────────────────────────────────────────────────────────

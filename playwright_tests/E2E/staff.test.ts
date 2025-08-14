@@ -8,7 +8,7 @@ test('staff user details', async ({ page }) => {
   console.log('Using user simple search');
   await page.locator('#content').getByRole('textbox').click();
   await page.locator('#content').getByRole('textbox').fill('xui');
-  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
   await expect(
     page.getByRole('link', { name: 'xui caseworker all services' })
@@ -41,7 +41,7 @@ test('staff user details advanced search', async ({ page }) => {
   await page.locator('#select_user-type').selectOption('1');
   await page.getByRole('checkbox', { name: 'Case allocator' }).check();
   await page.getByRole('link', { name: 'Add location' }).click();
-  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByText('Showing')).toBeVisible();
   await signOut(page);
 });

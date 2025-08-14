@@ -1,7 +1,7 @@
 apiVersion: v2
 name: xui-webapp
 home: https://github.com/hmcts/rpx-xui-webapp
-version: 1.0.33
+version: 1.0.34
 description: Expert UI
 maintainers:
   - name: HMCTS RPX XUI

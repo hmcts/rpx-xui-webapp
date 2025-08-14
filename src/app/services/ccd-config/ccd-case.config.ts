@@ -138,7 +138,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
@@ -194,7 +194,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl(): string {
-    return `${this.getCaseDataUrl()}/internal/banners/`;
+    return `${this.getCaseDataUrl()}/internal/banners`;
   }
 
   public getPrdUrl(): string {

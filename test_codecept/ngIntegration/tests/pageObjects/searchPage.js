@@ -1,19 +1,44 @@
+const { $, $$ } = require('../../../helpers/globals');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 class SearchCasePage {
-  pageContainer = $('exui-search-case');
-  dynamicFiltersContainer = $('#dynamicFilters');
-  jurisdiction = $('#s-jurisdiction');
-  caseType = $('#s-case-type');
-  applyBtnWorkbasketFilters = $('ccd-search-filters button:not(.button-secondary)');
-  resetBtnWorkbasketFilters = $('ccd-search-filters button.button-secondary]');
-  paginationInfotext = $('.pagination-top span');
-  nextPageLink = $('.ngx-pagination .pagination-next a');
-  paginationControlsContainer = $('.ngx-pagination');
-  previousPageLink = $('.ngx-pagination .pagination-previous a');
-  firstResultCaseLink = $('ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a');
-  searchResultsTopPagination = $('ccd-search-result .pagination-top');
+  get pageContainer() {
+    return $('exui-search-case');
+  }
+  get dynamicFiltersContainer() {
+    return $('#dynamicFilters');
+  }
+  get jurisdiction() {
+    return $('#s-jurisdiction');
+  }
+  get caseType() {
+    return $('#s-case-type');
+  }
+  get applyBtnWorkbasketFilters() {
+    return $('ccd-search-filters button:not(.button-secondary)');
+  }
+  get resetBtnWorkbasketFilters() {
+    return $('ccd-search-filters button.button-secondary');
+  }
+  get paginationInfotext() {
+    return $('.pagination-top span');
+  }
+  get nextPageLink() {
+    return $('.ngx-pagination .pagination-next a');
+  }
+  get paginationControlsContainer() {
+    return $('.ngx-pagination');
+  }
+  get previousPageLink() {
+    return $('.ngx-pagination .pagination-previous a');
+  }
+  get firstResultCaseLink() {
+    return $('ccd-search-result>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>a');
+  }
+  get searchResultsTopPagination() {
+    return $('ccd-search-result .pagination-top');
+  }
 
   async amOnPage() {
     try {
@@ -29,83 +54,69 @@ class SearchCasePage {
     await this.amOnPage();
     let retryCounter = 0;
     return await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForSeconds(retryCounter*3);
+      await BrowserWaits.waitForSeconds(retryCounter * 3);
       retryCounter++;
-      return await this.dynamicFiltersContainer.$(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isDisplayed();
+      return await this.dynamicFiltersContainer.locator(`#dynamicFilters .form-group #${fieldConfig.field.id}`).isVisible();
     });
   }
 
   async selectJurisdiction(option) {
     await BrowserWaits.waitForElement(this.jurisdiction);
-
-    const optionElement = this.jurisdiction.element(by.xpath('//*[text() =\'' + option + '\']'));
+    const optionElement = this.jurisdiction.locator(`xpath=//*[text()='${option}']`);
     await BrowserWaits.waitForElement(optionElement);
-
     await optionElement.click();
   }
 
   async selectCaseType(option) {
     await BrowserWaits.waitForElement(this.caseType);
-
-    const optionElement = this.caseType.element(by.xpath('//*[text() = \'' + option + '\']'));
+    const optionElement = this.caseType.locator(`xpath=//*[text()='${option}']`);
     await BrowserWaits.waitForElement(optionElement);
-
     await optionElement.click();
   }
 
-  async clickApplySearchCaseFilters(){
+  async clickApplySearchCaseFilters() {
     await this.amOnPage();
-    await browser.executeScript('arguments[0].scrollIntoView()', this.applyBtnWorkbasketFilters);
+    await this.applyBtnWorkbasketFilters.scrollIntoViewIfNeeded();
     await this.applyBtnWorkbasketFilters.click();
   }
 
-  async clickPaginationNextPage(){
-    const paginationInfobefore = await this.paginationInfotext.getText();
-    expect(await this.nextPageLink.isPresent(), 'Case list next page not present. current page info : ' + paginationInfobefore).to.be.true;
-
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.nextPageLink);
+  async clickPaginationNextPage() {
+    const beforeText = await this.paginationInfotext.textContent();
+    expect(await this.nextPageLink.isVisible(), `Next page not present. Current: ${beforeText}`).to.be.true;
+    await this.nextPageLink.scrollIntoViewIfNeeded();
     await this.nextPageLink.click();
-    const paginationInfoCurrent = await this.paginationInfotext.getText();
-    expect(paginationInfoCurrent).to.not.equal(paginationInfobefore);
-
-    await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, 'Data load taking too long on pagination');
+    const afterText = await this.paginationInfotext.textContent();
+    expect(afterText).to.not.equal(beforeText);
+    await BrowserWaits.waitForElement(this.paginationControlsContainer);
   }
 
   async clickPaginationPreviousPage() {
-    const paginationInfobefore = await this.paginationInfotext.getText();
-    expect(await this.previousPageLink.isPresent(), 'Case list previous page not present. current page info : ' + paginationInfobefore).to.be.true;
-
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.previousPageLink);
+    const beforeText = await this.paginationInfotext.textContent();
+    expect(await this.previousPageLink.isVisible(), `Previous page not present. Current: ${beforeText}`).to.be.true;
+    await this.previousPageLink.scrollIntoViewIfNeeded();
     await this.previousPageLink.click();
-    const paginationInfoCurrent = await this.paginationInfotext.getText();
-    expect(paginationInfoCurrent).to.not.equal(paginationInfobefore);
-    await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, 'Data load taking too long on pagination');
+    const afterText = await this.paginationInfotext.textContent();
+    expect(afterText).to.not.equal(beforeText);
+    await BrowserWaits.waitForElement(this.paginationControlsContainer);
   }
 
-  async openFirstCaseInResults(){
-    await this.searchResultsTopPagination.isPresent();
+  async openFirstCaseInResults() {
+    await this.searchResultsTopPagination.isVisible();
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
-    const thisPageUrl = await browser.getCurrentUrl();
-
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      this.firstResultCaseLink);
+    const currentUrl = await page.url();
+    await this.firstResultCaseLink.scrollIntoViewIfNeeded();
     await this.firstResultCaseLink.click();
-
-    await BrowserWaits.waitForPageNavigation(thisPageUrl);
+    await BrowserWaits.waitForPageNavigation(currentUrl);
   }
 
   async nextStepTriggerActions() {
-    const ccd_event_trigger = $$('ccd-event-trigger >form .form-group option');
-    const eventCount = await ccd_event_trigger.count();
-    const optionValues = [];
-    const id = 'next-step';
-    for (let ecount = 1; ecount <= eventCount; ecount++) {
-      const optionText = await element(by.xpath(`//*[@id='${id}']//option[${ecount}]`)).getText();
-      optionValues.push(`${optionText}`);
+    const options = $$('ccd-event-trigger >form .form-group option');
+    const count = await options.count();
+    const values = [];
+    for (let i = 0; i < count; i++) {
+      values.push(await options.nth(i).textContent());
     }
-    return optionValues;
+    return values;
   }
 }
 

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { sendGet, sendPost } from '../common/crudService';
 import { getConfigValue, showFeature } from '../configuration';
-import { FORCE_NEW_DEFAULT_SCREEN_FLOW, HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import { FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW, HEARINGS_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import {
@@ -67,7 +67,7 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
 
 export function retrieveForceNewDefaultScreenFlow():boolean {
   try {
-    const result = showFeature(FORCE_NEW_DEFAULT_SCREEN_FLOW);
+    const result = showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW);
     trackTrace('services.index - retrieveForceNewDefaultScreenFlow' + result);
     console.log('services.index - retrieveForceNewDefaultScreenFlow' + result);
     return toBoolean(result);

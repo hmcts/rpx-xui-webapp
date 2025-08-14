@@ -13,7 +13,7 @@ test('Simplified search results', async ({ page }) => {
   
     console.log("Using simple search");
     await fillSearchBox(page);
-    await page.getByRole('button', { name: 'Search' }).click();
+    await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.locator('exui-staff-user-list')).toContainText('Showing 1');
   
     await signOut(page);
@@ -25,7 +25,7 @@ test('Simplified search', async ({ page }) => {
   
     console.log("Using Simple search");
     await fillSearchBox(page);
-    await page.getByRole('button', { name: 'Search' }).click();
+    await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.getByRole('columnheader', { name: 'Job title' })).toBeVisible();
     await expect(page.locator('exui-staff-user-list')).toContainText('Showing 1');
     await axeTest(page);
@@ -40,10 +40,10 @@ test('Toggle search', async ({ page }) => {
   console.log("Toggle between simple and advanced search");
   await page.locator('#content').getByRole('textbox').click();
   await page.locator('#content').getByRole('textbox').fill('xui');
-  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
   await page.getByRole('link', { name: 'Advanced search' }).click();
   await page.locator('#select_user-job-title').selectOption('2');
-  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByText('Showing')).toBeVisible();
   await page.getByRole('link', { name: 'Hide advanced search' }).click();
   await expect(page.getByText('Showing')).toBeVisible();
@@ -63,7 +63,7 @@ test('Advanced search', async ({ page }) => {
     console.log("Using user simple search");
     await page.locator('#content').getByRole('textbox').click();
     await page.locator('#content').getByRole('textbox').fill('xui');
-    await page.getByRole('button', { name: 'Search' }).click();
+    await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.locator('exui-staff-user-list')).toContainText('Showing 1');
   
     console.log("Using Advanced search");
@@ -80,7 +80,7 @@ test('Advanced search', async ({ page }) => {
     await page.locator('#select_user-type').selectOption('3');
     await page.getByLabel('Case allocator').check();
     await page.locator('#select_user-job-title').selectOption('2');
-    await page.getByRole('button', { name: 'Search' }).click();
+    await page.getByRole('button', { name: 'Search', exact: true }).click();
     await expect(page.locator('#user-list-no-results')).toContainText('No results found');
   
     await axeTest(page);

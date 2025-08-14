@@ -49,9 +49,9 @@ export async function createApp() {
 
   const logger: JUILogger = log4jui.getLogger('Application');
   if (showFeature(FEATURE_HELMET_ENABLED)) {
-    const helmetCfg = getConfigValue(HELMET);
-    if (helmetCfg && typeof helmetCfg === 'object') {
-      app.use(helmet(helmetCfg)); // use the configured rules
+    const helmetConfig = getConfigValue(HELMET);
+    if (helmetConfig && typeof helmetConfig === 'object') {
+      app.use(helmet(helmetConfig)); // use the configured rules
     } else {
       app.use(helmet()); // fall back to Helmet defaults
     }

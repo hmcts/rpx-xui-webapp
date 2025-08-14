@@ -5,7 +5,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
-const logger: JUILogger = log4jui.getLogger('crud-service');
+export const logger: JUILogger = log4jui.getLogger('crud-service');
 
 /**
  * Generic handleGet call Rest API with GET method

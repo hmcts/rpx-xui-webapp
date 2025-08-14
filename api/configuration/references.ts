@@ -89,8 +89,6 @@ export const SESSION_SECRET = 'sessionSecret';
 
 export const ENVIRONMENT = 'environment';
 
-export const FORCE_NEW_DEFAULT_SCREEN_FLOW = 'forceNewDefaultScreenFlow';
-
 export const CASEWORKER_PAGE_SIZE = 'caseworkerPageSize';
 
 export const JURISDICTIONS = 'jurisdictions';
@@ -134,6 +132,8 @@ export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
 
 export const FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED = 'lauSpecificChallengedEnabled';
+
+export const FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW = 'forceNewDefaultScreenFlow';
 
 export const HELMET = 'helmet';
 

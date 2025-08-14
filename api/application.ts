@@ -49,7 +49,12 @@ export async function createApp() {
 
   const logger: JUILogger = log4jui.getLogger('Application');
   if (showFeature(FEATURE_HELMET_ENABLED)) {
-    app.use(helmet(getConfigValue(HELMET)));
+    const helmetCfg = getConfigValue(HELMET);
+    if (helmetCfg && typeof helmetCfg === 'object') {
+      app.use(helmet(helmetCfg)); // use the configured rules
+    } else {
+      app.use(helmet()); // fall back to Helmet defaults
+    }
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));
     app.use(helmet.referrerPolicy({ policy: ['origin'] }));

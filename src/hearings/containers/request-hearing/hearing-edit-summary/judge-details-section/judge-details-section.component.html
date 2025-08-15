@@ -19,7 +19,7 @@
         (click)="onChange('needJudge')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="judgeName?.length > 0">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Name of the judge
     </div>
@@ -35,7 +35,7 @@
         (click)="onChange('judgeName')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="judgeTypes?.length > 0">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Select all judge types that apply
     </div>
@@ -51,7 +51,7 @@
         (click)="onChange('judgeTypes')">Change</a>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="excludedJudgeNames?.length > 0">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Exclude a judge
     </div>

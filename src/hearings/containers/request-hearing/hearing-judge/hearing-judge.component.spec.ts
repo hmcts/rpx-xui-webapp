@@ -138,7 +138,7 @@ describe('HearingJudgeComponent', () => {
     component.hearingJudgeForm.get('specificJudge').setValue(RadioOptions.NO);
     component.showSpecificJudge(RadioOptions.NO);
     component.showRadioButtonError();
-    expect(component.selectJudgeTypesError).toBe(HearingJudgeSelectionEnum.SelectOneJudgeError);
+    expect(component.selectJudgeTypesError).toBe(null);
   });
 
   it('should check RadioButton selection', () => {

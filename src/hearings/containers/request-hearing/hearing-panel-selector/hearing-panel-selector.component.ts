@@ -7,7 +7,6 @@ import { HearingJudgeNamesListComponent } from '../../../components';
 import {
   ACTION,
   ControlTypeEnum,
-  HearingPanelSelectionEnum,
   MemberType,
   RequirementType
 } from '../../../models/hearings.enum';
@@ -176,10 +175,8 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
 
   public executeAction(action: ACTION): void {
     if (action === ACTION.CONTINUE) {
-      if (this.isFormValid()) {
-        this.prepareData();
-        super.navigateAction(action);
-      }
+      this.prepareData();
+      super.navigateAction(action);
     } else if (action === ACTION.BACK) {
       super.navigateAction(action);
     }
@@ -187,26 +184,6 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
 
   public onModelChange(updatedModel: LovRefDataModel[]): void {
     this.panelListCollection = updatedModel;
-  }
-
-  public isFormValid(): boolean {
-    this.validationErrors = [];
-    this.panelSelectionError = null;
-
-    const validIncludeOrExcludeSelection = this.includedJudge.judgeList.length > 0 || this.excludedJudge.judgeList.length > 0;
-
-    if (!this.panelListCollection.length) {
-      if (!validIncludeOrExcludeSelection) {
-        this.panelSelectionError = HearingPanelSelectionEnum.SelectionError;
-        this.validationErrors.push({
-          id: 'specific-panel-selection',
-          message: HearingPanelSelectionEnum.SelectionError
-        });
-        return false;
-      }
-    }
-
-    return this.panelJudgeForm.valid;
   }
 
   public ngAfterViewInit(): void {

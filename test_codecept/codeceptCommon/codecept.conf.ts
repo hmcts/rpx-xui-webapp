@@ -264,25 +264,6 @@ exports.config = {
     if (parallel) {
       await teardown();
 
-      // ─── remove mock session files (core API) ──────────────────
-      const dirs = [
-        path.resolve(__dirname, '../../.sessions'),
-        path.resolve(__dirname, '../../api/.sessions')   // DEBUG-mode folder
-      ];
-
-      for (const dir of dirs) {
-        try {
-          // recursive delete, no error if dir is missing
-          fs.rmSync(dir, { recursive: true, force: true });
-
-          // Re-create the empty folder so the next run doesn’t crash
-          fs.mkdirSync(dir, { recursive: true });
-          console.log('[mock] cleaned', dir);
-        } catch (e) {
-          console.warn('[mock] could not clean', dir, e.message);
-        }
-      }
-
       exitWithStatus();
     }
     await generateCucumberReport();        // JSON is now on disk

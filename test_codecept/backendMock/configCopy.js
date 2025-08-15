@@ -46,6 +46,24 @@ function releaseLock() {
     writeInt(COUNTER_FILE, n);
 
     if (n === 0) {
+      // ─── remove mock session files (core API) ──────────────────
+      const dirs = [
+        path.resolve(__dirname, '../../.sessions'),
+        path.resolve(__dirname, '../../api/.sessions')   // DEBUG-mode folder
+      ];
+
+      for (const dir of dirs) {
+        try {
+          // recursive delete, no error if dir is missing
+          fs.rmSync(dir, { recursive: true, force: true });
+
+          // Re-create the empty folder so the next run doesn’t crash
+          fs.mkdirSync(dir, { recursive: true });
+          console.log('[mock] cleaned', dir);
+        } catch (e) {
+          console.warn('[mock] could not clean', dir, e.message);
+        }
+      }
       /* last worker out – remove dir */
       try {
         const ownerPid = readInt(OWNER_PIDFILE);

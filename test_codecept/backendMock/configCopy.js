@@ -64,7 +64,6 @@ function releaseLock() {
 /* unified cleanup for all exit paths */
 function cleanup(trigger = 0) {
   try {
-    if (iAmOwner && ssr) ssr.kill('SIGTERM');
     releaseLock();
   } finally {
     if (typeof trigger === 'string') process.exit(0);

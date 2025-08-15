@@ -1,5 +1,5 @@
 <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
-<a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back' | rpxTranslate }}</a>
+<a class="govuk-back-link" href="#" (click)="onBack(); $event.preventDefault()">{{ 'Back' | rpxTranslate }}</a>
 <xuilib-hmcts-error-summary [errorMessages]="errors" [header]="'There is a problem' | rpxTranslate" *ngIf="errors && errors.length">
 </xuilib-hmcts-error-summary>
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName"></exui-linked-hearings-case-title>
@@ -30,7 +30,7 @@
                 {{case.caseName}} &nbsp;{{case.caseRef | caseReference}}
               </th>
               <th scope="col" class="govuk-table__header" width="80px" *ngIf="mode === pageMode.MANAGE_HEARINGS">
-                <a href="javascript:void(0)" class="clear-link" (click)="clearHearings(i)">{{ 'Clear' | rpxTranslate }}</a>
+                <a href="#" class="clear-link" (click)="clearHearings(i); $event.preventDefault()">{{ 'Clear' | rpxTranslate }}</a>
               </th>
             </tr>
             <tr class="govuk-table__row" *ngIf="case.caseHearings.length === 0">
@@ -50,7 +50,7 @@
                     <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                         alt="Linked">&nbsp;
                     <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseRef, 'hearings']"
-                      href="javascript:void(0)">{{ 'Manage Link' | rpxTranslate }}</a>
+                      >{{ 'Manage Link' | rpxTranslate }}</a>
                   </span>
                  </td>
                  <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
@@ -79,7 +79,7 @@
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                       alt="Linked">&nbsp;
                   <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseRef, 'hearings']"
-                    href="javascript:void(0)">{{ 'Manage Link' | rpxTranslate }}</a>
+                    >{{ 'Manage Link' | rpxTranslate }}</a>
                 </span>
               </td>
               <td scope="row" class="govuk-table__cell align-middle govuk-table-width-45-percent">
@@ -135,5 +135,5 @@
 
 <div *ngIf="linkedCases?.length">
   <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">{{ 'Continue' | rpxTranslate }}</button>
-  <a href="javascript:void(0)" class="link-cancel" (click)="onCancel()">{{ 'Cancel' | rpxTranslate }}</a>
+  <a href="#" class="link-cancel" (click)="onCancel(); $event.preventDefault()">{{ 'Cancel' | rpxTranslate }}</a>
 </div>

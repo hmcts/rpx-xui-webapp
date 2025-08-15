@@ -4,9 +4,9 @@
     <div class="govuk-main-wrapper">
       <p class="govuk-body">{{serverError.message}}</p>
       <span class="govuk-body align-left">
-          <a href="javascript:void(0)" (click)="reloadHearings()"
+          <button type="button" (click)="reloadHearings()"
              id="reload-hearing-tab"
-             class="govuk-link">{{ 'Reload hearings tab' | rpxTranslate }}</a>
+             class="govuk-link govuk-js-link">{{ 'Reload hearings tab' | rpxTranslate }}</button>
         </span>
     </div>
   </div>
@@ -16,11 +16,11 @@
   <ng-container *ngIf="!serverError &&
   (data.upcoming !== null || data.pastAndCancelled !== null || data.listed !==null)">
     <a *ngIf="hasRequestAction"
-       href="javascript:void(0)"
+       href="#"
        role="button" draggable="false"
        class="govuk-button govuk-button--start"
        data-module="govuk-button"
-       (click)="createHearingRequest()"
+       (click)="createHearingRequest(); $event.preventDefault()"
        style="padding-right: 10px;background-image:none;">
       {{'Request a hearing' | rpxTranslate }}
       <svg style="padding-left:5px;vertical-align: middle;" class="govuk-button__start-icon"

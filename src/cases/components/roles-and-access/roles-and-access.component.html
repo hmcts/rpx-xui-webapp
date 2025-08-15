@@ -89,8 +89,7 @@
   <exui-exclusions-table *ngIf="namedExclusions" [exclusions]="namedExclusions" [caseDetails]="caseDetails" [isCaseAllocator]="showAllocateRoleLink"></exui-exclusions-table>
 
   <p>
-    <a href="javascript:void(0)"
-       [routerLink]="['/', 'role-access', 'add-exclusion']"
+    <a [routerLink]="['/', 'role-access', 'add-exclusion']"
        [queryParams]="{'caseId': caseId, 'jurisdiction': jurisdiction}"
        (click) = "removeCashedCase()"
        class="govuk-link">Add</a>

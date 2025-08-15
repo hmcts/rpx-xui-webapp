@@ -1,4 +1,4 @@
-<a class="govuk-back-link" href="javascript:void(0)" *ngIf="isVisible((nocNavigationCurrentState$ | async), backVisibilityStates)" (click)="onEventTrigger(nocNavigationEvent.BACK)">{{'Back' | rpxTranslate}}</a>
+<a class="govuk-back-link" href="#" *ngIf="isVisible((nocNavigationCurrentState$ | async), backVisibilityStates)" (click)="onEventTrigger(nocNavigationEvent.BACK); $event.preventDefault()">{{'Back' | rpxTranslate}}</a>
 <div>
     <ng-content></ng-content>
 </div>

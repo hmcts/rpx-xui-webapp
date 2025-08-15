@@ -11,7 +11,6 @@ import { PanelPreferenceModel } from '../../../models/panelPreference.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { JudicialRefDataService } from '../../../services/judicial-ref-data.service';
 import * as fromHearingStore from '../../../store';
-import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
@@ -34,7 +33,6 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
   @ViewChild('excludedJudge', { static: false }) public excludedJudge: HearingJudgeNamesListComponent;
 
   constructor(private readonly formBuilder: FormBuilder,
-              private readonly validatorsUtils: ValidatorsUtils,
               protected readonly hearingStore: Store<fromHearingStore.State>,
               protected readonly hearingsService: HearingsService,
               protected readonly judicialRefDataService: JudicialRefDataService,
@@ -119,8 +117,6 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     this.hearingJudgeForm.controls.judgeType.clearValidators();
     if (this.specificJudgeSelection === RadioOptions.YES) {
       this.hearingJudgeForm.controls.judgeName.setValidators([Validators.required]);
-    } else {
-      this.hearingJudgeForm.controls.judgeType.setValidators([this.validatorsUtils.formArraySelectedValidator()]);
     }
     this.hearingJudgeForm.controls.judgeName.updateValueAndValidity();
     this.hearingJudgeForm.controls.judgeType.updateValueAndValidity();
@@ -188,9 +184,6 @@ export class HearingJudgeComponent extends RequestHearingPageFlow implements OnI
     } else if (this.hearingJudgeForm.controls.judgeName.valid && this.hearingJudgeForm.controls.judgeName.touched) {
       this.selectJudgeNameError = HearingJudgeSelectionEnum.ExcludeFullNameJudge;
       this.validationErrors.push({ id: 'inputSelectPerson', message: HearingJudgeSelectionEnum.ExcludeFullNameJudge });
-    } else if (this.specificJudgeSelection === RadioOptions.NO && !this.hearingJudgeForm.controls.judgeType.valid) {
-      this.selectJudgeTypesError = HearingJudgeSelectionEnum.SelectOneJudgeError;
-      this.validationErrors.push({ id: 'judgeTypes', message: HearingJudgeSelectionEnum.SelectOneJudgeError });
     }
   }
 

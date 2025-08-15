@@ -189,20 +189,17 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'judgeName',
         answerTitle: 'Name of the judge',
-        answerSource: AnswerSource.JUDGE_NAME,
-        isHiddenSource: IsHiddenSource.JUDGE_NAME
+        answerSource: AnswerSource.JUDGE_NAME
       },
       {
         id: 'judgeTypes',
         answerTitle: 'Select all judge types that apply',
-        answerSource: AnswerSource.JUDGE_TYPES,
-        isHiddenSource: IsHiddenSource.JUDGE_TYPES
+        answerSource: AnswerSource.JUDGE_TYPES
       },
       {
         id: 'judgeExclusion',
         answerTitle: 'Exclude a judge',
-        answerSource: AnswerSource.JUDGE_EXCLUSION,
-        isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
+        answerSource: AnswerSource.JUDGE_EXCLUSION
       }
     ],
     isHiddenSource: IsHiddenSource.JUDGE_DETAILS_EXCLUSION
@@ -249,20 +246,17 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'panelInclusion',
         answerTitle: 'Include specific panel members',
-        answerSource: AnswerSource.PANEL_INCLUSION,
-        isHiddenSource: IsHiddenSource.PANEL_INCLUSION
+        answerSource: AnswerSource.PANEL_INCLUSION
       },
       {
         id: 'panelExclusion',
         answerTitle: 'Exclude specific panel members',
-        answerSource: AnswerSource.PANEL_EXCLUSION,
-        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
+        answerSource: AnswerSource.PANEL_EXCLUSION
       },
       {
         id: 'panelRoles',
         answerTitle: 'Select any other panel roles required',
-        answerSource: AnswerSource.PANEL_ROLES,
-        isHiddenSource: IsHiddenSource.PANEL_ROLES
+        answerSource: AnswerSource.PANEL_ROLES
       }
     ],
     isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION

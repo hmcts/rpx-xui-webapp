@@ -2948,12 +2948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.32-mv-redactions-rc1":
-  version: 7.2.32-mv-redactions-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.32-mv-redactions-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.32-mv-redactions-rc2":
+  version: 7.2.32-mv-redactions-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.32-mv-redactions-rc2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b236d50d11ac525fceca8bf3a9e91451a22e6d163edf301c66995b10b1dbdc63299e59ac3569d75121031cacb6e0d11e98164839a683f8eeac42ebba4df209a6
+  checksum: 10/bbf2d1ac66cab70a92458169047a59ae64ab9031bf29d97d943009e7a268000edf0170526095b8add8b7d70337d02bc828b970243cfb38e28f214a71643916d7
   languageName: node
   linkType: hard
 
@@ -2976,9 +2976,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.3-redactions-rc5":
-  version: 4.1.3-redactions-rc5
-  resolution: "@hmcts/media-viewer@npm:4.1.3-redactions-rc5"
+"@hmcts/media-viewer@npm:4.1.3-redactions-rc7":
+  version: 4.1.3-redactions-rc7
+  resolution: "@hmcts/media-viewer@npm:4.1.3-redactions-rc7"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -2997,7 +2997,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/ab03bd8f927de1fc93e87845a85bf0e43a0b8cd5c771831fbc14b5fd55fb4294b5012dfe2a239c564e18b4778c6933ed1b4f759dcf1a6189ec86de3256c49c2b
+  checksum: 10/bcb0e7b769ed916653d0d3045ed2ab961f20c105e2d2fdfbce1dd9432b0c074e6618cd541fc2fb33bcbe1ae41d469292b1e6a8dd8305eba892696b5b9369e316
   languageName: node
   linkType: hard
 
@@ -4840,90 +4840,90 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-android-arm64@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-android-arm64@npm:0.1.70"
+"@napi-rs/canvas-android-arm64@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-android-arm64@npm:0.1.77"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-darwin-arm64@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-darwin-arm64@npm:0.1.70"
+"@napi-rs/canvas-darwin-arm64@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-darwin-arm64@npm:0.1.77"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-darwin-x64@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-darwin-x64@npm:0.1.70"
+"@napi-rs/canvas-darwin-x64@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-darwin-x64@npm:0.1.77"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.70"
+"@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.77"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-linux-arm64-gnu@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-linux-arm64-gnu@npm:0.1.70"
+"@napi-rs/canvas-linux-arm64-gnu@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-linux-arm64-gnu@npm:0.1.77"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-linux-arm64-musl@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-linux-arm64-musl@npm:0.1.70"
+"@napi-rs/canvas-linux-arm64-musl@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-linux-arm64-musl@npm:0.1.77"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.70"
+"@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.77"
   conditions: os=linux & cpu=riscv64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-linux-x64-gnu@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-linux-x64-gnu@npm:0.1.70"
+"@napi-rs/canvas-linux-x64-gnu@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-linux-x64-gnu@npm:0.1.77"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-linux-x64-musl@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-linux-x64-musl@npm:0.1.70"
+"@napi-rs/canvas-linux-x64-musl@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-linux-x64-musl@npm:0.1.77"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@napi-rs/canvas-win32-x64-msvc@npm:0.1.70":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas-win32-x64-msvc@npm:0.1.70"
+"@napi-rs/canvas-win32-x64-msvc@npm:0.1.77":
+  version: 0.1.77
+  resolution: "@napi-rs/canvas-win32-x64-msvc@npm:0.1.77"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
 "@napi-rs/canvas@npm:^0.1.65":
-  version: 0.1.70
-  resolution: "@napi-rs/canvas@npm:0.1.70"
+  version: 0.1.77
+  resolution: "@napi-rs/canvas@npm:0.1.77"
   dependencies:
-    "@napi-rs/canvas-android-arm64": "npm:0.1.70"
-    "@napi-rs/canvas-darwin-arm64": "npm:0.1.70"
-    "@napi-rs/canvas-darwin-x64": "npm:0.1.70"
-    "@napi-rs/canvas-linux-arm-gnueabihf": "npm:0.1.70"
-    "@napi-rs/canvas-linux-arm64-gnu": "npm:0.1.70"
-    "@napi-rs/canvas-linux-arm64-musl": "npm:0.1.70"
-    "@napi-rs/canvas-linux-riscv64-gnu": "npm:0.1.70"
-    "@napi-rs/canvas-linux-x64-gnu": "npm:0.1.70"
-    "@napi-rs/canvas-linux-x64-musl": "npm:0.1.70"
-    "@napi-rs/canvas-win32-x64-msvc": "npm:0.1.70"
+    "@napi-rs/canvas-android-arm64": "npm:0.1.77"
+    "@napi-rs/canvas-darwin-arm64": "npm:0.1.77"
+    "@napi-rs/canvas-darwin-x64": "npm:0.1.77"
+    "@napi-rs/canvas-linux-arm-gnueabihf": "npm:0.1.77"
+    "@napi-rs/canvas-linux-arm64-gnu": "npm:0.1.77"
+    "@napi-rs/canvas-linux-arm64-musl": "npm:0.1.77"
+    "@napi-rs/canvas-linux-riscv64-gnu": "npm:0.1.77"
+    "@napi-rs/canvas-linux-x64-gnu": "npm:0.1.77"
+    "@napi-rs/canvas-linux-x64-musl": "npm:0.1.77"
+    "@napi-rs/canvas-win32-x64-msvc": "npm:0.1.77"
   dependenciesMeta:
     "@napi-rs/canvas-android-arm64":
       optional: true
@@ -4945,7 +4945,7 @@ __metadata:
       optional: true
     "@napi-rs/canvas-win32-x64-msvc":
       optional: true
-  checksum: 10/f58dffc0543b58a9338b93e320fde9db8d08815926f20f15cdedfa21f756398e4b8fe6ee35f24316a47f572961f03319a8fe9cf3d8e30978af75d5b6d2265f62
+  checksum: 10/8af383233f37b6c4ba8d6cb6f44868c67e34abd993ad1b1a4c30edbe1a4df8b886fe1b0c7758197650d394dac78d40d9c2e3cb4f5a4436562b607e96735694fb
   languageName: node
   linkType: hard
 
@@ -20371,10 +20371,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.32-mv-redactions-rc1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.32-mv-redactions-rc2"
     "@hmcts/ccpay-web-component": "npm:6.2.16"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.3-redactions-rc5"
+    "@hmcts/media-viewer": "npm:4.1.3-redactions-rc7"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5"

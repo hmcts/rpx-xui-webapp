@@ -45,4 +45,5 @@ export interface ServiceHearingValuesModel {
   vocabulary: VocabularyModel[];
   hearingChannels: string[];
   hearingLevelParticipantAttendance: string[];
+  panelRequiredDefault?: boolean;
 }

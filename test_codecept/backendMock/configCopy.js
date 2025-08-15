@@ -1,114 +1,135 @@
-const fs   = require('fs');
-const net  = require('net');
+const fs = require('fs');
+const net = require('net');
 const path = require('path');
 const { spawn } = require('child_process');
 
-// ─── cheap on-disk lock ─────────────────────────────────────────
-const LOCK = path.resolve(__dirname, '../../.ssr.lock');
-let   lockFd = null;
-let   ssr    = null; 
+/* ── reference-count lock ───────────────────────────────────── */
+const LOCK_DIR = path.resolve(__dirname, '../../.ssr.lock');
+const COUNTER_FILE = path.join(LOCK_DIR, 'counter');
+const OWNER_PIDFILE = path.join(LOCK_DIR, 'owner.pid');
 
+let ssr = null; // holds the spawned SSR process (owner only)
+let iAmOwner = false; // true if THIS worker started the server
+
+function readInt(fp) { return Number(fs.readFileSync(fp, 'utf8').trim() || '0'); }
+function writeInt(fp, n) { fs.writeFileSync(fp, String(n)); }
+
+/** Acquire the lock; return true if THIS worker should spawn SSR */
 function acquireLock() {
   try {
-    // exclusive create, throws EEXIST when someone else holds the lock
-    lockFd = fs.openSync(LOCK, 'wx');
-    return lockFd;
+    /* first worker creates the directory */
+    fs.mkdirSync(LOCK_DIR, { recursive: false });
+    writeInt(COUNTER_FILE, 1);
+    writeInt(OWNER_PIDFILE, process.pid);
+    iAmOwner = true;
+    return true; // start SSR
   } catch (e) {
-    if (e.code !== 'EEXIST') throw e;
-    return null;           // another worker owns the lock
+    if (e.code !== 'EEXIST') throw e;     // real error
+
+    /* directory already exists ⇒ bump counter (retry if file busy) */
+    for (let retries = 0; retries < 5; retries++) {
+      try {
+        const n = readInt(COUNTER_FILE);
+        writeInt(COUNTER_FILE, n + 1);
+        break;
+      } catch { /* short wait then retry */ }
+    }
+    return false; // SSR is already or will be up
   }
 }
 
 function releaseLock() {
-  if (lockFd !== null) {
-    fs.closeSync(lockFd);
-    fs.unlinkSync(LOCK);
-    lockFd = null;
+  try {
+    if (!fs.existsSync(COUNTER_FILE)) return; // someone else cleaned up
+
+    const n = Math.max(0, readInt(COUNTER_FILE) - 1);
+    writeInt(COUNTER_FILE, n);
+
+    if (n === 0) {
+      /* last worker out – remove dir */
+      try {
+        const ownerPid = readInt(OWNER_PIDFILE);
+        if (ownerPid) process.kill(ownerPid, 'SIGTERM');
+      } catch { /* already dead */ }
+
+      fs.rmSync(LOCK_DIR, { recursive: true, force: true });
+    }
+  } catch (e) {
+    if (e.code !== 'ENOENT') {  // ignore “file already gone”
+      console.error('[lock] release failed:', e);
+    }
   }
 }
 
+/* unified cleanup for all exit paths */
 function cleanup(trigger = 0) {
   try {
-    if (ssr) ssr.kill('SIGTERM');
+    if (iAmOwner && ssr) ssr.kill('SIGTERM');
     releaseLock();
   } finally {
-    // If invoked by a signal, ensure a clean exit
     if (typeof trigger === 'string') process.exit(0);
   }
 }
 
-// run cleanup for every relevant termination path
 process.on('exit', cleanup);
 ['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach(sig =>
   process.once(sig, () => cleanup(sig))
 );
-process.once('uncaughtException',  err => { console.error(err); cleanup(1); });
+process.once('uncaughtException', err => { console.error(err); cleanup(1); });
 process.once('unhandledRejection', err => { console.error(err); cleanup(1); });
 
-//
-// ──────────────────────────────────────────────────────────────────────────
-// helper – resolves once the port probe succeeds/fails
-// ──────────────────────────────────────────────────────────────────────────
-function isPortFree (port) {
-  return new Promise((resolve) => {
-    const tester = net.createServer()
-      .once('error', () => resolve(false)) // EADDRINUSE
-      .once('listening', () => {
-        tester.close(() => resolve(true));
-      })
+/* ── helper – probe a port ───────────────────────────────────── */
+function isPortFree(port) {
+  return new Promise(res => {
+    const t = net.createServer()
+      .once('error', () => res(false))
+      .once('listening', () => t.close(() => res(true)))
       .listen(port, '::');
   });
 }
 
 (async () => {
-  /* 1 ── copy local-mock.json once ─────────────────────────────── */
+  /* 1 - copy local-mock.json once */
   const cfgDir = path.resolve(__dirname, '../../config');
   if (!fs.existsSync(path.join(cfgDir, 'local-mock.json'))) {
     fs.copyFileSync(
       path.join(__dirname, 'local-mock.json'),
-      path.join(cfgDir,  'local-mock.json')
+      path.join(cfgDir, 'local-mock.json')
     );
   }
 
-  /* 1a ── ensure session folders exist ─────────────────────────── */
+  /* 1a - ensure session folders */
   ['../../.sessions', '../../api/.sessions'].forEach(rel => {
-    const dir = path.resolve(__dirname, rel);
-    fs.mkdirSync(dir, { recursive: true });
-    console.log('[mock] ensured', dir);
+    fs.mkdirSync(path.resolve(__dirname, rel), { recursive: true });
   });
 
-  /* 2 ── start Mock API (8080) ─────────────────────────────────── */
+  /* 2 - start Mock API */
   const mock = require('./app');
-  await mock.startServer();          // will no-op if already started
+  await mock.startServer();
   process.env.MOCK_ALREADY_RUNNING = 'true';
 
-  /* 3 ── start SSR (3000) only once, via the lock ─────────────── */
-  const PORT   = 3000;
-  const lockFd = acquireLock();          // null if a lock already exists
+  /* 3 - SSR behind reference-count lock */
+  const PORT = 3000;
+  const shouldStart = acquireLock(); // true only for first worker
 
-  if (lockFd && await isPortFree(PORT)) {
-    console.log('[mock] starting SSR on :3000')
+  if (shouldStart && await isPortFree(PORT)) {
+    console.log('[mock] starting SSR on :3000');
+
     const env = {
       ...process.env,
-      NODE_CONFIG_ENV   : 'mock',
-      TEST_CSP_OFF      : 'true',
+      NODE_CONFIG_ENV: 'mock',
+      TEST_CSP_OFF: 'true',
       SSR_ALREADY_RUNNING: 'true'
     };
 
-    const ssr = spawn(
+    ssr = spawn(
       process.platform === 'win32' ? 'yarn.cmd' : 'yarn',
       ['node', 'dist/rpx-exui/api/server.bundle.js'],
       { cwd: path.resolve(__dirname, '../../'), stdio: 'inherit', env }
     );
 
-    // ensure we don’t leave stray children
-    process.on('exit', () => { ssr.kill(); releaseLock(lockFd); });
-
   } else {
-    console.log('[mock] another worker is starting / already started SSR – waiting for it');
-    // spin-wait until :3000 is really listening
-    while (await isPortFree(PORT)) {
-      await new Promise(r => setTimeout(r, 200));
-    }
+    console.log('[mock] waiting for shared SSR on :3000 …');
+    while (await isPortFree(PORT)) await new Promise(r => setTimeout(r, 200));
   }
 })();

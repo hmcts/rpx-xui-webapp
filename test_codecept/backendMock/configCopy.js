@@ -7,6 +7,7 @@ const { spawn } = require('child_process');
 const LOCK_DIR = path.resolve(__dirname, '../../.ssr.lock');
 const COUNTER_FILE = path.join(LOCK_DIR, 'counter');
 const OWNER_PIDFILE = path.join(LOCK_DIR, 'owner.pid');
+const KEEP_SSR_ALIVE = process.env.KEEP_SSR_ALIVE === 'true';
 
 let ssr = null; // holds the spawned SSR process (owner only)
 let iAmOwner = false; // true if THIS worker started the server
@@ -65,10 +66,14 @@ function releaseLock() {
         }
       }
       /* last worker out – remove dir */
-      try {
-        const ownerPid = readInt(OWNER_PIDFILE);
-        if (ownerPid) process.kill(ownerPid, 'SIGTERM');
-      } catch { /* already dead */ }
+      if (!KEEP_SSR_ALIVE) {
+        try {
+          const ownerPid = readInt(OWNER_PIDFILE);
+          if (ownerPid) process.kill(ownerPid, 'SIGTERM');
+        } catch { /* already dead */ }
+      } else {
+        console.log('[mock] SSR kept alive for shared run (KEEP_SSR_ALIVE=true)');
+      }
 
       fs.rmSync(LOCK_DIR, { recursive: true, force: true });
     }

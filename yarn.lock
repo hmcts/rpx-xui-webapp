@@ -2948,12 +2948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.35":
-  version: 7.2.35
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.35"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.35-2900":
+  version: 7.2.35-2900
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.35-2900"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/cb20b8690be301abe09158b68e0e526ca7618d20f605ed6cc6d8f88211f4d1f45dd1c6bbf84358785b8878a187936f9ae87dba5d50f7d4893b9edd8d7a792196
+  checksum: 10/8bbd051d733b5eb709c84808651b0f992f746194525e970626d74d5909782d55fd3c4e4204574f98d80edb33a8dc65b6d8a971823af88450fe5c92cca5f8aabd
   languageName: node
   linkType: hard
 
@@ -2976,9 +2976,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.3":
-  version: 4.1.3
-  resolution: "@hmcts/media-viewer@npm:4.1.3"
+"@hmcts/media-viewer@npm:4.1.3-ped-ac3":
+  version: 4.1.3-ped-ac3
+  resolution: "@hmcts/media-viewer@npm:4.1.3-ped-ac3"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -2997,7 +2997,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/a1b647543f8da431fd9039b8faa336d24b3cdc534bca6d8025830f04de9d9552dea001b39fba1f1fb85f92e34fd6782ea7dc50500358288a3cc91061e23ac298
+  checksum: 10/1a01fbbec9e79dce5855bb086ae62e2640c484e1632204e065af44fa237d27ef9b7c1fa68bfb686c4926d78681a1ff6f0d948e2d27e5e284d4c2d8c8f3ffc040
   languageName: node
   linkType: hard
 
@@ -20371,10 +20371,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.35"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.35-2900"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.3"
+    "@hmcts/media-viewer": "npm:4.1.3-ped-ac3"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5"

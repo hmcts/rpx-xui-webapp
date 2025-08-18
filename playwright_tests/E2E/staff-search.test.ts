@@ -41,15 +41,15 @@ test('Toggle search', async ({ page }) => {
   await page.locator('#content').getByRole('textbox').click();
   await page.locator('#content').getByRole('textbox').fill('xui');
   await page.getByRole('button', { name: 'Search', exact: true }).click();
-  await page.getByRole('link', { name: 'Advanced search' }).click();
+  await page.getByRole('button', { name: 'Advanced search' }).click();
   await page.locator('#select_user-job-title').selectOption('2');
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByText('Showing')).toBeVisible();
-  await page.getByRole('link', { name: 'Hide advanced search' }).click();
+  await page.getByRole('button', { name: 'Hide advanced search' }).click();
   await expect(page.getByText('Showing')).toBeVisible();
   await expect(page.locator('#content').getByRole('textbox')).toBeVisible();
   await page.getByText('User search Search for a user').click();
-  await page.getByRole('link', { name: 'Advanced search' }).click();
+  await page.getByRole('button', { name: 'Advanced search' }).click();
   await expect(page.locator('#select_user-job-title')).toBeVisible();
   await expect(page.getByText('Showing')).toBeVisible();
 

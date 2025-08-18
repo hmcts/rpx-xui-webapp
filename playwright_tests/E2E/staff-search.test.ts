@@ -67,7 +67,7 @@ test('Advanced search', async ({ page }) => {
     await expect(page.locator('exui-staff-user-list')).toContainText('Showing 1');
   
     console.log("Using Advanced search");
-    await page.getByRole('link', { name: 'Advanced search' }).click();
+    await page.getByRole('button', { name: 'Advanced search' }).click();
     await expect(page.getByText('Search for a service by name')).toBeVisible();
     await page.locator('#inputServiceSearch').click();
     await page.locator('#inputServiceSearch').fill('Damages');

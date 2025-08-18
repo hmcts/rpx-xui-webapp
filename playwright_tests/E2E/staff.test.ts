@@ -31,7 +31,7 @@ test('staff user details advanced search', async ({ page }) => {
   await signIn(page, 'STAFF_ADMIN');
   await clickToStaffPage(page);
   console.log('Using user advanced search');
-  await page.getByRole('link', { name: 'Advanced search' }).click();
+  await page.getByRole('button', { name: 'Advanced search' }).click();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'User type' }).first()).toBeVisible();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Job title' }).first()).toBeVisible();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Skills' }).first()).toBeVisible();

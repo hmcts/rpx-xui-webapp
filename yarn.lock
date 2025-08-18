@@ -3058,9 +3058,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-rel2":
-  version: 2.30.7-rel2
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-rel2"
+"@hmcts/rpx-xui-node-lib@npm:2.30.8-failures-o-token":
+  version: 2.30.8-failures-o-token
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.8-failures-o-token"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3080,7 +3080,7 @@ __metadata:
     passport-oauth2: "npm:^1.5.0"
     redis: "npm:^3.0.2"
     session-file-store: "npm:^1.5.0"
-  checksum: 10/336f32d7487fd70a16607a5b968b287cad8a84959e4f71f5d478094fb4fbc8c025345f25cf0d4f58c3c1d7d6be8ddfe3153b9ff3e717dd8a8e263f36a64145ab
+  checksum: 10/927fae80975838812efaffb7092083bf8996032f628904114533b5b739606054632979d6fbdf84ccb149c0d25c0117e62d60dd9041a3e9c9cab43d6b87e29990
   languageName: node
   linkType: hard
 
@@ -20378,7 +20378,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-rel2"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.8-failures-o-token"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

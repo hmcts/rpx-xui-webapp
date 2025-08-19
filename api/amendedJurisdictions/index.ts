@@ -14,7 +14,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]): any[] | any =
     return data;
   }
 
-  const filters = getConfigValue(JURISDICTIONS).split(',');
+  const filters = getConfigValue(JURISDICTIONS);
   const filteredJurisdictions = [...data]
     .filter((o) => filters.includes(o.id))
     .map((jurisdiction) => {

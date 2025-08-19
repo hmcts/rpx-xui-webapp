@@ -97,7 +97,9 @@ async function fetchAllUserPages(
   let pageNumber = 0;
   let hasMoreData = true;
   let allUsers: StaffUserDetails[] = [];
-  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  // Default to 5000 if CASEWORKER_PAGE_SIZE is missing or not a valid number
+  const configPageSize = getConfigValue(CASEWORKER_PAGE_SIZE);
+  const pageSize = !isNaN(parseInt(configPageSize)) ? parseInt(configPageSize) : 5000;
 
   while (hasMoreData) {
     const getUsersPath = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
@@ -107,16 +109,19 @@ async function fetchAllUserPages(
       ? await handleUsersGet(getUsersPath, req)
       : await handleNewUsersGet(getUsersPath, headers);
 
+    // Stop if no results or less than pageSize (last page)
     if (!userResponse || userResponse.length === 0) {
       hasMoreData = false;
     } else {
       allUsers = [...allUsers, ...userResponse];
 
-      // Check if this is the last page
+      // If less than pageSize, this is the last page
       if (userResponse.length < pageSize) {
         hasMoreData = false;
+      } else {
+        // If exactly pageSize, check if next page is empty before continuing
+        pageNumber++;
       }
-      pageNumber++;
     }
   }
 

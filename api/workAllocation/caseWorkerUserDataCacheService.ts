@@ -113,7 +113,7 @@ async function fetchAllUserPages(
     if (!userResponse || userResponse.length === 0) {
       hasMoreData = false;
     } else {
-      allUsers = [...allUsers, ...userResponse];
+      allUsers = allUsers.concat(userResponse);
 
       // If less than pageSize, this is the last page
       if (userResponse.length < pageSize) {

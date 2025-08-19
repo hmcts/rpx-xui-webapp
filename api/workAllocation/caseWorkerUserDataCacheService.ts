@@ -77,10 +77,13 @@ export async function fetchUserData(req?: EnhancedRequest, next?: NextFunction):
       return state.cachedUsers;
     }
 
-    // Reset cache on critical errors with no request handler
+    // Reset cache on critical errors
+    state.timestamp = null;
+    state.refreshRoles = false;
+    state.cachedUsers = null;
+    state.cachedUsersWithRoles = null;
+
     if (!next) {
-      state.timestamp = null;
-      state.refreshRoles = false;
       return null;
     }
 

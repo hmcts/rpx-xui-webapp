@@ -242,11 +242,6 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
     screenName: 'hearing-panel-selector',
     answers: [
       {
-        id: 'hearingPanel',
-        answerTitle: 'Do you require a panel for this hearing?',
-        answerSource: AnswerSource.HEARING_PANEL
-      },
-      {
         id: 'panelInclusion',
         answerTitle: 'Include specific panel members',
         answerSource: AnswerSource.PANEL_INCLUSION,

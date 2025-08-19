@@ -3065,9 +3065,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-new-csp-9":
-  version: 2.30.7-new-csp-9
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-new-csp-9"
+"@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-2":
+  version: 2.30.7-csp-final-change-2
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-2"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.7.7"
@@ -3089,7 +3089,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/438fd2703fd7575095aad23f8bd1503954522854d880d916f41d9ad3dfde21834737e8e84cb13ad631118d78beed787506f579c768c0abefcdc1be3091d41d03
+  checksum: 10/4d4253b0abe016c18e4af1ad7b8af8011f06cf0c40934f59a075c58c7befc96eb793c4b986586e08ea7e0b6092771544f0f1c6f705753e6acdfc0d079a46f160
   languageName: node
   linkType: hard
 
@@ -20342,7 +20342,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5-javascript-void-removal"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-new-csp-9"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-2"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

@@ -1,13 +1,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const functional_output_dir = path.resolve(__dirname, '../../functional-output/tests/codecept-ngIntegration');
+const CUKE_OUT = path.resolve(
+  __dirname,
+  '../../functional-output/tests/codecept-ngIntegration'
+);
 
 async function cucumberReportUpdateEmbeddings() {
-  const files = fs.readdirSync(functional_output_dir);
+  const files = fs.readdirSync(CUKE_OUT);
   for (const f of files){
     if (f.startsWith('cucumber_output') && f.endsWith('.json')){
-      const jsonString = fs.readFileSync(functional_output_dir + '/' + f, 'utf-8');
+      const jsonString = fs.readFileSync(path.join(CUKE_OUT, f), 'utf-8');
       const json = JSON.parse(jsonString);
 
       const ObjCount = json.length;
@@ -23,7 +26,7 @@ async function cucumberReportUpdateEmbeddings() {
       }
 
       // console.log(json)
-      fs.writeFileSync(functional_output_dir + '/' + f, JSON.stringify(json, null, 2));
+      fs.writeFileSync(path.join(CUKE_OUT, f), JSON.stringify(json, null, 2));
     }
   }
 }

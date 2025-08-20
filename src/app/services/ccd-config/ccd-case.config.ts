@@ -42,7 +42,8 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
-        if (obArray.length === 6) {
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
+        if (obArray.length === 7) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
@@ -107,6 +108,10 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.documentSecureModeCaseTypeExclusions;
   }
 
+  public getCdamExclusionList() {
+    return this.config.mc_cdam_exclusion_list;
+  }
+
   public getPostcodeLookupUrl() {
     return this.config.postcode_lookup_url;
   }
@@ -132,7 +137,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
@@ -188,7 +193,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl(): string {
-    return `${this.getCaseDataUrl()}/internal/banners/`;
+    return `${this.getCaseDataUrl()}/internal/banners`;
   }
 
   public getPrdUrl(): string {

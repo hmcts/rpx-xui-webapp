@@ -1,12 +1,16 @@
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 
 class HearingVenueDetailsPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-venue');
+  get pageContainer() { return $('exui-hearing-venue'); }
 
-    this.locationSearchInput = $('xuilib-search-venue input');
-    this.addLocationBtn = element(by.xpath('//exui-hearing-venue//a[contains(text(), \'Add location\')]'));
+  get locationSearchInput() { return $('xuilib-search-venue input'); }
 
-    this.fieldMapping = {
+  get addLocationBtn() {
+    return elementByXpath("//exui-hearing-venue//a[contains(text(),'Add location')]");
+  }
+
+  get fieldMapping() {
+    return {
       'Search for a location by name': $('div.search-location')
     };
   }
@@ -15,7 +19,7 @@ class HearingVenueDetailsPage {
     switch (field) {
       case 'Search for a location by name':
         const values = value.split(',');
-        await this.locationSearchInput.sendKeys(values[0]);
+        await this.locationSearchInput.type(values[0], { delay: 75 });
         await this.selectLocation(values[1]);
         await this.addLocationBtn.click();
         break;
@@ -25,12 +29,23 @@ class HearingVenueDetailsPage {
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async selectLocation(location) {
-    const ele = element(by.xpath(`//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`));
-    await ele.click();
+    // 1. wait for the overlay container to become visible
+    const panel = $('.mat-autocomplete-panel');
+    await panel.waitFor({ state: 'visible', timeout: 10_000 });
+
+    // 2. wait for the specific option inside the panel
+    const option = elementByXpath(
+      `//div[contains(@class,'mat-autocomplete-panel')]` +
+      `//mat-option//span[normalize-space(text())='${location}']`
+    );
+    await option.waitFor({ state: 'visible', timeout: 10_000 });
+
+    // 3. click it
+    await option.click();
   }
 }
 

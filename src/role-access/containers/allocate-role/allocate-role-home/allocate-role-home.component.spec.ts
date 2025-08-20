@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -13,8 +14,7 @@ import {
   AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateTo,
-  DurationOfRole,
-  RoleCategory
+  DurationOfRole
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';

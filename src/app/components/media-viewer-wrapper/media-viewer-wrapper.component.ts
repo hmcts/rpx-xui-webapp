@@ -22,6 +22,8 @@ export class MediaViewerWrapperComponent implements OnInit {
   public caseId = '';
   public caseJurisdiction = '';
 
+  public icpJurisdictions$: Observable<string[]>;
+  public icpEnabled$: Observable<boolean>;
   public enableRedactSearch$: Observable<boolean>;
 
   public constructor(
@@ -59,8 +61,21 @@ export class MediaViewerWrapperComponent implements OnInit {
       this.caseJurisdiction = media.case_jurisdiction;
     }
 
+    this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
+    this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
 
     this.titleService.setTitle(this.mediaFilename + ' - View Document');
+  }
+
+  /**
+     * isIcpEnabled()
+     * Determines ICP visibility
+     *
+     * @param isEnabled - true
+     * @param icpJurisdictions - []
+     */
+  public isIcpEnabled(isEnabled: boolean, icpJurisdictions: string[]): boolean {
+    return icpJurisdictions && icpJurisdictions.length > 0 ? icpJurisdictions.includes(this.caseJurisdiction) : isEnabled;
   }
 }

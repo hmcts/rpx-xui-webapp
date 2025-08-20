@@ -38,8 +38,10 @@ export class AppConfig extends AbstractAppConfig {
         const obArray: Array<Observable<ConfigValue>> = [];
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.accessManagementMode, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 3) {
+        if (obArray.length === 5) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
@@ -249,6 +251,10 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseDataStoreApiUrl(): string {
     return this.config.case_data_store_api_url;
+  }
+
+  public getIcpJurisdictions(): string[] {
+    return this.config.icp_jurisdictions;
   }
 
   public getEventsToHide(): string[] {

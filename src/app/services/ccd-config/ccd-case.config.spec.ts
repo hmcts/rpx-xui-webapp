@@ -51,6 +51,8 @@ class MockConfigService {
       case_data_store_api_url: 'test-case-store',
       documentSecureModeCaseTypeExclusions: ['DIVORCE', 'PROBATE'],
       mc_cdam_exclusion_list: ['DIVORCE', 'PROBATE'],
+      icp_enabled: false,
+      icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
       events_to_hide: [
         'queryManagementRespondQuery'
@@ -363,6 +365,7 @@ describe('AppConfiguration', () => {
     }));
   });
 
+  describe('getIcpEnable', () => {
   describe('getDocumentSecureModeCaseTypeExclusions', () => {
     it('should return document secure mode case type exclusions', inject([AppConfig], (service: AppConfig) => {
       expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
@@ -729,6 +732,7 @@ describe('AppConfiguration with specific config values', () => {
       document_data_url: 'https://docdata.test.com',
       rd_common_data_api_url: 'https://rdcommon.test.com',
       case_data_store_api_url: 'https://casestore.test.com',
+      icp_jurisdictions: ['SSCS', 'IMMIGRATION'],
       events_to_hide: ['event1', 'event2', 'event3'],
       access_management_mode: false
     };
@@ -737,6 +741,12 @@ describe('AppConfiguration with specific config values', () => {
     mockFeatureToggleServiceConfig.isEnabled.and.returnValue(of(false));
     mockFeatureToggleServiceConfig.getValue.and.callFake((featureName: string, defVal: any) => {
       // Override default values for specific features to match our test config
+      if (featureName === AppConstants.FEATURE_NAMES.icpEnabled) {
+        return of(true);
+      }
+      if (featureName === AppConstants.FEATURE_NAMES.icpJurisdictions) {
+        return of(['SSCS', 'IMMIGRATION']);
+      }
       if (featureName === AppConstants.FEATURE_NAMES.cdamExclusionList) {
         return of(['CIVIL', 'FAMILY']);
       }
@@ -820,10 +830,15 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getPaginationPageSize()).toBe(25);
   }));
 
+  it('should return all configured boolean values correctly', fakeAsync(inject([AppConfig], (service: AppConfig) => {
+    tick(5000);
+  })));
+
   it('should return all configured array values correctly', fakeAsync(inject([AppConfig], (service: AppConfig) => {
     tick(5000);
     expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
     expect(service.getCdamExclusionList()).toEqual(['CIVIL', 'FAMILY']);
+    expect(service.getIcpJurisdictions()).toEqual(['SSCS', 'IMMIGRATION']);
     expect(service.getEventsToHide()).toEqual(['event1', 'event2', 'event3']);
   })));
 

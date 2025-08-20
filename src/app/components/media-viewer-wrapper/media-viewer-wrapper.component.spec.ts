@@ -108,6 +108,25 @@ describe('MediaViewerWrapperComponent', () => {
   });
 
   describe('isIcpEnabled', () => {
+    it('should return true when icp-enabled is true and jurisdiction is empty', () => {
+      expect(component.isIcpEnabled(true, [])).toBeTruthy();
+    });
+
+    it('should return false when icp-enabled is false and jurisdiction is empty', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(false, [])).toBeFalsy();
+    });
+
+    it('should return true when icp-enabled is false but jurisdiction is not empty and correct', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(false, ['dummy'])).toBeTruthy();
+    });
+
+    it('should return false when icp-enabled is false and jurisdiction is not empty but is wrong ', () => {
+      component.caseJurisdiction = 'dummy';
+      expect(component.isIcpEnabled(false, ['dummy1'])).toBeFalsy();
+    });
+
     it('should change the browser title', () => {
       titleService.setTitle.and.returnValues('View Document - Any');
       fixture.detectChanges();

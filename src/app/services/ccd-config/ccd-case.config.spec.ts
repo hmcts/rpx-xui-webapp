@@ -366,6 +366,17 @@ describe('AppConfiguration', () => {
   });
 
   describe('getIcpEnable', () => {
+    it('should return ICP enabled flag', inject([AppConfig], (service: AppConfig) => {
+      expect(service.getIcpEnable()).toBeFalsy();
+    }));
+  });
+
+  describe('getIcpJurisdictions', () => {
+    it('should return ICP jurisdictions array', inject([AppConfig], (service: AppConfig) => {
+      expect(service.getIcpJurisdictions()).toEqual(['foo']);
+    }));
+  });
+
   describe('getDocumentSecureModeCaseTypeExclusions', () => {
     it('should return document secure mode case type exclusions', inject([AppConfig], (service: AppConfig) => {
       expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
@@ -732,6 +743,7 @@ describe('AppConfiguration with specific config values', () => {
       document_data_url: 'https://docdata.test.com',
       rd_common_data_api_url: 'https://rdcommon.test.com',
       case_data_store_api_url: 'https://casestore.test.com',
+      icp_enabled: true,
       icp_jurisdictions: ['SSCS', 'IMMIGRATION'],
       events_to_hide: ['event1', 'event2', 'event3'],
       access_management_mode: false
@@ -832,6 +844,7 @@ describe('AppConfiguration with specific config values', () => {
 
   it('should return all configured boolean values correctly', fakeAsync(inject([AppConfig], (service: AppConfig) => {
     tick(5000);
+    expect(service.getIcpEnable()).toBe(true);
   })));
 
   it('should return all configured array values correctly', fakeAsync(inject([AppConfig], (service: AppConfig) => {

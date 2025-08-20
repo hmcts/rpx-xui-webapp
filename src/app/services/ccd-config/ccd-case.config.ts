@@ -253,6 +253,10 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.case_data_store_api_url;
   }
 
+  public getIcpEnable(): boolean {
+    return this.config.icp_enabled;
+  }
+
   public getIcpJurisdictions(): string[] {
     return this.config.icp_jurisdictions;
   }

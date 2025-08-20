@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { combineLatest, Observable, Subscription, Subject, map, switchMap, take } from 'rxjs';
+import { combineLatest, Observable, Subscription, Subject } from 'rxjs';
 import {
   CaseNotifier,
   CaseView,
@@ -19,9 +19,13 @@ import {
   AlertService,
   CallbackErrorsContext,
   HttpError,
-  CaseQueriesCollection
+  CaseQueriesCollection,
+  CaseEventData,
+  CaseViewTrigger,
+  QmCaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { map, switchMap, take } from 'rxjs/operators';
 import { ErrorMessage } from '../../../app/models';
 import { CaseTypeQualifyingQuestions } from '../../models/qualifying-questions/casetype-qualifying-questions.model';
 import { QualifyingQuestion } from '../../models/qualifying-questions/qualifying-question.model';
@@ -30,7 +34,6 @@ import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { ServiceAttachmentHintTextResponse } from '../../models/service-message/service-message.model';
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
-import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'exui-query-management-container',
@@ -101,6 +104,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
   public triggerText: string;
   public ignoreWarning: boolean;
+  public triggerQueryDataSubmission: boolean;
+  public isQueryDataValidated: boolean;
 
   public callbackErrorsSubject: Subject<any> = new Subject();
   public showSpinner$: Observable<boolean>;
@@ -108,6 +113,12 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public caseQueriesCollections: CaseQueriesCollection[];
 
   public selectedQualifyingQuestion: QualifyingQuestion;
+
+  public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
+  public caseData: CaseEventData;
+  private caseViewTrigger: CaseViewTrigger;
+
+  private validateCaseSubscription: Subscription;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -165,6 +176,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     if (this.routerEventsSubscription) {
       this.routerEventsSubscription.unsubscribe();
     }
+    this.validateCaseSubscription?.unsubscribe();
   }
 
   public callbackErrorsNotify(errorContext: CallbackErrorsContext) {
@@ -179,6 +191,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public showResponseForm(): void {
     this.showSummary = false;
+    this.triggerQueryDataSubmission = false;
+    // this.eventTrigger = this.eventTrigger;
   }
 
   public showConfirmationPage(): void {
@@ -236,13 +250,51 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     }
 
     this.eventData = this.eventTrigger;
-    this.showSummary = true;
     this.submitted = true;
     this.validateForm();
-    this.showSummary = this.errorMessages?.length === 0;
+
+    if (this.errorMessages?.length === 0 && this.eventData) {
+      this.triggerQueryDataSubmission = true;
+    }
+
     // Reset hearing date if isHearingRelated
     if (!this.formGroup.get('isHearingRelated').value) {
       this.formGroup.get('hearingDate').setValue(null);
+    }
+  }
+
+  public onQueryDataCreated(data: QmCaseQueriesCollection): void {
+    if (data && this.triggerQueryDataSubmission) {
+      const queryData = {
+        data,
+        event: {
+          id: this.eventData?.id,
+          summary: '',
+          description: this.eventData?.description
+        },
+        event_token: this.eventData?.event_token,
+        ignore_warning: false
+      };
+      const validate$ = this.validate(queryData);
+      this.validateCaseSubscription = validate$.subscribe({
+        next: () => {
+          this.showSummary= true;
+          this.qmCaseQueriesCollectionData = data;
+        },
+        error: (error: HttpError) => {
+          if (error.status !== 401 && error.status !== 403) {
+            this.errorNotifierService.announceError(error);
+            this.alertService.error({ phrase: error.message });
+            console.error('Error occurred while fetching event data:', error);
+            this.callbackErrorsSubject.next(error);
+          } else {
+            this.eventDataError = true;
+            this.addError('Something unexpected happened. Please try again later.', 'eventDataError');
+          }
+
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        }
+      });
     }
   }
 
@@ -365,8 +417,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
     return combineLatest([
-      this.caseNotifier.caseView,
-      this.featureToggleService.getValue(this.LD_QUALIFYING_QUESTIONS, [])
+      this.caseNotifier.caseView as unknown as Observable<CaseView>,
+      this.featureToggleService.getValue<CaseTypeQualifyingQuestions[]>(this.LD_QUALIFYING_QUESTIONS, [])
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         const caseId = caseView.case_id;
@@ -383,11 +435,20 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         // Find the correct qualifying questions
         const qualifyingQuestions = (normalisedMap[caseTypeKey] ?? []).map((question) => {
           const url = question.url?.replace(placeholder, caseId);
-          let markdown = question.markdown;
-          if (markdown?.includes(placeholder)) {
-            markdown = Utils.replaceAll(markdown, placeholder, caseId);
-          }
-          return { ...question, url, markdown };
+          const markdown = question.markdown?.includes(placeholder)
+            ? question.markdown.replaceAll(placeholder, caseId)
+            : question.markdown;
+
+          const markdown_cy = question.markdown_cy?.includes(placeholder)
+            ? question.markdown_cy.replaceAll(placeholder, caseId)
+            : question.markdown_cy;
+
+          return {
+            ...question,
+            url,
+            markdown,
+            markdown_cy
+          };
         });
 
         // Add Extra options to qualifying question
@@ -406,7 +467,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     );
 
     return combineLatest([
-      this.caseNotifier.caseView,
+      this.caseNotifier.caseView as unknown as Observable<CaseView>,
       hintText$
     ]).pipe(
       map(([caseView, hintText]: [CaseView, ServiceAttachmentHintTextResponse]) => {
@@ -446,7 +507,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, { messages: [] });
 
     return combineLatest([
-      this.caseNotifier.caseView,
+      this.caseNotifier.caseView as unknown as Observable<CaseView>,
       serviceMessages$
     ]).pipe(
       map(([caseView, serviceMessages]: [CaseView, ServiceMessagesResponse]) => {
@@ -685,5 +746,12 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  public validate(data): Observable<any> {
+    return this.casesService.validateCase(
+      this.caseDetails.case_type.id,
+      data,
+      this.RAISE_A_QUERY_EVENT_TRIGGER_ID) as any;
   }
 }

@@ -14,6 +14,9 @@ describe('RolesAndAccessComponent', () => {
 
   const mockCaseView: CaseView = {
     case_id: 'CASE123',
+    case_type: {
+      id: 'XUI Case PoC',
+    },
     metadataFields: [
       { id: '[JURISDICTION]', value: 'DIVORCE' }
     ]
@@ -160,14 +163,18 @@ describe('RolesAndAccessComponent', () => {
       expect(component.caseId).toBe('CASE123');
     });
 
-    it('should set jurisdiction from metadataFields', () => {
+    it('should set jurisdiction and caseType from metadataFields', () => {
       component.ngOnInit();
       expect(component.jurisdiction).toBe('DIVORCE');
+      expect(component.caseType).toBe('XUI Case PoC');
     });
 
     it('should handle missing jurisdiction field', () => {
       component.caseDetails = {
         case_id: 'CASE456',
+        case_type: {
+          id: 'XUI Case PoC',
+        },
         metadataFields: []
       } as CaseView;
 

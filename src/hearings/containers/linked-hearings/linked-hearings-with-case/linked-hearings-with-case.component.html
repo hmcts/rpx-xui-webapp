@@ -49,7 +49,7 @@
                     &nbsp;&nbsp;
                     <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                         alt="Linked">&nbsp;
-                    <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseRef, 'hearings']"
+                    <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, case.caseRef, 'hearings']"
                       >{{ 'Manage Link' | rpxTranslate }}</a>
                   </span>
                  </td>
@@ -78,7 +78,7 @@
                   &nbsp;&nbsp;
                   <img src="../../../../assets/images/link_icon_slanted.png" width="20px;" class="align-middle"
                       alt="Linked">&nbsp;
-                  <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', case.caseRef, 'hearings']"
+                  <a class="govuk-link" [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, case.caseRef, 'hearings']"
                     >{{ 'Manage Link' | rpxTranslate }}</a>
                 </span>
               </td>

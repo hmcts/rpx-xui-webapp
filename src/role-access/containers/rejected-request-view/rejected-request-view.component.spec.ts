@@ -44,6 +44,7 @@ describe('RejectedRequestViewComponent', () => {
                 caseReference: '123456789',
                 roleCategory: RoleCategory.JUDICIAL,
                 jurisdiction: 'IA',
+                caseType: 'Appeal',
                 // date of role created is actually date rejected, not originally requested
                 dateRejected: '01-01-2020',
                 infoRequired: false,
@@ -86,7 +87,7 @@ describe('RejectedRequestViewComponent', () => {
 
   it('should allow the user to go to request again', () => {
     component.goToRequest();
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789/specific-access-request']);
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/IA/Appeal/123456789/specific-access-request']);
   });
 
   it('should show default message if infoRequired is false', () => {

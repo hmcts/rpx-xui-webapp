@@ -15,7 +15,7 @@ describe('RolesAndAccessComponent', () => {
   const mockCaseView: CaseView = {
     case_id: 'CASE123',
     case_type: {
-      id: 'XUI Case PoC',
+      id: 'XUI Case PoC'
     },
     metadataFields: [
       { id: '[JURISDICTION]', value: 'DIVORCE' }
@@ -173,7 +173,7 @@ describe('RolesAndAccessComponent', () => {
       component.caseDetails = {
         case_id: 'CASE456',
         case_type: {
-          id: 'XUI Case PoC',
+          id: 'XUI Case PoC'
         },
         metadataFields: []
       } as CaseView;

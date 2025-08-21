@@ -50,6 +50,10 @@ class ApplicationServer {
   }
 
   async start() {
+    if (process.env.SSR_ALREADY_RUNNING === 'true') {
+      console.log('[localServer] SSR already up – skipping second listen()');
+      return;
+    }
     if (!this.app) {
       await this.initialize();
     }
@@ -63,7 +67,11 @@ class ApplicationServer {
   }
 
   async stop() {
-    return await this.server.close();
+    if (!this.server) {
+      console.log('[SSR] stop() called but no server instance - skipping');
+      return;
+    }
+    await this.server.close();
   }
 }
 

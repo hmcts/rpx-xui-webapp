@@ -5,6 +5,50 @@
   <title>HMCTS Manage cases</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ▸ expose the per‑request nonce -->
+  <meta name="csp-nonce" content="{{cspNonce}}">
+
+  <!-- ▸ MONKEY‑PATCH – must run before any vendor script -->
+  <script nonce="{{cspNonce}}">
+    (() => {
+      const n = document.querySelector('meta[name="csp-nonce"]')?.content;
+      if (!n) { return; }
+
+      /* ── 1  patch createElement ───────────────────────────── */
+      const origCreate = Document.prototype.createElement;
+      Document.prototype.createElement = function (tag, opts) {
+        const el = origCreate.call(this, tag, opts);
+        if (tag && tag.toLowerCase() === 'style') { el.setAttribute('nonce', n); }
+        return el;
+      };
+
+      /* helper that stamps every <style> in a subtree */
+      const stampStyles = (root) =>
+        root.querySelectorAll?.('style').forEach((s) => {
+          if (!s.hasAttribute('nonce')) { s.setAttribute('nonce', n); }
+        });
+
+      /* ── 2  wrap appendChild / insertBefore ───────────────── */
+      const wrap = (fn) => function (node, ref) {
+        if (node.nodeType === 1 && node.tagName === 'STYLE') {
+          if (!node.hasAttribute('nonce')) { node.setAttribute('nonce', n); }
+        } else {
+          stampStyles(node);          // handles DocumentFragment, innerHTML trees
+        }
+        return fn.call(this, node, ref);
+      };
+      Node.prototype.appendChild = wrap(Node.prototype.appendChild);
+      Node.prototype.insertBefore = wrap(Node.prototype.insertBefore);
+
+      /* ── 3  OPTIONAL: MutationObserver for late innerHTML / insertAdjacentHTML ── */
+      const mo = new MutationObserver((records) => {
+        records.forEach((r) => r.addedNodes.forEach(stampStyles));
+      });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+    })();
+  </script>
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="govuk-template__body js-enabled">

@@ -1,7 +1,7 @@
 const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
-class ReviewDetailsPage{
+class ReviewDetailsPage {
 
   get container() {
     return $('ccd-case-edit-submit');
@@ -29,7 +29,13 @@ class ReviewDetailsPage{
       default:
         nameELement = `//div[contains(@class,'govuk-summary-list')]//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]`;
         valueElement = `//div[contains(@class,'govuk-summary-list')]//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]/../dd[contains(@class,'govuk-summary-list__value')]`;
-        changeLinkElement = `//div[contains(@class,'govuk-summary-list')]//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]/../dd[contains(@class,'govuk-summary-list__actions')]/a`;
+        changeLinkElement = `//div[contains(@class,'govuk-summary-list')]` +
+          `//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]` +
+          `/../dd[contains(@class,'govuk-summary-list__actions')]/a` +
+          ` | ` +
+          `//div[contains(@class,'govuk-summary-list')]` +
+          `//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]` +
+          `/../dd[contains(@class,'govuk-summary-list__actions')]/button`;
     }
 
     return {

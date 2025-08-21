@@ -1,4 +1,4 @@
-<a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back' | rpxTranslate }}</a>
+<a class="govuk-back-link" href="#" (click)="onBack(); $event.preventDefault()">{{ 'Back' | rpxTranslate }}</a>
 <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem' | rpxTranslate">
 </xuilib-hmcts-error-summary>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="errors$ | async">
@@ -46,7 +46,7 @@
 
     <h1 class="govuk-heading-m" id="hearingStageResult">{{ 'Hearing stage and result' | rpxTranslate }}</h1>
     <span class="govuk-body align-right">
-      <a href="javascript:void(0)" [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
+      <a [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
         id="hearing-stage-result-update-link" class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
     </span>
     <div class="govuk-error-message" *ngIf="hearingStageResultErrorMessage !== ''">
@@ -103,8 +103,8 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                    <a href="javascript:void(0)" id="hearing-stage-result-change-link" class="govuk-link"
-                      (click)="changeWasThisHearingDayRequired(actualHearingDay)">{{ 'Change' | rpxTranslate }}</a>
+                    <button type="button" id="hearing-stage-result-change-link" class="govuk-js-link"
+                      (click)="changeWasThisHearingDayRequired(actualHearingDay)">{{ 'Change' | rpxTranslate }}</button>
                   </ng-container>
                 </dd>
               </div>
@@ -118,8 +118,8 @@
                     <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <a href="javascript:void(0)" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                            id="hearing-timing-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</a>&nbsp;
+                          <button type="button" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
+                            id="hearing-timing-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</button>&nbsp;
                           <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]"
                             class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
                         </ng-container>
@@ -156,9 +156,9 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <a href="javascript:void(0)" (click)="confirmActualPartiesForDay(actualHearingDay)" *ngIf="!haveParticipantsBeenAdded((actualHearingDay))"
-                            id="hearing-parties-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</a>&nbsp;
-                          <a *ngIf="!isPaperHearing" href="javascript:void(0)"
+                          <button type="button" (click)="confirmActualPartiesForDay(actualHearingDay)" *ngIf="!haveParticipantsBeenAdded((actualHearingDay))"
+                            id="hearing-parties-result-confirm-link" class="govuk-js-link">{{ 'Confirm' | rpxTranslate }}</button>&nbsp;
+                          <a *ngIf="!isPaperHearing"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
                             class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
                         </ng-container>

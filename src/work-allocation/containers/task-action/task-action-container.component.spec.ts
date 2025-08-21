@@ -133,15 +133,20 @@ describe('WorkAllocation', () => {
     });
 
     it('should return the correct message/state', () => {
-      window.history.pushState({ returnUrl: 'case/case-details', keepUrl: true }, '', 'case/case-details');
+      mockInfoMessageCommService.nextMessage.calls.reset();
+
+      spyOnProperty(component as any, 'returnUrl', 'get').and.returnValue('cases/case-details/1234567890123456');
+
       const message = {
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK
       } as InformationMessage;
       const navigateSpy = spyOn(router, 'navigateByUrl');
       component.returnWithMessage(message, null);
-      expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
-      expect(navigateSpy).toHaveBeenCalledWith('case/case-details', {
+
+      expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalled();
+
+      expect(navigateSpy).toHaveBeenCalledWith('cases/case-details/1234567890123456', {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK,

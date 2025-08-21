@@ -141,7 +141,8 @@
               "**/*.spec.js",
               "test/**",
               "config/**",
-              "src/environments/**"
+              "src/environments/**",
+              "src/app/app.routes.ts"
             ],
             "main": "src/test.ts",
             "polyfills": [

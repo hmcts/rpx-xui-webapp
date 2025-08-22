@@ -202,76 +202,6 @@ describe('HearingPanelSelectorComponent', () => {
     requirementType: RequirementType.MUSTINC
   }];
 
-  /* eslint-disable */
-  const MEDICALLY_QUALIFIED_PANEL_MEMBERS: LovRefDataModel = {
-    category_key: 'PanelMemberType',
-    key: 'BBA3-MQPM2',
-    value_en: 'Medically Qualified Panel Member',
-    value_cy: '',
-    hint_text_en: '',
-    hint_text_cy: '',
-    lov_order: null,
-    parent_category: '',
-    parent_key: '',
-    active_flag: 'Y',
-    child_nodes: [
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-003',
-        value_en: 'Eye Surgeon',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      },
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-004',
-        value_en: 'General Practitioner',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      },
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-001',
-        value_en: 'Cardiologist',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      },
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-002',
-        value_en: 'Carer',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      }
-    ],
-    selected: false
-  };
-  /* eslint-enable */
-
   beforeEach(() => {
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
@@ -404,6 +334,115 @@ describe('HearingPanelSelectorComponent', () => {
     const result = component.buildModelFromValues();
 
     expect(result).toEqual(expectedResult);
+  });
+
+  it('buildModelFromValues returns [] when roleType is empty', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = [];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003'];
+    const result = component.buildModelFromValues();
+    expect(result).toEqual([]);
+  });
+
+  it('skips unknown roleType ids', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['UNKNOWN'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003'];
+    const result = component.buildModelFromValues();
+    expect(result).toEqual([]);
+  });
+
+  it('includes a role with null child_nodes when parent has no children', () => {
+    // OTHER_PANEL_ROLES includes BBA3-DQPM with child_nodes: null
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-DQPM'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003']; // irrelevant
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(1);
+    expect(result[0].key).toBe('BBA3-DQPM');
+    expect(result[0].child_nodes).toBeNull();
+  });
+
+  it('assigns specialisms FIFO when the same roleType appears multiple times', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-MQPM2', 'BBA3-MQPM2'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003', 'BBA3-MQPM2-004'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(2);
+    expect(result[0].key).toBe('BBA3-MQPM2');
+    expect(result[1].key).toBe('BBA3-MQPM2');
+    expect(result[0].child_nodes?.[0].key).toBe('BBA3-MQPM2-003');
+    expect(result[1].child_nodes?.[0].key).toBe('BBA3-MQPM2-004');
+  });
+
+  it('assigns null child_nodes when specialisms run out for repeated roles', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-MQPM2', 'BBA3-MQPM2'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(2);
+    expect(result[0].child_nodes?.[0].key).toBe('BBA3-MQPM2-003');
+    expect(result[1].child_nodes).toBeNull();
+  });
+
+  it('matches the earliest suitable specialism for each parent when roles are mixed', () => {
+    // Note: specialisms are intentionally out of order to prove the "earliest matching" search.
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-MQPM2', 'BBA3-MQPM1'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM1-003', 'BBA3-MQPM2-001'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(2);
+    expect(result[0].key).toBe('BBA3-MQPM2');
+    expect(result[0].child_nodes?.[0].key).toBe('BBA3-MQPM2-001');
+    expect(result[1].key).toBe('BBA3-MQPM1');
+    expect(result[1].child_nodes?.[0].key).toBe('BBA3-MQPM1-003');
+  });
+
+  it('only assigns one specialism per role occurrence even if multiple exist', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-MQPM2'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-003', 'BBA3-MQPM2-004'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(1);
+    expect(result[0].key).toBe('BBA3-MQPM2');
+    expect(result[0].child_nodes?.length).toBe(1);
+    expect(result[0].child_nodes?.[0].key).toBe('BBA3-MQPM2-003'); // the earliest matching specialism only
+  });
+
+  it('preserves the order of roleType in the output', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-RMM', 'BBA3-MQPM2'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-001'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.map((n) => n.key)).toEqual(['BBA3-RMM', 'BBA3-MQPM2']);
+    expect(result[0].child_nodes).toBeNull(); // RMM has no children
+    expect(result[1].child_nodes?.[0].key).toBe('BBA3-MQPM2-001');
+  });
+
+  it('ignores specialisms that do not belong to any selected parent role', () => {
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-FQPM'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-MQPM2-001'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(1);
+    expect(result[0].key).toBe('BBA3-FQPM');
+    expect(result[0].child_nodes).toBeNull();
+  });
+
+  it('does not mistakenly treat role-like strings in panelSpecialisms as matches', () => {
+    // Some initial state had a role key inside panelSpecialisms; ensure it does not attach as a child.
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.roleType = ['BBA3-DQPM'];
+    component.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms = ['BBA3-DQPM'];
+
+    const result = component.buildModelFromValues();
+
+    expect(result.length).toBe(1);
+    expect(result[0].key).toBe('BBA3-DQPM');
+    expect(result[0].child_nodes).toBeNull();
   });
 
   it('Should convert model into roleType and panelSpecialisms', () => {

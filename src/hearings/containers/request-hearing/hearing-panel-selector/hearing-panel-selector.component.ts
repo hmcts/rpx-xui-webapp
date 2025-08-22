@@ -76,37 +76,43 @@ export class HearingPanelSelectorComponent extends RequestHearingPageFlow implem
   }
 
   public buildModelFromValues(): LovRefDataModel[] {
-    // Create a copy of panelSpecialisms to track unprocessed child IDs
-    const panelSpecialismsClone = this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms ?
-      [...this.hearingRequestMainModel.hearingDetails.panelRequirements.panelSpecialisms] : [];
+    const { panelRequirements } = this.hearingRequestMainModel.hearingDetails;
 
-    if (!this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType ||
-      this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType.length === 0) {
+    // Normalize to strings for safe comparisons
+    const roleType = (panelRequirements.roleType ?? []).map(String);
+    const remainingSpecialism = (panelRequirements.panelSpecialisms ?? []).map(String);
+
+    if (roleType.length === 0) {
       return [];
     }
 
-    // Loop through each item in roleType
-    return this.hearingRequestMainModel.hearingDetails.panelRequirements.roleType
-      .map((id) => {
-        // Find the corresponding node
-        const node = this.otherPanelRoles.find((item) => item.key === id);
-        // If node is not found, return null
-        if (!node) {
-          return null;
+    const result: LovRefDataModel[] = [];
+
+    for (const id of roleType) {
+      const parentNode = this.otherPanelRoles.find((role) => String(role.key) === id);
+      if (!parentNode) {
+        continue;
+      } // skip unknown role ids
+
+      let child_nodes: LovRefDataModel[] | null = null;
+
+      // Assign at most one matching specialism to this occurrence
+      if (Array.isArray(parentNode.child_nodes) && parentNode.child_nodes.length && remainingSpecialism.length) {
+        // find the earliest remaining spec that belongs to this node
+        const specialismIdx = remainingSpecialism.findIndex((specId) =>
+          parentNode.child_nodes!.some((c) => String(c.key) === specId)
+        );
+        if (specialismIdx !== -1) {
+          const specialityId = remainingSpecialism.splice(specialismIdx, 1)[0]; // consume it (FIFO across occurrences)
+          const child = parentNode.child_nodes!.find((child) => String(child.key) === specialityId)!;
+          child_nodes = [child];
         }
-        // Filter out child nodes belonging to this main node
-        const childNodes = node.child_nodes?.filter((child) => {
-          const index = panelSpecialismsClone.indexOf(child.key);
-          if (index !== -1) {
-            panelSpecialismsClone[index] = null; // Mark as processed
-            return true;
-          }
-          return false;
-        }) || [];
-        // Return the rebuilt LovRefDataModel with filtered child nodes
-        return { ...node, child_nodes: childNodes.length ? childNodes : null };
-      })
-      .filter((item) => item !== null) as LovRefDataModel[];
+      }
+
+      result.push({ ...parentNode, child_nodes });
+    }
+
+    return result;
   }
 
   public extractValuesFromModel(model: LovRefDataModel[]): { roleType: string[], panelSpecialisms: (string | null)[] } {

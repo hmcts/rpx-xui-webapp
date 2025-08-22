@@ -10,6 +10,7 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { PartyType } from 'api/hearings/models/hearings.enum';
+import { Section } from '../models/section';
 
 export class HearingsUtils {
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
@@ -213,8 +214,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
-    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString) : null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString) : null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }
@@ -257,6 +258,25 @@ export class HearingsUtils {
     }
   }
 
+  public static checkTemplateForHearingPanelRequiremnts(template: Section[], isAPanelFlag: boolean): Section[] {
+    if (isAPanelFlag === undefined || isAPanelFlag === null) {
+      return template;
+    }
+    if (isAPanelFlag) {
+      return template.filter((tp: Section) => tp.screenName !== 'hearing-judge');
+    }
+    return template.filter((tp: Section) => tp.screenName !== 'hearing-panel' && tp.screenName !== 'hearing-panel-selector');
+  }
+
+  public static checkScreensForHearingPanelRequiremnts(screens: string[], isAPanelFlag: boolean): string[] {
+    if (isAPanelFlag === undefined || isAPanelFlag === null) {
+      return screens;
+    }
+    const excludedScreen = isAPanelFlag ? ['hearing-judge'] : ['hearing-panel-selector', 'hearing-panel'];
+
+    return screens.filter((screen) => !excludedScreen.includes(screen));
+  }
+
   public static doArraysDiffer(array: string[], arrayToCompare: string[]): boolean {
     return !_.isEqual(this.standardiseStringArray(array), this.standardiseStringArray(arrayToCompare));
   }
@@ -282,5 +302,32 @@ export class HearingsUtils {
     );
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
+  }
+
+  public static returnPanelRoles(
+    SelectedPanelSpecialism: string[],
+    SelectedPanelRoles: string[],
+    panelRoles: LovRefDataModel[],
+    separator: string): string {
+    const panelRolesRequired: string[] = [];
+    SelectedPanelRoles.forEach((roleName) => {
+      const matchingRole = panelRoles.find((role) => role.key === roleName && !(role.child_nodes?.length));
+      if (matchingRole) {
+        panelRolesRequired.push(matchingRole.value_en);
+      }
+    });
+    SelectedPanelSpecialism.forEach((specialismName) => {
+      for (const role of panelRoles) {
+        if (role.child_nodes?.length) {
+          const matchingSpecialism = role.child_nodes.find((specialism) => specialismName === specialism.key);
+          if (matchingSpecialism) {
+            const selectedSpecialismName = `${role.value_en} - ${matchingSpecialism.value_en}`;
+            panelRolesRequired.push(selectedSpecialismName);
+            break; // Exit the loop once we've found a match
+          }
+        }
+      }
+    });
+    return panelRolesRequired.join(separator);
   }
 }

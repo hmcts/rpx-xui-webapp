@@ -16,13 +16,15 @@ import {
   QueryWriteRaiseQueryComponent,
   ErrorNotifierService,
   AlertService,
-  QueryWriteRespondToQueryComponent
+  QueryWriteRespondToQueryComponent,
+  SessionStorageService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.enum';
 import { QueryManagementContainerComponent } from './query-management-container.component';
+import { FormControl } from '@angular/forms';
 
 @Pipe({ name: 'rpxTranslate' })
 class MockRpxTranslatePipe implements PipeTransform {
@@ -36,6 +38,7 @@ describe('QueryManagementContainerComponent', () => {
   let fixture: ComponentFixture<QueryManagementContainerComponent>;
   let activatedRoute: ActivatedRoute;
   const googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['event', 'virtualPageView']);
+  let mockSessionStorageService;
 
   const mockRouter = {
     events: of(new NavigationStart(1, '/some-other-route')),
@@ -100,6 +103,7 @@ describe('QueryManagementContainerComponent', () => {
         } as FieldType,
         id: 'qmCaseQueriesCollection',
         label: 'Query management case queries collection',
+        display_context: 'OPTIONAL',
         value: {
           caseMessages: [{
             id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
@@ -133,6 +137,7 @@ describe('QueryManagementContainerComponent', () => {
         } as FieldType,
         id: 'qmCaseQueriesCollection1',
         label: 'Query management case queries collection',
+        display_context: 'READONLY',
         value: {
           caseMessages: [{
             id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
@@ -178,8 +183,9 @@ describe('QueryManagementContainerComponent', () => {
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
   const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
   const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['setQualifyingQuestionSelection', 'clearQualifyingQuestionSelection']);
-  const mockCaseNotifier = new CaseNotifier(casesService);
+  const mockCaseNotifier = jasmine.createSpyObj('CaseNotifier', ['caseView', 'fetchAndRefresh']);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
+  mockCaseNotifier.fetchAndRefresh.and.returnValue(of(CASE_VIEW));
   casesService.getEventTrigger.and.returnValue(of(eventMockData));
   casesService.createEvent.and.returnValue(of({ status: 200 }));
 
@@ -227,7 +233,8 @@ describe('QueryManagementContainerComponent', () => {
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: GoogleTagManagerService, useValue: googleTagManagerService },
-        LoadingService
+        LoadingService,
+        { provide: SessionStorageService, useValue: mockSessionStorageService }
       ]
     }).compileComponents();
   }));
@@ -941,7 +948,8 @@ describe('QueryManagementContainerComponent', () => {
           caseTypeId: '123',
           caseJurisdiction: 'TEST',
           name: 'Raise a new query',
-          url: 'https://example.com/123/details'
+          url: 'https://example.com/123/details',
+          selectionType: 'raiseNewQuery'
         });
     });
 
@@ -954,11 +962,36 @@ describe('QueryManagementContainerComponent', () => {
 
       component.logSelection(qualifyingQuestion);
 
-      expect(googleTagManagerService.virtualPageView).toHaveBeenCalledWith(
-        '/query-management/query/123',
-        'Qualifying Question: Test question',
-        { caseTypeId: '123', jurisdictionId: 'TEST' }
-      );
+      expect(googleTagManagerService.event).toHaveBeenCalledWith(
+        'QM_QualifyingQuestion_Selection', {
+          caseTypeId: '123',
+          caseJurisdiction: 'TEST',
+          name: 'Test question',
+          url: '/query-management/query/123',
+          selectionType: 'qualifyingQuestion'
+        });
+    });
+
+    it('should call setQualifyingQuestionSelection and logSelection if markdown is present and selectedQualifyingQuestion is set', () => {
+      const qualifyingQuestion = {
+        name: 'Raise a new query',
+        markdown: '### Markdown content',
+        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+      };
+
+      // Setup component state
+      component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
+      component.selectedQualifyingQuestion = qualifyingQuestion;
+      component.qualifyingQuestionsControl = new FormControl(qualifyingQuestion);
+
+      spyOn(component as any, 'logSelection');
+      spyOn(component as any, 'getQueryCreateContext').and.returnValue(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL);
+
+      component.submitForm();
+
+      expect(qualifyingQuestionService.setQualifyingQuestionSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect((component as any).logSelection).toHaveBeenCalledWith(qualifyingQuestion);
+      expect(component.showContinueButton).toBeTruthy();
     });
   });
 
@@ -1144,5 +1177,40 @@ describe('QueryManagementContainerComponent', () => {
         expect(attachment).toBeNull();
       });
     }));
+
+    it('should validate and set qmCaseQueriesCollectionData on successful onQueryDataCreated', () => {
+      const mockData = { test: 'data' } as any;
+      spyOn(component, 'validate').and.returnValue(of({}));
+      component.triggerQueryDataSubmission = true;
+      component.onQueryDataCreated(mockData);
+
+      expect(component.qmCaseQueriesCollectionData).toEqual(mockData);
+      expect(component.showSummary).toBeTrue();
+    });
+    it('should handle error in onQueryDataCreated validate flow', () => {
+      const mockError = { status: 500, message: 'Server error' } as any;
+      spyOn(component, 'validate').and.returnValue(throwError(() => mockError));
+
+      component.triggerQueryDataSubmission = true;
+
+      component.onQueryDataCreated({} as any);
+
+      expect(mockAlertService.error).toHaveBeenCalledWith({ phrase: mockError.message });
+      expect(mockErrorNotifierService.announceError).toHaveBeenCalledWith(mockError);
+    });
+
+    it('should not throw if invalid element ID is provided to navigateToErrorElement', () => {
+      expect(() => component.navigateToErrorElement('non-existent-id')).not.toThrow();
+    });
+
+    it('should unsubscribe safely if subscription is provided', () => {
+      const subscription = jasmine.createSpyObj('Subscription', ['unsubscribe']);
+      component.unsubscribe(subscription);
+      expect(subscription.unsubscribe).toHaveBeenCalled();
+    });
+
+    it('should do nothing if no subscription is provided', () => {
+      expect(() => component.unsubscribe(null)).not.toThrow();
+    });
   });
 });

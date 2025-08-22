@@ -1,27 +1,26 @@
 const browser = require('./browser');
 const fs = require('fs');
-// const I = getActor();
 
-class CodeceptMochawesomeLog{
-  constructor(){
+class CodeceptMochawesomeLog {
+  constructor() {
     this.featureLogFilePath = null;
   }
 
-  getDate(){
+  getDate() {
     const d = new Date();
     const hh = d.getHours() < 10 ? `0${d.getHours()}` : d.getHours();
     const mm = d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes();
     const ss = d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds();
 
-    return `[${hh}:${mm }:${ss}]`;
+    return `[${hh}:${mm}:${ss}]`;
   }
 
-  FormatPrintJson(jsonObj, basePad){
+  FormatPrintJson(jsonObj, basePad) {
     basePad = basePad ? basePad : 0;
     const keys = Object.keys(jsonObj);
 
     let maxSize = 0;
-    for (const key of keys){
+    for (const key of keys) {
       maxSize = key.length > maxSize ? key.length : maxSize;
     }
 
@@ -36,7 +35,7 @@ class CodeceptMochawesomeLog{
     }
   }
 
-  LogTestDataInput(message){
+  LogTestDataInput(message) {
     try {
       browser.get_I().addMochawesomeContext(`>>>>>>> [ Test data input ]: ${message}`);
       // fs.appendFileSync(this.featureLogFilePath, '\n'+message)
@@ -46,7 +45,7 @@ class CodeceptMochawesomeLog{
     console.log(message);
   }
 
-  AddMessage(message, logLevel){
+  AddMessage(message, logLevel) {
     // if (!this._isLevelEnabled(logLevel)) return;
 
     try {
@@ -55,8 +54,8 @@ class CodeceptMochawesomeLog{
       const buf = message.toString('binary');
       browser.get_I().say(buf);
       // fs.appendFileSync(this.featureLogFilePath, '\n' + message)
-    } catch (err){
-      console.log('Error occured adding message to report. '+err.message+' \n '+err.stack);
+    } catch (err) {
+      console.log('Error occured adding message to report. ' + err.message + ' \n ' + err.stack);
       // fs.appendFileSync(this.featureLogFilePath, '\n' + err.message + ' \n ' + err.stack)
     }
     console.log(message);
@@ -74,7 +73,7 @@ class CodeceptMochawesomeLog{
     // browser.get_I().say(this.getDate() + message)
   }
 
-  AddJson(json, logLevel){
+  AddJson(json, logLevel) {
     // if (!this._isLevelEnabled(logLevel)) return;
 
     try {
@@ -96,7 +95,7 @@ class CodeceptMochawesomeLog{
     console.log(JSON.stringify(json, null, 2));
   }
 
-  async AddScreenshot(onbrowser, logLevel){
+  async AddScreenshot(onbrowser, logLevel) {
     // if (!this._isLevelEnabled(logLevel)) return;
 
     // const decodedImage = await this.getScreenshot(onbrowser);
@@ -105,14 +104,18 @@ class CodeceptMochawesomeLog{
     this.AddMessage('!!! Add screenshot not implemented !!!');
   }
 
-  async getScreenshot(onbrowser){
-    const scrrenshotBrowser = onbrowser ? onbrowser : browser;
-    const stream = await scrrenshotBrowser.takeScreenshot();
-    const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-    return decodedImage;
+  async getScreenshot(onbrowser) {
+    const page = onbrowser            // you may pass one in tests -or-
+      ? onbrowser               // fall back to the Playwright page
+      : require('codeceptjs').container.helpers().Playwright.page;
+
+    /** Playwright gives raw `Buffer`, Puppeteer gives `base64` string. */
+    const raw = await page.screenshot({ type: 'png' });
+    const buf = Buffer.isBuffer(raw) ? raw : Buffer.from(raw, 'base64');
+    return buf;
   }
 
-  reportDatatable(datatable){
+  reportDatatable(datatable) {
     const rows = datatable.parse().raw();
     const topRow = rows[0];
     const rowsCount = rows.length;
@@ -120,10 +123,10 @@ class CodeceptMochawesomeLog{
 
     const columnSizes = [];
 
-    for (let i = 0; i < columnsCount; i++){
+    for (let i = 0; i < columnsCount; i++) {
       const columnValues = rows.map((row) => row[i]);
 
-      let columnSize = columnValues.sort((a, b) => a.length < b.length ? 1:-1)[0].length;
+      let columnSize = columnValues.sort((a, b) => a.length < b.length ? 1 : -1)[0].length;
       columnSize = columnSize + 3;
       columnSizes[i] = columnSize;
     }
@@ -131,15 +134,15 @@ class CodeceptMochawesomeLog{
     let totalTableLength = 0;
 
     columnSizes.forEach((colLength) => totalTableLength += colLength);
-    this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength+1, '-'));
-    for (let row = 0; row < rowsCount; row++){
+    this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength + 1, '-'));
+    for (let row = 0; row < rowsCount; row++) {
       let tableRow = '';
-      for (let col = 0; col < columnsCount; col++){
+      for (let col = 0; col < columnsCount; col++) {
         tableRow += rows[row][col].padEnd(columnSizes[col], ' ');
       }
-      this.AddMessage('=== BDD)    |'+tableRow+'|');
+      this.AddMessage('=== BDD)    |' + tableRow + '|');
     }
-    this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength+1, '-'));
+    this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength + 1, '-'));
   }
 
   // _isLevelEnabled(msgLoglevel)`=== BDD)

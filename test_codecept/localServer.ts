@@ -1,22 +1,25 @@
-/**
- * localServer.ts used to run the application locally.
- */
+// localServer.ts
 import { createApp } from '../api/application';
 import { applicationConfiguration } from '../api/configuration/appConfig';
 import { appInsights } from '../api/lib/appInsights';
 import errorHandler from '../api/lib/error.handler';
 
 import axios from 'axios';
-
-import * as ejs from 'ejs';
 import * as express from 'express';
 import * as path from 'path';
+import { existsSync, readFileSync } from 'fs';
 
 import { removeCacheHeaders } from '../api/lib/middleware/removeCacheHeaders';
 
-/**
- * Show the developer the application configuration when they are developing locally.
- */
+function loadIndexHtml(): string {
+  const built = path.join(__dirname, '../dist/rpx-exui', 'index.html');
+  return readFileSync(built, 'utf8');
+}
+const indexHtmlRaw = loadIndexHtml();
+
+function injectNonce(html: string, nonce: string): string {
+  return html.replace(/{{\s*cspNonce\s*}}/g, nonce);
+}
 
 class ApplicationServer {
   server: any;
@@ -24,23 +27,22 @@ class ApplicationServer {
 
   async initialize() {
     this.app = await createApp();
-    this.app.engine('html', ejs.renderFile);
-    this.app.set('view engine', 'html');
-    this.app.set('views', path.join(__dirname, ''));
 
-    this.app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })]);
-    this.app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })]);
+    // Serve static assets only (don’t let static serve index)
+    this.app.use([
+      removeCacheHeaders,
+      express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })
+    ]);
+    this.app.use([
+      removeCacheHeaders,
+      express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })
+    ]);
 
-    this.app.use('/*', (req, res) => {
+    // Catch-all → send the nonce-injected HTML
+    this.app.get('/*', (req, res) => {
       res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
-      res.render('../dist/rpx-exui/index', {
-        providers: [
-          { provide: 'REQUEST', useValue: req },
-          { provide: 'RESPONSE', useValue: res }
-        ],
-        req,
-        res
-      });
+      const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+      res.type('html').send(html);
     });
 
     console.log(applicationConfiguration());
@@ -76,6 +78,4 @@ class ApplicationServer {
 }
 
 const applicationServer = new ApplicationServer();
-
-// applicationServer.start()
 export default applicationServer;

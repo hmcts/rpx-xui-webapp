@@ -304,7 +304,7 @@ export class HearingsUtils {
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
   }
 
-  public static returnPanelRoles(
+  public static returnPanelRolesOld(
     SelectedPanelSpecialism: string[],
     SelectedPanelRoles: string[],
     panelRoles: LovRefDataModel[],
@@ -329,5 +329,109 @@ export class HearingsUtils {
       }
     });
     return panelRolesRequired.join(separator);
+  }
+
+  public static returnPanelRoles(
+    SelectedPanelSpecialism: string[],
+    SelectedPanelRoles: string[],
+    panelRoles: LovRefDataModel[],
+    separator: string): string {
+    const panelRolesRequired: string[] = [];
+    this.extractSimpleRows(SelectedPanelRoles, panelRoles, panelRolesRequired);
+    this.extractSpecialismWithNoSelections(SelectedPanelRoles, panelRoles, panelRolesRequired, SelectedPanelSpecialism);
+    this.extractSpecialismRows(SelectedPanelSpecialism, panelRoles, panelRolesRequired);
+    return panelRolesRequired.join(separator);
+  }
+
+  private static extractSimpleRows(
+    SelectedPanelRoles: string[],
+    panelRoles: LovRefDataModel[],
+    panelRolesRequired: string[]
+  ) {
+    const simpleRoles = new Map(
+      panelRoles
+        .filter((role) => !role.child_nodes?.length)
+        .map((role) => [role.key, role.value_en])
+    );
+    for (const roleKey of SelectedPanelRoles) {
+      const name = simpleRoles.get(roleKey);
+      if (name) {
+        panelRolesRequired.push(name);
+      }
+    }
+  }
+
+  private static extractSpecialismWithNoSelections(
+    SelectedPanelRoles: string[],
+    panelRoles: LovRefDataModel[],
+    panelRolesRequired: string[],
+    SelectedPanelSpecialism: string[] = []
+  ) {
+    // Build lookup maps once
+    const roleByKey = new Map(panelRoles.map((role) => [role.key, role]));
+    const parentKeys = new Set(panelRoles.filter((role) => role.child_nodes?.length).map((r) => r.key));
+
+    // childKey -> parentKey
+    const childToParent = new Map<string, string>();
+    for (const parent of panelRoles) {
+      if (parent.child_nodes?.length) {
+        for (const child of parent.child_nodes) {
+          childToParent.set(child.key, parent.key);
+        }
+      }
+    }
+
+    // Count how many times each parent role was selected
+    const roleCounts = new Map<string, number>();
+    for (const roleKey of SelectedPanelRoles) {
+      if (parentKeys.has(roleKey)) {
+        roleCounts.set(roleKey, (roleCounts.get(roleKey) ?? 0) + 1);
+      }
+    }
+
+    // Count how many matching specialisms were chosen per parent role
+    const matchedCounts = new Map<string, number>();
+    for (const specKey of SelectedPanelSpecialism) {
+      const parentKey = childToParent.get(specKey);
+      if (parentKey) {
+        matchedCounts.set(parentKey, (matchedCounts.get(parentKey) ?? 0) + 1);
+      }
+    }
+
+    // For each parent role, add the leftover unmatched instances
+    for (const [parentKey, count] of roleCounts) {
+      const matched = matchedCounts.get(parentKey) ?? 0;
+      const extras = Math.max(0, count - matched);
+      if (extras > 0) {
+        const parent = roleByKey.get(parentKey);
+        if (parent?.value_en) {
+          for (let i = 0; i < extras; i++) {
+            panelRolesRequired.push(parent.value_en);
+          }
+        }
+      }
+    }
+  }
+
+  private static extractSpecialismRows(
+    SelectedPanelSpecialism: string[],
+    panelRoles: LovRefDataModel[],
+    panelRolesRequired: string[]
+  ) {
+    const labelByChild = new Map<string, string>();
+    for (const parent of panelRoles) {
+      if (!parent.child_nodes?.length) {
+        continue;
+      }
+      for (const child of parent.child_nodes) {
+        labelByChild.set(child.key, `${parent.value_en} - ${child.value_en}`);
+      }
+    }
+    for (const specKey of SelectedPanelSpecialism) {
+      const label = labelByChild.get(specKey);
+      if (label) {
+        panelRolesRequired.push(label);
+      }
+    }
   }
 }

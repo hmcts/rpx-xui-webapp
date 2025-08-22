@@ -119,7 +119,7 @@
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
                           <button type="button" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                            id="hearing-timing-result-confirm-link" class="govuk-link">{{ 'Confirm' | rpxTranslate }}</button>&nbsp;
+                            id="hearing-timing-result-confirm-link" class="govuk-js-link">{{ 'Confirm' | rpxTranslate }}</button>&nbsp;
                           <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]"
                             class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
                         </ng-container>

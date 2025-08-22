@@ -3170,9 +3170,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.4":
-  version: 4.1.4
-  resolution: "@hmcts/media-viewer@npm:4.1.4"
+"@hmcts/media-viewer@npm:4.1.3-ped-ac3":
+  version: 4.1.3-ped-ac3
+  resolution: "@hmcts/media-viewer@npm:4.1.3-ped-ac3"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3191,7 +3191,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/f9ab2add6c701fc70662bfca316a347badc49e17bbc13dc72898b2ecf378891762cf9676a9e8f8373eda020cdbcb594c71e66dd8d5274ab4a3934c3f9e59c7f5
+  checksum: 10/1a01fbbec9e79dce5855bb086ae62e2640c484e1632204e065af44fa237d27ef9b7c1fa68bfb686c4926d78681a1ff6f0d948e2d27e5e284d4c2d8c8f3ffc040
   languageName: node
   linkType: hard
 
@@ -20563,7 +20563,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.2.15-properties-upgrade"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.4"
+    "@hmcts/media-viewer": "npm:4.1.3-ped-ac3"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.2-govuk-frontend-upgrade"

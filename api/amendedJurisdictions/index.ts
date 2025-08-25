@@ -1,5 +1,7 @@
+import { ClientRequest } from 'http';
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
+import { Request, Response } from 'express';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
 
@@ -8,19 +10,54 @@ const jurisdictions = /aggregated\/.+jurisdictions\?/;
  * to make available jurisdiction in filters array only
  */
 export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
-  if (!Array.isArray(data)
-        || !jurisdictions.test(req.url)) {
+  if (!Array.isArray(data) || !jurisdictions.test(req.url)) {
     return data;
   }
+
   const filters = getConfigValue(JURISDICTIONS);
-  req.session.jurisdictions = [...data].filter((o) => filters.includes(o.id));
-  return req.session.jurisdictions;
+  const params = new URLSearchParams(req.url.split('?')[1]);
+  const access = params.get('access');
+  const filtered = data.filter((o) => filters.includes(o.id));
+
+  let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
+  if (access === 'read') {
+    sessionKey = 'readJurisdictions';
+  } else if (access === 'create') {
+    sessionKey = 'createJurisdictions';
+  } else {
+    sessionKey = 'jurisdictions';
+  }
+
+  if (!req.session[sessionKey]) {
+    req.session[sessionKey] = filtered;
+  }
+
+  return req.session[sessionKey];
 };
 
-export const checkCachedJurisdictions = (proxyReq, req, res) => {
+export const checkCachedJurisdictions = (
+  proxyReq: ClientRequest,
+  req: Request & { session: Record<string, any> },
+  res: Response
+) => {
   if (jurisdictions.test(req.url)) {
-    if (req.session.jurisdictions) {
-      res.send(req.session.jurisdictions);
+    const params = new URLSearchParams(req.url.split('?')[1]);
+    const access = params.get('access');
+    let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
+    if (access === 'read') {
+      sessionKey = 'readJurisdictions';
+    } else if (access === 'create') {
+      sessionKey = 'createJurisdictions';
+    } else {
+      sessionKey = 'jurisdictions';
+    }
+
+    const cached = req.session[sessionKey];
+    if (cached) {
+      console.log(`checkCachedJurisdictions ${sessionKey}:-`, cached);
+      res.send(cached);
+      res.end();
+      console.log('checkCachedJurisdictions close');
       proxyReq.end();
     }
   }

@@ -41,10 +41,14 @@
       const stampStyleInHtml = (html) =>
         String(html).replace(/<style(?![^>]*\bnonce=)/gi, `<style nonce="${n}"`);
 
-      /* 1) createElement: JS-created <style> */
+      /* 1) createElement: JS-created <style> and <script> */
+      const _create = _Doc_createElement; // alias to the captured native
       Document.prototype.createElement = function (tag, opts) {
-        const el = _Doc_createElement.call(this, tag, opts);
-        if (String(tag).toLowerCase() === 'style') stampStyleEl(el);
+        const el = _create.call(this, tag, opts);
+        const t = String(tag).toLowerCase();
+        if ((t === 'style' || t === 'script') && !el.hasAttribute('nonce')) {
+          el.setAttribute('nonce', n); // n is the meta[name=csp-nonce].content above
+        }
         return el;
       };
 

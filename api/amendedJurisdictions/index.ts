@@ -2,6 +2,7 @@ import { ClientRequest } from 'http';
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
 import { Request, Response } from 'express';
+import { trackTrace } from '../lib/appInsights';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
 
@@ -54,10 +55,10 @@ export const checkCachedJurisdictions = (
 
     const cached = req.session[sessionKey];
     if (cached) {
-      console.log(`checkCachedJurisdictions ${sessionKey}:-`, cached);
+      trackTrace(`checkCachedJurisdictions ${sessionKey}:-`, cached);
       res.send(cached);
       res.end();
-      console.log('checkCachedJurisdictions close');
+      trackTrace('checkCachedJurisdictions close');
       proxyReq.end();
     }
   }

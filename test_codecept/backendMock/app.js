@@ -108,7 +108,7 @@ class MockApp {
 
     app.use(
       cors({
-        origin: 'http://localhost:3000',
+        origin: [/^http:\/\/localhost:(3000|8080)$/],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization'],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
@@ -184,6 +184,17 @@ class MockApp {
       }
 
       res.send(resposne);
+    });
+
+    // ── serve the built UI from dist on :8080 ─────────────────────────────────
+    const staticRoot = path.resolve(__dirname, '../../dist/rpx-exui');
+
+    // 1) static files (no index auto-serve)
+    app.use(express.static(staticRoot, { index: false, cacheControl: false }));
+
+    // 2) SPA fallback: anything not matched by API routes returns index.html
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(staticRoot, 'index.html'));
     });
 
     console.log('mock server starting on :8080');

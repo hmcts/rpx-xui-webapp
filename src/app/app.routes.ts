@@ -68,7 +68,7 @@ export const ROUTES: Routes = [
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:jurisdiction/:caseType/:cid', pathMatch: 'full' },
   { path: 'case/:cid', redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid', pathMatch: 'full' },
   { path: 'case-details/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid', pathMatch: 'full' },
-  { path: 'v2/case/:cid', redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid', pathMatch: 'full' },
+  { path: 'v2/case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   {
     path: 'case/:jurisdiction/:case-type/:cid/trigger/:triggerPath',
     redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid/trigger/:triggerPath', pathMatch: 'full'

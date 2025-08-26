@@ -151,8 +151,7 @@ exports.config = {
 
     // },
     Playwright: {
-      url: externalServers
-        ? 'http://localhost:3000'   // use local build + mock
+      url: externalServers ? (process.env.WEB_BASE_URL || 'http://localhost:8080')
         : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
       show: head,

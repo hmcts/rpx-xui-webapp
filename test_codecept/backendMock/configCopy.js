@@ -39,7 +39,7 @@ function acquireLock() {
   } catch (e) {
     if (e.code !== 'EEXIST') throw e;
     for (let i = 0; i < 5; i++) {
-      try { const n = readInt(COUNTER_FILE); writeInt(COUNTER_FILE, n + 1); break; } catch {}
+      try { const n = readInt(COUNTER_FILE); writeInt(COUNTER_FILE, n + 1); break; } catch { }
     }
     return false;
   }
@@ -60,7 +60,7 @@ function releaseLock() {
         catch (e) { console.warn('[mock] could not clean', dir, e.message); }
       }
       if (!KEEP_SSR_ALIVE) {
-        try { const ownerPid = readInt(OWNER_PIDFILE); if (ownerPid) process.kill(ownerPid, 'SIGTERM'); } catch {}
+        try { const ownerPid = readInt(OWNER_PIDFILE); if (ownerPid) process.kill(ownerPid, 'SIGTERM'); } catch { }
       } else {
         console.log('[mock] SSR kept alive for shared run (KEEP_SSR_ALIVE=true)');
       }
@@ -116,7 +116,7 @@ function httpGetJson(url, timeoutMs) {
       });
     });
     req.on('timeout', () => { req.destroy(); resolve({ ok: false, status: 0, json: null }); });
-    req.on('error', () => resolve({ ok: false, status: 0, json: null }) );
+    req.on('error', () => resolve({ ok: false, status: 0, json: null }));
   });
 }
 
@@ -126,13 +126,6 @@ async function healthOK() {
     if (ok) return { ok: true, url, status };
   }
   return { ok: false, url: HEALTH_URLS[0], status: 0 };
-}
-
-function failFast(msg) {
-  console.error(msg);
-  // Terminate the bash -c shell that launched us so the pipeline doesn’t hang on wait-on.
-  try { process.kill(process.ppid, 'SIGINT'); } catch {}
-  process.exit(2);
 }
 
 /* ── tiny stub on :3000 that serves /external/configuration-ui/ ── */
@@ -154,7 +147,7 @@ function startStub3000() {
     const onListening = () => resolve();
     srv.once('error', onError);
     srv.once('listening', onListening);
-    srv.listen(SSR_PORT, () => {});  // no host ⇒ OS default
+    srv.listen(SSR_PORT, () => { });  // no host ⇒ OS default
   });
 
   return tryListen().then(() => {
@@ -244,6 +237,7 @@ function startStub3000() {
     return; // let wait-on succeed
   }
 
-  // Busy but not healthy ⇒ fail fast so the pipeline doesn’t hang forever
-  failFast(`[mock] :${SSR_PORT} is busy but not serving ${HEALTH_PATH}. Cannot continue.`);
+  // Busy but not healthy ⇒ ignore it; we use :8080 for tests anyway
+  console.warn(`[mock] :${SSR_PORT} is busy but not serving ${HEALTH_PATH}. Proceeding; tests target :8080.`);
+  // do nothing; mock on :8080 provides the UI and health
 })();

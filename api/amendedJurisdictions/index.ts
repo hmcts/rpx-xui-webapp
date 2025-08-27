@@ -1,6 +1,5 @@
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
-import { Request, Response } from 'express';
 import { trackTrace } from '../lib/appInsights';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
@@ -35,7 +34,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   return req.session[sessionKey];
 };
 
-export const checkCachedJurisdictions = (
+/*export const checkCachedJurisdictions = (
   proxyReq: { end: () => void },
   req: Request & { session: any },
   res: Response
@@ -56,6 +55,30 @@ export const checkCachedJurisdictions = (
     if (cached) {
       trackTrace(`checkCachedJurisdictions ${sessionKey}:-`, cached);
       res.json(cached);
+      trackTrace('checkCachedJurisdictions close');
+      proxyReq.end();
+    }
+  }
+};*/
+
+export const checkCachedJurisdictions = (proxyReq, req, res) => {
+  if (jurisdictions.test(req.url)) {
+    const params = new URLSearchParams(req.url.split('?')[1]);
+    const access = params.get('access');
+    let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
+    if (access === 'read') {
+      sessionKey = 'readJurisdictions';
+    } else if (access === 'create') {
+      sessionKey = 'createJurisdictions';
+    } else {
+      sessionKey = 'jurisdictions';
+    }
+
+    const cached = req.session[sessionKey];
+    if (cached) {
+      trackTrace(`checkCachedJurisdictions ${sessionKey}:-`, cached);
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(cached));
       trackTrace('checkCachedJurisdictions close');
       proxyReq.end();
     }

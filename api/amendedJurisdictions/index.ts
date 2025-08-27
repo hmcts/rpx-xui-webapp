@@ -1,6 +1,5 @@
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
-import { Request, Response } from 'express';
 import { trackTrace } from '../lib/appInsights';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
@@ -35,7 +34,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   return req.session[sessionKey];
 };
 
-export const checkCachedJurisdictions = (
+/*export const checkCachedJurisdictions = (
   proxyReq: { end: () => void },
   req: Request & { session: any },
   res: Response
@@ -60,9 +59,9 @@ export const checkCachedJurisdictions = (
       proxyReq.end();
     }
   }
-};
+};*/
 
-/*export const checkCachedJurisdictions = (proxyReq, req, res) => {
+export const checkCachedJurisdictions = (proxyReq, req, res) => {
   if (jurisdictions.test(req.url)) {
     const params = new URLSearchParams(req.url.split('?')[1]);
     const access = params.get('access');
@@ -84,4 +83,4 @@ export const checkCachedJurisdictions = (
       proxyReq.end();
     }
   }
-};*/
+};

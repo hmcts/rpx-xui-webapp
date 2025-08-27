@@ -141,7 +141,7 @@ describe('Amended Jurisdiction', () => {
       ];
 
       amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
-      expect(res.json).to.have.been.calledWith([{ id: "PROBATE" }, { id: "DIVORCE" }]);
+      expect(res.json).to.have.been.calledWith([{ id: 'PROBATE' }, { id: 'DIVORCE' }]);
       expect(proxyReq.end.called).to.be.true;
     });
 

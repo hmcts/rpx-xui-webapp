@@ -1,4 +1,3 @@
-import { ClientRequest } from 'http';
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
 import { Request, Response } from 'express';
@@ -37,8 +36,8 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
 };
 
 export const checkCachedJurisdictions = (
-  proxyReq: ClientRequest,
-  req: Request & { session: Record<string, any> },
+  proxyReq: { end: () => void },
+  req: Request & { session: any },
   res: Response
 ) => {
   if (jurisdictions.test(req.url)) {
@@ -56,8 +55,7 @@ export const checkCachedJurisdictions = (
     const cached = req.session[sessionKey];
     if (cached) {
       trackTrace(`checkCachedJurisdictions ${sessionKey}:-`, cached);
-      res.send(cached);
-      res.end();
+      res.json(cached);
       trackTrace('checkCachedJurisdictions close');
       proxyReq.end();
     }

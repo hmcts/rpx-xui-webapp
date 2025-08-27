@@ -135,9 +135,13 @@ describe('Amended Jurisdiction', () => {
 
     it('should send cached jurisdictions and end proxy request when jurisdictions are cached', () => {
       req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-      req.session = { readJurisdictions: [{ id: 'J1' }] };
-      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req as any, res as any);
-      expect(res.json).to.have.been.calledWith([{ id: 'J1' }]);
+      req.session.jurisdictions = [
+        { id: 'PROBATE' },
+        { id: 'DIVORCE' }
+      ];
+
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+      expect(res.json).to.have.been.calledWith([{ id: "PROBATE" }, { id: "DIVORCE" }]);
       expect(proxyReq.end.called).to.be.true;
     });
 
@@ -182,7 +186,7 @@ describe('Amended Jurisdiction', () => {
 
         amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
 
-        expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
+        expect(res.send).to.have.been.calledWith([{ id: 'PROBATE' }]);
         expect(proxyReq.end).to.have.been.called;
       });
     });

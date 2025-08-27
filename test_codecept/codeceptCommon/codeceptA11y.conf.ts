@@ -1,14 +1,14 @@
-const path   = require('path');
-const fs     = require('fs');
+const path = require('path');
+const fs = require('fs');
 import applicationServer from '../localServer';
-const backendMockApp      = require('../backendMock/app');
+const backendMockApp = require('../backendMock/app');
 const generateMergedReport = require('../accessibility/reporter/reportsMerger');
 
 /*───────────────────────────────────────────────────────────────*/
 const headed = /^(true|1)$/i.test(process.env.HEAD ?? '');
 console.log(`[conf] headed run: ${headed}`);
 
-const testType   = 'a11y';
+const testType = 'a11y';
 const CODECEPT_OUT = path.resolve(__dirname, `../../functional-output/tests/codecept-${testType}`);
 fs.mkdirSync(CODECEPT_OUT, { recursive: true });
 
@@ -51,22 +51,18 @@ exports.config = {
 
   plugins: {
     screenshotOnFail: { enabled: true, fullPageScreenshots: true },
-    retryFailedStep:  { enabled: true }
+    retryFailedStep: { enabled: true }
   },
 
   // ⬇️ Only start/stop local servers when we are NOT using external servers
   bootstrap: async () => {
-    if (!externalServers) {
-      await backendMockApp.startServer();
-      await applicationServer.start();
-    }
+    await backendMockApp.startServer();
+    await applicationServer.start();
   },
 
   teardown: async () => {
-    if (!externalServers) {
-      await backendMockApp.stopServer();
-      await applicationServer.stop();
-    }
+    await backendMockApp.stopServer();
+    await applicationServer.stop();
     await generateMergedReport();
   }
 };

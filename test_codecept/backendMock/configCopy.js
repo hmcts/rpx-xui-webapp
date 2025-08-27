@@ -91,13 +91,15 @@ function probeOnce(port, host) {
 }
 
 async function isPortFree(port) {
-  const [v4, v6] = await Promise.allSettled([
-    probeOnce(port, '127.0.0.1'),
-    probeOnce(port, '::'),
+  // try OS-default bind (no host) first, then v4, then v6
+  const results = await Promise.allSettled([
+    probeOnce(port),               // no host: all interfaces per OS policy
+    probeOnce(port, '127.0.0.1'),  // IPv4 loopback
+    probeOnce(port, '::1'),        // IPv6 loopback
   ]);
-  const ok4 = v4.status === 'fulfilled' ? v4.value : false;
-  const ok6 = v6.status === 'fulfilled' ? v6.value : false;
-  return ok4 && ok6;
+
+  const anyOK = results.some(r => r.status === 'fulfilled' && r.value === true);
+  return anyOK;  // free if we can bind on at least one
 }
 
 function httpGetJson(url, timeoutMs) {
@@ -140,37 +142,42 @@ function startStub3000() {
     }
   };
 
-  // Try without host (all interfaces), then fall back to v4 or v6
   const srv = http.createServer(handler);
-  const tryListen = () => new Promise((resolve, reject) => {
-    const onError = (err) => reject(err);
-    const onListening = () => resolve();
+
+  // helper that logs each bind attempt and result
+  const tryListen = (label, host) => new Promise((resolve, reject) => {
+    console.log(`[mock] stub: attempting bind on :${SSR_PORT} ${label}`);
+    const onError = (err) => {
+      console.error(`[mock] stub: failed to bind ${label} :${SSR_PORT} — ${err.code || err.message}`);
+      srv.removeListener('listening', onListening);
+      reject(err);
+    };
+    const onListening = async () => {
+      srv.removeListener('error', onError);
+      console.log(`[mock] stub: SUCCESS on ${label} :${SSR_PORT}`);
+      // self-probe to prove the handler is alive
+      try {
+        const probe = await httpGetJson(`http://127.0.0.1:${SSR_PORT}${HEALTH_PATH}`, 1000);
+        console.log(`[mock] stub: self probe => ${probe.status} (ok=${probe.ok})`);
+      } catch (e) {
+        console.warn('[mock] stub: self probe failed', e?.message || e);
+      }
+      resolve();
+    };
     srv.once('error', onError);
     srv.once('listening', onListening);
-    srv.listen(SSR_PORT, () => { });  // no host ⇒ OS default
+    // undefined host ⇒ OS default (all interfaces per policy)
+    srv.listen(SSR_PORT, host);
   });
 
-  return tryListen().then(() => {
-    console.log('[mock] stubbed /external/configuration-ui on :%d', SSR_PORT);
-    return srv;
-  }).catch(async () => {
-    // Retry explicitly on IPv4
-    await new Promise((resolve, reject) => {
-      srv.removeAllListeners('error'); srv.removeAllListeners('listening');
-      srv.once('error', reject); srv.once('listening', resolve);
-      srv.listen(SSR_PORT, '127.0.0.1');
-    }).catch(async () => {
-      // Retry explicitly on IPv6
-      await new Promise((resolve, reject) => {
-        srv.removeAllListeners('error'); srv.removeAllListeners('listening');
-        srv.once('error', reject); srv.once('listening', resolve);
-        srv.listen(SSR_PORT, '::1');
-      });
-    }).then(() => {
-      console.log('[mock] stubbed /external/configuration-ui on :%d (single-stack)', SSR_PORT);
+  // Try default bind first, then IPv4, then IPv6 (each logs outcome)
+  return tryListen('(all interfaces)', undefined)
+    .catch(() => tryListen('IPv4', '127.0.0.1'))
+    .catch(() => tryListen('IPv6', '::1'))
+    .then(() => {
+      console.log('[mock] stubbed /external/configuration-ui on :%d', SSR_PORT);
       return srv;
     });
-  });
 }
 
 /* ── main ───────────────────────────────────────────────────── */
@@ -237,7 +244,15 @@ function startStub3000() {
     return; // let wait-on succeed
   }
 
-  // Busy but not healthy ⇒ ignore it; we use :8080 for tests anyway
-  console.warn(`[mock] :${SSR_PORT} is busy but not serving ${HEALTH_PATH}. Proceeding; tests target :8080.`);
-  // do nothing; mock on :8080 provides the UI and health
+  // Busy but not healthy ⇒ we still must satisfy wait-on on :SSR_PORT
+  console.warn(`[mock] :${SSR_PORT} is busy but not serving ${HEALTH_PATH}. Starting stub so tests can proceed.`);
+  try {
+    await startStub3000();
+    return;
+  } catch (e) {
+    // If another process owns :SSR_PORT, bind will fail; be explicit so CI doesn't "hang"
+    console.error(`[mock] stub: could not bind :${SSR_PORT} (still occupied). ` +
+      `Either free the port or set SSR_PORT/WEB_BASE_URL to a free port (e.g. 3100).`);
+    process.exit(2);
+  }
 })();

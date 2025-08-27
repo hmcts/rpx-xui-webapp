@@ -29,7 +29,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   }
 
   if (!req.session[sessionKey]) {
-    req.session[sessionKey] = filtered;
+    req.session[sessionKey] = JSON.parse(JSON.stringify(filtered));
   }
 
   return req.session[sessionKey];

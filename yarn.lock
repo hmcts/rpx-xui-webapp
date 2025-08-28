@@ -2948,12 +2948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.38":
-  version: 7.2.38
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.38"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.38-exui-3323-2":
+  version: 7.2.38-exui-3323-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.38-exui-3323-2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/07838ea3dab4be3f3bc8d87e7ee5fcd654b85450d92b29b6ad563596b62db81a0f2e3682c9d36cf1a23987f4bde412eaa9d7b305a55218eabda10b5babf203a3
+  checksum: 10/e272ca9e7422e7795c8c07410bbb519fdfd1d4a3723910a0d7b08e1e361e330b986e556258ec30be1dff8909eda3e50c6cbb6fd8301e00e1db20c3720acf0b88
   languageName: node
   linkType: hard
 
@@ -20354,7 +20354,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.38"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.38-exui-3323-2"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.4"
@@ -20474,7 +20474,7 @@ __metadata:
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.1.1"
+    rpx-xui-translation: "npm:1.1.1-exui-3323-2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -20502,9 +20502,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.1.1":
-  version: 1.1.1
-  resolution: "rpx-xui-translation@npm:1.1.1"
+"rpx-xui-translation@npm:1.1.1-exui-3323-2":
+  version: 1.1.1-exui-3323-2
+  resolution: "rpx-xui-translation@npm:1.1.1-exui-3323-2"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -20512,7 +20512,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/2e1204d293ef408503f774a65161ba84c21e1e8e4e5223cf0ee1a874d49d1185e7f71524cb1239e0effae6dfc0acae0a6132d26759adc1ada8ae1f9cc219a96e
+  checksum: 10/d68413de3e5af67619ef221154a5c0eb64d6d61a03177b8e136a69a823ea084a6a0d2c901bb939051021c4badc0668aaa9f8578654006deefb4ebf2c76703f46
   languageName: node
   linkType: hard
 

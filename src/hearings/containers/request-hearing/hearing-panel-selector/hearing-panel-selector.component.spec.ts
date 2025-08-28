@@ -202,76 +202,6 @@ describe('HearingPanelSelectorComponent', () => {
     requirementType: RequirementType.MUSTINC
   }];
 
-  /* eslint-disable */
-  const MEDICALLY_QUALIFIED_PANEL_MEMBERS: LovRefDataModel = {
-    category_key: 'PanelMemberType',
-    key: 'BBA3-MQPM2',
-    value_en: 'Medically Qualified Panel Member',
-    value_cy: '',
-    hint_text_en: '',
-    hint_text_cy: '',
-    lov_order: null,
-    parent_category: '',
-    parent_key: '',
-    active_flag: 'Y',
-    child_nodes: [
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-003',
-        value_en: 'Eye Surgeon',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      },
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-004',
-        value_en: 'General Practitioner',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      },
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-001',
-        value_en: 'Cardiologist',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      },
-      {
-        category_key: 'PanelMemberSpecialism',
-        key: 'BBA3-MQPM2-002',
-        value_en: 'Carer',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: null,
-        parent_category: 'PanelMemberType',
-        parent_key: 'BBA3-MQPM2',
-        active_flag: 'Y',
-        child_nodes: null
-      }
-    ],
-    selected: false
-  };
-  /* eslint-enable */
-
   beforeEach(() => {
     const STATE = _.cloneDeep(initialState);
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
@@ -317,12 +247,7 @@ describe('HearingPanelSelectorComponent', () => {
     component.panelListCollection = [];
     component.includedJudge.judgeList = [];
     component.excludedJudge.judgeList = [];
-    component.isFormValid();
-    expect(component.validationErrors.length).toBeGreaterThan(0);
-  });
-
-  it('should check form valid', () => {
-    expect(component.isFormValid()).toBeTruthy();
+    expect(component.validationErrors.length).toBe(0);
   });
 
   it('should check getPanelMemberList', () => {

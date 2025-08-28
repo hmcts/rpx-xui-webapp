@@ -1,6 +1,7 @@
+import { ClientRequest } from 'http';
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
-import { trackTrace } from '../lib/appInsights';
+import { Request, Response } from 'express';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
 
@@ -26,17 +27,15 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   } else {
     sessionKey = 'jurisdictions';
   }
-
   if (!req.session[sessionKey]) {
-    req.session[sessionKey] = JSON.parse(JSON.stringify(filtered));
+    req.session[sessionKey] = filtered;
   }
-
   return req.session[sessionKey];
 };
 
-/*export const checkCachedJurisdictions = (
-  proxyReq: { end: () => void },
-  req: Request & { session: any },
+export const checkCachedJurisdictions = (
+  proxyReq: ClientRequest,
+  req: Request & { session: Record<string, any> },
   res: Response
 ) => {
   if (jurisdictions.test(req.url)) {
@@ -53,33 +52,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
 
     const cached = req.session[sessionKey];
     if (cached) {
-      trackTrace(`checkCachedJurisdictions1 ${sessionKey}:-`, cached);
-      res.json(cached);
-      trackTrace('checkCachedJurisdictions1 close');
-      proxyReq.end();
-    }
-  }
-};*/
-
-export const checkCachedJurisdictions = (proxyReq, req, res) => {
-  if (jurisdictions.test(req.url)) {
-    const params = new URLSearchParams(req.url.split('?')[1]);
-    const access = params.get('access');
-    let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
-    if (access === 'read') {
-      sessionKey = 'readJurisdictions';
-    } else if (access === 'create') {
-      sessionKey = 'createJurisdictions';
-    } else {
-      sessionKey = 'jurisdictions';
-    }
-
-    const cached = req.session[sessionKey];
-    if (cached) {
-      trackTrace(`checkCachedJurisdictions ${sessionKey}:-`, cached);
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(cached));
-      trackTrace('checkCachedJurisdictions close');
+      res.send(cached);
       proxyReq.end();
     }
   }

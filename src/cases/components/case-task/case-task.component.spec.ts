@@ -22,7 +22,7 @@ describe('CaseTaskComponent', () => {
     mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
     mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
     mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-    mockRouter.url = '/case-details/123243430403904/tasks';
+    mockRouter.url = '/case-details/IA/Asylum/123243430403904/tasks';
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mockRouter.navigate.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
     mockWindow = { location: new URL('https://manage-case.hmcts.platform.net') };
@@ -235,6 +235,8 @@ describe('CaseTaskComponent', () => {
       description: null,
       case_id: '1111222233334444',
       caseName: null,
+      jurisdiction: 'IA',
+      case_type_id: 'Asylum',
       caseCategory: null,
       location: null,
       taskName: null,
@@ -243,7 +245,7 @@ describe('CaseTaskComponent', () => {
       warnings: false,
       derivedIcon: null
     };
-    expect(component.returnUrl).toEqual('case-details/1111222233334444/tasks');
+    expect(component.returnUrl).toEqual('case-details/IA/Asylum/1111222233334444/tasks');
   });
 
   it('getDueDateTitle should be Task created', () => {
@@ -286,7 +288,7 @@ describe('CaseTaskComponent', () => {
     });
 
     it('should handle an action that redirects', () => {
-      const state = { returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true };
+      const state = { returnUrl: '/case-details/IA/Asylum/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true };
       const queryParams = { service: 'IA' };
 
       // need to check that navigate has been called
@@ -295,7 +297,7 @@ describe('CaseTaskComponent', () => {
 
       // need to verify correct properties were called
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], { queryParams, state });
-      expect(component.returnUrl).toBe('/case-details/123243430403904/tasks');
+      expect(component.returnUrl).toBe('/case-details/IA/Asylum/123243430403904/tasks');
     });
   });
 

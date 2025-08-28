@@ -165,20 +165,25 @@ describe('Hearing Values Effects', () => {
   });
 
   describe('handleError', () => {
+    const caseInfo = {
+      caseReference: '1111222233334444',
+      caseType: 'PRLAPPS',
+      jurisdictionId: 'PRIVATELAW'
+    };
     it('should handle 500', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 500,
         message: 'error'
-      }, '1111222233334444');
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
+      }, caseInfo);
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] })));
     });
 
     it('should handle 4xx related errors', () => {
       const action$ = HearingValuesEffects.handleError({
         status: 403,
         message: 'error'
-      }, '1111222233334444');
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/1111222233334444/hearings'] })));
+      }, caseInfo);
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] })));
     });
   });
 });

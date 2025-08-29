@@ -12,7 +12,7 @@
         </div>
         <div class="govuk-body" *ngIf="caseId">
           {{ 'You can' | rpxTranslate }} 
-          <a (click)="$event.preventDefault();" [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-link">
+          <a (click)="$event.preventDefault();" [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']" class="govuk-link">
             {{ 'view the status of this hearing in the hearings tab' | rpxTranslate }}
           </a>.
         </div>

@@ -12,4 +12,5 @@ export interface ExclusionStateData {
   person: Person;
   exclusionDescription: string;
   lastError?: HttpError;
+  caseType: string;
 }

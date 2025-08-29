@@ -56,7 +56,8 @@ class MockConfigService {
       wa_service_config: { test: 'config' },
       events_to_hide: [
         'queryManagementRespondQuery'
-      ]
+      ],
+      enable_service_specific_multi_followups: ['SERVICE_1']
     };
   }
 
@@ -219,6 +220,10 @@ describe('AppConfiguration', () => {
     tick(5000);
     expect(service.initialisationComplete).toBeTruthy();
   })));
+
+  it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(['foo']);
+  }));
 
   describe('getCaseDataUrl', () => {
     it('should return case data url', inject([AppConfig], (service: AppConfig) => {

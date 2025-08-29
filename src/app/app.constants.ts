@@ -12,6 +12,7 @@ const featureNames = {
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   accessManagementMode: 'access-management-mode',
+  enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
   cdamExclusionList: 'mc-cdam-exclusion-list'
 };
 
@@ -27,6 +28,7 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
   [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);
 

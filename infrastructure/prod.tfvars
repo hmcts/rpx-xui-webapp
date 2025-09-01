@@ -4,4 +4,4 @@ redis_family   = "P"
 redis_capacity = "2"
 
 # Welsh Language Reporting
-welsh_reporting_enabled = false
+welsh_reporting_enabled = true

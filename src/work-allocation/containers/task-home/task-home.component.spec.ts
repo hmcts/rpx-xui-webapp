@@ -3,11 +3,13 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../app/models';
-import { SessionStorageService } from '../../../app/services';
+import { SessionStorageService as AppSessionStorageService } from '../../../app/services';
 import { initialMockState } from '../../../role-access/testing/app-initial-state.mock';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { LocationDataService, WorkAllocationTaskService } from '../../services';
@@ -21,7 +23,7 @@ class WrapperComponent {
   @ViewChild(TaskHomeComponent, { static: true }) public appComponentRef: TaskHomeComponent;
 }
 
-xdescribe('TaskHomeComponent', () => {
+describe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -83,9 +85,20 @@ xdescribe('TaskHomeComponent', () => {
       unsubscribe: () => null
     }
   };
-  const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: () => { },
+    getTranslation: (phrase: string) => phrase,
+    getTranslation$: (phrase: string) => of(phrase),
+    language$: of('en')
+  });
+
+  const appSessionStorageService = jasmine.createSpyObj('appSessionStorageService', ['getItem', 'setItem', 'removeItem', 'clear']);
+  const ccdSessionStorageService = jasmine.createSpyObj('ccdSessionStorageService', ['getItem', 'setItem', 'removeItem', 'clear']);
   const locationDataService = jasmine.createSpyObj('locationDataService', ['getItem', 'getSpecificLocations']);
   const featureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
+  appSessionStorageService.getItem.and.returnValue(null);
+  ccdSessionStorageService.getItem.and.returnValue(null);
   locationDataService.getSpecificLocations.and.returnValue(of([]));
   featureToggleService.getValue.and.returnValue(of(true));
 
@@ -108,10 +121,16 @@ xdescribe('TaskHomeComponent', () => {
           provide: FilterService, useValue: mockFilterService
         },
         {
-          provide: SessionStorageService, useValue: sessionStorageService
+          provide: AppSessionStorageService, useValue: appSessionStorageService
+        },
+        {
+          provide: SessionStorageService, useValue: ccdSessionStorageService
         },
         {
           provide: FeatureToggleService, useValue: featureToggleService
+        },
+        {
+          provide: RpxTranslationService, useFactory: rpxTranslationServiceStub
         }
       ]
     }).compileComponents();

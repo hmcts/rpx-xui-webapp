@@ -170,7 +170,7 @@
     "redisEnabled": false,
     "oidcEnabled": false,
     "workAllocationEnabled": false,
-    "jrdELinksV2Enabled": false,
+    "jrdELinksV2Enabled": true,
     "lauSpecificChallengedEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,

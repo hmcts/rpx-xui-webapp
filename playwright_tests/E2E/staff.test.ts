@@ -1,11 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { signIn, signOut } from './steps/login-steps';
 import { clickToStaffPage } from './steps/staff-steps';
-import { registerCorsChecker } from './helpers/corsSmoke';
-
-test.beforeEach(async ({ page }) => {
-  registerCorsChecker(page);
-});
 
 test('staff user details', async ({ page }) => {
   await signIn(page, 'STAFF_ADMIN');

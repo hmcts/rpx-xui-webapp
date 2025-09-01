@@ -2,11 +2,6 @@ import { test, expect } from '@playwright/test';
 import { signIn } from "./steps/login-steps"
 import config from "../config"
 import axeTest from "./helpers/accessibilityTestHelper";
-import { registerCorsChecker } from './helpers/corsSmoke';
-
-test.beforeEach(async ({ page }) => {
-  registerCorsChecker(page);
-});
 
 test('login and log out from EUI with valid user', async ({ page }) => {
   await signIn(page, 'PROD_LIKE');

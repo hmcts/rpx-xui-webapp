@@ -182,7 +182,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   QUERY
 
   severity    = 3
-  frequency   = 6
+  frequency   = 1440
   time_window = 1440
 
   trigger {

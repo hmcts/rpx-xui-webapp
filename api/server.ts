@@ -13,7 +13,6 @@ import * as path from 'path';
 import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 import { removeCacheHeaders } from './lib/middleware/removeCacheHeaders';
-import { corsMw } from './security/cors';
 
 createApp()
   .then((app: express.Application) => {
@@ -23,8 +22,6 @@ createApp()
 
     app.set('view engine', 'html');
     app.set('views', __dirname);
-
-    app.use(corsMw);
 
     app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
     app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);

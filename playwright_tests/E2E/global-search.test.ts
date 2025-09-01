@@ -4,11 +4,6 @@ import { clickOnMainMenu } from './steps/steps-functions';
 import { retryAction } from './steps/retry-steps';
 import { waitForSpinner } from './steps/spinner-steps';
 import axeTest from "./helpers/accessibilityTestHelper";
-import { registerCorsChecker } from './helpers/corsSmoke';
-
-test.beforeEach(async ({ page }) => {
-  registerCorsChecker(page);
-});
 
 test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');

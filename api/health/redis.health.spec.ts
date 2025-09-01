@@ -44,8 +44,6 @@ describe('Redis Health', () => {
         redisClient: mockRedisClient
       }
     };
-
-    createAppStub = sandbox.stub(application, 'createApp');
   });
 
   afterEach(() => {

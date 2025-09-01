@@ -15,7 +15,6 @@ import {
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICE_S2S_PATH
@@ -42,7 +41,6 @@ export interface HealthChecks {
     s2s: any,
     workAllocationApi?: any,
     roleApi?: any,
-    roleMappingApi?: any,
     caseworkerRefApi?: any,
   };
 }
@@ -64,7 +62,6 @@ if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH));
   config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH));
   config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH));
-  config.checks.roleMappingApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH));
   config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH));
 }
 

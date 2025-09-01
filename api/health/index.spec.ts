@@ -21,12 +21,10 @@ import {
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
-  SERVICES_EM_ANNO_API_URL,
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICE_S2S_PATH
@@ -90,14 +88,12 @@ describe('Health Check', (): void => {
     getConfigValueStub.withArgs(SERVICES_EM_DOCASSEMBLY_API_URL).returns('http://docassembly-api');
     getConfigValueStub.withArgs(SERVICES_DOCUMENTS_API_PATH).returns('http://documents-api');
     getConfigValueStub.withArgs(SERVICES_DOCUMENTS_API_PATH_V2).returns('http://documents-api-v2');
-    getConfigValueStub.withArgs(SERVICES_EM_ANNO_API_URL).returns('http://emmo-api');
     getConfigValueStub.withArgs(SERVICES_IDAM_LOGIN_URL).returns('http://idam-login');
     getConfigValueStub.withArgs(SERVICES_IDAM_API_URL).returns('http://idam-api');
     getConfigValueStub.withArgs(SERVICE_S2S_PATH).returns('http://s2s');
     getConfigValueStub.withArgs(SERVICES_WORK_ALLOCATION_TASK_API_PATH).returns('http://work-allocation-api');
     getConfigValueStub.withArgs(SERVICES_CASE_CASEWORKER_REF_PATH).returns('http://caseworker-ref-api');
     getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_API_PATH).returns('http://role-assignment-api');
-    getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH).returns('http://role-mapping-api');
     getConfigValueStub.withArgs(SERVICES_CASE_JUDICIAL_REF_PATH).returns('http://judicial-ref-api');
     getConfigValueStub.withArgs(SERVICES_TERMS_AND_CONDITIONS_URL).returns('http://terms-conditions');
 
@@ -142,7 +138,6 @@ describe('Health Check', (): void => {
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_EM_DOCASSEMBLY_API_URL);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_DOCUMENTS_API_PATH);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_DOCUMENTS_API_PATH_V2);
-      expect(getConfigValueStub).to.have.been.calledWith(SERVICES_EM_ANNO_API_URL);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_IDAM_LOGIN_URL);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_IDAM_API_URL);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICE_S2S_PATH);
@@ -159,7 +154,6 @@ describe('Health Check', (): void => {
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_WORK_ALLOCATION_TASK_API_PATH);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_CASE_CASEWORKER_REF_PATH);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_ROLE_ASSIGNMENT_API_PATH);
-      expect(getConfigValueStub).to.have.been.calledWith(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH);
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_CASE_JUDICIAL_REF_PATH);
     });
   });

@@ -4,9 +4,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as moment from 'moment';
-import { combineLatest, Observable, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../app/app.constants';
+import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
@@ -25,7 +23,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
-  private combineResult$: Observable<any[]> | any;
   private existingBookingsSubscription: Subscription;
   private refreshAssignmentsSubscription: Subscription;
 

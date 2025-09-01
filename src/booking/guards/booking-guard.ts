@@ -13,8 +13,7 @@ export class BookingGuard {
   public static defaultUrl: string = '/cases';
 
   constructor(private readonly router: Router,
-              private readonly store: Store<fromActions.State>,
-              private readonly featureToggleService: FeatureToggleService) {}
+              private readonly store: Store<fromActions.State>) {}
 
   public hasAccess(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
@@ -23,12 +22,8 @@ export class BookingGuard {
 
   public canActivate(): Observable<boolean> {
     const userDetails$: Observable<UserDetails> = this.store.pipe(select(fromActions.getUserDetails));
-    const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
-    const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$]);
-    return userAccess$.pipe(map(([userDetails, bookingFeatureToggle]) => {
-      if (!bookingFeatureToggle) {
-        return false;
-      }
+    const userAccess$ = userDetails$;
+    return userAccess$.pipe(map((userDetails) => {
       // note: in order to enable booking url for guarded users just set return true for testing purposes
       // return true;
       return this.hasAccess(userDetails);

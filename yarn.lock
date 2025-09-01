@@ -2948,12 +2948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.38":
-  version: 7.2.38
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.38"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.39-remove-ld-feature-flags":
+  version: 7.2.39-remove-ld-feature-flags
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.39-remove-ld-feature-flags"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/07838ea3dab4be3f3bc8d87e7ee5fcd654b85450d92b29b6ad563596b62db81a0f2e3682c9d36cf1a23987f4bde412eaa9d7b305a55218eabda10b5babf203a3
+  checksum: 10/4c5ab9ea5271609e1dc023a82b84f0eb71a6e8df8cea5afae5ed0514c80cdcd20d06eef8510b0d07aa4b5479c6ad2adae1f615f9e0bb0136469e2f2517475910
   languageName: node
   linkType: hard
 
@@ -20354,7 +20354,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.38"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.39-remove-ld-feature-flags"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.4"

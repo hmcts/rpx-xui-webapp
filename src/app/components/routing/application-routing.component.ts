@@ -28,14 +28,13 @@ export class ApplicationRoutingComponent implements OnInit {
 
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
     const waLandingPageRoles$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
-    const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$, waLandingPageRoles$]);
-    userAccess$.pipe(map(([userDetails, bookingFeatureToggle, landingRoles]) => {
+    const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$]);
+    userAccess$.pipe(map(([userDetails, landingRoles]) => {
       if (this.router.url !== '/') {
         return;
       }
-      if (bookingFeatureToggle && AppUtils.isBookableAndJudicialRole(userDetails)) {
+      if (AppUtils.isBookableAndJudicialRole(userDetails)) {
         return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
       }
       if (!(userDetails?.userInfo?.roles?.includes('pui-case-manager'))) {

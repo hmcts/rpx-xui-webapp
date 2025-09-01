@@ -46,15 +46,10 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     if (this.userId) {
       this.existingBookingsSubscription = this.bookingService.getBookings(this.userId, bookableServices).subscribe((bookings) => {
         if (bookings) {
-          this.combineResult$ = combineLatest([of(bookings), this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
-          this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
-            if (bookingResults) {
-              this.existingBookings = bookingResults as any;
-              this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter((p) => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p) => p.locationId) : null;
-              this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
-            }
-          })).subscribe();
+          this.existingBookings = bookings as any;
+          this.orderByCurrentThenFuture();
+          this.bookingProcess.selectedBookingLocationIds = (bookings as any).filter((p) => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p) => p.locationId);
+          this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
         }
       },
       (err) => {

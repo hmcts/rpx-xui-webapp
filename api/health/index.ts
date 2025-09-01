@@ -11,7 +11,6 @@ import {
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
-  SERVICES_EM_ANNO_API_URL,
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
@@ -36,7 +35,6 @@ export interface HealthChecks {
     ccdDataApi: any,
     documentsApi: any,
     documentsApiV2: any,
-    emmoApi: any,
     docassemblyApi: any,
     idamApi: any,
     idamWeb: any,
@@ -56,7 +54,6 @@ const config: HealthChecks = {
     docassemblyApi: checkServiceHealth(getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL)),
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
     documentsApiV2: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)),
-    emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH))

@@ -30,6 +30,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   if (!req.session[sessionKey]) {
     req.session[sessionKey] = filtered;
   }
+  console.log(`caching data ${sessionKey}`, req.session[sessionKey]);
   return req.session[sessionKey];
 };
 
@@ -52,7 +53,8 @@ export const checkCachedJurisdictions = (
 
     const cached = req.session[sessionKey];
     if (cached) {
-      res.send(cached);
+      console.log(`cached data ${sessionKey}`, cached);
+      res.json(cached);
       proxyReq.end();
     }
   }

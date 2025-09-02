@@ -35,6 +35,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public methodOfAttendanceChanged: boolean;
   public noOfPhysicalAttendeesChanged: boolean;
   public paperHearingChanged: boolean;
+  public partyAmendmentStatusById: Record<string, AmendmentLabelStatus> = {};
 
   constructor(private readonly validatorsUtils: ValidatorsUtils,
     private readonly fb: FormBuilder,
@@ -110,6 +111,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           unavailabilityDOW: partyDetail.unavailabilityDOW,
           unavailabilityRanges: partyDetail.unavailabilityRanges
         } as PartyDetailsModel) as FormGroup);
+        this.setPartyStatus(partyDetail.partyID, AmendmentLabelStatus.NONE);
       });
   }
 
@@ -123,10 +125,10 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       if (!individualPartyIdsInHMC.includes(partyDetailsModel.partyID)) {
         partyDetailsModel = {
           ...partyDetailsModel,
-          partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`,
-          partyAmendmentStatus: AmendmentLabelStatus.ACTION_NEEDED
+          partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`
         };
         (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
+        this.setPartyStatus(partyDetailsModel.partyID, AmendmentLabelStatus.ACTION_NEEDED);
       } else {
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
         if (partyInHMC) {
@@ -142,13 +144,17 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             },
             organisationDetails: partyDetailsModel.organisationDetails,
             unavailabilityDOW: partyDetailsModel.unavailabilityDOW,
-            unavailabilityRanges: partyDetailsModel.unavailabilityRanges,
-            partyAmendmentStatus: HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE
+            unavailabilityRanges: partyDetailsModel.unavailabilityRanges
           } as PartyDetailsModel) as FormGroup);
+          this.setPartyStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
         }
       }
     });
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
+  }
+
+  private setPartyStatus(partyId: string, status: AmendmentLabelStatus): void {
+    this.partyAmendmentStatusById[partyId] = status ?? AmendmentLabelStatus.NONE;
   }
 
   public executeAction(action: ACTION): void {
@@ -264,8 +270,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       ...individualDetails && ({ individualDetails }),
       ...organisationDetails && ({ organisationDetails }),
       unavailabilityDOW: [party.unavailabilityDOW],
-      unavailabilityRanges: [party.unavailabilityRanges],
-      partyAmendmentStatus: [party.partyAmendmentStatus]
+      unavailabilityRanges: [party.unavailabilityRanges]
     });
   }
 

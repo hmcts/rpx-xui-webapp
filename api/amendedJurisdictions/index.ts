@@ -36,10 +36,10 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
 
 export const checkCachedJurisdictions = (
   proxyReq: ClientRequest,
-  req: Request & { session: Record<string, any> },
+  req: Request & { session?: Record<string, any> },
   res: Response
 ) => {
-  if (jurisdictions.test(req.url)) {
+  if (jurisdictions.test(req.url) && req.session) {
     const params = new URLSearchParams(req.url.split('?')[1]);
     const access = params.get('access');
     let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
@@ -54,8 +54,12 @@ export const checkCachedJurisdictions = (
     const cached = req.session[sessionKey];
     if (cached) {
       console.log(`cached data ${sessionKey}`, cached);
-      res.json(cached);
-      proxyReq.end();
+      if (!res.headersSent) {
+        res.json(cached);
+      }
+      if (!proxyReq.destroyed) {
+        proxyReq.end();
+      }
     }
   }
 };

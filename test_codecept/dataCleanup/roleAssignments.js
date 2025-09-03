@@ -1,5 +1,6 @@
 
 const axios = require('axios');
+
 const { getS2SToken } = require('./support');
 class RoleAssignments{
   constructor(){

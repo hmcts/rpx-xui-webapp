@@ -3156,12 +3156,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.38":
-  version: 7.2.38
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.38"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.39":
+  version: 7.2.39
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.39"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/07838ea3dab4be3f3bc8d87e7ee5fcd654b85450d92b29b6ad563596b62db81a0f2e3682c9d36cf1a23987f4bde412eaa9d7b305a55218eabda10b5babf203a3
+  checksum: 10/6014721aa655edc8bc31c4a9efa185c02d46269340bb7cd827b0df1992d6a3fbf1e1a9a1935a26720a9148f7fa1dee90e794910c32a16d3b28db58a43d4415ab
   languageName: node
   linkType: hard
 
@@ -3184,9 +3184,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.4":
-  version: 4.1.4
-  resolution: "@hmcts/media-viewer@npm:4.1.4"
+"@hmcts/media-viewer@npm:4.1.5":
+  version: 4.1.5
+  resolution: "@hmcts/media-viewer@npm:4.1.5"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3205,7 +3205,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/f9ab2add6c701fc70662bfca316a347badc49e17bbc13dc72898b2ecf378891762cf9676a9e8f8373eda020cdbcb594c71e66dd8d5274ab4a3934c3f9e59c7f5
+  checksum: 10/941d4e95dda8fdd60b9c6be93b2d1c12e4d7a9f6857f0c0a737aeaf48b8da229592aa229b77b1259554fee30c9e7f25f7be1b16a8e1cb53757821353c49b9edd
   languageName: node
   linkType: hard
 
@@ -20566,10 +20566,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.38"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.39"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.4"
+    "@hmcts/media-viewer": "npm:4.1.5"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5-srt-rc1"

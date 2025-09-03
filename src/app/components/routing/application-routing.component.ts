@@ -28,7 +28,8 @@ export class ApplicationRoutingComponent implements OnInit {
 
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    const waLandingPageRoles$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
+    const waLandingPageRoles$ =
+      this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
     const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$]);
     userAccess$.pipe(map(([userDetails, landingRoles]) => {
       if (this.router.url !== '/') {
@@ -37,8 +38,8 @@ export class ApplicationRoutingComponent implements OnInit {
       if (AppUtils.isBookableAndJudicialRole(userDetails)) {
         return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
       }
-      if (userDetails?.userInfo && !(userDetails?.userInfo?.roles?.includes('pui-case-manager'))) {
-        const userRoles = userDetails?.userInfo.roles;
+      if (!(userDetails?.userInfo?.roles?.includes('pui-case-manager'))) {
+        const userRoles = userDetails.userInfo.roles;
         let rolePresent = false;
         for (let i = 0, len = landingRoles.roles.length; i < len; i++) {
           if (userRoles.includes(landingRoles.roles[i])) {

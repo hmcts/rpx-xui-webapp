@@ -2948,12 +2948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.38-3453":
-  version: 7.2.38-3453
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.38-3453"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.39":
+  version: 7.2.39
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.39"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/cd39bb13ed01481fa93e1bd6c2f07a448aae6b62553f274da32b1fc4649723baa9967baf528494948a265d0a0e16fdbfe837b7bb7ff455a66631f92dda56a38e
+  checksum: 10/6014721aa655edc8bc31c4a9efa185c02d46269340bb7cd827b0df1992d6a3fbf1e1a9a1935a26720a9148f7fa1dee90e794910c32a16d3b28db58a43d4415ab
   languageName: node
   linkType: hard
 
@@ -2976,9 +2976,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.4-performance-issue":
-  version: 4.1.4-performance-issue
-  resolution: "@hmcts/media-viewer@npm:4.1.4-performance-issue"
+"@hmcts/media-viewer@npm:4.1.5":
+  version: 4.1.5
+  resolution: "@hmcts/media-viewer@npm:4.1.5"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -2997,7 +2997,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/8fd19bfeca393140977a72b500a29615c85ef721d584d7e5c6174d52b8ba8868c9eec089f5705cbd41b1740df5b8a510cb16c68ec662fcd62ad258d557319a89
+  checksum: 10/941d4e95dda8fdd60b9c6be93b2d1c12e4d7a9f6857f0c0a737aeaf48b8da229592aa229b77b1259554fee30c9e7f25f7be1b16a8e1cb53757821353c49b9edd
   languageName: node
   linkType: hard
 
@@ -20354,10 +20354,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.38-3453"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.39"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.4-performance-issue"
+    "@hmcts/media-viewer": "npm:4.1.5"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.5"

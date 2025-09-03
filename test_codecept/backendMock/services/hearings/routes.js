@@ -1,5 +1,6 @@
 
 const express = require('express');
+const bodyParser = require('body-parser');  
 
 const router = express.Router({ mergeParams: true });
 const service = require('./index');
@@ -13,6 +14,17 @@ const completedHearing = require('./mockData/completedHearing.data');
 const serviceHearingValuesMock = require('./serviceHearingValuesMock');
 
 const hearingActualsData = require('./mockData/hearingActuals');
+
+router.use(
+  bodyParser.json({
+    strict : false,                  // let "null", 123, "" through
+    type   : ['application/json'],   // only when Content-Type is JSON
+    verify : (req, res, buf) => {
+      // turn completely empty bodies into {}
+      if (!buf.length) req.body = {};
+    }
+  })
+);
 
 router.get('/hearings/:caseId', (req, res) => {
   userApiData.sendResponse(req, res, 'OnCaseHearings', () => service.getCaseHearings(req.params.caseId));
@@ -56,19 +68,11 @@ router.get('/hearingActuals/:hearingId', (req, res) => {
   res.send(hearingActualsData);
 });
 
-router.put('/hearingActuals/:hearingId', (req, res) => {
-  res.send({});
-});
-
 router.post('/hearingActualsCompletion/:hearingId', (req, res) => {
   res.send({});
 });
 
 router.put('/hearingActuals/:hearingId', (req, res) => {
-  res.send({});
-});
-
-router.post('/hearingActualsCompletion/:hearingId', (req, res) => {
   res.send({});
 });
 

@@ -9,7 +9,8 @@ export const initialState: ExclusionStateData = {
   personRole: null,
   person: null,
   exclusionDescription: null,
-  lastError: null
+  lastError: null,
+  caseType: null
 };
 
 export function exclusionReducer(currentState = initialState, action: ExclusionAction): ExclusionStateData {
@@ -29,7 +30,8 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
       return {
         ...currentState,
         caseId: action.caseId,
-        jurisdiction: action.jurisdiction
+        jurisdiction: action.jurisdiction,
+        caseType: action.caseType
       };
     }
     case ExclusionActionTypes.UPDATE_DESCRIBE_EXCLUSION_TEXT: {

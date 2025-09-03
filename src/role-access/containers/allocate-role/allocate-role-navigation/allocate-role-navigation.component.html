@@ -1,6 +1,6 @@
-<a class="govuk-back-link govuk-!-margin-bottom-1" href="javascript:void(0)"
+<a class="govuk-back-link govuk-!-margin-bottom-1" href="#"
    *ngIf="isBackVisible(((allocateRoleStateData$ | async)?.state), ((allocateRoleStateData$ | async)?.action))"
-   (click)="onEventTrigger(allocateRoleNavigationEvent.BACK)">Back</a>
+   (click)="onEventTrigger(allocateRoleNavigationEvent.BACK); $event.preventDefault()">Back</a>
 <ng-content></ng-content>
 <div class="govuk-button-group">
   <button class="govuk-button govuk-!-margin-right-3"
@@ -17,8 +17,8 @@
     <p>
       <a class='govuk-body'
          *ngIf="isVisible(((allocateRoleStateData$ | async)?.state), cancelButtonVisibilityStates)"
-         (click)="onEventTrigger(allocateRoleNavigationEvent.CANCEL)"
-         href="javascript:void(0)">Cancel</a>
+         (click)="onEventTrigger(allocateRoleNavigationEvent.CANCEL); $event.preventDefault()"
+          href="#">Cancel</a>
     </p>
   </div>
 </div>

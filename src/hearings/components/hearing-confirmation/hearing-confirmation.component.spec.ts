@@ -24,9 +24,11 @@ describe('HearingConfirmationComponent', () => {
 
   it('should display anchor link with destination to hearings tab if subheading description is null or empty', () => {
     component.caseId = '1111222233334444';
+    component.jurisdiction = 'IA';
+    component.caseType = 'Asylum';
     fixture.detectChanges();
     const subheadingDescriptionElement = fixture.debugElement.nativeElement.querySelector('.govuk-body');
     const anchorElement = subheadingDescriptionElement.querySelector('a');
-    expect(anchorElement.getAttribute('href')).toEqual('/cases/case-details/1111222233334444/hearings');
+    expect(anchorElement.getAttribute('href')).toEqual('/cases/case-details/IA/Asylum/1111222233334444/hearings');
   });
 });

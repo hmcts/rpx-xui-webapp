@@ -833,6 +833,32 @@ describe('returnPanelRoles', () => {
             parent_category: 'panel_roles',
             parent_key: 'role1',
             child_nodes: []
+          },
+          {
+            key: 'spec2',
+            value_en: 'Specialization 2',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role1',
+            child_nodes: []
+          },
+          {
+            key: 'spec3',
+            value_en: 'Specialization 3',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role1',
+            child_nodes: []
           }
         ]
       },
@@ -861,6 +887,59 @@ describe('returnPanelRoles', () => {
         parent_category: '',
         parent_key: '',
         child_nodes: []
+      },
+      {
+        key: 'role4',
+        value_en: 'Role 4',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: [
+          {
+            key: 'spec41',
+            value_en: 'Specialization 41',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role4',
+            child_nodes: []
+          },
+          {
+            key: 'spec42',
+            value_en: 'Specialization 42',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role4',
+            child_nodes: []
+          },
+          {
+            key: 'spec43',
+            value_en: 'Specialization 43',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role4',
+            child_nodes: []
+          }
+        ]
       }
     ];
   };
@@ -896,7 +975,7 @@ describe('returnPanelRoles', () => {
   it('should handle roles with no matching specialisms', () => {
     const panelRoles = createTestPanelRoles();
     const selectedPanelRoles = ['role2'];
-    const selectedPanelSpecialism = ['spec2']; // This doesn't exist
+    const selectedPanelSpecialism = ['spec5']; // This doesn't exist
     const separator = ' | ';
 
     const result = HearingsUtils.returnPanelRoles(
@@ -927,7 +1006,7 @@ describe('returnPanelRoles', () => {
 
   it('should ignore roles that do not match', () => {
     const panelRoles = createTestPanelRoles();
-    const selectedPanelRoles = ['role4']; // This doesn't exist
+    const selectedPanelRoles = ['role5']; // This doesn't exist
     const selectedPanelSpecialism = [];
     const separator = ', ';
 
@@ -939,5 +1018,216 @@ describe('returnPanelRoles', () => {
     );
 
     expect(result).toBe('');
+  });
+
+  it('should output roles with child nodes, when child nodes have not been selected', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2', 'role1', 'role1'];
+    const selectedPanelSpecialism = ['spec1'];
+    const separator = ', ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2, Role 1, Role 1 - Specialization 1');
+  });
+
+  describe('extractSimpleRows', () => {
+    // Helper to create LovRefDataModel
+    const createRole = (key: string, value_en: string, child_nodes: any[] = []) => ({
+      key,
+      value_en,
+      child_nodes
+    } as LovRefDataModel);
+
+    it('should add matching simple roles to panelRolesRequired', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1'),
+        createRole('role2', 'Role 2', [{ key: 'child1', value_en: 'Child 1', child_nodes: [] }]),
+        createRole('role3', 'Role 3')
+      ];
+      const selectedPanelRoles = ['role1', 'role3'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 1', 'Role 3']);
+    });
+
+    it('should ignore selected roles that do not exist in panelRoles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1'),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role3'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should not add roles with child nodes', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'child1', value_en: 'Child 1', child_nodes: [] }]),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role1', 'role2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 2']);
+    });
+
+    it('should handle duplicate selected roles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1'),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role1', 'role1', 'role2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 1', 'Role 1', 'Role 2']);
+    });
+
+    it('should handle empty selectedPanelRoles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1')
+      ];
+      const selectedPanelRoles: string[] = [];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should handle empty panelRoles', () => {
+      const panelRoles: LovRefDataModel[] = [];
+      const selectedPanelRoles = ['role1'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+  });
+  describe('extractSpecialismWithNoSelections', () => {
+    const createRole = (key: string, value_en: string, child_nodes: any[] = []) => ({
+      key,
+      value_en,
+      child_nodes
+    } as LovRefDataModel);
+
+    it('should add parent role when selected but no matching specialism', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'spec1', value_en: 'Spec 1', child_nodes: [] }]),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role1', 'role1'];
+      const panelRolesRequired: string[] = [];
+      const selectedPanelSpecialism: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismWithNoSelections(selectedPanelRoles, panelRoles, panelRolesRequired, selectedPanelSpecialism);
+
+      expect(panelRolesRequired).toEqual(['Role 1', 'Role 1']);
+    });
+
+    it('should not add parent role when all selections have matching specialisms', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'spec1', value_en: 'Spec 1', child_nodes: [] }])
+      ];
+      const selectedPanelRoles = ['role1', 'role1'];
+      const panelRolesRequired: string[] = [];
+      const selectedPanelSpecialism: string[] = ['spec1', 'spec1'];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismWithNoSelections(selectedPanelRoles, panelRoles, panelRolesRequired, selectedPanelSpecialism);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should add parent role only for unmatched selections', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'spec1', value_en: 'Spec 1', child_nodes: [] }])
+      ];
+      const selectedPanelRoles = ['role1', 'role1', 'role1'];
+      const panelRolesRequired: string[] = [];
+      const selectedPanelSpecialism: string[] = ['spec1', 'spec1'];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismWithNoSelections(selectedPanelRoles, panelRoles, panelRolesRequired, selectedPanelSpecialism);
+
+      expect(panelRolesRequired).toEqual(['Role 1']);
+    });
+  });
+
+  describe('extractSpecialismRows', () => {
+    const createRole = (key: string, value_en: string, child_nodes: any[] = []) => ({
+      key,
+      value_en,
+      child_nodes
+    } as LovRefDataModel);
+
+    it('should add formatted labels for selected specialisms', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [
+          { key: 'spec1', value_en: 'Spec 1', child_nodes: [] },
+          { key: 'spec2', value_en: 'Spec 2', child_nodes: [] }
+        ]),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelSpecialism = ['spec1', 'spec2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismRows(selectedPanelSpecialism, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 1 - Spec 1', 'Role 1 - Spec 2']);
+    });
+
+    it('should ignore specialisms not present in panelRoles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [
+          { key: 'spec1', value_en: 'Spec 1', child_nodes: [] }
+        ])
+      ];
+      const selectedPanelSpecialism = ['spec2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismRows(selectedPanelSpecialism, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should handle empty selectedPanelSpecialism', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [
+          { key: 'spec1', value_en: 'Spec 1', child_nodes: [] }
+        ])
+      ];
+      const selectedPanelSpecialism: string[] = [];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismRows(selectedPanelSpecialism, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
   });
 });

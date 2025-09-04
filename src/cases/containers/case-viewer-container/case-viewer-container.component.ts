@@ -4,7 +4,7 @@ import { CaseTab, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { combineLatest, of, Observable, Subject } from 'rxjs';
-import { catchError, filter, map, takeUntil } from 'rxjs/operators';
+import { catchError, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models/user-details.model';
@@ -15,6 +15,9 @@ import { WASupportedJurisdictionsService } from '../../../work-allocation/servic
 import { Utils } from '../../utils/utils';
 import { HearingJurisdictionConfigService } from '../../../app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { DeploymentEnvironmentEnum } from 'src/app/enums/deployment-environment-enum';
+import { LaunchDarklyDefaultsConstants } from 'src/app/services/ccd-config/launch-darkly-defaults.constants';
+import { EnvironmentService } from 'src/app/shared/services/environment.service';
 
 @Component({
   selector: 'exui-case-viewer-container',
@@ -28,72 +31,6 @@ export class CaseViewerContainerComponent implements OnInit {
   public userRoles$: Observable<string[]>;
   private retryCount: number;
   private readonly destroy$ = new Subject<void>();
-  private waDefaultServiceConfig: any = {
-    'configurations': [
-      {
-        'caseTypes': [
-          ''
-        ],
-        'releaseVersion': '4',
-        'serviceName': ''
-      },
-      {
-        'caseTypes': [
-          'Asylum'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'IA'
-      },
-      {
-        'caseTypes': [
-          'CIVIL',
-          'GENERALAPPLICATION'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'CIVIL'
-      },
-      {
-        'caseTypes': [
-          'PRIVATELAW',
-          'PRLAPPS'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'PRIVATELAW'
-      },
-      {
-        'caseTypes': [
-          'CriminalInjuriesCompensation'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'ST_CIC'
-      },
-      {
-        'caseTypes': [
-          'ET_EnglandWales',
-          'ET_Scotland',
-          'ET_EnglandWales_Multiple',
-          'ET_Scotland_Multiple'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'EMPLOYMENT'
-      },
-      {
-        'caseTypes': [
-          'Benefit',
-          'SSCS_ExceptionRecord'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'SSCS'
-      },
-      {
-        'caseTypes': [
-          'CARE_SUPERVISION_EPO'
-        ],
-        'releaseVersion': '4',
-        'serviceName': 'PUBLICLAW'
-      }
-    ]
-  };
 
   private readonly prependedTabs: CaseTab[] = [
     {
@@ -119,6 +56,17 @@ export class CaseViewerContainerComponent implements OnInit {
     }
   ];
 
+   private readonly excludedRolesForCaseTabs: string[] = [
+    'caseworker-ia-homeofficeapc',
+    'caseworker-ia-legalrep-solicitor',
+    'caseworker-ia-respondentofficer',
+    'caseworker-ia-homeofficelart',
+    'caseworker-ia-homeofficepou'
+  ];
+
+  private deploymentEnv = DeploymentEnvironmentEnum.PROD;
+  private waServiceConfig$!: Observable<WAFeatureConfig>;
+
   constructor(private readonly route: ActivatedRoute,
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
@@ -126,10 +74,17 @@ export class CaseViewerContainerComponent implements OnInit {
     protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
     private readonly loggerService: LoggerService,
     private readonly waService: WASupportedJurisdictionsService,
+    private readonly environmentService: EnvironmentService,
     private readonly router: Router){
     this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
       map((userDetails) => userDetails?.userInfo?.roles)
     );
+
+    this.deploymentEnv = this.environmentService.getDeploymentEnv();
+
+    this.waServiceConfig$ = of(
+      LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv)
+    ).pipe(shareReplay(1)); // cache for all subscribers
   }
 
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
@@ -174,10 +129,10 @@ export class CaseViewerContainerComponent implements OnInit {
 
   private setPrependedCaseViewTabs(): void {
     combineLatest([
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waServiceConfig, this.waDefaultServiceConfig),
+      this.waServiceConfig$,
       this.userRoles$,
       this.waService.getWASupportedJurisdictions(),
-      this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.excludedRolesForCaseTabs, [])
+      of(this.excludedRolesForCaseTabs)
     ]).pipe(
       map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[], string[], string[]]) =>
         this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []
@@ -185,7 +140,8 @@ export class CaseViewerContainerComponent implements OnInit {
       catchError((error) => {
         this.loggerService.log('case-viewer-container - Error in setPrependedCaseViewTabs', error);
         return of([]);
-      })
+      }),
+      takeUntil(this.destroy$)
     ).subscribe((tabs) => {
       this.prependedTabs$ = of(tabs);
     });

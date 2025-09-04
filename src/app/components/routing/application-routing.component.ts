@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
 import * as fromActions from '../../store';
+import { landingPageRoles } from './config/landing-page-roles';
 
 @Component({ templateUrl: './application-routing.component.html' })
 export class ApplicationRoutingComponent implements OnInit {
@@ -22,6 +23,8 @@ export class ApplicationRoutingComponent implements OnInit {
   public static bookingUrl: string = '../booking';
   public waLandingPageRoles$: Observable<WALandingPageRoles>;
   public ngOnInit(): void {
+    this.waLandingPageRoles$ = of(landingPageRoles);
+
     // EUI-6768 - release 1 blocks on this removed to progress onto release 2/3
     this.navigateBasedOnUserRole();
   }
@@ -29,9 +32,10 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     const bookingFeatureToggle$: Observable<boolean> = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.booking, false);
-    const waLandingPageRoles$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
+    const waLandingPageRoles$ = this.waLandingPageRoles$;
     const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$, waLandingPageRoles$]);
     userAccess$.pipe(map(([userDetails, bookingFeatureToggle, landingRoles]) => {
+      console.log('landingRole----------', landingRoles);
       if (this.router.url !== '/') {
         return;
       }

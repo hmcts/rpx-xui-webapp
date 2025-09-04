@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AppConstants } from '../../app/app.constants';
 
@@ -18,8 +18,7 @@ export class WorkAllocationAccessGuard {
   }
 
   public canActivate(): Observable<boolean> {
-    return this.featureToggleService.getValueOnce<boolean>(AppConstants.FEATURE_NAMES.waAccess, false).pipe(tap((isfeatureEnabled) => {
-      WorkAllocationAccessGuard.navigateUrl(isfeatureEnabled, this.router, WorkAllocationAccessGuard.defaultUrl);
-    }));
+    // waAccess feature flag removed - EXUI-2615: always allow
+    return of(true);
   }
 }

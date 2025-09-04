@@ -4,6 +4,7 @@ import { Section } from '../models/section';
 export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   {
     sectionHTMLTitle: '<h1 class="govuk-heading-l">View hearing</h1>',
+    screenName: 'view-hearing',
     answers: [
       {
         id: 'caseNumber',
@@ -35,6 +36,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m"></h2>',
+    screenName: 'view-hearing-heading',
     answers: [
       {
         id: 'caseInternalName',
@@ -65,11 +67,13 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: HearingTemplate.LISTING_INFORMATION,
+    screenName: 'hearing-listing-info',
     isHiddenSource: IsHiddenSource.NOT_LISTED,
     isHiddenMargin: true
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',
+    screenName: 'hearing-requirements',
     answers: [
       {
         id: 'caseFlags',
@@ -81,6 +85,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
+    screenName: 'hearing-facilities',
     answers: [
       {
         id: 'additionalSecurityRequired',
@@ -97,6 +102,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing stage</h2>',
+    screenName: 'hearing-stage',
     answers: [
       {
         id: 'stage',
@@ -108,6 +114,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
+    screenName: 'hearing-attendance',
     answers: [
       {
         id: 'paperHearing',
@@ -137,6 +144,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
+    screenName: 'hearing-venue',
     answers: [
       {
         id: 'venue',
@@ -148,6 +156,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Language requirements</h2>',
+    screenName: 'hearing-welsh',
     answers: [
       {
         id: 'needWelsh',
@@ -157,8 +166,20 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
     ],
     isHiddenSource: IsHiddenSource.WELSH_LOCATION
   },
+  { sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing panel required</h2>',
+    screenName: 'hearing-panel-required',
+    answers: [
+      {
+        id: 'needPanel',
+        answerTitle: 'Do you require a panel for this hearing?',
+        answerSource: AnswerSource.NEED_PANEL
+      }
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION
+  },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
+    screenName: 'hearing-judge',
     answers: [
       {
         id: 'needJudge',
@@ -188,6 +209,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
+    screenName: 'hearing-panel',
     answers: [
       {
         id: 'hearingPanel',
@@ -216,7 +238,33 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
     isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
   },
   {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
+    screenName: 'hearing-panel-selector',
+    answers: [
+      {
+        id: 'panelInclusion',
+        answerTitle: 'Include specific panel members',
+        answerSource: AnswerSource.PANEL_INCLUSION,
+        isHiddenSource: IsHiddenSource.PANEL_INCLUSION
+      },
+      {
+        id: 'panelExclusion',
+        answerTitle: 'Exclude specific panel members',
+        answerSource: AnswerSource.PANEL_EXCLUSION,
+        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
+      },
+      {
+        id: 'panelRoles',
+        answerTitle: 'Select any other panel roles required',
+        answerSource: AnswerSource.PANEL_ROLES,
+        isHiddenSource: IsHiddenSource.PANEL_ROLES
+      }
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION
+  },
+  {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',
+    screenName: 'hearing-timing',
     answers: [
       {
         id: 'hearingLength',
@@ -238,6 +286,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Linked hearings</h2>',
+    screenName: 'hearing-link',
     answers: [
       {
         id: 'linkedHearings',
@@ -249,6 +298,7 @@ export const HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE: Section[] = [
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional instructions</h2>',
+    screenName: 'hearing-additional-instructions',
     answers: [
       {
         id: 'additionalInstruction',

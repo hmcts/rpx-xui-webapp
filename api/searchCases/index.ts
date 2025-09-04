@@ -48,7 +48,6 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
   const canPerformWildCardSearch: boolean = userCanPerformWildCardSearch(user);
   const caseType: string = metaCriteria.ctid;
   const fieldsToApplyWildCardSearchesTo = getConfigValue(WILDCARD_SEARCH_FIELDS) as { [key: string]: string[] };
-  const hasESQueryTypeInPayload: boolean = Object.keys(body) && Object.keys(body).length && Object.keys(body)[0] === 'query';
 
   Object.keys(metaCriteria).map((key: string): void => {
     if (key === 'ctid' || key === 'use_case' || key === 'view' || key === 'page') {
@@ -133,7 +132,7 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
   };
 
   return {
-    native_es_query: hasESQueryTypeInPayload ? { ...body } : nativeEsQuery,
+    native_es_query: nativeEsQuery,
     supplementary_data: ['*']
   };
 }

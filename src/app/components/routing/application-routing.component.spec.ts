@@ -45,7 +45,7 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should call navigateBasedOnUserRole on ngOnInit and return nothing', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    setLandingRoles(['caseworker-ia']);
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     router.url = '/something';
     component.ngOnInit();
@@ -54,7 +54,6 @@ describe('ApplicationRoutingComponent', () => {
 
   it('should call navigateBasedOnUserRole on ngOnInit and call booking url', () => {
     featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
     setLandingRoles(['caseworker-ia']);
     mockStore.pipe.and.returnValue(of({ userInfo: { roleCategory: 'JUDICIAL' }, roleAssignmentInfo: [{ bookable: true }] }));
     component.ngOnInit();

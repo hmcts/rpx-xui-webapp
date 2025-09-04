@@ -30,6 +30,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public amendmentLabelEnum = AmendmentLabelStatus;
   public hearingFacilitiesChangesRequired: boolean;
   public hearingFacilitiesChangesConfirmed: boolean;
+  public additionalSecurityRequiredChanged: boolean;
+  public additionalFacilitiesChanged: boolean;
 
   constructor(private fb: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -45,6 +47,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       this.hearingFacilitiesChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
       this.hearingFacilitiesChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+      this.additionalSecurityRequiredChanged = this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+      this.additionalFacilitiesChanged = this.checkAdditionalFacilitiesChanged();
     }
 
     this.setNonReasonableAdjustmentFlags();
@@ -59,6 +63,12 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     } else {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
     }
+  }
+
+  private checkAdditionalFacilitiesChanged(): boolean {
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+    return CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
   }
 
   public ngAfterViewInit(): void {

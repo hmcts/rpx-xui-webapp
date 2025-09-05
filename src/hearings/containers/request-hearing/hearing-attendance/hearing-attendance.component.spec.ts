@@ -459,50 +459,50 @@ describe('HearingAttendanceComponent', () => {
     beforeEach(() => {
       // access the private method for testing
       callSet = (id: string, status?: AmendmentLabelStatus | null) =>
-        (component as any).setPartyStatus(id, status as AmendmentLabelStatus);
+        (component as any).setPartyNameStatus(id, status as AmendmentLabelStatus);
       // start each test with a clean map
-      component.partyAmendmentStatusById = {};
+      component.partyNameAmendmentStatusById = {};
     });
 
     it('sets the status for a new party id', () => {
       callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
 
     it('defaults to NONE when status is null', () => {
       callSet('p1', null);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
     });
 
     it('defaults to NONE when status is undefined', () => {
       callSet('p1', undefined);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
     });
 
     it('overwrites an existing status for the same id', () => {
       callSet('p1', AmendmentLabelStatus.NONE);
       callSet('p1', AmendmentLabelStatus.AMENDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
     });
 
     it('does not affect other party ids', () => {
       callSet('p1', AmendmentLabelStatus.AMENDED);
       callSet('p2', AmendmentLabelStatus.ACTION_NEEDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
-      expect(component.partyAmendmentStatusById.p2).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p2).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
 
     it('is idempotent when setting the same value repeatedly', () => {
       callSet('p1', AmendmentLabelStatus.NONE);
       callSet('p1', AmendmentLabelStatus.NONE);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
     });
 
     it('last call wins for rapid successive updates', () => {
       callSet('p1', AmendmentLabelStatus.NONE);
       callSet('p1', AmendmentLabelStatus.AMENDED);
       callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
   });
 

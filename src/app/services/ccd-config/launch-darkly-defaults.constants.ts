@@ -11,7 +11,8 @@ export class LaunchDarklyDefaultsConstants {
   "configurations": [
     {
       "caseTypes": [
-        "Asylum"
+        "Asylum",
+        "Bail"
       ],
       "releaseVersion": "4",
       "serviceName": "IA"
@@ -142,15 +143,99 @@ export class LaunchDarklyDefaultsConstants {
     ]
   }`;
 
+  private static readonly WASERVICECONFIGTESTQM = `
+  {
+  "configurations": [
+    {
+      "caseTypes": [
+        "Asylum",
+        "Bail"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "IA"
+    },
+    {
+      "caseTypes": [
+        "PRIVATELAW",
+        "PRLAPPS",
+        "PRIVATELAW_ExceptionRecord"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PRIVATELAW"
+    },
+    {
+      "caseTypes": [
+        "PUBLICLAW",
+        "CARE_SUPERVISION_EPO"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "PUBLICLAW"
+    },
+    {
+      "caseTypes": [
+        "CIVIL",
+        "GENERALAPPLICATION"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "CIVIL"
+    },
+    {
+      "caseTypes": [
+        "CriminalInjuriesCompensation"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "ET_EnglandWales",
+        "ET_Scotland",
+        "ET_EnglandWales_Multiple",
+        "ET_Scotland_Multiple"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "EMPLOYMENT"
+    },
+    {
+      "caseTypes": [
+        "Benefit",
+        "SSCS_ExceptionRecord"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "SSCS"
+    },
+    {
+      "caseTypes": [
+        "ST_CIC"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "CaseViewCallbackMessages2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
+    }
+    ]
+  }`;
+
   public static readonly waServiceConfigTest: WAFeatureConfig
     = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTEST);
 
   public static readonly waServiceConfigProd:WAFeatureConfig
     = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGPROD);
 
+  public static readonly waServiceConfigTestQm:WAFeatureConfig
+    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTESTQM);
+
   public static getWaServiceConfig(env: DeploymentEnvironmentEnum): WAFeatureConfig {
     if (env === DeploymentEnvironmentEnum.PROD) {
       return LaunchDarklyDefaultsConstants.waServiceConfigProd;
+    }
+    if (env === DeploymentEnvironmentEnum.DEMO) {
+      return LaunchDarklyDefaultsConstants.waServiceConfigTestQm;
     }
     return LaunchDarklyDefaultsConstants.waServiceConfigTest;
   }

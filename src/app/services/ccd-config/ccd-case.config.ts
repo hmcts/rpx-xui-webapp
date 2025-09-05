@@ -223,6 +223,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }
 
+  }
+
   public getLocationRefApiUrl(): string {
     return this.config.location_ref_api_url;
   }

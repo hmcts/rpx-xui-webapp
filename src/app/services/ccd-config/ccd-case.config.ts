@@ -223,6 +223,8 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }
 
+  public getWAServiceConfig(): WAFeatureConfig {
+    return LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
   }
 
   public getLocationRefApiUrl(): string {

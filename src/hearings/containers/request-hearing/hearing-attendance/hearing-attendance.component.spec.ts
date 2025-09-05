@@ -453,56 +453,56 @@ describe('HearingAttendanceComponent', () => {
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
   });
 
-  describe('setPartyStatus', () => {
+  describe('setPartyNameStatus', () => {
     let callSet: (id: string, status?: AmendmentLabelStatus | null) => void;
 
     beforeEach(() => {
       // access the private method for testing
       callSet = (id: string, status?: AmendmentLabelStatus | null) =>
-        (component as any).setPartyStatus(id, status as AmendmentLabelStatus);
+        (component as any).setPartyNameStatus(id, status as AmendmentLabelStatus);
       // start each test with a clean map
-      component.partyAmendmentStatusById = {};
+      component.partyNameAmendmentStatusById = {};
     });
 
     it('sets the status for a new party id', () => {
       callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
 
     it('defaults to NONE when status is null', () => {
       callSet('p1', null);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
     });
 
     it('defaults to NONE when status is undefined', () => {
       callSet('p1', undefined);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
     });
 
     it('overwrites an existing status for the same id', () => {
       callSet('p1', AmendmentLabelStatus.NONE);
       callSet('p1', AmendmentLabelStatus.AMENDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
     });
 
     it('does not affect other party ids', () => {
       callSet('p1', AmendmentLabelStatus.AMENDED);
       callSet('p2', AmendmentLabelStatus.ACTION_NEEDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
-      expect(component.partyAmendmentStatusById.p2).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p2).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
 
     it('is idempotent when setting the same value repeatedly', () => {
       callSet('p1', AmendmentLabelStatus.NONE);
       callSet('p1', AmendmentLabelStatus.NONE);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
     });
 
     it('last call wins for rapid successive updates', () => {
       callSet('p1', AmendmentLabelStatus.NONE);
       callSet('p1', AmendmentLabelStatus.AMENDED);
       callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
-      expect(component.partyAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
   });
 
@@ -563,6 +563,56 @@ describe('HearingAttendanceComponent', () => {
     it('should equal Yes as hearingChannels has ONPPRS', () => {
       fixture.detectChanges();
       expect(component.attendanceFormGroup.controls.paperHearing.value).toEqual('Yes');
+    });
+  });
+
+  describe('HearingAttendanceComponent setPartyChannelStatus', () => {
+    let component: HearingAttendanceComponent;
+
+    beforeEach(() => {
+      component = Object.create(HearingAttendanceComponent.prototype);
+      component.partyChannelAmendmentStatusById = {};
+    });
+
+    it('should set the status for a new party id', () => {
+      (component as any).setPartyChannelStatus('p1', AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should default to NONE when status is null', () => {
+      (component as any).setPartyChannelStatus('p2', null);
+      expect((component as any).partyChannelAmendmentStatusById.p2).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should default to NONE when status is undefined', () => {
+      (component as any).setPartyChannelStatus('p3', undefined);
+      expect((component as any).partyChannelAmendmentStatusById.p3).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should overwrite an existing status for the same id', () => {
+      (component as any).setPartyChannelStatus('p4', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p4', AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p4).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should not affect other party ids', () => {
+      (component as any).setPartyChannelStatus('p5', AmendmentLabelStatus.AMENDED);
+      (component as any).setPartyChannelStatus('p6', AmendmentLabelStatus.ACTION_NEEDED);
+      expect((component as any).partyChannelAmendmentStatusById.p5).toBe(AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p6).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('should be idempotent when setting the same value repeatedly', () => {
+      (component as any).setPartyChannelStatus('p7', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p7', AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById.p7).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('last call wins for rapid successive updates', () => {
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.AMENDED);
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.ACTION_NEEDED);
+      expect((component as any).partyChannelAmendmentStatusById.p8).toBe(AmendmentLabelStatus.ACTION_NEEDED);
     });
   });
 

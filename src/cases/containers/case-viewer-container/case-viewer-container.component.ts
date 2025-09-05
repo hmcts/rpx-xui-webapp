@@ -6,7 +6,6 @@ import { Store, select } from '@ngrx/store';
 import { combineLatest, of, Observable, Subject } from 'rxjs';
 import { catchError, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { AppConstants } from '../../../app/app.constants';
 import { UserRole } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../../app/store';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -56,7 +55,7 @@ export class CaseViewerContainerComponent implements OnInit {
     }
   ];
 
-   private readonly excludedRolesForCaseTabs: string[] = [
+  private readonly excludedRolesForCaseTabs: string[] = [
     'caseworker-ia-homeofficeapc',
     'caseworker-ia-legalrep-solicitor',
     'caseworker-ia-respondentofficer',

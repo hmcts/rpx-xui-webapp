@@ -4,7 +4,6 @@ import { FeatureToggleService, FilterPersistence, SubNavigation } from '@hmcts/r
 import { Observable, Subscription } from 'rxjs';
 import { of } from 'rxjs';
 
-import { AppConstants } from '../../../app/app.constants';
 import { AppUtils } from '../../../app/app-utils';
 import { ErrorMessage } from '../../../app/models';
 import { AllocateRoleService } from '../../../role-access/services';

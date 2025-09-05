@@ -13,7 +13,7 @@ describe('ApplicationRoutingComponent', () => {
   let mockStore: any;
   const featureToggleMock = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValueOnce', 'getValue']);
 
-   const setLandingRoles = (roles: string[]) => {
+  const setLandingRoles = (roles: string[]) => {
     (component as any).waLandingPageRoles$ = of({ roles } as WALandingPageRoles);
   };
 
@@ -29,7 +29,7 @@ describe('ApplicationRoutingComponent', () => {
     router.url = '/';
     featureToggleMock.isEnabled.and.returnValue(of(true));
     component = new ApplicationRoutingComponent(router, mockStore, featureToggleMock);
-     // default roles (empty) unless a test overrides
+    // default roles (empty) unless a test overrides
     setLandingRoles([]);
   });
 

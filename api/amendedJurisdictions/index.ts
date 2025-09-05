@@ -54,12 +54,28 @@ export const checkCachedJurisdictions = (
     const cached = req.session[sessionKey];
     if (cached) {
       console.log(`cached data ${sessionKey}`, cached);
-      if (!res.headersSent) {
-        res.json(cached);
+      if (typeof cached === 'object') {
+        console.log('h1');
+        return res.json(cached), proxyReq.end();
       }
-      if (!proxyReq.destroyed) {
-        proxyReq.end();
+
+      if (isValidJsonArrayString(cached)) {
+        console.log('h2');
+        res.type('application/json');
+        return res.send(cached), proxyReq.end();
       }
     }
   }
 };
+
+function isValidJsonArrayString(s: unknown): boolean {
+  if (typeof s !== 'string') {
+    return false;
+  }
+  try {
+    const v = JSON.parse(s);
+    return Array.isArray(v);
+  } catch {
+    return false;
+  }
+}

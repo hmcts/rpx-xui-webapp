@@ -1,15 +1,6 @@
-const { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
-const SoftAssert = require('../../../../ngIntegration/util/softAssert');
-
-const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
-const caseRolesAndAccessPage = require('../../pageObjects/workAllocation/caseRolesAccessPage');
-
-const ArrayUtil = require('../../../utils/ArrayUtil');
-
 const workFlowPage = require('../../pageObjects/caseAccessManagement/SARWorkflow');
-const { DataTableArgument } = require('codeceptjs');
 
 const reviewSARPage = workFlowPage.reviewRequestPage;
 const durationSelectionPage = workFlowPage.durationSelectionPage;
@@ -17,7 +8,7 @@ const durationSelectionPage = workFlowPage.durationSelectionPage;
 Then('I see Review specific access page with header {string} is displayed', async function (header) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await reviewSARPage.container.isDisplayed(), 'Review page not displayed').to.be.true;
-    expect(await reviewSARPage.header.getText(), 'does not match').to.include(header);
+    expect(await reviewSARPage.header.textContent(), 'does not match').to.include(header);
   });
 });
 
@@ -138,8 +129,8 @@ Then('I see SAR action {string} confirmation page', async function(action){
   // step definition code here
   if (action.toLowerCase() === 'approved'){
     await workFlowPage.approveConfirmationPage.waitForContainer();
-    const header = await workFlowPage.approveConfirmationPage.header.getText();
-    const detailsParaText = await workFlowPage.approveConfirmationPage.detailsPara.getText();
+    const header = await workFlowPage.approveConfirmationPage.header.textContent();
+    const detailsParaText = await workFlowPage.approveConfirmationPage.detailsPara.textContent();
 
     expect(header).to.includes('Access approved');
     expect(detailsParaText).to.includes('The requester has been granted access to this case.');
@@ -148,8 +139,8 @@ Then('I see SAR action {string} confirmation page', async function(action){
   if (action.toLowerCase() === 'denied' || action.toLowerCase() === 'reject') {
     await workFlowPage.rejectConfirmationPage.waitForContainer();
 
-    const header = await workFlowPage.rejectConfirmationPage.header.getText();
-    const detailsParaText = await workFlowPage.rejectConfirmationPage.detailsPara.getText();
+    const header = await workFlowPage.rejectConfirmationPage.header.textContent();
+    const detailsParaText = await workFlowPage.rejectConfirmationPage.detailsPara.textContent();
 
     expect(header).to.includes('Request for access denied');
     expect(detailsParaText).to.includes('The requester has been denied access to this case.');

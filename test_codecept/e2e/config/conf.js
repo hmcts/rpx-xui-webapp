@@ -3,7 +3,6 @@ const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
 const dotenv = require('dotenv');
-const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
 
 dotenv.config({ path: __dirname +'/../../.local-test.env' });
 
@@ -41,7 +40,6 @@ const cap = (argv.local) ? localConfig : jenkinsConfig;
 const config = {
   SELENIUM_PROMISE_MANAGER: false,
   framework: 'custom',
-  frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
   params: {
@@ -127,21 +125,7 @@ const config = {
       '../support/*.js',
       '../features/step_definitions/*.steps.js'
     ]
-  },
-
-  plugins: [
-    {
-      package: 'protractor-multiple-cucumber-html-reporter-plugin',
-      options: {
-        automaticallyGenerateReport: true,
-        removeExistingJsonReportFile: true,
-        reportName: 'XUI Manage Cases Functional Tests',
-        // openReportInBrowser: true,
-        jsonDir: 'reports/tests/functional',
-        reportPath: 'reports/tests/functional'
-      }
-    }
-  ]
+  }
 
 };
 

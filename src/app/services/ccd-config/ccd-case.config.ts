@@ -42,8 +42,9 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 7) {
+        if (obArray.length === 8) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
@@ -136,8 +137,8 @@ export class AppConfig extends AbstractAppConfig {
     return `${this.getCaseDataUrl()}/internal/cases/${caseId}/events/${eventId}`;
   }
 
-  public getCreateOrUpdateDraftsUrl(ctid: string): string {
-    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
+  public getCreateOrUpdateDraftsUrl(ctid: string) {
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string): string {
@@ -193,7 +194,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl(): string {
-    return `${this.getCaseDataUrl()}/internal/banners/`;
+    return `${this.getCaseDataUrl()}/internal/banners`;
   }
 
   public getPrdUrl(): string {
@@ -277,5 +278,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public logMessage(logMessage: string): void {
     this.loggerService.log(logMessage);
+  }
+
+  public getEnableServiceSpecificMultiFollowups(): string[] {
+    return this.config.enable_service_specific_multi_followups;
   }
 }

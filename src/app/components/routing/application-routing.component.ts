@@ -32,7 +32,6 @@ export class ApplicationRoutingComponent implements OnInit {
     const waLandingPageRoles$ = this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
     const userAccess$ = combineLatest([userDetails$, bookingFeatureToggle$, waLandingPageRoles$]);
     userAccess$.pipe(map(([userDetails, bookingFeatureToggle, landingRoles]) => {
-      console.log('landingRole----------', landingRoles);
       if (this.router.url !== '/') {
         return;
       }

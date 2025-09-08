@@ -55,14 +55,6 @@ export class CaseViewerContainerComponent implements OnInit {
     }
   ];
 
-  private readonly excludedRolesForCaseTabs: string[] = [
-    'caseworker-ia-homeofficeapc',
-    'caseworker-ia-legalrep-solicitor',
-    'caseworker-ia-respondentofficer',
-    'caseworker-ia-homeofficelart',
-    'caseworker-ia-homeofficepou'
-  ];
-
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
   private waServiceConfig$!: Observable<WAFeatureConfig>;
 
@@ -86,7 +78,7 @@ export class CaseViewerContainerComponent implements OnInit {
     ).pipe(shareReplay(1)); // cache for all subscribers
   }
 
-  private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[], excludedRoles: string[]): boolean {
+  private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[]): boolean {
     const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
@@ -96,7 +88,7 @@ export class CaseViewerContainerComponent implements OnInit {
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
-    return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles, excludedRoles);
+    return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles);
   }
 
   public ngOnInit(): void {
@@ -130,11 +122,10 @@ export class CaseViewerContainerComponent implements OnInit {
     combineLatest([
       this.waServiceConfig$,
       this.userRoles$,
-      this.waService.getWASupportedJurisdictions(),
-      of(this.excludedRolesForCaseTabs)
+      this.waService.getWASupportedJurisdictions()
     ]).pipe(
-      map(([feature, userRoles, supportedServices, excludedRoles]: [WAFeatureConfig, string[], string[], string[]]) =>
-        this.enablePrependedTabs(feature, userRoles, supportedServices, excludedRoles) ? this.prependedTabs : []
+      map(([feature, userRoles, supportedServices]: [WAFeatureConfig, string[], string[]]) =>
+        this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : []
       ),
       catchError((error) => {
         this.loggerService.log('case-viewer-container - Error in setPrependedCaseViewTabs', error);

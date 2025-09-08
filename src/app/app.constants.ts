@@ -19,6 +19,7 @@ function featureToAttributeName(key: string): string {
 }
 
 export const featureToAttributeMap = new Map<string, string>([
+  [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
   [featureNames.booking, featureToAttributeName(featureNames.booking)],
   [featureNames.secureDocumentStoreEnabled, 'document_management_secure_enabled'], // should refactor this
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],

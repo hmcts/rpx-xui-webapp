@@ -3,6 +3,7 @@ import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
+  waLandingPageRoles: 'wa-landing-page-roles',
   noticeOfChange: 'MC_Notice_of_Change',
   booking: 'mc-booking-active',
   secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',

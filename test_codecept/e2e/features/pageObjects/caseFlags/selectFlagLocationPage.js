@@ -1,17 +1,20 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class SelectFlagLocationPage{
-  constructor(){
-    this.container = $('ccd-select-flag-location');
+  get container() {
+    return $('ccd-select-flag-location');
+  }
 
-    this.fieldMapping = {
-      'Where should this flag be added?': element(by.xpath('//ccd-select-flag-location//h1[contains(text(),\'Where should this flag be added?\')]'))
+  get fieldMapping() {
+    return {
+      'Where should this flag be added?': elementByXpath('//ccd-select-flag-location//h1[contains(text(),\'Where should this flag be added?\')]')
     };
   }
 
   async inputValue(field, value) {
     switch (field) {
       case 'Where should this flag be added?':
-        const ele = element(by.xpath(`//ccd-select-flag-location//h1[contains(text(),'Where should this flag be added?')]/../..//label[contains(text(),'${value}')]/..//input`));
+        const ele = elementByXpath(`//ccd-select-flag-location//h1[contains(text(),'Where should this flag be added?')]/../..//label[contains(text(),'${value}')]/..//input`);
         await ele.click();
         break;
       default:

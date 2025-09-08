@@ -1,22 +1,20 @@
-
+const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
+const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
 const BrowserWaits = require('../../../support/customWaits');
-const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
-const CheckyourChangesTable = require('../common/checkYourChangesTable');
+
 class CaseAllocationCheckYourChangesPage {
-  constructor() {
-    this.pageContainer = $('exui-allocate-role-check-answers');
-    this.header = $('exui-allocate-role-check-answers h1');
-    this.headerCaption = $('exui-allocate-role-check-answers h1 span');
+  get pageContainer()            { return $('exui-allocate-role-check-answers'); }
+  get header()                   { return $('exui-allocate-role-check-answers h1'); }
+  get headerCaption()            { return $('exui-allocate-role-check-answers h1 span'); }
 
-    this.checkYourChangesHintText = $('exui-allocate-role-check-answers #reassign-confirm-hint|exui-allocate-role-check-answers #assign-confirm-hint');
+  get checkYourChangesHintText() { return $('exui-allocate-role-check-answers #reassign-confirm-hint, exui-allocate-role-check-answers #assign-confirm-hint'); }
 
-    this.submitButton = $('exui-allocate-role-navigation button');
-    this.cancelLink = element(by.xpath('/exui-allocate-role-check-answers//p/a[contains(text(),\'Cancel\')]'));
+  get submitButton()             { return $('exui-allocate-role-navigation button'); }
+  get cancelLink()               { return elementByXpath(`//exui-allocate-role-check-answers//p/a[contains(text(),'Cancel')]`); }
 
-    this.checkYourChangesTable = $('.govuk-summary-list');
-    this.answerRows = $('.govuk-summary-list .govuk-summary-list__row');
-  }
+  get checkYourChangesTable()    { return $('.govuk-summary-list'); }
+  get answerRows()               { return $$('.govuk-summary-list .govuk-summary-list__row'); }
 
   async amOnPage() {
     try {
@@ -29,26 +27,25 @@ class CaseAllocationCheckYourChangesPage {
   }
 
   async validatePage() {
-    const heaerText = await this.header.getText();
+    const heaerText = await getText(this.header);
     expect(heaerText).to.contains('Check your');
     await BrowserWaits.waitForElement(this.checkYourChangesTable);
 
-    const answerRow = await this.answerRows.get(1);
-    const answerRowActionLink = answerRow.$('.govuk-summary-list__actions');
-    expect(await answerRow.isDisplayed()).to.be.true;
+    const answerRow = await this.answerRows.nth(1);
+    expect(await answerRow.isVisible()).to.be.true;
   }
 
   async getColumnValue(header) {
     const rowsCount = await this.answerRows.count();
     let colvalue = null;
     for (let i = 0; i< rowsCount; i++){
-      const row = await this.answerRows.get(i);
-      const headerName = row.$('.govuk-summary-list__key');
-      const thisHeadername = await headerName.getText();
+      const row = await this.answerRows.nth(i);
+      const headerName = row.locator('.govuk-summary-list__key');
+      const thisHeadername = await getText(headerName);
 
       if (thisHeadername === header){
-        const headerValue = row.$('.govuk-summary-list__value');
-        colvalue = await headerValue.getText();
+        const headerValue = row.locator('.govuk-summary-list__value');
+        colvalue = await getText(headerValue);
       }
     }
     if (colvalue === null){
@@ -67,11 +64,11 @@ class CaseAllocationCheckYourChangesPage {
   }
 
   async getHeaderText() {
-    return await this.header.getText();
+    return await getText(this.header);
   }
 
   async getHeaderCaption() {
-    return await this.headerCaption.getText();
+    return await getText(this.headerCaption);
   }
 
   async clickContinueButton() {

@@ -1,16 +1,21 @@
-
+const { $, elementByXpath } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class BrowserCookiesUtil{
-  constructor(){
-    this.acceptCookiesBtn = $('#cookie-accept-submit');
-    this.rejectCookiesBtn = $('#cookie-reject-submit');
+  get acceptCookiesBtn() {
+    return $('#cookie-accept-submit');
+  }
 
-    this.hideMessageBtn = element(by.xpath('//header/div[@class=\'govuk-cookie-banner\']/div[1]/div[1]/div[1]/div[1]/p[3]/a[1]'));
+  get rejectCookiesBtn() {
+    return $('#cookie-reject-submit');
+  }
+
+  get hideMessageBtn() {
+    return elementByXpath('//header/div[@class=\'govuk-cookie-banner\']/div[1]/div[1]/div[1]/div[1]/p[3]/a[1]');
   }
 
   async getCookie(cookieName){
-    const allCookies = await browser.manage().getCookies();
+    const allCookies = await getXUITestPage().context().cookies();
     let expectedCookie = null;
     for (let i = 0; i < allCookies.length; i++){
       if (allCookies[i].name === cookieName){

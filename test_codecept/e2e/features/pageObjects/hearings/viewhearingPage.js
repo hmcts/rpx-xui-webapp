@@ -1,22 +1,24 @@
-
+const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 const SummaryTable = require('../common/summaryTable');
 
 class ViewHearingPage {
-  constructor() {
-    this.container = $('exui-hearing-viewsummary');
-    this.headerElement = $('exui-hearing-viewsummary exui-hearing-summary h1');
+  get container()      { return $('exui-hearing-viewsummary'); }
+  get headerElement()  { return $('exui-hearing-viewsummary exui-hearing-summary h1'); }
 
-    this.summaryTable = new SummaryTable('exui-hearing-viewsummary');
+  get summaryTable()   { return new SummaryTable('exui-hearing-viewsummary'); }
 
-    this.editHearingBtn = element(by.xpath('//exui-hearing-viewsummary//button[contains(text(),\'Edit hearing\')]'));
+  get editHearingBtn() {
+    return elementByXpath(
+      '//exui-hearing-viewsummary//button[contains(text(),"Edit hearing")]'
+    );
   }
 
   async isEditHearingBtnDisplayed(){
-    return await this.editHearingBtn.isDisplayed();
+    return await this.editHearingBtn.isVisible();
   }
 
   async getHeader() {
-    return await this.headerElement.getText();
+    return await getText(this.headerElement);
   }
 
   async isKeyFieldDisplayed(field) {

@@ -1,11 +1,18 @@
-
+const { $, $$, getText } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class CheckYourChangesAnswersTable {
-  constructor(parentlocator) {
-    this.changesTable = $('table');
-    this.tableHeaders = $$('table tr th');
-    this.tableRows = $$('table tbody tr');
+
+  get changesTable() {
+    return $('table');
+  }
+
+  get tableheaders() {
+    return $$('table tr th');
+  }
+
+  get tableRows() {
+    return $$('table tbody tr');
   }
 
   async getRowsCount() {
@@ -19,7 +26,7 @@ class CheckYourChangesAnswersTable {
     if (index - 1 >= rowCount) {
       throw new Error(`Cannot get row at index ${index}, table has total rows ${rowCount}`);
     }
-    return await this.tableRows.get(index - 1);
+    return await this.tableRows.nth(index - 1);
   }
 
   async getHeaderColumnPos(header) {
@@ -28,8 +35,8 @@ class CheckYourChangesAnswersTable {
     const colsCount = await this.tableHeaders.count();
     let colIndex = -1;
     for (let i = 0; i < colsCount; i++) {
-      const headerColElement = await this.tableHeaders.get(i);
-      const headerText = await headerColElement.getText();
+      const headerColElement = await this.tableHeaders.nth(i);
+      const headerText = await getText(headerColElement);
       if (headerText === header) {
         colIndex = i;
         break;
@@ -59,7 +66,7 @@ class CheckYourChangesAnswersTable {
     if (pos === -1) {
       throw new Error(`Table header "${header}" not found`);
     }
-    const rowColumns = rowElement.$$('td');
+    const rowColumns = rowElement.locator('td');
     const col = await rowColumns.get(pos);
     return col;
   }
@@ -67,7 +74,7 @@ class CheckYourChangesAnswersTable {
   async getColumnValueAtRow(rowIndex, header) {
     await this.waitForTableRows();
     const colElement = await this.getColumnElementAtRow(rowIndex, header);
-    const coltext = await colElement.getText();
+    const coltext = await getText(colElement);
     return coltext;
   }
 
@@ -75,7 +82,7 @@ class CheckYourChangesAnswersTable {
     await this.waitForTableRows();
 
     const rowElement = await this.getTableRowAtIndex(rowIndex);
-    return rowElement.element(by.xpath(`//td//a[contains(text(),'${linkText}')]`));
+    return rowElement.locator(`//td//a[contains(text(),'${linkText}')]`);
   }
 
   async isLinkWithTextPresentAtRow(rowIndex, linkText) {

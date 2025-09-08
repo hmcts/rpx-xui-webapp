@@ -1,28 +1,48 @@
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../../support/constants');
+
 class TaskAssignmentPage extends TaskList {
-  constructor() {
-    super();
-    this.taskAssignmentContainer = $('exui-task-container-assignment');
-    this.pageHeaderTitle = $('exui-task-container-assignment #main-content h1');
-    this.actionDescription = $('#main-content>div>div>p');
-
-    this.caseWorkerSelect = $('exui-task-assignment select#task_assignment_caseworker');
-    this.locationSelect = $('exui-task-assignment select#task_assignment_location');
-
-    this.reassignBtn = element(by.xpath('//exui-task-container-assignment//button[contains(text(),"Reassign")]'));
-    this.unassignBtn = element(by.xpath('//exui-task-container-assignment//button[contains(text(),"Unassign")]'));
-
-    this.cancelBtn = element(by.xpath('//exui-task-container-assignment//button[contains(text(),"Cancel")]'));
-
-    this.bannerMessageContainer = $('exui-info-message ');
-    this.infoMessages = $$('exui-info-message .hmcts-banner__message');
-
-    this.taskDetailsRow = $('exui-task-container-assignment exui-task-list table tbody tr');
-    this.taskColumnHeader = $('exui-task-container-assignment exui-task-list table thead th button');
-    this.chooseColleageHeader = element(by.xpath('//exui-task-container-assignment//h2[contains(text(),\'Choose a colleague\')]'));
+  get taskAssignmentContainer() {
+    return $('exui-task-container-assignment');
+  }
+  get pageHeaderTitle() {
+    return $('exui-task-container-assignment #main-content h1');
+  }
+  get actionDescription() {
+    return $('#main-content>div>div>p');
+  }
+  get caseWorkerSelect() {
+    return $('exui-task-assignment select#task_assignment_caseworker');
+  }
+  get locationSelect() {
+    return $('exui-task-assignment select#task_assignment_location');
+  }
+  get reassignBtn() {
+    return elementByXpath('//exui-task-container-assignment//button[contains(text(),"Reassign")]');
+  }
+  get unassignBtn() {
+    return elementByXpath('//exui-task-container-assignment//button[contains(text(),"Unassign")]');
+  }
+  get cancelBtn() {
+    return elementByXpath('//exui-task-container-assignment//button[contains(text(),"Cancel")]');
+  }
+  get bannerMessageContainer() {
+    return $('exui-info-message');
+  }
+  get infoMessages() {
+    return $$('exui-info-message .hmcts-banner__message');
+  }
+  get taskDetailsRow() {
+    return $('exui-task-container-assignment exui-task-list table tbody tr');
+  }
+  get taskColumnHeader() {
+    return $('exui-task-container-assignment exui-task-list table thead th button');
+  }
+  get chooseColleageHeader() {
+    return elementByXpath('//exui-task-container-assignment//h2[contains(text(),"Choose a colleague")]');
   }
 
   async amOnPage() {
@@ -35,14 +55,14 @@ class TaskAssignmentPage extends TaskList {
     }
   }
 
-  async isManageLinkPresent(){
+  async isManageLinkPresent() {
     const task = await this.getTableRowAt(1);
-    return await task.$('button[id^="manage_"]').isPresent();
+    return await task.locator('button[id^="manage_"]').isVisible();
   }
 
-  async getPageHeader(){
+  async getPageHeader() {
     await BrowserWaits.waitForElement(this.pageHeaderTitle);
-    return await this.pageHeaderTitle.getText();
+    return await this.pageHeaderTitle.textContent();
   }
 
   async getCaseworkerOptions() {
@@ -56,23 +76,23 @@ class TaskAssignmentPage extends TaskList {
   }
 
   async getOptionsFromSelect(selectElement) {
-    expect(await this.amOnPage(), 'Not on Task assignment page ').to.be.true;
-    const optionValues = [];
-    const optionsCount = await selectElement.$$('option').count();
-    for (let i = 0; i < optionsCount; i++) {
-      optionValues.push(await selectElement.$$('option').get(i).getText());
+    const options = selectElement.locator('option');
+    const count = await options.count();
+    const values = [];
+    for (let i = 0; i < count; i++) {
+      values.push(await options.nth(i).textContent());
     }
-    return optionValues;
+    return values;
   }
 
   async selectCaseworker(optionDisplayText) {
     expect(await this.amOnPage(), 'Not on Task assignment page ').to.be.true;
-    await this.caseWorkerSelect.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+    await this.caseWorkerSelect.locator(`xpath=./option[text() = '${optionDisplayText}']`).click();
   }
 
   async selectLocation(optionDisplayText) {
     expect(await this.amOnPage(), 'Not on Task assignment page ').to.be.true;
-    await this.locationSelect.element(by.xpath(`//option[text() = '${optionDisplayText}']`)).click();
+    await this.locationSelect.locator(`xpath=./option[text() = '${optionDisplayText}']`).click();
   }
 
   async selectLocationAtpos(pos) {
@@ -83,7 +103,7 @@ class TaskAssignmentPage extends TaskList {
     await $(`#task_assignment_caseworker option:nth-of-type(${pos})`).click();
   }
 
-  async clickReassignBtn(){
+  async clickReassignBtn() {
     expect(await this.amOnPage(), 'Not on task assignment page').to.be.true;
     await this.reassignBtn.click();
   }
@@ -93,16 +113,15 @@ class TaskAssignmentPage extends TaskList {
     await this.unassignBtn.click();
   }
 
-  async clickCancelBtn(){
+  async clickCancelBtn() {
     expect(await this.amOnPage(), 'Not on task assignment page').to.be.true;
     await this.cancelBtn.click();
   }
 
   async clickSubmitBtn(action) {
     const verb = this.getSubmitBtnText(action);
-
     expect(await this.amOnPage(), 'Not on task assignment page').to.be.true;
-    const submitBtn = element(by.xpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`));
+    const submitBtn = elementByXpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`);
     await submitBtn.click();
   }
 
@@ -112,94 +131,73 @@ class TaskAssignmentPage extends TaskList {
       return true;
     } catch (err) {
       cucumberReporter.AddMessage('message banner not displayed: ' + err, LOG_LEVELS.Error);
-
       return false;
     }
   }
 
   async getBannerMessagesDisplayed() {
     expect(await this.isBannerMessageDisplayed(), 'Message banner not displayed').to.be.true;
-    const messagescount = await this.infoMessages.count();
+    const count = await this.infoMessages.count();
     const messages = [];
-    for (let i = 0; i < messagescount; i++) {
-      const message = await this.infoMessages.get(i).getText();
-
-      const submessagestrings = message.split('\n');
-      messages.push(...submessagestrings);
+    for (let i = 0; i < count; i++) {
+      const message = await this.infoMessages.nth(i).textContent();
+      messages.push(...message.split('\n'));
     }
     return messages;
   }
 
   async isBannermessageWithTextDisplayed(messageText) {
     const messages = await this.getBannerMessagesDisplayed();
-
-    for (const message of messages) {
-      if (message.includes(messageText)) {
-        return true;
-      }
-    }
-    return false;
+    return messages.some(message => message.includes(messageText));
   }
 
-  async isTaskDisplayed(){
+  async isTaskDisplayed() {
     try {
       await BrowserWaits.waitForElement(this.taskDetailsRow);
       return true;
     } catch (err) {
-      console.log('Task assignment page not displayed: ' + err);
+      console.log('Task assignment row not displayed: ' + err);
       return false;
     }
   }
 
-  async isColumnWithHeaderDisplayed(){
+  async isColumnWithHeaderDisplayed() {
     expect(await this.isTaskDisplayed(), 'Task details row not displayed').to.be.true;
-    return this.taskColumnHeader.isDisplayed();
+    return this.taskColumnHeader.isVisible();
   }
 
-  async validatePageContentForAction(action, softAssert){
+  async validatePageContentForAction(action, softAssert) {
     const verb = this.getSubmitBtnText(action);
+    const submitBtn = elementByXpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`);
 
-    const submitBtn = element(by.xpath(`//exui-task-container-assignment//button[contains(text(),"${verb}")]`));
     await BrowserWaits.waitForElement(this.caseWorkerSelect);
-    if (softAssert){
-      await softAssert.assert(async () => expect(await this.chooseColleageHeader.isDisplayed(), 'h2 header with text choose a colleague is not displayed').to.be.true);
-      await softAssert.assert(async () => expect(await this.caseWorkerSelect.isDisplayed(), 'Caseworker select is not displayed').to.be.true);
-      await softAssert.assert(async () => expect(await this.locationSelect.isDisplayed(), 'Location select is not displayed').to.be.true);
-
-      await softAssert.assert(async () => expect(await this.caseWorkerSelect.isDisplayed(), 'Caseworker select is not displayed').to.be.true);
-
-      await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
-      await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true);
+    if (softAssert) {
+      await softAssert.assert(async () => expect(await this.chooseColleageHeader.isVisible()).to.be.true);
+      await softAssert.assert(async () => expect(await this.caseWorkerSelect.isVisible()).to.be.true);
+      await softAssert.assert(async () => expect(await this.locationSelect.isVisible()).to.be.true);
+      await softAssert.assert(async () => expect(await submitBtn.isVisible()).to.be.true);
+      await softAssert.assert(async () => expect(await this.cancelBtn.isVisible()).to.be.true);
     } else {
-      expect(await this.chooseColleageHeader.isDisplayed(), 'h2 header with text choose a colleague is not displayed').to.be.true;
-
-      expect(await this.caseWorkerSelect.isDisplayed(), 'Caseworker select is not displayed').to.be.true;
-      expect(await this.locationSelect.isDisplayed(), 'Location select is not displayed').to.be.true;
-
-      expect(await this.caseWorkerSelect.isDisplayed(), 'Caseworker select is not displayed').to.be.true;
-
-      expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
-      expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true;
+      expect(await this.chooseColleageHeader.isVisible()).to.be.true;
+      expect(await this.caseWorkerSelect.isVisible()).to.be.true;
+      expect(await this.locationSelect.isVisible()).to.be.true;
+      expect(await submitBtn.isVisible()).to.be.true;
+      expect(await this.cancelBtn.isVisible()).to.be.true;
     }
   }
 
   getSubmitBtnText(action) {
-    let btnTxt = '';
     switch (action) {
       case 'Reassign task':
-        btnTxt = 'Reassign';
-        break;
+        return 'Reassign';
       case 'Unassign task':
-        btnTxt = 'Unassign';
-        break;
+        return 'Unassign';
       case 'Mark as done':
-        btnTxt = action;
-        break;
       case 'Cancel task':
-        btnTxt = action;
-        break;
+        return action;
+      default:
+        return '';
     }
-    return btnTxt;
   }
 }
 

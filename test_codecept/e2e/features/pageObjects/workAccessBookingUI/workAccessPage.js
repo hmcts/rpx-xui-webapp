@@ -1,58 +1,62 @@
-
+const { $, $$, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
-const locators = {
-  existingBooking: {
-    location: '',
-    fromDate: '',
-    toDate: ''
+
+class WorkAccessPage {
+  get dateFormat() { return 'YYYY-MM-DD'; }
+
+  get pageContainer() { return $('exui-booking-home'); }
+
+  get radioChooseExistingBooking() {
+    return elementByXpath(this.getRadiobuttonXPathWithLabel('Choose an existing booking'));
   }
-};
-
-class WorkAccessPage{
-  constructor(){
-    this.dateFormat = 'YYYY-MM-DD';
-
-    this.pageContainer = $('exui-booking-home');
-    this.radioChooseExistingBooking = element(by.xpath(this.getRadiobuttonXPathWithLabel('Choose an existing booking')));
-    this.radioCreateNewBooking = element(by.xpath(this.getRadiobuttonXPathWithLabel('Create a new booking')));
-    this.radioViewtasksAndCases = element(by.xpath(this.getRadiobuttonXPathWithLabel('View tasks and cases')));
-
-    this.existingBookingsList = $('exui-booking-home .govuk-radios__conditional');
-    this.existingBookings = $$('exui-booking-home .govuk-radios__conditional .govuk-grid-column-one-third');
-
-    this.continueButton = element(by.xpath('//exui-booking-home//form/button[contains(text(),\'Continue\')]'));
+  get radioCreateNewBooking() {
+    return elementByXpath(this.getRadiobuttonXPathWithLabel('Create a new booking'));
+  }
+  get radioViewtasksAndCases() {
+    return elementByXpath(this.getRadiobuttonXPathWithLabel('View tasks and cases'));
   }
 
-  getRadiobuttonXPathWithLabel(label){
+  get existingBookingsList() {
+    return $('exui-booking-home .govuk-radios__conditional');
+  }
+  get existingBookings() {
+    return $$('exui-booking-home .govuk-radios__conditional .govuk-grid-column-one-third');
+  }
+
+  get continueButton() {
+    return elementByXpath('//exui-booking-home//form/button[contains(text(),\'Continue\')]');
+  }
+
+  getRadiobuttonXPathWithLabel(label) {
     return `//exui-booking-home//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${label}')]`;
   }
 
-  async waitForPage(){
+  async waitForPage() {
     await BrowserWaits.waitForElement(this.pageContainer);
   }
 
-  async amOnPage(){
-    const isPresent = await this.pageContainer.isPresent();
-    if (!isPresent) {
-      return isPresent;
+  async amOnPage() {
+    const present = await isPresent(this.pageContainer);
+    if (!present) {
+      return present;
     }
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
-  async isConitnueDisplayed(){
-    const isPresent = await this.continueButton.isPresent();
-    if (!isPresent){
-      return isPresent;
+  async isConitnueDisplayed() {
+    const present = await isPresent(this.continueButton);
+    if (!present) {
+      return present;
     }
-    return await this.continueButton.isDisplayed();
+    return await this.continueButton.isVisible();
   }
 
-  async getExistingBooksingCount(){
+  async getExistingBooksingCount() {
     return await this.existingBookings.count();
   }
 
-  async getBookingDetails(index){
+  async getBookingDetails(index) {
     const allBookings = await this.getExistingBookingsDetails();
     const bookingAtIndex = allBookings[index];
     return {
@@ -62,7 +66,7 @@ class WorkAccessPage{
     };
   }
 
-  async getMatchingBookings(location, fromDate, toDate){
+  async getMatchingBookings(location, fromDate, toDate) {
     const allBookings = await this.getExistingBookingsDetails();
     const matchingBookings = allBookings.filter((booking) => {
       cucumberReporter.AddMessage(`${location} ${fromDate} to ${toDate}`);
@@ -72,24 +76,24 @@ class WorkAccessPage{
     return matchingBookings;
   }
 
-  async isBookingDisplayed(location, fromDate, toDate){
+  async isBookingDisplayed(location, fromDate, toDate) {
     const matchingBookings = await this.getMatchingBookings(location, fromDate, toDate);
     return matchingBookings.length > 0;
   }
 
-  async getExistingBookingsDetails(){
+  async getExistingBookingsDetails() {
     const count = await this.getExistingBooksingCount();
     const bookings = [];
-    for (let i = 0; i < count; i++){
-      const booking = await this.existingBookings.get(i);
+    for (let i = 0; i < count; i++) {
+      const booking = await this.existingBookings.nth(i);
 
-      const bookingDatesText = await booking.$('span.govuk-hint').getText();
+      const bookingDatesText = await getText(booking.locator('span.govuk-hint'));
       const bookingDateSplit = bookingDatesText.split(' to ');
       bookings.push({
-        location: await booking.$('span[class*="font-weight-bold"]').getText(),
+        location: await getText(booking.locator('span[class*="font-weight-bold"]')),
         fromDate: bookingDateSplit[0],
         toDate: bookingDateSplit[1],
-        continueBtnElement: booking.$('.govuk-button-group button')
+        continueBtnElement: booking.locator('.govuk-button-group button')
       });
     }
     return bookings;

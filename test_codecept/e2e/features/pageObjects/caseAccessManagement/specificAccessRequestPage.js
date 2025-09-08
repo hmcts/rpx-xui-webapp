@@ -1,15 +1,30 @@
+const { $ } = require('../../../../helpers/globals');
 
 class SpecificAccessRequestPage {
-  constructor() {
-    this.container = $('ccd-case-specific-access-request');
-    this.header = $('h1.govuk-fieldset__heading');
+  constructor() {}
 
-    this.provideReasonInput = $('#specific-reason');
+  get container() {
+    return $('ccd-case-specific-access-request');
+  }
 
-    this.submitBtn = $('ccd-case-specific-access-request div.govuk-button-group button');
-    this.cancelLink = $('ccd-case-specific-access-request div.govuk-button-group a');
+  get header() {
+    return $('h1.govuk-fieldset__heading');
+  }
 
-    this.requestSuccessPageContainer = $('ccd-case-specific-access-success');
+  get provideReasonInput() {
+    return $('#specific-reason');
+  }
+
+  get submitBtn() {
+    return $('ccd-case-specific-access-request div.govuk-button-group button');
+  }
+
+  get cancelLink() {
+    return $('ccd-case-specific-access-request div.govuk-button-group a');
+  }
+
+  get requestSuccessPageContainer() {
+    return $('ccd-case-specific-access-success');
   }
 }
 

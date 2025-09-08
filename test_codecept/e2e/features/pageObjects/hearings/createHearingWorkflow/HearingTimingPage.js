@@ -1,52 +1,48 @@
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 
 class HearingTimingPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-timing');
+  get pageContainer()                       { return $('exui-hearing-timing'); }
 
-    this.durationDays = $('#hearing-length #durationdays');
-    this.durationHours = $('#hearing-length #durationhours');
-    this.durationMinutes = $('#hearing-length #durationmins');
+  get durationDays()                        { return $('#hearing-length #durationdays'); }
+  get durationHours()                       { return $('#hearing-length #durationhours'); }
+  get durationMinutes()                     { return $('#hearing-length #durationmins'); }
 
-    this.noSpecificDate = $('#hearing-specific-dates #noSpecificDate');
-    this.hearingSingleDate = $('#hearing-specific-dates #hearingSingleDate');
-    this.hearingDateRange = $('#hearing-specific-dates #hearingDateRange');
+  get noSpecificDate()                      { return $('#hearing-specific-dates #noSpecificDate'); }
+  get hearingSingleDate()                   { return $('#hearing-specific-dates #hearingSingleDate'); }
+  get hearingDateRange()                    { return $('#hearing-specific-dates #hearingDateRange'); }
 
-    this.firstHearingDate_day = $('input[name=\'firstHearingDate-day\']');
-    this.firstHearingDate_month = $('input[name=\'firstHearingDate-month\']');
-    this.firstHearingDate_year = $('input[name=\'firstHearingDate-year\']');
+  get firstHearingDate_day()                { return $("input[name='firstHearingDate-day']"); }
+  get firstHearingDate_month()              { return $("input[name='firstHearingDate-month']"); }
+  get firstHearingDate_year()               { return $("input[name='firstHearingDate-year']"); }
 
-    this.earliestHearingDate_day = $('input[name=\'earliestHearingDate-day\']');
-    this.earliestHearingDate_month = $('input[name=\'earliestHearingDate-month\']');
-    this.earliestHearingDate_year = $('input[name=\'earliestHearingDate-year\']');
+  get earliestHearingDate_day()             { return $("input[name='earliestHearingDate-day']"); }
+  get earliestHearingDate_month()           { return $("input[name='earliestHearingDate-month']"); }
+  get earliestHearingDate_year()            { return $("input[name='earliestHearingDate-year']"); }
 
-    this.latestHearingDate_day = $('input[name=\'latestHearingDate-day\']');
-    this.latestHearingDate_month = $('input[name=\'latestHearingDate-month\']');
-    this.latestHearingDate_year = $('input[name=\'latestHearingDate-year\']');
+  get latestHearingDate_day()               { return $("input[name='latestHearingDate-day']"); }
+  get latestHearingDate_month()             { return $("input[name='latestHearingDate-month']"); }
+  get latestHearingDate_year()              { return $("input[name='latestHearingDate-year']"); }
 
-    this.fieldMapping = {
-      'Length of hearing': $('#hearing-length'),
-      'Does the hearing need to take place on a specific date?': $('#hearing-specific-dates'),
-      'What is the priority of this hearing?': $('#hearing-priority'),
-      'The first date of the hearing must be': $('#firstHearingDate-date'),
-      'Earliest start date': $('#earliestHearingDate-date'),
-      'Latest end date': $('#latestHearingDate-date')
+  get firstDateHearingAmendedLabel()        { return $('#first-date-amendment-label'); }
+  get earliestHearingDateAmendedLabel()     { return $('#earliest-hearing-date-amendment-label'); }
+  get latestHearingDateAmendedLabel()       { return $('#latest-hearing-date-amendment-label'); }
+  get specificHearingDateAmendedLabel()     { return $('#hearing-specific-dates-label'); }
+  get lengthOfHearingAmendedLabel()         { return $('#length-of-hearing-label'); }
+  get hearingPriorityAmendmentLabel()       { return $('#hearing-priority-amendment-label'); }
+
+  get fieldMapping() {
+    return {
+      'Length of hearing'                                              : $('#hearing-length'),
+      'Does the hearing need to take place on a specific date?'        : $('#hearing-specific-dates'),
+      'What is the priority of this hearing?'                          : $('#hearing-priority'),
+      'The first date of the hearing must be'                          : $('#firstHearingDate-date'),
+      'Earliest start date'                                            : $('#earliestHearingDate-date'),
+      'Latest end date'                                                : $('#latestHearingDate-date')
     };
-
-    this.firstDateHearingAmendedLabel = $('#first-date-amendment-label');
-
-    this.earliestHearingDateAmendedLabel = $('#earliest-hearing-date-amendment-label');
-
-    this.latestHearingDateAmendedLabel = $('#latest-hearing-date-amendment-label');
-
-    this.specificHearingDateAmendedLabel = $('#hearing-specific-dates-label');
-
-    this.lengthOfHearingAmendedLabel = $('#length-of-hearing-label');
-
-    this.hearingPriorityAmendmentLabel = $('#hearing-priority-amendment-label');
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async getEarliestDate(){
@@ -67,9 +63,9 @@ class HearingTimingPage {
     switch (field) {
       case 'Length of hearing':
         const valueMap = value.split(',');
-        await this.durationDays.sendKeys(valueMap[0].trim());
-        await this.durationHours.sendKeys(valueMap[1].trim());
-        await this.durationMinutes.sendKeys(valueMap[2].trim());
+        await this.durationDays.fill(valueMap[0].trim());
+        await this.durationHours.fill(valueMap[1].trim());
+        await this.durationMinutes.fill(valueMap[2].trim());
         break;
       case 'Does the hearing need to take place on a specific date?':
         const opt = value.toLowerCase().trim();
@@ -88,21 +84,21 @@ class HearingTimingPage {
         break;
       case 'The first date of the hearing must be':
         const firstDateMap = value.split(',');
-        await this.firstHearingDate_day.sendKeys(firstDateMap[0].trim());
-        await this.firstHearingDate_month.sendKeys(firstDateMap[1].trim());
-        await this.firstHearingDate_year.sendKeys(firstDateMap[2].trim());
+        await this.firstHearingDate_day.fill(firstDateMap[0].trim());
+        await this.firstHearingDate_month.fill(firstDateMap[1].trim());
+        await this.firstHearingDate_year.fill(firstDateMap[2].trim());
         break;
       case 'Earliest start date':
         const earliestDate = value.split(',');
-        await this.earliestHearingDate_day.sendKeys(earliestDate[0].trim());
-        await this.earliestHearingDate_month.sendKeys(earliestDate[1].trim());
-        await this.earliestHearingDate_year.sendKeys(earliestDate[2].trim());
+        await this.earliestHearingDate_day.fill(earliestDate[0].trim());
+        await this.earliestHearingDate_month.fill(earliestDate[1].trim());
+        await this.earliestHearingDate_year.fill(earliestDate[2].trim());
         break;
       case 'Latest end date':
         const latestEndDate = value.split(',');
-        await this.latestHearingDate_day.sendKeys(latestEndDate[0].trim());
-        await this.latestHearingDate_month.sendKeys(latestEndDate[1].trim());
-        await this.latestHearingDate_year.sendKeys(latestEndDate[2].trim());
+        await this.latestHearingDate_day.fill(latestEndDate[0].trim());
+        await this.latestHearingDate_month.fill(latestEndDate[1].trim());
+        await this.latestHearingDate_year.fill(latestEndDate[2].trim());
         break;
       default:
         throw new Error(`${field} not recognised.`);
@@ -110,7 +106,7 @@ class HearingTimingPage {
   }
 
   async selectHearingPriority(priority){
-    const ele = element(by.xpath(`//fieldset[@id='hearing-priority']//label[contains(text(),'${priority}')]/../input`));
+    const ele = elementByXpath(`//fieldset[@id='hearing-priority']//label[contains(text(),'${priority}')]/../input`);
     await ele.click();
   }
 
@@ -118,22 +114,22 @@ class HearingTimingPage {
     let retVal = false;
     switch (fieldName){
       case 'The first date of the hearing must be':
-        retVal = await this.firstDateHearingAmendedLabel.isDisplayed();
+        retVal = await this.firstDateHearingAmendedLabel.isVisible();
         break;
       case 'Length of hearing':
-        retVal = await this.lengthOfHearingAmendedLabel.isDisplayed();
+        retVal = await this.lengthOfHearingAmendedLabel.isVisible();
         break;
       case 'Does the hearing need to take place on a specific date?':
-        retVal = await this.specificHearingDateAmendedLabel.isDisplayed();
+        retVal = await this.specificHearingDateAmendedLabel.isVisible();
         break;
       case 'What is the priority of this hearing?':
-        retVal = await this.hearingPriorityAmendmentLabel.isDisplayed();
+        retVal = await this.hearingPriorityAmendmentLabel.isVisible();
         break;
       case 'Earliest start date':
-        retVal = await this.earliestHearingDateAmendedLabel.isDisplayed();
+        retVal = await this.earliestHearingDateAmendedLabel.isVisible();
         break;
       case 'Latest end date':
-        retVal = await this.latestHearingDateAmendedLabel.isDisplayed();
+        retVal = await this.latestHearingDateAmendedLabel.isVisible();
         break;
       default:
     }

@@ -1,8 +1,12 @@
+const { $, elementByXpath, elementsByXpath, getText } = require('../../../../helpers/globals');
 
 class SummaryTable{
   constructor(pageElementTag){
     this.pageElementTag = pageElementTag;
-    this.summaryContainer = $(`${this.pageElementTag ? this.pageElementTag : ''} .govuk-summary-list`);
+  }
+
+  get summaryContainer() {
+    return $(`${this.pageElementTag ? this.pageElementTag : ''} .govuk-summary-list`);
   }
 
   getTableKeyElementXpath(key) {
@@ -30,39 +34,39 @@ class SummaryTable{
   }
 
   async isFieldDisplayed(forKey) {
-    const e = element(by.xpath(this.getTableKeyElementXpath(forKey)));
-    return await e.isDisplayed();
+    const e = elementByXpath(this.getTableKeyElementXpath(forKey)).first();
+    return await e.isVisible();
   }
 
   async getValueForField(forKey) {
-    const e = element(by.xpath(this.getTableValueElementXpath(forKey)));
-    return await e.getText();
+    const e = elementByXpath(this.getTableValueElementXpath(forKey)).first();
+    return await getText(e);
   }
 
   async getValuesForField(forKey) {
     const values = [];
-    const elements = element.all(by.xpath(this.getTableValueElementXpath(forKey)+'/div'));
+    const elements = elementsByXpath(this.getTableValueElementXpath(forKey)+'/div');
     const count = await elements.count();
     for (let i = 0; i < count; i++){
-      const e = await elements.get(i);
-      values.push(await e.getText());
+      const e = await elements.nth(i);
+      values.push(await getText(e));
     }
     return values;
   }
 
   async isChangeLinkDisplayedForField(forKey) {
-    const e = element(by.xpath(this.getTableChangeLinkElementXpath(forKey)));
-    return await e.isDisplayed();
+    const e = elementByXpath(this.getTableChangeLinkElementXpath(forKey)).first();
+    return await e.isVisible();
   }
 
   async clickChangeLinkForField(forKey){
-    const e = element(by.xpath(this.getTableChangeLinkElementXpath(forKey)));
+    const e = elementByXpath(this.getTableChangeLinkElementXpath(forKey)).first();
     await e.click();
   }
 
   async isAmendedFlagDisplayedForField(forKey){
-    const e = element(by.xpath(this.getTableAmendedElementXpath(forKey)));
-    return await e.isDisplayed();
+    const e = elementByXpath(this.getTableAmendedElementXpath(forKey)).first();
+    return await e.isVisible();
   }
 }
 

@@ -111,7 +111,6 @@ Feature: WA Release 2: All work - filters (filters to be ignored EUI-4831)
         When I select filter item "Tasks by role type" select or radio option "<Person_Role_Type>" in all work page
 
         When I enter find person search input "<Person_search>" in work flow
-
         Then I see find person search results in work flow
             | Person        |
             | <Person_name> |

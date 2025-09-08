@@ -1,4 +1,4 @@
-
+const { $, elementByXpath, isPresent } = require('../../../helpers/globals');
 const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
@@ -6,14 +6,19 @@ const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const MessageBanner = require('./messageBanner');
 class CaseDetailsPage{
   constructor(){
-    this.caseDetailsContainer = $('exui-case-details-home');
-    this.tabsContainer = $('mat-tab-header .mat-tab-label-container');
-
     this.messageBanner = new MessageBanner();
   }
 
+  get caseDetailsContainer() {
+    return $('exui-case-details-home');
+  }
+
+  get tabsContainer() {
+    return $('mat-tab-header .mat-tab-label-container');
+  }
+
   async isDisplayed(){
-    return this.caseDetailsContainer.isPresent();
+    return isPresent(this.caseDetailsContainer);
   }
 
   async amOnPage(){
@@ -33,7 +38,7 @@ class CaseDetailsPage{
   async isTabWithLabelPresent(tabLabel){
     await this.waitForTabHeader();
     const tabElement = this.getTabElementWithLabel(tabLabel);
-    return await tabElement.isPresent();
+    return await isPresent(tabElement);
   }
 
   async isTabWithLabelSelected(tabLabel){
@@ -49,7 +54,7 @@ class CaseDetailsPage{
   }
 
   getTabElementWithLabel(tabLabel){
-    return element(by.xpath(`//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`));
+    return elementByXpath(`//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`);
   }
 
   async openLinkedDocument() {

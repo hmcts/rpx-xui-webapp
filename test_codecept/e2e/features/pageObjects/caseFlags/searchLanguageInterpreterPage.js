@@ -1,12 +1,16 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class SearchLanguageInterpreterPage {
-  constructor() {
-    this.container = $('ccd-search-language-interpreter');
 
-    this.fieldMapping = {
-      'Language Interpreter': element(by.xpath('//ccd-search-language-interpreter//label[contains(text(),\'Language Interpreter\')]/../..//div[contains(@class,\'auto-complete-container\')]//input')),
-      'Enter the language manually': element(by.xpath('//label[contains(text(),\'Enter the language manually\')]/..//input')),
-      'Enter the language': element(by.xpath('//label[text()=\'Enter the language\']/..//input'))
+  get container() {
+    return $('ccd-search-language-interpreter');
+  }
+
+  get fieldMapping() {
+    return {
+      'Language Interpreter': elementByXpath('//ccd-search-language-interpreter//label[contains(text(),\'Language Interpreter\')]/../..//div[contains(@class,\'auto-complete-container\')]//input'),
+      'Enter the language manually': elementByXpath('//label[contains(text(),\'Enter the language manually\')]/..//input'),
+      'Enter the language': elementByXpath('//label[text()=\'Enter the language\']/..//input')
     };
   }
 
@@ -14,14 +18,14 @@ class SearchLanguageInterpreterPage {
     switch (field) {
       case 'Language Interpreter':
         const searchInput = value.split(',');
-        await this.fieldMapping[field].sendKeys(searchInput[0].trim());
-        await element(by.xpath(`//mat-option//span[contains(text(),'${searchInput[1].trim()}')]`)).click();
+        await this.fieldMapping[field].fill(searchInput[0].trim());
+        await elementByXpath(`//mat-option//span[contains(text(),'${searchInput[1].trim()}')]`).click();
         break;
       case 'Enter the language manually':
         await this.fieldMapping[field].click();
         break;
       case 'Enter the language':
-        await this.fieldMapping[field].sendKeys(value);
+        await this.fieldMapping[field].fill(value);
         break;
       default:
         throw new Error(`${field} not configured in test pageObject`);

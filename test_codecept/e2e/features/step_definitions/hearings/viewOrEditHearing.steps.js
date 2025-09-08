@@ -16,15 +16,15 @@ function getPageObject(page) {
 
 Then('I validate view or edit hearing page displayed', async function(){
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await viewOrEditHearingPage.container.isDisplayed()).to.be.true;
-    expect(await viewOrEditHearingPage.headerElement.getText()).to.include('View or edit hearing');
+    expect(await viewOrEditHearingPage.container.isVisible()).to.be.true;
+    expect(await viewOrEditHearingPage.headerElement.textContent()).to.include('View or edit hearing');
   });
 });
 
 Then('I validate Edit hearing page displayed', async function () {
   await browserWaits.retryWithActionCallback(async () => {
-    expect(await editHearingPage.container.isDisplayed()).to.be.true;
-    expect(await editHearingPage.headerElement.getText()).to.include('Edit hearing');
+    expect(await editHearingPage.container.isVisible()).to.be.true;
+    expect(await editHearingPage.headerElement.textContent()).to.include('Edit hearing');
   });
 });
 
@@ -47,6 +47,7 @@ Then('I validate fields displayed in view or edit hearing page', async function 
     }
 
     const values = await viewOrEditHearingPage.getKeyFieldValue(field);
+    console.log(`DEBUG (${field}):`, values);
     const isValueDisplayed = values.find((v) => v.includes(expectedVal));
     const actualValue = values.find((v) => v.includes(expectedVal));
     expect(actualValue, `Field:${field}  ${expectedAmendFlagDisplayed} not displayed in ${actualValue} `).to.not.equal(undefined);
@@ -107,10 +108,10 @@ Then('I validate edit heating change links and navigation', async function(datat
 
       const navigationPageObject = getPageObject(navigationPage);
       await browserWaits.retryWithActionCallback(async () => {
-        expect(await navigationPageObject.isDisplayed(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true;
+        expect(await navigationPageObject.isVisible(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true;
       });
 
-      const actualheaderCaption = await $('span.govuk-caption-l').getText();
+      const actualheaderCaption = await $('span.govuk-caption-l').textContent();
       reportLogger.AddMessage(`page header expected ${pageHeader}, actual ${actualheaderCaption}`);
       expect(actualheaderCaption).to.includes(pageHeader);
     });
@@ -118,7 +119,7 @@ Then('I validate edit heating change links and navigation', async function(datat
   }
 });
 
-Then('In edit hearing page warning message banner isDisplayed {string}', async function (boolVal) {
+Then('In edit hearing page warning message banner isVisible {string}', async function (boolVal) {
   if (boolVal.toLowerCase().includes('true')) {
     expect(await editHearingPage.isWarningTextBannerDisplayed()).to.be.true;
   } else {
@@ -135,6 +136,6 @@ Then('In edit hearing page error banner displayed with message {string}', async 
 });
 
 Then('In edit hearing page error displayed with message {string}', async function (errorMessage) {
-  expect(await editHearingPage.errorMessage.getText()).to.includes(errorMessage);
+  expect(await editHearingPage.errorMessage.textContent()).to.includes(errorMessage);
 });
 

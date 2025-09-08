@@ -1,5 +1,5 @@
 
-@ng @functional_enabled 
+@ng @functional_enabled
 Feature: Hearings : Actuals update
 
     Scenario: Add or edit action

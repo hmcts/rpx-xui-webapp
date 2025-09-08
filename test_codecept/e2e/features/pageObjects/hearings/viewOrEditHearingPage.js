@@ -1,21 +1,20 @@
-
+const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 const SummaryTable = require('../common/summaryTable');
 
 class ViewOrEditHearingPage{
-  constructor(){
-    this.container = $('exui-hearing-view-edit-summary');
-    this.headerElement = $('exui-hearing-view-edit-summary exui-hearing-summary h1');
-
-    this.summaryTable = new SummaryTable('exui-hearing-view-edit-summary');
-    this.submitUpdatedRequestBtn = $('');
-    this.multiValueFields = [
+  get container()               { return $('exui-hearing-view-edit-summary'); }
+  get headerElement()           { return $('exui-hearing-view-edit-summary exui-hearing-summary h1'); }
+  get summaryTable()            { return new SummaryTable('exui-hearing-view-edit-summary'); }
+  get submitUpdatedRequestBtn() { return $('button[type="submit"]'); }   // keep same name
+  get multiValueFields() {
+    return [
       'Reasonable adjustments',
       'Does the hearing need to take place on a specific date?'
     ];
   }
 
   async getHeader(){
-    return await this.headerElement.getText();
+    return await getText(this.headerElement);
   }
 
   async isKeyFieldDisplayed(field){
@@ -43,7 +42,7 @@ class ViewOrEditHearingPage{
 
   async getActionColumnTextForKeyField(field) {
     const actionColumnElement = this.summaryTable.getTableActionsElementXpath(field);
-    return await element(by.xpath(actionColumnElement)).getText();
+    return await getText(elementByXpath(actionColumnElement));
   }
 
   async clickChangeLinkForField(field) {
@@ -55,9 +54,9 @@ class ViewOrEditHearingPage{
   }
 
   async getSectionHeadingLabel(heading){
-    const e = element(by.xpath(`//h2[contains(text(),'${heading}')]//exui-amendment-label`));
-    const isDisplayed = await e.isDisplayed();
-    return isDisplayed ? await e.getText() : '';
+    const e = elementByXpath(`//h2[contains(text(),'${heading}')]//exui-amendment-label`);
+    const isDisplayed = await e.isVisible();
+    return isDisplayed ? await getText(e) : '';
   }
 }
 

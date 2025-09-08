@@ -1,43 +1,82 @@
+const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 
-const browser = require('../../../../codeceptCommon/browser');
 const BrowserWaits = require('../../../support/customWaits');
 
 class AddUserPage{
-  constructor(){
-    this.container = $('exui-staff-add-edit-user-form');
-    this.headerTitle = $('exui-staff-add-edit-user-form .govuk-heading-xl');
+  get container() {
+    return $('exui-staff-add-edit-user-form');
+  }
 
-    this.firstName = $('input#first_name');
-    this.lastName = $('input#last_name');
-    this.email = $('input#email_id');
+  get headerTitle() {
+    return $('exui-staff-add-edit-user-form .govuk-heading-xl');
+  }
 
-    this.region = $('#region_id');
+  get firstName() {
+    return $('input#first_name');
+  }
 
-    this.services = $('#services');
+  get lastName() {
+    return $('input#last_name');
+  }
 
-    this.primaryLocation = $('#base_locations_primary  exui-staff-select-location #location-primary');
-    this.primaryLocationAddBtn = $('#base_locations_primary  exui-staff-select-location a');
+  get email() {
+    return $('input#email_id');
+  }
 
-    this.additionalLocations = $('#base_locations_additional  exui-staff-select-location #location-primary');
-    this.additionalLocationAddBtn = $('#base_locations_additional  exui-staff-select-location a');
+  get region() {
+    return $('#region_id');
+  }
 
-    this.userType = $('#user_type');
+  get services() {
+    return $('#services');
+  }
 
-    this.roles = $('#roles');
+  get primaryLocation() {
+    return $('#base_locations_primary  exui-staff-select-location #location-primary');
+  }
 
-    this.jobTitles = $('#checkbox_job_title');
+  get primaryLocationAddBtn() {
+    return $('#base_locations_primary  exui-staff-select-location a');
+  }
 
-    this.continue = element(by.xpath('//button[contains(text(),"Continue")]'));
-    this.saveChanges = element(by.xpath('//button[contains(text(),"Save changes")]'));
-    this.cancel = element(by.xpath('//button[contains(text(),"Cancel")]'));
+  get additionalLocations() {
+    return $('#base_locations_additional  exui-staff-select-location #location-primary');
+  }
+
+  get additionalLocationAddBtn() {
+    return $('#base_locations_additional  exui-staff-select-location a');
+  }
+
+  get userType() {
+    return $('#user_type');
+  }
+
+  get roles() {
+    return $('#roles');
+  }
+
+  get jobTitles() {
+    return $('#checkbox_job_title');
+  }
+
+  get continue() {
+    return elementByXpath('//button[contains(text(),"Continue")]');
+  }
+
+  get saveChanges() {
+    return elementByXpath('//button[contains(text(),"Save changes")]');
+  }
+
+  get cancel() {
+    return elementByXpath('//button[contains(text(),"Cancel")]');
   }
 
   async getPageTitle(){
-    return await this.headerTitle.getText();
+    return await getText(this.headerTitle);
   }
 
   async isDisplayed(){
-    return await this.container.isDisplayed();
+    return await this.container.isVisible();
   }
 
   async clickContinue(){
@@ -59,13 +98,13 @@ class AddUserPage{
       const inputVal = userDetails[key];
       switch (key){
         case 'First name':
-          await this.firstName.sendKeys(inputVal);
+          await this.firstName.fill(inputVal);
           break;
         case 'Last name':
-          await this.lastName.sendKeys(inputVal);
+          await this.lastName.fill(inputVal);
           break;
         case 'Email':
-          await this.email.sendKeys(inputVal);
+          await this.email.fill(inputVal);
           break;
         case 'Region':
           await this.region.selectOptionAtIndex(1);
@@ -83,12 +122,12 @@ class AddUserPage{
           break;
         case 'Primary location':
           await this.primaryLocation.scrollIntoView();
-          await this.primaryLocation.sendKeys(inputVal);
+          await this.primaryLocation.fill(inputVal);
           const searchResults = $$('.mat-option-text');
 
           let e = null;
           await BrowserWaits.retryWithActionCallback(async () => {
-            await browser.sleep(2);
+            await BrowserWaits.waitForSeconds(2);
             e = await searchResults.getItemWithText(inputVal);
             if (e === null){
               throw new Error('locations not found, retry waiting');
@@ -99,11 +138,11 @@ class AddUserPage{
           break;
         case 'Additional locations':
           inputVal.forEach(async(loc) => {
-            await this.additionalLocations.sendKeys(loc);
+            await this.additionalLocations.fill(loc);
             const additionaLocationResults = $$('.mat-option-text');
             let ale = null;
             await BrowserWaits.retryWithActionCallback(async () => {
-              await browser.sleep(2);
+              await BrowserWaits.waitForSeconds(2);
               ale = additionaLocationResults.getItemWithText(loc);
               if (ale === null) {
                 throw new Error('locations not found, retry waiting');
@@ -147,12 +186,12 @@ class AddUserPage{
 
 async function checkBoxes(parent){
   const checkBoxes = {};
-  const elements = parent.$$('.govuk-checkboxes__item');
+  const elements = parent.locator('.govuk-checkboxes__item');
   const count = await elements.count();
   for (let i = 0; i< count; i++){
-    const e = elements.get(i);
-    const label = await e.$('label').getText();
-    checkBoxes[label] = e.$('input');
+    const e = elements.nth(i);
+    const label = await getText(e.locator('label'));
+    checkBoxes[label] = e.locator('input');
   }
   return checkBoxes;
 }

@@ -1,83 +1,82 @@
-
+const { $, elementByXpath, getText, isPresent } = require('../../../../../helpers/globals');
 const BrowserWaits = require('../../../../support/customWaits');
 
-class CheckYourAnswersPage{
-  constructor(){
-    this.container = $('exui-answers');
-    this.header = this.container.$('h1');
-    this.headerCaption = this.header.$('span');
+class CheckYourAnswersPage {
 
-    this.hintText = this.container.$('.govuk-hint');
+  get container() { return $('exui-answers'); }
+  get header() { return this.container.locator('h1'); }
+  get headerCaption() { return this.header.locator('span'); }
 
-    this.summaryListContainer = this.container.$('.govuk-summary-list');
-    this.questionRows = this.container.$$('.govuk-summary-list__row');
-    this.submitButton = $('.govuk-button-group button');
-    this.cancelLink = $('.govuk-button-group p>a');
-  }
+  get hintText() { return this.container.locator('.govuk-hint'); }
+  get summaryListContainer() { return this.container.locator('.govuk-summary-list'); }
+  get questionRows() { return this.container.locator('.govuk-summary-list__row'); }
 
-  async waitForPage(){
+  get submitButton() { return $('.govuk-button-group button'); }
+  get cancelLink() { return $('.govuk-button-group p>a'); }
+
+  async waitForPage() {
     await BrowserWaits.waitForElement(this.container);
   }
 
-  async getTotalQuestionsCount(){
+  async getTotalQuestionsCount() {
     return await this.questionRows.count();
   }
 
-  async isSubmitButtonWithLabelPresent(label){
-    return await this.getSubmitButtonElementWithLabel(label).isPresent();
+  async isSubmitButtonWithLabelPresent(label) {
+    return await isPresent(this.getSubmitButtonElementWithLabel(label));
   }
 
-  async clickSubmitButtonWithLabel(label){
+  async clickSubmitButtonWithLabel(label) {
     await this.getSubmitButtonElementWithLabel(label).click();
   }
 
-  async clickCancelLink(){
-    await element(by.xpath('//div[contains(@class,\'govuk-button-group\')]//p/a[contains(text(),\'Cancel\')]')).click();
+  async clickCancelLink() {
+    await elementByXpath('//div[contains(@class,\'govuk-button-group\')]//p/a[contains(text(),\'Cancel\')]').click();
   }
 
-  getSubmitButtonElementWithLabel(label){
-    return element(by.xpath(`//div[contains(@class,'govuk-button-group')]//button[contains(text(),'${label}')]`));
+  getSubmitButtonElementWithLabel(label) {
+    return elementByXpath(`//div[contains(@class,'govuk-button-group')]//button[contains(text(),'${label}')]`);
   }
 
-  async isDisplayed(){
-    return await this.container.isDisplayed();
+  async isDisplayed() {
+    return await this.container.isVisible();
   }
 
-  async getHeaderText(){
+  async getHeaderText() {
     await BrowserWaits.waitForElement(this.container);
-    return await this.header.getText();
+    return await getText(this.header);
   }
 
   async getHeaderCaption() {
     await BrowserWaits.waitForElement(this.container);
-    return await this.headerCaption.getText();
+    return await getText(this.headerCaption);
   }
 
   async getHintText() {
     await BrowserWaits.waitForElement(this.container);
-    return await this.hintText.getText();
+    return await getText(this.hintText);
   }
 
-  async isSummayListPresent(){
+  async isSummayListPresent() {
     await BrowserWaits.waitForElement(this.container);
-    return await this.summaryListContainer.isPresent();
+    return await isPresent(this.summaryListContainer);
   }
 
-  async isQuestionRowPresent(question){
+  async isQuestionRowPresent(question) {
     await BrowserWaits.waitForElement(this.container);
 
     const rowWithQuestion = this.getRowElementWithQuestion(question);
-    return await rowWithQuestion.isPresent();
+    return await isPresent(rowWithQuestion);
   }
 
   async getAnswerForQuestion(question) {
     await BrowserWaits.waitForElement(this.container);
 
     const rowWithQuestion = this.getRowElementWithQuestion(question);
-    if (!(await rowWithQuestion.isPresent())){
+    if (!(await isPresent(rowWithQuestion))) {
       throw new Error('Question is now found in page');
     }
-    const answer = await rowWithQuestion.$('.govuk-summary-list__value').getText();
+    const answer = await getText(rowWithQuestion.locator('.govuk-summary-list__value'));
     return answer;
   }
 
@@ -85,24 +84,24 @@ class CheckYourAnswersPage{
     await BrowserWaits.waitForElement(this.container);
 
     const rowWithQuestion = this.getRowElementWithQuestion(question);
-    if (!(await rowWithQuestion.isPresent())) {
+    if (!(await isPresent(rowWithQuestion))) {
       throw new Error('Question is now found in page');
     }
-    return await rowWithQuestion.$('.govuk-summary-list__actions a').isPresent();
+    return await isPresent(rowWithQuestion.locator('.govuk-summary-list__actions a'));
   }
 
   async clickChangeForQuestion(question) {
     await BrowserWaits.waitForElement(this.container);
 
     const rowWithQuestion = this.getRowElementWithQuestion(question);
-    if (!(await rowWithQuestion.isPresent())) {
+    if (!(await isPresent(rowWithQuestion))) {
       throw new Error('Question is now found in page');
     }
-    await rowWithQuestion.$('.govuk-summary-list__actions a').click();
+    await rowWithQuestion.locator('.govuk-summary-list__actions a').click();
   }
 
-  getRowElementWithQuestion(question){
-    return this.summaryListContainer.element(by.xpath(`//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),"${question}")]//ancestor::div[contains(@class,'govuk-summary-list__row')]`));
+  getRowElementWithQuestion(question) {
+    return this.summaryListContainer.locator(`//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),"${question}")]//ancestor::div[contains(@class,'govuk-summary-list__row')]`);
   }
 }
 

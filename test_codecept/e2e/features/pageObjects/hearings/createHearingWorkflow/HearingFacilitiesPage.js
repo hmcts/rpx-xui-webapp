@@ -1,15 +1,17 @@
-
-const GovUKTable = require('../../common/govUkTable');
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 const partyCaseFlags = require('./partyCaseFlagsTable');
-class HearingFacilitiesPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-facilities');
 
-    this.fieldMapping = {
-      'Will additional security be required?': $('#addition-security-confirmation'),
-      'Will additional security be required?-Yes': $('#additionalSecurityYes'),
-      'Will additional security be required?-No': $('#additionalSecurityNo'),
-      'Select any additional facilities required': $('#facilitiesList')
+class HearingFacilitiesPage {
+  get pageContainer() {
+    return $('exui-hearing-facilities');
+  }
+
+  get fieldMapping() {
+    return {
+      'Will additional security be required?':        $('#addition-security-confirmation'),
+      'Will additional security be required?-Yes':    $('#additionalSecurityYes'),
+      'Will additional security be required?-No':     $('#additionalSecurityNo'),
+      'Select any additional facilities required':    $('#facilitiesList')
     };
   }
 
@@ -34,7 +36,7 @@ class HearingFacilitiesPage {
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async isAdditionalSecurityRequired(booleanValue) {
@@ -46,7 +48,7 @@ class HearingFacilitiesPage {
   }
 
   async clickAdditionalFacilityCheckbox(facility) {
-    const ele = element(by.xpath(`//div[@id='checkbox-addition-facility']//label[contains(text(),'${facility}')]/../input`));
+    const ele = elementByXpath(`//div[@id='checkbox-addition-facility']//label[contains(text(),'${facility}')]/../input`);
     await ele.click();
   }
 

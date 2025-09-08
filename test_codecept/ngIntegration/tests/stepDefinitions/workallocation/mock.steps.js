@@ -1,9 +1,6 @@
-const { defineSupportCode } = require('cucumber');
-
 const MockApp = require('../../../../nodeMock/app');
 const workAllocationMockData = require('../../../mockData/workAllocation/mockData');
 
-const BrowserWaits = require('../../../../e2e/support/customWaits');
 const WACasesTable = require('../../../../e2e/features/pageObjects/workAllocation/casesTable');
 
 const caseDetailsPage = require('../../pageObjects/caseDetailsPage');

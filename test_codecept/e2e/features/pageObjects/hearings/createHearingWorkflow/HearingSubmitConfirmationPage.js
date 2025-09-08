@@ -1,15 +1,20 @@
+const { $, getText } = require('../../../../../helpers/globals');
+
 class HearingSubmitConfirmationPage{
-  constructor() {
-    this.pageContainer = $('exui-hearing-confirmation');
-    this.confirmationBanner = $('.govuk-panel--confirmation');
+  get pageContainer() {
+    return $('exui-hearing-confirmation');
+  }
+
+  get confirmationBanner() {
+    return $('.govuk-panel--confirmation');
   }
 
   async confirmationbannerMessage(){
-    return await this.confirmationBanner.getText();
+    return await getText(this.confirmationBanner);
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 }
 

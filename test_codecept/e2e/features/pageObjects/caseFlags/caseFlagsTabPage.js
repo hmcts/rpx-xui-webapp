@@ -1,8 +1,7 @@
+const { elementByXpath, elementsByXpath, getText } = require('../../../../helpers/globals');
 
 class CaseFlagsTabPage{
-  constructor(){
-
-  }
+  constructor(){}
 
   getFlagTableFor(flagTableFor){
     return new FlagTableFor(flagTableFor);
@@ -15,36 +14,36 @@ class FlagTableFor {
 
     this.tableLocator = `//ccd-case-flag-table//caption[contains(text(),'${this.tableFor}')]/..`;
 
-    this.tableHeader = element(by.xpath(this.tableLocator));
-    this.tableHeaders = element.all(by.xpath(`${this.tableLocator}//thead/tr/th`));
+    this.tableHeader = elementByXpath(this.tableLocator);
+    this.tableHeaders = elementsByXpath(`${this.tableLocator}//thead/tr/th`);
 
-    this.tableRows = element.all(by.xpath(`${this.tableLocator}//tbody/tr`));
+    this.tableRows = elementsByXpath(`${this.tableLocator}//tbody/tr`);
 
-    this.tableDataNone = element(by.xpath(`${this.tableLocator}//tbody/tr/td[contains(text(),'None')]`));
+    this.tableDataNone = elementByXpath(`${this.tableLocator}//tbody/tr/td[contains(text(),'None')]`);
   }
 
   async isTableDataNone(){
-    return await this.tableDataNone.isDisplayed();
+    return await this.tableDataNone.isVisible();
   }
 
   async getTableData(){
     const colCount = await this.tableHeaders.count();
     const cols = [];
     for (let i = 0; i< colCount; i++){
-      const colName = await this.tableHeaders.get(i).getText();
+      const colName = await getText(this.tableHeaders.nth(i));
       cols.push(colName);
     }
 
     const rowsCount = await this.tableRows.count();
     const tableObj = [];
     for (let rowCount = 0; rowCount < rowsCount; rowCount++){
-      const row = await this.tableRows.get(rowCount);
-      const rowCols = row.$$('//td');
+      const row = await this.tableRows.nth(rowCount);
+      const rowCols = row.locator('//td');
 
       let colCounter = 0;
       const rowObj = {};
       for (const col of cols){
-        const colValue = await rowCols.get(colCounter).getText();
+        const colValue = await getText(rowCols.nth(colCounter));
         rowObj[col] = colValue;
         colCounter++;
       }

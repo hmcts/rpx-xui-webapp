@@ -1,20 +1,16 @@
-
+const { $ } = require('../../../../helpers/globals');
 const LocationPage = require('./searchLocationPage');
 const ChooseDurationPage = require('./chooseDurationPage');
 const checkAnswersPage = require('./checkAnswersPage');
 
-class CreateNewBookingWorkFlow{
-  constructor(){
-    this.searchLocation = LocationPage;
-    this.chooseDurationPage = ChooseDurationPage;
-    this.checkAnswersPage = checkAnswersPage;
+class CreateNewBookingWorkFlow {
+  get searchLocation() { return LocationPage; }
+  get chooseDurationPage() { return ChooseDurationPage; }
+  get checkAnswersPage() { return checkAnswersPage; }
 
-    this.continueButton = $('exui-booking-location button,exui-booking-date button');
-    this.confirmBookingButton = $('exui-booking-check button');
-
-    this.cancelLink = $('');
-    this.backLink = $('.govuk-back-link');
-  }
+  get continueButton() { return $('exui-booking-location button, exui-booking-date button'); }
+  get confirmBookingButton() { return $('exui-booking-check button'); }
+  get backLink() { return $('.govuk-back-link'); }
 }
 
 module.exports = new CreateNewBookingWorkFlow();

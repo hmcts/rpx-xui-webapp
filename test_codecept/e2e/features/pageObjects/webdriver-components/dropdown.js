@@ -1,3 +1,4 @@
+const { $, $$, elementByCss, getText, isPresent } = require('../../../../helpers/globals');
 const CustomError = require('../../../utils/errors/custom-error.js');
 const RandomUtils = require('../../../utils/euiDataGenerationUtils.js');
 
@@ -28,7 +29,7 @@ class Dropdown {
     const dropdownElements = await this._getOptionElements();
     const stringArray = [];
     for (const option of dropdownElements){
-      const optionText = await option.getText();
+      const optionText = await getText(option);
       stringArray.push(optionText);
     }
     return stringArray;
@@ -54,7 +55,7 @@ class Dropdown {
    * @returns String
    */
   async getCurrentSelectedOption(){
-    const text = await $(this._currentDropdownOptionElement).getText();
+    const text = await getText($(this._currentDropdownOptionElement));
     return text.trim();
   }
 
@@ -70,7 +71,7 @@ class Dropdown {
     const optionsTextArray = [];
 
     for (const option of options){
-      const optionText = await option.getText();
+      const optionText = await getText(option);
       await optionsTextArray.push(optionText);
       if (optionText.trim().toLowerCase() === dropdownOption.trim().toLowerCase()){
         optionToSelect = option;
@@ -95,12 +96,12 @@ class Dropdown {
     const optionsTextArray = [];
 
     for (const option of options){
-      const optionText = await option.getText();
+      const optionText = await getText(option);
       await optionsTextArrayTemp.push(optionText);
     }
 
     for (const option of options){
-      const optionText = await option.getText();
+      const optionText = await getText(option);
       await optionsTextArray.push(optionText);
       if (optionText.trim().toLowerCase() === optionsTextArrayTemp[dropdownIndex].trim().toLowerCase()){
         optionToSelect = option;
@@ -128,7 +129,7 @@ class Dropdown {
         return false;
       }
     }
-    return await $(this._dropdownElement).isPresent();
+    return await isPresent($(this._dropdownElement));
   }
 
   /**
@@ -140,10 +141,9 @@ class Dropdown {
   }
 
   async waitForElementToBeInvisible(){
-    // const EC = protractor.ExpectedConditions;
 
     try {
-      await browser.wait(EC.invisibilityOf(await element(by.css(this._dropdownElement))), DEFAULT_TIMEOUT);
+      await browser.wait(EC.invisibilityOf(await elementByCss(this._dropdownElement)), DEFAULT_TIMEOUT);
       return true;
     } catch (e) {
       const message = `timed out after ${DEFAULT_TIMEOUT} waiting for dropdown element ${element} to be invisible`;
@@ -151,17 +151,16 @@ class Dropdown {
     }
   }
 
-  async waitForElementToBeVisible(){
-    const EC = protractor.ExpectedConditions;
-
-    try {
-      await browser.wait(EC.visibilityOf($(this._dropdownElement)), DEFAULT_TIMEOUT);
-      return true;
-    } catch (e) {
-      const message = `timed out after ${DEFAULT_TIMEOUT} waiting for dropdown element ${element} to be visible`;
-      throw new CustomError(message, e);
-    }
+  async waitForElementToBeVisible(page, timeout = DEFAULT_TIMEOUT) {
+  try {
+    const locator = page.locator(this._dropdownElement);
+    await locator.waitFor({ state: 'visible', timeout });
+    return true;
+  } catch (e) {
+    const message = `timed out after ${timeout}ms waiting for dropdown element "${this._dropdownElement}" to be visible`;
+    throw new CustomError(message, e);
   }
+}
 
   /**
    * Select a dropdown option by text value. Retry 2 more times if fails.
@@ -180,7 +179,7 @@ class Dropdown {
         failmessage = e;
         console.log(e);
         console.log(`Attempt ${i}/3 failed, Retry after wait`);
-        await browser.sleep(2 * i);
+        await pause(2000 * i);
       }
     }
 
@@ -202,7 +201,7 @@ class Dropdown {
         failmessage = e;
         console.log(e);
         console.log(`Attempt ${i}/3 failed, Retry after wait`);
-        await browser.sleep(2 * i);
+        await pause(2000 * i);
       }
     }
 

@@ -1,7 +1,6 @@
 
 const BrowserWaits = require('../../support/customWaits');
 const ArrayUtil = require('../../utils/ArrayUtil');
-const { defineSupportCode } = require('cucumber');
 const BrowserLogs = require('../../support/browserLogs');
 
 const cucumberReporter = require('../../../codeceptCommon/reportLogger');

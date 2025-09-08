@@ -1,34 +1,29 @@
 
 const functional_output_dir = '../../../functional_output';
 const codeceptCommonDir = '../../codeceptCommon';
-
 const global = require(`${codeceptCommonDir}/globals`);
+const head = process.env.HEAD === 'true'; 
 
 exports.config = {
   grep: '@smoke',
   timeout: 120,
   'gherkin': {
     'features': '../features/app/**/*.feature',
-    'steps': '../features/step_definitions/**/*.steps.js'
+    'steps': ['../features/step_definitions/setup.steps.js', '../features/step_definitions/**/*.steps.js']
   },
   output: `${functional_output_dir}/output`,
   helpers: {
-    Puppeteer: {
+    Playwright: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
-      browser: 'chrome',
-      show: true,
-      restart: true
-      // chrome: {
-      //   args: ['--no-sandbox', '--headless1', '--window-size=1920,1080', '--disable-web-security'],
-      //   ignoreHTTPSErrors: true,
-      // },
+      browser: 'chromium',
+      show: head,
+      restart: true,
+      waitForNavigation: 'domcontentloaded',
+      ignoreHTTPSErrors: true,
+      fullPageScreenshots: true,
+      windowSize: '1600x900',
+      chrome: { args: ['--no-sandbox'] } 
     }
-    // WebDriver:{
-    //   url: 'https://manage-case.aat.platform.hmcts.net/',
-    //   browser: 'chrome',
-    //   show: true,
-
-    // }
   },
   'mocha': {
     'codeceptjs-cli-reporter': {
@@ -56,15 +51,14 @@ exports.config = {
   plugins: {
     'allure': {
       'enabled': true
-    },
-    'myPlugin': {
-      'require': `${codeceptCommonDir}/hooks.js`,
-      'enabled': true
     }
   },
   include: {
   },
-  bootstrap: null,
+  bootstrap: async () => {
+    const path = require('path');
+    require(path.resolve(__dirname, `${codeceptCommonDir}/hooks.js`)); // 🟢 This ensures hooks execute
+  },
   teardown: () => {
     console.log('Run complete...');
 

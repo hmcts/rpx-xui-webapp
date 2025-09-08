@@ -9,25 +9,14 @@ exports.config = {
   timeout: 120,
   'gherkin': {
     'features': '../features/app/**/*.feature',
-    'steps': '../features/step_definitions/**/*.steps.js'
+    'steps': ['../features/step_definitions/setup.steps.js', '../features/step_definitions/**/*.steps.js']
   },
   output: `${functional_output_dir}/output`,
   helpers: {
-    // Puppeteer: {
-    //   url: 'https://manage-case.aat.platform.hmcts.net/',
-    //   browser: 'chrome',
-    //   show: true,
-    //   restart:true,
-    //   // chrome: {
-    //   //   args: ['--no-sandbox', '--headless1', '--window-size=1920,1080', '--disable-web-security'],
-    //   //   ignoreHTTPSErrors: true,
-    //   // },
-    // },
-    WebDriver: {
+    Playwright: {
       url: 'https://manage-case.aat.platform.hmcts.net/',
-      browser: 'chrome',
+      browser: 'chromium',
       show: true
-
     }
   },
   'mocha': {
@@ -56,15 +45,14 @@ exports.config = {
   plugins: {
     'allure': {
       'enabled': true
-    },
-    'myPlugin': {
-      'require': `${codeceptCommonDir}/hooks.js`,
-      'enabled': true
     }
   },
   include: {
   },
-  bootstrap: null
+  bootstrap: async () => {
+    const path = require('path');
+    require(path.resolve(__dirname, `${codeceptCommonDir}/hooks.js`)); // 🟢 This ensures hooks execute
+  }
   // teardown: () => {
   //   console.log("Run complete...")
 

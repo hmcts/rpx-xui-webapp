@@ -1,12 +1,25 @@
+const { $, $$, elementByXpath, elementsByXpath, getSelectOptions, isPresent } = require('../../helpers/globals');
 
 class Select{
-  constructor(locatorType, selector){
-    this.selectElement = locatorType.toLowerCase() === 'css' ? $(selector) : element(by.xpath(selector));
-    this.selectElementOptions = locatorType.toLowerCase() === 'css' ? $$(`${selector} option`) : element.all(by.xpath(`${selector}//option`));
+  constructor(locatorType, selector) {
+    this.locatorType = locatorType.toLowerCase();
+    this.selector = selector;
+  }
+
+  get selectElement() {
+    return this.locatorType === 'css'
+      ? $(this.selector)
+      : elementByXpath(this.selector);
+  }
+
+  get selectElementOptions() {
+    return this.locatorType === 'css'
+      ? $$(`${this.selector} option`)
+      : elementsByXpath(`${this.selector}//option`);
   }
 
   async isDisplayed(){
-    return await this.selectElement.isPresent() && await this.selectElement.isDisplayed();
+    return await isPresent(this.selectElement) && await this.selectElement.isVisible();
   }
 
   async isEnabled() {
@@ -14,13 +27,13 @@ class Select{
   }
 
   async getOptions(){
-    const options = await this.selectElement.getSelectOptions();
+    const options = await getSelectOptions(this.selectElement);
 
     return options;
   }
 
   async selectOption(optiontext){
-    await this.selectElement.selectOptionWithLabel(optiontext);
+    await this.selectElement.selectOption({ label: optiontext });
   }
 }
 
@@ -31,15 +44,15 @@ class GovUKRadios{
   }
 
   async isDisplayed() {
-    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
+    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : elementByXpath(`${this.selector}`);
 
-    return await container.isPresent();
+    return await isPresent(container);
   }
 
   async isEnabled(){
-    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : element(by.xpath(`${this.selector}`));
+    const container = this.locatorType.toLowerCase() === 'css' ? $(`${this.selector}`) : elementByXpath(`${this.selector}`);
 
-    return await containert.isEnabled();
+    return await container.isEnabled();
   }
 
   async getRadioOptions(){
@@ -47,24 +60,24 @@ class GovUKRadios{
   }
 
   async getOptions() {
-    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
+    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : elementsByXpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`);
 
     const count = await labels.count();
     const options = [];
     for (let i = 0; i < count; i++) {
-      const optionVal = await labels.get(i).getText();
+      const optionVal = await labels.nth(i).textContent();
       options.push(optionVal);
     }
     return options;
   }
 
   async selectOption(option){
-    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : element.all(by.xpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`));
+    const labels = this.locatorType.toLowerCase() === 'css' ? $$(`${this.selector} .govuk-radios__item .govuk-radios__label`) : elementsByXpath(`${this.selector}//div[contains(@class,"govuk-radios__item")]//label`);
     const options = [];
     const count = await labels.count();
     for (let i = 0; i < count; i++) {
-      const element = await labels.get(i);
-      const optionVal = await element.getText();
+      const element = await labels.nth(i);
+      const optionVal = await element.textContent();
       options.push(optionVal);
       if (optionVal.includes(option)){
         await element.click();

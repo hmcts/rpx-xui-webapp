@@ -3,14 +3,14 @@ const MockApp = require('../../nodeMock/app');
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
 
-const headerPage = require('../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../e2e/features/pageObjects/headerPage')(); }
 
 const CCDCaseEditPage = require('./pageObjects/ccdCaseEditPages');
 const CCDCaseConfig = require('../../nodeMock/ccd/ccdCaseConfig/caseCreateConfigGenerator');
 
 describe('CCD casefields, retain_hidden_field setting', function () {
   before(async function(){
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
   });
 
   beforeEach(async function (done) {

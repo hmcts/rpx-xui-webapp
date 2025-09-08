@@ -1,13 +1,15 @@
+const { $ } = require('../../../../../helpers/globals');
 
 class HearingLinkPage{
-  constructor() {
-    this.pageContainer = $('exui-hearing-link');
+  get pageContainer()   { return $('exui-hearing-link'); }
 
-    this.hearingLink_yes = $('.govuk-form-group input[name=\'hearingLink\'][value=\'yes\']');
-    this.hearingLink_no = $('.govuk-form-group input[name=\'hearingLink\'][value=\'no\']');
+  get hearingLink_yes() { return $('.govuk-form-group input[name="hearingLink"][value="yes"]'); }
+  get hearingLink_no()  { return $('.govuk-form-group input[name="hearingLink"][value="no"]'); }
 
-    this.fieldMapping = {
-      'Will this hearing need to be linked to other hearings?': $('.govuk-form-group input[name=\'hearingLink\']')
+  get fieldMapping() {
+    return {
+      'Will this hearing need to be linked to other hearings?':
+        $('.govuk-form-group input[name="hearingLink"]')
     };
   }
 
@@ -26,7 +28,7 @@ class HearingLinkPage{
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 }
 

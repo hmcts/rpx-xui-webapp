@@ -1,15 +1,19 @@
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 
 class HearingChangeReasonsPage{
-  constructor(){
-    this.pageContainer = $('exui-hearing-change-reasons');
 
-    this.fieldMapping = {
+  get pageContainer() {
+    return $('exui-hearing-change-reasons');
+  }
+
+  get fieldMapping() {
+    return {
       'Provide a reason for changing this hearing': $('#hearing-option-container')
     };
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async inputValue(field, value) {
@@ -26,7 +30,7 @@ class HearingChangeReasonsPage{
   }
 
   async clickReasonCheckbox(facility) {
-    const ele = element(by.xpath(`//label[contains(text(),'${facility}')]/../input`));
+    const ele = elementByXpath(`//label[contains(text(),'${facility}')]/../input`);
     await ele.click();
   }
 }

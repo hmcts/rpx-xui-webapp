@@ -1,9 +1,16 @@
-class HearingStagePage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-stage');
-    this.hearingStagesListContainer = $('#hearing-stage');
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 
-    this.fieldMapping = {
+class HearingStagePage {
+  get pageContainer() {
+    return $('exui-hearing-stage');
+  }
+
+  get hearingStagesListContainer() {
+    return $('#hearing-stage');
+  }
+
+  get fieldMapping() {
+    return {
       'What stage is this hearing at?': $('#hearing-stage')
     };
   }
@@ -19,15 +26,15 @@ class HearingStagePage {
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
   async validatePage() {
-    expect(await this.hearingStagesListContainer.isDisplayed(), 'Hearing stages list not displayed').to.be.true;
+    expect(await this.hearingStagesListContainer.isVisible(), 'Hearing stages list not displayed').to.be.true;
   }
 
   async selectHearingStage(stage) {
-    const ele = element(by.xpath(`//fieldset[@id='hearing-stage']//label[contains(text(),'${stage}')]/../input`));
+    const ele = elementByXpath(`//fieldset[@id='hearing-stage']//label[contains(text(),'${stage}')]/../input`);
     await ele.click();
   }
 }

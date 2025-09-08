@@ -1,5 +1,4 @@
 
-const { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');

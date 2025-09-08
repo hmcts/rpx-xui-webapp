@@ -1,21 +1,20 @@
-
+const { $ } = require('../../../../helpers/globals');
 const { LOG_LEVELS } = require('../../../support/constants');
 const BrowserWaits = require('../../../support/customWaits');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const CheckyourChangesTable = require('../common/checkYourChangesTable');
-class TaskCheckYourChangesPage{
-  constructor(){
-    this.pageContainer = $('exui-task-assignment-confirm');
-    this.header = $('exui-task-assignment-confirm h1');
-    this.headerCaption = $('exui-task-assignment-confirm h1 span');
-
-    this.checkYourChangesHintText = $('exui-task-assignment-confirm #reassign-confirm-hint|exui-task-assignment-confirm #assign-confirm-hint ');
-
-    this.submitButton = $('exui-task-assignment-confirm button[type = \'submit\']');
-    this.cancelLink = element(by.xpath('//exui-task-assignment-confirm//p/a[contains(text(),\'Cancel\')]'));
-
-    this.checkYourChangesTable = new CheckyourChangesTable(this.pageContainer);
+class TaskCheckYourChangesPage {
+  get checkyourChangesTable() {
+    return new CheckyourChangesTable(this.pageContainer);
   }
+
+  get pageContainer() { return $('exui-task-assignment-confirm'); }
+  get header() { return this.pageContainer.locator('h1'); }
+  get headerCaption() { return this.header.locator('span'); }
+  get checkYourChangesHintText() { return $('exui-task-assignment-confirm #reassign-confirm-hint, exui-task-assignment-confirm #assign-confirm-hint'); }
+
+  get submitButton() { return this.pageContainer.locator('button[type="submit"]'); }
+  get cancelLink() { return elementByXpath('//exui-task-assignment-confirm//p/a[contains(text(),"Cancel")]'); }
 
   async amOnPage() {
     try {
@@ -28,7 +27,7 @@ class TaskCheckYourChangesPage{
   }
 
   async validatePage() {
-    const heaerText = await this.header.getText();
+    const heaerText = await this.header.textContent();
     expect(heaerText).to.contains('Check your answers');
     await BrowserWaits.waitForElement(this.checkYourChangesTable.changesTable);
     expect(await this.checkYourChangesTable.isLinkWithTextPresentAtRow(1, 'Change')).to.be.true;
@@ -49,11 +48,11 @@ class TaskCheckYourChangesPage{
   }
 
   async getHeaderText() {
-    return await this.header.getText();
+    return await this.header.textContent();
   }
 
   async getHeaderCaption() {
-    return await this.headerCaption.getText();
+    return await this.headerCaption.textContent();
   }
 
   async clickContinueButton() {

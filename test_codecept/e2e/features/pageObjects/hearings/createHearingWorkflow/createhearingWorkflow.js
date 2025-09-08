@@ -1,4 +1,4 @@
-
+const { $, elementByXpath } = require('../../../../../helpers/globals');
 const HearingRequirementsPage = require('./HearingRequirementsPage');
 const HearingFacilitiesPage = require('./HearingFacilitiesPage');
 const HearingStagePage = require('./HearingStagePage');
@@ -13,17 +13,10 @@ const HearingCreateEditSummaryPage = require('./HearingCreateEditSummaryPage');
 const HearingSubmitConfirmationPage = require('./HearingSubmitConfirmationPage');
 const HearingWelshPage = require('./hearingWelshPage');
 const HearingChangeReasonsPage = require('./HearingChangeReasonsPage');
+
 class CreateHearingWorkflow{
-  constructor(){
-    this.continueBtn = element(by.xpath('//button[contains(text(),\'Continue\')]'));
-    this.submitBtn = element(by.xpath('//button[contains(text(),\'Submit request\')]'));
-    this.backLink = $('exui-request-hearing a.govuk-back-link');
-
-    this.pageHeading = $('h1.govuk-heading-l');
-
-    this.createhearingContainer = $('exui-request-hearing');
-
-    this.pages = {
+  get pages() {
+    return {
       'Hearing requirements': new HearingRequirementsPage(),
       'Do you require any additional facilities?': new HearingFacilitiesPage(),
       'What stage is this hearing at?': new HearingStagePage(),
@@ -38,11 +31,31 @@ class CreateHearingWorkflow{
       'Check your answers before sending your request': new HearingCreateEditSummaryPage(),
       'Hearing request submitted': new HearingSubmitConfirmationPage(),
       'Provide a reason for changing this hearing': new HearingChangeReasonsPage()
-    };
+    }
+  }
+
+  get continueBtn() {
+    return elementByXpath("//button[contains(text(),'Continue')]");
+  }
+
+  get submitBtn() {
+    return elementByXpath("//button[contains(text(),'Submit request')]");
+  }
+
+  get backLink() {
+    return $('exui-request-hearing a.govuk-back-link');
+  }
+
+  get pageHeading() {
+    return $('h1.govuk-heading-l');
+  }
+
+  get createhearingContainer() {
+    return $('exui-request-hearing');
   }
 
   async isCreateHearingWorkflowDIsplayed(){
-    return await this.createhearingContainer.isDisplayed();
+    return await this.createhearingContainer.isVisible();
   }
 
   async clickSubmitRequest(){

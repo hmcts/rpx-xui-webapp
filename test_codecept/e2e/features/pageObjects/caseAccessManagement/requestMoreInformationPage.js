@@ -1,15 +1,20 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class SARRequestMoreInformationPage{
-  constructor(){
-    this.container = $('exui-specific-access-information h1');
+  constructor(){}
 
-    this.fieldMapping = {
-      'Request more information': element(by.xpath('//h1[contains(text(),\'Request more information\')]/..//textarea'))
+  get container() {
+    return $('exui-specific-access-information h1');
+  }
+
+  get fieldMapping() {
+    return {
+      'Request more information': elementByXpath('//h1[contains(text(),\'Request more information\')]/..//textarea')
     };
   }
 
   async inputValues(field, value){
-    await this.fieldMapping[field].sendkeys(value);
+    await this.fieldMapping[field].fill(value);
   }
 }
 

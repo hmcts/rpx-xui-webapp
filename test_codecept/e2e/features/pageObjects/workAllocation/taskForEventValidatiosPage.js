@@ -1,7 +1,8 @@
+const { $, isPresent } = require('../../../../helpers/globals');
 
-class TaskForEventCompletionValidationPage{
-  constructor(){
-    const validationPages = [
+class TaskForEventCompletionValidationPage {
+  get _validationPageSelectors() {
+    return [
       'app-no-tasks-available',
       'app-multiple-tasks-exist',
       'app-task-assigned',
@@ -10,26 +11,27 @@ class TaskForEventCompletionValidationPage{
       'app-case-event-completion-task-completed',
       'app-case-event-completion-task-terminated'
     ];
-    this.validatioPages = $(validationPages.join(','));
-
-    this.summaryHeading = $('.govuk-error-summary h2');
-    this.summaryBody = $('.govuk-error-summary__body');
-
-    this.errorDetailsContainer = $('div.govuk-form-group--error');
-    this.errorDetailsHeader = $('div.govuk-form-group--error h2');
-    this.errorDetailsMessage = $('div.govuk-form-group--error');
-    this.errorDetailsNavLink = $('div.govuk-form-group--error a');
-
-    this.continueButton = $('ccd-case-event-completion button');
-    this.cancelButton = $('ccd-case-event-completion a.govuk-button');
   }
 
-  async isPageDisplayed(){
-    const isPresent = await this.validatioPages.isPresent();
-    if (isPresent){
-      return await await this.validatioPages.isDisplayed();
+  get validationPages() { return $(this._validationPageSelectors.join(',')); }
+
+  get summaryHeading() { return $('.govuk-error-summary h2'); }
+  get summaryBody() { return $('.govuk-error-summary__body'); }
+
+  get errorDetailsContainer() { return $('div.govuk-form-group--error'); }
+  get errorDetailsHeader() { return $('div.govuk-form-group--error h2'); }
+  get errorDetailsMessage() { return $('div.govuk-form-group--error'); }
+  get errorDetailsNavLink() { return $('div.govuk-form-group--error a'); }
+
+  get continueButton() { return $('ccd-case-event-completion button'); }
+  get cancelButton() { return $('ccd-case-event-completion a.govuk-button'); }
+
+  async isPageDisplayed() {
+    const present = await isPresent(this.validationPages);
+    if (present) {
+      return await this.validationPages.isVisible();
     }
-    return isPresent;
+    return present;
   }
 }
 

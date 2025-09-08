@@ -1,4 +1,3 @@
-const { defineSupportCode } = require('cucumber');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
@@ -11,12 +10,12 @@ Then('I see task event validation error page', async function (datatable) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await taskForEventCompletionValidationPage.isPageDisplayed()).to.be.true;
 
-    const summaryHeader = await taskForEventCompletionValidationPage.summaryHeading.getText();
-    const summaryMessage = await taskForEventCompletionValidationPage.summaryBody.getText();
+    const summaryHeader = await taskForEventCompletionValidationPage.summaryHeading.textContent();
+    const summaryMessage = await taskForEventCompletionValidationPage.summaryBody.textContent();
 
-    const detailsHeader = await taskForEventCompletionValidationPage.errorDetailsHeader.getText();
-    const detailMessage = await taskForEventCompletionValidationPage.errorDetailsMessage.getText();
-    const messageLink = await taskForEventCompletionValidationPage.errorDetailsNavLink.getText();
+    const detailsHeader = await taskForEventCompletionValidationPage.errorDetailsHeader.textContent();
+    const detailMessage = await taskForEventCompletionValidationPage.errorDetailsMessage.textContent();
+    const messageLink = await taskForEventCompletionValidationPage.errorDetailsNavLink.textContent();
 
     if (rowshash['Summary header']) {
       expect(summaryHeader).to.include(rowshash['Summary header']);

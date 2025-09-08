@@ -1,23 +1,30 @@
 
+const { $, elementByXpath, elementsByXpath, getText, selectOption, getXUITestPage } = require('../../../../../helpers/globals');
 const reportLogger = require('../../../../../codeceptCommon/reportLogger');
 const partyCaseFlags = require('./partyCaseFlagsTable');
 
 class ParticipantAttendancePage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-attendance');
+  get pageContainer() { return $('exui-hearing-attendance'); }
+  get partiesContainer() { return $('div[formGroupName="parties"]'); }
 
-    this.paperhearingYes = $('#paperHearingYes');
-    this.paperhearingNo = $('#paperHearingNo');
+  get paperHearingYes() { return $('#paperHearingYes'); }
+  get paperHearingNo() { return $('#paperHearingNo'); }
+  get methodOfAttendance() { return $('#checkbox-addition-facility'); }
+  get attendanceNumber() { return $('#attendance-number'); }
 
-    this.methodOfAttendanceForHearing = $('#checkbox-addition-facility');
-    this.partiesContainer = $('div[formGroupName = "parties"]');
-    this.attendanceNumber = $('#attendance-number');
+  get fieldMapping() {
+    return {
+      'Will this be a paper hearing?':
+        elementByXpath('//h3[contains(text(), "Will this be a paper hearing?")]'),
 
-    this.fieldMapping = {
-      'Will this be a paper hearing?': element(by.xpath('//h3[contains(text(),\'Will this be a paper hearing?\')]')),
-      'What will be the methods of attendance for this hearing?': element(by.xpath('//h1[contains(text(),\'What will be the methods of attendance for this hearing?\')]')),
-      'How will each participant attend the hearing?': element(by.xpath('//label[contains(text(),\'How will each participant attend the hearing?\')]')),
-      'How many people will attend the hearing in person?': element(by.xpath('//label[contains(text(),\'How many people will attend the hearing in person?\')]'))
+      'What will be the methods of attendance for this hearing?':
+        elementByXpath('//h1[contains(text(), "What will be the methods of attendance for this hearing?")]'),
+
+      'How will each participant attend the hearing?':
+        elementByXpath('//label[contains(text(), "How will each participant attend the hearing?")]'),
+
+      'How many people will attend the hearing in person?':
+        elementByXpath('//label[contains(text(), "How many people will attend the hearing in person?")]')
     };
   }
 
@@ -26,9 +33,9 @@ class ParticipantAttendancePage {
     switch (field) {
       case 'Will this be a paper hearing?':
         if (value.toLowerCase().includes('yes')) {
-          await this.paperhearingYes.click();
+          await this.paperHearingYes.first().check();
         } else {
-          await this.paperhearingNo.click();
+          await this.paperHearingNo.first().check();
         }
         break;
       case 'What will be the methods of attendance for this hearing?':
@@ -50,54 +57,54 @@ class ParticipantAttendancePage {
     }
   }
 
-  async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+  async isVisible() {
+    return await this.pageContainer.isVisible();
   }
 
   async validateFieldsDisplayed() {
-    expect(await this.paperhearingYes.isDisplayed(), 'Radio button not displayed').to.be.true;
-    expect(await this.paperhearingNo.isDisplayed(), 'Radio button not displayed').to.be.true;
-    expect(await this.methodOfAttendanceForHearing.isDisplayed(), 'not displayed: What will be the methods of attendance for this hearing?').to.be.true;
-    expect(await this.partiesContainer.isDisplayed(), 'Parties list not displayed').to.be.true;
-    expect(await this.attendanceNumber.isDisplayed(), 'attendance count not displayed').to.be.true;
+    expect(await this.paperHearingYes.isVisible(), 'Radio button not displayed').to.be.true;
+    expect(await this.paperHearingNo.isVisible(), 'Radio button not displayed').to.be.true;
+    expect(await this.methodOfAttendanceForHearing.isVisible(), 'not displayed: What will be the methods of attendance for this hearing?').to.be.true;
+    expect(await this.partiesContainer.isVisible(), 'Parties list not displayed').to.be.true;
+    expect(await this.attendanceNumber.isVisible(), 'attendance count not displayed').to.be.true;
   }
 
   async selectIsPaperhearing(booleanValue) {
     if (booleanValue) {
-      await this.paperhearingYes.click();
+      await this.paperHearingYes.first().check();
     } else {
-      await this.paperhearingNo.click();
+      await this.paperHearingNo.first().check();
     }
   }
 
   async slectMethodOfHearing(method) {
-    const ele = element(by.xpath(`//div[@id='checkbox-addition-facility']//label[contains(text(),'${method}')]/../input`));
+    const ele = elementByXpath(`//div[@id='checkbox-addition-facility']//label[contains(text(),'${method}')]/../input`);
     await ele.click();
   }
 
   async selectParticipantHearingMethod(partyname, method) {
-    const ele = element(by.xpath(`//div[contains(@class,'party-row')]//label[contains(text(),'${partyname}')]/../select`));
-    await ele.select(method);
+    const ele = elementByXpath(`//div[contains(@class,'party-row')]//label[contains(text(),'${partyname}')]/../select`);
+    await selectOption(ele, method);
   }
 
-  async getPartiesDisplayed(){
-    const elements = element.all(by.xpath('//div[contains(@class,\'party-row\')]//label'));
+  async getPartiesDisplayed() {
+    const elements = elementsByXpath('//div[contains(@class,\'party-row\')]//label');
     const parties = [];
     const count = await elements.count();
-    for (let i = 0; i< count; i++){
-      const e = await elements.get(i);
-      parties.push(await e.getText());
+    for (let i = 0; i < count; i++) {
+      const e = await elements.nth(i);
+      parties.push(await getText(e));
     }
     return parties;
   }
 
-  async isPartyWithNameDisplayed(partyname){
-    const ele = element(by.xpath(`//div[contains(@class,'party-row')]//label[contains(text(),'${partyname}')]`));
-    await ele.isDisplayed();
+  async isPartyWithNameDisplayed(partyname) {
+    const ele = elementByXpath(`//div[contains(@class,'party-row')]//label[contains(text(),'${partyname}')]`);
+    await ele.isVisible();
   }
 
   async enterAttendanceNumber(count) {
-    await this.attendanceNumber.sendKeys(count);
+    await this.attendanceNumber.fill(count);
   }
 
   async getPartiesWithCaseFlagsDisplayed() {

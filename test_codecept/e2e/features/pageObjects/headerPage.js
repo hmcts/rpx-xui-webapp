@@ -1,357 +1,268 @@
 'use strict';
 
+const { $, $$, elementByXpath, isPresent } = require('../../../helpers/globals');
 const browserUtil = require('../../../ngIntegration/util/browserUtil');
-const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
-
 const BrowserWaits = require('../../support/customWaits');
-const BrowserUtil = require('.././../../ngIntegration/util/browserUtil');
 const CaseListPage = require('./CaseListPage');
 const CreateCaseStartPage = require('./createCaseStartPage');
-const SearchCasePage = require('../pageObjects/searchPage');
 const taskListPage = require('../pageObjects/workAllocation/taskListPage');
 const taskManagerPage = require('./workAllocation/taskManagerPage');
 const myWorkPage = require('../pageObjects/workAllocation/myWorkPage');
 const allWorkPage = require('../../features/pageObjects/workAllocation/allWorkPage');
 const globalSearchPage = require('./globalSearchCases');
-const CucumberReporter = require('../../../codeceptCommon/reportLogger');
-
 const staffSearchPage = require('./staffUI/staffUISearchPage');
+const SearchCasePage = require('../pageObjects/searchPage');
 
 const createCaseStartPage = new CreateCaseStartPage();
 const caseListPage = new CaseListPage();
 const searchCasePage = new SearchCasePage();
 
-function HeaderSearch(){
-  this.container = element(by.xpath('//div[@class =\'hmcts-primary-navigation__search\']//exui-case-reference-search-box'));
-  this.label = element(by.xpath('//div[@class =\'hmcts-primary-navigation__search\']//exui-case-reference-search-box//span'));
-  this.input = element(by.xpath('//div[@class =\'hmcts-primary-navigation__search\']//exui-case-reference-search-box//input[@id=\'caseReference\']'));
-  this.button = element(by.xpath('//div[@class =\'hmcts-primary-navigation__search\']//exui-case-reference-search-box//button'));
+class HeaderSearch {
+  get container() {
+    return elementByXpath("//div[@class='hmcts-primary-navigation__search']//exui-case-reference-search-box");
+  }
+  get label() {
+    return this.container.locator('span');
+  }
+  get input() {
+    return this.container.locator("input#caseReference");
+  }
+  get button() {
+    return this.container.locator("button");
+  }
 
-  this.waitForContainer = async function() {
+  async waitForContainer() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.container);
     });
-  };
+  }
 
-  this.searchInput = async function(input) {
+  async searchInput(input) {
     await this.waitForContainer();
-    await this.input.clear();
-    await this.input.sendKeys(input);
-  };
+    await this.input.fill('');
+    await this.input.type(input);
+  }
 
-  this.clickFind = async function() {
+  async clickFind() {
     await this.waitForContainer();
-
     await this.button.click();
-  };
+  }
 }
 
-function HeaderPage() {
-  this.jcmLogoImg = element(by.xpath('//div[contains(@class,\'hmcts-header__container\')]//a//img[@src=\'/assets/images/govuk-crest-jcm.png\']'));
-  this.myHMCTSHeader = element(by.xpath('//div[contains(@class,\'hmcts-header__container\')]//a//span[contains(text(),\'MyHMCTS\')]'));
-  this.headerLink = $('div.hmcts-header__container a.hmcts-header__link');
-  this.globalHeaderContainerWithStyle = element(by.xpath('//exui-hmcts-global-header/..'));
+class HeaderPage {
+  constructor() {
+    this.headerCaseRefSearch = new HeaderSearch();
+  }
 
-  this.caseReferenceSearchBox = $('.hmcts-primary-navigation__search exui-case-reference-search-box');
+  getJcmLogoImg() {
+    return elementByXpath("//img[@src='/assets/images/govuk-crest-jcm.png']");
+  }
 
-  this.primaryNavBar = element(by.css('.hmcts-primary-navigation__container'));
-  this.primaryNavBar_NavItems = element(by.css('.hmcts-primary-navigation__nav ul'));
+  getMyHMCTSHeader() {
+    return elementByXpath("//span[contains(text(),'MyHMCTS')]");
+  }
 
-  this.headerMenuItems = $$('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
-  this.primaryNavBar_rightSideItems = element(by.css('.hmcts-primary-navigation__search ul'));
+  getHeaderLink() {
+    return $('div.hmcts-header__container a.hmcts-header__link');
+  }
 
-  this.manageCases = element(by.css('.hmcts-header .hmcts-header__link'));
+  getGlobalHeaderContainerWithStyle() {
+    return elementByXpath('//exui-hmcts-global-header/..');
+  }
 
-  this.headerAppLogoLink = $('.hmcts-header__logo a,.hmcts-header__container a.hmcts-header__link');
-  this.headerBanner = $('exui-header header > div');
+  getHeaderAppLogoLink() {
+    return $('.hmcts-header__logo a, .hmcts-header__container a.hmcts-header__link');
+  }
 
-  this.headerCaseRefSearch = new HeaderSearch();
+  getHeaderBanner() {
+    return $('exui-header header > div');
+  }
 
-  this.navigateToRoute = async function(route){
-    const currentUrl = await browser.getCurrentUrl();
-    const protocol = currentUrl.split(':')[0];
-    const domain = currentUrl.replace(`${protocol}://`, '').split('/')[0];
+  getCaseReferenceSearchBox() {
+    return $('.hmcts-primary-navigation__search exui-case-reference-search-box');
+  }
 
-    CucumberReporter.AddMessage(`appProtocol: ${protocol}, domain ${domain}`);
-    const baseUrl = `${protocol}://${domain}`;
+  getPrimaryNavBar() {
+    return $('.hmcts-primary-navigation__container');
+  }
 
-    await browser.get(baseUrl + route);
-    await browserUtil.waitForLD();
-    await this.waitForPrimaryNavDisplay();
+  getPrimaryNavBarNavItems() {
+    return $('.hmcts-primary-navigation__nav ul');
+  }
+
+  getHeaderMenuItems() {
+    return $$('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
+  }
+
+  getPrimaryNavBarRightSideItems() {
+    return $('.hmcts-primary-navigation__search ul');
+  }
+
+  getManageCases() {
+    return $('.hmcts-header .hmcts-header__link');
+  }
+
+  getFindCase() {
+    return elementByXpath("//a[contains(text(),'Find case')]");
+  }
+
+  getSignOut() {
+    return elementByXpath("//a[contains(text(),'Sign out')]");
+  }
+
+  getContentHeader() {
+    return $('#content h1');
+  }
+
+  caseList() {
+    return elementByXpath("//a[contains(text(),'Case list')]");
+  }
+  createCase() {
+    return elementByXpath("//li/a[contains(text(),'Create case')]");
+  }
+  taskList() {
+    return elementByXpath("//li/a[contains(text(),'Task list')]");
+  }
+  taskManager() {
+    return elementByXpath("//li/a[contains(text(),'Task manager')]");
+  }
+
+  async getMenuItemsCount() {
+    return await this.getHeaderMenuItems().count();
   };
 
-  this.getMenuItemsCount = async function(){
-    return await this.headerMenuItems.count();
-  };
-
-  this.refreshBrowser = async function(){
-    await browser.get(await browser.getCurrentUrl());
-    await browserUtil.waitForLD();
-    await this.waitForPrimaryNavDisplay();
-  };
-
-  this.amOnPage = async function(){
-    return await this.headerAppLogoLink.isPresent();
-  };
-
-  this.validateHeaderDisplayedForUserType = async function(userType){
-    if (userType.toLowerCase() === 'caseworker') {
-      expect(await this.jcmLogoImg.isPresent(), 'JCM logo displayed').to.be.false;
-      expect(await this.myHMCTSHeader.isPresent(), 'MyHMCTS is displayed').to.be.false;
-      expect(await this.headerLink.getText(), 'Header link mismatch').to.includes('Manage Cases');
-      // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
-    } else if (userType.toLowerCase() === 'judicial') {
-      await BrowserWaits.waitForElement(this.jcmLogoImg);
-      expect(await this.jcmLogoImg.isPresent(), 'JCM logo not displayed').to.be.true;
-      expect(await this.myHMCTSHeader.isPresent(), 'MyHMCTS is displayed').to.be.false;
-      expect(await this.headerLink.getText(), 'Header link mismatch').to.includes('Judicial Case Manager');
-      // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(141, 15, 14);");
-    } else if (userType.toLowerCase() === 'solicitor') {
-      await BrowserWaits.waitForElement(this.myHMCTSHeader);
-      expect(await this.jcmLogoImg.isPresent(), 'JCM displayed').to.be.false;
-      expect(await this.myHMCTSHeader.isPresent(), 'MyHMCTS displayed').to.be.true;
-      expect(await this.headerLink.getText(), 'Header link mismatch').to.includes('Manage Cases');
-      // expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes("background-color: rgb(32, 32, 32);");
-    } else {
-      throw new Error(`User type ${userType} is not recognized`);
-    }
-  };
-
-  this.clickPrimaryNavigationWithLabel = async function(label){
-    const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
-    await BrowserWaits.retryWithActionCallback(async () => {
-      if (userType.toLowerCase() === 'caseworker') {
-        expect(await this.jcmLogoImg.isPresent(), 'JCM logo displayed').to.be.false;
-        expect(await this.myHMCTSHeader.isPresent(), 'MyHMCTS is displayed').to.be.false;
-        expect(await this.headerLink.getText(), 'Header link mismatch').to.includes('Manage Cases');
-        expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes('background-color: rgb(32, 32, 32);');
-      } else if (userType.toLowerCase() === 'judicial') {
-        await BrowserWaits.waitForElement(this.jcmLogoImg);
-        expect(await this.jcmLogoImg.isPresent(), 'JCM logo not displayed').to.be.true;
-        expect(await this.myHMCTSHeader.isPresent(), 'MyHMCTS is displayed').to.be.false;
-        expect(await this.headerLink.getText(), 'Header link mismatch').to.includes('Judicial Case Manager');
-        expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes('background-color: rgb(141, 15, 14);');
-      } else if (userType.toLowerCase() === 'solicitor') {
-        await BrowserWaits.waitForElement(this.myHMCTSHeader);
-        expect(await this.jcmLogoImg.isPresent(), 'JCM displayed').to.be.false;
-        expect(await this.myHMCTSHeader.isPresent(), 'MyHMCTS displayed').to.be.true;
-        expect(await this.headerLink.getText(), 'Header link mismatch').to.includes('Manage Cases');
-        expect(await this.globalHeaderContainerWithStyle.getAttribute('style')).to.includes('background-color: rgb(32, 32, 32);');
-      } else {
-        throw new Error(`User type ${userType} is not recognized`);
-      }
-    });
-  };
-
-  this.clickPrimaryNavigationWithLabel = async function(label){
-    const ele = element(by.xpath(`//exui-hmcts-global-header//a[contains(@class,'hmcts-primary-navigation__link') and contains(text(),'${label}')]`));
-    await BrowserWaits.waitForElement(ele);
-    await ele.click();
-  };
-
-  this.clickAppLogoLink = async function(){
-    await this.headerAppLogoLink.click();
-  };
-
-  this.caseList = function(){
-    return element(by.xpath('//a[contains(text(),\'Case list\')]'));
-  };
-  this.createCase = function() {
-    return element(by.xpath('//li/a[contains(text(),\'Create case\')]'));
-  };
-
-  this.clickRefunds = async function () {
-    const refundsLink = element(by.xpath('//li/a[contains(text(),\'Refunds\')]'));
-    await BrowserWaits.waitForElementClickable(refundsLink);
-    await refundsLink.click();
-    const searchPageHeader = element(by.xpath('//*[@id = \'content\']//h1[text() = \'Refund list\']'));
-    await BrowserWaits.waitForElement(searchPageHeader);
-  };
-
-  this.taskList = function(){
-    return element(by.xpath('//li/a[contains(text(),\'Task list\')]'));
-  };
-  this.taskManager = function() {
-    return element(by.xpath('//li/a[contains(text(),\'Task manager\')]'));
-  };
-
-  this.findCase = element(by.xpath('//a[contains(text(),\'Find case\')]'));
-  this.signOut = element(by.xpath('//a[contains(text(),\'Sign out\')]'));
-
-  this.contentHeader = $('#content h1');
-
-  this.clickManageCases = async function () {
-    await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.manageCases);
-      await this.manageCases.click();
-      await browserUtil.waitForLD();
-    });
-    //await BrowserWaits.waitForElement($('exui-case-list'));
-  };
-
-  this.clickCaseList = async function () {
+  async clickCaseList() {
     await BrowserWaits.waitForSpinnerToDissappear();
     await BrowserWaits.waitForElement(this.caseList());
     await BrowserWaits.waitForElementClickable(this.caseList());
     await this.caseList().click();
     await browserUtil.waitForLD();
     expect(await caseListPage.amOnPage(), 'Case list page not loaded').to.be.true;
-  };
+  }
 
-  this.clickCreateCase = async function () {
+  async clickCreateCase() {
     await BrowserWaits.waitForSpinnerToDissappear();
-
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.createCase());
       await BrowserWaits.waitForElementClickable(this.createCase());
       await this.createCase().click();
       await browserUtil.waitForLD();
       expect(await createCaseStartPage.amOnPage()).to.be.true;
     });
-  };
+  }
 
-  this.clickTaskList = async function () {
+  async clickTaskList() {
     await BrowserWaits.waitForSpinnerToDissappear();
-
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskList());
       await BrowserWaits.waitForElementClickable(this.taskList());
       await this.taskList().click();
       await browserUtil.waitForLD();
     });
-  };
+  }
 
-  this.clickTaskManager = async function () {
+  async clickTaskManager() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.taskManager());
       await BrowserWaits.waitForElementClickable(this.taskManager());
       await this.taskManager().click();
       await browserUtil.waitForLD();
     });
-  };
+  }
 
-  this.clickFindCase = async function () {
+  async clickFindCase() {
     await BrowserWaits.retryWithActionCallback(async () => {
-      await BrowserWaits.waitForElement(this.findCase);
-      await this.findCase.click();
-
-      const searchPageHeader = element(by.xpath('//*[@id = \'content\']//h1[contains(text() , \'Search\')]'));
+      await BrowserWaits.waitForElement(this.getFindCase());
+      await this.getFindCase().click();
+      const searchPageHeader = elementByXpath('//*[@id = \'content\']//h1[contains(text() , \'Search\')]');
       await BrowserWaits.waitForElement(searchPageHeader);
     });
-  };
+  }
 
-  this.clickSignOut = async function () {
-    await BrowserWaits.waitForElement(this.signOut);
-    this.signOut.click();
-    // browser.sleep(SHORT_DELAY);
-  };
+  async clickSignOut() {
+    await BrowserWaits.waitForElement(this.getSignOut());
+    await this.getSignOut().click();
+  }
 
-  this.isTabPresent = async function (tabDisplatText) {
-    return await this.getTabElementWithText(tabDisplatText).isPresent();
-  };
+  async isTabPresent(tabText) {
+    const tab = this.getPrimaryNavBar().locator(`xpath=//a[contains(text(),"${tabText}")]`);
+    return await tab.isVisible();
+  }
 
-  this.isTabPresentInMainNav = async function (tabText) {
-    return await this.primaryNavBar_NavItems.element(by.xpath('//a[contains(text(),"' + tabText + '")]')).isPresent();
-  };
+  async isTabPresentInMainNav(tabText) {
+    return await isPresent(this.getPrimaryNavBarNavItems().locator('//a[contains(text(),"' + tabText + '")]'));
+  }
 
-  this.isTabPresentInRightNav = async function (tabText) {
-    return await this.primaryNavBar_rightSideItems.element(by.xpath('//a[contains(text(),"' + tabText + '")]')).isPresent();
-  };
+  async isTabPresentInRightNav(tabText) {
+    return await isPresent(this.getPrimaryNavBarRightSideItems().locator('//a[contains(text(),"' + tabText + '")]'));
+  }
 
-  this.waitForPrimaryNavDisplay = async function () {
+  async waitForPrimaryNavDisplay() {
     await BrowserWaits.waitForElement(this.primaryNavBar);
-  };
+  }
 
-  this.getTabElementWithText = function (tabText) {
-    return this.primaryNavBar.element(by.xpath('//a[contains(text(),"' + tabText + '")]'));
-  };
+  getTabElementWithText(tabText) {
+    return this.getPrimaryNavBar().locator(`xpath=//a[contains(text(),"${tabText}")]`);
+  }
 
-  this.clickTabWithText = async function (tabText) {
+  async clickTabWithText(tabText) {
     await BrowserWaits.retryWithActionCallback(async () => {
-      const primaryTabs = this.getPrimaryTabsDisplayed();
-      const tabEle = this.getTabElementWithText(tabText).click();
-      await BrowserWaits.waitForElement(tabEle);
-      if (tabEle) {
-        await tabEle.click();
-      } else {
-        await this.refreshBrowser();
-        throw new Error(`Tab ${tabText} is not present in navigation tabs headers ${primaryTabs} `);
-      }
+      const tab = this.getTabElementWithText(tabText);
+      await BrowserWaits.waitForElement(tab);
+      await tab.click();
     });
-  };
+  }
 
-  this.getPrimaryTabsDisplayed = async function () {
-    return await BrowserUtil.stepWithRetry(async () => {
+  async getPrimaryTabsDisplayed() {
+    return await browserUtil.stepWithRetry(async () => {
       const tabsText = [];
-      const tablinks = this.primaryNavBar.$$('a');
-      const tabsCount = await tablinks.count();
-      for (let i = 0; i < tabsCount; i++) {
-        const tabLink = await tablinks.get(i);
-        tabsText.push(await tabLink.getText());
+      const tabs = this.getPrimaryNavBar().locator('a');
+      const count = await tabs.count();
+      for (let i = 0; i < count; i++) {
+        tabsText.push(await tabs.nth(i).textContent());
       }
       return tabsText;
     });
-  };
+  }
 
-  this.getPrimaryRightSideItems = async function () {
-    return await BrowserUtil.stepWithRetry(async () => {
-      const tabsText = [];
-      const tablinks = this.primaryNavBar_rightSideItems$$('a');
-      const tabsCount = await tablinks.count();
-      for (let i = 0; i < tabsCount; i++) {
-        const tabLink = await tablinks.get(i);
-        tabsText.push(await tabLink.getText());
-      }
-      return tabsText;
-    });
-  };
+  async waitForPrimaryNavDisplay() {
+    const nav = this.getPrimaryNavBar();
+    await BrowserWaits.waitForElement(nav);
+  }
 
-  this.isPrimaryTabPageDisplayed = async function(primaryTab){
-    let retValue = null;
-    switch (primaryTab){
-      case 'Case list':
-        retValue = await caseListPage.amOnPage();
-        break;
+  async isPrimaryTabPageDisplayed(primaryTab) {
+    switch (primaryTab) {
+      case 'Case list': return await caseListPage.amOnPage();
       case 'Create case':
-        const isOnpage = await createCaseStartPage.amOnPage();
-        retValue = await BrowserWaits.retryWithActionCallback(async () => {
-          const juridictiosnLoaded = await createCaseStartPage.getLoadedJurisdictionsCount();
-          const val = juridictiosnLoaded > 1;
-          if (!val){
+        await BrowserWaits.retryWithActionCallback(async () => {
+          const loaded = await createCaseStartPage.getLoadedJurisdictionsCount() > 1;
+          if (!loaded) {
             await BrowserWaits.waitForSeconds(10);
-            throw Error('Waiting for jusdictions to load');
+            throw Error('Waiting for jurisdictions to load');
           }
-          return val;
         });
-
-        break;
-      case 'Find case':
-        retValue = await searchCasePage.amOnPage();
-        break;
-      case 'Task list':
-        retValue = await taskListPage.amOnPage();
-        break;
-      case 'Task manager':
-        retValue = await taskManagerPage.amOnPage();
-        break;
-      case 'My work':
-        retValue = await myWorkPage.amOnPage();
-        break;
-      case 'Search':
-        retValue = await globalSearchPage.amOnPage();
-        break;
-      case 'All work':
-        retValue = await allWorkPage.amOnPage();
-        break;
-      case 'Staff':
-        retValue = await staffSearchPage.amOnPage();
-        break;
-      default:
-        throw new Error(`Tab "${primaryTab}" is not recognised or not implemeted in test to handle.`);
+        return true;
+      case 'Find case': return await searchCasePage.amOnPage();
+      case 'Task list': return await taskListPage.amOnPage();
+      case 'Task manager': return await taskManagerPage.amOnPage();
+      case 'My work': return await myWorkPage.amOnPage();
+      case 'Search': return await globalSearchPage.amOnPage();
+      case 'All work': return await allWorkPage.amOnPage();
+      case 'Staff': return await staffSearchPage.amOnPage();
+      default: throw new Error(`Tab "${primaryTab}" is not recognised.`);
     }
-    return retValue;
-  };
+  }
+
+  async clickPrimaryNavigationWithLabel(label) {
+    const tab = this.getTabElementWithText(label);
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await BrowserWaits.waitForElement(tab);
+      await tab.click();
+    });
+  }
+  async clickAppLogoLink () {
+    await this.getHeaderAppLogoLink().click();
+  }
 }
 
-module.exports = new HeaderPage();
+module.exports = () => new HeaderPage(); 

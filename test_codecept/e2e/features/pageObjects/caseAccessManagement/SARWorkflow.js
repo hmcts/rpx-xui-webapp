@@ -1,18 +1,11 @@
+const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 
 const SpecificReviewPage = require('./reviewSARPage');
 const SpecificAccessDurationSelectionPage = require('./durationSelectionPage');
 const requestMoreInformationPage = require('./requestMoreInformationPage');
 
-const ActionConfirmationPage = require('./SARActionConfirmationPage');
 class SpecificAccessRequestWorkflow{
   constructor(){
-    this.continueBtn = element(by.xpath('//button[contains(text(),\'Continue\')]'));
-    this.submitBtn = element(by.xpath('//button[contains(text(),\'Submit\')]'));
-
-    this.errorBanner = $('.govuk-error-summary');
-
-    this.SARSubmitSuccessPage = $('');
-
     this.pages = {
       'Review specific access request': new SpecificReviewPage(),
       'How long do you want to give access to this case for?': new SpecificAccessDurationSelectionPage(),
@@ -20,12 +13,28 @@ class SpecificAccessRequestWorkflow{
     };
   }
 
+  get continueBtn() {
+    return elementByXpath("//button[contains(text(),'Continue')]");
+  }
+
+  get submitBtn() {
+    return elementByXpath("//button[contains(text(),'Submit')]");
+  }
+
+  get errorBanner() {
+    return $('.govuk-error-summary');
+  }
+
+  get SARSubmitSuccessPage() {
+    return $('');
+  }
+
   async isErrorMessageDisplayed(){
-    return this.errorBanner.isDisplayed();
+    return this.errorBanner.isVisible();
   }
 
   async getErrorMessageDisplayed(){
-    return this.errorBanner.getText();
+    return getText(this.errorBanner);
   }
 }
 

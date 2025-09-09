@@ -20,7 +20,6 @@ import {
   SERVICES_IDAM_ISS_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  SERVICES_IDAM_SERVICE_OVERRIDE,
   SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
@@ -105,8 +104,7 @@ export const getXuiNodeMiddleware = () => {
     sessionKey: 'xui-webapp',
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
-    useRoutes: true,
-    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
+    useRoutes: true
   };
 
   const baseStoreOptions = {

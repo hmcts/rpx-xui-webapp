@@ -82,7 +82,6 @@
       "idamLoginUrl": "https://hmcts-access.service.gov.uk",
       "indexUrl": "/",
       "oauthCallbackUrl": "oauth2/callback",
-      "serviceOverride": true,
       "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts"
     },
     "location_api": "http://rd-location-ref-api-prod.service.core-compute-prod.internal",

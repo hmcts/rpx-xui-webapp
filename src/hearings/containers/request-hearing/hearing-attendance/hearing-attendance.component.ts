@@ -141,7 +141,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             individualDetails: partyDetailsModel.individualDetails && {
               ...partyDetailsModel.individualDetails,
               preferredHearingChannel: partyInHMC.individualDetails?.preferredHearingChannel
-              // preferredHearingChannelAmendmentStatus: HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE
             },
             organisationDetails: partyDetailsModel.organisationDetails,
             unavailabilityDOW: partyDetailsModel.unavailabilityDOW,
@@ -285,7 +284,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       firstName: [individualDetails.firstName],
       lastName: [individualDetails.lastName],
       preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
-      // preferredHearingChannelAmendmentStatus: [individualDetails.preferredHearingChannelAmendmentStatus],
       interpreterLanguage: [individualDetails.interpreterLanguage],
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],

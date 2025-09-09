@@ -35,7 +35,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   public methodOfAttendanceChanged: boolean;
   public noOfPhysicalAttendeesChanged: boolean;
   public paperHearingChanged: boolean;
-  public partyAmendmentStatusById: Record<string, AmendmentLabelStatus> = {};
+  public partyNameAmendmentStatusById: Record<string, AmendmentLabelStatus> = {};
+  public partyChannelAmendmentStatusById: Record<string, AmendmentLabelStatus> = {};
 
   constructor(private readonly validatorsUtils: ValidatorsUtils,
     private readonly fb: FormBuilder,
@@ -111,7 +112,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           unavailabilityDOW: partyDetail.unavailabilityDOW,
           unavailabilityRanges: partyDetail.unavailabilityRanges
         } as PartyDetailsModel) as FormGroup);
-        this.setPartyStatus(partyDetail.partyID, AmendmentLabelStatus.NONE);
+        this.setPartyNameStatus(partyDetail.partyID, AmendmentLabelStatus.NONE);
       });
   }
 
@@ -128,7 +129,7 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
           partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`
         };
         (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues(partyDetailsModel) as FormGroup);
-        this.setPartyStatus(partyDetailsModel.partyID, AmendmentLabelStatus.ACTION_NEEDED);
+        this.setPartyNameStatus(partyDetailsModel.partyID, AmendmentLabelStatus.ACTION_NEEDED);
       } else {
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
         if (partyInHMC) {
@@ -139,22 +140,26 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
             partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`,
             individualDetails: partyDetailsModel.individualDetails && {
               ...partyDetailsModel.individualDetails,
-              preferredHearingChannel: partyInHMC.individualDetails?.preferredHearingChannel,
-              preferredHearingChannelAmendmentStatus: HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE
+              preferredHearingChannel: partyInHMC.individualDetails?.preferredHearingChannel
             },
             organisationDetails: partyDetailsModel.organisationDetails,
             unavailabilityDOW: partyDetailsModel.unavailabilityDOW,
             unavailabilityRanges: partyDetailsModel.unavailabilityRanges
           } as PartyDetailsModel) as FormGroup);
-          this.setPartyStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
+          this.setPartyNameStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
+          this.setPartyChannelStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
         }
       }
     });
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
   }
 
-  private setPartyStatus(partyId: string, status: AmendmentLabelStatus): void {
-    this.partyAmendmentStatusById[partyId] = status ?? AmendmentLabelStatus.NONE;
+  private setPartyNameStatus(partyId: string, status: AmendmentLabelStatus): void {
+    this.partyNameAmendmentStatusById[partyId] = status ?? AmendmentLabelStatus.NONE;
+  }
+
+  private setPartyChannelStatus(partyId: string, status: AmendmentLabelStatus): void {
+    this.partyChannelAmendmentStatusById[partyId] = status ?? AmendmentLabelStatus.NONE;
   }
 
   public executeAction(action: ACTION): void {
@@ -279,7 +284,6 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
       firstName: [individualDetails.firstName],
       lastName: [individualDetails.lastName],
       preferredHearingChannel: [individualDetails.preferredHearingChannel, Validators.required],
-      preferredHearingChannelAmendmentStatus: [individualDetails.preferredHearingChannelAmendmentStatus],
       interpreterLanguage: [individualDetails.interpreterLanguage],
       reasonableAdjustments: [individualDetails.reasonableAdjustments],
       relatedParties: [individualDetails.relatedParties],

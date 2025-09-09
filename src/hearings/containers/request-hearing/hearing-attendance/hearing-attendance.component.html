@@ -81,8 +81,8 @@
             <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
               <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel'+i">
                   {{ partyControl.value.partyName }}
-                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && (partyAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'"
-                  [displayLabel]="partyAmendmentStatusById[partyControl.value.partyID]">
+                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && (partyNameAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'"
+                  [displayLabel]="partyNameAmendmentStatusById[partyControl.value.partyID]">
                 </exui-amendment-label>
               </label>
               <ng-container formGroupName="individualDetails">
@@ -90,8 +90,8 @@
                   <option value="" selected>{{ 'Please select' | rpxTranslate }}</option>
                   <option *ngFor="let party of partyChannels" [ngValue]="party.key">{{party.value_en}}</option>
                 </select>
-                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && partyControl.value.individualDetails.preferredHearingChannelAmendmentStatus !== 'NONE'"
-                                      [displayLabel]="partyControl.value.individualDetails.preferredHearingChannelAmendmentStatus">
+                <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && (partyChannelAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'"
+                                      [displayLabel]="partyChannelAmendmentStatusById[partyControl.value.partyID]">
                 </exui-amendment-label>
               </ng-container>
             </div>

@@ -34,51 +34,6 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   return req.session[sessionKey];
 };
 
-/*export const checkCachedJurisdictions = (
-  proxyReq: ClientRequest,
-  req: Request & { session?: Record<string, any> },
-  res: Response
-) => {
-  if (jurisdictions.test(req.url) && req.session) {
-    const params = new URLSearchParams(req.url.split('?')[1]);
-    const access = params.get('access');
-    let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
-    if (access === 'read') {
-      sessionKey = 'readJurisdictions';
-    } else if (access === 'create') {
-      sessionKey = 'createJurisdictions';
-    } else {
-      sessionKey = 'jurisdictions';
-    }
-
-    const cached = req.session[sessionKey];
-    if (cached) {
-      console.log(`cached data ${sessionKey}`, cached);
-      if (typeof cached === 'object') {
-        console.log('h1');
-        return res.json(cached), proxyReq.end();
-      }
-
-      if (isValidJsonArrayString(cached)) {
-        console.log('h2');
-        res.type('application/json');
-        return res.send(cached), proxyReq.end();
-      }
-    }
-  }
-};
-
-function isValidJsonArrayString(s: unknown): boolean {
-  if (typeof s !== 'string') {
-    return false;
-  }
-  try {
-    const v = JSON.parse(s);
-    return Array.isArray(v);
-  } catch {
-    return false;
-  }
-}*/
 export const checkCachedJurisdictions = (
   proxyReq: ClientRequest,
   req: Request & { session?: Record<string, any> },
@@ -97,33 +52,27 @@ export const checkCachedJurisdictions = (
     }
 
     const cached = req.session[sessionKey];
-    // if (cached == null) return next();
 
-    try {
-      // If it’s already an object/array, send it
-      if (typeof cached === 'object') {
-        console.log(`From object cached data for ${sessionKey}:`, cached);
-        res.json(cached);
-        proxyReq.end();
-        return;
+    if (cached && typeof cached === 'object') {
+      console.log(`From object cached data for ${sessionKey}:`, cached);
+      return res.json(cached), proxyReq.end();
+    }
+
+    if (cached && typeof cached === 'string') {
+      console.log(`From string cached data for ${sessionKey}:`, cached);
+      const cleaned = cached.replace(/\p{C}+$/u, '');
+      // If the above line throws a lint or parsing error, use double backslashes:
+      // const cleaned = cached.replace(/[\u0000-\\u001F]+$/g, '');
+      try {
+        const parsed = JSON.parse(cleaned);
+        // self-heal: store parsed so future reads are safe
+        req.session[sessionKey] = parsed;
+        return res.json(parsed), proxyReq.end();
+      } catch {
+        console.warn(`[jurisdictions] Corrupt cached JSON string for ${sessionKey}:`, cleaned);
+        delete req.session[sessionKey];
+        // fall through to proxy
       }
-
-      // If it’s a string, parse -> send via res.json (never res.send for JSON)
-      if (typeof cached === 'string') {
-        const parsed = JSON.parse(cached); // throws on truncated JSON
-        console.log(`From string cached data for ${sessionKey}:`, parsed);
-        res.json(parsed);
-        proxyReq.end();
-        return;
-      }
-
-      // Anything else → treat as corrupt
-      console.warn(`[jurisdictions] Unexpected cached type for ${sessionKey}:`, typeof cached);
-      delete req.session[sessionKey];
-    } catch (e) {
-      // If parse fails, the cache is corrupt/truncated; evict and fall through
-      console.warn(`[jurisdictions] Evicting corrupt cache for ${sessionKey}:`, (e as Error).message);
-      delete req.session[sessionKey];
     }
   }
 };

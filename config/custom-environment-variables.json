@@ -136,7 +136,10 @@
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
-  "serviceRefDataMapping": "SERVICE_REF_DATA_MAPPING",
+  "serviceRefDataMapping": {
+    "__name": "SERVICE_REF_DATA_MAPPING",
+    "__format": "json"
+  },
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"

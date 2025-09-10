@@ -15,7 +15,7 @@
     "oauth2_client_id": "ccd_gateway",
     "postcode_lookup_url": "/api/addresses?postcode=${postcode}",
     "remote_document_management_url": ".*(\/documents)",
-    "documentSecureModeCaseTypeExclusions": "DIVORCE,DIVORCE_BulkAction,DIVORCE_ExceptionRecord,DIVORCE_NOTICE_OF_ACTING,NFD_BulkAction,NFD,NFD_ExceptionRecord,CARE_SUPERVISION_EPO,PRLAPPS,Caveat,GrantOfRepresentation,LegacySearch,PROBATE_ExceptionRecord,StandingSearch,WillLodgement,CriminalInjuriesCompensation,Benefit,SSCS_ExceptionRecord,CareStandards,MentalHeath,PrimaryHealthLists,SpecialEducationalNeeds,DisabilityDiscrimination,Asylum,Bail,ET_EnglandWales,ET_Scotland,ET_Scotland_Multiple,ET_EnglandWales_Multiple",
+    "documentSecureModeCaseTypeExclusions": "DIVORCE,DIVORCE_BulkAction,DIVORCE_ExceptionRecord,DIVORCE_NOTICE_OF_ACTING,CARE_SUPERVISION_EPO,PRLAPPS,Caveat,GrantOfRepresentation,LegacySearch,PROBATE_ExceptionRecord,StandingSearch,WillLodgement,CriminalInjuriesCompensation,Benefit,SSCS_ExceptionRecord,CareStandards,MentalHeath,PrimaryHealthLists,SpecialEducationalNeeds,DisabilityDiscrimination,Asylum,Bail,ET_EnglandWales,ET_Scotland,ET_Scotland_Multiple,ET_EnglandWales_Multiple,MoneyClaimCase,CMC_ExceptionRecord",
     "payments_url": "/payments",
     "pay_bulk_scan_url": "/pay-bulkscan",
     "activity_batch_collection_delay_ms": 1,

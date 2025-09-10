@@ -84,12 +84,12 @@
   <!-- Manage column -->
   <ng-container cdkColumnDef="manage">
     <th class="govuk-table__header" cdk-header-cell *cdkHeaderCellDef>&nbsp;</th>
-    <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell govuk-accordion__section-header">
-      <div *ngIf="showManage[rowData.id]" class="govuk-accordion__section-heading">
+    <td cdk-cell *cdkCellDef="let rowData" class="govuk-table__cell">
+      <div *ngIf="showManage[rowData.id]" class="xui-manage-container">
         <button type="button" [id]="'manage_' + rowData.id" (click)="setSelectedCase(rowData)"
-          class="govuk-accordion__section-button xui-reset" [attr.aria-expanded]="isCaseSelected(rowData)">
-          Manage
-          <span class="govuk-accordion__icon" aria-hidden="true"></span>
+          class="xui-manage-button" [attr.aria-expanded]="isCaseSelected(rowData)">
+          <span class="xui-manage-text">Manage</span>
+          <span class="xui-manage-icon" aria-hidden="true"></span>
         </button>
       </div>
     </td>

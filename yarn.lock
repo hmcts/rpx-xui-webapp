@@ -791,8 +791,8 @@ __metadata:
   linkType: hard
 
 "@azure/identity@npm:^4.2.1":
-  version: 4.12.0
-  resolution: "@azure/identity@npm:4.12.0"
+  version: 4.11.2
+  resolution: "@azure/identity@npm:4.11.2"
   dependencies:
     "@azure/abort-controller": "npm:^2.0.0"
     "@azure/core-auth": "npm:^1.9.0"
@@ -805,7 +805,7 @@ __metadata:
     "@azure/msal-node": "npm:^3.5.0"
     open: "npm:^10.1.0"
     tslib: "npm:^2.2.0"
-  checksum: 10/943ac6a272f263d8696aceaee4c662b9b4ea9435db532b92aa6ff3766f1c3f006a375f97c16bb3725902fee7da6b00b95beaa63cfead40f01cafb8972d2b891c
+  checksum: 10/34d47b2dd3c504caea9f2456b64da29c64241df971c400da43d3cd37cea6479811db75a8b9a635f77b535ceabe37cb5fd7c100bc78ecfd0d9d456cfba15e84ef
   languageName: node
   linkType: hard
 
@@ -856,11 +856,11 @@ __metadata:
   linkType: hard
 
 "@azure/msal-browser@npm:^4.2.0":
-  version: 4.22.1
-  resolution: "@azure/msal-browser@npm:4.22.1"
+  version: 4.21.1
+  resolution: "@azure/msal-browser@npm:4.21.1"
   dependencies:
     "@azure/msal-common": "npm:15.12.0"
-  checksum: 10/3f76f8024648540b8ba07c14f5a2a8a0408014eafaa26c829129544753bfcbfd7bfe22c55535ae3ffe9225ef9dd6fb43fb27ac300e20bc8998a2c46fc278db78
+  checksum: 10/ee2e3e1026db938e0914465bc585158519839f4f68da1d250269b9a4500a6f5c15d243bdb91270e19c36e8516c06be04f538b23b906e92389dad202192a7f9e2
   languageName: node
   linkType: hard
 
@@ -3156,12 +3156,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.39-remove-ld-feature-flags":
-  version: 7.2.39-remove-ld-feature-flags
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.39-remove-ld-feature-flags"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.41":
+  version: 7.2.41
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.41"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/4c5ab9ea5271609e1dc023a82b84f0eb71a6e8df8cea5afae5ed0514c80cdcd20d06eef8510b0d07aa4b5479c6ad2adae1f615f9e0bb0136469e2f2517475910
+  checksum: 10/2f7ada992ae347cd47679cebba3a4c2407f91aedf52e9ee78b3283f4547a5b05a9a427fa38d2f3cfb291bc3087cd6882564f998d0687d648b701d9424fed98a7
   languageName: node
   linkType: hard
 
@@ -20566,7 +20566,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.39-remove-ld-feature-flags"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.41"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.6"
@@ -20686,7 +20686,7 @@ __metadata:
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.1.1"
+    rpx-xui-translation: "npm:1.1.2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -20714,9 +20714,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.1.1":
-  version: 1.1.1
-  resolution: "rpx-xui-translation@npm:1.1.1"
+"rpx-xui-translation@npm:1.1.2":
+  version: 1.1.2
+  resolution: "rpx-xui-translation@npm:1.1.2"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -20724,7 +20724,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/2e1204d293ef408503f774a65161ba84c21e1e8e4e5223cf0ee1a874d49d1185e7f71524cb1239e0effae6dfc0acae0a6132d26759adc1ada8ae1f9cc219a96e
+  checksum: 10/a96aad3ca088de43a5898a8c31a2a48d0ad2fde765dcf4f98c96afe5393446aa25846cc324f7afa9f31844f193641d8a91244400fe8abf86206054718c661b04
   languageName: node
   linkType: hard
 

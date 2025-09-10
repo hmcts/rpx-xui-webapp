@@ -3156,12 +3156,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.38-exui-3323-2":
-  version: 7.2.38-exui-3323-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.38-exui-3323-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.41":
+  version: 7.2.41
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.41"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/e272ca9e7422e7795c8c07410bbb519fdfd1d4a3723910a0d7b08e1e361e330b986e556258ec30be1dff8909eda3e50c6cbb6fd8301e00e1db20c3720acf0b88
+  checksum: 10/2f7ada992ae347cd47679cebba3a4c2407f91aedf52e9ee78b3283f4547a5b05a9a427fa38d2f3cfb291bc3087cd6882564f998d0687d648b701d9424fed98a7
   languageName: node
   linkType: hard
 
@@ -20566,7 +20566,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.38-exui-3323-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.41"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.6"
@@ -20686,7 +20686,7 @@ __metadata:
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.1.1-exui-3323-2"
+    rpx-xui-translation: "npm:1.1.2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -20714,9 +20714,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.1.1-exui-3323-2":
-  version: 1.1.1-exui-3323-2
-  resolution: "rpx-xui-translation@npm:1.1.1-exui-3323-2"
+"rpx-xui-translation@npm:1.1.2":
+  version: 1.1.2
+  resolution: "rpx-xui-translation@npm:1.1.2"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -20724,7 +20724,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/d68413de3e5af67619ef221154a5c0eb64d6d61a03177b8e136a69a823ea084a6a0d2c901bb939051021c4badc0668aaa9f8578654006deefb4ebf2c76703f46
+  checksum: 10/a96aad3ca088de43a5898a8c31a2a48d0ad2fde765dcf4f98c96afe5393446aa25846cc324f7afa9f31844f193641d8a91244400fe8abf86206054718c661b04
   languageName: node
   linkType: hard
 

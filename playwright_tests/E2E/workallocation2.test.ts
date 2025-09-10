@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { signIn, signOut } from "./steps/login-steps";
 import axeTest from "./helpers/accessibilityTestHelper";
+import { registerCorsChecker } from './helpers/corsSmoke';
+
+test.beforeEach(async ({ page }) => {
+  registerCorsChecker(page);
+});
 
 test('All work tabs', async ({ page }) => {
 await signIn(page, "IAC_CaseOfficer_R2", false);

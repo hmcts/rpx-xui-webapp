@@ -3,12 +3,9 @@ import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
-  waServiceConfig: 'wa-service-config',
   waLandingPageRoles: 'wa-landing-page-roles',
-  waAccess: 'wa-access',
   noticeOfChange: 'MC_Notice_of_Change',
   booking: 'mc-booking-active',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
@@ -23,9 +20,7 @@ function featureToAttributeName(key: string): string {
 }
 
 export const featureToAttributeMap = new Map<string, string>([
-  [featureNames.waServiceConfig, featureToAttributeName(featureNames.waServiceConfig)],
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
-  [featureNames.waAccess, featureToAttributeName(featureNames.waAccess)],
   [featureNames.booking, featureToAttributeName(featureNames.booking)],
   [featureNames.secureDocumentStoreEnabled, 'document_management_secure_enabled'], // should refactor this
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],

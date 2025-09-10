@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, UrlTree } from '@angular/router';
-import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
@@ -14,19 +13,35 @@ export class BookingGuard {
   constructor(private readonly router: Router,
               private readonly store: Store<fromActions.State>) {}
 
-  public hasAccess(userDetails: UserDetails): boolean {
-    const { roleAssignmentInfo, userInfo } = userDetails;
-    return userInfo.roleCategory === RoleCategory.JUDICIAL && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
+  public canActivate(): Observable<boolean> {
+    const userDetails$ = this.store.pipe(
+      select(fromActions.getUserDetails)
+    );
+
+    return userDetails$.pipe(
+      // ignore falsy/partial emissions
+      filter((u: any): u is UserDetails => !!u && !!u.userInfo),
+      map((user) => {
+        const roleCategory = user.userInfo.roleCategory;
+        const roles = user.userInfo.roles ?? [];
+
+        const isJudicial =
+          roleCategory === 'JUDICIAL' || roles.includes('caseworker-judge');
+
+        const hasBookable =
+          (user.roleAssignmentInfo ?? []).some((ra: any) => {
+            const b = ra?.bookable;
+            return b === true || (typeof b === 'string' && b.toLowerCase() === 'true');
+          });
+
+        return isJudicial && hasBookable;
+      }),
+      tap((allowed) => {
+        if (!allowed) {
+          this.router.navigate([BookingGuard.defaultUrl]);
+        }
+      }),
+      take(1)
+    );
   }
-
-public canActivate(): Observable<boolean | UrlTree> {
-  return this.store.pipe(
-    select(fromActions.getUserDetails),
-    // wait until userDetails (and userInfo) are present
-    filter((u): u is UserDetails => !!u && !!u.userInfo),
-    take(1),
-    map((u) => this.hasAccess(u) ? true : this.router.createUrlTree([BookingGuard.defaultUrl]))
-  );
-}
-
 }

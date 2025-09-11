@@ -141,18 +141,18 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
     action_group = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]
   }
 
-  data_source_id = azurerm_application_insights.appinsight.id
+  data_source_id = module.application_insights.id
   description    = "Monthly Welsh language usage report"
   enabled        = var.welsh_reporting_enabled
 
-  # Note: This query is configured to execute daily, but it will only produce results on the first day of each month.
-  # This ensures that the alert is triggered and the email is sent out just once per month.
+  # Note: This query is configured to execute daily, but it will only produce results on the 15th day of each month.
+  # This ensures that the alert is triggered and the email is sent out just once per month, regardless of Welsh usage.
   query = <<-QUERY
-    let runQuery = dayofmonth(now()) == 11;
+let isReportDay = dayofmonth(now()) == 16;
     let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
     let endTime = startofmonth(now());
     let FilteredRequests = requests
-    | where runQuery and timestamp between (startTime .. endTime)
+    | where isReportDay and timestamp between (startTime .. endTime)
     | where url has "/api/translation/cy"
     | extend day = startofday(timestamp);
     let UniqueSessionsPerDay = FilteredRequests
@@ -163,24 +163,27 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
     | where isempty(session_Id)
     | summarize HasMissingSessions = count() by day
     | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-    UniqueSessionsPerDay
+    let WelshUsageData = UniqueSessionsPerDay
     | join kind=fullouter HasNoSession on day
     | extend
         SessionCount = coalesce(SessionCount, 0),
         NoSessionAddition = coalesce(NoSessionAddition, 0)
     | extend TotalSessions = SessionCount + NoSessionAddition
     | project day, TotalSessions
-    | order by day asc
+    | order by day asc;
+    union WelshUsageData, (print day = startofmonth(now()), TotalSessions = 0, reportGenerated = "No Welsh usage in previous month")
+    | where isReportDay
+    | project day, TotalSessions
     | render columnchart
   QUERY
 
   severity    = 3
-  frequency   = 1440
-  time_window = 1440
+  frequency   = 360
+  time_window = 2880
 
   trigger {
     operator  = "GreaterThan"
-    threshold = 1
+    threshold = 0
   }
 
   tags = var.common_tags

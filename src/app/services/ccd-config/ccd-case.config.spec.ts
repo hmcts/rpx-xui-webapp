@@ -193,11 +193,6 @@ describe('AppConfiguration', () => {
     expect(service.getDocumentSecureMode()).toBe(false);
   }));
 
-  it('should have getAccessManagementMode return value', inject([AppConfig], (service: AppConfig) => {
-    mockEnvironmentService.get.and.returnValue(true);
-    expect(service.getAccessManagementMode()).toBe(true);
-  }));
-
   it('should have getLocationRefApiUrl return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getLocationRefApiUrl()).toBe('test-location');
   }));
@@ -448,18 +443,6 @@ describe('AppConfiguration', () => {
       service.initialisationComplete = false;
       const config = service.getWAServiceConfig();
       expect(config).toBeDefined();
-    }));
-  });
-
-  describe('getAccessManagementMode', () => {
-    it('should return true when both config and environment are enabled', inject([AppConfig], (service: AppConfig) => {
-      mockEnvironmentService.get.and.returnValue(true);
-      expect(service.getAccessManagementMode()).toBe(true);
-    }));
-
-    it('should return false when environment is disabled', inject([AppConfig], (service: AppConfig) => {
-      mockEnvironmentService.get.and.returnValue(false);
-      expect(service.getAccessManagementMode()).toBe(false);
     }));
   });
 });
@@ -793,9 +776,6 @@ describe('AppConfiguration with specific config values', () => {
       if (featureName === AppConstants.FEATURE_NAMES.cdamExclusionList) {
         return of(['CIVIL', 'FAMILY']);
       }
-      if (featureName === AppConstants.FEATURE_NAMES.accessManagementMode) {
-        return of(false);
-      }
       return of(defVal);
     });
 
@@ -891,28 +871,6 @@ describe('AppConfiguration with specific config values', () => {
   it('should return OAuth2 client ID correctly', inject([AppConfig], (service: AppConfig) => {
     expect(service.getOAuth2ClientId()).toBe('test-client-id');
   }));
-
-  it('should handle access management mode with environment check', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-    tick(5000);
-    // Initially both config and environment are false
-    expect(service.getAccessManagementMode()).toBe(false);
-
-    // Change environment to true, but config is still false
-    mockEnvironmentServiceConfig.get.and.callFake((key: string) => {
-      if (key === 'accessManagementEnabled') {
-        return true;
-      }
-      if (key === 'paymentReturnUrl') {
-        return 'https://payment-return.test.com';
-      }
-      if (key === 'ccdGatewayUrl') {
-        return 'https://gateway.test.com';
-      }
-      return 'default-value';
-    });
-    // Still false because config.access_management_mode is false (from feature toggle)
-    expect(service.getAccessManagementMode()).toBe(false);
-  })));
 
   it('should generate correct derived URLs', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCaseHistoryUrl('1234', '5678')).toBe('https://casedata.test.com/internal/cases/1234/events/5678');

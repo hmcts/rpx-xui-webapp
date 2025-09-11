@@ -3,3 +3,24 @@
 
 $govuk-compatibility-govukfrontendtoolkit: true;
 @import "govuk-frontend/govuk/all";
+
+.govuk-js-link {
+  @extend .govuk-link;       // copies colour, underline, font
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+
+  // :link / :visited only match <a>, so repeat the colours
+  color: govuk-colour("blue");
+
+  &:hover {
+    color: govuk-colour("dark-blue");
+  }
+
+  &:focus {
+    @include govuk-focused-text;
+  }
+}

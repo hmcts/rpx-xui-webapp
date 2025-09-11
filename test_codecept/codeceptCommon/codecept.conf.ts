@@ -16,6 +16,7 @@ const statsReporter = require('./statsReporter');
 
 setDefaultResultOrder('ipv4first');
 
+const externalServers = process.env.EXTERNAL_SERVERS === 'true';
 function findStepFiles(basePath) {
   const results = [];
 
@@ -66,9 +67,12 @@ console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
 console.log(`headless : ${head}`);
 
-console.log('process.env.TEST_URL : ', process.env.TEST_URL);
-const pipelineBranch = process.env.TEST_URL.includes('pr-') || process.env.TEST_URL.includes('manage-case.aat.platform.hmcts.net') ? 'preview' : 'master';
-const local = process.env.LOCAL && process.env.LOCAL.includes('true');
+const TEST_URL = process.env.TEST_URL || '';
+const pipelineBranch = externalServers //   running against localhost
+  ? 'local' //   value won’t be used later
+  : (TEST_URL.includes('pr-') || TEST_URL.includes('manage-case.aat.platform.hmcts.net')
+    ? 'preview'
+    : 'master');
 let features = '';
 if (testType === 'e2e' || testType === 'smoke') {
   features = '../e2e/features/app/**/*.feature';
@@ -147,7 +151,8 @@ exports.config = {
 
     // },
     Playwright: {
-      url: 'https://manage-case.aat.platform.hmcts.net',
+      url: externalServers ? (process.env.WEB_BASE_URL || 'http://localhost:8080')
+        : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
       show: head,
       waitForNavigation: 'domcontentloaded',
@@ -245,7 +250,6 @@ exports.config = {
   bootstrapAll: async () => {
     global.scenarioData = {};
     const path = require('path');
-    console.log(path, 'path Connnnnnnnnooooor')
     require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 
     if (parallel) {
@@ -256,6 +260,11 @@ exports.config = {
     if (!parallel) await teardown();       // no report here any more
   },
   teardownAll: async () => {               // ← fires after *all* workers
+    if (parallel) {
+      await teardown();
+
+      exitWithStatus();
+    }
     await generateCucumberReport();        // JSON is now on disk
     exitWithStatus();                      // evaluate pass / fail
   },
@@ -268,7 +277,7 @@ function exitWithStatus() {
 }
 
 async function setup() {
-  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
+  if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.startServer(debugMode);
     await applicationServer.initialize();
     await applicationServer.start();
@@ -277,7 +286,7 @@ async function setup() {
 
 async function teardown() {
   console.log('Tests execution completed');
-  if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
+  if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
     await applicationServer.stop();
   }
@@ -345,7 +354,6 @@ function processCucumberJsonReports() {
   const executionOutcomes: Record<string, string> = {};
   const goodFiles = fs.readdirSync(CUKE_OUT)
     .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'));
-
   for (const f of goodFiles) {
     const full = path.join(CUKE_OUT, f);
     const json = JSON.parse(fs.readFileSync(full, 'utf8'));

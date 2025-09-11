@@ -15,7 +15,8 @@ const featureNames = {
   enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
   accessManagementMode: 'access-management-mode',
   enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
-  cdamExclusionList: 'mc-cdam-exclusion-list'
+  cdamExclusionList: 'mc-cdam-exclusion-list',
+  serviceMessagesFeatureToggleKey: 'mc-service-messages-dates'
 };
 
 function featureToAttributeName(key: string): string {
@@ -33,7 +34,8 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
   [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
   [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
-  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)],
+  [featureNames.serviceMessagesFeatureToggleKey, featureToAttributeName(featureNames.serviceMessagesFeatureToggleKey)]
 ]);
 
 const footerDataNavigation = {
@@ -209,6 +211,15 @@ const serviceMessageCookie: string = 'service_messages';
 const caseAllocatorRole: string = 'case-allocator-role';
 const iaJudgeRole: string = 'caseworker-ia-iacjudge';
 const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
+const defaultServiceMessage = [
+   {
+     "index": 10,
+    "message_cy": "Efallai y bydd rhai defnyddwyr yn profi problemau gyda'r gwasanaeth hwn ar hyn o bryd. Rydym yn gweithio i ddatrys hyn cyn gynted â phosibl.",
+    "message_en": "Some users may experience problems with this service at the moment. We are working to resolve this as soon as possible.",
+    "roles": ".+"
+   }
+  ];
+
 
 export class AppConstants {
   public static FOOTER_DATA = null;
@@ -228,6 +239,7 @@ export class AppConstants {
   public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
+  public static DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

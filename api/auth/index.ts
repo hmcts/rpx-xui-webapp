@@ -25,7 +25,8 @@ import {
   SESSION_SECRET,
   SYSTEM_USER_NAME,
   SYSTEM_USER_PASSWORD,
-  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE
+  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE,
+  SERVICES_SSO_LOGOUT_URL
 } from '../configuration/references';
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
@@ -110,7 +111,8 @@ export const getXuiNodeMiddleware = async () => {
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
     useRoutes: true,
-    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
+    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE),
+    ssoLogoutURL: getConfigValue(SERVICES_SSO_LOGOUT_URL)
   };
 
   const baseStoreOptions = {

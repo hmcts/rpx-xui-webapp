@@ -122,6 +122,8 @@ nodejs:
     SERVICES_TRANSLATION_API_URL: http://ts-translation-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services LAU Challenged access
     SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH: http://lau-case-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # SSO Logout URL
+    SERVICES_SSO_LOGOUT_URL: https://hmcts-access.service.gov.uk/o/endSession?post_logout_redirect_uri=https://manage-case.platform.hmcts.net
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true

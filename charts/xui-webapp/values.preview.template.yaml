@@ -28,6 +28,7 @@ nodejs:
      FEATURE_JRD_E_LINKS_V2_ENABLED: true
      FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
      SERVICES_IDAM_SERVICE_OVERRIDE: false
+     SERVICES_SSO_LOGOUT_URL: https://hmcts-access.service.gov.uk/o/endSession?post_logout_redirect_uri=https://manage-case.aat.platform.hmcts.net
   keyVaults:
     rpx:
       secrets:

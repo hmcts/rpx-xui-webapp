@@ -1,18 +1,19 @@
+const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 
 class AddUserCheckYourAnswersPage {
-  constructor() {
-    this.container = $('exui-staff-user-check-answers');
-    this.heading = $('exui-staff-user-details h1');
-    this.summaryListRows = $$('exui-staff-user-check-answers .govuk-summary-list__row');
+  get container() { return $('exui-staff-user-check-answers'); }
 
-    this.backLink = $('exui-staff-main-container .govuk-back-link');
-    this.submitButton = element(by.xpath('//button[contains(text(),\'Submit\')]'));
-    this.cancelButton = element(by.xpath('//button[contains(text(),\'Cancel\')]'));
-  }
+  get heading() { return $('exui-staff-user-details h1'); }
+
+  get summaryListRows() { return $$('exui-staff-user-check-answers .govuk-summary-list__row'); }
+
+  get backLink() { return $('exui-staff-main-container .govuk-back-link'); }
+  get submitButton() { return elementByXpath('//button[contains(text(),\'Submit\')]'); }
+  get cancelButton() { return elementByXpath('//button[contains(text(),\'Cancel\')]'); }
 
   async isDisplayed() {
     await this.container.wait();
-    return await this.container.isDisplayed();
+    return await this.container.isVisible();
   }
 
   async getUserDetails() {
@@ -21,26 +22,26 @@ class AddUserCheckYourAnswersPage {
     const count = await this.summaryListRows.count();
 
     for (let i = 0; i < count; i++) {
-      const row = this.summaryListRows.get(i);
-      const name = await row.$('.govuk-summary-list__key').getText();
-      const value = await row.$('.govuk-summary-list__value').getText();
+      const row = this.summaryListRows.nth(i);
+      const name = await getText(row.locator('.govuk-summary-list__key'));
+      const value = await getText(row.locator('.govuk-summary-list__value'));
 
       userDetails[name] = value;
     }
     return userDetails;
   }
 
-  async clickChangeLinkFor(fieldName){
+  async clickChangeLinkFor(fieldName) {
     await this.container.wait();
     let link = null;
     const count = await this.summaryListRows.count();
 
     const fieldsList = [];
     for (let i = 0; i < count; i++) {
-      const row = this.summaryListRows.get(i);
-      const name = await row.$('.govuk-summary-list__key').getText();
+      const row = this.summaryListRows.nth(i);
+      const name = await getText(row.locator('.govuk-summary-list__key'));
       fieldsList.push(name);
-      if (name === fieldName){
+      if (name === fieldName) {
         link = row.$('a');
         break;
       }

@@ -1,14 +1,13 @@
 
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
-const { defineSupportCode } = require('cucumber');
 const ArrayUtil = require('../../utils/ArrayUtil');
 const BrowserWaits = require('../../support/customWaits');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const errorPageObject = require('../pageObjects/common/errorPage');
 const MessageBanner = require('../pageObjects/messageBanner');
 const exuiErrorMessage = require('../pageObjects/common/exuiErrorMessage');
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 
 const messageBanner = new MessageBanner($('exui-root'));
 Then('I see error message of type {string} displayed with message {string}', async function(errorType, errorMessage){
@@ -45,7 +44,7 @@ Then('I validate for error messge type {string}, if it is banner message I see p
       return;
     } else if (errorTypePage.includes('banner')) {
       expect(await messageBanner.isBannerMessageDisplayed()).to.be.true;
-      expect(await headerPage.isPrimaryTabPageDisplayed(page)).to.be.true;
+      expect(await headerPage().isPrimaryTabPageDisplayed(page)).to.be.true;
     } else {
       throw new Error(`${errorType} is not recognised or not implemented in step definition of tests`);
     }

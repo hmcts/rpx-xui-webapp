@@ -5,9 +5,8 @@ const MockApp = require('../../nodeMock/app');
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
 
-const headerPage = require('../../e2e/features/pageObjects/headerPage');
+function headerPage () { return require('../../e2e/features/pageObjects/headerPage')(); }
 const exuiTestCaseType = require('../../nodeMock/ccd/solicitorCreate/exuiTestCaseType');
-const config = require('../config/protractor.conf');
 
 describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
   beforeEach(async function (done) {
@@ -29,7 +28,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
@@ -43,7 +42,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
 
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
@@ -56,7 +55,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
@@ -69,7 +68,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
@@ -82,7 +81,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
@@ -95,7 +94,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await MockApp.startServer();
 
     await BrowserUtil.gotoHomePage();
-    await headerPage.isTabPresent('Case list');
+    await headerPage().isTabPresent('Case list');
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);

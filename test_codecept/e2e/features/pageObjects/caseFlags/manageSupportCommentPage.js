@@ -1,17 +1,20 @@
+const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class ManageSupportCommentPage {
-  constructor() {
-    this.container = $('ccd-update-flag');
+  get container() {
+    return $('ccd-update-flag');
+  }
 
-    this.fieldMapping = {
-      'Tell us why the support is no longer needed': element(by.xpath('//ccd-update-flag//label[contains(text(),\'Tell us why the support is no longer needed\')]'))
+  get fieldMapping() {
+    return {
+      'Tell us why the support is no longer needed': elementByXpath('//ccd-update-flag//label[contains(text(),\'Tell us why the support is no longer needed\')]')
     };
   }
 
   async inputValue(field, value) {
     switch (field) {
       case 'Tell us why the support is no longer needed':
-        const ele = element(by.xpath('//ccd-update-flag//label[contains(text(),\'Tell us why the support is no longer needed\')]/../..//textarea'));
+        const ele = elementByXpath('//ccd-update-flag//label[contains(text(),\'Tell us why the support is no longer needed\')]/../..//textarea');
         await ele.sendKeys(value);
         break;
       default:

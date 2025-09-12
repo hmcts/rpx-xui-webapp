@@ -1,25 +1,22 @@
-
+const { $, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
+
 class ChooseDuration {
-  constructor() {
-    this.container = $('exui-booking-date');
-    this.header = this.container.$('h1');
-    this.headerCaption = this.container.$('h1 span');
+  get container() { return $('exui-booking-date'); }
+  get header() { return this.container.locator('h1'); }
+  get headerCaption() { return this.container.locator('h1 span'); }
+  get errorMessage() { return $('#error-message'); }
+  get radioOptions() { return this.container.locator('.govuk-radios'); }
+  get anotherPeriodValidationIndicator() { return $('exui-booking-date #conditional-contact-3.form-group-error'); }
 
-    this.errorMessage = $('#error-message');
-    this.radioOptions = this.container.$$('.govuk-radios');
-
-    this.anotherPeriodValidationIndicator = $('exui-booking-date #conditional-contact-3.form-group-error');
-  }
-
-  async waitForPage(){
+  async waitForPage() {
     await BrowserWaits.waitForElement(this.container);
   }
 
   async isDisplayed() {
     try {
       await BrowserWaits.waitForElement(this.container);
-      return await this.container.isDisplayed();
+      return await this.container.isVisible();
     } catch (err) {
       console.log(err);
       return false;
@@ -29,7 +26,7 @@ class ChooseDuration {
   async isValidationErrorMessageDisplayed() {
     try {
       await BrowserWaits.waitForElement(this.errorMessage);
-      return await this.container.isDisplayed();
+      return await this.container.isVisible();
     } catch (err) {
       return false;
     }
@@ -40,15 +37,15 @@ class ChooseDuration {
     if (!isMsgDisplayed) {
       throw new Error('Validation error message is not displayed.');
     }
-    return await this.errorMessage.getText();
+    return await getText(this.errorMessage);
   }
 
   async getHeaderCaption() {
-    return await this.headerCaption.getText();
+    return await getText(this.headerCaption);
   }
 
   async getHeaderText() {
-    return await this.header.getText();
+    return await getText(this.header);
   }
 
   async getCountOfRadioOptions() {
@@ -56,15 +53,15 @@ class ChooseDuration {
   }
 
   async isRadioOptionPresent(radioLabel) {
-    return await this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]`)).isDisplayed();
+    return await this.container.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]`).isVisible();
   }
 
   async getRadioOptionInputElement(radioLabel) {
-    return await this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]//../input`));
+    return await this.container.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]//../input`);
   }
 
   async getRadioOptionCaptionText(radioLabel) {
-    return await this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]/parent::div[contains(@class,'govuk-radios__item')]//span`)).getText();
+    return await getText(this.container.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]/parent::div[contains(@class,'govuk-radios__item')]//span`));
   }
 
   async selectRadioOption(radioLabel) {
@@ -74,58 +71,58 @@ class ChooseDuration {
 
   async isRadioOptionSelected(radioLabel) {
     const radioInput = await this.getRadioOptionInputElement(radioLabel);
-    return await radioInput.isSelected();
+    return await radioInput.isChecked();
   }
 
   async isDateInputWithLabelDisplayed(label) {
     const dateInput = this.getDateInputFieldWithLabel(label);
-    return await dateInput.isPresent() && await dateInput.isDisplayed();
+    return await isPresent(dateInput) && await dateInput.isVisible();
   }
 
   async enterDayInDateInputWithLabel(label, val) {
     const dayField = this.getFieldFromDatInput(label, 'Day');
     await dayField.clear();
-    await dayField.sendKeys(val);
+    await dayField.fill(val);
   }
 
   async enterMonthInDateInputWithLabel(label, val) {
     const monthField = this.getFieldFromDatInput(label, 'Month');
     await monthField.clear();
-    await monthField.sendKeys(val);
+    await monthField.fill(val);
   }
 
   async enterYearInDateInputWithLabel(label, val) {
     const yearField = this.getFieldFromDatInput(label, 'Year');
     await yearField.clear();
-    await yearField.sendKeys(val);
+    await yearField.fill(val);
   }
 
   async isDateInputWithLabelDisplayed(label) {
     const dateInput = this.getDateInputFieldWithLabel(label);
-    return await dateInput.isPresent() && dateInput.isDisplayed();
+    return await isPresent(dateInput) && dateInput.isVisible();
   }
 
   async isValidationErrorDisplayedForDateInput(label) {
     const errorMessageElement = this.getDateInputErrorMessageElement(label);
-    const errorMessage = await errorMessageElement.getText();
+    const errorMessage = await getText(errorMessageElement);
     return errorMessage !== '';
   }
 
   async getAnotherPeriodValidationMessageForField(label) {
     const errorMessageElement = this.getDateInputErrorMessageElement(label);
-    return errorMessageElement.getText();
+    return getText(errorMessageElement);
   }
 
   getDateInputErrorMessageElement(forFieldWithLabel) {
-    return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//span[contains(@class ,'govuk-error-message')]`));
+    return elementByXpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//span[contains(@class ,'govuk-error-message')]`);
   }
 
   getFieldFromDatInput(forFieldWithLabel, fieldLabel) {
-    return element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/following-sibling::input`));
+    return elementByXpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/following-sibling::input`);
   }
 
   getDateInputFieldWithLabel(label) {
-    return this.container.element(by.xpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${label}')]/parent::fieldset`));
+    return this.container.locator(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${label}')]/parent::fieldset`);
   }
 }
 

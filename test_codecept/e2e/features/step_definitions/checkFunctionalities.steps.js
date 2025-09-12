@@ -1,7 +1,5 @@
 const IacCase = require('../pageObjects/iacCase');
 
-const { defineSupportCode } = require('cucumber');
-
 const iacCase = new IacCase();
 
 When('I check all fields IAC case', async function () {

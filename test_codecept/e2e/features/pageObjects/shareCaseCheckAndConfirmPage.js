@@ -1,82 +1,79 @@
-
-const BrowserWaits = require('../../support/customWaits');
-
 const CucumberReportLog = require('../../../codeceptCommon/reportLogger');
+const { $, $$ } = require('../../../helpers/globals');
+const BrowserWaits = require('../../support/customWaits');
 
 const ShareCaseData = require('../../utils/shareCaseData');
 class ShareCaseCheckAndConfirmPage {
-  constructor(){
-    this.pageContainer = $('xuilib-share-case-confirm');
-    this.summarySelectionContainer = $('#summarySections');
+  get pageContainer() { return $('xuilib-share-case-confirm'); }
+  get summarySelectionContainer() { return $('#summarySections'); }
 
-    this.selectedCaseConfirmList = $$('xuilib-selected-case-confirm #user-access-block');
-    this.backLink = $('.govuk-back-link');
-    this.confirmBtn = $('#share-case-nav button');
+  get selectedCaseConfirmList() { return $$('xuilib-selected-case-confirm #user-access-block'); }
+  get backLink() { return $('.govuk-back-link'); }
+  get confirmBtn() { return $('#share-case-nav button'); }
 
-    this.changesSubmissionConfirmationContainer = $('.govuk-panel--confirmation');
-  }
+  get changesSubmissionConfirmationContainer() { return $('.govuk-panel--confirmation'); }
 
-  async waitForPageToLoad(){
+  async waitForPageToLoad() {
     await BrowserWaits.waitForElement(this.pageContainer, 'Share Case Conform your selection page not displayed.');
     await BrowserWaits.waitForElement(this.summarySelectionContainer, 'Share Case confirm selection summary not displayed');
   }
 
-  async amOnPage(){
+  async amOnPage() {
     await this.waitForPageToLoad();
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 
-  async getCaseIdOfCaseContainer(containerIndex){
-    const caseContainer = await this.selectedCaseConfirmList.get(containerIndex);
-    if (!caseContainer){
+  async getCaseIdOfCaseContainer(containerIndex) {
+    const caseContainer = await this.selectedCaseConfirmList.nth(containerIndex);
+    if (!caseContainer) {
       throw Error('no Case at position ' + containerIndex);
     }
-    await BrowserWaits.waitForElement(caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + containerIndex);
-    const caseId = await caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption').getText();
+    await BrowserWaits.waitForElement(caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + containerIndex);
+    const caseId = await caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption').textContent();
     return caseId;
   }
 
-  async getcaseContainerWithId(caseid){
+  async getcaseContainerWithId(caseid) {
     const casesCount = await this.selectedCaseConfirmList.count();
-    for (let caseCounter = 0; caseCounter < casesCount; caseCounter++){
-      const caseContainer = await this.selectedCaseConfirmList.get(caseCounter);
-      await BrowserWaits.waitForElement(caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + caseCounter);
-      const caseId = await caseContainer.$('.case-share-confirm__caption-area .case-share-confirm__caption').getText();
-      if (caseId.includes(caseid)){
+    for (let caseCounter = 0; caseCounter < casesCount; caseCounter++) {
+      const caseContainer = await this.selectedCaseConfirmList.nth(caseCounter);
+      await BrowserWaits.waitForElement(caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + caseCounter);
+      const caseId = await caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption').textContent();
+      if (caseId.includes(caseid)) {
         return caseContainer;
       }
     }
     return null;
   }
 
-  async getUserActionForCaseId(caseId, email){
+  async getUserActionForCaseId(caseId, email) {
     const caseContainer = await this.getcaseContainerWithId(caseId);
-    const userRows = caseContainer.$$('tbody tr');
+    const userRows = caseContainer.locator('tbody tr');
     const usersCount = await userRows.count();
-    for (let userCounter = 0; userCounter < usersCount; userCounter++){
-      const userRow = await userRows.get(userCounter);
-      const userEmail = await userRow.$('td:nth-of-type(2)').getText();
-      if (userEmail.includes(email)){
-        return await userRow.$('td:nth-of-type(3)').getText();
+    for (let userCounter = 0; userCounter < usersCount; userCounter++) {
+      const userRow = await userRows.nth(userCounter);
+      const userEmail = await userRow.locator('td:nth-of-type(2)').textContent();
+      if (userEmail.includes(email)) {
+        return await userRow.locator('td:nth-of-type(3)').textContent();
       }
     }
     return null;
   }
 
-  async isUserMarkedToBeRemovedIncase(caseId, email){
+  async isUserMarkedToBeRemovedIncase(caseId, email) {
     const userActionStatus = await this.getUserActionForCaseId(caseId, email);
     return userActionStatus ? userActionStatus.toLowerCase().includes('remove') : false;
   }
 
   async isUserMarkedToBeAddedIncase(caseId, email) {
     const userActionStatus = await this.getUserActionForCaseId(caseId, email);
-    return userActionStatus ? userActionStatus.toLowerCase().includes('added'): false;
+    return userActionStatus ? userActionStatus.toLowerCase().includes('added') : false;
   }
 
-  async validateShareCaseChangesForListedCases(){
+  async validateShareCaseChangesForListedCases() {
     const casesCount = await this.selectedCaseConfirmList.count();
     const issuesList = [];
-    for (let caseCounter = 0; caseCounter < casesCount; caseCounter++){
+    for (let caseCounter = 0; caseCounter < casesCount; caseCounter++) {
       const caseid = await this.getCaseIdOfCaseContainer(caseCounter);
       const caseShareData = ShareCaseData.getCaseWithId(caseid);
 
@@ -98,23 +95,23 @@ class ShareCaseCheckAndConfirmPage {
     return issuesList;
   }
 
-  async clickBack(){
+  async clickBack() {
     await this.backLink.click();
   }
 
-  async clickChangeLinkForCase(caseNum){
+  async clickChangeLinkForCase(caseNum) {
     const caseContainer = await this.getcaseContainerWithId(caseNum);
-    await caseContainer.$('a').click();
+    await caseContainer.locator('a').click();
   }
 
-  async clickConfirmBtn(){
+  async clickConfirmBtn() {
     await this.confirmBtn.click();
     ShareCaseData.changesCommited();
   }
 
-  async isSubmissionSuccessful(){
+  async isSubmissionSuccessful() {
     await BrowserWaits.waitForElement(this.changesSubmissionConfirmationContainer);
-    const message = await this.changesSubmissionConfirmationContainer.getText();
+    const message = await this.changesSubmissionConfirmationContainer.textContent();
     return message.includes('Your cases have been updated');
   }
 }

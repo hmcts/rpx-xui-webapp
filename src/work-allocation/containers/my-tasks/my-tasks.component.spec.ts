@@ -8,6 +8,7 @@ import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { TaskListComponent } from '..';
 import { SessionStorageService } from '../../../app/services';
 import * as fromActions from '../../../app/store';
@@ -41,7 +42,7 @@ const workTypeInfo =
     {"key":"decision_making_work","label":"Decision-making work"},
     {"key":"applications","label":"Applications"}]`;
 
-xdescribe('MyTasksComponent', () => {
+describe('MyTasksComponent', () => {
   let component: MyTasksComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -57,6 +58,12 @@ xdescribe('MyTasksComponent', () => {
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: () => { },
+    getTranslation: (phrase: string) => phrase,
+    getTranslation$: (phrase: string) => of(phrase)
+  });
 
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,6 +90,7 @@ xdescribe('MyTasksComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
         { provide: Store, useValue: storeMock }
       ]
     }).compileComponents();

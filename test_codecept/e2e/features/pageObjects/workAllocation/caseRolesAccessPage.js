@@ -1,23 +1,48 @@
-
-const CaseRolesTable = require('../common/caseRolesTable');
-const BrowserWaits = require('../../../support/customWaits');
+const { $, elementByXpath, isPresent } = require('../../../../helpers/globals');
 const BrowserUtil = require('../../../../ngIntegration/util/browserUtil');
+const BrowserWaits = require('../../../support/customWaits');
+const CaseRolesTable = require('../common/caseRolesTable');
 
 class CaseRolesAccessPage{
   constructor(){
-    this.pageContainer = $('exui-roles-and-access-container');
-
     this.legalOpsRolesAccessTable = new CaseRolesTable('//h2[contains(text(),\'Legal Ops\')]/following-sibling::exui-case-roles-table[position()=1]');
-    this.addLegalOpsRoleLink = element(by.xpath('//h2[contains(text(),\'Legal Ops\')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),\'Allocate a legal ops role\')]'));
 
     this.adminRolesAccessTable = new CaseRolesTable('//h2[contains(text(),\'Admin\')]/following-sibling::exui-case-roles-table[position()=1]');
-    this.addAdminRoleLink = element(by.xpath('//h2[contains(text(),\'Admin\')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),\'Allocate an admin role\')]'));
 
     this.judicialRolesAccessTable = new CaseRolesTable('//h2[contains(text(),\'Judiciary\')]/following-sibling::exui-case-roles-table[position()=1]');
-    this.addJudicialRoleLink = element(by.xpath('//h2[contains(text(),\'Judiciary\')]/following-sibling::p[position()=1]//exui-allocate-a-role-link//a[contains(text(),\'Allocate a judicial role\')]'));
 
     this.exclusionTable = new CaseRolesTable('//h2[contains(text(),\'Exclusions\')]/following-sibling::exui-exclusions-table[position()=1]');
-    this.addExcluusionLink = element(by.xpath('//h2[contains(text(),\'Exclusions\')]/following-sibling::p[position()=1]//a[contains(text(),\'Add\')]'));
+  }
+
+  get container() { 
+    return $('exui-roles-and-access-container'); 
+  }
+
+  get addLegalOpsRoleLink() {
+    return elementByXpath(
+      '//h2[contains(text(),\'Legal Ops\')]/following-sibling::p[position()=1]' +
+      '//exui-allocate-a-role-link//a[contains(text(),\'Allocate a legal ops role\')]'
+    );
+  }
+
+  get addAdminRoleLink() {
+    return elementByXpath(
+      '//h2[contains(text(),\'Admin\')]/following-sibling::p[position()=1]' +
+      '//exui-allocate-a-role-link//a[contains(text(),\'Allocate an admin role\')]'
+    );
+  }
+
+  get addJudicialRoleLink() {
+    return elementByXpath(
+      '//h2[contains(text(),\'Judiciary\')]/following-sibling::p[position()=1]' +
+      '//exui-allocate-a-role-link//a[contains(text(),\'Allocate a judicial role\')]'
+    );
+  }
+
+  get addExcluusionLink() {
+    return elementByXpath(
+      '//h2[contains(text(),\'Exclusions\')]/following-sibling::p[position()=1]//a[contains(text(),\'Add\')]'
+    );
   }
 
   async waitForPage(){
@@ -70,11 +95,11 @@ class CaseRolesAccessPage{
   }
 
   async isAllocateRoleLinkPresentForCategory(rolecategory){
-    const isPresent = await this.getAllocateRoleLinkForCategory(rolecategory).isPresent();
+    const isPresent = await isPresent(this.getAllocateRoleLinkForCategory(rolecategory));
     if (!isPresent){
       return false;
     }
-    return await this.getAllocateRoleLinkForCategory(rolecategory).isDisplayed();
+    return await this.getAllocateRoleLinkForCategory(rolecategory).isVisible();
   }
 
   async clickAllocateRoleLinkForCategory(rolecategory){
@@ -84,7 +109,7 @@ class CaseRolesAccessPage{
   }
 
   async isExclusionAddLinkPresent(){
-    return this.getExclusionAddLink().isPresent();
+    return isPresent(this.getExclusionAddLink());
   }
 
   async clickAddExclusionLink(){

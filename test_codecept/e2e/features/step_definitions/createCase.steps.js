@@ -6,7 +6,7 @@ const ProbatePage = require('../pageObjects/probatePage.js');
 const DivorcesPage = require('../pageObjects/divorcesPage.js');
 const FrUserPage = require('../pageObjects/frUserPage.js');
 const ApplyForProbatePage = require('../pageObjects/applyForProbatePage.js');
-const headerPage = require('../pageObjects/headerPage');
+function headerPage () { return require('../pageObjects/headerPage')(); }
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const TestData = require('../../utils/TestData.js');
 
@@ -33,7 +33,7 @@ const caseManager = new CaseManager();
 
 When('I click on create case button', async function () {
   //await caseListPage.clickCreateNewCaseButton();
-  await headerPage.clickCreateCase();
+  await headerPage().clickCreateCase();
 });
 
 Then('Create case page should be displayed', async function () {

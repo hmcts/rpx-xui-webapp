@@ -1,19 +1,24 @@
+const { $ } = require('../../../../../helpers/globals');
 
 class HearingAdditionalInstructionsPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-additional-instructions');
+  get pageContainer() {
+    return $('exui-hearing-additional-instructions');
+  }
 
-    this.instructionsInput = $('#additionalInstructionsTextarea');
+  get instructionsInput() {
+    return $('#additionalInstructionsTextarea');
+  }
 
-    this.fieldMapping = {
-      'Enter any additional instructions for the hearing': $('#additionalInstructionsTextarea')
+  get fieldMapping() {
+    return {
+      'Enter any additional instructions for the hearing': this.instructionsInput
     };
   }
 
   async inputValue(field, value) {
     switch (field) {
       case 'Enter any additional instructions for the hearing':
-        await this.instructionsInput.sendKeys(value);
+        await this.instructionsInput.fill(value);
         break;
       default:
         throw new Error(`${field} is not recognised`);
@@ -21,7 +26,7 @@ class HearingAdditionalInstructionsPage {
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 }
 

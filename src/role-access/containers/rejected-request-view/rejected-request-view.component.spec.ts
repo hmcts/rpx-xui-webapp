@@ -1,16 +1,17 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PipesModule } from '@hmcts/ccd-case-ui-toolkit';
+import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { getMockCaseRoles } from '../../../work-allocation/tests/utils.spec';
-import { CaseRoleDetails, RoleCategory } from '../../models';
+import { CaseRoleDetails } from '../../models';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 import { RejectedRequestViewComponent } from './rejected-request-view.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('RejectedRequestViewComponent', () => {
   let component: RejectedRequestViewComponent;

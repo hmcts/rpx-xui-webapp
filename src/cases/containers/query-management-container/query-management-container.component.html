@@ -36,7 +36,7 @@
           <ccd-qualifying-question-options *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS"
             [qualifyingQuestionsControl]="qualifyingQuestionsControl"
             [qualifyingQuestions$]="qualifyingQuestions$"
-            (questionSelected)="logSelection($event)">
+            (questionSelected)="onQuestionSelected($event)">
           </ccd-qualifying-question-options>
           <ccd-qualifying-question-detail *ngSwitchCase="queryCreateContextEnum.NEW_QUERY_QUALIFYING_QUESTION_DETAIL"
             [qualifyingQuestion]="qualifyingQuestion">
@@ -46,7 +46,11 @@
             [caseDetails]="caseDetails"
             [showForm]="showForm"
             [serviceMessage]="serviceMessage$ | async"
-            [queryCreateContext]="queryCreateContext" [submitted]="submitted">
+            [queryCreateContext]="queryCreateContext" [submitted]="submitted"
+            [eventData]="eventTrigger$ | async"
+            [triggerSubmission]="triggerQueryDataSubmission"
+            (queryDataCreated)="onQueryDataCreated($event)"
+            [queryItem]="queryItem" >
           </ccd-query-write-raise-query>
           <ccd-query-write-respond-to-query
             *ngSwitchCase="[queryCreateContextEnum.RESPOND, queryCreateContextEnum.FOLLOWUP].includes(queryCreateContext) ? queryCreateContext : !queryCreateContext"
@@ -54,6 +58,9 @@
             (hasRespondedToQueryTask)="hasRespondedToQueryTask($event)"
             [caseQueriesCollections]="caseQueriesCollections"
             [showForm]="showForm"
+            [eventData]="eventTrigger$ | async"
+            [triggerSubmission]="triggerQueryDataSubmission"
+            (queryDataCreated)="onQueryDataCreated($event)"
             [submitted]="submitted" [queryCreateContext]="queryCreateContext">
           </ccd-query-write-respond-to-query>
         </div>
@@ -86,6 +93,7 @@
       [eventData]="eventData"
       [queryItem]="queryItem"
       [formGroup]="formGroup"
+      [qmCaseQueriesCollectionData]="qmCaseQueriesCollectionData"
       [queryCreateContext]="queryCreateContext"
       (backClicked)="showResponseForm()"
       (querySubmitted)="showConfirmationPage()"

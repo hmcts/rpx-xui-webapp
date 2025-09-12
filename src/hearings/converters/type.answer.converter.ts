@@ -17,7 +17,7 @@ export class TypeAnswerConverter implements AnswerConverter {
   public transformAnswer(hearingState$: Observable<State>): Observable<string> {
     return hearingState$.pipe(
       map((state) => {
-        const caseTypes: CaseCategoryDisplayModel[] = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, state.hearingValues.serviceHearingValuesModel.caseCategories);
+        const caseTypes: CaseCategoryDisplayModel[] = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, state.hearingValues.serviceHearingValuesModel?.caseCategories);
         let result = '';
         caseTypes.forEach((caseCategory) => {
           result += `${caseCategory.categoryDisplayValue} \n<ul>`;

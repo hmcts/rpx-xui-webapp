@@ -9,11 +9,11 @@ const featureNames = {
   noticeOfChange: 'MC_Notice_of_Change',
   booking: 'mc-booking-active',
   excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
-  secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
-  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  accessManagementMode: 'access-management-mode'
+  accessManagementMode: 'access-management-mode',
+  enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
+  cdamExclusionList: 'mc-cdam-exclusion-list'
 };
 
 function featureToAttributeName(key: string): string {
@@ -25,11 +25,11 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
   [featureNames.waAccess, featureToAttributeName(featureNames.waAccess)],
   [featureNames.booking, featureToAttributeName(featureNames.booking)],
-  [featureNames.secureDocumentStoreEnabled, 'document_management_secure_enabled'], // should refactor this
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
-  [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
-  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)]
+  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
+  [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);
 
 const footerDataNavigation = {
@@ -203,6 +203,8 @@ const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
 const caseAllocatorRole: string = 'case-allocator-role';
+const iaJudgeRole: string = 'caseworker-ia-iacjudge';
+const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 
 export class AppConstants {
   public static FOOTER_DATA = null;
@@ -218,6 +220,8 @@ export class AppConstants {
   public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
   public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
   public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
+  public static IA_JUDGE_ROLE = iaJudgeRole;
+  public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
 }

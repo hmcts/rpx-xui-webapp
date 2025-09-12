@@ -650,16 +650,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/ssr@npm:^18.2.18":
-  version: 18.2.19
-  resolution: "@angular/ssr@npm:18.2.19"
+"@angular/ssr@npm:^18.2.21":
+  version: 18.2.21
+  resolution: "@angular/ssr@npm:18.2.21"
   dependencies:
     critters: "npm:0.0.24"
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.0.0
     "@angular/core": ^18.0.0
-  checksum: 10/31ef747f9f167e413c2a22b6392c9203ad91605d50daad31f47fed7b7525bb6d8b3fda8756b943d747b0ba3669a13e1347094030c244cf2a665a5f8ec59f2816
+  checksum: 10/a03b11e7129941f09f65a1a6b2e1f513372e3211fed24904d69c63e6876a195deff2126becfd06bbc41b2867a54ef41787b3ed9ebeaafac4ebdb83f73a808be3
   languageName: node
   linkType: hard
 
@@ -20578,7 +20578,7 @@ __metadata:
     "@angular/platform-browser": "npm:^18.2.13"
     "@angular/platform-browser-dynamic": "npm:^18.2.13"
     "@angular/router": "npm:^18.2.13"
-    "@angular/ssr": "npm:^18.2.18"
+    "@angular/ssr": "npm:^18.2.21"
     "@axe-core/playwright": "npm:^4.9.1"
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"

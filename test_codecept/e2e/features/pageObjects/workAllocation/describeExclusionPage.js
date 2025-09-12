@@ -1,16 +1,11 @@
-
+const { $, getText } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
-const exuiErrorMessage = require('../common/exuiErrorMessage');
 
 class DescribeExclusionPage {
-  constructor() {
-    this.container = $('exui-describe-exclusion');
-
-    this.headerCaption = this.container.$('h1 span');
-    this.header = this.container.$('h1');
-
-    this.textArea = this.container.$('#exclusion-description');
-  }
+  get container() { return $('exui-describe-exclusion'); }
+  get headerCaption() { return this.container.locator('h1 span'); }
+  get header() { return this.container.locator('h1'); }
+  get textArea() { return this.container.locator('#exclusion-description'); }
 
   async isDisplayed() {
     try {
@@ -22,16 +17,16 @@ class DescribeExclusionPage {
   }
 
   async getHeaderCaption() {
-    return await this.headerCaption.getText();
+    return await getText(this.headerCaption);
   }
 
   async getHeaderText() {
-    return await this.header.getText();
+    return await getText(this.header);
   }
 
-  async enterExclusionDescription(description){
+  async enterExclusionDescription(description) {
     await this.textArea.clear();
-    await this.textArea.sendKeys(description);
+    await this.textArea.fill(description);
   }
 }
 

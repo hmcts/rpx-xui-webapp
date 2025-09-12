@@ -1,86 +1,100 @@
+const { $ } = require('../../../helpers/globals');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
-class CaseDetailsPage{
-  constructor(){
-    this.ccdCaseDetailsContainer = $('exui-case-details-home');
-    this.exuiAlert = $('exui-alert');
-
-    this.caseTitle = $('.title');
-    this.eventTriggerContainer = $('ccd-event-trigger');
-
-    this.challengedAccessRequestContainer = $('ccd-case-challenged-access-request');
-    this.specificAccessRequestContainer = $('ccd-case-specific-access-request');
+class CaseDetailsPage {
+  get ccdCaseDetailsContainer() {
+    return $('exui-case-details-home');
   }
 
-  async amOnPage(){
+  get exuiAlert() {
+    return $('exui-alert');
+  }
+
+  get caseTitle() {
+    return $('.title');
+  }
+
+  get eventTriggerContainer() {
+    return $('ccd-event-trigger');
+  }
+
+  get challengedAccessRequestContainer() {
+    return $('ccd-case-challenged-access-request');
+  }
+
+  get specificAccessRequestContainer() {
+    return $('ccd-case-specific-access-request');
+  }
+
+  async amOnPage() {
     try {
       await this.waitForPage();
       return true;
-    } catch (err){
+    } catch (err) {
       console.log('Case details page is not displayed.', err);
       return false;
     }
   }
 
-  async waitForPage(){
+  async waitForPage() {
     await BrowserWaits.waitForElement(this.ccdCaseDetailsContainer);
   }
 
-  async isAlertMessageDisplayed(){
+  async isAlertMessageDisplayed() {
     await this.amOnPage();
-    return await this.exuiAlert.isDisplayed();
+    return await this.exuiAlert.isVisible();
   }
 
   async getAlertMessageText() {
-    if (await this.isAlertMessageDisplayed()){
-      return await this.exuiAlert.getText();
+    if (await this.isAlertMessageDisplayed()) {
+      return await this.exuiAlert.textContent();
     }
-    throw new error('Alert/notification  message is not displayed or disappeared.');
+    throw new Error('Alert/notification message is not displayed or disappeared.');
   }
 
-  async isCaseTitleDisplayed(){
+  async isCaseTitleDisplayed() {
     await this.amOnPage();
-    return await this.caseTitle.isDisplayed();
+    return await this.caseTitle.isVisible();
   }
 
   async getCaseTitle() {
     await this.amOnPage();
-    return await this.caseTitle.getText();
+    return await this.caseTitle.textContent();
   }
 
-  async isEventTriggerDisplayed(){
+  async isEventTriggerDisplayed() {
     await this.amOnPage();
-    return await this.eventTriggerContainer.isDisplayed();
+    return await this.eventTriggerContainer.isVisible();
   }
 
-  async GetEvents(){
-    const isTriggerElementDisplayed = this.isEventTriggerDisplayed();
-    if (!isTriggerElementDisplayed){
+  async getEvents() {
+    if (!await this.isEventTriggerDisplayed()) {
       throw new Error('Event trigger element not displayed');
     }
-    const eventsCount = await this.eventTriggerContainer.$$('option').count();
+    const options = this.eventTriggerContainer.locator('option');
+    const count = await options.count();
     const events = [];
-    for (let eventCounter = 0; eventCounter < eventsCount; eventCounter++){
-      events.push(await this.eventTriggerContainer.$$('option')[eventCounter].getText());
+    for (let i = 0; i < count; i++) {
+      events.push(await options.nth(i).textContent());
     }
     return events;
   }
 
-  async selectNextStepEvent(eventName){
-    await await this.eventTriggerContainer.$(`option[title = ${eventName}]`).click();
+  async selectNextStepEvent(eventName) {
+    await this.eventTriggerContainer.locator(`option[title="${eventName}"]`).click();
   }
 
-  async isEventTriggetGoButtonEnabled(){
+  async isEventTriggerGoButtonEnabled() {
     await this.amOnPage();
-    return this.eventTriggerContainer.$('button').isEnabled();
+    return await this.eventTriggerContainer.locator('button').isEnabled();
   }
 
   async clickEventTriggerGoButton() {
     await this.amOnPage();
-    if (await isEventTriggetGoButtonEnabled()){
-      return this.eventTriggerContainer.$('button').click();
+    if (await this.isEventTriggerGoButtonEnabled()) {
+      return await this.eventTriggerContainer.locator('button').click();
     }
-    throw new error('Event trigger Go button not enabled');
+    throw new Error('Event trigger Go button not enabled');
   }
 }
 

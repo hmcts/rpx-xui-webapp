@@ -270,7 +270,6 @@ function exitWithStatus() {
 async function setup() {
   if (!debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.startServer(debugMode);
-    await applicationServer.initialize();
     await applicationServer.start();
   }
 }

@@ -59,7 +59,6 @@ export const SERVICES_IDAM_CLIENT_ID = 'services.idam.idamClientID';
 export const SERVICES_IDAM_LOGIN_URL = 'services.idam.idamLoginUrl';
 export const SERVICES_IDAM_ISS_URL = 'services.idam.iss';
 export const SERVICES_IDAM_OAUTH_CALLBACK_URL = 'services.idam.oauthCallbackUrl';
-export const SERVICES_IDAM_SERVICE_OVERRIDE = 'services.idam.serviceOverride';
 
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICES_TERMS_AND_CONDITIONS_URL = 'services.termsAndConditions';
@@ -125,7 +124,6 @@ export const FEATURE_OIDC_ENABLED = 'oidcEnabled';
 export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
 export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
-export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 

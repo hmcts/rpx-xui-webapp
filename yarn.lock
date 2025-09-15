@@ -650,16 +650,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/ssr@npm:^18.2.18":
-  version: 18.2.20
-  resolution: "@angular/ssr@npm:18.2.20"
+"@angular/ssr@npm:^18.2.21":
+  version: 18.2.21
+  resolution: "@angular/ssr@npm:18.2.21"
   dependencies:
     critters: "npm:0.0.24"
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.0.0
     "@angular/core": ^18.0.0
-  checksum: 10/62e5f130a9f42dd44eb8a83f0ac80bee0e4b2dff020afdf9ee8c674c392cd58f32aba1a128c91e50233fc86c8f511150d77f9ee8e6a2298988eddb9e38522b07
+  checksum: 10/a03b11e7129941f09f65a1a6b2e1f513372e3211fed24904d69c63e6876a195deff2126becfd06bbc41b2867a54ef41787b3ed9ebeaafac4ebdb83f73a808be3
   languageName: node
   linkType: hard
 
@@ -3156,12 +3156,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.41-remove-ld-feature-flags":
-  version: 7.2.41-remove-ld-feature-flags
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.41-remove-ld-feature-flags"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.43-remove-ld-feature-flags":
+  version: 7.2.43-remove-ld-feature-flags
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.43-remove-ld-feature-flags"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/4d3004e556a428414edecf1c7fd692854adabbbffbf0adf9988e976c4054f11f0a325f798cc248e9f8b4d1792a600fd4f58fd9c5ed55b927df1adf539c661183
+  checksum: 10/4bcde7130c176cae530cde05e2254159a3f9e55575da221b3debd5bd68604b7e2fb81cf7d27f8f6e0bcfba565e71d6eb090abd4bfc4dbff8f62f94c5b66c6b94
   languageName: node
   linkType: hard
 
@@ -20561,12 +20561,12 @@ __metadata:
     "@angular/platform-browser": "npm:^18.2.13"
     "@angular/platform-browser-dynamic": "npm:^18.2.13"
     "@angular/router": "npm:^18.2.13"
-    "@angular/ssr": "npm:^18.2.18"
+    "@angular/ssr": "npm:^18.2.21"
     "@axe-core/playwright": "npm:^4.9.1"
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.41-remove-ld-feature-flags"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.43-remove-ld-feature-flags"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.6"

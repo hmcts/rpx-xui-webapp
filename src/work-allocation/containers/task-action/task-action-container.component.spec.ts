@@ -9,12 +9,13 @@ import { CaseNotifier, PaginationModule, SessionStorageService } from '@hmcts/cc
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
-import { InfoMessage } from 'src/app/shared/enums/info-message';
-import { InformationMessage } from 'src/app/shared/models';
-import { InfoMessageType } from 'src/role-access/models/enums';
 import { TaskListComponent } from '..';
 import { ErrorMessageComponent } from '../../../app/components';
+import { AppTestConstants } from '../../../app/app.test-constants.spec';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
+import { InfoMessage } from '../../../app/shared/enums/info-message';
+import { InformationMessage } from '../../../app/shared/models';
+import { InfoMessageType } from '../../../role-access/models/enums';
 import { TaskActionConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
@@ -132,15 +133,20 @@ describe('WorkAllocation', () => {
     });
 
     it('should return the correct message/state', () => {
-      window.history.pushState({ returnUrl: 'case/case-details', keepUrl: true }, '', 'case/case-details');
+      mockInfoMessageCommService.nextMessage.calls.reset();
+
+      spyOnProperty(component as any, 'returnUrl', 'get').and.returnValue('cases/case-details/1234567890123456');
+
       const message = {
         type: InfoMessageType.SUCCESS,
         message: InfoMessage.ASSIGNED_TASK
       } as InformationMessage;
       const navigateSpy = spyOn(router, 'navigateByUrl');
       component.returnWithMessage(message, null);
-      expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
-      expect(navigateSpy).toHaveBeenCalledWith('case/case-details', {
+
+      expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalled();
+
+      expect(navigateSpy).toHaveBeenCalledWith('cases/case-details/1234567890123456', {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK,
@@ -200,7 +206,7 @@ describe('WorkAllocation', () => {
         surname: 'surName',
         email: 'email',
         active: true,
-        roles: ['caseworker-ia-caseofficer'],
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
 
@@ -216,7 +222,7 @@ describe('WorkAllocation', () => {
         surname: 'surName',
         email: 'email',
         active: true,
-        roles: ['caseworker-ia-caseofficer'],
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
         uid: '1233434'
       }));
       const task = {} as Task;
@@ -271,7 +277,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -353,7 +359,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -430,7 +436,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
@@ -505,7 +511,7 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-ia-iacjudge']
+      roles: [AppTestConstants.IA_JUDGE_ROLE]
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {

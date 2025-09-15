@@ -5,7 +5,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 
-const logger: JUILogger = log4jui.getLogger('crud-service');
+export const logger: JUILogger = log4jui.getLogger('crud-service');
 
 /**
  * Generic handleGet call Rest API with GET method
@@ -46,15 +46,10 @@ export async function sendGet(path: string, req: EnhancedRequest, customHeaders:
  * @param next
  * @returns {Promise<AxiosResponse>}
  */
-export async function handlePost<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-  try {
-    logger.info('handlePost:', path);
-    const headers = setHeaders(req);
-    return await http.post(path, body, { headers });
-  } catch (e) {
-    logger.error('handlePost: ' + e.status + ' ' + path, e.statusText, JSON.stringify(e.data));
-    next(e);
-  }
+export async function handlePost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+  logger.info('handlePost:', path);
+  const headers = setHeaders(req);
+  return await http.post(path, body, { headers });
 }
 
 export async function sendPost<T>(path: string, body: T, req: EnhancedRequest, next?: NextFunction): Promise<AxiosResponse> {

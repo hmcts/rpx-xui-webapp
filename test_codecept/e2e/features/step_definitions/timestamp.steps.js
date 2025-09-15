@@ -1,7 +1,5 @@
 const CaseManager = require('../pageObjects/common/CaseManager');
 
-const { defineSupportCode } = require('cucumber');
-
 const caseManager = new CaseManager();
 
 When('I Add Comment to the case', async function () {

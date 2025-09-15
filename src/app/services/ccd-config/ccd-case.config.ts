@@ -36,12 +36,12 @@ export class AppConfig extends AbstractAppConfig {
       if (init) {
         const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
         const obArray: Array<Observable<ConfigValue>> = [];
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.accessManagementMode, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
         if (obArray.length === 6) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
@@ -95,16 +95,16 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.document_management_url_v2;
   }
 
-  public getDocumentSecureMode() {
-    return this.config.document_management_secure_enabled;
-  }
-
   public getRemoteDocumentManagementUrl() {
     return this.config.remote_document_management_url;
   }
 
   public getDocumentSecureModeCaseTypeExclusions() {
     return this.config.documentSecureModeCaseTypeExclusions;
+  }
+
+  public getCdamExclusionList() {
+    return this.config.mc_cdam_exclusion_list;
   }
 
   public getPostcodeLookupUrl() {
@@ -132,7 +132,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getCreateOrUpdateDraftsUrl(ctid: string) {
-    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts/`;
+    return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts`;
   }
 
   public getViewOrDeleteDraftsUrl(did: string) {
@@ -188,7 +188,7 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getBannersUrl(): string {
-    return `${this.getCaseDataUrl()}/internal/banners/`;
+    return `${this.getCaseDataUrl()}/internal/banners`;
   }
 
   public getPrdUrl(): string {
@@ -254,10 +254,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.case_data_store_api_url;
   }
 
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    return this.config.enable_case_file_view_version_1_1;
-  }
-
   public getIcpEnable(): boolean {
     return this.config.icp_enabled;
   }
@@ -272,5 +268,9 @@ export class AppConfig extends AbstractAppConfig {
 
   public logMessage(logMessage: string): void {
     this.loggerService.log(logMessage);
+  }
+
+  public getEnableServiceSpecificMultiFollowups(): string[] {
+    return this.config.enable_service_specific_multi_followups;
   }
 }

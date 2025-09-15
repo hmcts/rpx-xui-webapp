@@ -38,8 +38,7 @@ import {
   SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL, SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICE_S2S_PATH,
-  SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH,
-  SERVICES_SSO_LOGOUT_URL
+  SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH
 } from './references';
 
 /**
@@ -94,7 +93,6 @@ export const applicationConfiguration = () => {
     servicesTermsAndConditionsPath: getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL),
     servicesSpecificChallengedAccessPath: getConfigValue(SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH),
     workAllocationTaskPath: getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH),
-    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH),
-    ssoLogoutURL: getConfigValue(SERVICES_SSO_LOGOUT_URL)
+    judicialApiPath: getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH)
   };
 };

@@ -11,12 +11,10 @@ import {
   SERVICES_CCD_DATA_STORE_API_PATH,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
-  SERVICES_EM_ANNO_API_URL,
   SERVICES_EM_DOCASSEMBLY_API_URL,
   SERVICES_IDAM_API_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
   SERVICE_S2S_PATH
@@ -36,7 +34,6 @@ export interface HealthChecks {
     ccdDataApi: any,
     documentsApi: any,
     documentsApiV2: any,
-    emmoApi: any,
     docassemblyApi: any,
     idamApi: any,
     idamWeb: any,
@@ -44,7 +41,6 @@ export interface HealthChecks {
     s2s: any,
     workAllocationApi?: any,
     roleApi?: any,
-    roleMappingApi?: any,
     caseworkerRefApi?: any,
   };
 }
@@ -56,7 +52,6 @@ const config: HealthChecks = {
     docassemblyApi: checkServiceHealth(getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL)),
     documentsApi: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH)),
     documentsApiV2: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)),
-    emmoApi: checkServiceHealth(getConfigValue(SERVICES_EM_ANNO_API_URL)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
     s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH))
@@ -67,7 +62,6 @@ if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
   config.checks.workAllocationApi = checkServiceHealth(getConfigValue(SERVICES_WORK_ALLOCATION_TASK_API_PATH));
   config.checks.caseworkerRefApi = checkServiceHealth(getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH));
   config.checks.roleApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH));
-  config.checks.roleMappingApi = checkServiceHealth(getConfigValue(SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH));
   config.checks.judicialApi = checkServiceHealth(getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH));
 }
 

@@ -141,7 +141,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
     action_group = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]
   }
 
-  data_source_id = azurerm_application_insights.appinsight.id
+  data_source_id = module.application_insights.id
   description    = "Monthly Welsh language usage report"
   enabled        = var.welsh_reporting_enabled
 

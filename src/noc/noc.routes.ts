@@ -11,7 +11,6 @@ export const ROUTES: Routes = [
       {
         path: '',
         component: null,
-        canActivate: [FeatureToggleGuard],
         data: {
           title: 'HMCTS Manage cases | Notice of Change',
           featureDisabledRedirect: '/'

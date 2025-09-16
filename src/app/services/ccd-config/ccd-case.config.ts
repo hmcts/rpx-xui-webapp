@@ -52,6 +52,7 @@ export class AppConfig extends AbstractAppConfig {
       } else {
         console.error('InitialisationSyncService indicated initialisation failed, using default config values');
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey, AppConstants.DEFAULT_SERVICE_MESSAGE, []);
+        this.initialisationComplete = false;
       }
     });
   }

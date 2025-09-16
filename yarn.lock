@@ -3262,7 +3262,7 @@ __metadata:
   resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-3465-rc4"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
-    axios: "npm:^1.7.7"
+    axios: "npm:^1.11.0"
     caller-path: "npm:^3.0.0"
     connect-redis: "npm:^4.0.4"
     csurf: "npm:^1.11.0"

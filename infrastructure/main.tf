@@ -179,7 +179,7 @@ let isReportDay = dayofmonth(now()) == 16;
   QUERY
 
   severity    = 3
-  frequency   = 5
+  frequency   = 360
   time_window = 2880
 
   trigger {

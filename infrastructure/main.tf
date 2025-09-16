@@ -149,10 +149,11 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   # This ensures that the alert is triggered and the email is sent out just once per month, regardless of Welsh usage.
   query = <<-QUERY
     let runQuery = dayofmonth(now()) == 16;
-    let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-    let endTime = startofmonth(now());
+    let currentMonth = startofmonth(now());
+    let previousMonth = startofmonth(datetime_add('month', -1, currentMonth));
     let FilteredRequests = requests
-    | where runQuery and timestamp between (startTime .. endTime)
+    | where runQuery 
+    | where timestamp >= previousMonth and timestamp < currentMonth
     | where url has "/api/translation/cy"
     | extend day = startofday(timestamp);
     let UniqueSessionsPerDay = FilteredRequests

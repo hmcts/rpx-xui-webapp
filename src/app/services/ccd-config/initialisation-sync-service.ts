@@ -21,11 +21,6 @@ export class InitialisationSyncService {
 
   // Call this function when initialisation (in this case, LaunchDarkly initialisation) has completed
   public initialisationComplete(complete = true): void {
-    // Prevent calling complete more than once
-    // if (this.isComplete) {
-    //   return;
-    // }
-
     console.log(`InitialisationSyncService: initialisationComplete: ${complete}`);
     this.init$.next(complete);
     this.init$.complete();
@@ -33,7 +28,6 @@ export class InitialisationSyncService {
 
   // Call this function to specify code to be run after initialisation has completed
   // calls the supplied callback when the initialisationComplete function has been called
-  // Register a callback to run after initialisation completes
   public waitForInitialisation(callback: (arg:boolean) => void): void {
     console.log('InitialiseSyncService: waitForInitialisation');
     // No need to wait if the initilisation has already completed

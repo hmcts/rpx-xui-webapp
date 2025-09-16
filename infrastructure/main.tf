@@ -180,6 +180,7 @@ let isReportDay = dayofmonth(now()) == 16;
 
   severity    = 3
   frequency   = 360
+  time_window = 2880
 
   trigger {
     operator  = "GreaterThan"

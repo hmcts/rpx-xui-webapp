@@ -14,15 +14,14 @@ import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.mode
 import * as fromHearingStore from '../../../../hearings/store';
 import {
   HEARING_JUDGE, HEARING_PANEL, HEARING_PANEL_REQUIRED, HEARING_TIMING, HEARING_VENUE,
-  HEARING_WELSH,
-  replaceResultValue
+  HEARING_WELSH
 } from '../../../../../api/hearings/data/defaultScreenFlow.data';
 
 const screenFlow: ScreenNavigationModel[] = [
-  replaceResultValue(HEARING_VENUE, 'hearing-judge', 'hearing-panel-required'),
-  replaceResultValue(HEARING_WELSH, 'hearing-judge', 'hearing-panel-required'),
+  HEARING_VENUE,
+  HEARING_WELSH,
   HEARING_PANEL_REQUIRED,
-  replaceResultValue(HEARING_JUDGE, 'hearing-panel', 'hearing-timing'),
+  HEARING_JUDGE,
   HEARING_PANEL,
   HEARING_TIMING
 ];
@@ -292,9 +291,9 @@ describe('HearingViewEditSummaryComponent', () => {
       fixture.detectChanges();
       expect(component.template[2].screenName).toEqual('hearing-venue');
       expect(component.template[3].screenName).toEqual('hearing-welsh');
-      expect(component.template[4].screenName).toEqual('hearing-panel-required');
+      expect(component.template[4].screenName).toEqual('hearing-judge');
       expect(component.template[5].screenName).toEqual('hearing-panel');
-      expect(component.template[6].screenName).toEqual('hearing-panel-selector');
+      expect(component.template[6].screenName).toEqual('hearing-timing');
       const scrFl = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(screenFlow));
       component.getScreenFlowFromStore().subscribe((scr) => {
         expect(scr.length).toEqual(6);
@@ -388,8 +387,7 @@ describe('HearingViewEditSummaryComponent', () => {
       fixture.detectChanges();
       expect(component.template[2].screenName).toEqual('hearing-venue');
       expect(component.template[3].screenName).toEqual('hearing-welsh');
-      expect(component.template[4].screenName).toEqual('hearing-panel-required');
-      expect(component.template[5].screenName).toEqual('hearing-judge');
+      expect(component.template[5].screenName).toEqual('hearing-panel');
       expect(component.template[6].screenName).toEqual('hearing-timing');
       const scrFl = spyOn(component, 'getScreenFlowFromStore').and.returnValue(of(screenFlow));
       component.getScreenFlowFromStore().subscribe((scr) => {

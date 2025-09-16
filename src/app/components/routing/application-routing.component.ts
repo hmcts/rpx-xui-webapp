@@ -41,8 +41,8 @@ export class ApplicationRoutingComponent implements OnInit {
       if (!(userDetails?.userInfo?.roles?.includes('pui-case-manager'))) {
         const userRoles = userDetails.userInfo.roles;
         let rolePresent = false;
-        for (let i = 0, len = landingRoles.roles.length; i < len; i++) {
-          if (userRoles.includes(landingRoles.roles[i])) {
+        for (let i = 0, len = landingRoles?.roles?.length; i < len; i++) {
+          if (userRoles.includes(landingRoles?.roles[i])) {
             rolePresent = true;
             break;
           }

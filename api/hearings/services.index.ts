@@ -37,15 +37,9 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
       const { status, data }: { status: number, data: ServiceHearingValuesModel } = await sendPost(markupPath, reqBody, req, next);
       let dataByDefault = mapDataByDefault(data);
       const forceNewDefaultScreenFlow = retrieveForceNewDefaultScreenFlow();
-      trackTrace(`services.index - forceNewDefaultScreenFlow: ${forceNewDefaultScreenFlow}`);
-      console.log(`services.index - forceNewDefaultScreenFlow: ${forceNewDefaultScreenFlow}`);
       if (forceNewDefaultScreenFlow) {
-        trackTrace('services.index - In forceDefaultScreenFlow...');
-        console.log('services.index - In forceDefaultScreenFlow...');
         dataByDefault = forceDefaultScreenFlow(data);
       } else {
-        trackTrace('services.index - Not in forceDefaultScreenFlow...');
-        console.log('services.index - Not in forceDefaultScreenFlow...');
         if (!data.screenFlow) {
           dataByDefault = {
             ...data,
@@ -54,9 +48,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
           };
         }
       }
-      trackTrace('services.index - dataByDefault.screenFlow:' + JSON.stringify(data.screenFlow));
-      console.log('services.index - dataByDefault.screenFlow:' + JSON.stringify(data.screenFlow));
-
       res.status(status).send(dataByDefault);
     }
   } catch (error) {
@@ -68,8 +59,6 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
 export function retrieveForceNewDefaultScreenFlow():boolean {
   try {
     const result = showFeature(FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW);
-    trackTrace('services.index - retrieveForceNewDefaultScreenFlow' + result);
-    console.log('services.index - retrieveForceNewDefaultScreenFlow' + result);
     return toBoolean(result);
   } catch {
     return false;
@@ -87,14 +76,10 @@ export function toBoolean(value: unknown): boolean {
 }
 
 export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
-  trackTrace('services.index - in forceDefaultScreenFlow '+ JSON.stringify(data.screenFlow));
-  console.log('services.index - in forceDefaultScreenFlow '+ JSON.stringify(data.screenFlow));
   if (!data.screenFlow) {
-    trackTrace('services.index - data.screenFlow is undefined, using DEFAULT_SCREEN_FLOW_NEW');
-    console.log('services.index - data.screenFlow is undefined, using DEFAULT_SCREEN_FLOW_NEW');
     return {
       ...data,
-      screenFlow: DEFAULT_SCREEN_FLOW_NEW
+      screenFlow: (data.panelRequiredDefault !== undefined) ? DEFAULT_SCREEN_FLOW_NEW : DEFAULT_SCREEN_FLOW
     };
   }
   const panelSelectorScreen = data.screenFlow.find((screen) => screen.screenName === 'hearing-panel');
@@ -107,8 +92,6 @@ export function forceDefaultScreenFlow(data: ServiceHearingValuesModel) {
 }
 
 export function replaceScreenFlow(screenFlow: ScreenNavigationModel[], followingScreen: string): ScreenNavigationModel[] {
-  trackTrace('services.index - replaceScreenFlow called with followingScreen:');
-  console.log('services.index - replaceScreenFlow called with followingScreen:');
   // Define the sequence to be replaced
   const toReplaceSequence = ['hearing-venue', 'hearing-welsh', 'hearing-judge', 'hearing-panel'];
 
@@ -141,8 +124,6 @@ export function replaceScreenFlow(screenFlow: ScreenNavigationModel[], following
 
   // Insert the new sequence at the same location
   screenFlow.splice(startIndex, 0, ...newSequence);
-  trackTrace('services.index - replaceScreenFlow screen flow replaced with new sequence: ' + JSON.stringify(screenFlow));
-  console.log('services.index - replaceScreenFlow screen flow replaced with new sequence: ' + JSON.stringify(screenFlow));
   return screenFlow;
 }
 

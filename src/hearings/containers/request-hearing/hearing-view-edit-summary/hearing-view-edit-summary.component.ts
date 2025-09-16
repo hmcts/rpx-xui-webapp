@@ -10,10 +10,9 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HEARING_VIEW_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-edit-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { Section } from '../../../../hearings/models/section';
-import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigation.model';
-import { HearingResponseError } from '../../../../hearings/models/hearingResponseError.model';
-import { HearingsUtils } from '../../../utils/hearings.utils';
+import { Section } from '../../../models/section';
+import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
+import { HearingResponseError } from '../../../models/hearingResponseError.model';
 
 @Component({
   selector: 'exui-hearing-view-edit-summary',
@@ -89,9 +88,6 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
             return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info');
           });
         });
-        if (this.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
-          this.template = HearingsUtils.checkTemplateForHearingPanelRequiremnts(this.template, storeData?.hearings?.hearingRequest?.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
-        }
       }
     });
     return this.template;

@@ -1,23 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription, timer } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Injectable()
 export class InitialisationSyncService {
   private init$ = new BehaviorSubject<boolean>(false);
   private isComplete = false;
   private subscriptions: Subscription[] = [];
-  private timeoutSubscription?: Subscription;
-  private readonly LD_TIMEOUT: number = 10000; // timeout value in milliseconds
 
   private observer = {
     complete: () => {
       this.isComplete = true;
       this.subscriptions.forEach((s) => s.unsubscribe());
       this.subscriptions = [];
-      if (this.timeoutSubscription) {
-        this.timeoutSubscription.unsubscribe();
-        this.timeoutSubscription = undefined;
-      }
     }
   };
 
@@ -28,7 +22,9 @@ export class InitialisationSyncService {
   // Call this function when initialisation (in this case, LaunchDarkly initialisation) has completed
   public initialisationComplete(complete = true): void {
     // Prevent calling complete more than once
-    if (this.isComplete) return;
+    // if (this.isComplete) {
+    //   return;
+    // }
 
     console.log(`InitialisationSyncService: initialisationComplete: ${complete}`);
     this.init$.next(complete);
@@ -42,12 +38,6 @@ export class InitialisationSyncService {
     console.log('InitialiseSyncService: waitForInitialisation');
     // No need to wait if the initilisation has already completed
     if (!this.isComplete) {
-      // Start a timeout that will call initialisationComplete(false) after 10 seconds
-      this.timeoutSubscription = timer(this.LD_TIMEOUT).subscribe(() => {
-        console.warn('InitialisationSyncService: Timeout exceeded, marking initialisation as failed.');
-        this.initialisationComplete(false);
-      });
-
       this.subscriptions.push(this.init$.subscribe(callback));
     } else {
       console.log('Initialisation complete before waitForInitialisation called, calling callback directly');

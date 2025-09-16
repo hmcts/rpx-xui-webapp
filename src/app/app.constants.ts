@@ -208,14 +208,13 @@ const caseAllocatorRole: string = 'case-allocator-role';
 const iaJudgeRole: string = 'caseworker-ia-iacjudge';
 const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 const defaultServiceMessage = [
-   {
-     "index": 10,
-    "message_cy": "Efallai y bydd rhai defnyddwyr yn profi problemau gyda'r gwasanaeth hwn ar hyn o bryd. Rydym yn gweithio i ddatrys hyn cyn gynted â phosibl.",
-    "message_en": "Some users may experience problems with this service at the moment. We are working to resolve this as soon as possible.",
-    "roles": ".+"
-   }
-  ];
-
+  {
+    'index': 10,
+    'message_cy': 'Efallai y bydd rhai defnyddwyr yn profi problemau gyda\'r gwasanaeth hwn ar hyn o bryd. Rydym yn gweithio i ddatrys hyn cyn gynted â phosibl.',
+    'message_en': 'Some users may experience problems with this service at the moment. We are working to resolve this as soon as possible.',
+    'roles': '.+'
+  }
+];
 
 export class AppConstants {
   public static FOOTER_DATA = null;

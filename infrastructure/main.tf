@@ -148,11 +148,11 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
   # Note: This query is configured to execute daily, but it will only produce results on the 15th day of each month.
   # This ensures that the alert is triggered and the email is sent out just once per month, regardless of Welsh usage.
   query = <<-QUERY
-    let runQuery = dayofmonth(now()) == 16;
+let isReportDay = dayofmonth(now()) == 16;
     let currentMonth = startofmonth(now());
     let previousMonth = startofmonth(datetime_add('month', -1, currentMonth));
     let FilteredRequests = requests
-    | where runQuery 
+    | where isReportDay 
     | where timestamp >= previousMonth and timestamp < currentMonth
     | where url has "/api/translation/cy"
     | extend day = startofday(timestamp);
@@ -164,14 +164,17 @@ resource "azurerm_monitor_scheduled_query_rules_alert" "welsh_usage_report" {
     | where isempty(session_Id)
     | summarize HasMissingSessions = count() by day
     | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-    UniqueSessionsPerDay
+    let WelshUsageData = UniqueSessionsPerDay
     | join kind=fullouter HasNoSession on day
     | extend
         SessionCount = coalesce(SessionCount, 0),
         NoSessionAddition = coalesce(NoSessionAddition, 0)
     | extend TotalSessions = SessionCount + NoSessionAddition
     | project day, TotalSessions
-    | order by day asc
+    | order by day asc;
+    union WelshUsageData, (print day = currentMonth, TotalSessions = 0, reportGenerated = "No Welsh usage in previous month")
+    | where isReportDay
+    | project day, TotalSessions
     | render columnchart
   QUERY
 

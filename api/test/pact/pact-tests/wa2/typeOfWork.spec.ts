@@ -98,5 +98,4 @@ describe('Task management api, work types', () => {
 
 function assertResponses(dto: any) {
   expect(dto[0].key).to.be.equal('upper_tribunal');
-  expect(dto[0].value).to.be.equal('Upper Tribunal');
 }

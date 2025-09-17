@@ -4,9 +4,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import * as moment from 'moment';
-import { combineLatest, Observable, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AppConstants } from '../../../app/app.constants';
+import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
@@ -25,7 +23,6 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
 
   public bookingTypeForm: FormGroup;
   public existingBookings: Booking[];
-  private combineResult$: Observable<any[]> | any;
   private existingBookingsSubscription: Subscription;
   private refreshAssignmentsSubscription: Subscription;
 
@@ -46,15 +43,10 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     if (this.userId) {
       this.existingBookingsSubscription = this.bookingService.getBookings(this.userId, bookableServices).subscribe((bookings) => {
         if (bookings) {
-          this.combineResult$ = combineLatest([of(bookings), this.featureToggleService.isEnabled(AppConstants.FEATURE_NAMES.booking)]);
-          this.combineResult$.pipe(map(([bookingResults, bookingFeatureToggle]) => {
-            if (bookingResults) {
-              this.existingBookings = bookingResults as any;
-              this.orderByCurrentThenFuture();
-              this.bookingProcess.selectedBookingLocationIds = bookingFeatureToggle ? (bookingResults as any).filter((p) => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p) => p.locationId) : null;
-              this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
-            }
-          })).subscribe();
+          this.existingBookings = bookings as any;
+          this.orderByCurrentThenFuture();
+          this.bookingProcess.selectedBookingLocationIds = (bookings as any).filter((p) => moment(new Date()).isSameOrAfter(p.beginTime) && moment(new Date()).isSameOrBefore(p.endTime)).sort(this.sortBookings).map((p) => p.locationId);
+          this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(new Set(this.bookingProcess.selectedBookingLocationIds))));
         }
       },
       (err) => {

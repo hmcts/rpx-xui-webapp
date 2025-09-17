@@ -3303,16 +3303,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.6":
-  version: 2.1.6
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.6"
+"@hmcts/rpx-xui-common-lib@npm:2.1.6-exui-3616-rc1":
+  version: 2.1.6-exui-3616-rc1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.6-exui-3616-rc1"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/f1327fba7e05849d4b5c9ccae60506512ccf303d4a34842e35c53f9b15ba2e6f5131c1814882626692936f890982c4ad6e3a9560a996eac0eaeabd4a5f0b8de9
+  checksum: 10/7a78733ecd5cae7f75fb00c9a33b8a7df2f287ee68f872a7fc97dcbadfe57f931782134b264152a2606f5962611c1b0eaafa30229fb8fe720b0074eb6e890e04
   languageName: node
   linkType: hard
 
@@ -20860,7 +20860,7 @@ __metadata:
     "@hmcts/media-viewer": "npm:4.1.6"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.6"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.6-exui-3616-rc1"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-rc2"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

@@ -67,6 +67,11 @@ moved {
   to   = module.application_insights.azurerm_application_insights.this
 }
 
+moved {
+  from = azurerm_monitor_scheduled_query_rules_alert.welsh_usage_report
+  to   = azurerm_monitor_scheduled_query_rules_alert_v2.welsh_usage_report
+}
+
 resource "azurerm_application_insights" "appinsight" {
   name                = "${local.app_full_name}-appinsights-${var.env}-classic"
   location            = var.location

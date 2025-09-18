@@ -157,7 +157,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "welsh_usage_report" {
     # Note: This query is configured to execute daily, but it will only produce results on the 15th day of each month.
     # This ensures that the alert is triggered and the email is sent out just once per month, regardless of Welsh usage.
     query = <<-QUERY
-let isReportDay = dayofmonth(now()) == 16;
+let isReportDay = dayofmonth(now()) == 18;
     let currentMonth = startofmonth(now());
     let previousMonth = startofmonth(datetime_add('month', -1, currentMonth));
     let FilteredRequests = requests

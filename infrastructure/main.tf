@@ -142,7 +142,7 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "welsh_usage_report" {
   enabled               = var.welsh_reporting_enabled
   severity              = 3
   evaluation_frequency  = "PT5M"  # 5 minutes in ISO 8601 format
-  window_duration       = "PT2D"  
+  window_duration       = "P2D"  
 
   action {
     action_groups = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]

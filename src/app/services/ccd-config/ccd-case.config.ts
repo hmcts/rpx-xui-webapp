@@ -18,6 +18,10 @@ type ConfigValue = string | boolean | Array<string> | object;
  */
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    // Return the feature toggle value from config, defaulting to false if not present
+    return !!this.config.enable_case_file_view_version_1_1;
+  }
   public initialisationComplete = false;
   protected config: CaseEditorConfig;
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
@@ -36,15 +40,12 @@ export class AppConfig extends AbstractAppConfig {
       if (init) {
         const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
         const obArray: Array<Observable<ConfigValue>> = [];
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled, false, obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.accessManagementMode, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 8) {
+        if (obArray.length === 5) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
@@ -221,10 +222,6 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.case_flags_refdata_api_url;
   }
 
-  public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
-  }
-
   public getWAServiceConfig(): WAFeatureConfig {
     if (this.initialisationComplete) {
       return this.config.wa_service_config;
@@ -258,10 +255,6 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseDataStoreApiUrl(): string {
     return this.config.case_data_store_api_url;
-  }
-
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    return this.config.enable_case_file_view_version_1_1;
   }
 
   public getIcpEnable(): boolean {

@@ -14,8 +14,8 @@ const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_work
 describe('Task management api, work types', () => {
   const RESPONSE_BODY = {
     work_types: eachLike({
-      id: somethingLike('evidence'),
-      label: somethingLike('Evidence')
+      id: somethingLike('upper_tribunal'),
+      label: somethingLike('Upper Tribunal')
     })
   };
 
@@ -97,5 +97,5 @@ describe('Task management api, work types', () => {
 });
 
 function assertResponses(dto: any) {
-  expect(dto[0].key).to.be.equal('evidence');
+  expect(dto[0].key).to.be.equal('upper_tribunal');
 }

@@ -70,13 +70,13 @@
     "logLevel": "debug"
   },
   "/socket.io": {
-    "target": "http://localhost:3460",
+    "target": "http://localhost:3001",
     "secure": false,
     "ws": true,
     "logLevel": "debug"
   },
   "/activity": {
-    "target": "http://localhost:3460",
+    "target": "http://localhost:3001",
     "secure": false,
     "ws": true,
     "logLevel": "debug"

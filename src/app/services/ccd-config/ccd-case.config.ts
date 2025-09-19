@@ -21,7 +21,6 @@ export class AppConfig extends AbstractAppConfig {
   public initialisationComplete = false;
   protected config: CaseEditorConfig;
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
-
   constructor(
     private readonly appConfigService: AppConfigService,
     private readonly featureToggleService: FeatureToggleService,

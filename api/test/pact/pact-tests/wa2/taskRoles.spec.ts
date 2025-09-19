@@ -8,14 +8,14 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, eachLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_task_role_permissions_by_task_id', port: 8000 });
 
-const taskId = '4d4b6fgh-c91f-433f-92ac-e456ae34f72a';
+const taskId = '4d4b6fgh-c91f-433f-92ac-e800ae34f92c';
 
 describe('Task management api, task roles', () => {
   const RESPONSE_BODY = { roles: eachLike({
-    role_category: somethingLike('LEGAL_OPERATIONS'),
-    role_name: somethingLike('tribunal-caseworker'),
+    role_category: somethingLike('JUDICIARY'),
+    role_name: somethingLike('judge'),
     permissions: eachLike('READ'),
-    authorisations: eachLike('IAC')
+    authorisations: eachLike('SSCS')
   }) };
 
   describe('get /work-types', () => {

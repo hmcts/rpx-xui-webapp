@@ -56,4 +56,77 @@ describe('PanelRolesHiddenConverter', () => {
     const expected = cold('(b|)', { b: showAnswer });
     expect(result$).toBeObservable(expected);
   });
+  it('should return false when amendments are enabled (overrides everything)', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingConditions = {
+      ...STATE.hearingConditions,
+      isHearingAmendmentsEnabled: true
+    } as any;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null as any;
+
+    const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: false });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when panelRequirements is defined but has no relevant fields', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    // object exists but none of panelSpecialisms/roleType/panelPreferences present
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {} as any;
+
+    const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when all arrays are present but empty', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelSpecialisms: [],
+      roleType: [],
+      panelPreferences: []
+    } as any;
+
+    const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when panelPreferences has no PANEL_MEMBER entries', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [
+        { memberID: 'A1', memberType: MemberType.JUDGE, requirementType: RequirementType.EXCLUDE },
+        { memberID: 'A2', memberType: MemberType.JUDGE, requirementType: RequirementType.MUSTINC }
+      ]
+    } as any;
+
+    const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return false when at least one PANEL_MEMBER exists, regardless of requirement type', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [
+        { memberID: 'X1', memberType: MemberType.JUDGE, requirementType: RequirementType.EXCLUDE },
+        { memberID: 'X2', memberType: MemberType.PANEL_MEMBER, requirementType: RequirementType.OPTINC }, // counts
+        { memberID: 'X3', memberType: MemberType.JUDGE, requirementType: RequirementType.MUSTINC }
+      ]
+    } as any;
+
+    const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: false });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when panelRequirements is undefined', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = undefined as any;
+
+    const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
 });

@@ -150,19 +150,22 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'judgeName',
         answerTitle: 'Name of the judge',
         answerSource: AnswerSource.JUDGE_NAME,
-        changeLink: '/hearings/request/hearing-judge#inputSelectPerson'
+        changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
+        isHiddenSource: IsHiddenSource.JUDGE_NAME
       },
       {
         id: 'judgeTypes',
         answerTitle: 'Select all judge types that apply',
         answerSource: AnswerSource.JUDGE_TYPES,
-        changeLink: '/hearings/request/hearing-judge#judgeTypes'
+        changeLink: '/hearings/request/hearing-judge#judgeTypes',
+        isHiddenSource: IsHiddenSource.JUDGE_TYPES
       },
       {
         id: 'judgeExclusion',
         answerTitle: 'Exclude a judge',
         answerSource: AnswerSource.JUDGE_EXCLUSION,
-        changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude'
+        changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
+        isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
       }
     ]
   },
@@ -208,19 +211,22 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'panelInclusion',
         answerTitle: 'Include specific panel members',
         answerSource: AnswerSource.PANEL_INCLUSION,
-        changeLink: '/hearings/request/hearing-panel-selector#inputSelectPersonInclude'
+        changeLink: '/hearings/request/hearing-panel-selector#inputSelectPersonInclude',
+        isHiddenSource: IsHiddenSource.PANEL_INCLUSION
       },
       {
         id: 'panelExclusion',
         answerTitle: 'Exclude specific panel members',
         answerSource: AnswerSource.PANEL_EXCLUSION,
-        changeLink: '/hearings/request/hearing-panel-selector#inputSelectPersonExclude'
+        changeLink: '/hearings/request/hearing-panel-selector#inputSelectPersonExclude',
+        isHiddenSource: IsHiddenSource.PANEL_EXCLUSION
       },
       {
         id: 'panelRoles',
         answerTitle: 'Select any other panel roles required',
         answerSource: AnswerSource.PANEL_ROLES,
-        changeLink: '/hearings/request/hearing-panel-selector#specificPanelSelection'
+        changeLink: '/hearings/request/hearing-panel-selector#specificPanelSelection',
+        isHiddenSource: IsHiddenSource.PANEL_ROLES
       }
     ],
     isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION

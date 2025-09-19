@@ -5,6 +5,7 @@ import { LovRefDataModel } from '../models/lovRefData.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
 import { HearingsUtils } from '../utils/hearings.utils';
+import { Mode } from '../models/hearings.enum';
 
 export class PanelRolesAnswerConverter implements AnswerConverter {
   constructor(protected readonly route: ActivatedRoute) {}
@@ -14,7 +15,7 @@ export class PanelRolesAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map((state) => {
-        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+        const panelRequirements = (state.hearingConditions?.isHearingAmendmentsEnabled && state.hearingConditions?.mode === Mode.VIEW_EDIT)
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const SelectedPanelSpecialism: string[] = panelRequirements && panelRequirements.panelSpecialisms || [];

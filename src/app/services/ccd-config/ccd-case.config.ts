@@ -36,13 +36,12 @@ export class AppConfig extends AbstractAppConfig {
       if (init) {
         const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
         const obArray: Array<Observable<ConfigValue>> = [];
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.accessManagementMode, true, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 6) {
+        if (obArray.length === 5) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
@@ -213,10 +212,6 @@ export class AppConfig extends AbstractAppConfig {
 
   public getCaseFlagsRefdataApiUrl(): string {
     return this.config.case_flags_refdata_api_url;
-  }
-
-  public getAccessManagementMode(): boolean {
-    return this.config.access_management_mode && this.environmentService.get('accessManagementEnabled');
   }
 
   public getWAServiceConfig(): WAFeatureConfig {

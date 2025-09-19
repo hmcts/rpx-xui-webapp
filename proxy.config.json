@@ -69,14 +69,14 @@
     "secure": false,
     "logLevel": "debug"
   },
-  "/socket.io/*": {
-    "target": "http://localhost:3001",
+  "/socket.io": {
+    "target": "http://localhost:3460",
     "secure": false,
     "ws": true,
     "logLevel": "debug"
   },
-  "/activity/*": {
-    "target": "http://localhost:3001",
+  "/activity": {
+    "target": "http://localhost:3460",
     "secure": false,
     "ws": true,
     "logLevel": "debug"

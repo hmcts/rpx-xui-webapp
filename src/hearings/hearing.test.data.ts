@@ -92,6 +92,20 @@ export const judicialUsersRefData: JudicialUserModel[] = [{
   isJudge: '',
   isMagistrate: '',
   isPanelMember: ''
+},
+{
+  title: 'Mr',
+  knownAs: 'Dave Collins',
+  surname: 'Dave Collins',
+  fullName: 'Dave Collins',
+  emailId: 'dave.collins@judicial.com',
+  idamId: '1102839233',
+  initials: 'JC',
+  postNominals: 'JP',
+  personalCode: 'P0000002',
+  isJudge: '',
+  isMagistrate: '',
+  isPanelMember: ''
 }];
 
 export const panelMembersRefData: JudicialUserModel[] = [{
@@ -119,7 +133,21 @@ export const judgeRefData: JudicialUserModel[] = [
     idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
     initials: 'JC',
     postNominals: 'JP',
-    personalCode: 'P0000001',
+    personalCode: 'P0000003',
+    isJudge: '',
+    isMagistrate: '',
+    isPanelMember: ''
+  },
+  {
+    title: 'Mrs',
+    knownAs: 'Tracy Collins',
+    surname: 'Collins',
+    fullName: 'Tracy Collins',
+    emailId: 'tracy.collins@judicial.com',
+    idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c1',
+    initials: 'JC',
+    postNominals: 'JP',
+    personalCode: 'P0000004',
     isJudge: '',
     isMagistrate: '',
     isPanelMember: ''

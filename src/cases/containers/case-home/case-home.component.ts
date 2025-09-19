@@ -101,8 +101,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases',
             'case-details',
-            navigation.relativeTo.snapshot.params.jurisdiction,
-            navigation.relativeTo.snapshot.params.caseType,
+            navigation.relativeTo.snapshot.params.jurisdiction ?? navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
+            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid],

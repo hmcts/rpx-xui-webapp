@@ -18,13 +18,10 @@ type ConfigValue = string | boolean | Array<string> | object;
  */
 @Injectable()
 export class AppConfig extends AbstractAppConfig {
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    // Return the feature toggle value from config, defaulting to false if not present
-    return !!this.config.enable_case_file_view_version_1_1;
-  }
   public initialisationComplete = false;
   protected config: CaseEditorConfig;
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
+  
   constructor(
     private readonly appConfigService: AppConfigService,
     private readonly featureToggleService: FeatureToggleService,
@@ -72,6 +69,11 @@ export class AppConfig extends AbstractAppConfig {
       ...obj,
       [key]: value
     } as T & { [P in K]: V };
+  }
+
+  public getEnableCaseFileViewVersion1_1(): boolean {
+    // Return the feature toggle value from config, defaulting to false if not present
+    return !!this.config.enable_case_file_view_version_1_1;
   }
 
   public load(): Promise<void> {

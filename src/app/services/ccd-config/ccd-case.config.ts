@@ -1,5 +1,3 @@
-/* eslint-disable no-trailing-spaces */ 
-// Temporary disable as this file is due to be refactored
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { AbstractAppConfig, CaseEditorConfig } from '@hmcts/ccd-case-ui-toolkit';
@@ -23,6 +21,7 @@ export class AppConfig extends AbstractAppConfig {
   public initialisationComplete = false;
   protected config: CaseEditorConfig;
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
+
   constructor(
     private readonly appConfigService: AppConfigService,
     private readonly featureToggleService: FeatureToggleService,

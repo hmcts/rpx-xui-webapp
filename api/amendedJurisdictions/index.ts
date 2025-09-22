@@ -27,19 +27,16 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   } else {
     sessionKey = 'jurisdictions';
   }
+
   if (!req.session[sessionKey]) {
     req.session[sessionKey] = filtered;
   }
-  console.log(`caching data ${sessionKey}`, req.session[sessionKey]);
+
   return req.session[sessionKey];
 };
 
-export const checkCachedJurisdictions = (
-  proxyReq: ClientRequest,
-  req: Request & { session?: Record<string, any> },
-  res: Response
-) => {
-  if (jurisdictions.test(req.url) && req.session) {
+export const checkCachedJurisdictions = (proxyReq, req, res) => {
+  if (jurisdictions.test(req.url)) {
     const params = new URLSearchParams(req.url.split('?')[1]);
     const access = params.get('access');
     let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';

@@ -110,7 +110,8 @@ export const getXuiNodeMiddleware = async () => {
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
     useRoutes: true,
-    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
+    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE),
+    ssoLogoutURL: `${idamWebUrl}/o/endSession`
   };
 
   const baseStoreOptions = {

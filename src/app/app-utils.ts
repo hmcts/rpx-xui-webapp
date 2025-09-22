@@ -232,7 +232,7 @@ export class AppUtils {
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return userInfo.roleCategory === RoleCategory.JUDICIAL
+    return userInfo?.roleCategory === RoleCategory.JUDICIAL
       && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }

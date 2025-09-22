@@ -121,7 +121,7 @@ xdescribe('Amended Jurisdiction', () => {
       { id: 'PROBATE' },
       { id: 'DIVORCE' }
     ]);
-    expect(response).to.equal([{ id: 'PROBATE' }, { id: 'DIVORCE' }]);
+    expect(response).to.equal(req.session[sessionKey]);
   });
 
   describe('checkCachedJurisdictions', () => {
@@ -135,14 +135,16 @@ xdescribe('Amended Jurisdiction', () => {
 
     it('should send cached jurisdictions and end proxy request when jurisdictions are cached', () => {
       req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-      req.session.jurisdictions = [
+      const sessionKey = 'readJurisdictions';
+      req.session[sessionKey] = [
         { id: 'PROBATE' },
         { id: 'DIVORCE' }
       ];
 
       amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
-      expect(res.json).to.have.been.calledWith([{ id: 'PROBATE' }, { id: 'DIVORCE' }]);
-      expect(proxyReq.end.called).to.be.true;
+
+      expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
+      expect(proxyReq.end).to.have.been.called;
     });
 
     it('should not send response when no jurisdictions are cached', () => {
@@ -186,7 +188,7 @@ xdescribe('Amended Jurisdiction', () => {
 
         amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
 
-        expect(res.send).to.have.been.calledWith([{ id: 'PROBATE' }]);
+        expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
         expect(proxyReq.end).to.have.been.called;
       });
     });

@@ -5,7 +5,7 @@
         <ng-container *ngFor="let location of selectedLocations">
           <ng-template #locationSelectionTags>
             <li class="location-selection">
-              <a class="hmcts-filter__tag" (click)="removeLocation(location)" href="javascript:void(0)">
+              <a class="hmcts-filter__tag" (click)="removeLocation(location); $event.preventDefault()" href="#">
                 {{ location.location }}
               </a>
             </li>
@@ -52,7 +52,7 @@
 
   <div>
     <a class="govuk-button govuk-button--secondary"
-       href="javascript:void(0)" (click)="addLocation()" data-module="govuk-button">
+       href="#" (click)="addLocation(); $event.preventDefault()" data-module="govuk-button">
       <ng-container>{{ addButtonTitle }}</ng-container>
     </a>
   </div>

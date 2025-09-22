@@ -58,7 +58,7 @@ describe('ErrorPageComponent', () => {
     const headingElement = nativeElement.querySelector('.govuk-heading-xl');
     expect(headingElement.textContent).toEqual('There was a system error and your request could not be processed.');
     const hrefElement = nativeElement.querySelector('.govuk-link');
-    expect(hrefElement.getAttribute('href')).toEqual('/cases/case-details/1111222233334444/hearings');
+    expect(hrefElement.getAttribute('href')).toEqual('/cases/case-details/IA/Asylum/1111222233334444/hearings');
     expect(component.caseId).toEqual('1111222233334444');
   });
 });

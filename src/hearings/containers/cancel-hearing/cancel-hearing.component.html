@@ -4,7 +4,7 @@
   <div class="page">
     <main id="content" role="main">
        <a href="javascript:void(0)"
-           [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']" class="govuk-back-link">{{ 'Back' | rpxTranslate }}</a>
+           [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']" class="govuk-back-link">{{ 'Back' | rpxTranslate }}</a>
 
       <div class="govuk-grid-row">
         <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem'| rpxTranslate"></xuilib-hmcts-error-summary>
@@ -41,7 +41,7 @@
           </form>
           <p class="govuk-body">
              <a href="javascript:void(0)"
-           [routerLink]="['/', 'cases', 'case-details', caseId, 'hearings']">{{ 'Do not cancel hearing' | rpxTranslate }}</a>
+           [routerLink]="['/', 'cases', 'case-details', jurisdiction, caseType, caseId, 'hearings']">{{ 'Do not cancel hearing' | rpxTranslate }}</a>
           </p>
         </div>
       </div>

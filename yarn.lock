@@ -3222,12 +3222,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.42-3044-javascript-void-removal":
-  version: 7.2.42-3044-javascript-void-removal
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.42-3044-javascript-void-removal"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.42-3044-2761-rc2":
+  version: 7.2.42-3044-2761-rc2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.42-3044-2761-rc2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b64ab3b82fa95d4f7e6b496e1339f2cbfb78b430a9d72d8709774f3fbd39828012728f0b03c0e73069dd277bce108b7dfae6347f119bde61c6689500413789a3
+  checksum: 10/755d18516a3fdda2dc768918c852e2bc834652f49fbbf56b0f7f8cd3ebe3613c738b56fe664801d0065c103dc704e647947bad9eb11bf3b467c32495f63ab733
   languageName: node
   linkType: hard
 
@@ -11145,7 +11145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.3.6, debug@npm:^4.3.7, debug@npm:^4.4.0":
+"debug@npm:4, debug@npm:4.4.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:^4.3.6, debug@npm:^4.3.7, debug@npm:^4.4.0":
   version: 4.4.1
   resolution: "debug@npm:4.4.1"
   dependencies:
@@ -11178,18 +11178,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/0073c3bcbd9cb7d71dd5f6b55be8701af42df3e56e911186dfa46fac3a5b9eb7ce7f377dd1d3be6db8977221f8eb333d945216f645cf56f6b688cd484837d255
-  languageName: node
-  linkType: hard
-
-"debug@npm:4.4.1":
-  version: 4.4.1
-  resolution: "debug@npm:4.4.1"
-  dependencies:
-    ms: "npm:^2.1.3"
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 10/8e2709b2144f03c7950f8804d01ccb3786373df01e406a0f66928e47001cf2d336cbed9ee137261d4f90d68d8679468c755e3548ed83ddacdc82b194d2468afe
   languageName: node
   linkType: hard
 
@@ -16319,6 +16307,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"layout-base@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "layout-base@npm:2.0.1"
+  checksum: 10/b5cca04a2e327ea16374a0058f73544291aeb0026972677a128594aca3b627d26949140ab7d275798c7d39193a33b41c5a856d4509c1518f49c9a5f1dad39a20
+  languageName: node
+  linkType: hard
+
 "lazy-ass@npm:1.6.0":
   version: 1.6.0
   resolution: "lazy-ass@npm:1.6.0"
@@ -20883,7 +20878,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.42-3044-javascript-void-removal"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.42-3044-2761-rc2"
     "@hmcts/ccpay-web-component": "npm:6.2.18"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.6"

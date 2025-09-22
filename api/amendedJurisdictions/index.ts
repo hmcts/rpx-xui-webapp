@@ -1,7 +1,5 @@
-import { ClientRequest } from 'http';
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
-import { Request, Response } from 'express';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
 

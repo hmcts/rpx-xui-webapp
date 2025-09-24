@@ -27,10 +27,10 @@ module.exports = function(config) {
     },
     reporters: ['spec', 'progress', 'kjhtml', 'coverage'],
     coverageReporter: {
-      type: 'lcov',
       dir: require('path').join(__dirname, '../reports/tests/coverage/ng'),
       subdir: '.',
       reporters: [
+        { type: 'lcov' },
         { type: 'html' },
         { type: 'text-summary' }
       ]

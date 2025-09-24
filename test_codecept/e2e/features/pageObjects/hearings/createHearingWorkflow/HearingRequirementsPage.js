@@ -1,9 +1,9 @@
-const GovUKTable = require('../../common/govUkTable');
+const { $ } = require('../../../../../helpers/globals');
 const partyCaseFlags = require('./partyCaseFlagsTable');
 
 class HearingRequirementsPage {
-  constructor() {
-    this.pageContainer = $('exui-hearing-requirements');
+  get pageContainer() {
+    return $('exui-hearing-requirements');
   }
 
   async getPartiesWithCaseFlagsDisplayed() {
@@ -15,7 +15,7 @@ class HearingRequirementsPage {
   }
 
   async isDisplayed() {
-    return await this.pageContainer.isDisplayed();
+    return await this.pageContainer.isVisible();
   }
 }
 

@@ -1,29 +1,42 @@
+const { $, $$, elementByXpath } = require('../../../../helpers/globals');
 const TaskList = require('./taskListTable');
 const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../../support/constants');
 
 class TaskActionPage extends TaskList {
-  constructor() {
-    super();
-    this.taskAssignmentContainer = $('exui-task-action-container');
-    this.pageHeaderTitle = $('exui-task-action-container #main-content h1');
-    this.actionDescription = $('#main-content>div>div>p');
-
-    this.unassignBtn = element(by.xpath('//exui-task-action-container//button[contains(text(),"Unassign")]'));
-
-    //In release 1
-    this.cancelBtn = element(by.xpath('//exui-task-action-container//button[contains(text(),"Cancel")]'));
-
-    //From release2
-    this.submitBtn = $('exui-task-action-container button[id = \'submit-button\']');
-    this.cancelLink = element(by.xpath('//exui-task-action-container//p/a[contains(text(),"Cancel")]'));
-
-    this.bannerMessageContainer = $('exui-info-message ');
-    this.infoMessages = $$('exui-info-message .hmcts-banner__message');
-
-    this.taskDetailsRow = $('exui-task-action-container exui-task-list table tbody tr');
-    this.taskColumnHeader = $('exui-task-action-container exui-task-list table thead th button');
+  get taskAssignmentContainer() {
+    return $('exui-task-action-container');
+  }
+  get pageHeaderTitle() {
+    return $('exui-task-action-container #main-content h1');
+  }
+  get actionDescription() {
+    return $('#main-content>div>div>p');
+  }
+  get unassignBtn() {
+    return elementByXpath('//exui-task-action-container//button[contains(text(),"Unassign")]');
+  }
+  get cancelBtn() {
+    return elementByXpath('//exui-task-action-container//button[contains(text(),"Cancel")]');
+  }
+  get submitBtn() {
+    return $('exui-task-action-container button#submit-button');
+  }
+  get cancelLink() {
+    return elementByXpath('//exui-task-action-container//p/a[contains(text(),"Cancel")]');
+  }
+  get bannerMessageContainer() {
+    return $('exui-info-message');
+  }
+  get infoMessages() {
+    return $$('exui-info-message .hmcts-banner__message');
+  }
+  get taskDetailsRow() {
+    return $('exui-task-action-container exui-task-list table tbody tr');
+  }
+  get taskColumnHeader() {
+    return $('exui-task-action-container exui-task-list table thead th button');
   }
 
   async amOnPage() {
@@ -38,30 +51,30 @@ class TaskActionPage extends TaskList {
 
   async isManageLinkPresent() {
     const task = await this.getTableRowAt(1);
-    return await task.$('button[id^="manage_"]').isPresent();
+    return await task.locator('button[id^="manage_"]').isVisible();
   }
 
   async getPageHeader() {
     await BrowserWaits.waitForElement(this.pageHeaderTitle);
-    return await this.pageHeaderTitle.getText();
+    return await this.pageHeaderTitle.textContent();
   }
 
-  async getActionDescription(){
+  async getActionDescription() {
     await BrowserWaits.waitForElement(this.actionDescription);
-    return await this.actionDescription.getText();
+    return await this.actionDescription.textContent();
   }
 
-  async clickCancelLink(){
+  async clickCancelLink() {
     await BrowserWaits.waitForElement(this.cancelLink);
     await this.cancelLink.click();
   }
 
-  async getSubmitBtnActionLabel(){
+  async getSubmitBtnActionLabel() {
     await BrowserWaits.waitForElement(this.submitBtn);
-    return await this.submitBtn.getText();
+    return await this.submitBtn.textContent();
   }
 
-  async clickSubmit(){
+  async clickSubmit() {
     await BrowserWaits.waitForElement(this.submitBtn);
     await this.submitBtn.click();
   }
@@ -79,8 +92,8 @@ class TaskActionPage extends TaskList {
   async clickSubmitBtn(action) {
     const verb = this.getSubmitBtnText(action);
     expect(await this.amOnPage(), 'Not on task action page').to.be.true;
-    this.unassignBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
-    await this.unassignBtn.click();
+    const submitBtn = elementByXpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`);
+    await submitBtn.click();
   }
 
   async isBannerMessageDisplayed() {
@@ -89,36 +102,27 @@ class TaskActionPage extends TaskList {
       return true;
     } catch (err) {
       cucumberReporter.AddMessage('message banner not displayed: ' + err, LOG_LEVELS.Error);
-
       return false;
     }
   }
 
   async getBannerMessagesDisplayed() {
     expect(await this.isBannerMessageDisplayed(), 'Message banner not displayed').to.be.true;
-    const messagescount = await this.infoMessages.count();
+    const count = await this.infoMessages.count();
     const messages = [];
-    for (let i = 0; i < messagescount; i++) {
-      const message = await this.infoMessages.get(i).getText();
-
-      const submessagestrings = message.split('\n');
-      messages.push(...submessagestrings);
+    for (let i = 0; i < count; i++) {
+      const message = await this.infoMessages.nth(i).textContent();
+      messages.push(...message.split('\n'));
     }
     return messages;
   }
 
   async isBannermessageWithTextDisplayed(messageText) {
     const messages = await this.getBannerMessagesDisplayed();
-
-    for (const message of messages) {
-      if (message.includes(messageText)) {
-        return true;
-      }
-    }
-    return false;
+    return messages.some(msg => msg.includes(messageText));
   }
 
-  async getColumnValue(columnHeader){
+  async getColumnValue(columnHeader) {
     await this.waitForTable();
     return await this.getColumnValueForTaskAt(columnHeader, 1);
   }
@@ -128,47 +132,38 @@ class TaskActionPage extends TaskList {
       await BrowserWaits.waitForElement(this.taskDetailsRow);
       return true;
     } catch (err) {
-      console.log('Task assignment page not displayed: ' + err);
+      console.log('Task assignment row not displayed: ' + err);
       return false;
     }
   }
 
   async isColumnWithHeaderDisplayed() {
     expect(await this.isTaskDisplayed(), 'Task details row not displayed').to.be.true;
-    return this.taskColumnHeader.isDisplayed();
+    return this.taskColumnHeader.isVisible();
   }
 
   async validatePageContentForAction(action, softAssert) {
     const verb = this.getSubmitBtnText(action);
-    const submitBtn = element(by.xpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`));
-    if (softAssert){
-      await BrowserWaits.waitForElement(this.pageHeaderTitle);
+    const submitBtn = elementByXpath(`//exui-task-action-container//button[contains(text(),"${verb}")]`);
+    await BrowserWaits.waitForElement(this.pageHeaderTitle);
 
-      await softAssert.assert(async () => expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true);
-      await softAssert.assert(async () => expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true);
+    if (softAssert) {
+      await softAssert.assert(async () => expect(await submitBtn.isVisible()).to.be.true);
+      await softAssert.assert(async () => expect(await this.cancelBtn.isVisible()).to.be.true);
     } else {
-      expect(await submitBtn.isDisplayed(), `Submit button with text ${verb} not displayed`).to.be.true;
-      expect(await this.cancelBtn.isDisplayed(), 'Cancel button with not displayed').to.be.true;
+      expect(await submitBtn.isVisible()).to.be.true;
+      expect(await this.cancelBtn.isVisible()).to.be.true;
     }
   }
 
-  getSubmitBtnText(action){
-    let btnTxt = '';
-    switch (action){
-      case 'Reassign task':
-        btnTxt = 'Reassign';
-        break;
-      case 'Unassign task':
-        btnTxt = 'Unassign';
-        break;
+  getSubmitBtnText(action) {
+    switch (action) {
+      case 'Reassign task': return 'Reassign';
+      case 'Unassign task': return 'Unassign';
       case 'Mark as done':
-        btnTxt = action;
-        break;
-      case 'Cancel task':
-        btnTxt = action;
-        break;
+      case 'Cancel task': return action;
+      default: return '';
     }
-    return btnTxt;
   }
 }
 

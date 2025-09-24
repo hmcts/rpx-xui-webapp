@@ -2,8 +2,6 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
 
-const screenShotUtils = require('protractor-screenshot-utils').ProtractorScreenShotUtils;
-
 const BrowserUtil = require('.././../ngIntegration/util/browserUtil');
 chai.use(chaiAsPromised);
 
@@ -54,7 +52,6 @@ const cap = (argv.local) ? localConfig : jenkinsConfig;
 const config = {
   SELENIUM_PROMISE_MANAGER: false,
   framework: 'custom',
-  frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000/',
   params: {
@@ -98,25 +95,10 @@ const config = {
       '../support/hooks.js',
       '../support/world.js',
       '../support/*.js',
+      '../features/step_definitions/setup.steps.js',
       '../features/step_definitions/*.steps.js',
       '../features/step_definitions/**/*.steps.js'
-    ] },
-
-  plugins: [
-    {
-      package: 'protractor-multiple-cucumber-html-reporter-plugin',
-      options: {
-        automaticallyGenerateReport: true,
-        removeExistingJsonReportFile: true,
-        reportName: 'XUI Manage Cases Functional Tests',
-        // openReportInBrowser: true,
-        jsonDir: 'functional-output/tests/functional',
-        reportPath: 'functional-output/tests/functional',
-        displayDuration: true,
-        durationInMS: false
-      }
-    }
-  ]
+    ] }
 
 };
 

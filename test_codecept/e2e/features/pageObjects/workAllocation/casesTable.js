@@ -1,11 +1,3 @@
-const c = require('config');
-const { constants } = require('karma');
-const browserUtil = require('../../../../ngIntegration/util/browserUtil');
-const BrowserWaits = require('../../../support/customWaits');
-const ArrayUtil = require('../../../utils/ArrayUtil');
-const Spinner = require('../../pageObjects/common/spinner');
-
-const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const WATable = require('./waTable');
 
 class WACaseListTable extends WATable {

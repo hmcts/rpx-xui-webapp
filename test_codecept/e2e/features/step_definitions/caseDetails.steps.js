@@ -1,11 +1,7 @@
-
-const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
-
-const { defineSupportCode } = require('cucumber');
+const { $ } = require('../../../helpers/globals');
 const BrowserWaits = require('../../support/customWaits');
 const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 const mediaViewerPage = require('../pageObjects/mediaViewerPage');
-const caseDetailsBasicViewPage = require('../pageObjects/caseAccessManagement/caseDetailsBasicView');
 const { I } = inject();
 
 Then('I see case details tab label {string} is displayed is {string}', async function (tabLabel, boolString) {
@@ -57,7 +53,7 @@ When('I click tab with label {string} in case details page, to see element with 
     await caseDetailsPage.clickTabWithLabel(tabLabel);
 
     await BrowserWaits.waitForElement($(cssSelector));
-    expect(await $(cssSelector).isDisplayed()).to.be.true;
+    expect(await $(cssSelector).isVisible()).to.be.true;
   });
 });
 

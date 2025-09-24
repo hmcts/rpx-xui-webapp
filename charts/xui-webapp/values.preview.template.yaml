@@ -3,7 +3,6 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   environment:
      NODE_TLS_REJECT_UNAUTHORIZED: 0
-     SERVICES_ICP_API_URL: https://em-icp-pr-1468.preview.platform.hmcts.net/
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
      REDISCLOUD_URL: redis://${SERVICE_NAME}-redis-master:6379

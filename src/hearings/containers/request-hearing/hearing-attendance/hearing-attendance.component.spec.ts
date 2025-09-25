@@ -7,7 +7,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
-import { LovRefDataModel } from '../../../../hearings/models/lovRefData.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingChannelEnum, PartyType, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -16,6 +16,7 @@ import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingAttendanceComponent } from './hearing-attendance.component';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 
 const refData: LovRefDataModel[] = [
   {
@@ -218,14 +219,14 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
       }
     };
     component.prepareHearingRequestData();
-    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(true);
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.participantAttendanceChangesConfirmed).toEqual(true);
   });
 
   it('should get individual parties', () => {
@@ -303,7 +304,7 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -360,8 +361,8 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        partyDetailsChangesConfirmed: true,
+        participantAttendanceChangesRequired: true,
+        participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -387,7 +388,7 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -420,7 +421,7 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -440,8 +441,8 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        partyDetailsChangesConfirmed: true,
+        participantAttendanceChangesRequired: true,
+        participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false
@@ -450,6 +451,59 @@ describe('HearingAttendanceComponent', () => {
     component.initialiseFromHearingValuesForAmendments();
     expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
+  });
+
+  describe('setPartyNameStatus', () => {
+    let callSet: (id: string, status?: AmendmentLabelStatus | null) => void;
+
+    beforeEach(() => {
+      // access the private method for testing
+      callSet = (id: string, status?: AmendmentLabelStatus | null) =>
+        (component as any).setPartyNameStatus(id, status as AmendmentLabelStatus);
+      // start each test with a clean map
+      component.partyNameAmendmentStatusById = {};
+    });
+
+    it('sets the status for a new party id', () => {
+      callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('defaults to NONE when status is null', () => {
+      callSet('p1', null);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('defaults to NONE when status is undefined', () => {
+      callSet('p1', undefined);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('overwrites an existing status for the same id', () => {
+      callSet('p1', AmendmentLabelStatus.NONE);
+      callSet('p1', AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('does not affect other party ids', () => {
+      callSet('p1', AmendmentLabelStatus.AMENDED);
+      callSet('p2', AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p2).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('is idempotent when setting the same value repeatedly', () => {
+      callSet('p1', AmendmentLabelStatus.NONE);
+      callSet('p1', AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('last call wins for rapid successive updates', () => {
+      callSet('p1', AmendmentLabelStatus.NONE);
+      callSet('p1', AmendmentLabelStatus.AMENDED);
+      callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
   });
 
   afterEach(() => {
@@ -512,12 +566,129 @@ describe('HearingAttendanceComponent', () => {
     });
   });
 
+  describe('HearingAttendanceComponent setPartyChannelStatus', () => {
+    let component: HearingAttendanceComponent;
+
+    beforeEach(() => {
+      component = Object.create(HearingAttendanceComponent.prototype);
+      component.partyChannelAmendmentStatusById = {};
+    });
+
+    it('should set the status for a new party id', () => {
+      (component as any).setPartyChannelStatus('p1', AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should default to NONE when status is null', () => {
+      (component as any).setPartyChannelStatus('p2', null);
+      expect((component as any).partyChannelAmendmentStatusById.p2).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should default to NONE when status is undefined', () => {
+      (component as any).setPartyChannelStatus('p3', undefined);
+      expect((component as any).partyChannelAmendmentStatusById.p3).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should overwrite an existing status for the same id', () => {
+      (component as any).setPartyChannelStatus('p4', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p4', AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p4).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should not affect other party ids', () => {
+      (component as any).setPartyChannelStatus('p5', AmendmentLabelStatus.AMENDED);
+      (component as any).setPartyChannelStatus('p6', AmendmentLabelStatus.ACTION_NEEDED);
+      expect((component as any).partyChannelAmendmentStatusById.p5).toBe(AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p6).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('should be idempotent when setting the same value repeatedly', () => {
+      (component as any).setPartyChannelStatus('p7', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p7', AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById.p7).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('last call wins for rapid successive updates', () => {
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.AMENDED);
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.ACTION_NEEDED);
+      expect((component as any).partyChannelAmendmentStatusById.p8).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+  });
+
   describe('The forms estimation', () => {
     it('should equal 3 as partyDetails is empty', () => {
       fixture.detectChanges();
       expect(component.attendanceFormGroup.controls.estimation.value).toEqual(3);
     });
   });
+
+  it('should correctly set amendment flags when setAmendmentFlags is called', () => {
+    // We need to spy on the HearingsUtils methods that are called inside setAmendmentFlags
+    spyOn(HearingsUtils, 'doArraysDiffer').and.returnValue(true);
+    spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(true);
+    spyOn(HearingsUtils, 'hasPaperHearingChanged').and.returnValue(false);
+
+    // We need access to the private method
+    const setAmendmentFlagsMethod = spyOn<any>(component, 'setAmendmentFlags').and.callThrough();
+
+    // Setup test data - channels with different configurations
+    component.serviceHearingValuesModel.hearingChannels = ['INTER', 'TEL'];
+    component.hearingRequestMainModel.hearingDetails.hearingChannels = ['INTER'];
+    component.hearingCondition = { mode: 'view-edit' };
+
+    // Create a new FormArray with mock channels
+    const mockChannels = [
+      { key: 'INTER', selected: true, showAmendedLabel: false },
+      { key: 'TEL', selected: false, showAmendedLabel: false },
+      { key: 'VID', selected: true, showAmendedLabel: false }
+    ];
+
+    // Get FormBuilder from TestBed instead of using component's private property
+    const fb = TestBed.inject(FormBuilder);
+
+    // Create a new FormArray with FormGroups instead of directly assigning to value
+    const formArray = new FormArray(mockChannels.map((channel) =>
+      fb.group({
+        key: channel.key,
+        selected: channel.selected,
+        showAmendedLabel: channel.showAmendedLabel,
+        value_en: '',
+        value_cy: '',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 0,
+        parent_key: null
+      })
+    ));
+
+    // Replace the hearingLevelChannels control with our new FormArray
+    component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
+
+    // Call ngOnInit which will call setAmendmentFlags
+    component.ngOnInit();
+
+    // Verify the method was called
+    expect(setAmendmentFlagsMethod).toHaveBeenCalled();
+
+    // Verify the flags were updated correctly
+    expect(component.methodOfAttendanceChanged).toBe(true);
+    expect(component.noOfPhysicalAttendeesChanged).toBe(true);
+    expect(component.paperHearingChanged).toBe(false);
+
+    // Verify the showAmendedLabel was set correctly for each channel
+    // INTER is in defaults and selected (no amendment needed)
+    expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+    // TEL is in defaults but not selected (amendment needed)
+    expect(component.hearingLevelChannels[1].showAmendedLabel).toBeTrue();
+    // VID is not in defaults but is selected (amendment needed)
+    expect(component.hearingLevelChannels[2].showAmendedLabel).toBeTrue();
+
+    // Verify hearingLevelChannels property was updated
+    const formArrayValue = component.attendanceFormGroup.get('hearingLevelChannels').value;
+    expect(component.hearingLevelChannels).toEqual(formArrayValue);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

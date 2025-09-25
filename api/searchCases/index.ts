@@ -128,10 +128,9 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
   const collapse = body?.collapse;
   const indices_boost = body?.indices_boost;
 
-  // Start with your rebuilt constraints as FILTER (always applied, non-scoring)
-  const boolQuery: any = { filter: [], must: [] };
+  const boolQuery: any = { must: [] };
   if (matchList.length) {
-    boolQuery.filter.push(...matchList);
+    boolQuery.must.push(...matchList);
   }
 
   // Merge client's query (preserve bool internals if present)

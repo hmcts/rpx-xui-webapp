@@ -9,7 +9,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, eachLike } = Matchers;
 
-const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
 
 describe('getNoCQuestions API', () => {
   const caseId = '1234567890123452';

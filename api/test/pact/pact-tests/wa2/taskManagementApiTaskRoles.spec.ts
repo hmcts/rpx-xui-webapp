@@ -1,25 +1,25 @@
-import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
+import { expect } from 'chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getWorkAllocationAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
-import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
+const { somethingLike, eachLike } = Matchers;
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_task_roles', port: 8000 });
 
-const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_work_types', port: 8000 });
+const taskId = '4d4b6fgh-c91f-433f-92ac-e800ae34f88c';
 
-describe('Task management api,  retrieve all the work types ', () => {
-  const RESPONSE_BODY = {
-    work_types: eachLike({
-      id: somethingLike('5687'),
-      label: somethingLike('Upper Tribunal')
-    })
-  };
+describe('WA Task management api, given taskId get the roles associated with the task', () => {
+  const RESPONSE_BODY = { roles: eachLike({
+    role_category: somethingLike('JUDICIAL'),
+    role_name: somethingLike('lead-judge'),
+    permissions: eachLike(somethingLike('EXECUTE')),
+    authorisations: eachLike(somethingLike(('IAC')))
+  }) };
 
-  describe('get /work-types', () => {
+  describe('get /task/taskId/roles', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -29,18 +29,14 @@ describe('Task management api,  retrieve all the work types ', () => {
 
     before(async () => {
       const interaction = {
-        states: [{ description: 'retrieve work types filtered for the user in context' }],
-        uponReceiving: 'retrieve all work types',
+        states: [{ description: 'get task roles given a taskId ' }],
+        uponReceiving: 'a taskId ',
         withRequest: {
           method: 'GET',
-          path: '/work-types',
-          query: {
-            'filter-by-user': 'true'
-          },
+          path: `/task/${taskId}/roles`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
           }
         },
         willRespondWith: {
@@ -60,18 +56,19 @@ describe('Task management api,  retrieve all the work types ', () => {
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const configValues = getWorkAllocationAPIOverrides(mockServer.url);
-
         sandbox.stub(config, 'get').callsFake((prop) => {
           return configValues[prop];
         });
 
-        const { getTypesOfWork } = requireReloaded('../../../../workAllocation/index');
-
+        const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
         const req = mockReq({
           headers: {
-            Authorization: 'Bearer someAuthorizationToken',
-            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+            // 'content-Type': 'application/json'
+          },
+          params: {
+            taskId: taskId
           }
         });
         let returnedResponse = null;
@@ -81,7 +78,7 @@ describe('Task management api,  retrieve all the work types ', () => {
         };
 
         try {
-          await getTypesOfWork(req, response, next);
+          await getTaskRoles(req, response, next);
 
           assertResponses(returnedResponse);
         } catch (err) {
@@ -94,6 +91,9 @@ describe('Task management api,  retrieve all the work types ', () => {
 });
 
 function assertResponses(dto: any) {
-  expect(dto[0].key).to.be.equal('5687');
-  expect(dto[0].label).to.be.equal('Upper Tribunal');
+  console.log(JSON.stringify(dto));
+  expect(dto[0].role_category).to.be.equal('JUDICIAL');
+  expect(dto[0].role_name).to.be.equal('lead-judge');
+  expect(dto[0].permissions).to.include.members(['EXECUTE']);
+  expect(dto[0].authorisations).to.include.members(['IAC']);
 }

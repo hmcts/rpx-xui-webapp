@@ -120,16 +120,78 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
     }
   }
 
-  const nativeEsQuery: object = {
-    from,
-    query: {
-      bool: {
-        must: matchList
+  // =========================
+  // Merge client native ES parts into rebuilt query
+  // =========================
+  const aggs = body?.aggs;
+  const post_filter = body?.post_filter;
+  const collapse = body?.collapse;
+  const indices_boost = body?.indices_boost;
+
+  // Start with your rebuilt constraints as FILTER (always applied, non-scoring)
+  const boolQuery: any = { filter: [], must: [] };
+  if (matchList.length) {
+    boolQuery.filter.push(...matchList);
+  }
+
+  // Merge client's query (preserve bool internals if present)
+  if (body?.query) {
+    const q = body.query;
+    if (q.bool && typeof q.bool === 'object') {
+      const { must, filter, should, must_not } = q.bool;
+      if (Array.isArray(must)) {
+        boolQuery.must.push(...must);
       }
-    },
+      if (Array.isArray(filter)) {
+        boolQuery.filter.push(...filter);
+      }
+      if (Array.isArray(should) && should.length) {
+        boolQuery.should = (boolQuery.should || []).concat(should);
+      }
+      if (Array.isArray(must_not) && must_not.length) {
+        boolQuery.must_not = (boolQuery.must_not || []).concat(must_not);
+      }
+    } else {
+      boolQuery.must.push(q); // non-bool → AND it
+    }
+  }
+
+  // Tidy up empty arrays; fallback to match_all if nothing remains
+  if (!boolQuery.must.length) {
+    delete boolQuery.must;
+  }
+  if (!boolQuery.filter.length) {
+    delete boolQuery.filter;
+  }
+  if (!boolQuery.should?.length) {
+    delete boolQuery.should;
+  }
+  if (!boolQuery.must_not?.length) {
+    delete boolQuery.must_not;
+  }
+
+  const nativeEsQuery: any = {
+    from,
     size,
-    sort
+    sort,
+    query: (boolQuery.filter || boolQuery.must || boolQuery.should || boolQuery.must_not) // This is a guard to avoid returning an empty bool query when nothing was added
+      ? { bool: boolQuery }
+      : { match_all: {} }
   };
+
+  // Attach other native parts if present
+  if (aggs) {
+    nativeEsQuery.aggs = aggs;
+  }
+  if (post_filter) {
+    nativeEsQuery.post_filter = post_filter;
+  }
+  if (collapse) {
+    nativeEsQuery.collapse = collapse;
+  }
+  if (indices_boost) {
+    nativeEsQuery.indices_boost = indices_boost;
+  }
 
   return {
     native_es_query: nativeEsQuery,

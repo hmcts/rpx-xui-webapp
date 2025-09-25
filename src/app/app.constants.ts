@@ -210,6 +210,13 @@ const defaultServiceMessage = [
     'roles': '.+'
   }
 ];
+const menuFlags = {
+  'MC_Work_Allocation': true,
+  'MC_Notice_of_Change': true,
+  'feature-global-search': true,
+  'mc-work-allocation-active-feature': 'WorkAllocationRelease2',
+  'feature-refunds': true
+};
 
 export class AppConstants {
   public static FOOTER_DATA = null;
@@ -230,6 +237,7 @@ export class AppConstants {
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
   public static DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
+  public static MENU_FLAGS = menuFlags;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

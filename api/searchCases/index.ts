@@ -139,7 +139,7 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
     if (q.bool && typeof q.bool === 'object') {
       const { must, filter, should, must_not } = q.bool;
       if (Array.isArray(must)) {
-        boolQuery.must.push(...must);
+        (boolQuery.must ||= []).push(...must);
       }
       if (Array.isArray(filter)) {
         (boolQuery.filter ||= []).push(...filter);

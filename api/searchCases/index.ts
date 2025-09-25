@@ -142,30 +142,30 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
         boolQuery.must.push(...must);
       }
       if (Array.isArray(filter)) {
-        boolQuery.filter.push(...filter);
+        (boolQuery.filter ||= []).push(...filter);
       }
       if (Array.isArray(should) && should.length) {
-        boolQuery.should = (boolQuery.should || []).concat(should);
+        (boolQuery.should ||= []).push(...should);
       }
       if (Array.isArray(must_not) && must_not.length) {
-        boolQuery.must_not = (boolQuery.must_not || []).concat(must_not);
+        (boolQuery.must_not ||= []).push(...must_not);
       }
     } else {
-      boolQuery.must.push(q); // non-bool → AND it
+      (boolQuery.must ||= []).push(q);
     }
   }
 
-  // Tidy up empty arrays; fallback to match_all if nothing remains
-  if (!boolQuery.must.length) {
+  const isEmptyArr = (v: any) => !Array.isArray(v) || v.length === 0;
+  if (isEmptyArr(boolQuery.must)) {
     delete boolQuery.must;
   }
-  if (!boolQuery.filter.length) {
+  if (isEmptyArr(boolQuery.filter)) {
     delete boolQuery.filter;
   }
-  if (!boolQuery.should?.length) {
+  if (isEmptyArr(boolQuery.should)) {
     delete boolQuery.should;
   }
-  if (!boolQuery.must_not?.length) {
+  if (isEmptyArr(boolQuery.must_not)) {
     delete boolQuery.must_not;
   }
 

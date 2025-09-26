@@ -1,0 +1,70 @@
+name: pr-bot
+on:
+  pull_request:
+    types: [opened, closed, reopened]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+    contents: read
+    pull-requests: write
+    issues: write
+
+jobs:
+  slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout respository
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            # Log in to Azure using service principal
+            az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+            # Set the active subscription
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID_STG }}
+
+            # Get Slack token from Azure Key Vault
+            SLACK_BOT_TOKEN=$(az keyvault secret show --name "exui-code-reviews-bot-slack-token" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value" --output tsv)
+            echo "::add-mask::$SLACK_BOT_TOKEN"
+            echo "SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN" >> $GITHUB_ENV
+
+            # Get token for data repo access from Azure Key Vault
+            DATA_REPO_TOKEN=$(az keyvault secret show --name "${{ secrets.DATA_REPO_PAT_NAME }}" --vault-name "${{ secrets.AZURE_VAULT_NAME }}" --query "value" --output tsv)
+            echo "::add-mask::$DATA_REPO_TOKEN"
+            echo "DATA_REPO_TOKEN=$DATA_REPO_TOKEN" >> $GITHUB_ENV
+
+      - name: Parse PR_BOT_CONFIG_JSON github variable into environment variables
+        run: |
+          echo "REQUIRED_APPROVALS=$(echo $PR_BOT_CONFIG_JSON | jq -r '.REQUIRED_APPROVALS')" >> $GITHUB_ENV
+          echo "TITLE_MAX_LENGTH=$(echo $PR_BOT_CONFIG_JSON | jq -r '.TITLE_MAX_LENGTH')" >> $GITHUB_ENV
+          echo "DATA_REPO_OWNER=$(echo $PR_BOT_CONFIG_JSON | jq -r '.DATA_REPO_OWNER')" >> $GITHUB_ENV
+          echo "DATA_REPO_NAME=$(echo $PR_BOT_CONFIG_JSON | jq -r '.DATA_REPO_NAME')" >> $GITHUB_ENV
+          echo "DATA_STATE_FILE_PATH=$(echo $PR_BOT_CONFIG_JSON | jq -r '.DATA_STATE_FILE_PATH')" >> $GITHUB_ENV
+          echo "SLACK_CHANNEL=$(echo $PR_BOT_CONFIG_JSON | jq -r '.SLACK_CHANNEL')" >> $GITHUB_ENV
+          echo "SLACK_CHANNEL_ID=$(echo $PR_BOT_CONFIG_JSON | jq -r '.SLACK_CHANNEL_ID')" >> $GITHUB_ENV
+        env:
+          PR_BOT_CONFIG_JSON: ${{ vars.PR_BOT_CONFIG_JSON }}
+
+      - name: Run pr-bot
+        run: npx @hmcts/pr-bot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ env.SLACK_BOT_TOKEN }}
+          DATA_REPO_TOKEN: ${{ env.DATA_REPO_TOKEN }}
+          REQUIRED_APPROVALS: ${{ env.REQUIRED_APPROVALS }}
+          TITLE_MAX_LENGTH: ${{ env.TITLE_MAX_LENGTH }}
+          DATA_REPO_OWNER: ${{ env.DATA_REPO_OWNER }}
+          DATA_REPO_NAME: ${{ env.DATA_REPO_NAME }}
+          DATA_STATE_FILE_PATH: ${{ env.DATA_STATE_FILE_PATH }}
+          SLACK_CHANNEL: ${{ env.SLACK_CHANNEL }}
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}

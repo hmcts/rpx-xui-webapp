@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
-import { map, skipWhile, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, skipWhile, switchMap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
@@ -118,12 +118,15 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
+    console.log('Filtering items based on user roles', items);
     const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     return userDetails$.pipe(
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
+        console.log('User roles', roles);
         const i = items.filter((item) => (item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true));
+        console.log('Filtered items based on user roles', i);
         return i.filter((item) => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true));
       })
     );
@@ -131,6 +134,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
+    console.log('Filtering items based on user flags', items);
     return of(
       items.filter((item) => {
         // If item.flags exists, check every flag against AppConstants.MENU_FLAGS
@@ -147,12 +151,12 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       }).filter((item) =>
         item.notFlags && item.notFlags.length > 0
           ? item.notFlags.every((flag) => {
-              const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
-              const flagValue = this.isPlainFlag(flag)
-                ? AppConstants.MENU_FLAGS[flagName]
-                : AppConstants.MENU_FLAGS[flagName] !== flag.value;
-              return !flagValue;
-            })
+            const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+            const flagValue = this.isPlainFlag(flag)
+              ? AppConstants.MENU_FLAGS[flagName]
+              : AppConstants.MENU_FLAGS[flagName] !== flag.value;
+            return !flagValue;
+          })
           : true
       )
     );

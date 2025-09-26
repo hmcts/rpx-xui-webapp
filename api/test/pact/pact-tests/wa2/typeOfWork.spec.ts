@@ -9,7 +9,7 @@ import { eachLike } from '@pact-foundation/pact/src/dsl/matchers';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_work_types', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_get_work_types', port: 8000 });
 
 describe('Task management api,  retrieve all the work types ', () => {
   const RESPONSE_BODY = {

@@ -21246,11 +21246,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-<<<<<<< HEAD
     "@hmcts/ccd-case-ui-toolkit": "npm:7.2.46-exui-2916-2"
-=======
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.46"
->>>>>>> 21629a56a79ef823a5ac86cc23336073c0dc0ea9
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.7"

@@ -1,23 +1,25 @@
 import { expect } from 'chai';
 import { ProfessionalUserResponse } from '../../pactFixtures';
 import { getUsers } from '../../pactUtil';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { eachLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_professionalExternalUsers', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_professionalExternalUsers', port: 8000 });
 
 describe('RD Professional API Interactions with webapp', () => {
   describe('Get Users', () => {
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'Professional users exist for an Active organisation',
+        states: [{ description: 'Professional users exist for an Active organisation' }],
         uponReceiving: 'a request for those users',
         withRequest: {
           method: 'GET',
           path: '/refdata/external/v1/organisations/users',
-          query: 'returnRoles=true&status=active',
+          query: {
+            returnRoles: 'true',
+            status: 'active'
+          },
           headers: {
             'Authorization': 'Bearer some-access-token',
             'Content-Type': 'application/json',
@@ -32,19 +34,16 @@ describe('RD Professional API Interactions with webapp', () => {
           body: getUsersResponse
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
     it('returns the correct response', async () => {
-      const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/external/v1/organisations/users?returnRoles=true&status=active`;
-      const resp = getUsers(path);
-      resp.then((response) => {
-        const responseDto: ProfessionalUserResponse = <ProfessionalUserResponse>response.data;
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const path: string = `${mockServer.url}/refdata/external/v1/organisations/users?returnRoles=true&status=active`;
+        const resp = await getUsers(path);
+        const responseDto: ProfessionalUserResponse = <ProfessionalUserResponse>resp.data;
         assertResponse(responseDto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
       });
     });
   });

@@ -156,6 +156,7 @@ nodejs:
         - system-user-name
         - system-user-password
         - system-user-id
+        - document-hash-token
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

@@ -3,6 +3,8 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { getConfigValue } from '../configuration';
+import { DOCUMENT_HASH_TOKEN } from "../configuration/references";
 import * as documents from './index';
 
 chai.use(sinonChai);
@@ -37,7 +39,7 @@ describe('Documents Uploading', () => {
         size: 12317,
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         originalDocumentName: 'blank copy 4.docx',
-        hashToken: 'c62d79ffa737bfe5213f2dfbc5a0e848f6bd35781acadb65a3a0822b3ec69b7c',
+        hashToken: getConfigValue(DOCUMENT_HASH_TOKEN),
         createdOn: '2024-01-12T14:30:10.000+00:00',
         createdBy: 'c9ca25c7-0554-4e05-b781-442f02a59907',
         lastModifiedBy: 'c9ca25c7-0554-4e05-b781-442f02a59907',

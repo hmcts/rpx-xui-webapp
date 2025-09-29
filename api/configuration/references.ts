@@ -113,6 +113,8 @@ export const SYSTEM_USER_PASSWORD = 'secrets.rpx.system-user-password';
 
 export const SYSTEM_USER_ID = 'secrets.rpx.system-user-id';
 
+export const DOCUMENT_HASH_TOKEN = 'secrets.rpx.document-hash-token';
+
 export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher';
 
 export const LOG4_J_CONFIG = 'log4JConfig';

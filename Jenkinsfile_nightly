@@ -32,6 +32,7 @@ def secrets = [
     secret('system-user-name', 'SYSTEM_USER_NAME'),
     secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
     secret('system-user-id', 'SYSTEM_USER_ID'),
+    secret('document-hash-token', 'DOCUMENT_HASH_TOKEN'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
   ],
   ]

@@ -1,6 +1,9 @@
 
 const roles = require('./roles');
 const { v4 } = require('uuid');
+const { getConfigValue } = require('../../../../api/configuration');
+const { SYSTEM_USER_ID} = require('../../../../api/configuration/references');
+
 class RoleAssignments {
   constructor() {
     this.serviceUsersRoleAssignments = [];
@@ -171,9 +174,9 @@ class RoleAssignments {
       roleAssignmentResponse: {
         roleRequest: {
           id: 'bf28c9a7-67d7-401b-93c1-fede693b5d1c',
-          authenticatedUserId: '3002eca3-cb09-4b58-be7b-bf5cc3075761',
+          authenticatedUserId: getConfigValue(SYSTEM_USER_ID),
           correlationId: 'bc10952c-b000-4c96-bbde-04126a2def46',
-          assignerId: '3002eca3-cb09-4b58-be7b-bf5cc3075761',
+          assignerId: getConfigValue(SYSTEM_USER_ID),
           requestType: 'CREATE',
           replaceExisting: false,
           status: 'APPROVED',

@@ -3274,9 +3274,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.6":
-  version: 4.1.6
-  resolution: "@hmcts/media-viewer@npm:4.1.6"
+"@hmcts/media-viewer@npm:4.1.7":
+  version: 4.1.7
+  resolution: "@hmcts/media-viewer@npm:4.1.7"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3295,7 +3295,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/70feae33b5852991d5db7271783a9b39441f6ad6c7be92179ece96b83e8e09fed8f79b4731dec48f7a8ba223cad036feafccb763066bb511f5369fce4354b9bf
+  checksum: 10/2ae74312d3807f078e5a9c0f431bdf3567e96ccab95554864505eb2ba88a8844f1fd1f2be5dc0f4605486b8f9362cb75de7dd95c72f70f4ea238fec58abfe1ef
   languageName: node
   linkType: hard
 
@@ -21246,10 +21246,14 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
+<<<<<<< HEAD
     "@hmcts/ccd-case-ui-toolkit": "npm:7.2.46-exui-2916-2"
+=======
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.46"
+>>>>>>> 21629a56a79ef823a5ac86cc23336073c0dc0ea9
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.6"
+    "@hmcts/media-viewer": "npm:4.1.7"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.6"

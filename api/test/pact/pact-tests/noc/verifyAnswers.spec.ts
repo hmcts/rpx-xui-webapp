@@ -4,21 +4,19 @@ import { NextFunction } from 'express';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { NocAnswer } from '../../../../../src/noc/models';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('verifyAnswers API', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
   afterEach(() => {
     sinon.reset();
     sandbox.restore();
-    pactSetUp.provider.verify();
-    pactSetUp.provider.finalize();
   });
 
   const answers: NocAnswer[] = [{
@@ -26,7 +24,7 @@ describe('verifyAnswers API', () => {
     value: 'test@email.com'
   }];
   const mockRequest = {
-    case_id: '1234567812345678',
+    case_id: '1234567812345670',
     answers: answers
   };
 
@@ -39,8 +37,8 @@ describe('verifyAnswers API', () => {
     body: mockRequest
   });
 
-  function setUpMockConfigForFunction() {
-    const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+  function setUpMockConfigForFunction(url) {
+    const configValues = getNocAPIOverrides(url);
     sandbox.stub(config, 'get').callsFake((prop) => {
       return configValues[prop];
     });
@@ -58,9 +56,8 @@ describe('verifyAnswers API', () => {
     };
 
     before(async () => {
-      await pactSetUp.provider.setup();
       return pactSetUp.provider.addInteraction({
-        state: 'A valid NoC answers verification request',
+        states: [{ description: 'A valid NoC answers verification request' }],
         uponReceiving: 'a request to verify NoC answers',
         withRequest: {
           method: 'POST',
@@ -75,21 +72,23 @@ describe('verifyAnswers API', () => {
     });
 
     it('should return a valid response', async () => {
-      const validateNoCQuestions = setUpMockConfigForFunction();
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const validateNoCQuestions = setUpMockConfigForFunction(mockServer.url);
 
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-      const next = sinon.mock().atLeast(1) as NextFunction;
-      try {
-        await validateNoCQuestions(req, response, next);
-        assertResponse(returnedResponse);
-      } catch (err) {
-        console.log(err.stack);
-        throw new Error(err);
-      }
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+        const next = sinon.mock().atLeast(1) as NextFunction;
+        try {
+          await validateNoCQuestions(req, response, next);
+          assertResponse(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
+      });
     });
   });
 });

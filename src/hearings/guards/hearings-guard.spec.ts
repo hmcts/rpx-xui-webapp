@@ -8,6 +8,7 @@ import { HearingJurisdictionConfigService } from 'src/app/services/hearing-juris
 import { CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { AppTestConstants } from '../../app/app.test-constants.spec';
 
 describe('HearingsGuard', () => {
   const USER: UserDetails = {
@@ -17,7 +18,7 @@ describe('HearingsGuard', () => {
       totalIdleTime: 50
     },
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',

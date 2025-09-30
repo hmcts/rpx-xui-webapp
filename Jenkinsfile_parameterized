@@ -31,7 +31,8 @@ List<LinkedHashMap<String, Object>> secrets = [
   secret('system-user-name', 'SYSTEM_USER_NAME'),
   secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
   secret('system-user-id', 'SYSTEM_USER_ID'),
-  secret('document-hash-token', 'DOCUMENT_HASH_TOKEN')
+  secret('document-hash-token', 'DOCUMENT_HASH_TOKEN'),
+  secret('test-user-id', 'TEST_USER_ID')
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {

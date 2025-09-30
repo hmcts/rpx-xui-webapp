@@ -1,13 +1,11 @@
 import { expect } from 'chai';
-import * as config from 'config';
-import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
-import { requireReloaded } from '../utils/moduleUtil';
+import {accessRolesByCaseId} from "../../pactUtil";
+import {AccessRolesDto} from "../../pactFixtures";
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
+
 const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
 
 const caseId = '12345';
@@ -47,13 +45,6 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
   };
 
   describe('post /am/role-assignments/query', () => {
-    const sandbox: sinon.SinonSandbox = sinon.createSandbox();
-    let next;
-
-    beforeEach(() => {
-      next = sandbox.spy();
-    });
-
     before(async () => {
       const interaction = {
         states: [{ description: 'A list of role assignments for the search query' }],
@@ -64,14 +55,14 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
           },
           body: REQUEST_BODY
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
           },
           body: RESPONSE_BODY
         }
@@ -80,50 +71,29 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
       pactSetUp.provider.addInteraction(interaction);
     });
 
-    afterEach(() => {
-      sandbox.restore();
-      sinon.reset();
-    });
-
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
-        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
-        sandbox.stub(config, 'get').callsFake((prop) => {
-          return configValues[prop];
-        });
 
-        const { getAccessRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
-
-        const req = mockReq({
-          headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
-          },
-          body: {
-            caseId: caseId
-          }
-
-        });
-        let returnedResponse = null;
-        const response = mockRes();
-        response.send = (ret) => {
-          returnedResponse = ret;
+        const path: string = `${mockServer.url}/am/role-assignments/query`;
+        const payload = {
+          queryRequests: [
+            {
+              attributes: {
+                caseId: '12345'
+              }
+            }
+          ]
         };
-
-        try {
-          await getAccessRolesByCaseId(req, response, next);
-          assertResponses(returnedResponse);
-        } catch (err) {
-          throw new Error(err);
-        }
+        const response = await accessRolesByCaseId(path, payload);
+        //console.log(' response .headers for getAccessRolesByCaseID', response.headers);
+        const accessRolesResponse = <AccessRolesDto[]> response.data;
+        assertResponses(accessRolesResponse);
       });
     });
   });
 });
 
 function assertResponses(dto: any) {
-  console.log('>>>>>>>>');
   console.log(dto);
   expect(dto.length).to.be.equal(1);
   expect(dto[0].actions[0].id).to.be.equal('reallocate');

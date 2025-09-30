@@ -113,3 +113,58 @@ export async function postS2SLease(S2SUrl: string, payload: any): Promise<any> {
   };
   return await axios.post(S2SUrl, payload, axiosConfig);
 }
+
+export async function fetchUserDetails(path: string, payload: any) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer someAuthorizationToken',
+      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+      'content-type': 'application/json'
+    }
+  };
+  return axios.post(path, payload , axiosConfig);
+}
+
+export async function getCaseWorkers(path: string) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer someAuthorizationToken',
+      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+      'content-type': 'application/json'
+    }
+  };
+  return axios.get(path, axiosConfig);
+}
+
+export async function searchCaseworker(taskUrl: string, payload: any) {
+  const axiosConfig = {
+    headers: {
+      Authorization: 'Bearer someAuthorizationToken',
+      'Content-Type': 'application/json',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+    }
+  };
+  return await axios.post(taskUrl, payload, axiosConfig);
+}
+export async function getLocations(path: string) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer someAuthorizationToken',
+      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+      'content-type': 'application/json'
+    }
+  };
+  return axios.get(path, axiosConfig);
+}
+
+export async function accessRolesByCaseId (taskUrl: string, payload: any) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer someAuthorizationToken',
+      'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
+      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+    }
+  };
+  return await axios.post(taskUrl, payload, axiosConfig);
+}
+

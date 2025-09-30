@@ -96,9 +96,9 @@ export interface AccessRolesDto{
       'classification': string;
       'grantType': string;
       'roleCategory': string;
-      'readonly ': boolean;
+      'readOnly': boolean;
       'beginTime': string;
-      'created ': string;
+      'created': string;
       'attributes':{
         'substantive': string;
         'caseId': string;

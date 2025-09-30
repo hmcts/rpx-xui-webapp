@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const RAS_V2_HEADER = 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
+
 export async function getUsers(path: string) {
   const axiosConfig = {
     headers: {
@@ -161,8 +163,8 @@ export async function accessRolesByCaseId (taskUrl: string, payload: any) {
   const axiosConfig = {
     headers: {
       'Authorization': 'Bearer someAuthorizationToken',
-      'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
-      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+      'content-type': RAS_V2_HEADER
     }
   };
   return await axios.post(taskUrl, payload, axiosConfig);

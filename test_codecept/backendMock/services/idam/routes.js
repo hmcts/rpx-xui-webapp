@@ -5,8 +5,6 @@ const router = express.Router({ mergeParams: true });
 const service = require('./index');
 
 const userApiData = require('../userApiData');
-const { getConfigValue } = require('../../../../api/configuration');
-const { TEST_USER_ID } = require('../../../../api/configuration/references')
 
 const jwt = require('jsonwebtoken');
 
@@ -96,16 +94,6 @@ router.get('/o/jwks', (req, res) => {
 router.post('/o/authrorize', (req, res) => {
   res.send();
 });
-
-// router.get('/oauth2/callback', (req, res) => {
-//     res.set('Location', 'http://localhost:3000/');
-//     res.cookie('XSRF-TOKEN','WEOO1ETc-SkONrAXBUyecjjjp13jVhcJFpiA')
-//     res.cookie('__userid__', getConfigValue(TEST_USER_ID))
-//     res.cookie('__auth__', getConfigValue(TEST_USER_ID))
-//     res.cookie('xui-webapp', 's%3AW9lK_bl38LqrPZqQWg_-nYn9buWbJAS0.LShMQ2AkUvRcXzkFVx4zXdIS7W377O4OQbsSGrlR%2F6w')
-
-//     res.status(302).send();
-// });
 
 router.post('/o/token', (req, res) => {
   res.send({

@@ -118,15 +118,12 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    console.log('Filtering items based on user roles', items);
     const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     return userDetails$.pipe(
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
-        console.log('User roles', roles);
         const i = items.filter((item) => (item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true));
-        console.log('Filtered items based on user roles', i);
         return i.filter((item) => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true));
       })
     );
@@ -134,7 +131,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    console.log('Filtering items based on user flags', items);
     return of(
       items.filter((item) => {
         // If item.flags exists, check every flag against AppConstants.MENU_FLAGS

@@ -58,3 +58,53 @@ export interface AssignAccessWithinOrganisationDto {
 export interface S2SResponse {
   token?: string;
 }
+
+export interface CaseworkerUserDetailsDto {
+  email_id: string;
+  base_location: [
+    {
+      is_primary: boolean,
+      location: string;
+      location_id: number;
+    }
+  ];
+  last_name: string;
+  first_name: string;
+  user_type:string;
+}
+
+export interface CourtLocationDetailsDto{
+  court_venues: [
+    {
+      'site_name': string;
+      'epimms_id': string;
+      'court_name': string;
+    }
+  ];
+  court_type: string;
+  service_code: string;
+  court_type_id: string;
+}
+export interface AccessRolesDto{
+  roleAssignmentResponse: [
+    {
+      'id': string;
+      'actorIdType': string;
+      'actorId': string;
+      'roleType': string;
+      'roleName': string;
+      'classification': string;
+      'grantType': string;
+      'roleCategory': string;
+      'readonly ': boolean;
+      'beginTime': string;
+      'created ': string;
+      'attributes':{
+        'substantive': string;
+        'caseId': string;
+        'jurisdiction': string;
+        'caseType': string;
+      }
+    }
+  ]
+}

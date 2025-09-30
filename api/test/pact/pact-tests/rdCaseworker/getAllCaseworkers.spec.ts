@@ -1,44 +1,34 @@
 import { expect } from 'chai';
-import * as config from 'config';
-import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
-import { requireReloaded } from '../utils/moduleUtil';
+import {fetchUserDetails} from "../../pactUtil";
+import {CaseworkerUserDetailsDto} from "../../pactFixtures";
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
-
-xdescribe('Caseworker ref data api, get all caseworkers', () => {
+describe('Caseworker ref data api, get all caseworkers', () => {
   const REQUEST_BODY = {
     userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')]
-  };
+   };
 
   const baseLocations = [
-    { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
+    { location_id: somethingLike(1),
+      location: somethingLike('National'),
+      is_primary: somethingLike(true) }
   ];
   const RESPONSE_BODY = [
     {
       'email_id': somethingLike('test_person@test.gov.uk'),
-      'first_name': somethingLike('testfn'),
-      'last_name': somethingLike('testln'),
-      'id': somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
+      'first_name': somethingLike('testFN'),
+      'last_name': somethingLike('testLN'),
+      'user_type': somethingLike('HMCTS'),
       'base_location': baseLocations
     }
   ];
 
-  describe('get /caseworker', () => {
-    const sandbox: sinon.SinonSandbox = sinon.createSandbox();
-    let next;
-
-    beforeEach(() => {
-      next = sandbox.spy();
-    });
-
-    before(async () => {
+  describe('get all the caseworker', () => {
+     before(async () => {
       const interaction = {
         states: [{ description: 'A list of users for CRD request' }],
         uponReceiving: 'get list of caseworkers',
@@ -64,72 +54,26 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
       pactSetUp.provider.addInteraction(interaction);
     });
 
-    afterEach(() => {
-      sandbox.restore();
-      sinon.reset();
-      MockApp.stopServer();
-    });
-
     it('returns the correct response', async () => {
-      MockApp.setServerPort(9000);
-      MockApp.init();
-
-      MockApp.onPost('/am/role-assignments/query', (req, res) => {
-        res.send({
-          roleAssignmentResponse: [
-            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
-            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' }
-          ]
-        });
-      });
-      await MockApp.startServer();
-
       return pactSetUp.provider.executeTest(async (mockServer) => {
-        const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
-        configValues['services.role_assignment.roleApi'] = 'http://localhost:9000';
-
-        // @ts-ignore
-        configValues.waSupportedJurisdictions = 'IA';
-        sandbox.stub(config, 'get').callsFake((prop) => {
-          return configValues[prop];
-        });
-
-        const { getAllCaseWorkers } = requireReloaded('../../../../workAllocation/index');
-
-        const req = mockReq({
-          headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
-
-        });
-        let returnedResponse = null;
-        const response = mockRes();
-        response.send = (ret) => {
-          returnedResponse = ret;
+        const path: string = `${mockServer.url}/refdata/case-worker/users/fetchUsersById`;
+        const payload = {
+          userIds: ["userId1","userId2"]
         };
-
-        try {
-          await getAllCaseWorkers(req, response, next);
-
-          assertResponses(returnedResponse);
-        } catch (err) {
-          console.log(err.stack);
-          throw new Error(err);
-        }
-      });
+        const resp = await fetchUserDetails(path,payload);
+        const responseDto = <CaseworkerUserDetailsDto[]> resp.data;
+        assertUserDetailsResponse(responseDto);
+        });
+     });
     });
-  });
 });
 
-function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
-  expect(dto[0].email).to.be.equal('test_person@test.gov.uk');
-  expect(dto[0].firstName).to.be.equal('testfn');
-  expect(dto[0].lastName).to.be.equal('testln');
-  expect(dto[0].roleCategory).to.be.equal('case-worker');
-  expect(dto[0].idamId).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
-  expect(dto[0].location.id).to.be.equal(1);
-  expect(dto[0].location.locationName).to.be.equal('National');
+function assertUserDetailsResponse(responseDto: CaseworkerUserDetailsDto[]): void {
+  // eslint-disable-next-line no-unused-expressions
+  expect(responseDto).to.be.not.null;
+  for (const element of responseDto) {
+    expect(element.first_name).to.equal('testFN');
+    expect(element.last_name).to.equal('testLN');
+    expect(element.user_type).to.equal('HMCTS');
+  }
 }

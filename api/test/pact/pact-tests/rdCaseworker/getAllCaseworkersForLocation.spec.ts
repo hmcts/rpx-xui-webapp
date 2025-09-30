@@ -12,7 +12,7 @@ const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUs
 
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
-xdescribe('Caseworker ref data api, get all caseworkers for a specific location', () => {
+describe('Caseworker ref data api, get all caseworkers for a specific location', () => {
   const baseLocations = [
     { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
   ];

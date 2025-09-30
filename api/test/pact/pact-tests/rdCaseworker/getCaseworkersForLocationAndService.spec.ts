@@ -1,52 +1,54 @@
 import { expect } from 'chai';
-import * as config from 'config';
-import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
-import { requireReloaded } from '../utils/moduleUtil';
+import {getUsers} from "../../pactUtil";
+import {CaseworkerUserDetailsDto} from "../../pactFixtures";
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+/*
+    Currently not able to see a Pact requirement for this as on MC the calls to location api are only
+    for
+    router.get('/getLocations', getLocations);
+    router.get('/getLocationById', getLocationById);
+    there is no requirement at the moment to
+    for Location and Service Id
+    ie this end point: /refdata/caseworker/location/{locationId}/service/{serviceId}
+    Example : /refdata/caseworker/location/1/service/IA
+*/
 
 xdescribe('Caseworker ref data api, get all caseworkers for a specific location and service', () => {
   const baseLocations = [
-    { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
+    { location_id: somethingLike(1),
+      location: somethingLike('National'),
+      is_primary: somethingLike(true) }
   ];
+
   const RESPONSE_BODY = [
     {
       'email_id': somethingLike('test_person@test.gov.uk'),
-      'first_name': somethingLike('testfn'),
-      'last_name': somethingLike('testln'),
+      'first_name': somethingLike('testFN'),
+      'last_name': somethingLike('testLN'),
       'id': somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
       'base_location': baseLocations
     }
   ];
 
-  describe('get /caseworker', () => {
-    const sandbox: sinon.SinonSandbox = sinon.createSandbox();
-    let next;
-
-    beforeEach(() => {
-      next = sandbox.spy();
-    });
+  describe('get Caseworkers For A Location And Service', () => {
 
     before(async () => {
       const interaction = {
-        states: [{ description: 'A list of users for CRD request' }],
+        states: [{ description: ' Get A list of users given a location and a Service' }],
         uponReceiving: 'get list of caseworkers for location and service',
         withRequest: {
           method: 'GET',
-          path: '/caseworker/location/1/service/IA',
+          path: '/refdata/caseworker/location/1/service/IA',
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
           },
-          body: null
         },
         willRespondWith: {
           status: 200,
@@ -60,66 +62,31 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location 
       pactSetUp.provider.addInteraction(interaction);
     });
 
-    afterEach(() => {
-      sandbox.restore();
-      sinon.reset();
-      MockApp.stopServer();
-    });
-
     it('returns the correct response', async () => {
-      MockApp.setServerPort(8080);
-      MockApp.init();
+        return pactSetUp.provider.executeTest(async (mockServer) => {
 
-      MockApp.onPost('/am/role-assignments/query', (req, res) => {
-        res.send({
-          roleAssignmentResponse: [
-            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
-            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' }
-          ]
+          const path: string = `${mockServer.url}/refdata/caseworker/location/1/service/IA}`;
+
+          const resp = await getUsers(path);
+          const responseDto = <CaseworkerUserDetailsDto[]> resp.data;
+          // more assert needed in this method
+          assertUserDetailsResponse(responseDto);
         });
       });
-      await MockApp.startServer();
-      return pactSetUp.provider.executeTest(async (mockServer) => {
-        const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
-        configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
-
-        // @ts-ignore
-        configValues.waSupportedJurisdictions = 'IA';
-        sandbox.stub(config, 'get').callsFake((prop) => {
-          return configValues[prop];
-        });
-
-        const { getCaseWorkersForLocationAndService } = requireReloaded('../../../../workAllocation/index');
-
-        const req = mockReq({
-          headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          },
-          params: { locationId: '1', serviceId: 'IA' }
-
-        });
-        let returnedResponse = null;
-        const response = mockRes();
-        response.send = (ret) => {
-          returnedResponse = ret;
-        };
-
-        await getCaseWorkersForLocationAndService(req, response, next);
-        assertResponses(returnedResponse);
-      });
-    });
-  });
+ });
 });
 
-function assertResponses(dto: any) {
-  console.log(JSON.stringify(dto));
-  expect(dto[0].email_id).to.be.equal('test_person@test.gov.uk');
-  expect(dto[0].first_name).to.be.equal('testfn');
-  expect(dto[0].last_name).to.be.equal('testln');
-  expect(dto[0].id).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
-  expect(dto[0].base_location[0].location_id).to.be.equal(1);
-  expect(dto[0].base_location[0].location).to.be.equal('National');
-  expect(dto[0].base_location[0].is_primary).to.be.equal(true);
+
+function assertUserDetailsResponse(responseDto: CaseworkerUserDetailsDto[]): void {
+  // eslint-disable-next-line no-unused-expressions
+  expect(responseDto).to.be.not.null;
+  for (const element of responseDto) {
+    expect(element.first_name).to.equal('testFN');
+    expect(element.last_name).to.equal('testLN');
+    expect(element.user_type).to.equal('HMCTS');
+    expect(element.email_id).to.equal('test_person@test.gov.uk');
+    expect(responseDto[0].base_location[0].location_id).to.be.equal(1);
+    expect(responseDto[0].base_location[0].location).to.be.equal('National');
+    expect(responseDto[0].base_location[0].is_primary).to.be.equal(true);
+  }
 }

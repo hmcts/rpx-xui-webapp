@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
-import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import { SERVICES_ROLE_ASSIGNMENT_API_PATH, TEST_USER_ID } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import * as accessManagement from '../accessManagement';
@@ -73,12 +73,12 @@ describe('orchestrationSpecificAccessRequest', () => {
     roleAssignmentResponse: {
       roleRequest: {
         id: '37cb4517-20b7-4709-adea-472986e78088',
-        authenticatedUserId: '45bcb0e5-9ad6-4561-b6c9-5e14c9b07536',
+        authenticatedUserId: getConfigValue(TEST_USER_ID),
         correlationId: 'dec7ca0c-b6d8-4b43-a855-018f766321a4',
-        assignerId: '45bcb0e5-9ad6-4561-b6c9-5e14c9b07536',
+        assignerId: getConfigValue(TEST_USER_ID),
         requestType: 'CREATE',
         process: 'specific-access',
-        reference: '1651667946523483/specific-access-admin/45bcb0e5-9ad6-4561-b6c9-5e14c9b07536',
+        reference: `1651667946523483/specific-access-admin/${getConfigValue(TEST_USER_ID)}`,
         replaceExisting: true,
         status: 'APPROVED',
         created: '2022-05-10T10:59:01.308613Z',

@@ -6,6 +6,9 @@ redis:
       enabled: false
   auth:
     enabled: false
+  image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/redis
 
 nodejs:
   applicationPort: 3000

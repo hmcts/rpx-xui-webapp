@@ -2,14 +2,20 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_queryAssignment', port: 8000 });
+
+const pactSetUp = new PactV3TestSetup({
+  provider: 'am_roleAssignment_queryAssignment',
+  port: 8000
+});
+
+const RAS_V2_HEADER = 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
 
 const caseId = '12345';
 const roles = [
@@ -58,9 +64,8 @@ describe('access management service, query role assignments', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'A list of role assignments for the search query',
+        states: [{ description: 'A list of role assignments for the search query' }],
         uponReceiving: 'query role assignments for caseId',
         withRequest: {
           method: 'POST',
@@ -68,14 +73,14 @@ describe('access management service, query role assignments', () => {
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type': RAS_V2_HEADER
           },
           body: REQUEST_BODY
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type': RAS_V2_HEADER
           },
           body: RESPONSE_BODY
         }
@@ -87,34 +92,31 @@ describe('access management service, query role assignments', () => {
         dummyRole.name = role.roleName;
         dummyRole.category = role.roleCategory;
         dummyRole.label = role.displayName;
-        // @ts-ignore
         rolesResponseBody.push(dummyRole);
       }
 
       const getRolesInteraction = {
-        state: 'A list of role assignments for the search query',
-        uponReceiving: 'query role assignments for caseId',
+        states: [{ description: 'A list of role assignments for the search query' }],
+        uponReceiving: 'GET available roles',
         withRequest: {
           method: 'GET',
           path: '/am/role-assignments/roles',
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type': RAS_V2_HEADER
           }
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'Content-Type': RAS_V2_HEADER
           },
           body: rolesResponseBody
         }
       };
 
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
-      // @ts-ignore
       pactSetUp.provider.addInteraction(getRolesInteraction);
     });
 
@@ -124,42 +126,40 @@ describe('access management service, query role assignments', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
+        const { getRolesByCaseId } = requireReloaded('../../../../roleAccess/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
-        },
-        body: {
-          caseId: caseId,
-          jurisdiction: 'IAC',
-          caseType: 'asylum'
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': RAS_V2_HEADER
+          },
+          body: {
+            caseId: caseId,
+            jurisdiction: 'IAC',
+            caseType: 'asylum'
+          }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getRolesByCaseId(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
         }
-
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getRolesByCaseId(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

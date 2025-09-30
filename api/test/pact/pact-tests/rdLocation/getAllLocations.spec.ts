@@ -1,17 +1,13 @@
-// @ts-ignore
-
 import { expect } from 'chai';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import {getLocations} from "../../pactUtil";
-import {CourtLocationDetails} from "../../pactFixtures";
+import { getLocations } from '../../pactUtil';
+import { CourtLocationDetailsDto } from '../../pactFixtures';
 import Any = jasmine.Any;
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
 const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_location', port: 8000 });
-
 const serviceCode = 'BFA1';
-
 describe('Locations ref data api, get all locations for service', () => {
   const RESPONSE_BODY = {
     'court_venues': [
@@ -62,7 +58,7 @@ describe('Locations ref data api, get all locations for service', () => {
         const path: string = `${mockServer.url}/refdata/location/court-venues/services?service_code=BFA1`;
 
         const response = await getLocations(path);
-        const responseDto = <CourtLocationDetails[]> response.data;
+        const responseDto = <CourtLocationDetailsDto[]> response.data;
         assertResponses(responseDto);
         });
     });
@@ -75,5 +71,4 @@ function assertResponses(responseDto: any) {
     expect(responseDto.court_venues[0].epimms_id).be.equal('12345');
     expect(responseDto.court_type).to.be.equal('CountyCourt');
     expect(responseDto.court_type_id).to.be.equal('courtTypeId');
-
   }

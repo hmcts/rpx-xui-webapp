@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_get_task_by_id', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_get_task_by_id', port: 8000 });
 
 const taskId = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
 
@@ -48,9 +48,8 @@ describe('Task management api, get task by id', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'get a task using taskId',
+        states: [{ description: 'get a task using taskId' }],
         uponReceiving: 'taskId to get a task',
         withRequest: {
           method: 'GET',
@@ -69,7 +68,6 @@ describe('Task management api, get task by id', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -79,41 +77,39 @@ describe('Task management api, get task by id', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getSearchTaskOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getSearchTaskOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getTask } = requireReloaded('../../../../workAllocation/index');
+        const { getTask } = requireReloaded('../../../../workAllocation/index');
 
-      const req = mockReq({
-        headers: {
-          Authorization: 'Bearer someAuthorizationToken',
-          ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        params: {
-          taskId: taskId
+        const req = mockReq({
+          headers: {
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          params: {
+            taskId: taskId
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getTask(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getTask(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

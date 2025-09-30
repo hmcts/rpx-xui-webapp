@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_restoreSpecificAccessRequestRole', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_restoreSpecificAccessRequestRole', port: 8000 });
 
 const REQUEST_BODY = {
   state: 1,
@@ -145,9 +145,8 @@ describe('access management service, restore specific access request role', () =
     });
 
     before(async() => {
-      await pactSetUp.provider.setup();
       const roleAssignmentInteraction = {
-        state: 'Restore specific access request role for user',
+        states: [{ description: 'Restore specific access request role for user' }],
         uponReceiving: 'restore specific access request role',
         withRequest: {
           method: 'POST',
@@ -169,7 +168,7 @@ describe('access management service, restore specific access request role', () =
       };
 
       const refreshRoleAssignmentInteraction = {
-        state: 'An actor with provided id is available in role assignment service',
+        states: [{ description: 'An actor with provided id is available in role assignment service' }],
         uponReceiving: 'refresh role assignment for user',
         withRequest: {
           method: 'GET',
@@ -189,9 +188,7 @@ describe('access management service, restore specific access request role', () =
         }
       };
 
-      // @ts-ignore
       pactSetUp.provider.addInteraction(roleAssignmentInteraction);
-      // @ts-ignore
       pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
@@ -201,35 +198,33 @@ describe('access management service, restore specific access request role', () =
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { restoreSpecificAccessRequestRole } = requireReloaded('../../../../roleAccess/index');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          session: { passport: { user: { userinfo: { id: '123' } } } },
+          body: REQUEST_BODY
+        });
+
+        let returnedResponse = null;
+        const response = null;
+
+        try {
+          returnedResponse = await restoreSpecificAccessRequestRole(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
-
-      const { restoreSpecificAccessRequestRole } = requireReloaded('../../../../roleAccess/index');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        session: { passport: { user: { userinfo: { id: '123' } } } },
-        body: REQUEST_BODY
-      });
-
-      let returnedResponse = null;
-      const response = null;
-
-      try {
-        returnedResponse = await restoreSpecificAccessRequestRole(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

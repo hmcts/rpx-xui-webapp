@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import { getIdamUsersByEmail } from '../../pactUtil';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'idamApi_users', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'idamApi_users', port: 8000 });
 
 describe('Idam Get user by email', async () => {
   const RESPONSE_BODY = {
@@ -20,14 +20,15 @@ describe('Idam Get user by email', async () => {
 
   describe('get /users?email', () => {
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'a user exists with email joe@bloggs.net',
+        states: [{ description: 'a user exists with email joe@bloggs.net' }],
         uponReceiving: 'a request for that user by email',
         withRequest: {
           method: 'GET',
           path: '/users',
-          query: 'email=joe@bloggs.net',
+          query: {
+            email: 'joe@bloggs.net'
+          },
           headers: {
             Authorization: 'Bearer some-access-token'
           }
@@ -40,21 +41,16 @@ describe('Idam Get user by email', async () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
     it('Returns the correct response', async () => {
-      const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/users?email=joe@bloggs.net`;
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const taskUrl = `${mockServer.url}/users?email=joe@bloggs.net`;
 
-      const response: Promise<any> = getIdamUsersByEmail(taskUrl);
-
-      response.then((axiosResponse) => {
-        const dto: IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto>axiosResponse.data;
+        const response = await getIdamUsersByEmail(taskUrl);
+        const dto = await response.data;
         assertResponses(dto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
       });
     });
   });

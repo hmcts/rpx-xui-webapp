@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getJudicialBookingAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_judicialBooking', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_judicialBooking', port: 8000 });
 
 const RESPONSE_BODY = {
   userId: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
@@ -38,9 +38,8 @@ describe('Access management api, create booking', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'create booking',
+        states: [{ description: 'create booking' }],
         uponReceiving: 'relevant user id',
         withRequest: {
           method: 'POST',
@@ -60,7 +59,7 @@ describe('Access management api, create booking', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -70,46 +69,44 @@ describe('Access management api, create booking', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getJudicialBookingAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getJudicialBookingAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { createBooking } = requireReloaded('../../../../accessManagement/index');
+        const { createBooking } = requireReloaded('../../../../accessManagement/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          beginTime: '01-01-2000',
-          endTime: '01-01-3000',
-          locationId: '123',
-          regionId: '1',
-          userId: '018a0310-f122-4377-9504-f635301f39ed-test2'
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          body: {
+            beginTime: '01-01-2000',
+            endTime: '01-01-3000',
+            locationId: '123',
+            regionId: '1',
+            userId: '018a0310-f122-4377-9504-f635301f39ed-test2'
+          }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await createBooking(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
-
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await createBooking(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

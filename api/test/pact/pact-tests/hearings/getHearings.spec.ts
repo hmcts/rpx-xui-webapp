@@ -1,15 +1,14 @@
-import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { Matchers, V3Interaction } from '@pact-foundation/pact';
 
-const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'hmcHearingServiceProvider', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'hmcHearingServiceProvider', port: 8000 });
 
 const caseId = '1667564306557767';
 
@@ -62,9 +61,8 @@ describe('Hearings, get hearings for a given caseId', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-      const interaction: InteractionObject = {
-        state: 'Get hearings',
+      const interaction: V3Interaction = {
+        states: [{ description: 'Get hearings' }],
         uponReceiving: 'get list of hearings for given caseId',
         withRequest: {
           method: 'GET',
@@ -93,38 +91,38 @@ describe('Hearings, get hearings for a given caseId', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getHearingsAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getHearingsAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getHearings } = requireReloaded('../../../../hearings/hmc.index.ts');
+        const { getHearings } = requireReloaded('../../../../hearings/hmc.index.ts');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        query: {
-          caseId
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          query: {
+            caseId
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getHearings(req, response, next);
+        } catch (err) {
+          throw new Error(err);
         }
+
+        assertResponses(returnedResponse);
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getHearings(req, response, next);
-      } catch (err) {
-        throw new Error(err);
-      }
-
-      assertResponses(returnedResponse);
-      pactSetUp.provider.verify();
-      pactSetUp.provider.finalize();
     });
   });
 });

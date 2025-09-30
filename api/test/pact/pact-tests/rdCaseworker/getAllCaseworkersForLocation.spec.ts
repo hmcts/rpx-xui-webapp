@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
@@ -35,9 +35,8 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location'
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'A list of users for CRD request',
+        states: [{ description: 'A list of users for CRD request' }],
         uponReceiving: 'get list of caseworkers for location',
         withRequest: {
           method: 'GET',
@@ -57,7 +56,7 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location'
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -80,44 +79,43 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location'
         });
       });
       await MockApp.startServer();
-      const configValues = getCaseworkerRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
-      // @ts-ignore
-      configValues.waSupportedJurisdictions = 'IA';
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
+        configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
+
+        // @ts-ignore
+        configValues.waSupportedJurisdictions = 'IA';
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { getAllCaseWorkersForLocation } = requireReloaded('../../../../workAllocation/index');
+
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          params: { locationId: '1' }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getAllCaseWorkersForLocation(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
       });
-
-      const { getAllCaseWorkersForLocation } = requireReloaded('../../../../workAllocation/index');
-
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        params: { locationId: '1' }
-
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getAllCaseWorkersForLocation(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

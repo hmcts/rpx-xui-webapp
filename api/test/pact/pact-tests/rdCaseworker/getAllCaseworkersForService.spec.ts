@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getCaseworkerRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { Matchers, V3Interaction } from '@pact-foundation/pact';
 
-const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUsers', port: 8000 });
 
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
@@ -35,9 +35,8 @@ describe('Caseworker ref data api, get all caseworkers for a specific service', 
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-      const interaction = {
-        state: 'A list of users for CRD request',
+      const interaction: V3Interaction = {
+        states: [{ description: 'A list of users for CRD request' }],
         uponReceiving: 'get list of caseworkers for location',
         withRequest: {
           method: 'GET',
@@ -57,7 +56,6 @@ describe('Caseworker ref data api, get all caseworkers for a specific service', 
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -80,44 +78,36 @@ describe('Caseworker ref data api, get all caseworkers for a specific service', 
         });
       });
       await MockApp.startServer();
-      const configValues = getCaseworkerRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
+        configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
-      // @ts-ignore
-      configValues.waSupportedJurisdictions = 'IA';
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+        // @ts-ignore
+        configValues.waSupportedJurisdictions = 'IA';
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getCaseWorkersForService } = requireReloaded('../../../../workAllocation/index');
+        const { getCaseWorkersForService } = requireReloaded('../../../../workAllocation/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        params: { serviceId: 'IA' }
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          params: { serviceId: 'IA' }
 
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
 
-      try {
         await getCaseWorkersForService(req, response, next);
-
         assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
+      });
     });
   });
 });

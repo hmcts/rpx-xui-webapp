@@ -1,15 +1,14 @@
-import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { V3Interaction, Matchers } from '@pact-foundation/pact';
 
-const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'hmc_hearingActuals', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'hmc_hearingActuals', port: 8000 });
 
 const hearingId = '1234567890123456';
 
@@ -87,9 +86,8 @@ describe('Hearings, update single hearing actuals for given hearingId', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-      const interaction: InteractionObject = {
-        state: 'Update hearing actuals by hearingId',
+      const interaction: V3Interaction = {
+        states: [{ description: 'Update hearing actuals by hearingId' }],
         uponReceiving: 'update hearing actuals for given hearingId',
         withRequest: {
           method: 'PUT',
@@ -119,39 +117,39 @@ describe('Hearings, update single hearing actuals for given hearingId', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getHearingsAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getHearingsAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { updateHearingActuals } = requireReloaded('../../../../hearings/hmc.index.ts');
+
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          query: {
+            hearingId
+          },
+          body: EXAMPLE_REQUEST_BODY
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await updateHearingActuals(req, response, next);
+        } catch (err) {
+          throw new Error(err);
+        }
+
+        assertResponses(returnedResponse);
       });
-
-      const { updateHearingActuals } = requireReloaded('../../../../hearings/hmc.index.ts');
-
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        query: {
-          hearingId
-        },
-        body: EXAMPLE_REQUEST_BODY
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await updateHearingActuals(req, response, next);
-      } catch (err) {
-        throw new Error(err);
-      }
-
-      assertResponses(returnedResponse);
-      pactSetUp.provider.verify();
-      pactSetUp.provider.finalize();
     });
   });
 });

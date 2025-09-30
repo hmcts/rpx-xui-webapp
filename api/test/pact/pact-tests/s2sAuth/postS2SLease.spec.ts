@@ -1,11 +1,9 @@
 import { expect } from 'chai';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { postS2SLease } from '../../pactUtil';
 import { S2SResponse } from '../../pactFixtures';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 's2s_auth', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 's2s_auth', port: 8000 });
 
 describe('S2S Auth API', () => {
   describe('post S2S lease', () => {
@@ -13,12 +11,9 @@ describe('S2S Auth API', () => {
       microservice: 'xui-webapp', oneTimePassword: 'exPassword'
     };
 
-    const mockResponse = somethingLike('sometoken');
-
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'microservice with valid credentials',
+        states: [{ description: 'microservice with valid credentials' }],
         uponReceiving: 'a request for a token',
         withRequest: {
           method: 'POST',
@@ -34,25 +29,22 @@ describe('S2S Auth API', () => {
             'Content-Type': 'text/plain'
           },
           status: 200,
-          body: mockResponse
+          body: 'sometoken'
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
     it('returns the correct response', async () => {
-      const s2sUrl: string = `${pactSetUp.provider.mockService.baseUrl}/lease`;
-      try {
-        const resp = await postS2SLease(s2sUrl, mockRequest);
-        assertResponse(resp.data);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (e) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(e);
-      }
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const s2sUrl: string = `${mockServer.url}/lease`;
+        try {
+          const resp = await postS2SLease(s2sUrl, mockRequest);
+          assertResponse(resp.data);
+        } catch (e) {
+          throw new Error(e);
+        }
+      });
     });
   });
 });

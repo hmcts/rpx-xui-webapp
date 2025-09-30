@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_createSpecificAccessDenyRole', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_createSpecificAccessDenyRole', port: 8000 });
 
 const REQUEST_BODY = {
   caseId: '1594717367271987',
@@ -84,9 +84,8 @@ describe('access management service, create specific access deny role', () => {
     });
 
     before(async() => {
-      await pactSetUp.provider.setup();
       const roleAssignmentInteraction = {
-        state: 'Create specific access deny role for user',
+        states: [{ description: 'Create specific access deny role for user' }],
         uponReceiving: 'create specific access deny role',
         withRequest: {
           method: 'POST',
@@ -107,7 +106,6 @@ describe('access management service, create specific access deny role', () => {
         }
       };
 
-      // @ts-ignore
       pactSetUp.provider.addInteraction(roleAssignmentInteraction);
     });
 
@@ -117,35 +115,26 @@ describe('access management service, create specific access deny role', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { createSpecificAccessDenyRole } = requireReloaded('../../../../roleAccess/index');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        session: { passport: { user: { userinfo: { id: '123' } } } },
-        body: REQUEST_BODY
-      });
+        const { createSpecificAccessDenyRole } = requireReloaded('../../../../roleAccess/index');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          session: { passport: { user: { userinfo: { id: '123' } } } },
+          body: REQUEST_BODY
+        });
 
-      let returnedResponse = null;
-      const response = null;
-
-      try {
-        returnedResponse = await createSpecificAccessDenyRole(req, response, next);
+        const returnedResponse = await createSpecificAccessDenyRole(req, null, next);
         assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
+      });
     });
   });
 });

@@ -1,23 +1,24 @@
 import { expect } from 'chai';
 import { Organisation } from '../../pactFixtures';
 import { getOrganisationDetails } from '../../pactUtil';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, eachLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalExternalUsers', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_organisationalExternalUsers', port: 8000 });
 
 describe('RD Professional API call for get organisations', () => {
   describe('Get Organisations', () => {
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'Organisations exists with status of Active',
+        states: [{ description: 'Organisations exists with status of Active' }],
         uponReceiving: 'On receiving a request for those organisations',
         withRequest: {
           method: 'GET',
           path: '/refdata/external/v1/organisations/status/ACTIVE',
-          query: 'address=true',
+          query: {
+            address: 'true'
+          },
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer some-access-token',
@@ -32,20 +33,17 @@ describe('RD Professional API call for get organisations', () => {
           body: getOrganisationResponse
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
     it('returns the correct response', async () => {
-      const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/external/v1/organisations/status/ACTIVE?address=true`;
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const path: string = `${mockServer.url}/refdata/external/v1/organisations/status/ACTIVE?address=true`;
 
-      const resp = getOrganisationDetails(path);
-      resp.then((response) => {
-        const responseDto: Organisation[] = <Organisation[]>response.data;
+        const resp = await getOrganisationDetails(path);
+        const responseDto = <Organisation[]>resp.data;
         assertResponse(responseDto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
       });
     });
   });

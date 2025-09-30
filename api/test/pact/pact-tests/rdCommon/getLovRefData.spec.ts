@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getRdCommonDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_commonData', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_commonData', port: 8000 });
 
 const serviceId = 'IA';
 const categoryId = 'exampleCat';
@@ -37,14 +37,16 @@ describe('RD get lov ref data', async () => {
       next = sandbox.spy();
     });
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'get lov ref data',
+        states: [{ description: 'get lov ref data' }],
         uponReceiving: 'service id, category id and child required',
         withRequest: {
           method: 'GET',
           path: `/refdata/commondata/lov/categories/${categoryId}`,
-          query: `serviceId=${serviceId}&isChildRequired=${false}`,
+          query: {
+            serviceId: serviceId,
+            isChildRequired: 'false'
+          },
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -59,7 +61,7 @@ describe('RD get lov ref data', async () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
     afterEach(() => {
@@ -68,34 +70,32 @@ describe('RD get lov ref data', async () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getRdCommonDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getRdCommonDataAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+        const { getLovRefData } = requireReloaded('../../../../prd/lov');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          query: { serviceId, categoryId, isChildRequired }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+        try {
+          await getLovRefData(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
-      const { getLovRefData } = requireReloaded('../../../../prd/lov');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        query: { serviceId, categoryId, isChildRequired }
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-      try {
-        await getLovRefData(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

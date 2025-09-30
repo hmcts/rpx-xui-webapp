@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_deleteRoleByAssignmentId', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_deleteRoleByAssignmentId', port: 8000 });
 
 const assigmentId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
 
@@ -57,9 +57,8 @@ describe('access management service, delete role by assignment id', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'An actor with provided id is available in role assignment service',
+        states: [{ description: 'An actor with provided id is available in role assignment service' }],
         uponReceiving: 'delete role by assignment id',
         withRequest: {
           method: 'DELETE',
@@ -77,7 +76,7 @@ describe('access management service, delete role by assignment id', () => {
       };
 
       const refreshRoleAssignmentInteraction = {
-        state: 'An actor with provided id is available in role assignment service',
+        states: [{ description: 'An actor with provided id is available in role assignment service' }],
         uponReceiving: 'refresh role assignment for user',
         withRequest: {
           method: 'GET',
@@ -97,9 +96,7 @@ describe('access management service, delete role by assignment id', () => {
         }
       };
 
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
-      // @ts-ignore
       pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
@@ -109,35 +106,33 @@ describe('access management service, delete role by assignment id', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { deleteRoleByAssignmentId } = requireReloaded('../../../../roleAccess/index');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          session: { passport: { user: { userinfo: { id: '123' } } } },
+          body: REQUEST_BODY
+        });
+
+        let returnedResponse = null;
+        const response = null;
+
+        try {
+          returnedResponse = await deleteRoleByAssignmentId(req, response, next, assigmentId);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
-
-      const { deleteRoleByAssignmentId } = requireReloaded('../../../../roleAccess/index');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        session: { passport: { user: { userinfo: { id: '123' } } } },
-        body: REQUEST_BODY
-      });
-
-      let returnedResponse = null;
-      const response = null;
-
-      try {
-        returnedResponse = await deleteRoleByAssignmentId(req, response, next, assigmentId);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

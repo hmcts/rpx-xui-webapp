@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import {getUsers} from "../../pactUtil";
-import {CaseworkerUserDetailsDto} from "../../pactFixtures";
+import { getUsers } from '../../pactUtil';
+import { CaseworkerUserDetailsDto } from '../../pactFixtures';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
@@ -36,7 +36,6 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location 
   ];
 
   describe('get Caseworkers For A Location And Service', () => {
-
     before(async () => {
       const interaction = {
         states: [{ description: ' Get A list of users given a location and a Service' }],
@@ -48,7 +47,7 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location 
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
-          },
+          }
         },
         willRespondWith: {
           status: 200,
@@ -63,20 +62,15 @@ xdescribe('Caseworker ref data api, get all caseworkers for a specific location 
     });
 
     it('returns the correct response', async () => {
-        return pactSetUp.provider.executeTest(async (mockServer) => {
-
-          const path: string = `${mockServer.url}/refdata/caseworker/location/1/service/IA}`;
-
-          const resp = await getUsers(path);
-          const responseDto = <CaseworkerUserDetailsDto[]> resp.data;
-          // more assert needed in this method
-          assertUserDetailsResponse(responseDto);
-        });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const path: string = `${mockServer.url}/refdata/caseworker/location/1/service/IA}`;
+        const resp = await getUsers(path);
+        const responseDto = <CaseworkerUserDetailsDto[]> resp.data;
+        assertUserDetailsResponse(responseDto);
       });
- });
+    });
+  });
 });
-
-
 function assertUserDetailsResponse(responseDto: CaseworkerUserDetailsDto[]): void {
   // eslint-disable-next-line no-unused-expressions
   expect(responseDto).to.be.not.null;

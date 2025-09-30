@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import {accessRolesByCaseId} from "../../pactUtil";
-import {AccessRolesDto} from "../../pactFixtures";
+import { accessRolesByCaseId } from '../../pactUtil';
+import { AccessRolesDto } from '../../pactFixtures';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
@@ -73,7 +73,6 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
 
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
-
         const path: string = `${mockServer.url}/am/role-assignments/query`;
         const payload = {
           queryRequests: [

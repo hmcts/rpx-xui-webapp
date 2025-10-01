@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { PactV3TestSetup } from '../settings/provider.mock';
-import {fetchUserDetails} from "../../pactUtil";
-import {CaseworkerUserDetailsDto} from "../../pactFixtures";
+import { fetchUserDetails } from '../../pactUtil';
+import { CaseworkerUserDetailsDto } from '../../pactFixtures';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
@@ -10,7 +10,7 @@ const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUs
 describe('Caseworker ref data api, get all caseworkers', () => {
   const REQUEST_BODY = {
     userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')]
-   };
+  };
 
   const baseLocations = [
     { location_id: somethingLike(1),
@@ -28,7 +28,7 @@ describe('Caseworker ref data api, get all caseworkers', () => {
   ];
 
   describe('get all the caseworker', () => {
-     before(async () => {
+    before(async () => {
       const interaction = {
         states: [{ description: 'A list of users for CRD request' }],
         uponReceiving: 'get list of caseworkers',
@@ -58,14 +58,14 @@ describe('Caseworker ref data api, get all caseworkers', () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const path: string = `${mockServer.url}/refdata/case-worker/users/fetchUsersById`;
         const payload = {
-          userIds: ["userId1","userId2"]
+          userIds: ['userId1', 'userId2']
         };
-        const resp = await fetchUserDetails(path,payload);
+        const resp = await fetchUserDetails(path, payload);
         const responseDto = <CaseworkerUserDetailsDto[]> resp.data;
         assertUserDetailsResponse(responseDto);
-        });
-     });
+      });
     });
+  });
 });
 
 function assertUserDetailsResponse(responseDto: CaseworkerUserDetailsDto[]): void {

@@ -9,13 +9,9 @@ const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_caseworkerRefUs
 
 /*
     Currently not able to see a Pact requirement for this as on MC the calls to location api are only
-    for
-    router.get('/getLocations', getLocations);
-    router.get('/getLocationById', getLocationById);
-    there is no requirement at the moment to
-    for Location and Service Id
-    ie this end point: /refdata/caseworker/location/{locationId}/service/{serviceId}
+    for this end point: /refdata/caseworker/location/{locationId}/service/{serviceId}
     Example : /refdata/caseworker/location/1/service/IA
+    Hence this pact is disabled for now.
 */
 
 xdescribe('Caseworker ref data api, get all caseworkers for a specific location and service', () => {

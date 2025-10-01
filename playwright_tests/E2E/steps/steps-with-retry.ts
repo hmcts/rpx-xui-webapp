@@ -1,5 +1,7 @@
 import { expect, Page } from '@playwright/test';
 
+const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 type RetryLabelByOptionOpts = {
   attempts?: number;   // default 6
   delayMs?: number;    // default 5000ms
@@ -16,6 +18,7 @@ type VisibleRetryOpts = {
 export async function selectOptionWithRetry(
   page: Page,
   optionLabel: string,
+  optionNeedsField: boolean = true,
   opts: RetryLabelByOptionOpts = {}
 ) {
   const {
@@ -29,12 +32,16 @@ export async function selectOptionWithRetry(
       if (i !== 0) {
         console.log(`Attempt ${i}: Failed to select '${label}', retrying...`);
       }
-      await page.getByLabel(label).selectOption({ label: optionLabel });
+      if (optionNeedsField) {
+        await page.getByLabel(label).selectOption({ label: optionLabel}, {timeout: 5000 });
+      } else {
+        await page.getByLabel(label).selectOption(optionLabel, {timeout: 5000 });
+      }
       return;
     } catch (error) {
       console.error(error);
       if (i === attempts - 1) throw error;
-      await page.waitForTimeout(delayMs);
+      await sleep(delayMs); 
     }
   }
 }
@@ -65,7 +72,7 @@ export async function expectTextVisibleWithRetry(
         throw err;
       }
       console.warn(`Text "${text}" not visible on attempt ${i + 1}, retrying in ${delayMs}ms...`);
-      await page.waitForTimeout(delayMs);
+      await sleep(delayMs); 
     }
   }
 }

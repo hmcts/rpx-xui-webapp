@@ -48,15 +48,78 @@ variable "welsh_reporting_enabled" {
   type        = bool
 }
 
-variable "welsh_action_group_name" {
-  default     = "welsh-support"
-  description = "The name of the Action Group for Welsh reporting."
-  type        = string
-  
-}
-
 variable "welsh_email_address_key" {
   default     = "welsh-report-email"
   description = "Email address key in azure Key Vault for Welsh reporting."
   type        = string
+}
+
+# Logic App Configuration for KQL Reports
+variable "logic_app_enabled" {
+  default     = false
+  description = "Enable Logic App for monthly KQL reports"
+  type        = bool
+}
+
+variable "logic_app_schedule_interval" {
+  default     = 1
+  description = "Interval for Logic App recurrence (in months)"
+  type        = number
+}
+
+variable "logic_app_schedule_frequency" {
+  default     = "Month"
+  description = "Frequency for Logic App recurrence"
+  type        = string
+}
+
+variable "logic_app_email_recipients_key" {
+  default     = "kql-report-email-recipients"
+  description = "Key vault key for email recipients list"
+  type        = string
+}
+
+variable "logic_app_acs_connection_string_key" {
+  default     = "acs-email-connection-string"
+  description = "Key vault key for Azure Communication Services connection string"
+  type        = string
+}
+
+variable "logic_app_log_analytics_workspace_name" {
+  default     = "hmcts-prod"
+  description = "Log Analytics workspace name for KQL queries"
+  type        = string
+}
+
+variable "logic_app_log_analytics_resource_group" {
+  default     = "oms-automation"
+  description = "Resource group for Log Analytics workspace"
+  type        = string
+}
+
+variable "logic_app_kql_query" {
+  default     = "requests | where timestamp > ago(30d) | summarize count() by bin(timestamp, 1d) | render columnchart"
+  description = "KQL query to execute and email results"
+  type        = string
+}
+
+# Environment-specific Log Analytics workspace mappings
+variable "env_log_analytics_workspace_map" {
+  type        = map(string)
+  description = "Mapping of environment to Log Analytics workspace names"
+  default = {
+    prod     = "hmcts-prod"
+    aat      = "hmcts-aat" 
+    perftest = "hmcts-perftest"
+  }
+}
+
+variable "env_log_analytics_rg_map" {
+  type        = map(string)
+  description = "Mapping of environment to Log Analytics resource groups"
+  default = {
+    prod     = "oms-automation"
+    aat      = "oms-automation-aat"
+    perftest = "oms-automation-perftest"
+  }
 }

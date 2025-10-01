@@ -2,15 +2,15 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getCcdDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'ccdDataStoreAPI_search', port: 8000 });
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+const pactSetUp = new PactV3TestSetup({ provider: 'ccdDataStoreAPI_search', port: 8000 });
+// const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
 describe('Global serarch API', () => {
   let next;
@@ -52,9 +52,8 @@ describe('Global serarch API', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'Search for case id',
+        states: [{ description: 'Search for case id' }],
         uponReceiving: 'return case details',
         withRequest: {
           method: 'POST',
@@ -74,57 +73,53 @@ describe('Global serarch API', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
     afterEach(() => {
       sandbox.restore();
       sinon.reset();
-      MockApp.stopServer();
     });
 
     it('returns the correct response', async () => {
-      const configValues = getCcdDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getCcdDataAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getSearchResults } = requireReloaded('../../../../globalSearch/index');
+        const { getSearchResults } = requireReloaded('../../../../globalSearch/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          'searchCriteria': {
-            'CCDJurisdictionIds': ['PUBLICLAW'],
-            'caseReferences': ['1675871084353511']
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
           },
-          'sortCriteria': null,
-          'maxReturnRecordCount': 25,
-          'startRecordNumber': 1
+          body: {
+            'searchCriteria': {
+              'CCDJurisdictionIds': ['PUBLICLAW'],
+              'caseReferences': ['1675871084353511']
+            },
+            'sortCriteria': null,
+            'maxReturnRecordCount': 25,
+            'startRecordNumber': 1
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getSearchResults(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getSearchResults(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

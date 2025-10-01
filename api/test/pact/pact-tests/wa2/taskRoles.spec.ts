@@ -1,21 +1,21 @@
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getWorkAllocationAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, eachLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_task_role_permissions_by_task_id', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_task_role_permissions_by_task_id', port: 8000 });
 
-const taskId = '4d4b6fgh-c91f-433f-92ac-e456ae34f72a';
+const taskId = '4d4b6fgh-c91f-433f-92ac-e800ae34f92c';
 
 describe('Task management api, task roles', () => {
   const RESPONSE_BODY = { roles: eachLike({
-    role_category: somethingLike('LEGAL_OPERATIONS'),
-    role_name: somethingLike('tribunal-caseworker'),
+    role_category: somethingLike('JUDICIARY'),
+    role_name: somethingLike('judge'),
     permissions: eachLike('READ'),
-    authorisations: eachLike('IAC')
+    authorisations: eachLike('SSCS')
   }) };
 
   describe('get /work-types', () => {
@@ -27,10 +27,8 @@ describe('Task management api, task roles', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-
       const interaction = {
-        state: 'get task role information using taskId',
+        states: [{ description: 'get task role information using taskId' }],
         uponReceiving: 'get task roles by taskId',
         withRequest: {
           method: 'GET',
@@ -47,7 +45,6 @@ describe('Task management api, task roles', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -57,40 +54,38 @@ describe('Task management api, task roles', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getWorkAllocationAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getWorkAllocationAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
-          // 'content-Type': 'application/json'
-        },
-        params: {
-          taskId: taskId
+        const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+            // 'content-Type': 'application/json'
+          },
+          params: {
+            taskId: taskId
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getTaskRoles(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getTaskRoles(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

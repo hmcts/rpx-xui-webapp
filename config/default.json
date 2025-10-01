@@ -130,7 +130,7 @@
     { "service": "EMPLOYMENT", "serviceCodes": ["BHA1"] },
     { "service": "DIVORCE", "serviceCodes": ["ABA1"] },
     { "service": "FR", "serviceCodes": ["ABA2"] },
-    { "service": "HRS", "serviceCodes": ["HRS1"] }
+    { "service": "HRS", "serviceCodes": ["HRS1"] },
     { "service": "PROBATE", "serviceCodes": ["ABA6"] }
   ],
   "wildcardSearchFields": {

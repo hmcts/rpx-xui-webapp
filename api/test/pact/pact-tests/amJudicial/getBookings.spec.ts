@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getJudicialBookingAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_judicialBooking', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_judicialBooking', port: 8000 });
 
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
@@ -37,9 +37,8 @@ describe('Access management api, get bookings', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'return bookings for specific user',
+        states: [{ description: 'return bookings for specific user' }],
         uponReceiving: 'relevant user id',
         withRequest: {
           method: 'POST',
@@ -59,7 +58,6 @@ describe('Access management api, get bookings', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -82,50 +80,48 @@ describe('Access management api, get bookings', () => {
       });
       await MockApp.startServer();
 
-      const configValues = getJudicialBookingAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      configValues['services.location_api'] = 'http://localhost:8080';
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getJudicialBookingAPIOverrides(mockServer.url);
+        configValues['services.location_api'] = 'http://localhost:8080';
 
-      // @ts-ignore
-      configValues.serviceRefDataMapping = [
-        { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
-      ];
+        // @ts-ignore
+        configValues.serviceRefDataMapping = [
+          { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
+        ];
 
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getBookings } = requireReloaded('../../../../accessManagement/index');
+        const { getBookings } = requireReloaded('../../../../accessManagement/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          userId: '018a0310-f122-4377-9504-f635301f39ed-test2',
-          bookableServices: ['IA']
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          body: {
+            userId: '018a0310-f122-4377-9504-f635301f39ed-test2',
+            bookableServices: ['IA']
+          }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getBookings(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
-
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getBookings(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

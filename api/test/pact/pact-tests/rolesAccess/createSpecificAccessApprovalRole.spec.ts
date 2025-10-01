@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_createSpecificAccessApprovalRole', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_createSpecificAccessApprovalRole', port: 8000 });
 
 const REQUEST_BODY = {
   specificAccessStateData: {
@@ -164,9 +164,8 @@ describe('access management service, create specific access approval role', () =
     });
 
     before(async() => {
-      await pactSetUp.provider.setup();
       const roleAssignmentInteraction = {
-        state: 'Create specific access approval role for user',
+        states: [{ description: 'Create specific access approval role for user' }],
         uponReceiving: 'create specific access approval role',
         withRequest: {
           method: 'POST',
@@ -188,7 +187,7 @@ describe('access management service, create specific access approval role', () =
       };
 
       const refreshRoleAssignmentInteraction = {
-        state: 'An actor with provided id is available in role assignment service',
+        states: [{ description: 'An actor with provided id is available in role assignment service' }],
         uponReceiving: 'refresh role assignment for user',
         withRequest: {
           method: 'GET',
@@ -208,9 +207,7 @@ describe('access management service, create specific access approval role', () =
         }
       };
 
-      // @ts-ignore
       pactSetUp.provider.addInteraction(roleAssignmentInteraction);
-      // @ts-ignore
       pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
@@ -220,35 +217,33 @@ describe('access management service, create specific access approval role', () =
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { createSpecificAccessApprovalRole } = requireReloaded('../../../../roleAccess/index');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          session: { passport: { user: { userinfo: { id: '123' } } } },
+          body: REQUEST_BODY
+        });
+
+        let returnedResponse = null;
+        const response = null;
+
+        try {
+          returnedResponse = await createSpecificAccessApprovalRole(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
-
-      const { createSpecificAccessApprovalRole } = requireReloaded('../../../../roleAccess/index');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        session: { passport: { user: { userinfo: { id: '123' } } } },
-        body: REQUEST_BODY
-      });
-
-      let returnedResponse = null;
-      const response = null;
-
-      try {
-        returnedResponse = await createSpecificAccessApprovalRole(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

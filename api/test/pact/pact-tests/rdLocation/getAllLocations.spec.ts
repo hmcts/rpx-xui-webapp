@@ -19,15 +19,13 @@ describe('Locations ref data api, get all locations for service', () => {
     ],
     'court_type': somethingLike('CountyCourt'),
     'service_code': somethingLike(serviceCode),
-    'court_type_id': somethingLike("courtTypeId")
+    'court_type_id': somethingLike('courtTypeId')
   };
 
   describe('get /locations}', () => {
-
-
     before(async () => {
       const interaction = {
-        states: [{description: 'Court Venues exist for the service code provided'}],
+        states: [{ description: 'Court Venues exist for the service code provided' }],
         uponReceiving: 'get list of court venues for given service code',
         withRequest: {
           method: 'GET',
@@ -52,23 +50,20 @@ describe('Locations ref data api, get all locations for service', () => {
       pactSetUp.provider.addInteraction(interaction);
     });
 
-
     it('returns the correct response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const path: string = `${mockServer.url}/refdata/location/court-venues/services?service_code=BFA1`;
-
         const response = await getLocations(path);
         const responseDto = <CourtLocationDetailsDto[]> response.data;
         assertResponses(responseDto);
-        });
+      });
     });
   });
 });
 
-
 function assertResponses(responseDto: any) {
-    expect(responseDto.court_venues[0].site_name).be.equal('siteName1');
-    expect(responseDto.court_venues[0].epimms_id).be.equal('12345');
-    expect(responseDto.court_type).to.be.equal('CountyCourt');
-    expect(responseDto.court_type_id).to.be.equal('courtTypeId');
-  }
+  expect(responseDto.court_venues[0].site_name).be.equal('siteName1');
+  expect(responseDto.court_venues[0].epimms_id).be.equal('12345');
+  expect(responseDto.court_type).to.be.equal('CountyCourt');
+  expect(responseDto.court_type_id).to.be.equal('courtTypeId');
+}

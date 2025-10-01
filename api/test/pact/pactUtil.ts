@@ -124,7 +124,7 @@ export async function fetchUserDetails(path: string, payload: any) {
       'content-type': 'application/json'
     }
   };
-  return axios.post(path,payload,axiosConfig);
+  return axios.post(path, payload, axiosConfig);
 }
 
 export async function getCaseWorkers(path: string) {

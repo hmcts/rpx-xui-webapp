@@ -29,7 +29,7 @@ describe('Task management api,  retrieve all the work types ', () => {
 
     before(async () => {
       const interaction = {
-        states: [{ description: 'retrieve work types filtered for the user in context' }],
+        states: [{ description: 'retrieve all work types' }],
         uponReceiving: 'retrieve all work types',
         withRequest: {
           method: 'GET',
@@ -82,7 +82,6 @@ describe('Task management api,  retrieve all the work types ', () => {
 
         try {
           await getTypesOfWork(req, response, next);
-
           assertResponses(returnedResponse);
         } catch (err) {
           console.log(err.stack);

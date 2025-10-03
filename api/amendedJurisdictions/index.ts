@@ -47,9 +47,27 @@ export const checkCachedJurisdictions = (proxyReq, req, res) => {
     }
 
     const cached = req.session[sessionKey];
-    if (cached) {
-      res.send(cached);
-      proxyReq.end();
+
+    if (cached && typeof cached === 'object') {
+      console.log(`From object cached data for ${sessionKey}:`, cached);
+      return res.json(cached), proxyReq.end();
+    }
+
+    if (cached && typeof cached === 'string') {
+      console.log(`From string cached data for ${sessionKey}:`, cached);
+      const cleaned = cached.replace(/\p{C}+$/u, '');
+      // If the above line throws a lint or parsing error, use double backslashes:
+      // const cleaned = cached.replace(/[\u0000-\\u001F]+$/g, '');
+      try {
+        const parsed = JSON.parse(cleaned);
+        // self-heal: store parsed so future reads are safe
+        req.session[sessionKey] = parsed;
+        return res.json(parsed), proxyReq.end();
+      } catch {
+        console.warn(`[jurisdictions] Corrupt cached JSON string for ${sessionKey}:`, cleaned);
+        delete req.session[sessionKey];
+        // fall through to proxy
+      }
     }
   }
 };

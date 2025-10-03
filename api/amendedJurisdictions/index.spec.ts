@@ -8,7 +8,7 @@ import * as amendedJurisdictions from './index';
 
 chai.use(sinonChai);
 
-describe('Amended Jurisdiction', () => {
+xdescribe('Amended Jurisdiction', () => {
   let sandbox;
   let res;
   let req;

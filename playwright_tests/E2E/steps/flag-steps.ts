@@ -1,7 +1,20 @@
 export async function getActiveFlagsForCase(page) {
   console.log('Getting the active flags int from the banner');
   const activeFlags = page.getByLabel('Important').getByRole('paragraph');
-  const textContent = await activeFlags.innerText();
+  let textContent = '';
+  for (let i = 0; i < 6; i++) {
+    // added a loop to retry clicking on the 'Search' link in case of spinner issues
+    try {
+      if (i !== 0) {
+        console.log(`Attempt ${i}: Failed to 'Search' label, retrying...`);
+      }
+      textContent = await activeFlags.innerText();
+      break;
+    } catch (error) {
+      console.error(error);
+    }
+    await page.waitForTimeout(5000);
+  }
   const match = textContent.match(/\d+/);
   const numberOfFlags = match ? parseInt(match[0], 10) : 0;
   return numberOfFlags;

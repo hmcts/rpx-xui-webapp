@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
-import { DOCUMENT_HASH_TOKEN } from "../configuration/references";
+import { DOCUMENT_HASH_TOKEN } from '../configuration/references';
 import * as documents from './index';
 
 chai.use(sinonChai);

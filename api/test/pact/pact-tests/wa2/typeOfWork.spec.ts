@@ -11,7 +11,7 @@ const { somethingLike } = Matchers;
 
 const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_get_work_types', port: 8000 });
 
-describe('Task management api,  retrieve all the work types ', () => {
+describe('Task management api,  retrieve all work types by userId', () => {
   const RESPONSE_BODY = {
     work_types: eachLike({
       id: somethingLike('5687'),
@@ -19,7 +19,7 @@ describe('Task management api,  retrieve all the work types ', () => {
     })
   };
 
-  describe('get /work-types', () => {
+  describe('get /work-types by userId', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     let next;
 
@@ -29,8 +29,8 @@ describe('Task management api,  retrieve all the work types ', () => {
 
     before(async () => {
       const interaction = {
-        states: [{ description: 'retrieve work types filtered for the user in context' }],
-        uponReceiving: 'retrieve all work types',
+        states: [{ description: 'retrieve work types by userId' }],
+        uponReceiving: 'userId to get all work types',
         withRequest: {
           method: 'GET',
           path: '/work-types',
@@ -82,7 +82,6 @@ describe('Task management api,  retrieve all the work types ', () => {
 
         try {
           await getTypesOfWork(req, response, next);
-
           assertResponses(returnedResponse);
         } catch (err) {
           console.log(err.stack);

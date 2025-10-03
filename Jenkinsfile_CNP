@@ -60,14 +60,6 @@ withPipeline(type, product, component) {
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
 
-  // For check only Revert this after Pact ConsumerDeploycheck
-  onPR() {
-      env.ENV = 'preview'
-      enablePactAs([AppPipelineDsl.PactRoles.CONSUMER,
-                    AppPipelineDsl.PactRoles.CONSUMER_DEPLOY_CHECK
-      ])
-  }
-
     enablePactAs([
         AppPipelineDsl.PactRoles.CONSUMER
     ])

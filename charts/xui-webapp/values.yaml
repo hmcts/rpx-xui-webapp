@@ -162,9 +162,6 @@ nodejs:
         - launch-darkly-client-id
         - system-user-name
         - system-user-password
-        - system-user-id
-        - document-hash-token
-        - test-user-id
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

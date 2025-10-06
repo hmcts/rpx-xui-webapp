@@ -37,9 +37,6 @@ nodejs:
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
-        - system-user-id
-        - document-hash-token
-        - test-user-id
         - name: launch-darkly-client-id-preview
           alias: launch-darkly-client-id
   autoscaling:

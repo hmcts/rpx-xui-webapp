@@ -141,7 +141,7 @@ xdescribe('Amended Jurisdiction', () => {
         { id: 'DIVORCE' }
       ];
 
-      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
 
       expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
       expect(proxyReq.end).to.have.been.called;
@@ -151,7 +151,7 @@ xdescribe('Amended Jurisdiction', () => {
       req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
       // No jurisdictions in session
 
-      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
 
       expect(res.send).to.not.have.been.called;
       expect(proxyReq.end).to.not.have.been.called;
@@ -165,7 +165,7 @@ xdescribe('Amended Jurisdiction', () => {
         { id: 'DIVORCE' }
       ];
 
-      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
 
       expect(res.send).to.not.have.been.called;
       expect(proxyReq.end).to.not.have.been.called;
@@ -186,7 +186,7 @@ xdescribe('Amended Jurisdiction', () => {
         res.send.resetHistory();
         proxyReq.end.resetHistory();
 
-        amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+        amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
 
         expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
         expect(proxyReq.end).to.have.been.called;
@@ -209,7 +209,7 @@ xdescribe('Amended Jurisdiction', () => {
         res.send.resetHistory();
         proxyReq.end.resetHistory();
 
-        amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+        amendedJurisdictions.checkCachedJurisdictions(proxyReq, req);
 
         expect(res.send).to.not.have.been.called;
         expect(proxyReq.end).to.not.have.been.called;

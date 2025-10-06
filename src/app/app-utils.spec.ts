@@ -300,7 +300,7 @@ describe('getFilterPersistenceByRoleType', () => {
           totalIdleTime: 50
         },
         userInfo: {
-          id: AppTestConstants.TEST_USER_ID,
+          id: 'test-user-id',
           forename: 'Luke',
           surname: 'Wilson',
           email: 'lukesuperuserxui@mailnesia.com',

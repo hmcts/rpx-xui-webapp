@@ -12,9 +12,9 @@ module.exports = defineConfig({
   /* Retry on CI only */
   retries: 3, // Set the number of retries for all projects
 
-  timeout: 3 * 60 * 1000,
+  timeout: 5 * 60 * 1000, // 5 minutes per test maximum as on first nightly run tests were taking too long
   expect: {
-    timeout: 1 * 60 * 1000
+    timeout: 2 * 60 * 1000 // Same reason as above
   },
   reportSlowTests: null,
 

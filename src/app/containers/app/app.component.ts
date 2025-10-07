@@ -71,7 +71,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    console.log('testing h7');
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe((useIdleTimeout) => {
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();

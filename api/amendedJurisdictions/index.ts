@@ -38,7 +38,6 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
  * Returns the cached jurisdictions array for the given access type, or undefined if not cached.
  */
 export const checkCachedJurisdictions = (proxyReq, req) => {
-  console.log('checkCachedJurisdictions', req.url);
   if (!jurisdictions.test(req.url)) {
     return undefined;
   }
@@ -52,7 +51,6 @@ export const checkCachedJurisdictions = (proxyReq, req) => {
   } else {
     sessionKey = 'jurisdictions';
   }
-  console.log('cached data:', sessionKey, req.session[sessionKey]);
   const cached = req.session[sessionKey];
   if (cached) {
     return cached;

@@ -14,8 +14,11 @@ import { NocDateFieldComponent } from './date';
 import { NocYesNoFieldComponent } from './yes-no';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-test-component',
   template: '<div>Test Component</div>'
+
 })
 class TestComponent {
   public questionField: NocQuestion;

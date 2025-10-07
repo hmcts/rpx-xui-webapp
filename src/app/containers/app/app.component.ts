@@ -14,10 +14,13 @@ import * as fromRoot from '../../store';
 import { InitialisationSyncService } from '../../services/ccd-config/initialisation-sync-service';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
+
 })
 export class AppComponent implements OnInit, OnDestroy {
   public timeoutModalConfig = {

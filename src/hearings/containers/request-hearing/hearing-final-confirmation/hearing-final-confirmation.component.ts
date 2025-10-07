@@ -5,8 +5,11 @@ import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-final-confirmation',
   templateUrl: './hearing-final-confirmation.component.html'
+
 })
 export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public heading: string;

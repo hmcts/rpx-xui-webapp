@@ -6,7 +6,10 @@ import { MockRpxTranslatePipe } from '../../shared/test/mock-rpx-translate.pipe'
 import { ErrorMessageComponent } from './error-message.component';
 
 @Component({
+  standalone: false,
+
   template: '<exui-error-message [title]="title" [error]="error"></exui-error-message>'
+
 })
 class WrapperComponent {
   @ViewChild(ErrorMessageComponent, { static: true }) public appComponentRef: ErrorMessageComponent;

@@ -5,9 +5,12 @@ import { NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-noc-submit-success',
   templateUrl: './noc-submit-success.component.html',
   styleUrls: ['./noc-submit-success.component.scss']
+
 })
 export class NocSubmitSuccessComponent implements OnInit {
   public caseReference$: Observable<string>;

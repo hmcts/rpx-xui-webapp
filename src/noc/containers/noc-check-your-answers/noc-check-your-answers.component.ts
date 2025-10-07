@@ -5,9 +5,12 @@ import { NocAnswer, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-noc-check-your-answers',
   templateUrl: './noc-check-your-answers.component.html',
   styleUrls: ['./noc-check-your-answers.component.scss']
+
 })
 export class NocCheckYourAnswersComponent implements OnInit {
   public caseReference$: Observable<string>;

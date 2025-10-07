@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { LD_FLAG_REMOVE_USER_FROM_CASE_MC } from '../../../app/app.constants';
@@ -9,9 +9,12 @@ import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-case-share-complete',
   templateUrl: './case-share-complete.component.html',
   styleUrls: ['case-share-complete.component.scss']
+
 })
 export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public shareCases$: Observable<SharedCase[]>;

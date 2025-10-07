@@ -10,8 +10,11 @@ import * as fromCaseCreate from '../../store';
  * param caseId
  */
 @Component({
+  standalone: false,
+
   selector: 'exui-case-details',
   templateUrl: './case-details.component.html'
+
 })
 export class CaseDetailsComponent implements OnDestroy, OnInit {
   public caseId: string;

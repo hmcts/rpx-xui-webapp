@@ -1,9 +1,10 @@
+
 import * as chai from 'chai';
 import { expect } from 'chai';
+import * as sinonChai from 'sinon-chai';
 import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';

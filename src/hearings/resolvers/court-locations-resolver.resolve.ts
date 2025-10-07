@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';

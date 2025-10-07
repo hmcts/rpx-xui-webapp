@@ -29,8 +29,11 @@ import { HearingRequirementsComponent } from './hearing-requirements.component';
 import * as _ from 'lodash';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-parties-title',
   template: ''
+
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;

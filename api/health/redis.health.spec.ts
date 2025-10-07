@@ -1,8 +1,9 @@
+
 import * as chai from 'chai';
 import { expect } from 'chai';
+import * as sinonChai from 'sinon-chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as application from '../application';
 import * as log4jui from '../lib/log4jui';
 

@@ -2,9 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Task } from '../../../work-allocation/models/tasks';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-task-alert-banner',
   templateUrl: './task-alert-banner.component.html',
   styleUrls: ['./task-alert-banner.component.scss']
+
 })
 export class TaskAlertBannerComponent implements OnInit {
   @Input() public alertTitle;

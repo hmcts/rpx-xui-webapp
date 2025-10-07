@@ -1,9 +1,10 @@
+
 import * as chai from 'chai';
 import { expect } from 'chai';
+import * as sinonChai from 'sinon-chai';
 import * as log4js from 'log4js';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as log4jui from './log4jui';
 import { leftPad } from './log4jui';
 import { isJUILogger } from './models';

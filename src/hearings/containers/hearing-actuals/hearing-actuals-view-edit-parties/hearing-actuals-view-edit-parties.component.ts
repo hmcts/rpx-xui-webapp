@@ -19,9 +19,12 @@ import { ActualHearingsUtils } from '../../../utils/actual-hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-actuals-view-edit-parties',
   styleUrls: ['./hearing-actuals-view-edit-parties.component.scss'],
   templateUrl: './hearing-actuals-view-edit-parties.component.html'
+
 })
 export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy {
   public partyChannels: LovRefDataModel[];

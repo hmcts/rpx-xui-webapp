@@ -1,7 +1,8 @@
+
 import * as chai from 'chai';
 import { expect } from 'chai';
-import 'mocha';
 import * as sinonChai from 'sinon-chai';
+import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as HealthCheck from '@hmcts/nodejs-healthcheck';

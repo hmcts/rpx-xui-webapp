@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { ProfessionalUserResponse } from '../../pactFixtures';
 import { getUsers } from '../../pactUtil';
 import { PactV3TestSetup } from '../settings/provider.mock';

@@ -4,8 +4,11 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-case-name',
   templateUrl: './hearing-case-name.component.html'
+
 })
 export class HearingCaseNameComponent implements OnInit, OnDestroy {
   public caseName: string;

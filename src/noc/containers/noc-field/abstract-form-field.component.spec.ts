@@ -7,7 +7,10 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
 // Define a test-specific implementation of the abstract component
 @Component({
+  standalone: false,
+
   template: ''
+
 })
 class TestFormFieldComponent extends AbstractFormFieldComponent {
   public addValidators(questionField: NocQuestion, control: FormControl): void {

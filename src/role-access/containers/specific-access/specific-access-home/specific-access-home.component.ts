@@ -24,9 +24,12 @@ import { SpecificAccessReviewComponent } from '../specific-access-review/specifi
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-specific-access-home',
   templateUrl: './specific-access-home.component.html',
   styleUrls: ['./specific-access-home.component.scss']
+
 })
 export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   @ViewChild('specificAccessReview', { read: SpecificAccessReviewComponent })

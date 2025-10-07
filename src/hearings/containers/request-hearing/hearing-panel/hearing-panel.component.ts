@@ -21,8 +21,11 @@ import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-panel',
   templateUrl: './hearing-panel.component.html'
+
 })
 export class HearingPanelComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public panelJudgeForm: FormGroup;

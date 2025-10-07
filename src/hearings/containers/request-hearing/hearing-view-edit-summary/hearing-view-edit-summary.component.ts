@@ -15,8 +15,11 @@ import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigat
 import { HearingResponseError } from '../../../../hearings/models/hearingResponseError.model';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-view-edit-summary',
   templateUrl: './hearing-view-edit-summary.component.html'
+
 })
 export class HearingViewEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_VIEW_EDIT_SUMMARY_TEMPLATE;

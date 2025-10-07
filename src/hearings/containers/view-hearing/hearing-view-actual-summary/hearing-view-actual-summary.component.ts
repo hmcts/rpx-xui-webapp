@@ -8,8 +8,11 @@ import { HearingActualsStateData } from '../../../models/hearingActualsStateData
 import * as fromHearingStore from '../../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-view-actual-summary',
   templateUrl: './hearing-view-actual-summary.component.html'
+
 })
 export class HearingViewActualSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;

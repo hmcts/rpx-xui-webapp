@@ -1,9 +1,10 @@
+
 import * as chai from 'chai';
 import { expect } from 'chai';
+import * as sinonChai from 'sinon-chai';
 import * as log4js from 'log4js';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptors';
 
 chai.use(sinonChai);

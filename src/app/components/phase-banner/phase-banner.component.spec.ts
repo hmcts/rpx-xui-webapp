@@ -10,7 +10,10 @@ const mockSessionStorageService = {
   setItem: jasmine.createSpy('setItem').and.returnValue(JSON.stringify('false'))
 };
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

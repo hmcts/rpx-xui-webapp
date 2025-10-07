@@ -19,7 +19,10 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
+  standalone: false,
+
   template: ''
+
 })
 class StubComponent {}
 

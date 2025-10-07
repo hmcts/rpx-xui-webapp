@@ -25,7 +25,10 @@ import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
+  standalone: false,
+
   template: '<div>Nothing</div>'
+
 })
 class NothingComponent { }
 const USER_DETAILS = {

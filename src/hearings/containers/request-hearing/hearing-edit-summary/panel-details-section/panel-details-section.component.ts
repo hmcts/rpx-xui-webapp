@@ -6,8 +6,11 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-panel-details-section',
   templateUrl: './panel-details-section.component.html'
+
 })
 export class PanelDetailsSectionComponent implements OnInit {
   @Input() public panelRolesRefData: LovRefDataModel[];

@@ -7,9 +7,12 @@ import { NocHttpError, NocNavigation, NocNavigationEvent, NocState } from '../..
 import * as fromFeature from '../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-noc-case-ref',
   templateUrl: 'noc-case-ref.component.html',
   styleUrls: ['noc-case-ref.component.scss']
+
 })
 export class NocCaseRefComponent implements OnInit, OnDestroy {
   @Input() public navEvent: NocNavigation;

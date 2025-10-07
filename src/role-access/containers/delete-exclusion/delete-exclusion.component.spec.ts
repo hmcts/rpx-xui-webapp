@@ -13,8 +13,11 @@ import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
 
 @Component({
+  standalone: false,
+
   template: `
     <exui-delete-exclusion></exui-delete-exclusion>`
+
 })
 class WrapperComponent {
   @ViewChild(DeleteExclusionComponent, { static: true }) public appComponentRef: DeleteExclusionComponent;

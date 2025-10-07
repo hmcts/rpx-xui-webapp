@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { getDetails } from '../../../../services/idam';
 import { PactV3TestSetup } from '../settings/provider.mock';
 

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { CaseAssignmentResponseDto } from '../../pactFixtures';
 import { getCaseAssignments } from '../../pactUtil';
 import { PactV3TestSetup } from '../settings/provider.mock';

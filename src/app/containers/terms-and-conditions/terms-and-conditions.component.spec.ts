@@ -20,8 +20,11 @@ let dispatchSpy: jasmine.Spy;
 
 describe('TermsAndConditionsComponent', () => {
   @Component({
+    standalone: false,
+
     selector: 'exui-app-host-dummy-component',
     template: '<exui-terms-and-conditions></exui-terms-and-conditions>'
+
   })
   class TestDummyHostComponent {
     @ViewChild(TermsAndConditionsComponent, { static: false })

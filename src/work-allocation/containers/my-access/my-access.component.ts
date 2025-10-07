@@ -10,8 +10,11 @@ import { SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-my-access',
   templateUrl: 'my-access.component.html'
+
 })
 export class MyAccessComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {

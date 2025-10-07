@@ -12,7 +12,7 @@ import {
   WindowService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
@@ -31,10 +31,13 @@ import * as fromCaseList from '../../store/reducers';
  * param TBC
  */
 @Component({
+  standalone: false,
+
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['case-list.component.scss']
+
 })
 export class CaseListComponent implements OnInit, OnDestroy {
   @ViewChild('ccdSearchResult', { static: false }) public ccdSearchResult: SearchResultComponent; // EUI-2906

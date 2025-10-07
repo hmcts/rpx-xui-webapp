@@ -16,9 +16,12 @@ import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-v
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-viewsummary',
   templateUrl: './hearing-view-summary.component.html',
   styleUrls: ['./hearing-view-summary.component.scss']
+
 })
 export class HearingViewSummaryComponent extends RequestHearingPageFlow implements OnInit {
   public template: Section[];

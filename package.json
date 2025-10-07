@@ -92,7 +92,7 @@
     "@hmcts/ccd-case-ui-toolkit": "7.2.49-create-case-redirect",
     "@hmcts/ccpay-web-component": "6.3.3",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.1.7",
+    "@hmcts/media-viewer": "4.1.8",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "2.1.6",

@@ -574,20 +574,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:^17.3.6":
-  version: 17.3.10
-  resolution: "@angular/cdk@npm:17.3.10"
+"@angular/cdk@npm:^16.2.0":
+  version: 16.2.14
+  resolution: "@angular/cdk@npm:16.2.14"
   dependencies:
     parse5: "npm:^7.1.2"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^17.0.0 || ^18.0.0
-    "@angular/core": ^17.0.0 || ^18.0.0
+    "@angular/common": ^16.0.0 || ^17.0.0
+    "@angular/core": ^16.0.0 || ^17.0.0
     rxjs: ^6.5.3 || ^7.4.0
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: 10/2e83fc75783750ffa025d1dc31da303e6a5f7da617c33dd190e8294c7fba6c633f6e410f19b6f41382cd0c5c918a59f27fbb9af01a651d753c7e2429c6a2ab65
+  checksum: 10/2c05039dead71258eb3c5f904e007eb8726ebab1b48159ea0c962841165b66b995feeac528abd8cb5ec31d8c2fb81dc399c83f31a503bbe0c53dee293d653629
   languageName: node
   linkType: hard
 
@@ -3411,12 +3411,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.48":
-  version: 7.2.48
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.48"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.0-prerelease":
+  version: 7.3.0-prerelease
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.0-prerelease"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/15c92b8ccb960c069a3d9f9e54dc55285c3f8408c776fc2d78a15fc9f46256e2c9cc287c4a8ca52fbc27e539ca945224c2f825e0f8579da4098e379603a16407
+  checksum: 10/ab064f60f22cf7ee7bd26a2c3b992d163856a5ffbd36f9695867ddce0b8fae198109028d3f606e1a4484ecdd0829bf57395bb1d26c7466e3362a9e257907db58
   languageName: node
   linkType: hard
 
@@ -3499,16 +3499,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:v3.1.0-cme-778-prerelease":
-  version: 3.1.0-cme-778-prerelease
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.1.0-cme-778-prerelease"
+"@hmcts/rpx-xui-common-lib@npm:3.1.2-cme-778-prerelease":
+  version: 3.1.2-cme-778-prerelease
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.1.2-cme-778-prerelease"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/27bdd5e4fe3d8de66ae3eaa5d9eb40445df362a25ffd0cb12b0ef10437a13ef759faefc80553a76110233fbed370cd3b6f17fb5b77e9806d38eb5081467204b8
+  checksum: 10/7a0f49118dfc75c9833e8bd7e5167b6a8763cd14887394cc0db9c9ae440ba3e923c3431417295357e1fb6e23ec2e709873eca6223d4f1155dbf3b8338990bf0f
   languageName: node
   linkType: hard
 
@@ -21493,7 +21493,7 @@ __metadata:
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:^16.0.1"
     "@angular/animations": "npm:^20.0.0"
-    "@angular/cdk": "npm:^17.3.6"
+    "@angular/cdk": "npm:^16.2.0"
     "@angular/cli": "npm:^20.0.0"
     "@angular/common": "npm:^20.0.0"
     "@angular/compiler": "npm:^20.0.0"
@@ -21510,13 +21510,13 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.48"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.0-prerelease"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "npm:v3.1.0-cme-778-prerelease"
+    "@hmcts/rpx-xui-common-lib": "npm:3.1.2-cme-778-prerelease"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-rc3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -21556,7 +21556,7 @@ __metadata:
     allure-js-commons: "npm:^3.0.0"
     applicationinsights: "npm:1.8.10"
     axe-html-reporter: "npm:^2.2.3"
-    axios: "npm:^1.10"
+    axios: "npm:1.8.4"
     axios-mock-adapter: "npm:^1.22.0"
     base-64: "npm:^1.0.0"
     chai: "npm:^4.3.10"

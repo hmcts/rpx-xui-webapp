@@ -20,10 +20,10 @@ export class CaseReferenceFieldComponent implements OnChanges {
   public ngOnChanges(): void {
     let href: string;
     if (this.caseReference) {
-      // Get rid of the spaces in the caseReference.
       const caseId = this.caseReference;
       if (caseId) {
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+        const encodedCaseId = encodeURIComponent(caseId);
+        href = `${AppConstants.CASE_DETAILS_URL}${encodedCaseId}`;
       }
     }
     this.pHref = href;

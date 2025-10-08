@@ -216,6 +216,7 @@ describe('StaffUserCheckAnswersComponent', () => {
   });
 
   it('should call onSubmit method on clicking the submit button', () => {
+    mockStaffDataAccessService.addNewUser.and.returnValue(of(testStaffUser));
     spyOn(component, 'onSubmit').and.callThrough();
     const checkAnswersSubmitButton = fixture.debugElement.query(By.css('#user-staff-check-answers-submit'));
     checkAnswersSubmitButton.triggerEventHandler('click', null);

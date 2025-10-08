@@ -63,6 +63,7 @@ describe('NocFieldComponent', () => {
     mockComponentFactoryResolver = jasmine.createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
     mockViewContainerRef = jasmine.createSpyObj('ViewContainerRef', ['insert']);
     mockInjector = jasmine.createSpyObj('Injector', ['get']);
+    (mockInjector as any).destroy = jasmine.createSpy('destroy');
 
     TestBed.configureTestingModule({
       declarations: [NocFieldComponent, TestComponent],
@@ -109,7 +110,7 @@ describe('NocFieldComponent', () => {
 
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
-      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
 
       fixture.detectChanges();
 
@@ -165,7 +166,7 @@ describe('NocFieldComponent', () => {
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
 
       // Mock Injector.create as a static method
-      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
     });
 
     it('should create component based on field type', () => {
@@ -311,7 +312,7 @@ describe('NocFieldComponent', () => {
 
       mockComponentFactoryResolver.resolveComponentFactory.and.returnValue(mockComponentFactory);
       mockPaletteService.getFieldComponentClass.and.returnValue(TestComponent);
-      spyOn(Injector, 'create').and.returnValue(mockInjector);
+      spyOn(Injector, 'create').and.returnValue(mockInjector as any);
     });
 
     it('should handle complex questionField with all properties', () => {

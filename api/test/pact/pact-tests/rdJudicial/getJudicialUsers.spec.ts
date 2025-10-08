@@ -82,50 +82,48 @@ describe('Judicial ref data api, get all judge users', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getJudicialRefDataAPIOverrides(mockServer.url);
+        configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
-      // @ts-ignore
-      configValues.serviceRefDataMapping = [
-        { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
-      ];
+        // @ts-ignore
+        configValues.serviceRefDataMapping = [
+          { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
+        ];
 
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { getJudicialUsers } = requireReloaded('../../../../roleAccess/index');
+        const { getJudicialUsers } = requireReloaded('../../../../roleAccess/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
-          services: ['IA']
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          body: {
+            userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
+            services: ['IA']
+          }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getJudicialUsers(req, response, next);
+
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
-
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getJudicialUsers(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

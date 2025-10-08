@@ -5,6 +5,7 @@ import { AppConstants, LEGAL_OPS_ROLE_LIST } from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
+import { AppTestConstants } from './app.test-constants.spec';
 
 describe('getEnvironment', () => {
   it('should return the prod environment for a blank url.', () => {
@@ -299,7 +300,7 @@ describe('getFilterPersistenceByRoleType', () => {
           totalIdleTime: 50
         },
         userInfo: {
-          id: '***REMOVED***',
+          id: 'test-user-id',
           forename: 'Luke',
           surname: 'Wilson',
           email: 'lukesuperuserxui@mailnesia.com',

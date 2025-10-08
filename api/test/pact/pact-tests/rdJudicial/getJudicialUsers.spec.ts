@@ -23,7 +23,7 @@ const REQUEST_BODY = {
 };
 
 const user1 = getDummyJudgeUserDetails();
-user1.sidam_id = somethingLike(REQUEST_BODY.sidam_ids[0]);
+user1.sidam_id = somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe');
 user1.known_as = somethingLike('Lead judge');
 user1.surname = somethingLike('cruz');
 user1.full_name = somethingLike('Tom cruz');
@@ -61,7 +61,10 @@ describe('Judicial ref data api, get all judge users', () => {
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
             'content-type': 'application/json'
           },
-          body: REQUEST_BODY
+          body: {
+            userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
+            services: ['IA']
+          }
         },
         willRespondWith: {
           status: 200,
@@ -130,7 +133,7 @@ describe('Judicial ref data api, get all judge users', () => {
 
 function assertResponses(dto: any) {
   console.log(JSON.stringify(dto));
-  expect(dto[0].sidam_id).to.be.equal(REQUEST_BODY.sidam_ids[0]);
+  expect(dto[0].sidam_id).to.be.equal('004b7164-0943-41b5-95fc-39794af4a9fe');
   expect(dto[0].known_as).to.be.equal('Lead judge');
   expect(dto[0].surname).to.be.equal('cruz');
   expect(dto[0].full_name).to.be.equal('Tom cruz');

@@ -37,7 +37,7 @@ describe('Documents Uploading', () => {
         size: 12317,
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         originalDocumentName: 'blank copy 4.docx',
-        hashToken: 'c62d79ffa737bfe5213f2dfbc5a0e848f6bd35781acadb65a3a0822b3ec69b7c',
+        hashToken: 'test0hash0value0000000000000000000000000000000000000000000000000',
         createdOn: '2024-01-12T14:30:10.000+00:00',
         createdBy: 'c9ca25c7-0554-4e05-b781-442f02a59907',
         lastModifiedBy: 'c9ca25c7-0554-4e05-b781-442f02a59907',

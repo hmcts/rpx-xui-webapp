@@ -30,7 +30,7 @@ jobs:
       
       - run: yarn install
       
-      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues || true
+      - run: yarn npm audit --all --environment production --json > yarn-audit-known-issues || true
       
       - name: Check for changes
         id: check-changes

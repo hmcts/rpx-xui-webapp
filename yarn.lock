@@ -3239,12 +3239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.48-manage-caseLink-event":
-  version: 7.2.48-manage-caseLink-event
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.48-manage-caseLink-event"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.49":
+  version: 7.2.49
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.49"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/aaf7160b524f8c67087ad9b8b80bdaf656046cb749d969a7c99426d7467cd0a3c267a53297b07d54a36ca90eb1ab026757a6ae8f03648ed0f900bfe96c241bc9
+  checksum: 10/f6f952a59e3024dee4e08c13263b6ed518be33f57c35e7dab9119cd864480c720ae38fe1ab4d2f19dbc3f14ed3f57348d43d4d83d73fe7f3f560e2ac9d4fd2fe
   languageName: node
   linkType: hard
 
@@ -20987,7 +20987,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.48-manage-caseLink-event"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.49"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.7"

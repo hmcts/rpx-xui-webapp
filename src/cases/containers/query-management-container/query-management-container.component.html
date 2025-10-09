@@ -12,9 +12,9 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngFor="let errorMessage of errorMessages">
-            <a [id]="'error-' + errorMessage.fieldId" href="javascript:void(0)"
+            <button type="button" [id]="'error-' + errorMessage.fieldId"
               (click)="navigateToErrorElement(errorMessage.fieldId)"
-              class="validation-error">{{ errorMessage.description | rpxTranslate }}</a>
+              class="validation-error govuk-js-link">{{ errorMessage.description | rpxTranslate }}</button>
           </li>
         </ul>
       </div>
@@ -112,17 +112,17 @@
     <div *ngIf="!showConfirmation">
       <ng-container [ngSwitch]="queryCreateContext">
         <a *ngSwitchCase="queryCreateContextEnum.NEW_QUERY"
-          href="javascript:void(0)" (click)="navigateToCaseOverviewTab()"
+          href="#" (click)="navigateToCaseOverviewTab(); $event.preventDefault()"
           class="govuk-back-link govuk-!-margin-bottom-0">
             {{ 'Cancel and return to case' | rpxTranslate }}
         </a>
         <a *ngSwitchCase="queryCreateContextEnum.FOLLOWUP"
-          href="javascript:void(0)" (click)="goToQueryList()"
+          href="#" (click)="goToQueryList(); $event.preventDefault()"
           class="govuk-back-link govuk-!-margin-bottom-0">
           {{ 'Cancel and return to query list' | rpxTranslate }}
         </a>
         <a *ngSwitchCase="queryCreateContextEnum.RESPOND"
-          href="javascript:void(0)" (click)="navigateToCaseTaskTab()"
+          href="#" (click)="navigateToCaseTaskTab(); $event.preventDefault()"
           class="govuk-back-link govuk-!-margin-top-0">
           {{ 'Cancel and return to tasks' | rpxTranslate }}
         </a>

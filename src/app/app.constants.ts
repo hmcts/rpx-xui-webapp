@@ -4,13 +4,9 @@ import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
   waLandingPageRoles: 'wa-landing-page-roles',
-  noticeOfChange: 'MC_Notice_of_Change',
-  booking: 'mc-booking-active',
-  secureDocumentStoreEnabled: 'mc-document-secure-mode-enabled',
+  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
-  enableCaseFileViewVersion1_1: 'enable-case-file-view-version-1-1',
-  accessManagementMode: 'access-management-mode',
   enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
   cdamExclusionList: 'mc-cdam-exclusion-list'
 };
@@ -21,12 +17,8 @@ function featureToAttributeName(key: string): string {
 
 export const featureToAttributeMap = new Map<string, string>([
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
-  [featureNames.booking, featureToAttributeName(featureNames.booking)],
-  [featureNames.secureDocumentStoreEnabled, 'document_management_secure_enabled'], // should refactor this
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
-  [featureNames.enableCaseFileViewVersion1_1, featureToAttributeName(featureNames.enableCaseFileViewVersion1_1)],
-  [featureNames.accessManagementMode, featureToAttributeName(featureNames.accessManagementMode)],
   [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
   [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);

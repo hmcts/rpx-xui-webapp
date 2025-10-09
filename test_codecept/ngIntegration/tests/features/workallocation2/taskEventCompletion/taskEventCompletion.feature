@@ -207,8 +207,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
     #     Given I set MOCK task required for event as "true"
     #     Given I set MOCK tasks required for event
     #         | assignee                             | task_state |
-    #         | 41a90c39-d756-4eba-8e85-5b5bf56b31f5 | assigned   |
-    #         | 41a90c39-d756-4eba-8e85-5b5bf56b31f5 | assigned   |
+    #         | test-user-id-12345 | assigned   |
+    #         | test-user-id-12345 | assigned   |
 
 
     #     Given I start MockApp

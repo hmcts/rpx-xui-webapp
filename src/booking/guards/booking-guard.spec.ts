@@ -1,18 +1,15 @@
 import { Router } from '@angular/router';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { of, lastValueFrom } from 'rxjs';
 import { UserDetails } from '../../app/models';
 import * as fromActions from '../../app/store';
 import { BookingGuard } from './booking-guard';
+import { AppTestConstants } from '../../app/app.test-constants.spec';
 
 describe('BookingGuard', () => {
   const USER_1: UserDetails = {
     canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
+    sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
     roleAssignmentInfo: [{
       primaryLocation: '',
       jurisdiction: '',
@@ -21,7 +18,7 @@ describe('BookingGuard', () => {
       bookable: 'true'
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -42,20 +39,15 @@ describe('BookingGuard', () => {
       ]
     }
   };
+
   const USER_2: UserDetails = {
     canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
+    sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
     roleAssignmentInfo: [{
-      primaryLocation: '',
-      jurisdiction: '',
-      isCaseAllocator: true,
-      bookable: true
+      primaryLocation: '', jurisdiction: '', isCaseAllocator: true, bookable: true // boolean
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -73,17 +65,12 @@ describe('BookingGuard', () => {
 
   const USER_3: UserDetails = {
     canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
+    sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
     roleAssignmentInfo: [{
-      primaryLocation: '',
-      jurisdiction: '',
-      isCaseAllocator: true
+      primaryLocation: '', jurisdiction: '', isCaseAllocator: true // no "bookable"
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -99,19 +86,15 @@ describe('BookingGuard', () => {
       ]
     }
   };
+
   const USER_4: UserDetails = {
     canShareCases: true,
-    sessionTimeout: {
-      idleModalDisplayTime: 10,
-      totalIdleTime: 50
-    },
+    sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
     roleAssignmentInfo: [{
-      primaryLocation: '',
-      jurisdiction: '',
-      isCaseAllocator: true
+      primaryLocation: '', jurisdiction: '', isCaseAllocator: true // no "bookable"
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -126,52 +109,54 @@ describe('BookingGuard', () => {
       ]
     }
   };
+
   let bookingGuard: BookingGuard;
   let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
-  let featureToggleMock: jasmine.SpyObj<FeatureToggleService>;
 
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromActions.State>>('store', ['pipe']);
-    featureToggleMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValueOnce']);
-    bookingGuard = new BookingGuard(routerMock, storeMock, featureToggleMock);
+    bookingGuard = new BookingGuard(routerMock, storeMock);
   });
 
   it('guard truthy', () => {
     expect(bookingGuard).toBeTruthy();
   });
 
-  it('should allow access if user has judicial role and bookable role assignment', () => {
+  it('allows access if user is JUDICIAL and has a bookable role assignment (string "true")', async () => {
     storeMock.pipe.and.returnValue(of(USER_1));
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeTruthy());
+    const allowed = await lastValueFrom(bookingGuard.canActivate());
+    expect(allowed).toBeTrue();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
-  it('should deny access if user has no judicial role but has bookable role assignment', () => {
+  it('denies access if user is not JUDICIAL but has bookable role assignment', async () => {
     storeMock.pipe.and.returnValue(of(USER_2));
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
+    const allowed = await lastValueFrom(bookingGuard.canActivate());
+    expect(allowed).toBeFalse();
+    expect(routerMock.navigate).toHaveBeenCalledWith([BookingGuard.defaultUrl]);
   });
 
-  it('should deny access if user has judicial role but no bookable role assignment', () => {
+  it('denies access if user is JUDICIAL (role list) but no bookable role assignment', async () => {
     storeMock.pipe.and.returnValue(of(USER_3));
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
+    const allowed = await lastValueFrom(bookingGuard.canActivate());
+    expect(allowed).toBeFalse();
+    expect(routerMock.navigate).toHaveBeenCalledWith([BookingGuard.defaultUrl]);
   });
 
-  it('should deny access if user has no judicial role AND no bookable role assignment', () => {
+  it('denies access if user is not JUDICIAL and has no bookable role assignment', async () => {
     storeMock.pipe.and.returnValue(of(USER_4));
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
+    const allowed = await lastValueFrom(bookingGuard.canActivate());
+    expect(allowed).toBeFalse();
+    expect(routerMock.navigate).toHaveBeenCalledWith([BookingGuard.defaultUrl]);
   });
 
-  it('should deny access if booking feature toggle is off', () => {
-    storeMock.pipe.and.returnValue(of(USER_1));
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeTruthy());
-
-    featureToggleMock.getValueOnce.and.returnValue(of(false));
-    bookingGuard.canActivate().toPromise().then((canActivate) => expect(canActivate).toBeFalsy());
+  it('waits for real user details (filters out falsy/partial emissions)', async () => {
+    // emits undefined first, then real details; guard uses filter(...).take(1)
+    storeMock.pipe.and.returnValue(of(undefined as any, USER_1));
+    const allowed = await lastValueFrom(bookingGuard.canActivate());
+    expect(allowed).toBeTrue();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 });

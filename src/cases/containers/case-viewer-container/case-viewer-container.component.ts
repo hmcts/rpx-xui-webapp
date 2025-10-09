@@ -153,8 +153,8 @@ export class CaseViewerContainerComponent implements OnInit {
       filter((event) => event instanceof NavigationEnd),
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
-      if (event.url.indexOf(`/cases/case-details/${this.caseDetails.case_id}`) === -1){
-        window.location.href = `/cases/case-details/${event.url.split('/')[3]}`;
+      if (event.url.indexOf(`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.caseDetails.case_id}`) === -1){
+        window.location.href = `/cases/case-details/${event.url.split('/')[5]}`;
       }
     });
     this.userRoles$.pipe(

@@ -14,9 +14,9 @@ import { WASupportedJurisdictionsService } from '../../../work-allocation/servic
 import { Utils } from '../../utils/utils';
 import { HearingJurisdictionConfigService } from '../../../app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 import { LoggerService } from '../../../app/services/logger/logger.service';
-import { DeploymentEnvironmentEnum } from 'src/app/enums/deployment-environment-enum';
-import { LaunchDarklyDefaultsConstants } from 'src/app/services/ccd-config/launch-darkly-defaults.constants';
-import { EnvironmentService } from 'src/app/shared/services/environment.service';
+import { DeploymentEnvironmentEnum } from '../../../app/enums/deployment-environment-enum';
+import { LaunchDarklyDefaultsConstants } from '../../../app/services/ccd-config/launch-darkly-defaults.constants';
+import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
 @Component({
   selector: 'exui-case-viewer-container',

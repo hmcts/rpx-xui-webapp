@@ -200,7 +200,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease1'
         }
       ],
       'href': '/tasks',
@@ -215,7 +215,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease1'
         }
       ],
       'href': '/tasks/task-manager',

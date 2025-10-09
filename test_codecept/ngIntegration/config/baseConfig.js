@@ -192,7 +192,7 @@ const menuConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease1'
         }
       ],
       'href': '/tasks',
@@ -207,7 +207,7 @@ const menuConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease1'
         }
       ],
       'href': '/tasks/task-manager',

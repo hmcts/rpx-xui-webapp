@@ -4,7 +4,6 @@ import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
   waLandingPageRoles: 'wa-landing-page-roles',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',

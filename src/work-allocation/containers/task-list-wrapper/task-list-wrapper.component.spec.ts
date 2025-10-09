@@ -89,7 +89,7 @@ describe('TaskListWrapperComponent', () => {
     component = fixture.componentInstance;
     const tasks: Task[] = getMockTasks();
     mockWorkAllocationService.searchTask.and.returnValue(of({ tasks }));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationActive'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));

@@ -97,7 +97,7 @@ describe('MyAccessComponent', () => {
     mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseService.getMyAccess.and.returnValue(of({ cases }));
     mockCaseworkerService.getAll.and.returnValue(of([]));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationActive'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFilterService.getStream.and.returnValue(of({}));
     mockFilterService.get.and.returnValue({});

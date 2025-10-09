@@ -6,7 +6,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
+          'value': 'WorkAllocationActive'
         }
       ],
       'href': '/work/my-work/list',
@@ -26,7 +26,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
+          'value': 'WorkAllocationActive'
         }
       ],
       'href': '/work/all-work/tasks',
@@ -163,7 +163,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
+          'value': 'WorkAllocationActive'
         }
       ],
       'href': '/work/my-work/list',
@@ -185,7 +185,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
+          'value': 'WorkAllocationActive'
         }
       ],
       'href': '/work/all-work/tasks',
@@ -200,7 +200,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease1'
+          'value': 'WorkAllocationActive'
         }
       ],
       'href': '/tasks',
@@ -215,7 +215,7 @@ export const baseConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease1'
+          'value': 'WorkAllocationActive'
         }
       ],
       'href': '/tasks/task-manager',

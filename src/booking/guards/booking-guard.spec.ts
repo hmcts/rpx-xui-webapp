@@ -4,6 +4,7 @@ import { of, lastValueFrom } from 'rxjs';
 import { UserDetails } from '../../app/models';
 import * as fromActions from '../../app/store';
 import { BookingGuard } from './booking-guard';
+import { AppTestConstants } from '../../app/app.test-constants.spec';
 
 describe('BookingGuard', () => {
   const USER_1: UserDetails = {
@@ -17,7 +18,7 @@ describe('BookingGuard', () => {
       bookable: 'true'
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -46,7 +47,7 @@ describe('BookingGuard', () => {
       primaryLocation: '', jurisdiction: '', isCaseAllocator: true, bookable: true // boolean
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -69,7 +70,7 @@ describe('BookingGuard', () => {
       primaryLocation: '', jurisdiction: '', isCaseAllocator: true // no "bookable"
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -93,7 +94,7 @@ describe('BookingGuard', () => {
       primaryLocation: '', jurisdiction: '', isCaseAllocator: true // no "bookable"
     }],
     userInfo: {
-      id: '41a90c39-d756-4eba-8e85-5b5bf56b31f5',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',

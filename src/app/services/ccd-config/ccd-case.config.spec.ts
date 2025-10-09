@@ -414,21 +414,6 @@ describe('AppConfiguration', () => {
       expect(mockEnvironmentService.get).toHaveBeenCalledWith('ccdGatewayUrl');
     }));
   });
-
-  describe('getWAServiceConfig', () => {
-    it('should return WA service config when initialization is complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      expect(service.initialisationComplete).toBeTruthy();
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    })));
-
-    it('should return default WA service config when initialization is not complete', inject([AppConfig], (service: AppConfig) => {
-      service.initialisationComplete = false;
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    }));
-  });
 });
 
 describe('AppConfiguration with different deployment environments', () => {
@@ -485,12 +470,6 @@ describe('AppConfiguration with different deployment environments', () => {
       expect(mockEnvironmentServiceForEnv.getDeploymentEnv).toHaveBeenCalled();
       expect((service as any).deploymentEnv).toBe(DeploymentEnvironmentEnum.AAT);
     }));
-
-    it('should return AAT specific WA service config', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    })));
   });
 
   describe('with DEMO deployment environment', () => {

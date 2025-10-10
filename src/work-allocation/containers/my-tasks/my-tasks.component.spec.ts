@@ -122,7 +122,7 @@ describe('MyTasksComponent', () => {
     };
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     mockFilterService.getStream.and.returnValue(of(filterFields));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationActive'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
@@ -241,7 +241,7 @@ describe('MyTasksComponent', () => {
 
   it('should allow setting the release 2 details', () => {
     // verifying fields best way to check as the elements (apart from column names) on page will not change
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationActive'));
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.fields[0].name).toBe('case_name');

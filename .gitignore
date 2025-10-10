@@ -103,3 +103,4 @@ ignore/
 #playwright
 test-results/
 
+api/.yarn/install-state.gz

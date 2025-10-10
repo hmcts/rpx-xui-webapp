@@ -3,9 +3,12 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-case-reference-field',
   templateUrl: './case-reference-field.component.html',
   styleUrls: ['case-reference-field.component.scss']
+
 })
 export class CaseReferenceFieldComponent implements OnChanges {
   /**
@@ -17,10 +20,10 @@ export class CaseReferenceFieldComponent implements OnChanges {
   public ngOnChanges(): void {
     let href: string;
     if (this.caseReference) {
-      // Get rid of the spaces in the caseReference.
       const caseId = this.caseReference;
       if (caseId) {
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+        const encodedCaseId = encodeURIComponent(caseId);
+        href = `${AppConstants.CASE_DETAILS_URL}${encodedCaseId}`;
       }
     }
     this.pHref = href;

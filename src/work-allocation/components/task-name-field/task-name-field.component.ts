@@ -3,9 +3,12 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-task-name-field',
   templateUrl: './task-name-field.component.html',
   styleUrls: ['task-name-field.component.scss']
+
 })
 /**
  * Note: This class currently identical to case-name-field component however
@@ -24,8 +27,8 @@ export class TaskNameFieldComponent implements OnChanges {
     if (this.caseId) {
       const caseId = this.caseId;
       if (caseId) {
-        // in future required functionality, this should link to Tasks tab on Case details page
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}/tasks`;
+        const encodedCaseId = encodeURIComponent(caseId);
+        href = `${AppConstants.CASE_DETAILS_URL}${encodedCaseId}/tasks`;
       }
     }
     this.pHref = href;

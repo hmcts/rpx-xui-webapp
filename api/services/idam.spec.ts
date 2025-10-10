@@ -1,8 +1,9 @@
+
 import * as chai from 'chai';
 import { expect } from 'chai';
+import * as sinonChai from 'sinon-chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_IDAM_API_URL

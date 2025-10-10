@@ -1,5 +1,6 @@
 /*
-import { expect } from 'chai'
+import { expect } from 'chai';
+
 import { getUserTermsAndConditionsUrl, postUserTermsAndConditionsUrl } from './userTermsAndConditionsUtil'
 
 describe('terms And Conditions ', () => {

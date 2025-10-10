@@ -19,7 +19,10 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
+  standalone: false,
+
   template: ''
+
 })
 class StubComponent {}
 
@@ -30,7 +33,7 @@ describe('StaffUserDetailsComponent', () => {
   let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
   let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
   let location: Location;
-  let router: jasmine.SpyObj<Router>;
+  let router: Router;
   let testStaffUserData: Partial<StaffUser>;
   const caseWorkerId = '123456';
 
@@ -182,7 +185,7 @@ describe('StaffUserDetailsComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
     fixture.detectChanges();
     location = TestBed.inject(Location);

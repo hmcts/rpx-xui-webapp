@@ -8,8 +8,11 @@ import { LocationByEpimmsModel } from '../../../../models/location.model';
 import { LocationsDataService } from '../../../../services/locations-data.service';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-venue-section',
   templateUrl: './hearing-venue-section.component.html'
+
 })
 export class HearingVenueSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;

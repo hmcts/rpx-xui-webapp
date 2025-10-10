@@ -9,9 +9,12 @@ import { PaginationParameter, SearchCaseRequest } from '../../models/dtos';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-all-work-cases',
   templateUrl: 'all-work-case.component.html',
   styleUrls: ['all-work-case.component.scss']
+
 })
 export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implements OnInit {
   public sortedBy: SortField = {

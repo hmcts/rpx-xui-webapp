@@ -3,8 +3,11 @@ import { AppUtils } from '../../../app/app-utils';
 import { PriorityLimits, TaskPriority } from '../../enums';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-priority-field',
   templateUrl: './priority-field.component.html'
+
 })
 export class PriorityFieldComponent {
   /**

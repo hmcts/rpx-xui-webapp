@@ -26,8 +26,11 @@ import { TaskAssignmentContainerComponent } from './task-assignment-container.co
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
+  standalone: false,
+
   template: `
     <exui-task-container-assignment></exui-task-container-assignment>`
+
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentContainerComponent, { static: true }) public appComponentRef: TaskAssignmentContainerComponent;
@@ -35,13 +38,19 @@ class WrapperComponent {
 }
 
 @Component({
+  standalone: false,
+
   template: `
     <div>Nothing</div>`
+
 })
 class NothingComponent {
 }
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

@@ -3,9 +3,12 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-case-name-field',
   templateUrl: './case-name-field.component.html',
   styleUrls: ['case-name-field.component.scss']
+
 })
 export class CaseNameFieldComponent implements OnChanges {
   /**
@@ -21,7 +24,8 @@ export class CaseNameFieldComponent implements OnChanges {
     if (this.caseId) {
       const caseId = this.caseId;
       if (caseId) {
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+        const encodedCaseId = encodeURIComponent(caseId);
+        href = `${AppConstants.CASE_DETAILS_URL}${encodedCaseId}`;
       }
     }
     this.pHref = href;

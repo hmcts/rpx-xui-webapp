@@ -3,8 +3,11 @@ import { InfoMessage } from '../../shared/enums/info-message';
 import { InfoMessageType } from '../../shared/enums/info-message-type';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-info-message',
   templateUrl: './info-message.component.html'
+
 })
 export class InfoMessageComponent {
   /**

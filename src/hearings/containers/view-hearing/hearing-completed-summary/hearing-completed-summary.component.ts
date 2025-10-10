@@ -9,8 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-hearing-completed-summary',
   templateUrl: './hearing-completed-summary.component.html'
+
 })
 export class HearingCompletedSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;

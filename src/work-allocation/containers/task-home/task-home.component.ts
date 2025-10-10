@@ -11,9 +11,12 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { SortField } from '../../models/common';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html',
   styleUrls: ['task-home.component.scss']
+
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
   public persistence$: Observable<FilterPersistence> = of('local' as FilterPersistence);

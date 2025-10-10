@@ -21,8 +21,11 @@ import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
 
 @Component({
+  standalone: false,
+
   template: `
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
+
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent, { static: true }) public appComponentRef: TaskAssignmentConfirmComponent;

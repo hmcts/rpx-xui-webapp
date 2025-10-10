@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { RpxTranslationService } from 'rpx-xui-translation';
@@ -21,7 +21,10 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
 @Component({
+  standalone: false,
+
   template: '<exui-my-tasks></exui-my-tasks>'
+
 })
 class WrapperComponent {
   @ViewChild(MyTasksComponent, { static: true }) public appComponentRef: MyTasksComponent;

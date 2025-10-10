@@ -3,7 +3,10 @@ import { ConfigurationModel } from '../../models/configuration.model';
 import { AppConfigService } from '../../services/config/configuration.services';
 
 @Directive({
+  standalone: false,
+
   selector: '[exuiFeatureToggle]'
+
 })
 export class FeatureToggleDirective implements OnInit {
   @Input() public exuiFeatureToggle: string;

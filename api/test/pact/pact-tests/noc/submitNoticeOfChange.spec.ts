@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import * as config from 'config';
 import { NextFunction } from 'express';
 import * as sinon from 'sinon';

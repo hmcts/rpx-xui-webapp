@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FilterService, PersonRole } from '@hmcts/rpx-xui-common-lib';
-import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
-import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { FilterConfig, FilterFieldConfig, FilterSetting } from '@hmcts/rpx-xui-common-lib';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -10,10 +10,13 @@ import { HMCTSServiceDetails } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-case-manager-filter',
   templateUrl: './case-manager-filter.component.html',
   styleUrls: ['./case-manager-filter.component.scss'],
   encapsulation: ViewEncapsulation.None
+
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';

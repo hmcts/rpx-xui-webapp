@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';
@@ -24,8 +24,11 @@ import { MockRouter, getMockLocations, getMockTasks } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 @Component({
+  standalone: false,
+
   template: `
     <exui-available-tasks></exui-available-tasks>`
+
 })
 class WrapperComponent {
   @ViewChild(AvailableTasksComponent, { static: true }) public appComponentRef: AvailableTasksComponent;
@@ -40,7 +43,10 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

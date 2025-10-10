@@ -19,9 +19,12 @@ import * as fromHearingStore from '../../../store';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-linked-hearings-with-case',
   templateUrl: './linked-hearings-with-case.component.html',
   styleUrls: ['./linked-hearings-with-case.component.scss']
+
 })
 export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public isManageLink: boolean;

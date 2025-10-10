@@ -129,8 +129,9 @@ describe('AllocateRoleHomeComponent', () => {
       initialUrl: undefined,
       previousNavigation: undefined,
       trigger: undefined,
-      extras: { state: { backUrl: null } }
-    });
+      extras: { state: { backUrl: null } },
+      abort: () => {}
+    } as any);
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });

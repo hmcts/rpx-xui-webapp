@@ -4,8 +4,11 @@ import { Store } from '@ngrx/store';
 import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
 
 @Component({
+  standalone: false,
+
   selector: 'ccd-test-component',
   template: ''
+
 })
 class MockCcdComponent {
   @Output() submitted = new EventEmitter();
@@ -13,6 +16,8 @@ class MockCcdComponent {
 }
 
 @Component({
+  standalone: false,
+
   template: `
     <exui-ccd-connector
       [store]="store"
@@ -21,6 +26,7 @@ class MockCcdComponent {
       <ccd-test-component #ccdComponent></ccd-test-component>
     </exui-ccd-connector>
   `
+
 })
 class TestHostComponent {
   store: any;

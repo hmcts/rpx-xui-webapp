@@ -6,7 +6,10 @@ import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -15,11 +18,14 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('HmctsGlobalFooterComponent', () => {
   @Component({
+    standalone: false,
+
     selector: 'exui-app-host-dummy-component',
     template: `<exui-app-hmcts-global-footer
                   [reference]="iconFallbackText"
                   [title]="type"
                   [items]="text"></exui-app-hmcts-global-footer>`
+
   })
   class TestDummyHostComponent {
     @Input() public help: Helper;

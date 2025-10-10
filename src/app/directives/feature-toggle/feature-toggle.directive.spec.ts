@@ -7,6 +7,8 @@ import { FeatureToggleDirective } from './feature-toggle.directive';
 
 // Test component that uses the directive
 @Component({
+  standalone: false,
+
   template: `
     <div>
       <p *exuiFeatureToggle="'testFeature'" id="test-element">Feature content</p>
@@ -14,6 +16,7 @@ import { FeatureToggleDirective } from './feature-toggle.directive';
       <p *exuiFeatureToggle="'undefinedFeature'" id="undefined-element">Undefined feature</p>
     </div>
   `
+
 })
 class TestComponent {}
 
@@ -233,11 +236,14 @@ describe('FeatureToggleDirective', () => {
 
   describe('template syntax variations', () => {
     @Component({
+      standalone: false,
+
       template: `
         <div *exuiFeatureToggle="featureName">
           Dynamic feature name content
         </div>
       `
+
     })
     class DynamicTestComponent {
       featureName = 'dynamicFeature';

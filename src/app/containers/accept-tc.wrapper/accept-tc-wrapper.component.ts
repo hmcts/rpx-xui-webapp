@@ -9,8 +9,11 @@ import * as fromStore from '../../store';
  * absorbs Terms and Condition dumb component
  */
 @Component({
+  standalone: false,
+
   selector: 'exui-accept-terms-conditions-wrapper',
   templateUrl: './accept-tc-wrapper.component.html'
+
 })
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   public subscription: Subscription;

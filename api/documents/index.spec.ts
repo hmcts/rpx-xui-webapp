@@ -1,13 +1,13 @@
+
 import * as chai from 'chai';
+import { expect } from 'chai';
+import * as sinonChai from 'sinon-chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as documents from './index';
 
 chai.use(sinonChai);
-
-const { expect } = chai;
 
 describe('Documents Uploading', () => {
   let sandbox;

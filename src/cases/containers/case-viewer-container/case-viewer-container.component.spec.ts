@@ -21,6 +21,8 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 @Component({
+  standalone: false,
+
   selector: 'ccd-case-viewer',
   template: `
     <mat-tab-group>
@@ -28,6 +30,7 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
       </mat-tab>
     </mat-tab-group>
   `
+
 })
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;

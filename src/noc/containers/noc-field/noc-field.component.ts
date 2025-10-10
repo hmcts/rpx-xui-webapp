@@ -14,12 +14,15 @@ import { FormValidatorsService } from './form-validators.service';
 import { PaletteService } from './palette.service';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-noc-field',
   template: `
     <div>
       <ng-container #fieldContainer></ng-container>
     </div>
   `
+
 })
 export class NocFieldComponent extends AbstractFieldWriteComponent implements AfterViewInit {
   @ViewChild('fieldContainer', { static: true, read: ViewContainerRef })

@@ -2,8 +2,11 @@ import { Component, Input } from '@angular/core';
 import { HearingsService } from '../../../../../hearings/services/hearings.service';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-warning-and-error-section',
   templateUrl: './warning-and-error-section.component.html'
+
 })
 export class WarningAndErrorSectionComponent {
   @Input() public isPagelessAttributeChanged: boolean;

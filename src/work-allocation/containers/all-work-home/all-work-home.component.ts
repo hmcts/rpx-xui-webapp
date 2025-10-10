@@ -5,9 +5,12 @@ import { Subscription } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-all-work-home',
   templateUrl: 'all-work-home.component.html',
   styleUrls: ['all-work-home.component.scss']
+
 })
 export class AllWorkHomeComponent implements OnInit, OnDestroy {
   public pageTitle: string;

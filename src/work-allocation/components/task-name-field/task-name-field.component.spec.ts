@@ -6,7 +6,10 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { TaskNameFieldComponent } from './task-name-field.component';
 
 @Component({
+  standalone: false,
+
   template: '<exui-task-name-field [taskName]="taskName" [caseId]=\'caseId\'></exui-task-name-field>'
+
 })
 class WrapperComponent {
   @ViewChild(TaskNameFieldComponent, { static: true }) public appComponentRef: TaskNameFieldComponent;

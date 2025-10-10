@@ -9,8 +9,11 @@ import { Action, CaseRole } from '../../../role-access/models';
 import { RoleAccessSectionComponent } from './role-access-section.component';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-case-roles-table',
   template: ''
+
 })
 class MockCaseRolesTableComponent {
   @Input() public roles: CaseRole[];
@@ -20,8 +23,11 @@ class MockCaseRolesTableComponent {
 }
 
 @Component({
+  standalone: false,
+
   selector: 'exui-allocate-a-role-link',
   template: ''
+
 })
 class MockAllocateRoleLinkComponent {
   @Input() public routerLink: string;

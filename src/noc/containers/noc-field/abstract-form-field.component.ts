@@ -4,7 +4,10 @@ import { Observable } from 'rxjs';
 import { NocQuestion } from '../../models';
 
 @Component({
+  standalone: false,
+
   template: ''
+
 })
 export abstract class AbstractFormFieldComponent {
   @Input()

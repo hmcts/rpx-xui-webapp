@@ -7,7 +7,10 @@ import { OptionsModel } from '../../models/options-model';
 import { ChooseRadioOptionComponent } from './choose-radio-option.component';
 
 @Component({
+  standalone: false,
+
   template: '<exui-choose-radio-option [optionsList]="optionsList" [title]="title" [caption]="caption"></exui-choose-radio-option>'
+
 })
 class WrapperComponent {
   @ViewChild(ChooseRadioOptionComponent, { static: true }) public ref: ChooseRadioOptionComponent;

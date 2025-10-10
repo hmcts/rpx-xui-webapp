@@ -1,15 +1,18 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { NocHttpError, NocNavigation, NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-noc-case-ref',
   templateUrl: 'noc-case-ref.component.html',
   styleUrls: ['noc-case-ref.component.scss']
+
 })
 export class NocCaseRefComponent implements OnInit, OnDestroy {
   @Input() public navEvent: NocNavigation;

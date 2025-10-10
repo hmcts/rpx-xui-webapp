@@ -12,8 +12,11 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 import { InfoMessageType } from '../../../role-access/models/enums';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-available-tasks',
   templateUrl: 'available-tasks.component.html'
+
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {

@@ -7,8 +7,11 @@ import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
 @Component({
+  standalone: false,
+
   selector: 'exui-rejected-request',
   templateUrl: './rejected-request-view.component.html'
+
 })
 export class RejectedRequestViewComponent implements OnInit {
   public caseName: string;

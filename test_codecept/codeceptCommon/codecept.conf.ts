@@ -243,7 +243,7 @@ exports.config = {
   },
   bootstrap: async () => {
     share({ users: [], reuseCounter: 0 });
-    if (!parallel) {
+    if (!parallel && testType !== 'smoke') { // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },
@@ -252,7 +252,7 @@ exports.config = {
     const path = require('path');
     require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 
-    if (parallel) {
+    if (parallel && testType !== 'smoke') { // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },

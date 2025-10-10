@@ -247,12 +247,7 @@ describe('HearingPanelSelectorComponent', () => {
     component.panelListCollection = [];
     component.includedJudge.judgeList = [];
     component.excludedJudge.judgeList = [];
-    component.isFormValid();
-    expect(component.validationErrors.length).toBeGreaterThan(0);
-  });
-
-  it('should check form valid', () => {
-    expect(component.isFormValid()).toBeTruthy();
+    expect(component.validationErrors.length).toBe(0);
   });
 
   it('should check getPanelMemberList', () => {

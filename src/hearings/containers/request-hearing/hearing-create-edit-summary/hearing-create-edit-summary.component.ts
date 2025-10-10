@@ -8,8 +8,10 @@ import { HEARING_CREATE_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { Section } from '../../../../hearings/models/section';
 import { ScreenNavigationModel } from 'api/hearings/models/screenNavigation.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { HearingsUtils } from '../../../utils/hearings.utils';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingConditions } from '../../../models/hearingConditions';
 
 @Component({
   selector: 'exui-hearing-create-edit-summary',
@@ -19,9 +21,12 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   public template = HEARING_CREATE_EDIT_SUMMARY_TEMPLATE;
   public mode = Mode.CREATE_EDIT;
   public screenFlow: ScreenNavigationModel[] = [];
+  public featureToggleServiceSubscription: Subscription;
+  public isHearingAmendmentsEnabled: boolean;
 
   constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
+    protected readonly hearingsFeatureService: HearingsFeatureService,
     protected readonly featureToggleService: FeatureToggleService) {
     super(hearingStore, hearingsService, featureToggleService);
   }
@@ -29,6 +34,14 @@ export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow im
   ngOnInit(): void {
     this.hearingsService.hearingRequestForSubmitValid = false;
     this.removeUnnecessarySummaryTemplateItems();
+
+    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmendmentsEnabled().subscribe((enabled: boolean) => {
+      this.isHearingAmendmentsEnabled = enabled;
+      const hearingCondition: HearingConditions = {
+        isHearingAmendmentsEnabled: this.isHearingAmendmentsEnabled
+      };
+      this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
+    });
   }
 
   public executeAction(action: ACTION): void {

@@ -7,10 +7,11 @@ import { MemberType } from '../models/hearings.enum';
 export class PanelRolesHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
     return hearingState$.pipe(map((state) => {
-      const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
-        ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
-        : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+      if (state.hearingConditions?.isHearingAmendmentsEnabled){
+        return false;
+      }
 
+      const panelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
       if (panelRequirements?.panelSpecialisms || panelRequirements?.roleType || panelRequirements?.panelPreferences) {
         const panelSpecialisms: number = panelRequirements?.panelSpecialisms?.length || 0;
         const roleTypes: number = panelRequirements?.roleType?.length || 0;

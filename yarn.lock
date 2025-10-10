@@ -650,7 +650,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/ssr@npm:^18.2.21":
+"@angular/ssr@npm:^18.2.18":
   version: 18.2.21
   resolution: "@angular/ssr@npm:18.2.21"
   dependencies:
@@ -20982,7 +20982,7 @@ __metadata:
     "@angular/platform-browser": "npm:^18.2.13"
     "@angular/platform-browser-dynamic": "npm:^18.2.13"
     "@angular/router": "npm:^18.2.13"
-    "@angular/ssr": "npm:^18.2.21"
+    "@angular/ssr": "npm:^18.2.18"
     "@axe-core/playwright": "npm:^4.9.1"
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"

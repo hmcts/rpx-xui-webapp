@@ -16,8 +16,8 @@
     <div class="govuk-summary-list__actions">
       <a id="stage"
         class="change-link"
-        href="javascript:void(0)"
-        (click)="onChange('stage')">Change</a>
+        href="#"
+        (click)="onChange('stage'); $event.preventDefault()">Change</a>
     </div>
   </div>
 </div>

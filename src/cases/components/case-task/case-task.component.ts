@@ -42,7 +42,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public get returnUrl(): string {
-    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
+    return this.router ? this.router.url : `case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.task.case_id}/tasks`;
   }
 
   public get task(): Task {

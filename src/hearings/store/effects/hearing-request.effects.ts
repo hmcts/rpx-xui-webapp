@@ -28,6 +28,8 @@ export class HearingRequestEffects {
   public isHearingAmendmentsEnabled: boolean;
   public fragmentId: string;
   public hearingId: string;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(
     private readonly actions$: Actions,
@@ -48,6 +50,8 @@ export class HearingRequestEffects {
         this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
         this.isHearingAmendmentsEnabled = state.hearingConditions.hasOwnProperty(KEY_IS_HEARING_AMENDMENTS_ENABLED) ? state.hearingConditions[KEY_IS_HEARING_AMENDMENTS_ENABLED] : false;
         this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
+        this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
+        this.caseType = state?.hearingValues?.caseInfo?.caseType;
       }
     );
   }
@@ -63,7 +67,7 @@ export class HearingRequestEffects {
           this.location.back();
           return of(null); // Return an observable that emits null and then completes
         default:
-          return from(this.router.navigate(['cases', 'case-details', this.caseId, 'hearings']));
+          return from(this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']));
       }
     })
   ), { dispatch: false });
@@ -108,8 +112,8 @@ export class HearingRequestEffects {
           break;
 
         default:
-          this.router.navigate(['cases', 'case-details', this.caseId, 'hearings'])
-            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/caseId/hearings ', err));
+          this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
+            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err));
           break;
       }
     })

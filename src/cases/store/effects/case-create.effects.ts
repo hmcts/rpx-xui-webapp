@@ -29,7 +29,7 @@ export class CaseCreateEffects {
     map((action: fromActions.ApplyChange) => action.payload),
     map((newCases) => {
       return new fromRoot.CreateCaseGo({
-        path: [`/cases/case-details/${newCases.caseId}`],
+        path: [`/cases/case-details/${newCases.jurisdiction}/${newCases.caseType}/${newCases.caseId}`],
         caseId: newCases.caseId
       });
     })

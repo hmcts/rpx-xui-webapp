@@ -80,7 +80,7 @@ describe('TaskAssignmentChooseRoleComponent', () => {
   });
 
   it('should send user to find person', () => {
-    window.history.pushState({ returnUrl: '/case-details/123243430403904/tasks' }, 'state');
+    window.history.pushState({ returnUrl: '/case-details/123243430403904/IA/Appeal-864/tasks' }, 'state');
     const state = window.history.state;
     component.submit(component.form.value, component.form.valid);
     expect(router.navigate).toHaveBeenCalledWith(

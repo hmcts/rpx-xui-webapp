@@ -739,7 +739,7 @@ describe('QueryManagementContainerComponent', () => {
   describe('cancel navigation', () => {
     it('should navigate to case overview tab', () => {
       component.navigateToCaseOverviewTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
         { fragment: 'Overview' }
       );
     });
@@ -748,7 +748,7 @@ describe('QueryManagementContainerComponent', () => {
   describe('navigateToCaseOverviewTab', () => {
     it('should navigate to case overview tab', () => {
       component.navigateToCaseOverviewTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
         { fragment: 'Overview' }
       );
     });
@@ -757,14 +757,14 @@ describe('QueryManagementContainerComponent', () => {
   describe('navigateToCaseTaskTab', () => {
     it('should navigate to case tasks tab', () => {
       component.navigateToCaseTaskTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId, 'tasks']);
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId, 'tasks']);
     });
   });
 
   describe('goToQueryList', () => {
     it('should navigate to case Queries tab', () => {
       component.goToQueryList();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', component.caseId],
+      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
         { fragment: 'Queries' }
       );
     });
@@ -929,7 +929,7 @@ describe('QueryManagementContainerComponent', () => {
     it('should retrieve and process qualifying questions', () => {
       component.qualifyingQuestions$.subscribe((qualifyingQuestions) => {
         expect(qualifyingQuestions[0].name).toBe('Follow-up on an existing query');
-        expect(qualifyingQuestions[0].url).toContain('/cases/case-details/123#Queries');
+        expect(qualifyingQuestions[0].url).toContain('/cases/case-details/TEST/TestAddressBookCase/123#Queries');
         expect(qualifyingQuestions[1].name).toBe('Raise a new query');
       });
     });

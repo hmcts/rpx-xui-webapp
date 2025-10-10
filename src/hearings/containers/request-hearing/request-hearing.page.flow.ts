@@ -35,8 +35,8 @@ export abstract class RequestHearingPageFlow {
         this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
         this.hearingRequestToCompareMainModel = { ...hearingState.hearingRequestToCompare.hearingRequestMainModel };
         this.hearingCondition = hearingState.hearingConditions;
-        this.jurisdictionId = this.hearingListMainModel.jurisdictionId;
-        this.caseReference = this.hearingListMainModel.caseRef;
+        this.jurisdictionId = this.hearingListMainModel?.jurisdictionId;
+        this.caseReference = this.hearingListMainModel?.caseRef;
       });
   }
 

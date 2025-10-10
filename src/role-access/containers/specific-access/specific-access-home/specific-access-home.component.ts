@@ -175,8 +175,8 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
 
       case SpecificAccessNavigationEvent.RETURNTOTASKSTAB:
       case SpecificAccessNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`/cases/case-details/${this.caseId}/tasks`)
-          .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/caseId/tasks ', err));
+        this.router.navigateByUrl(`/cases/case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.caseId}/tasks`)
+          .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/jurisdiction/caseType/caseId/tasks ', err));
         break;
 
       default:

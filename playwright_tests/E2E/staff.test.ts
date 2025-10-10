@@ -13,7 +13,7 @@ test('staff user details', async ({ page }) => {
   console.log('Using user simple search');
   await page.locator('#content').getByRole('textbox').click();
   await page.locator('#content').getByRole('textbox').fill('xui');
-  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
   await expect(
     page.getByRole('link', { name: 'xui caseworker all services' })
@@ -36,7 +36,7 @@ test('staff user details advanced search', async ({ page }) => {
   await signIn(page, 'STAFF_ADMIN');
   await clickToStaffPage(page);
   console.log('Using user advanced search');
-  await page.getByRole('link', { name: 'Advanced search' }).click();
+  await page.getByRole('button', { name: 'Advanced search' }).click();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'User type' }).first()).toBeVisible();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Job title' }).first()).toBeVisible();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Skills' }).first()).toBeVisible();
@@ -46,7 +46,7 @@ test('staff user details advanced search', async ({ page }) => {
   await page.locator('#select_user-type').selectOption('1');
   await page.getByRole('checkbox', { name: 'Case allocator' }).check();
   await page.getByRole('link', { name: 'Add location' }).click();
-  await page.getByRole('button', { name: 'Search' }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByText('Showing')).toBeVisible();
   await signOut(page);
 });

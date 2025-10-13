@@ -266,6 +266,14 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getEnableServiceSpecificMultiFollowups(): string[] {
-    return this.config.enable_service_specific_multi_followups;
+    const specificService = this.config.enable_service_specific_multi_followups;
+    if (Array.isArray(specificService)) {
+      return specificService;
+    }
+    if (typeof specificService === 'string') {
+      return (specificService as string).split(',').map((s) => s.trim()).filter(Boolean);
+    }
+    // fallback for {} or undefined
+    return [];
   }
 }

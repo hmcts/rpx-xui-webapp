@@ -115,7 +115,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.resultSubscription = this.resultView$.subscribe((resultView) => this.onResultsViewHandler(resultView));
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe((value) => {
+    this.elasticSearchFlagSubsription = this.featureToggleService.getValue('elastic-search', true).subscribe((value) => {
       this.elasticSearchFlag = value;
       this.triggerQuery();
     });

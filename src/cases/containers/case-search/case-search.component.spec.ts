@@ -26,7 +26,7 @@ describe('CaseSearchComponent', () => {
   let store: Store<fromCaseSearchStore.SearchState>;
   let storePipeMock: any;
   let storeDispatchMock: any;
-  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
+  const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
 
   const appConfigMock = {
     getPaginationPageSize: () => 10
@@ -62,6 +62,7 @@ describe('CaseSearchComponent', () => {
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleService.getValue.and.returnValue(of(false));
 
     fixture = TestBed.createComponent(CaseSearchComponent);
     component = fixture.componentInstance;

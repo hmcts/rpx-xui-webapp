@@ -156,7 +156,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.triggerQuery();
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.isEnabled('elastic-search').subscribe((value) => this.elasticSearchFlag = value);
+    this.elasticSearchFlagSubsription = this.featureToggleService.getValue('elastic-search', true).subscribe((value) => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails)) as unknown as Observable<any>;
     this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$

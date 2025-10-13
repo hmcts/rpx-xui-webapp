@@ -41,12 +41,17 @@ export class AppConfig extends AbstractAppConfig {
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 5) {
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey, AppConstants.DEFAULT_SERVICE_MESSAGE, obArray);
+        if (obArray.length === 6) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');
           });
         }
+      } else {
+        console.error('InitialisationSyncService indicated initialisation failed, using default config values');
+        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey, AppConstants.DEFAULT_SERVICE_MESSAGE, []);
+        this.initialisationComplete = false;
       }
     });
   }

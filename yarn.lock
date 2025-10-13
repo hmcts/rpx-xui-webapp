@@ -3239,12 +3239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.49":
-  version: 7.2.49
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.49"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.50-payment-history-message":
+  version: 7.2.50-payment-history-message
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50-payment-history-message"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/f6f952a59e3024dee4e08c13263b6ed518be33f57c35e7dab9119cd864480c720ae38fe1ab4d2f19dbc3f14ed3f57348d43d4d83d73fe7f3f560e2ac9d4fd2fe
+  checksum: 10/a669cb24e299ff80eb1a6eef947238d94f3195f5dcb03a1d6528e2a6ec086417049e3f007da866b06d155711008dac14f72c1026c4c32967f617e5a2061643b8
   languageName: node
   linkType: hard
 
@@ -20987,7 +20987,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.49"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.50-payment-history-message"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"

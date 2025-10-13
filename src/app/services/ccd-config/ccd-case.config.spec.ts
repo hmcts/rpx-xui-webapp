@@ -893,7 +893,7 @@ describe('AppConfiguration with specific config values', () => {
       );
       spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
       mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](true);
-      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(6);
+      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(5);
     });
 
     it('should call setUpLaunchDarklyForFeature only for serviceMessagesFeatureToggleKey when initialisation is false', () => {

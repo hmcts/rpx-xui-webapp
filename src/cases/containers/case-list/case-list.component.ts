@@ -86,7 +86,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictions: Jurisdiction[];
   public selectedCases: SearchResultViewItem[] = [];
 
-  public elasticSearchFlag: boolean = true;
+  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlagSubsription: Subscription;
 
   public sortParameters;
 
@@ -152,6 +153,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.triggerQuery();
 
+    this.elasticSearchFlagSubsription = this.featureToggleService.getValue('elastic-search', true).subscribe((value) => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails)) as unknown as Observable<any>;
     this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
@@ -445,6 +447,9 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
+    }
+    if (this.elasticSearchFlagSubsription) {
+      this.elasticSearchFlagSubsription.unsubscribe();
     }
 
     this.unsubscribe$.next(null);

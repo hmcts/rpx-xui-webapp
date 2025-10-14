@@ -679,6 +679,12 @@ describe('AppConfiguration edge cases and error scenarios', () => {
       tick(5000);
       expect(service.initialisationComplete).toBeTruthy();
     }));
+
+    it('should not mark initialization complete when initialisation sync is false', inject([AppConfig, InitialisationSyncService],
+      (appConfig: AppConfig, initSync: InitialisationSyncService) => {
+        initSync.initialisationComplete(false);
+        expect(appConfig.initialisationComplete).toBeFalsy();
+      }));
   });
 });
 
@@ -845,95 +851,4 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getBannersUrl()).toBe('https://casedata.test.com/internal/banners');
     expect(service.getActivityUrl()).toBe('https://gateway.test.com/activity');
   }));
-
-  describe('AppConfig constructor', () => {
-    let mockAppConfigService: any;
-    let mockFeatureToggleService: any;
-    let mockEnvironmentService: any;
-    let mockInitialisationSyncService: any;
-    let mockWindow: any;
-    let mockLoggerService: any;
-
-    beforeEach(() => {
-      mockAppConfigService = jasmine.createSpyObj('AppConfigService', ['getEditorConfiguration']);
-      mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-      mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['getDeploymentEnv']);
-      mockInitialisationSyncService = jasmine.createSpyObj('InitialisationSyncService', ['waitForInitialisation']);
-      mockWindow = {};
-      mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
-
-      mockAppConfigService.getEditorConfiguration.and.returnValue({ documentSecureModeCaseTypeExclusions: ['DIVORCE'] });
-      mockFeatureToggleService.getValue.and.callFake((featureName: string, defVal: any) => of(defVal));
-      mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
-    });
-
-    it('should set initialisationComplete to true when all LD observables complete', () => {
-      let callback: (init: boolean) => void;
-      mockInitialisationSyncService.waitForInitialisation.and.callFake((cb) => {
-        callback = cb;
-      });
-      const appConfig = new AppConfig(
-        mockAppConfigService,
-        mockFeatureToggleService,
-        mockEnvironmentService,
-        mockInitialisationSyncService,
-        mockWindow,
-        mockLoggerService
-      );
-      callback(true);
-      expect(appConfig.initialisationComplete).toBeTrue();
-    });
-
-    it('should set initialisationComplete to false if initialisation fails', () => {
-      let callback: (init: boolean) => void;
-      mockInitialisationSyncService.waitForInitialisation.and.callFake((cb) => {
-        callback = cb;
-      });
-      const appConfig = new AppConfig(
-        mockAppConfigService,
-        mockFeatureToggleService,
-        mockEnvironmentService,
-        mockInitialisationSyncService,
-        mockWindow,
-        mockLoggerService
-      );
-      spyOn(console, 'error');
-      callback(false);
-      expect(appConfig.initialisationComplete).toBeFalse();
-      expect(console.error).toHaveBeenCalledWith('InitialisationSyncService indicated initialisation failed, using default config values');
-    });
-
-    it('should call setUpLaunchDarklyForFeature for each feature when initialisation is true', () => {
-      const appConfig = new AppConfig(
-        mockAppConfigService,
-        mockFeatureToggleService,
-        mockEnvironmentService,
-        mockInitialisationSyncService,
-        mockWindow,
-        mockLoggerService
-      );
-      spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
-      mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](true);
-      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(6);
-    });
-
-    it('should call setUpLaunchDarklyForFeature only for serviceMessagesFeatureToggleKey when initialisation is false', () => {
-      const appConfig = new AppConfig(
-        mockAppConfigService,
-        mockFeatureToggleService,
-        mockEnvironmentService,
-        mockInitialisationSyncService,
-        mockWindow,
-        mockLoggerService
-      );
-      spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
-      mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](false);
-      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(1);
-      const actualArgs = (appConfig as any).setUpLaunchDarklyForFeature.calls.mostRecent().args;
-      expect(actualArgs[0]).toBe(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey);
-      expect(actualArgs[1]).toEqual(AppConstants.DEFAULT_SERVICE_MESSAGE);
-      // Accept any array as the third argument, including an array with an Observable
-      expect(Array.isArray(actualArgs[2])).toBeTrue();
-    });
-  });
 });

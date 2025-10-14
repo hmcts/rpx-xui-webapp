@@ -10,8 +10,7 @@ const featureNames = {
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
-  cdamExclusionList: 'mc-cdam-exclusion-list',
-  serviceMessagesFeatureToggleKey: 'mc-service-messages-dates'
+  cdamExclusionList: 'mc-cdam-exclusion-list'
 };
 
 function featureToAttributeName(key: string): string {
@@ -25,8 +24,7 @@ export const featureToAttributeMap = new Map<string, string>([
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
-  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)],
-  [featureNames.serviceMessagesFeatureToggleKey, featureToAttributeName(featureNames.serviceMessagesFeatureToggleKey)]
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
 ]);
 
 const footerDataNavigation = {
@@ -202,21 +200,6 @@ const serviceMessageCookie: string = 'service_messages';
 const caseAllocatorRole: string = 'case-allocator-role';
 const iaJudgeRole: string = 'caseworker-ia-iacjudge';
 const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
-const defaultServiceMessage = [
-  {
-    'index': 10,
-    'message_cy': 'Efallai y bydd rhai defnyddwyr yn profi problemau gyda\'r gwasanaeth hwn ar hyn o bryd. Rydym yn gweithio i ddatrys hyn cyn gynted â phosibl.',
-    'message_en': 'Some users may experience problems with this service at the moment. We are working to resolve this as soon as possible.',
-    'roles': '.+'
-  }
-];
-const menuFlags = {
-  'MC_Work_Allocation': true,
-  'MC_Notice_of_Change': true,
-  'feature-global-search': true,
-  'mc-work-allocation-active-feature': 'WorkAllocationActive',
-  'feature-refunds': true
-};
 
 export class AppConstants {
   public static FOOTER_DATA = null;
@@ -236,8 +219,6 @@ export class AppConstants {
   public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
-  public static DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
-  public static MENU_FLAGS = menuFlags;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

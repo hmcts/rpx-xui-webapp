@@ -16,6 +16,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-view-summary.template';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
+import { AppTestConstants } from '../../../../app/app.test-constants.spec';
 
 describe('HearingViewSummaryComponent', () => {
   let component: HearingViewSummaryComponent;
@@ -32,7 +33,7 @@ describe('HearingViewSummaryComponent', () => {
       totalIdleTime: 50
     },
     userInfo: {
-      id: '***REMOVED***',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',

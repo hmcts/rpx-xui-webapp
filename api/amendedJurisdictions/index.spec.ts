@@ -133,52 +133,87 @@ describe('Amended Jurisdiction', () => {
       };
     });
 
-    it('should return cached jurisdictions for access=read', () => {
-      req.url = 'aggregated/caseworkers/123/jurisdictions?access=read';
-      req.session.readJurisdictions = [{ id: 'PROBATE' }];
-      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
-      expect(result).to.eql([{ id: 'PROBATE' }]);
+    it('should send cached jurisdictions and end proxy request when jurisdictions are cached', () => {
+      req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
+      const sessionKey = 'readJurisdictions';
+      req.session[sessionKey] = [
+        { id: 'PROBATE' },
+        { id: 'DIVORCE' }
+      ];
+
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+
+      expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
+      expect(proxyReq.end).to.have.been.called;
     });
 
-    it('should return cached jurisdictions for access=create', () => {
-      req.url = 'aggregated/caseworkers/123/jurisdictions?access=create';
-      req.session.createJurisdictions = [{ id: 'DIVORCE' }];
-      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
-      expect(result).to.eql([{ id: 'DIVORCE' }]);
+    it('should not send response when no jurisdictions are cached', () => {
+      req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
+      // No jurisdictions in session
+
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+
+      expect(res.send).to.not.have.been.called;
+      expect(proxyReq.end).to.not.have.been.called;
     });
 
-    it('should return cached jurisdictions for no access param', () => {
-      req.url = 'aggregated/caseworkers/123/jurisdictions?';
-      req.session.jurisdictions = [{ id: 'CIVIL' }];
-      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
-      expect(result).to.eql([{ id: 'CIVIL' }]);
+    it('should not send response when URL does not match jurisdictions pattern', () => {
+      req.url = '/some/other/endpoint';
+      const sessionKey = 'jurisdictions';
+      req.session[sessionKey] = [
+        { id: 'PROBATE' },
+        { id: 'DIVORCE' }
+      ];
+
+      amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+
+      expect(res.send).to.not.have.been.called;
+      expect(proxyReq.end).to.not.have.been.called;
     });
 
-    it('should return undefined if no cached jurisdictions exist', () => {
-      req.url = 'aggregated/caseworkers/123/jurisdictions?access=read';
-      delete req.session.readJurisdictions;
-      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
-      expect(result).to.be.undefined;
+    it('should handle jurisdictions URL with different patterns', () => {
+      const sessionKey = 'jurisdictions';
+      req.session[sessionKey] = [{ id: 'PROBATE' }];
+
+      // Test various jurisdiction URL patterns
+      const jurisdictionUrls = [
+        'aggregated/judges/456/jurisdictions?filter=active',
+        'aggregated/users/abc/jurisdictions?'
+      ];
+
+      jurisdictionUrls.forEach((url) => {
+        req.url = url;
+        res.send.resetHistory();
+        proxyReq.end.resetHistory();
+
+        amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+
+        expect(res.send).to.have.been.calledWith(req.session[sessionKey]);
+        expect(proxyReq.end).to.have.been.called;
+      });
     });
 
-    it('should return undefined if URL does not match jurisdictions pattern', () => {
-      req.url = '/not/a/jurisdictions/url?access=read';
-      req.session.readJurisdictions = [{ id: 'PROBATE' }];
-      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
-      expect(result).to.be.undefined;
-    });
+    it('should not match URLs without jurisdictions pattern', () => {
+      req.session.jurisdictions = [{ id: 'PROBATE' }];
 
-    it('should handle missing query string gracefully', () => {
-      req.url = 'aggregated/caseworkers/123/jurisdictions?';
-      req.session.jurisdictions = [{ id: 'CIVIL' }];
-      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
-      expect(result).to.eql([{ id: 'CIVIL' }]);
-    });
+      // Test URLs that should not match
+      const nonJurisdictionUrls = [
+        'aggregated/caseworkers/123/jurisdictions', // No ? at the end
+        'api/jurisdictions?access=read', // No aggregated prefix
+        'aggregated/jurisdictions', // Missing path before jurisdictions
+        'aggregated/users/jurisdiction?' // Wrong word (jurisdiction vs jurisdictions)
+      ];
 
-    it('should handle undefined session object gracefully', () => {
-      req.url = 'aggregated/caseworkers/123/jurisdictions?access=read';
-      req.session = undefined;
-      expect(() => amendedJurisdictions.checkCachedJurisdictions(proxyRes, req)).to.throw();
+      nonJurisdictionUrls.forEach((url) => {
+        req.url = url;
+        res.send.resetHistory();
+        proxyReq.end.resetHistory();
+
+        amendedJurisdictions.checkCachedJurisdictions(proxyReq, req, res);
+
+        expect(res.send).to.not.have.been.called;
+        expect(proxyReq.end).to.not.have.been.called;
+      });
     });
   });
 });

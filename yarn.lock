@@ -3239,12 +3239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.50":
-  version: 7.2.50
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50"
+"@hmcts/ccd-case-ui-toolkit@npm:v7.2.50-error-trigger-nav":
+  version: 7.2.50-error-trigger-nav
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50-error-trigger-nav"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/cf4d3de48a96f19b18b1918d37fbf3a53e11300e69e7b52d091dd5ecc7c41ce9a166a9f923d392d612e9738258b403a937c9055d32a2403f407bef375dafee69
+  checksum: 10/9f0a97523a1a31f3177cbcb35038cad17255549d4dc5a9d67738537cd7a66f3b0eafb83d23f4bf92d12e925a5acc63a405f2a433aa085687c79f923dd616f502
   languageName: node
   linkType: hard
 
@@ -20987,7 +20987,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.50"
+    "@hmcts/ccd-case-ui-toolkit": "npm:v7.2.50-error-trigger-nav"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"

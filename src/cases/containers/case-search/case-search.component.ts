@@ -57,7 +57,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   public state: any;
   public toggleButtonName: string;
 
-  public elasticSearchFlag: boolean = true;
+  public elasticSearchFlag: boolean = false;
+  public elasticSearchFlagSubsription: Subscription;
 
   public sortParameters;
 
@@ -114,7 +115,10 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.resultSubscription = this.resultView$.subscribe((resultView) => this.onResultsViewHandler(resultView));
 
-    this.triggerQuery();
+    this.elasticSearchFlagSubsription = this.featureToggleService.getValue('elastic-search', true).subscribe((value) => {
+      this.elasticSearchFlag = value;
+      this.triggerQuery();
+    });
   }
 
   public listenToPaginationMetadata = () => {
@@ -271,6 +275,9 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
+    }
+    if (this.elasticSearchFlagSubsription) {
+      this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
 }

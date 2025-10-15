@@ -7,6 +7,7 @@ import { FeatureVariation } from '../../cases/models/feature-variation.model';
 import { HearingsEditGuard } from './hearings-edit-guard';
 import { HearingJurisdictionConfigService } from '../../app/services/hearing-jurisdiction-config/hearing-jurisdiction-config.service';
 import { of } from 'rxjs';
+import { AppTestConstants } from '../../app/app.test-constants.spec';
 
 describe('HearingsAmendmentsGuard', () => {
   const USER_1: UserDetails = {
@@ -16,7 +17,7 @@ describe('HearingsAmendmentsGuard', () => {
       totalIdleTime: 50
     },
     userInfo: {
-      id: '***REMOVED***',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -36,7 +37,7 @@ describe('HearingsAmendmentsGuard', () => {
       totalIdleTime: 50
     },
     userInfo: {
-      id: '***REMOVED***',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',

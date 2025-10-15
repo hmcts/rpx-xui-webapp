@@ -1,14 +1,20 @@
 import { test, expect } from '@playwright/test';
 import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
 import config from "../config"
+import { registerCorsChecker } from './helpers/corsSmoke';
 import { routeToCasePage } from './steps/case-steps';
 import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from './steps/flag-steps';
+import { expectTextVisibleWithRetry } from './steps/steps-with-retry';
+
+test.beforeEach(async ({ page }) => {
+  registerCorsChecker(page);
+});
 
 test('Create case flag 2', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
   await routeToCasePage(page, '1747043572209027');
-  await expect(page.getByText('Case flags', { exact: true })).toBeVisible();
+  await expectTextVisibleWithRetry(page, 'Case flags');
   await page.getByText('Case flags', { exact: true }).click();
   await expect(page.getByRole('table', { name: 'Respondent' }).getByRole('caption')).toBeVisible();
   await expect(page.locator('#case-viewer-field-read--FlagLauncher1').getByText('Language Interpreter')).toBeVisible();

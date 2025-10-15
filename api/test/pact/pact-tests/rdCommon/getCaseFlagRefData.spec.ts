@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getRdCommonDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_commonData', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_commonData', port: 8000 });
 
 const serviceId = 'IA';
 
@@ -34,9 +34,8 @@ describe('RD get case flag ref data', async () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'get case flag ref data',
+        states: [{ description: 'get case flag ref data' }],
         uponReceiving: 'a service id',
         withRequest: {
           method: 'GET',
@@ -56,7 +55,7 @@ describe('RD get case flag ref data', async () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -66,34 +65,29 @@ describe('RD get case flag ref data', async () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getRdCommonDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
-      const { getCaseFlagRefData } = requireReloaded('../../../../prd/caseFlag');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        query: { serviceId }
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-      try {
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getRdCommonDataAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+        const { getCaseFlagRefData } = requireReloaded('../../../../prd/caseFlag');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          query: { serviceId }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
         await getCaseFlagRefData(req, response, next);
         assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
+      });
     });
   });
 });

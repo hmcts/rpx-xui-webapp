@@ -5,8 +5,14 @@ import { getCaseReferenceFromFirstRow, dealWithShortenedCaseRefLabel } from './s
 import { confirmNextSteps, confirmTabsVisible, caseDetailsCheck, validateWorkBasketComplexValues, validateWorkbasketInputs } from './steps/test-case';
 import { waitForSpecificResponse } from './helpers/responseListenerHelper';
 import { createCase } from './steps/create-xui-case-poc-steps';
+import { selectOptionWithRetry } from './steps/steps-with-retry';
 import { submitEvent } from './steps/submit-update-case-event-steps';
 import { createTestCaseErrorValidation } from './steps/create-xui-case-test-case-type-dev-steps';
+import { registerCorsChecker } from './helpers/corsSmoke';
+
+test.beforeEach(async ({ page }) => {
+  registerCorsChecker(page);
+});
 
 test('Validate next steps drop down', async ({ page }) => {
   const response = waitForSpecificResponse(
@@ -17,7 +23,7 @@ test('Validate next steps drop down', async ({ page }) => {
 
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
-  await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
+  await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });
   await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
   await page.getByLabel('Apply filter').click();
   await waitForSpinner(page);
@@ -152,10 +158,10 @@ test('Validate workbasket complex values against the API response', async ({ pag
 test('check form validations are functioning ', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
-  await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
+  await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });
   await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
   await page.getByRole('link', { name: 'Create case' }).click();
-  await page.getByLabel('Jurisdiction').selectOption('DIVORCE');
+  await selectOptionWithRetry(page, 'DIVORCE', false, { label: 'Jurisdiction' });
   await page.getByLabel('Case type').selectOption('xuiTestCaseType_dev');
   await page.getByRole('button', { name: 'Start' }).click();
   await expect(page.getByRole('heading', { name: 'Page 1 header' })).toBeVisible();
@@ -192,6 +198,7 @@ test('check form validations are functioning ', async ({ page }) => {
 
 test('Validate invalid date error message', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
+  await setTimeout(() => {}, 5000);
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await createTestCaseErrorValidation(page);
   await signOut(page);

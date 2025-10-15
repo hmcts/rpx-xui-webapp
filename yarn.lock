@@ -3239,12 +3239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.51-hide-follow-up-btn-from-judge-1":
-  version: 7.2.51-hide-follow-up-btn-from-judge-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.51-hide-follow-up-btn-from-judge-1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.51-hide-follow-up-btn-from-judge-2":
+  version: 7.2.51-hide-follow-up-btn-from-judge-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.51-hide-follow-up-btn-from-judge-2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/ec80e353e25fe923cdd90348eaf24f5581b5b3c126722ea6bfab5920c14f3479021240dc641b4698de6612454d8a65b61d160f72271fc50659f77fa26bc60286
+  checksum: 10/e6540abef12d1f0b354b0a92923befe7a90cdb100a64bb82544afcb7c62b8d1c7445d6015f9647031021540a0ac60abbe2d8b3c0de15e160994339590d30645d
   languageName: node
   linkType: hard
 
@@ -20987,7 +20987,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.51-hide-follow-up-btn-from-judge-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.51-hide-follow-up-btn-from-judge-2"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"

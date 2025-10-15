@@ -7,23 +7,90 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  update-dependencies:
     runs-on: ubuntu-latest
+    outputs:
+      pr-number: ${{ steps.create-pr.outputs.pull-request-number }}
+      has-changes: ${{ steps.check-changes.outputs.changes }}
     steps:
       - uses: tibdex/github-app-token@v2
         id: generate-token
         with:
           app_id: ${{ secrets.HMCTS_GITHUB_EXUI_APP_ID }}
           private_key: ${{ secrets.HMCTS_GITHUB_EXUI_PRIVATE_KEY }}
+      
       - uses: actions/checkout@v4
         with:
           token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0
+      
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      
       - run: yarn install
-      - run: yarn npm audit --recursive --environment production --json > yarn-audit-known-issues || true
-      - name: Commit
-        uses: stefanzweifel/git-auto-commit-action@v5
+      
+      - run: yarn npm audit --all --environment production --json > yarn-audit-known-issues || true
+      
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Pull Request
+        id: create-pr
+        if: steps.check-changes.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
         with:
-          commit_message: "Automated update of known-issue suppression"
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: "Automated update of known-issue suppression"
+          title: "Automated update of yarn audit known issues"
+          body: |
+            This is an automated PR to update the yarn audit known issues file.
+            
+            Changes made:
+            - Updated `yarn-audit-known-issues` with latest audit results
+            
+            This PR was created automatically by the dependency check workflow.
+          branch: automated-dependency-update
+          delete-branch: true
+          base: master
+
+  # approve-pr:
+  #   runs-on: ubuntu-latest
+  #   needs: update-dependencies
+  #   if: needs.update-dependencies.outputs.has-changes == 'true'
+  #   steps:
+  #     - uses: tibdex/github-app-token@v2
+  #       id: generate-token
+  #       with:
+  #         app_id: ${{ secrets.HMCTS_GITHUB_EXUI_APP_ID }}
+  #         private_key: ${{ secrets.HMCTS_GITHUB_EXUI_PRIVATE_KEY }}
+      
+  #     - name: Approve PR
+  #       uses: juliangruber/approve-pull-request-action@v2
+  #       with:
+  #         github-token: ${{ steps.generate-token.outputs.token }}
+  #         number: ${{ needs.update-dependencies.outputs.pr-number }}
+
+  # merge-pr:
+  #   runs-on: ubuntu-latest
+  #   needs: [update-dependencies, approve-pr]
+  #   if: needs.update-dependencies.outputs.has-changes == 'true'
+  #   steps:
+  #     - uses: tibdex/github-app-token@v2
+  #       id: generate-token
+  #       with:
+  #         app_id: ${{ secrets.HMCTS_GITHUB_EXUI_APP_ID }}
+  #         private_key: ${{ secrets.HMCTS_GITHUB_EXUI_PRIVATE_KEY }}
+      
+  #     - name: Merge PR
+  #       uses: juliangruber/merge-pull-request-action@v1
+  #       with:
+  #         github-token: ${{ steps.generate-token.outputs.token }}
+  #         number: ${{ needs.update-dependencies.outputs.pr-number }}
+  #         method: squash

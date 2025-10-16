@@ -29,7 +29,6 @@ export class MockHearingAnswersPipe implements PipeTransform {
   standalone: false,
   template: `
     <div>Nothing</div>`
-
 })
 class NothingComponent {
 }

@@ -13,7 +13,6 @@ describe('FooterComponent', () => {
 
     selector: 'exui-app-host-dummy-component',
     template: '<exui-app-footer></exui-app-footer>'
-
   })
   class TestDummyHostComponent {
     @ViewChild(FooterComponent, { static: false })

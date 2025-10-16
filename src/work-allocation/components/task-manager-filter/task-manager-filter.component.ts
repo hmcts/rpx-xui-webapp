@@ -16,7 +16,6 @@ import { getRoleCategory } from '../../utils';
   templateUrl: './task-manager-filter.component.html',
   styleUrls: ['./task-manager-filter.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';

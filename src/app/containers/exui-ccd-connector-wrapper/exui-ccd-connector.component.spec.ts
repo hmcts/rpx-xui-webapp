@@ -23,7 +23,6 @@ class MockCcdComponent {
       <ccd-test-component #ccdComponent></ccd-test-component>
     </exui-ccd-connector>
   `
-
 })
 class TestHostComponent {
   store: any;

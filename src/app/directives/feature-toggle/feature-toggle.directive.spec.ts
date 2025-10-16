@@ -15,7 +15,6 @@ import { FeatureToggleDirective } from './feature-toggle.directive';
       <p *exuiFeatureToggle="'undefinedFeature'" id="undefined-element">Undefined feature</p>
     </div>
   `
-
 })
 class TestComponent {}
 

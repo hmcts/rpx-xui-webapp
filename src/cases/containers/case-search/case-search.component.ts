@@ -20,7 +20,6 @@ import * as fromCasesFeature from '../../store';
   templateUrl: 'case-search.component.html',
   styleUrls: ['case-search.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {
   public caseSearchFilterEventsBindings: ActionBindingModel[];

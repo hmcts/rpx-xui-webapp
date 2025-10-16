@@ -36,7 +36,6 @@ export const LOCATION_ERROR: ErrorMessage = {
   templateUrl: './task-list-filter.component.html',
   styleUrls: ['task-list-filter.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
   public static readonly FILTER_NAME = 'my-work-tasks-filter';

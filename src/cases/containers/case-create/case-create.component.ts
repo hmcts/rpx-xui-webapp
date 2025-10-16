@@ -15,7 +15,6 @@ import * as fromCaseCreate from '../../store';
   selector: 'exui-create-case',
   templateUrl: './case-create.component.html',
   encapsulation: ViewEncapsulation.None
-
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {
   public caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};

@@ -25,7 +25,6 @@ import { WorkCaseListComponent } from './work-case-list.component';
       [caseServiceConfig]="caseServiceConfig"
       [sortedBy]="CaseSortField"
       [pagination]="pagination"></exui-work-case-list>`
-
 })
 class WrapperComponent {
   @ViewChild(WorkCaseListComponent, { static: true }) public appComponentRef: WorkCaseListComponent;

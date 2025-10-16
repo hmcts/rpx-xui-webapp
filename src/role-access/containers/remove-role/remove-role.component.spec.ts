@@ -22,7 +22,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   standalone: false,
   template: `
     <exui-remove-role></exui-remove-role>`
-
 })
 class WrapperComponent {
   @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;

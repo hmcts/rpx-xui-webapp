@@ -28,7 +28,6 @@ import * as fromCaseCreate from '../../store/reducers';
       </div>
     </exui-page-wrapper>`,
   encapsulation: ViewEncapsulation.None
-
 })
 export class CaseFilterComponent implements OnInit {
   public startButtonText: string;

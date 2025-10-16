@@ -13,7 +13,6 @@ const MEDIA_VIEWER = 'media-viewer-info';
   templateUrl: './media-viewer-wrapper.component.html',
   styleUrls: ['./media-viewer-wrapper.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class MediaViewerWrapperComponent implements OnInit {
   public mediaURL = '';

@@ -29,7 +29,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
   standalone: false,
   template: `
     <exui-task-container-assignment></exui-task-container-assignment>`
-
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentContainerComponent, { static: true }) public appComponentRef: TaskAssignmentContainerComponent;
@@ -40,7 +39,6 @@ class WrapperComponent {
   standalone: false,
   template: `
     <div>Nothing</div>`
-
 })
 class NothingComponent {
 }

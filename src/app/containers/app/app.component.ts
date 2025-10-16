@@ -19,7 +19,6 @@ import { InitialisationSyncService } from '../../services/ccd-config/initialisat
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class AppComponent implements OnInit, OnDestroy {
   public timeoutModalConfig = {

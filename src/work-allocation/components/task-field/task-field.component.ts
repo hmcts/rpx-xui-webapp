@@ -13,7 +13,6 @@ import { Task } from '../../models/tasks';
   templateUrl: './task-field.component.html',
   styleUrls: ['task-field.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class TaskFieldComponent implements OnInit {
   /**

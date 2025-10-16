@@ -15,7 +15,6 @@ import * as fromAppStore from '../../../app/store';
   templateUrl: './case-manager-filter.component.html',
   styleUrls: ['./case-manager-filter.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class CaseManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-cases-filter';

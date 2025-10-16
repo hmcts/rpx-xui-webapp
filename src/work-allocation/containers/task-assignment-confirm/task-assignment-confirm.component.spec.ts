@@ -24,7 +24,6 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
   standalone: false,
   template: `
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
-
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent, { static: true }) public appComponentRef: TaskAssignmentConfirmComponent;

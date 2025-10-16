@@ -24,7 +24,6 @@ import { Subscription } from 'rxjs';
       <ng-content></ng-content>
     </ng-container>
   `
-
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   @ContentChild('ccdComponent', { static: false }) public ccdComponent;

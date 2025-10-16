@@ -29,7 +29,6 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
       </mat-tab>
     </mat-tab-group>
   `
-
 })
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;

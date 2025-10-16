@@ -12,7 +12,6 @@ import { Task } from '../../models/tasks';
   templateUrl: './work-field.component.html',
   styleUrls: ['./work-field.component.scss'],
   encapsulation: ViewEncapsulation.None
-
 })
 export class WorkFieldComponent {
   /**

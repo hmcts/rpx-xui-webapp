@@ -19,7 +19,6 @@ import { TaskHomeComponent } from './task-home.component';
   standalone: false,
   template: `
     <exui-task-home></exui-task-home>`
-
 })
 class WrapperComponent {
   @ViewChild(TaskHomeComponent, { static: true }) public appComponentRef: TaskHomeComponent;

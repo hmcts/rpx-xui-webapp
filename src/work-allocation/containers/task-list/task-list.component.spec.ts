@@ -27,7 +27,6 @@ import { TaskListComponent } from './task-list.component';
       [taskServiceConfig]="taskServiceConfig"
       [sortedBy]="sortedBy"
       [pagination]="pagination"></exui-task-list>`
-
 })
 class WrapperComponent {
   @ViewChild(TaskListComponent) public appComponentRef: TaskListComponent;

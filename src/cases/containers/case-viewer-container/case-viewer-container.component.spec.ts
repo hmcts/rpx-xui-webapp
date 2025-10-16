@@ -22,7 +22,6 @@ import { WASupportedJurisdictionsService } from '../../../work-allocation/servic
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
 @Component({
   standalone: false,
-
   selector: 'ccd-case-viewer',
   template: `
     <mat-tab-group>

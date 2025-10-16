@@ -8,7 +8,6 @@ import { Task } from '../../models/tasks';
 
 @Component({
   standalone: false,
-
   selector: 'exui-work-field',
   templateUrl: './work-field.component.html',
   styleUrls: ['./work-field.component.scss'],

@@ -13,7 +13,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-home',
   templateUrl: 'noc-home.component.html',
   styleUrls: ['noc-home.component.scss']

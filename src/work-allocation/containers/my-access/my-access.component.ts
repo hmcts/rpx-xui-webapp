@@ -11,7 +11,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 
 @Component({
   standalone: false,
-
   selector: 'exui-my-access',
   templateUrl: 'my-access.component.html'
 

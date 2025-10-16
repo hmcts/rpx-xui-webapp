@@ -8,7 +8,6 @@ import * as fromCaseList from '../../store/reducers';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-share-confirm',
   templateUrl: './case-share-confirm.component.html',
   styleUrls: ['./case-share-confirm.component.scss']

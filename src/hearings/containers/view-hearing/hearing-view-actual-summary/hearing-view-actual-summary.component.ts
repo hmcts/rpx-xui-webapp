@@ -9,7 +9,6 @@ import * as fromHearingStore from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-view-actual-summary',
   templateUrl: './hearing-view-actual-summary.component.html'
 

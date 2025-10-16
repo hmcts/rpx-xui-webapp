@@ -10,7 +10,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-welsh',
   templateUrl: './hearing-welsh.component.html'
 

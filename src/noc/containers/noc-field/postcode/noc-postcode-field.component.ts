@@ -4,7 +4,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-postcode-field',
   templateUrl: './noc-postcode-field.component.html'
 

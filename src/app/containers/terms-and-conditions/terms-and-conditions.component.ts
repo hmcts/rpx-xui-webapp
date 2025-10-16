@@ -7,7 +7,6 @@ import * as fromRoot from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-terms-and-conditions',
   templateUrl: './terms-and-conditions.component.html'
 

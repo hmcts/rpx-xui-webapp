@@ -7,7 +7,6 @@ import * as fromFeature from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-navigation',
   templateUrl: 'noc-navigation.component.html',
   styleUrls: ['noc-navigation.component.scss']

@@ -16,7 +16,6 @@ import * as fromCasesFeature from '../../store';
  */
 @Component({
   standalone: false,
-
   selector: 'exui-search-case',
   templateUrl: 'case-search.component.html',
   styleUrls: ['case-search.component.scss'],

@@ -32,7 +32,6 @@ import * as fromCaseList from '../../store/reducers';
  */
 @Component({
   standalone: false,
-
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,

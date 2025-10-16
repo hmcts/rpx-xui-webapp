@@ -4,7 +4,6 @@ import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-name-field',
   templateUrl: './case-name-field.component.html',
   styleUrls: ['case-name-field.component.scss']

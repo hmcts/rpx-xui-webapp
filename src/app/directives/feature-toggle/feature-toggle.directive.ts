@@ -4,7 +4,6 @@ import { AppConfigService } from '../../services/config/configuration.services';
 
 @Directive({
   standalone: false,
-
   selector: '[exuiFeatureToggle]'
 
 })

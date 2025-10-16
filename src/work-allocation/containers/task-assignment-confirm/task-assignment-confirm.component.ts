@@ -14,7 +14,6 @@ import { handleTasksFatalErrors } from '../../utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-assignment-confirm',
   templateUrl: './task-assignment-confirm.component.html'
 

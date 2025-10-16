@@ -4,7 +4,6 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   standalone: false,
-
   selector: 'exui-privacy-policy',
   templateUrl: './privacy-policy.component.html'
 

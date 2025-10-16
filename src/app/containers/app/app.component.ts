@@ -15,7 +15,6 @@ import { InitialisationSyncService } from '../../services/ccd-config/initialisat
 
 @Component({
   standalone: false,
-
   selector: 'exui-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

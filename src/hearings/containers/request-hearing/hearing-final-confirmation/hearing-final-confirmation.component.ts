@@ -6,7 +6,6 @@ import * as fromHearingStore from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-final-confirmation',
   templateUrl: './hearing-final-confirmation.component.html'
 

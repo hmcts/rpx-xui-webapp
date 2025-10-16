@@ -16,7 +16,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-attendance',
   templateUrl: './hearing-attendance.component.html',
   styleUrls: ['./hearing-attendance.component.scss']

@@ -10,7 +10,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 
 @Component({
   standalone: false,
-
   selector: 'exui-all-work-cases',
   templateUrl: 'all-work-case.component.html',
   styleUrls: ['all-work-case.component.scss']

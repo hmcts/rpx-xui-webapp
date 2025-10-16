@@ -37,7 +37,6 @@ import { ServiceMessagesResponse } from '../../models/service-message/service-me
 
 @Component({
   standalone: false,
-
   selector: 'exui-query-management-container',
   templateUrl: './query-management-container.component.html',
   styleUrls: ['./query-management-container.component.scss']

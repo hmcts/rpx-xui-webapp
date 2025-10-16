@@ -7,7 +7,6 @@ import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState
 
 @Component({
   standalone: false,
-
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
   styleUrls: ['./booking-wrapper.component.scss']

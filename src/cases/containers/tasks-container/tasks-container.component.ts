@@ -13,7 +13,6 @@ import { getAssigneeName } from '../../../work-allocation/utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-tasks-container',
   templateUrl: './tasks-container.component.html',
   styleUrls: ['./tasks-container.component.scss']

@@ -8,7 +8,6 @@ import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
   standalone: false,
-
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
   styleUrls: ['./booking-location.component.scss']

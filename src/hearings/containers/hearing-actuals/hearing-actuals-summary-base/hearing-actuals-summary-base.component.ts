@@ -24,7 +24,6 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-actual-summary-base',
   template: ''
 

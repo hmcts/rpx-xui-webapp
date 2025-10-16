@@ -14,7 +14,6 @@ import { TaskServiceConfig } from '../../models/tasks';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html'
 

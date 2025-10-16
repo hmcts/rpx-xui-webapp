@@ -3,7 +3,6 @@ import { AmendmentLabelStatus } from '../../../hearings/models/hearingsUpdateMod
 
 @Component({
   standalone: false,
-
   selector: 'exui-parties-unavailable-dates',
   templateUrl: './parties-unavailable-dates.component.html',
   styleUrls: ['./parties-unavailable-dates.component.scss']

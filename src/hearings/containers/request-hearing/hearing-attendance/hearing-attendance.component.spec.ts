@@ -126,7 +126,6 @@ const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-parties-title',
   template: ''
 

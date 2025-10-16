@@ -18,7 +18,6 @@ import {
 
 @Component({
   standalone: false,
-
   selector: 'exui-booking-date',
   templateUrl: './booking-date.component.html'
 

@@ -10,7 +10,6 @@ import { Location, PaginationParameter } from '../../models/dtos';
 
 @Component({
   standalone: false,
-
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',
   styleUrls: ['work-case-list.component.scss']

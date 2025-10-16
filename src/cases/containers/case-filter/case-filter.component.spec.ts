@@ -12,7 +12,6 @@ import { RpxTranslationModule } from 'rpx-xui-translation';
 
 @Component({
   standalone: false,
-
   selector: 'exui-ccd-connector',
   template: '<ng-content></ng-content>'
 
@@ -21,7 +20,6 @@ class MockCcdConnectorComponent {}
 
 @Component({
   standalone: false,
-
   selector: 'ccd-create-case-filters',
   template: 'Mock CCD Create Case Filters'
 
@@ -30,7 +28,6 @@ class MockCreateCaseFiltersComponent {}
 
 @Component({
   standalone: false,
-
   selector: 'exui-page-wrapper',
   template: '<ng-content></ng-content>'
 
@@ -39,7 +36,6 @@ class MockPageWrapperComponent {}
 
 @Directive({
   standalone: false,
-
   selector: '[exuiFeatureToggle]'
 
 })

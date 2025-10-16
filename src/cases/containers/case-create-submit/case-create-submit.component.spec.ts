@@ -79,7 +79,6 @@ const SANITISED_EDIT_FORM: CaseEventData = {
 
 @Component({
   standalone: false,
-
   selector: 'exui-ccd-connector',
   template: '<div></div>'
 

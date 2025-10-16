@@ -12,7 +12,6 @@ import { getTitleText } from '../../../utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-choose-allocate-to',
   templateUrl: './choose-allocate-to.component.html'
 

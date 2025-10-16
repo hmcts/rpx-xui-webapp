@@ -23,7 +23,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-parties-title',
   template: ''
 

@@ -4,7 +4,6 @@ import { CaseRole, TypeOfRole } from '../../role-access/models';
 
 @Directive({
   standalone: false,
-
   selector: '[exuiShowAllocateLink]'
 
 })

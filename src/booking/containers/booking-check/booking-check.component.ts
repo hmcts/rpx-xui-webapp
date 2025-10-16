@@ -11,7 +11,6 @@ import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/bo
 
 @Component({
   standalone: false,
-
   selector: 'exui-booking-check',
   templateUrl: './booking-check.component.html',
   styleUrls: ['./booking-check.component.scss']

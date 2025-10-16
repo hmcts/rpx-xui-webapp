@@ -12,7 +12,6 @@ import { BookingService } from '../../services';
 
 @Component({
   standalone: false,
-
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html',
   styleUrls: ['./booking-home.component.scss']

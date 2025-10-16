@@ -8,7 +8,6 @@ import * as fromRoot from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-get-help',
   templateUrl: './get-help.component.html'
 

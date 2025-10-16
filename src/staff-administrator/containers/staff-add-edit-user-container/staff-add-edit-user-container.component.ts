@@ -4,7 +4,6 @@ import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staf
 
 @Component({
   standalone: false,
-
   selector: 'exui-staff-add-edit-user-container',
   templateUrl: './staff-add-edit-user-container.component.html',
   styleUrls: ['./staff-add-edit-user-container.component.scss'],

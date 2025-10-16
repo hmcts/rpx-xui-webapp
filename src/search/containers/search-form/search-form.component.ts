@@ -9,7 +9,6 @@ import { SearchValidators } from '../../utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-search-form',
   templateUrl: './search-form.component.html',
   styleUrls: ['./search-form.component.scss']

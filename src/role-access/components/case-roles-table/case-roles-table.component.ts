@@ -10,7 +10,6 @@ interface Item extends CaseRole {
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-roles-table',
   templateUrl: './case-roles-table.component.html',
   styleUrls: ['./case-roles-table.component.scss']

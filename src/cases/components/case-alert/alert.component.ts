@@ -5,7 +5,6 @@ import { Observable, Subscription } from 'rxjs';
 
 @Component({
   standalone: false,
-
   selector: 'exui-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss']

@@ -12,7 +12,6 @@ import { getRoleCategory } from '../../utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-manager-filter',
   templateUrl: './task-manager-filter.component.html',
   styleUrls: ['./task-manager-filter.component.scss'],

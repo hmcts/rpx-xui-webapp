@@ -6,7 +6,6 @@ import { NoResultsMessageId } from '../../enums';
 
 @Component({
   standalone: false,
-
   selector: 'exui-no-results',
   templateUrl: './no-results.component.html',
   styleUrls: ['./no-results.component.scss']

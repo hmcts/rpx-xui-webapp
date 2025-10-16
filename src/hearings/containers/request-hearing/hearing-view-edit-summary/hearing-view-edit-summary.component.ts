@@ -16,7 +16,6 @@ import { HearingResponseError } from '../../../../hearings/models/hearingRespons
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-view-edit-summary',
   templateUrl: './hearing-view-edit-summary.component.html'
 

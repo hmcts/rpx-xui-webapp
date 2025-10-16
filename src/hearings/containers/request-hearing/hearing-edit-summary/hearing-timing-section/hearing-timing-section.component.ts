@@ -13,7 +13,6 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-timing-section',
   templateUrl: './hearing-timing-section.component.html'
 

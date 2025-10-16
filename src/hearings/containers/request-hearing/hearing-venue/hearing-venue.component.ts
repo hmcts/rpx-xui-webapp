@@ -14,7 +14,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-venue',
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']

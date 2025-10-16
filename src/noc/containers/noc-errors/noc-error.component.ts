@@ -7,7 +7,6 @@ import * as fromFeature from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-error',
   templateUrl: 'noc-error.component.html'
 

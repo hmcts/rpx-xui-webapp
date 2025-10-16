@@ -25,7 +25,6 @@ import { SessionStorageService } from '../../../app/services';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html',
   styleUrls: ['./case-hearings.component.scss']

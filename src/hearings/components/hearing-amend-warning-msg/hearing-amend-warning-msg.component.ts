@@ -8,7 +8,6 @@ import { HearingsUtils } from '../../utils/hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-amend-warning-msg',
   templateUrl: './hearing-amend-warning-msg.component.html'
 

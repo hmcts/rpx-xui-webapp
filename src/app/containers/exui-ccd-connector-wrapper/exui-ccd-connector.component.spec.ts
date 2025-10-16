@@ -5,7 +5,6 @@ import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
 
 @Component({
   standalone: false,
-
   selector: 'ccd-test-component',
   template: ''
 

@@ -8,7 +8,6 @@ import * as fromFeature from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-add-exclusion-check-answers',
   templateUrl: './add-exclusion-check-answers.component.html'
 

@@ -17,7 +17,6 @@ import * as fromActions from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-app-header',
   templateUrl: './app-header.component.html'
 

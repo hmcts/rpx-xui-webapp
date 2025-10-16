@@ -8,7 +8,6 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-additional-facilities-section',
   templateUrl: './additional-facilities-section.component.html'
 

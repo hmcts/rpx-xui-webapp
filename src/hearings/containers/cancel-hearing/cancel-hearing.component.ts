@@ -13,7 +13,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   standalone: false,
-
   selector: 'exui-cancel-hearing',
   templateUrl: './cancel-hearing.component.html',
   styleUrls: ['./cancel-hearing.component.scss']

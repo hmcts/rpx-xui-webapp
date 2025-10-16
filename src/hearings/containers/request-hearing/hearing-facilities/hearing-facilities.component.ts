@@ -16,7 +16,6 @@ import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-facilities',
   templateUrl: './hearing-facilities.component.html'
 

@@ -8,7 +8,6 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-actuals-edit-summary',
   templateUrl: './hearing-actuals-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-edit-summary.component.scss'],

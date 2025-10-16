@@ -11,7 +11,6 @@ import * as fromCaseCreate from '../../store';
  */
 @Component({
   standalone: false,
-
   selector: 'exui-case-details',
   templateUrl: './case-details.component.html'
 

@@ -6,7 +6,6 @@ import { SpecificAccessNavigation } from '../../../models';
 
 @Component({
   standalone: false,
-
   selector: 'exui-specific-access-duplicate-record',
   templateUrl: './specific-access-duplicate-record.component.html',
   styleUrls: ['./specific-access-duplicate-record.component.scss']

@@ -6,7 +6,6 @@ import * as fromFeature from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-submit-success',
   templateUrl: './noc-submit-success.component.html',
   styleUrls: ['./noc-submit-success.component.scss']

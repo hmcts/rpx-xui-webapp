@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
 */
 @Component({
   standalone: false,
-
   selector: 'exui-sign-out',
   templateUrl: './signed-out.component.html'
 

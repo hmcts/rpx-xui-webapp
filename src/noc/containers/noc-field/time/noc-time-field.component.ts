@@ -5,7 +5,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-time-field',
   templateUrl: './noc-time-field.component.html'
 

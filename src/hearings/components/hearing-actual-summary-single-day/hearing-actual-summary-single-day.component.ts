@@ -7,7 +7,6 @@ import { ActualHearingsUtils } from '../../utils/actual-hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-actual-summary-single-day',
   templateUrl: './hearing-actual-summary-single-day.component.html',
   styleUrls: ['./hearing-actual-summary-single-day.component.scss']

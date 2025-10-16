@@ -7,7 +7,6 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 
 @Component({
   standalone: false,
-
   selector: 'exui-language-requirements-section',
   templateUrl: './language-requirements-section.component.html'
 

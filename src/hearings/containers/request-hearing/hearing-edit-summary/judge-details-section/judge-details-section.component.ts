@@ -9,7 +9,6 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 
 @Component({
   standalone: false,
-
   selector: 'exui-judge-details-section',
   templateUrl: './judge-details-section.component.html'
 

@@ -16,7 +16,6 @@ import * as fromFeature from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-specific-access-review',
   templateUrl: './specific-access-review.component.html'
 

@@ -7,7 +7,6 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
 
 @Component({
   standalone: false,
-
   selector: 'exui-staff-adv-filter',
   templateUrl: './staff-adv-filter.component.html',
   styleUrls: ['./staff-adv-filter.component.scss']

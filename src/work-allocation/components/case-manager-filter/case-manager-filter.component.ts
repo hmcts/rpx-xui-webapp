@@ -11,7 +11,6 @@ import * as fromAppStore from '../../../app/store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-manager-filter',
   templateUrl: './case-manager-filter.component.html',
   styleUrls: ['./case-manager-filter.component.scss'],

@@ -17,7 +17,6 @@ import * as fromHearingStore from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-stage-result',
   templateUrl: './hearing-stage-result.component.html',
   styleUrls: ['./hearing-stage-result.component.scss']

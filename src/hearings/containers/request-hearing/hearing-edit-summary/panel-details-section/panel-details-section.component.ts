@@ -7,7 +7,6 @@ import { PanelRequirementsModel } from '../../../../models/panelRequirements.mod
 
 @Component({
   standalone: false,
-
   selector: 'exui-panel-details-section',
   templateUrl: './panel-details-section.component.html'
 

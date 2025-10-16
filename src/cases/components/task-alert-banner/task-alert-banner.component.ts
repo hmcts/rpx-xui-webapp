@@ -3,7 +3,6 @@ import { Task } from '../../../work-allocation/models/tasks';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-alert-banner',
   templateUrl: './task-alert-banner.component.html',
   styleUrls: ['./task-alert-banner.component.scss']

@@ -28,7 +28,6 @@ import { isEmpty } from 'lodash';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-timing',
   templateUrl: './hearing-timing.component.html'
 

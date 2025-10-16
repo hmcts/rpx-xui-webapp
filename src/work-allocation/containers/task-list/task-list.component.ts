@@ -11,7 +11,6 @@ import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../mo
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']

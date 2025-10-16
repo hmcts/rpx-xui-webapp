@@ -4,7 +4,6 @@ import { AppConstants } from '../../../app/app.constants';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-name-field',
   templateUrl: './task-name-field.component.html',
   styleUrls: ['task-name-field.component.scss']

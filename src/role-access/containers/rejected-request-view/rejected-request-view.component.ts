@@ -8,7 +8,6 @@ import { AllocateRoleService } from '../../services';
 
 @Component({
   standalone: false,
-
   selector: 'exui-rejected-request',
   templateUrl: './rejected-request-view.component.html'
 

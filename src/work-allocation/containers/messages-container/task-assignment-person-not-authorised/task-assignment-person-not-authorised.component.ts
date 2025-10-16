@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-assignment-person-not-authorised',
   templateUrl: './task-assignment-person-not-authorised.component.html'
 

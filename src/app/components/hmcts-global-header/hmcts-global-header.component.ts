@@ -13,7 +13,6 @@ import { UserService } from '../../services/user/user.service';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hmcts-global-header',
   templateUrl: './hmcts-global-header.component.html',
   styleUrls: ['./hmcts-global-header.component.scss']

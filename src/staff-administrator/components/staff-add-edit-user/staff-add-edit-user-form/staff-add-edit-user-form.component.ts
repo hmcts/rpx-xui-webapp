@@ -12,7 +12,6 @@ import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-fo
 
 @Component({
   standalone: false,
-
   selector: 'exui-staff-add-edit-user-form',
   templateUrl: './staff-add-edit-user-form.component.html',
   styleUrls: ['./staff-add-edit-user-form.component.scss']

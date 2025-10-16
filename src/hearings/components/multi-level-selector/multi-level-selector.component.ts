@@ -5,7 +5,6 @@ import { ControlTypeEnum } from '../../models/hearings.enum';
 
 @Component({
   standalone: false,
-
   selector: 'exui-multi-level-selector',
   templateUrl: './multi-level-selector.component.html',
   styleUrls: ['./multi-level-selector.component.scss'],

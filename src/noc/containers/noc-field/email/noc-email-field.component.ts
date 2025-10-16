@@ -4,7 +4,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-email-field',
   templateUrl: 'noc-email-field.component.html'
 

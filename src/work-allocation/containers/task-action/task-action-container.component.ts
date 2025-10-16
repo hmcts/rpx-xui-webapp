@@ -21,7 +21,6 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-action-container',
   templateUrl: 'task-action-container.component.html'
 

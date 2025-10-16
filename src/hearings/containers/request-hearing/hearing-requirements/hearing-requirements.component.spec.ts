@@ -30,7 +30,6 @@ import * as _ from 'lodash';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-parties-title',
   template: ''
 

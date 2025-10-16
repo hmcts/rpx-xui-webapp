@@ -4,7 +4,6 @@ import { SessionStorageService } from 'src/app/services';
 
 @Component({
   standalone: false,
-
   selector: 'exui-phase-banner',
   templateUrl: './phase-banner.component.html'
 

@@ -37,7 +37,6 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
 
 @Component({
   standalone: false,
-
   selector: 'exui-allocate-role-home',
   templateUrl: './allocate-role-home.component.html',
   styleUrls: ['./allocate-role-home.component.scss']

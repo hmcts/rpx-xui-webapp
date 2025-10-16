@@ -32,7 +32,6 @@ export const LOCATION_ERROR: ErrorMessage = {
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-list-filter',
   templateUrl: './task-list-filter.component.html',
   styleUrls: ['task-list-filter.component.scss'],

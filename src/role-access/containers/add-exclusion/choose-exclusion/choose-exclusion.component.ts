@@ -14,7 +14,6 @@ import * as fromFeature from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-choose-exclusion',
   templateUrl: './choose-exclusion.component.html'
 

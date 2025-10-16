@@ -10,7 +10,6 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-completed-summary',
   templateUrl: './hearing-completed-summary.component.html'
 

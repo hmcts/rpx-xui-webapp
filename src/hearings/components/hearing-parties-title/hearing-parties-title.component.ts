@@ -7,7 +7,6 @@ import { HearingsFeatureService } from '../../../hearings/services/hearings-feat
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-parties-title',
   templateUrl: './hearing-parties-title.component.html'
 

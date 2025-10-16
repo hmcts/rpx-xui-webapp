@@ -8,7 +8,6 @@ import { StaffUserLocation } from '../../../../models/staff-user-location.model'
 
 @Component({
   standalone: false,
-
   selector: 'exui-staff-select-location',
   templateUrl: './staff-select-location.component.html',
   styleUrls: ['./staff-select-location.component.scss']

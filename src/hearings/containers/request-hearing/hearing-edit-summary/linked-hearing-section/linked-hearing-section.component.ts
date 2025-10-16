@@ -7,7 +7,6 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 
 @Component({
   standalone: false,
-
   selector: 'exui-linked-hearing-section',
   templateUrl: './linked-hearing-section.component.html'
 

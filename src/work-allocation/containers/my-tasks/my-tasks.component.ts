@@ -8,7 +8,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 
 @Component({
   standalone: false,
-
   selector: 'exui-my-tasks',
   templateUrl: 'my-tasks.component.html'
 

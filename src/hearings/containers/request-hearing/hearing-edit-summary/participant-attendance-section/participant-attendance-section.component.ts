@@ -12,7 +12,6 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-participant-attendance-section',
   templateUrl: './participant-attendance-section.component.html',
   styleUrls: ['./participant-attendance-section.component.scss']

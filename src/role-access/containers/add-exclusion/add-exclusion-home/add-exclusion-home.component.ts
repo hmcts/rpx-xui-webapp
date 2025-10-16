@@ -20,7 +20,6 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
 
 @Component({
   standalone: false,
-
   selector: 'exui-add-exclusion-home',
   templateUrl: './add-exclusion-home.component.html',
   styleUrls: ['./add-exclusion-home.component.scss']

@@ -16,7 +16,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 
 @Component({
   standalone: false,
-
   selector: 'exui-all-work-tasks',
   templateUrl: 'all-work-task.component.html',
   styleUrls: ['all-work-task.component.scss']

@@ -9,7 +9,6 @@ import { LocationsDataService } from '../../../../services/locations-data.servic
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-venue-section',
   templateUrl: './hearing-venue-section.component.html'
 

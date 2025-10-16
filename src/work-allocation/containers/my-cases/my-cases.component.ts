@@ -8,7 +8,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 
 @Component({
   standalone: false,
-
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html'
 

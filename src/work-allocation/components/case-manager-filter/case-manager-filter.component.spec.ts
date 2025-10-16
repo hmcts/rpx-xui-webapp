@@ -16,7 +16,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-
   selector: 'xuilib-generic-filter',
   template: '<span></span>'
 

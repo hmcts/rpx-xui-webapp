@@ -18,7 +18,6 @@ import { Subscription } from 'rxjs';
  */
 @Component({
   standalone: false,
-
   selector: 'exui-ccd-connector',
   template: `
     <ng-container>

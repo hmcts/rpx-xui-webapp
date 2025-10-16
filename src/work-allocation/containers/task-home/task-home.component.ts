@@ -12,7 +12,6 @@ import { SortField } from '../../models/common';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html',
   styleUrls: ['task-home.component.scss']

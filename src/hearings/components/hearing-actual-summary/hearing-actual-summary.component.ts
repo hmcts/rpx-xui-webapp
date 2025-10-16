@@ -9,7 +9,6 @@ import * as moment from 'moment';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
   styleUrls: ['./hearing-actual-summary.component.scss']

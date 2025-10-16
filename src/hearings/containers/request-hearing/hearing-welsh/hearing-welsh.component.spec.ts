@@ -14,7 +14,6 @@ import { HearingWelshComponent } from './hearing-welsh.component';
 
 @Component({
   standalone: false,
-
   selector: 'exui-error-message',
   template: ''
 
@@ -25,7 +24,6 @@ class MockTestComponent {
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-parties-title',
   template: ''
 

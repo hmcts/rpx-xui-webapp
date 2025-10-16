@@ -10,7 +10,6 @@ import { HearingsUtils } from '../../utils/hearings.utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-listing-information-summary',
   templateUrl: './listing-information-summary.component.html',
   styleUrls: ['./listing-information-summary.component.scss']

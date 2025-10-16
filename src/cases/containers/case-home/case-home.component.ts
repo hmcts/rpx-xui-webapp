@@ -18,7 +18,6 @@ import * as fromFeature from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-home',
   templateUrl: 'case-home.component.html',
   styleUrls: ['case-home.component.scss']

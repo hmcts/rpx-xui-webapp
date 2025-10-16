@@ -25,7 +25,6 @@ import * as moment from 'moment';
 
 @Component({
   standalone: false,
-
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html'
 

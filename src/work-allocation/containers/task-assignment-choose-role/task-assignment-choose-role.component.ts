@@ -10,7 +10,6 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
 
 @Component({
   standalone: false,
-
   selector: 'exui-task-assignment-choose-role',
   templateUrl: './task-assignment-choose-role.component.html',
   styleUrls: ['./task-assignment-choose-role.component.scss']

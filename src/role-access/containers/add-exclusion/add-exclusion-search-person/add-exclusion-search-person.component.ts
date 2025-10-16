@@ -10,7 +10,6 @@ import * as fromFeature from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-add-exclusion-search-person',
   templateUrl: './add-exclusion-search-person.component.html'
 

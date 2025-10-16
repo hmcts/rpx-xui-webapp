@@ -5,7 +5,6 @@ import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-flags',
   templateUrl: './case-flags.component.html',
   styleUrls: ['./case-flags.component.scss']

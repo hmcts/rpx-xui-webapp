@@ -12,7 +12,6 @@ import * as fromCaseCreate from '../../store';
  */
 @Component({
   standalone: false,
-
   selector: 'exui-create-case',
   templateUrl: './case-create.component.html',
   encapsulation: ViewEncapsulation.None

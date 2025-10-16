@@ -18,7 +18,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-viewer-container',
   templateUrl: './case-viewer-container.component.html',
   styleUrls: ['./case-viewer-container.component.scss']

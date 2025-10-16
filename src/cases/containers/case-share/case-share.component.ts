@@ -14,7 +14,6 @@ import * as fromCaseList from '../../store/reducers';
 
 @Component({
   standalone: false,
-
   selector: 'exui-case-share',
   templateUrl: './case-share.component.html',
   styleUrls: ['./case-share.component.scss']

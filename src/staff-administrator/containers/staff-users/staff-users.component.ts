@@ -7,7 +7,6 @@ import { selectStaffError } from '../../store/selectors/staff-select.selector';
 
 @Component({
   standalone: false,
-
   selector: 'exui-staff-users',
   templateUrl: './staff-users.component.html',
   styleUrls: ['./staff-users.component.scss'],

@@ -6,7 +6,6 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
 
 @Component({
   standalone: false,
-
   selector: 'exui-additional-instructions-section',
   templateUrl: './additional-instructions-section.component.html'
 

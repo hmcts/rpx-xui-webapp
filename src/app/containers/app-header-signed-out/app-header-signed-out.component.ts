@@ -8,7 +8,6 @@ import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
   standalone: false,
-
   selector: 'exui-app-header-signed-out',
   templateUrl: './app-header-signed-out.component.html'
 

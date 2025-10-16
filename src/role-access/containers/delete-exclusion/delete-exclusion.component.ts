@@ -14,7 +14,6 @@ import { handleError } from '../../utils';
 
 @Component({
   standalone: false,
-
   selector: 'exui-delete-exclusion',
   templateUrl: './delete-exclusion.component.html'
 

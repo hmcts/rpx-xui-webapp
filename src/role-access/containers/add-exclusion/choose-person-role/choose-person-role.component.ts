@@ -13,7 +13,6 @@ import * as fromFeature from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-choose-person-role',
   templateUrl: './choose-person-role.component.html'
 

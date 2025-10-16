@@ -10,7 +10,6 @@ import * as fromStore from '../../store';
  */
 @Component({
   standalone: false,
-
   selector: 'exui-accept-terms-conditions-wrapper',
   templateUrl: './accept-tc-wrapper.component.html'
 

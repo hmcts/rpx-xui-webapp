@@ -3,7 +3,6 @@ import { HearingsService } from '../../../../../hearings/services/hearings.servi
 
 @Component({
   standalone: false,
-
   selector: 'exui-warning-and-error-section',
   templateUrl: './warning-and-error-section.component.html'
 

@@ -7,7 +7,6 @@ import * as fromFeature from '../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-noc-affirmation',
   templateUrl: './noc-affirmation.component.html',
   styleUrls: ['./noc-affirmation.component.scss']

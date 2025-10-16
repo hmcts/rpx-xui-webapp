@@ -15,7 +15,6 @@ import * as fromFeature from '../../../store';
 
 @Component({
   standalone: false,
-
   selector: 'exui-specific-access-duration',
   templateUrl: './specific-access-duration.component.html',
   styleUrls: ['./specific-access-duration.component.scss']

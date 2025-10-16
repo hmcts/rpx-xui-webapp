@@ -1,4 +1,6 @@
-<a class="govuk-back-link" href="javascript:history.back()">{{ 'Back' | rpxTranslate }}</a>
+<a href="#" class="govuk-back-link" (click)="onBack(); $event.preventDefault()">
+  {{ 'Back' | rpxTranslate }}
+</a>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="errors$ | async">
 </xuilib-hmcts-error-summary>
 

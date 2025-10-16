@@ -129,7 +129,7 @@
   <p>{{ 'You can only link to hearings from other linked cases.' | rpxTranslate }}
     <br>{{ 'Case links can be created from the \'Linked cases\' tab' | rpxTranslate }}</p>
   <div class="govuk-button-group">
-    <a href="javascript:history.back()" class="govuk-link">{{ 'Return to hearings' | rpxTranslate }}</a>
+    <a href="#" class="govuk-link" (click)="onBack(); $event.preventDefault()">{{ 'Return to hearings' | rpxTranslate }}</a>
   </div>
 </div>
 

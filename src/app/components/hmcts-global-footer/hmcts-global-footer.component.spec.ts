@@ -19,13 +19,11 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('HmctsGlobalFooterComponent', () => {
   @Component({
     standalone: false,
-
     selector: 'exui-app-host-dummy-component',
     template: `<exui-app-hmcts-global-footer
                   [reference]="iconFallbackText"
                   [title]="type"
                   [items]="text"></exui-app-hmcts-global-footer>`
-
   })
   class TestDummyHostComponent {
     @Input() public help: Helper;

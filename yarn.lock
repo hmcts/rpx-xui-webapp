@@ -3239,12 +3239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.49-exui-2986-1":
-  version: 7.2.49-exui-2986-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.49-exui-2986-1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.49-exui-2986-2":
+  version: 7.2.49-exui-2986-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.49-exui-2986-2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/155296c729807062752f886c56a0e7e869bc9da3161c2e3518720449cca0b8a361c86b2a878dc75bfa87f9c216fc232b19ad58c5f80b477145f365164fe12679
+  checksum: 10/998a9b86f0034d0cc41617289633c056a0056f4d8b711a1d296a908213c4aa6931c2ae92e86e780d3e53b0acbe0f4eaf258f0dba295d0bba07111f53cea7683e
   languageName: node
   linkType: hard
 
@@ -3267,9 +3267,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.8-exui-2986-1":
-  version: 4.1.8-exui-2986-1
-  resolution: "@hmcts/media-viewer@npm:4.1.8-exui-2986-1"
+"@hmcts/media-viewer@npm:4.1.8-exui-2986-3":
+  version: 4.1.8-exui-2986-3
+  resolution: "@hmcts/media-viewer@npm:4.1.8-exui-2986-3"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3288,7 +3288,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/ac500307b0c6242b7cffcb4b692e2ddaa26025ebeac97505db02f8fa047cb3da0d47220679e1d6a788e62d5be632b2441f75eba9cb8c2356c2bf3946b1a92cf1
+  checksum: 10/2ae392a59f4d7d266c4b815a2855edb7731991c670c1a7e6b718fb1ce428bd17d1028dff785c97574d573eab9e308d97d54edc9cc50d2cdd187144aaf876ac2f
   languageName: node
   linkType: hard
 
@@ -20987,10 +20987,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.49-exui-2986-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.49-exui-2986-2"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.8-exui-2986-1"
+    "@hmcts/media-viewer": "npm:4.1.8-exui-2986-3"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.6"

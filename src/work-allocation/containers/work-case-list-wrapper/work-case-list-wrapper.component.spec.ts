@@ -111,7 +111,7 @@ describe('WorkCaseListWrapperComponent', () => {
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyAccess.and.returnValue(of({ cases }));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationActive'));
+    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));

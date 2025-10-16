@@ -6,7 +6,7 @@ const menuConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease2'
         }
       ],
       'href': '/work/my-work/list',
@@ -25,7 +25,7 @@ const menuConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease2'
         }
       ],
       'href': '/work/all-work/tasks',
@@ -156,7 +156,7 @@ const menuConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease2'
         }
       ],
       'href': '/work/my-work/list',
@@ -177,7 +177,7 @@ const menuConfig = {
         'MC_Work_Allocation',
         {
           'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationActive'
+          'value': 'WorkAllocationRelease2'
         }
       ],
       'href': '/work/all-work/tasks',

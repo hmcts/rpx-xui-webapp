@@ -108,7 +108,7 @@ describe('AllWorkCaseComponent', () => {
   const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
   mockCaseService.getCases.and.returnValue(of({ cases }));
   mockCaseworkerService.getAll.and.returnValue(of([]));
-  mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationActive'));
+  mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
   mockFeatureToggleService.isEnabled.and.returnValue(of(false));
   mockLocationService.getLocations.and.returnValue(of(ALL_LOCATIONS as unknown as Location[]));
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));

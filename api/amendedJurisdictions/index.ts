@@ -53,8 +53,20 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
       return result;
     });
 
-  req.session.jurisdictions = filteredJurisdictions;
-  return req.session.jurisdictions;
+  // Determine session key based on access type
+  const params = new URLSearchParams(req.url.split('?')[1] || '');
+  const access = params.get('access');
+  let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
+  if (access === 'read') {
+    sessionKey = 'readJurisdictions';
+  } else if (access === 'create') {
+    sessionKey = 'createJurisdictions';
+  } else {
+    sessionKey = 'jurisdictions';
+  }
+
+  req.session[sessionKey] = filteredJurisdictions;
+  return req.session[sessionKey];
 };
 
 export const checkCachedJurisdictions = (proxyReq, req, res) => {

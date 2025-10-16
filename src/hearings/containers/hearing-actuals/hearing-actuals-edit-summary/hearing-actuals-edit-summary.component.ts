@@ -35,7 +35,8 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
     this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
   }
 
-  public onBack(): void {
+  // Note: Already onBack on extended component but does not work for this use case
+  public onBackPage(): void {
     // Prefer an in-app back when we can
     const sameOriginReferrer =
       document.referrer && new URL(document.referrer).origin === location.origin;

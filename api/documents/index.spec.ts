@@ -1,13 +1,10 @@
-
-import * as chai from 'chai';
-import { expect } from 'chai';
-import * as sinonChai from 'sinon-chai';
-import 'mocha';
+import { expect, use } from 'chai';
 import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import * as documents from './index';
+import { handleRequest } from './index';
 
-chai.use(sinonChai);
+use(sinonChai);
 
 describe('Documents Uploading', () => {
   let sandbox;
@@ -54,7 +51,7 @@ describe('Documents Uploading', () => {
   });
 
   it('should handle request and return true if not rate-limited', () => {
-    const result = documents.handleRequest(req, res, proxyRes);
+    const result = handleRequest(req, res, proxyRes);
 
     expect(result).to.deep.equal(true);
   });
@@ -69,7 +66,7 @@ describe('Documents Uploading', () => {
       }
     };
 
-    const result = documents.handleRequest(req, rateLimitedReq, proxyRes);
+    const result = handleRequest(req, rateLimitedReq, proxyRes);
     expect(result).to.deep.equal(false);
   });
 
@@ -83,7 +80,7 @@ describe('Documents Uploading', () => {
       },
       headers: { cookie: 'test1' }
     };
-    documents.handleRequest(req, mainReq, proxyRes);
+    handleRequest(req, mainReq, proxyRes);
     expect(mainReq?.headers?.cookie).to.be.an('undefined');
   });
 });

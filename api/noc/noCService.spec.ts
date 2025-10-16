@@ -1,18 +1,15 @@
-import * as chai from 'chai';
-import { expect } from 'chai';
-import * as sinonChai from 'sinon-chai';
-import 'mocha';
-import * as sinon from 'sinon';
-import { mockReq } from 'sinon-express-mock';
 import { AxiosResponse } from 'axios';
-
+import { expect, use } from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import { mockReq } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 import * as proxy from '../lib/proxy';
 import { handleGet, handlePost } from './noCService';
 
-chai.use(sinonChai);
+use(sinonChai);
 
 describe('NoC Service', () => {
   let sandbox: sinon.SinonSandbox;

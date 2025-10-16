@@ -4,11 +4,6 @@ import 'mocha';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import * as configuration from '../configuration';
-import { http } from '../lib/http';
-import { setHeaders } from '../lib/proxy';
-import { toTitleCase } from '../utils';
-import { getDetailedWASupportedJurisdictions } from './index';
 
 chai.use(sinonChai);
 

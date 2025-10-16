@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import * as sinon from 'sinon';
 import { UserInfo } from '../../auth/interfaces/UserInfo';
 import { PersonRole } from '../../workAllocation/interfaces/person';

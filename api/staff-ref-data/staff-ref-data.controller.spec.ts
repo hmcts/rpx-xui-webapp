@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as controller from './staff-ref-data.controller';

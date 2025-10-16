@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { RefinedRole } from './models/roleType';
 import { substantiveRolesValid } from './utils';
 

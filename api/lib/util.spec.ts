@@ -1,8 +1,7 @@
-
 import * as chai from 'chai';
 import { expect } from 'chai';
-import * as sinonChai from 'sinon-chai';
 import 'mocha';
+import * as sinonChai from 'sinon-chai';
 import { dotNotation, exists, fieldNameMapper, isObject, isUserTandCPostSuccessful, shorten, some, valueOrNull } from './util';
 
 chai.use(sinonChai);

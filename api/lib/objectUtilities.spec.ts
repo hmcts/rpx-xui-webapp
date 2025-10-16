@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { propsExist } from './objectUtilities';
 
 describe('Object Utilities ', () => {

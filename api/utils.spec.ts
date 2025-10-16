@@ -1,4 +1,3 @@
-
 import { expect } from 'chai';
 
 import { allContainOnlySafeCharacters, containsDangerousCode, toTitleCase } from './utils';

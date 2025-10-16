@@ -1,9 +1,8 @@
-
 import * as chai from 'chai';
 import { expect } from 'chai';
-import * as sinonChai from 'sinon-chai';
 import 'mocha';
 import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import * as searchCases from './index';
 import { ElasticSearchQuery } from './interfaces/ElasticSearchQuery';

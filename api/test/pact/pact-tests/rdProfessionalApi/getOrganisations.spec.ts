@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { Organisation } from '../../pactFixtures';
 import { getOrganisationDetails } from '../../pactUtil';
 import { PactV3TestSetup } from '../settings/provider.mock';

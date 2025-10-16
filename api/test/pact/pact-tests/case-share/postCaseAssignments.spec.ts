@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { AssignAccessWithinOrganisationDto } from '../../pactFixtures';
 import { postAssignCasesToUsers } from '../../pactUtil';
 import { PactV3TestSetup } from '../settings/provider.mock';

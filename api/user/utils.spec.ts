@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { CASE_ALLOCATOR_ROLE, LEGAL_OPS_TYPE } from './constants';
 import { getOrganisationRoles, getUserRoleCategory, isCurrentUserCaseAllocator, userDetailsValid } from './utils';
 

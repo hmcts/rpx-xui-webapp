@@ -1,9 +1,8 @@
-
 import * as chai from 'chai';
 import { expect } from 'chai';
-import * as sinonChai from 'sinon-chai';
 import 'mocha';
 import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import { setupMenuConfig } from './configs';
 import * as baseConfigModule from './base-config';
 import * as aatDiffsModule from './aat-diffs';

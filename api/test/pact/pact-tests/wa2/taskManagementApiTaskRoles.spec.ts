@@ -1,7 +1,6 @@
-import { expect } from 'chai';
-
 import * as config from 'config';
 import * as sinon from 'sinon';
+import { expect } from 'chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
 import { getWorkAllocationAPIOverrides } from '../utils/configOverride';

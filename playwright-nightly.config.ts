@@ -21,8 +21,19 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.FUNCTIONAL_TESTS_WORKERS ? parseInt(process.env.FUNCTIONAL_TESTS_WORKERS, 10) : 1,
 
-  reporter: [[process.env.CI ? 'html' : 'list'],
-    ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-e2e' }]],
+  reporter: [
+    [process.env.CI ? 'dot' : 'list'],
+    ['odhin-reports-playwright', {
+      outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
+      indexFilename: 'xui-playwright.html',
+      title: 'RPX XUI Playwright',
+      testEnvironment: process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local'),
+      startServer: false,
+      consoleLog: true,
+      consoleError: true,
+      testOutput: 'only-on-failure'
+    }]
+  ],
 
   projects: [
     {

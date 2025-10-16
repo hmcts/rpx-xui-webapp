@@ -17,7 +17,6 @@ import { TaskHomeComponent } from './task-home.component';
 
 @Component({
   standalone: false,
-
   template: `
     <exui-task-home></exui-task-home>`
 

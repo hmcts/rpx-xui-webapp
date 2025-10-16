@@ -26,7 +26,6 @@ import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
   standalone: false,
-
   template: '<div>Nothing</div>'
 })
 class NothingComponent { }

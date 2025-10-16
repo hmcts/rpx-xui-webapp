@@ -7,7 +7,6 @@ import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
   standalone: false,
-
   template: '<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>'
 })
 class WrapperComponent {

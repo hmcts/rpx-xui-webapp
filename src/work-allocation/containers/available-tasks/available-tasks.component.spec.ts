@@ -25,7 +25,6 @@ import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 @Component({
   standalone: false,
-
   template: `
     <exui-available-tasks></exui-available-tasks>`
 

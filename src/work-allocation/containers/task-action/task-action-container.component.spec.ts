@@ -27,7 +27,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-
   template: `
     <exui-task-action-container></exui-task-action-container>`
 
@@ -39,7 +38,6 @@ class WrapperComponent {
 
 @Component({
   standalone: false,
-
   template: `
     <div>Nothing</div>`
 

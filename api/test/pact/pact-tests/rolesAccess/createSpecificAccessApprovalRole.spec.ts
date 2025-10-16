@@ -1,6 +1,5 @@
-import { expect } from 'chai';
-
 import { somethingLike } from '@pact-foundation/pact/src/dsl/matchers';
+import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq } from 'sinon-express-mock';

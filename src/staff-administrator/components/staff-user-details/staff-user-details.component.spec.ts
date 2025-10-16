@@ -20,7 +20,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-
   template: ''
 })
 class StubComponent {}

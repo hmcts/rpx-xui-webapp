@@ -8,7 +8,6 @@ import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
   standalone: false,
-
   template: '<exui-case-name-field [caseName]="caseName" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
 })
 class WrapperComponent {
@@ -124,7 +123,6 @@ describe('WorkAllocation', () => {
 
 @Component({
   standalone: false,
-
   template: '<exui-case-name-field [caseName]="caseName" [caseId]="caseId" ></exui-case-name-field>'
 })
 class Wrapper1Component {

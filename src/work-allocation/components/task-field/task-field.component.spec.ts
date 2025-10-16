@@ -22,7 +22,6 @@ import { TaskFieldComponent } from './task-field.component';
 
 @Component({
   standalone: false,
-
   template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>'
 })
 class WrapperComponent {

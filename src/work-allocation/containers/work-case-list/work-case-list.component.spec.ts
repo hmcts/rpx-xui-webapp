@@ -17,7 +17,6 @@ import { WorkCaseListComponent } from './work-case-list.component';
 
 @Component({
   standalone: false,
-
   template: `
     <exui-work-case-list
       [fields]='fields'

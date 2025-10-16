@@ -22,7 +22,6 @@ import { MyTasksComponent } from './my-tasks.component';
 
 @Component({
   standalone: false,
-
   template: '<exui-my-tasks></exui-my-tasks>'
 })
 class WrapperComponent {

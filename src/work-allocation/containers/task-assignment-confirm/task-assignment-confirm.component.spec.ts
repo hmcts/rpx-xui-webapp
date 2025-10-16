@@ -22,7 +22,6 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
 
 @Component({
   standalone: false,
-
   template: `
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 

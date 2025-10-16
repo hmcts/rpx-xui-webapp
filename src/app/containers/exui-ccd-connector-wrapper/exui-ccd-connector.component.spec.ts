@@ -15,7 +15,6 @@ class MockCcdComponent {
 
 @Component({
   standalone: false,
-
   template: `
     <exui-ccd-connector
       [store]="store"

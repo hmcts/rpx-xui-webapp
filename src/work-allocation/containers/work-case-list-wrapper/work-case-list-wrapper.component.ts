@@ -31,7 +31,6 @@ import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCA
 
 @Component({
   standalone: false,
-
   templateUrl: 'work-case-list-wrapper.component.html'
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {

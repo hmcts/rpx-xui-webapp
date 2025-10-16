@@ -19,7 +19,6 @@ import { TaskListComponent } from './task-list.component';
 
 @Component({
   standalone: false,
-
   template: `
     <exui-task-list
       [fields]='fields'

@@ -11,7 +11,6 @@ import { StaffUserLocation } from '../../../../models/staff-user-location.model'
   selector: 'exui-staff-select-location',
   templateUrl: './staff-select-location.component.html',
   styleUrls: ['./staff-select-location.component.scss']
-
 })
 export class StaffSelectLocationComponent implements OnInit {
   @Input() public isPrimaryMode = false;

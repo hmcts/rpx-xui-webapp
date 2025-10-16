@@ -22,7 +22,6 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   selector: 'exui-linked-hearings-how-to-heard',
   templateUrl: './linked-hearings-how-to-heard.component.html',
   styleUrls: ['./linked-hearings-how-to-heard.component.scss']
-
 })
 export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public caseId: string;

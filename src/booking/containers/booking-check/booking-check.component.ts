@@ -14,7 +14,6 @@ import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/bo
   selector: 'exui-booking-check',
   templateUrl: './booking-check.component.html',
   styleUrls: ['./booking-check.component.scss']
-
 })
 export class BookingCheckComponent {
   @Input() public selectedBookingOption: number;

@@ -16,7 +16,6 @@ import { UserService } from '../../services/user/user.service';
   selector: 'exui-hmcts-global-header',
   templateUrl: './hmcts-global-header.component.html',
   styleUrls: ['./hmcts-global-header.component.scss']
-
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';

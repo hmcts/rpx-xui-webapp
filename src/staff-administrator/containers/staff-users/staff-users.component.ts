@@ -11,7 +11,6 @@ import { selectStaffError } from '../../store/selectors/staff-select.selector';
   templateUrl: './staff-users.component.html',
   styleUrls: ['./staff-users.component.scss'],
   providers: [StaffDataFilterService]
-
 })
 export class StaffUsersComponent {
   public advancedSearchEnabled = false;

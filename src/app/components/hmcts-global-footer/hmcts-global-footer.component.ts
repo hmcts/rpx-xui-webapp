@@ -7,7 +7,6 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
   selector: 'exui-app-hmcts-global-footer',
   templateUrl: './hmcts-global-footer.component.html',
   styleUrls: ['./hmcts-global-footer.component.scss']
-
 })
 export class HmctsGlobalFooterComponent {
   @Input() public help: Helper;

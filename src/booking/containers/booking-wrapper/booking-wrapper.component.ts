@@ -10,7 +10,6 @@ import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
   styleUrls: ['./booking-wrapper.component.scss']
-
 })
 export class BookingWrapperComponent implements OnInit {
   public backVisibilityStates = bookingBackButtonVisibilityStates;

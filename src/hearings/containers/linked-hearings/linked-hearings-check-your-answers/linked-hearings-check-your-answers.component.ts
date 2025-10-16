@@ -21,7 +21,6 @@ import * as fromHearingStore from '../../../store';
   selector: 'exui-check-your-answers',
   templateUrl: './linked-hearings-check-your-answers.component.html',
   styleUrls: ['./linked-hearings-check-your-answers.component.scss']
-
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestroy {
   private static readonly MANAGE_JOURNEY_FINAL_PAGE = 'check-your-answers';

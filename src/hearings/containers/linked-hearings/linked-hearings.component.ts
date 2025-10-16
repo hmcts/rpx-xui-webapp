@@ -9,7 +9,6 @@ import * as fromHearingStore from '../../store';
   selector: 'exui-linked-hearings',
   templateUrl: './linked-hearings.component.html',
   styleUrls: ['./linked-hearings.component.scss']
-
 })
 export class LinkedHearingsComponent implements OnInit, OnDestroy {
   public caseId: string;

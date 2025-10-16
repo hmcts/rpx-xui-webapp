@@ -11,7 +11,6 @@ import * as fromFeature from '../../store';
   selector: 'exui-noc-case-ref',
   templateUrl: 'noc-case-ref.component.html',
   styleUrls: ['noc-case-ref.component.scss']
-
 })
 export class NocCaseRefComponent implements OnInit, OnDestroy {
   @Input() public navEvent: NocNavigation;

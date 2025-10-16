@@ -12,7 +12,6 @@ import * as fromFeature from '../../store';
   selector: 'exui-noc-check-and-submit',
   templateUrl: './noc-check-and-submit.component.html',
   styleUrls: ['./noc-check-and-submit.component.scss']
-
 })
 export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   @Input()

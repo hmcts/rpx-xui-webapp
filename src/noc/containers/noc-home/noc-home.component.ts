@@ -16,7 +16,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   selector: 'exui-noc-home',
   templateUrl: 'noc-home.component.html',
   styleUrls: ['noc-home.component.scss']
-
 })
 export class NocHomeComponent implements OnInit, OnDestroy {
   @ViewChild('nocCaseRef', { static: false, read: NocCaseRefComponent })

@@ -28,7 +28,6 @@ import { SessionStorageService } from '../../../app/services';
   selector: 'exui-case-hearings',
   templateUrl: './case-hearings.component.html',
   styleUrls: ['./case-hearings.component.scss']
-
 })
 export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingTypesRefData$: Observable<LovRefDataModel[]>;

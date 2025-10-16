@@ -17,7 +17,6 @@ import * as fromCaseList from '../../store/reducers';
   selector: 'exui-case-share',
   templateUrl: './case-share.component.html',
   styleUrls: ['./case-share.component.scss']
-
 })
 export class CaseShareComponent implements OnInit {
   public routerState$: Observable<RouterReducerState<RouterStateUrl>>;

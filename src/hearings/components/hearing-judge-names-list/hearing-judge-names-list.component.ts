@@ -9,7 +9,6 @@ import { ValidatorsUtils } from '../../utils/validators.utils';
   selector: 'exui-hearing-judge-names-list',
   templateUrl: './hearing-judge-names-list.component.html',
   styleUrls: ['./hearing-judge-names-list.component.scss']
-
 })
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;

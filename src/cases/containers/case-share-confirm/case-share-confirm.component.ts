@@ -11,7 +11,6 @@ import * as fromCaseList from '../../store/reducers';
   selector: 'exui-case-share-confirm',
   templateUrl: './case-share-confirm.component.html',
   styleUrls: ['./case-share-confirm.component.scss']
-
 })
 export class CaseShareConfirmComponent implements OnInit {
   public shareCases$: Observable<SharedCase[]>;

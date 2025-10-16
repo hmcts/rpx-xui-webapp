@@ -10,7 +10,6 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
   selector: 'exui-hearing-actuals',
   templateUrl: './hearing-actuals.component.html',
   styleUrls: ['./hearing-actuals.component.scss']
-
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
   private sub: Subscription;

@@ -15,7 +15,6 @@ import { BookingService } from '../../services';
   selector: 'exui-booking-home',
   templateUrl: './booking-home.component.html',
   styleUrls: ['./booking-home.component.scss']
-
 })
 export class BookingHomeComponent implements OnInit, OnDestroy {
   @Input() public bookingProcess: BookingProcess;

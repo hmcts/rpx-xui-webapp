@@ -9,7 +9,6 @@ import { SpecificAccessNavigation } from '../../../models';
   selector: 'exui-specific-access-duplicate-record',
   templateUrl: './specific-access-duplicate-record.component.html',
   styleUrls: ['./specific-access-duplicate-record.component.scss']
-
 })
 export class SpecificAccessDuplicateRecordComponent implements OnInit {
   @Input() public navEvent: SpecificAccessNavigation;

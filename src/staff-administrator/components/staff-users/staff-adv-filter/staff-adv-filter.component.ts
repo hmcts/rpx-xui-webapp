@@ -10,7 +10,6 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   selector: 'exui-staff-adv-filter',
   templateUrl: './staff-adv-filter.component.html',
   styleUrls: ['./staff-adv-filter.component.scss']
-
 })
 export class StaffAdvFilterComponent implements OnInit, OnDestroy {
   public readonly FILTER_NAME = 'staff-advanced-filters';

@@ -15,7 +15,6 @@ import * as fromHearingStore from '../../../hearings/store';
   selector: 'exui-case-hearings-list',
   templateUrl: './case-hearings-list.component.html',
   styleUrls: ['./case-hearings-list.component.scss']
-
 })
 
 export class CaseHearingsListComponent implements OnInit {

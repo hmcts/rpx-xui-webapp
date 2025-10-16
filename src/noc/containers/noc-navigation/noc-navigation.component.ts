@@ -10,7 +10,6 @@ import * as fromFeature from '../../store';
   selector: 'exui-noc-navigation',
   templateUrl: 'noc-navigation.component.html',
   styleUrls: ['noc-navigation.component.scss']
-
 })
 export class NocNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();

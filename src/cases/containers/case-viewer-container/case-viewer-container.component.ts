@@ -21,7 +21,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   selector: 'exui-case-viewer-container',
   templateUrl: './case-viewer-container.component.html',
   styleUrls: ['./case-viewer-container.component.scss']
-
 })
 export class CaseViewerContainerComponent implements OnInit {
   public caseDetails: CaseView;

@@ -20,7 +20,6 @@ import * as fromHearingStore from '../../../store';
   selector: 'exui-hearing-stage-result',
   templateUrl: './hearing-stage-result.component.html',
   styleUrls: ['./hearing-stage-result.component.scss']
-
 })
 export class HearingStageResultComponent implements OnInit, OnDestroy {
   public hearingStageResultForm: FormGroup;

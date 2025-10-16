@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
   selector: 'exui-request-hearing',
   templateUrl: './request-hearing.component.html',
   styleUrls: ['./request-hearing.component.scss']
-
 })
 export class RequestHearingComponent implements OnDestroy {
   private readonly reloadMessage = 'The Party IDs for this request appear mismatched, please reload and start the request again.';

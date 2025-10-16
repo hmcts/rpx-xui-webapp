@@ -12,7 +12,6 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
   templateUrl: './hearing-actuals-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-edit-summary.component.scss'],
   providers: [DatePipe]
-
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   constructor(

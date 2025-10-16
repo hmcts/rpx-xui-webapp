@@ -8,7 +8,6 @@ import { PartyFlagsDisplayModel } from 'src/hearings/models/partyFlags.model';
   selector: 'exui-case-flags',
   templateUrl: './case-flags.component.html',
   styleUrls: ['./case-flags.component.scss']
-
 })
 export class CaseFlagsComponent {
   @Input() public caseFlagsGroup: CaseFlagGroup[];

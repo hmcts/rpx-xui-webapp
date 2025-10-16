@@ -7,7 +7,6 @@ import * as fromRoot from '../../app/store';
   selector: 'exui-refunds',
   templateUrl: './refunds.component.html',
   styleUrls: ['./refunds.component.scss']
-
 })
 export class RefundsComponent implements OnInit {
   public refundsApiRoot = 'api/refund';

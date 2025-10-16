@@ -23,7 +23,6 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
   selector: 'exui-add-exclusion-home',
   templateUrl: './add-exclusion-home.component.html',
   styleUrls: ['./add-exclusion-home.component.scss']
-
 })
 export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('chooseExclusion', { static: false, read: ChooseExclusionComponent })

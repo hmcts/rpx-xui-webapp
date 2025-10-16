@@ -13,7 +13,6 @@ interface Item extends CaseRole {
   selector: 'exui-case-roles-table',
   templateUrl: './case-roles-table.component.html',
   styleUrls: ['./case-roles-table.component.scss']
-
 })
 export class CaseRolesTableComponent implements OnInit {
   public backUrl: string;

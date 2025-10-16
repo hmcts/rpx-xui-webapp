@@ -13,7 +13,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   selector: 'exui-all-work-cases',
   templateUrl: 'all-work-case.component.html',
   styleUrls: ['all-work-case.component.scss']
-
 })
 export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implements OnInit {
   public sortedBy: SortField = {

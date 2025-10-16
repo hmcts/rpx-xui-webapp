@@ -18,7 +18,6 @@ import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
   selector: 'exui-case-task',
   templateUrl: './case-task.component.html',
   styleUrls: ['./case-task.component.scss']
-
 })
 export class CaseTaskComponent implements OnInit {
   private static readonly CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';

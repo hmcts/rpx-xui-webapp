@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
   selector: 'exui-access-view-field',
   templateUrl: './access-view-field.component.html',
   styleUrls: ['access-view-field.component.scss']
-
 })
 export class AccessViewFieldComponent {
   /**

@@ -8,7 +8,6 @@ import { CaseRole } from '../../../role-access/models';
   selector: 'exui-allocate-a-role-link',
   templateUrl: './allocate-a-role-link.component.html',
   styleUrls: ['./allocate-a-role-link.component.scss']
-
 })
 
 export class AllocateARoleLinkComponent implements OnInit, OnChanges {

@@ -19,7 +19,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   selector: 'exui-hearing-attendance',
   templateUrl: './hearing-attendance.component.html',
   styleUrls: ['./hearing-attendance.component.scss']
-
 })
 export class HearingAttendanceComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public attendanceFormGroup: FormGroup;

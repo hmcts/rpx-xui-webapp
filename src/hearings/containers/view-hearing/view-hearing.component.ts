@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
   selector: 'exui-view-hearing',
   templateUrl: './view-hearing.component.html',
   styleUrls: ['./view-hearing.component.scss']
-
 })
 export class ViewHearingComponent {
   constructor(

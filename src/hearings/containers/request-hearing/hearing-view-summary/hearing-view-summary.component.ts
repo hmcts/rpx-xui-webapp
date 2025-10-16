@@ -20,7 +20,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   selector: 'exui-hearing-viewsummary',
   templateUrl: './hearing-view-summary.component.html',
   styleUrls: ['./hearing-view-summary.component.scss']
-
 })
 export class HearingViewSummaryComponent extends RequestHearingPageFlow implements OnInit {
   public template: Section[];

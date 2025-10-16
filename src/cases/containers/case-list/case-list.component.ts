@@ -36,7 +36,6 @@ import * as fromCaseList from '../../store/reducers';
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['case-list.component.scss']
-
 })
 export class CaseListComponent implements OnInit, OnDestroy {
   @ViewChild('ccdSearchResult', { static: false }) public ccdSearchResult: SearchResultComponent; // EUI-2906

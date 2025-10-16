@@ -13,7 +13,6 @@ import * as fromCaseList from '../../store/reducers';
   selector: 'exui-case-share-complete',
   templateUrl: './case-share-complete.component.html',
   styleUrls: ['case-share-complete.component.scss']
-
 })
 export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public shareCases$: Observable<SharedCase[]>;

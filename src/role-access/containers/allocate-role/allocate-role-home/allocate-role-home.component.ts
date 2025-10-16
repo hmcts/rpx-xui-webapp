@@ -40,7 +40,6 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
   selector: 'exui-allocate-role-home',
   templateUrl: './allocate-role-home.component.html',
   styleUrls: ['./allocate-role-home.component.scss']
-
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   @Input() public existingUsers: string[] = [];

@@ -16,7 +16,6 @@ import { SessionStorageService } from 'src/app/services';
   templateUrl: './hearing-actuals-add-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],
   providers: [DatePipe]
-
 })
 export class HearingActualsAddEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   public successBanner = false;

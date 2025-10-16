@@ -12,7 +12,6 @@ import * as moment from 'moment';
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
   styleUrls: ['./hearing-actual-summary.component.scss']
-
 })
 export class HearingActualSummaryComponent implements OnInit {
   @Input() public hearingState$: Observable<fromHearingStore.State>;

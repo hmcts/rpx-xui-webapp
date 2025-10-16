@@ -6,7 +6,6 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   selector: 'exui-staff-user-list',
   templateUrl: './staff-user-list.component.html',
   styleUrls: ['./staff-user-list.component.scss']
-
 })
 export class StaffUserListComponent {
   public displayedColumns = ['name', 'services', 'locations', 'jobTitle'];

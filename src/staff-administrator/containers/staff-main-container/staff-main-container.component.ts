@@ -5,6 +5,5 @@ import { Component } from '@angular/core';
   selector: 'exui-staff-main-container',
   templateUrl: './staff-main-container.component.html',
   styleUrls: ['./staff-main-container.component.scss']
-
 })
 export class StaffMainContainerComponent {}

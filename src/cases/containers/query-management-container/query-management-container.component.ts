@@ -40,7 +40,6 @@ import { ServiceMessagesResponse } from '../../models/service-message/service-me
   selector: 'exui-query-management-container',
   templateUrl: './query-management-container.component.html',
   styleUrls: ['./query-management-container.component.scss']
-
 })
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';

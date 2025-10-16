@@ -11,7 +11,6 @@ import { BookingNavigationEvent, BookingProcess } from '../../models';
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
   styleUrls: ['./booking-location.component.scss']
-
 })
 export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Input() public bookingProcess: BookingProcess;

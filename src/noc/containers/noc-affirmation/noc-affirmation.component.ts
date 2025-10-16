@@ -10,7 +10,6 @@ import * as fromFeature from '../../store';
   selector: 'exui-noc-affirmation',
   templateUrl: './noc-affirmation.component.html',
   styleUrls: ['./noc-affirmation.component.scss']
-
 })
 export class NocAffirmationComponent implements OnInit {
   @Input()

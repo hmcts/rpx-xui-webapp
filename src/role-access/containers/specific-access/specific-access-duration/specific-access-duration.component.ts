@@ -18,7 +18,6 @@ import * as fromFeature from '../../../store';
   selector: 'exui-specific-access-duration',
   templateUrl: './specific-access-duration.component.html',
   styleUrls: ['./specific-access-duration.component.scss']
-
 })
 export class SpecificAccessDurationComponent implements OnInit {
   // static properties

@@ -12,7 +12,6 @@ import { SearchService } from '../../services/search.service';
   selector: 'exui-search-results',
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.scss']
-
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {
   public searchSubscription$: Subscription;

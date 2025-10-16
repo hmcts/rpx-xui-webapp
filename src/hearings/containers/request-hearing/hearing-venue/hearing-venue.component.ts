@@ -17,7 +17,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   selector: 'exui-hearing-venue',
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']
-
 })
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public locationType: string;

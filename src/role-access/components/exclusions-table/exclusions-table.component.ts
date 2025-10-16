@@ -7,7 +7,6 @@ import { RoleExclusion } from '../../models';
   selector: 'exui-exclusions-table',
   templateUrl: './exclusions-table.component.html',
   styleUrls: ['./exclusions-table.component.scss']
-
 })
 export class ExclusionsTableComponent {
   @Input() public caseDetails: CaseView;

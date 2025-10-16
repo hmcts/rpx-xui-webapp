@@ -9,7 +9,6 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   selector: 'exui-staff-search',
   templateUrl: './staff-search.component.html',
   styleUrls: ['./staff-search.component.scss']
-
 })
 export class StaffSearchComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;

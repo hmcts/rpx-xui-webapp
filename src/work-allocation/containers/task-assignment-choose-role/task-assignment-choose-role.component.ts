@@ -13,7 +13,6 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
   selector: 'exui-task-assignment-choose-role',
   templateUrl: './task-assignment-choose-role.component.html',
   styleUrls: ['./task-assignment-choose-role.component.scss']
-
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {
   private static readonly userDetails: string = 'userDetails';

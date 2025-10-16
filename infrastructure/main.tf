@@ -93,25 +93,25 @@ resource "azurerm_resource_group" "rg" {
 
 # Logic App for Monthly KQL Reports
 data "azurerm_key_vault_secret" "logic_app_email_recipients" {
-  count        = var.logic_app_enabled ? 1 : 0
+  count        = var.welsh_reporting_enabled ? 1 : 0
   name         = var.logic_app_email_recipients_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
 data "azurerm_key_vault_secret" "logic_app_acs_connection_string" {
-  count        = var.logic_app_enabled ? 1 : 0
+  count        = var.welsh_reporting_enabled ? 1 : 0
   name         = var.logic_app_acs_connection_string_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
 data "azurerm_log_analytics_workspace" "logic_app_workspace" {
-  count               = var.logic_app_enabled ? 1 : 0
+  count               = var.welsh_reporting_enabled ? 1 : 0
   name                = var.env_log_analytics_workspace_map[var.env]
   resource_group_name = var.env_log_analytics_rg_map[var.env]
 }
 
 resource "azurerm_logic_app_workflow" "kql_report_workflow" {
-  count               = var.logic_app_enabled ? 1 : 0
+  count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-kql-report-${var.env}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -124,8 +124,8 @@ resource "azurerm_logic_app_workflow" "kql_report_workflow" {
 }
 
 resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
-  count      = var.logic_app_enabled ? 1 : 0
-  name       = "monthly-recurrence"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "monthly-recurrence"
   logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
 
   frequency = var.logic_app_schedule_frequency
@@ -139,8 +139,8 @@ resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
 }
 
 resource "azurerm_logic_app_action_custom" "run_kql_query" {
-  count      = var.logic_app_enabled ? 1 : 0
-  name       = "run-kql-query"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "run-kql-query"
   logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
 
   body = jsonencode({
@@ -153,11 +153,11 @@ resource "azurerm_logic_app_action_custom" "run_kql_query" {
       method = "post"
       path   = "/queryData"
       queries = {
-        resourcegroups  = "[parameters('resourceGroups')]"
-        resourcename    = "[parameters('workspaceName')]"
-        resourcetype    = "Log Analytics Workspace"
-        subscriptions   = "[parameters('subscriptionId')]"
-        timerange       = "Last 30 days"
+        resourcegroups = "[parameters('resourceGroups')]"
+        resourcename   = "[parameters('workspaceName')]"
+        resourcetype   = "Log Analytics Workspace"
+        subscriptions  = "[parameters('subscriptionId')]"
+        timerange      = "Last 30 days"
       }
       body = jsonencode({
         query = var.logic_app_kql_query
@@ -175,8 +175,8 @@ resource "azurerm_logic_app_action_custom" "run_kql_query" {
 }
 
 resource "azurerm_logic_app_action_custom" "send_email" {
-  count      = var.logic_app_enabled ? 1 : 0
-  name       = "send-email"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "send-email"
   logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
 
   body = jsonencode({
@@ -197,8 +197,8 @@ resource "azurerm_logic_app_action_custom" "send_email" {
         }
         attachments = [
           {
-            name        = "@body('run-kql-query')?['AttachmentName']"
-            contentType = "image/png"
+            name         = "@body('run-kql-query')?['AttachmentName']"
+            contentType  = "image/png"
             contentBytes = "@body('run-kql-query')?['AttachmentContent']"
           }
         ]
@@ -217,8 +217,8 @@ resource "azurerm_logic_app_action_custom" "send_email" {
 
 # API Connections for Logic App
 resource "azurerm_logic_app_action_custom" "azure_monitor_connection" {
-  count      = var.logic_app_enabled ? 1 : 0
-  name       = "azure-monitor-connection"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "azure-monitor-connection"
   logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
 
   body = jsonencode({
@@ -238,8 +238,8 @@ resource "azurerm_logic_app_action_custom" "azure_monitor_connection" {
 }
 
 resource "azurerm_logic_app_action_custom" "acs_email_connection" {
-  count      = var.logic_app_enabled ? 1 : 0
-  name       = "acs-email-connection"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "acs-email-connection"
   logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
 
   body = jsonencode({
@@ -260,7 +260,7 @@ resource "azurerm_logic_app_action_custom" "acs_email_connection" {
 
 # Role Assignment for Logic App to access Log Analytics
 resource "azurerm_role_assignment" "logic_app_log_analytics_reader" {
-  count                = var.logic_app_enabled ? 1 : 0
+  count                = var.welsh_reporting_enabled ? 1 : 0
   scope                = data.azurerm_log_analytics_workspace.logic_app_workspace.0.id
   role_definition_name = "Log Analytics Reader"
   principal_id         = azurerm_logic_app_workflow.kql_report_workflow.0.identity[0].principal_id
@@ -304,14 +304,14 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
     "$connections" = {
       "value" = {
         "azuremonitorlogs" = {
-          "connectionId"    = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
-          "connectionName"  = "azuremonitorlogs"
-          "id"              = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
+          "connectionId"   = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
+          "connectionName" = "azuremonitorlogs"
+          "id"             = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
         }
         "azurecommunicationservices" = {
-          "connectionId"    = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
-          "connectionName"  = "azurecommunicationservices"
-          "id"              = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
+          "connectionId"   = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
+          "connectionName" = "azurecommunicationservices"
+          "id"             = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
         }
       }
     }
@@ -322,23 +322,23 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
 
 # Monthly recurrence trigger for Welsh reporting
 resource "azurerm_logic_app_trigger_recurrence" "welsh_monthly_trigger" {
-  count      = var.welsh_reporting_enabled ? 1 : 0
-  name       = "monthly-welsh-trigger"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "monthly-welsh-trigger"
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   frequency = "Month"
   interval  = 1
   schedule {
     # Run on the 1st day of each month at 9 AM UTC
-    at_these_hours = [9]
+    at_these_hours   = [9]
     at_these_minutes = [0]
   }
 }
 
 # Welsh KQL Query Action
 resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
-  count      = var.welsh_reporting_enabled ? 1 : 0
-  name       = "run-welsh-kql-query"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "run-welsh-kql-query"
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({
@@ -352,7 +352,7 @@ resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
       path   = "/queryData"
       body = {
         queries = [{
-          query = <<-QUERY
+          query     = <<-QUERY
             let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
             let endTime = startofmonth(now());
             let FilteredRequests = requests
@@ -394,8 +394,8 @@ resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
 
 # Welsh Email Action
 resource "azurerm_logic_app_action_custom" "welsh_send_email" {
-  count      = var.welsh_reporting_enabled ? 1 : 0
-  name       = "send-welsh-email"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "send-welsh-email"
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({
@@ -458,8 +458,8 @@ UniqueSessionsPerDay
 
 # API Connections for Welsh Logic App
 resource "azurerm_logic_app_action_custom" "welsh_azure_monitor_connection" {
-  count      = var.welsh_reporting_enabled ? 1 : 0
-  name       = "welsh-azure-monitor-connection"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "welsh-azure-monitor-connection"
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({
@@ -479,8 +479,8 @@ resource "azurerm_logic_app_action_custom" "welsh_azure_monitor_connection" {
 }
 
 resource "azurerm_logic_app_action_custom" "welsh_acs_email_connection" {
-  count      = var.welsh_reporting_enabled ? 1 : 0
-  name       = "welsh-acs-email-connection"
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "welsh-acs-email-connection"
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({

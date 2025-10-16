@@ -54,12 +54,7 @@ variable "welsh_email_address_key" {
   type        = string
 }
 
-# Logic App Configuration for KQL Reports
-variable "logic_app_enabled" {
-  default     = false
-  description = "Enable Logic App for monthly KQL reports"
-  type        = bool
-}
+# Logic App Configuration for KQL Reports (gated by welsh_reporting_enabled)
 
 variable "logic_app_schedule_interval" {
   default     = 1
@@ -109,7 +104,7 @@ variable "env_log_analytics_workspace_map" {
   description = "Mapping of environment to Log Analytics workspace names"
   default = {
     prod     = "hmcts-prod"
-    aat      = "hmcts-aat" 
+    aat      = "hmcts-aat"
     perftest = "hmcts-perftest"
   }
 }

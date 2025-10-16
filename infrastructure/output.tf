@@ -21,15 +21,15 @@ output "appInsightsConnectionString" {
 }
 
 output "logicAppWorkflowId" {
-  value = var.logic_app_enabled ? azurerm_logic_app_workflow.kql_report_workflow.0.id : null
+  value = var.welsh_reporting_enabled ? azurerm_logic_app_workflow.kql_report_workflow.0.id : null
 }
 
 output "logicAppWorkflowName" {
-  value = var.logic_app_enabled ? azurerm_logic_app_workflow.kql_report_workflow.0.name : null
+  value = var.welsh_reporting_enabled ? azurerm_logic_app_workflow.kql_report_workflow.0.name : null
 }
 
 output "logicAppTriggerName" {
-  value = var.logic_app_enabled ? azurerm_logic_app_trigger_recurrence.monthly_trigger.0.name : null
+  value = var.welsh_reporting_enabled ? azurerm_logic_app_trigger_recurrence.monthly_trigger.0.name : null
 }
 
 output "welshLogicAppWorkflowId" {

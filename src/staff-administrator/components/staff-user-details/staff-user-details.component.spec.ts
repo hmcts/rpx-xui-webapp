@@ -22,7 +22,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
   standalone: false,
 
   template: ''
-
 })
 class StubComponent {}
 

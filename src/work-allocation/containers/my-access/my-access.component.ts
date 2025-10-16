@@ -13,7 +13,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   standalone: false,
   selector: 'exui-my-access',
   templateUrl: 'my-access.component.html'
-
 })
 export class MyAccessComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {

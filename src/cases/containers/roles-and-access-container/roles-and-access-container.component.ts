@@ -18,7 +18,6 @@ import { Utils } from '../../utils/utils';
   standalone: false,
   selector: 'exui-roles-and-access-container',
   templateUrl: './roles-and-access-container.component.html'
-
 })
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;

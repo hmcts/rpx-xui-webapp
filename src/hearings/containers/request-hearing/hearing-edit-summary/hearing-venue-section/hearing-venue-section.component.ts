@@ -11,7 +11,6 @@ import { LocationsDataService } from '../../../../services/locations-data.servic
   standalone: false,
   selector: 'exui-hearing-venue-section',
   templateUrl: './hearing-venue-section.component.html'
-
 })
 export class HearingVenueSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;

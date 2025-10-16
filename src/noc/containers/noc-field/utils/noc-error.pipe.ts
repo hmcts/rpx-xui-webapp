@@ -5,7 +5,6 @@ import { ValidationErrors } from '@angular/forms';
   standalone: false,
 
   name: 'nocError'
-
 })
 export class NocErrorPipe implements PipeTransform {
   public transform(value: ValidationErrors): string {

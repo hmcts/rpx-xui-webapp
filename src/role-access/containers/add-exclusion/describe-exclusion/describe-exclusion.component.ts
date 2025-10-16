@@ -11,7 +11,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-describe-exclusion',
   templateUrl: './describe-exclusion.component.html'
-
 })
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
   @Input() public navEvent: ExclusionNavigation;

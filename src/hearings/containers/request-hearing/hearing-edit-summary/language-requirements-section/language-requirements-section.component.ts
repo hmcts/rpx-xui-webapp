@@ -9,7 +9,6 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
   standalone: false,
   selector: 'exui-language-requirements-section',
   templateUrl: './language-requirements-section.component.html'
-
 })
 export class LanguageRequirementsSectionComponent {
   @Input() public hearingInWelshFlag: boolean;

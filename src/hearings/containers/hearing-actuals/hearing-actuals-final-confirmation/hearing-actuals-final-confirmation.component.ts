@@ -8,7 +8,6 @@ import * as fromHearingStore from '../../../store';
   standalone: false,
   selector: 'exui-hearing-actuals-final-confirmation',
   templateUrl: './hearing-actuals-final-confirmation.component.html'
-
 })
 export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestroy {
   public heading: string;

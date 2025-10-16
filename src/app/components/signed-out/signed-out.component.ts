@@ -8,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
   standalone: false,
   selector: 'exui-sign-out',
   templateUrl: './signed-out.component.html'
-
 })
 export class SignedOutComponent implements OnInit {
   public redirectUrl: string;

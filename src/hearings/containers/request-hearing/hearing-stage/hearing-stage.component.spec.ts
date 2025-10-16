@@ -19,7 +19,6 @@ import { HearingStageComponent } from './hearing-stage.component';
   standalone: false,
   selector: 'exui-hearing-parties-title',
   template: ''
-
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;

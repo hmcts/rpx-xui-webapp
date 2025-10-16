@@ -6,7 +6,6 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
   standalone: false,
   selector: 'exui-info-message-container',
   templateUrl: './info-message-container.component.html'
-
 })
 export class InfoMessageContainerComponent implements OnInit {
   public showInfoMessage: boolean = false;

@@ -6,7 +6,6 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-case-details-home',
   templateUrl: './case-details-home.component.html'
-
 })
 export class CaseDetailsHomeComponent implements OnInit {
   private readonly extras: NavigationExtras;

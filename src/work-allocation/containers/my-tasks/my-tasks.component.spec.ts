@@ -24,7 +24,6 @@ import { MyTasksComponent } from './my-tasks.component';
   standalone: false,
 
   template: '<exui-my-tasks></exui-my-tasks>'
-
 })
 class WrapperComponent {
   @ViewChild(MyTasksComponent, { static: true }) public appComponentRef: MyTasksComponent;

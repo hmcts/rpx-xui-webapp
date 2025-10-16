@@ -7,7 +7,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   standalone: false,
   selector: 'exui-noc-date-field',
   templateUrl: './noc-date-field.component.html'
-
 })
 export class NocDateFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
   public dateControl: FormControl;

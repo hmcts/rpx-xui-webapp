@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   standalone: false,
   selector: 'exui-user-not-assignable',
   templateUrl: './user-not-assignable.component.html'
-
 })
 export class UserNotAssignableComponent {}

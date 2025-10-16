@@ -5,7 +5,6 @@ import { HearingsService } from '../../../../../hearings/services/hearings.servi
   standalone: false,
   selector: 'exui-warning-and-error-section',
   templateUrl: './warning-and-error-section.component.html'
-
 })
 export class WarningAndErrorSectionComponent {
   @Input() public isPagelessAttributeChanged: boolean;

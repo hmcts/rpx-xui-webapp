@@ -16,7 +16,6 @@ import { handleTasksFatalErrors } from '../../utils';
   standalone: false,
   selector: 'exui-task-assignment-confirm',
   templateUrl: './task-assignment-confirm.component.html'
-
 })
 export class TaskAssignmentConfirmComponent implements OnInit {
   public verb: TaskActionType;

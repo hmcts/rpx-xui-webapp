@@ -15,7 +15,6 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-hearing-timing-section',
   templateUrl: './hearing-timing-section.component.html'
-
 })
 export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingPrioritiesRefData: LovRefDataModel[];

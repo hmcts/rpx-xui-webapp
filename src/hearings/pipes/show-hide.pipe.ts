@@ -33,7 +33,6 @@ import { State } from '../store';
   standalone: false,
 
   name: 'isHidden'
-
 })
 export class ShowHidePipe implements PipeTransform {
   constructor(protected readonly locationsDataService: LocationsDataService,

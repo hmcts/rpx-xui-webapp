@@ -23,7 +23,6 @@ import { getTitleText } from '../../../utils';
   standalone: false,
   selector: 'exui-allocate-role-search-person',
   templateUrl: './allocate-role-search-person.component.html'
-
 })
 export class AllocateRoleSearchPersonComponent implements OnInit {
   public allocateAction = 'Allocate';

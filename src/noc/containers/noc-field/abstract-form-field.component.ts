@@ -7,7 +7,6 @@ import { NocQuestion } from '../../models';
   standalone: false,
 
   template: ''
-
 })
 export abstract class AbstractFormFieldComponent {
   @Input()

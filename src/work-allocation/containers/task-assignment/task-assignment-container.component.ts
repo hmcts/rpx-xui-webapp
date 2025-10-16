@@ -16,7 +16,6 @@ import { TaskServiceConfig } from '../../models/tasks';
   standalone: false,
   selector: 'exui-task-container-assignment',
   templateUrl: 'task-assignment-container.component.html'
-
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;

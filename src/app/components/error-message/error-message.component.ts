@@ -5,7 +5,6 @@ import { ErrorMessage } from '../../models';
   standalone: false,
   selector: 'exui-error-message',
   templateUrl: './error-message.component.html'
-
 })
 export class ErrorMessageComponent {
   @Input() public error: ErrorMessage;

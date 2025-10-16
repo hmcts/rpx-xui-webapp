@@ -81,7 +81,6 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   standalone: false,
   selector: 'exui-ccd-connector',
   template: '<div></div>'
-
 })
 
 class FakeExuidCcdConnectorComponent { }

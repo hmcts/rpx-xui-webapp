@@ -12,7 +12,6 @@ import * as fromStore from '../../store';
   standalone: false,
   selector: 'exui-accept-terms-conditions-wrapper',
   templateUrl: './accept-tc-wrapper.component.html'
-
 })
 export class AcceptTcWrapperComponent implements OnInit, OnDestroy {
   public subscription: Subscription;

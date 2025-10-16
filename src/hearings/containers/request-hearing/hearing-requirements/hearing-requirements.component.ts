@@ -27,7 +27,6 @@ import * as moment from 'moment';
   standalone: false,
   selector: 'exui-hearing-requirements',
   templateUrl: './hearing-requirements.component.html'
-
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;

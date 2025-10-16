@@ -11,7 +11,6 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
   standalone: false,
   selector: 'exui-judge-details-section',
   templateUrl: './judge-details-section.component.html'
-
 })
 export class JudgeDetailsSectionComponent implements OnInit {
   @Input() public panelRequirements: PanelRequirementsModel;

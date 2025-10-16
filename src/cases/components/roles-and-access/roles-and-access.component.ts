@@ -9,7 +9,6 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
   standalone: false,
   selector: 'exui-roles-and-access',
   templateUrl: './roles-and-access.component.html'
-
 })
 export class RolesAndAccessComponent implements OnInit, OnChanges {
   public exclusionsNotNamed = false;

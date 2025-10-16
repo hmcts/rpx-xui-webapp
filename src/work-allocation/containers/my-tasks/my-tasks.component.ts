@@ -10,7 +10,6 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
   standalone: false,
   selector: 'exui-my-tasks',
   templateUrl: 'my-tasks.component.html'
-
 })
 export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
   public get emptyMessage(): string {

@@ -19,7 +19,6 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
   standalone: false,
   selector: 'exui-hearing-actuals-timing',
   templateUrl: './hearing-actuals-timing.component.html'
-
 })
 export class HearingActualsTimingComponent implements OnInit, OnDestroy {
   public formGroup: FormGroup;

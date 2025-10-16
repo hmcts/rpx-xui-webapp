@@ -20,7 +20,6 @@ import {
   standalone: false,
   selector: 'exui-booking-date',
   templateUrl: './booking-date.component.html'
-
 })
 export class BookingDateComponent implements OnInit {
   @Input() public bookingProcess: BookingProcess;

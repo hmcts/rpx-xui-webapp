@@ -30,7 +30,6 @@ import { isEmpty } from 'lodash';
   standalone: false,
   selector: 'exui-hearing-timing',
   templateUrl: './hearing-timing.component.html'
-
 })
 export class HearingTimingComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public priorityForm: FormGroup;

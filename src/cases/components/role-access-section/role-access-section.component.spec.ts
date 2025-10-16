@@ -12,7 +12,6 @@ import { RoleAccessSectionComponent } from './role-access-section.component';
   standalone: false,
   selector: 'exui-case-roles-table',
   template: ''
-
 })
 class MockCaseRolesTableComponent {
   @Input() public roles: CaseRole[];
@@ -25,7 +24,6 @@ class MockCaseRolesTableComponent {
   standalone: false,
   selector: 'exui-allocate-a-role-link',
   template: ''
-
 })
 class MockAllocateRoleLinkComponent {
   @Input() public routerLink: string;

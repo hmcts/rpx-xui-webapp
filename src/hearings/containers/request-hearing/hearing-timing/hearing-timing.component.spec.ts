@@ -25,7 +25,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
   standalone: false,
   selector: 'exui-hearing-parties-title',
   template: ''
-
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;

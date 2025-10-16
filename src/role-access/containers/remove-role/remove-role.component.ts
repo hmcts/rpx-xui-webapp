@@ -17,7 +17,6 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-remove-role',
   templateUrl: './remove-role.component.html'
-
 })
 export class RemoveRoleComponent implements OnInit {
   public removeAllocationNavigationEvent = RemoveAllocationNavigationEvent;

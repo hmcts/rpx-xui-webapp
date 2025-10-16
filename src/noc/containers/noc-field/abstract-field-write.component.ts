@@ -5,7 +5,6 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
   standalone: false,
 
   template: ''
-
 })
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
   @Input()

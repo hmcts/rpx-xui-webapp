@@ -10,7 +10,6 @@ import { NavItemsModel } from './../../models/nav-item.model';
   standalone: false,
   selector: 'exui-header',
   templateUrl: './header.component.html'
-
 })
 export class HeaderComponent {
   @Input() public navItems: NavItemsModel[];

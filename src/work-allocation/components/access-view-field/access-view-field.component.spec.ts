@@ -10,7 +10,6 @@ import { AccessViewFieldComponent } from './access-view-field.component';
   standalone: false,
 
   template: '<exui-access-view-field [workField]="workField"></exui-access-view-field>'
-
 })
 class WrapperComponent {
   @ViewChild(AccessViewFieldComponent) public appComponentRef: AccessViewFieldComponent;

@@ -10,7 +10,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-add-exclusion-check-answers',
   templateUrl: './add-exclusion-check-answers.component.html'
-
 })
 export class AddExclusionCheckAnswersComponent implements OnDestroy {
   @Input() public navEvent: ExclusionNavigation;

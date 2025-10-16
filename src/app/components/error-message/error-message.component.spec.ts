@@ -9,7 +9,6 @@ import { ErrorMessageComponent } from './error-message.component';
   standalone: false,
 
   template: '<exui-error-message [title]="title" [error]="error"></exui-error-message>'
-
 })
 class WrapperComponent {
   @ViewChild(ErrorMessageComponent, { static: true }) public appComponentRef: ErrorMessageComponent;

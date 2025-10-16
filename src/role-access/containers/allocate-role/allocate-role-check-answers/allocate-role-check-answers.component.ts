@@ -23,7 +23,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-allocate-role-check-answers',
   templateUrl: './allocate-role-check-answers.component.html'
-
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   @Input() public navEvent: AllocateRoleNavigation;

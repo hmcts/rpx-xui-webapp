@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: false,
 
   name: 'formatDateTime'
-
 })
 export class DateTimePipe implements PipeTransform {
   public transform(value: string): string {

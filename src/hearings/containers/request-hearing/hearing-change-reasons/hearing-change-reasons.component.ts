@@ -20,7 +20,6 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
   standalone: false,
   selector: 'exui-hearing-change-reasons',
   templateUrl: './hearing-change-reasons.component.html'
-
 })
 export class HearingChangeReasonsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public hearingChangeReasons: LovRefDataModel[];

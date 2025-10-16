@@ -6,7 +6,6 @@ import { Mode } from '../../models/hearings.enum';
   standalone: false,
   selector: 'exui-linked-hearings-case-title',
   templateUrl: './linked-hearings-case-title.component.html'
-
 })
 export class LinkedHearingsCaseTitleComponent {
   @Input() public caseName: string;

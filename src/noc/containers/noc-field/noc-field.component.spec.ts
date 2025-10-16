@@ -17,7 +17,6 @@ import { NocYesNoFieldComponent } from './yes-no';
   standalone: false,
   selector: 'exui-test-component',
   template: '<div>Test Component</div>'
-
 })
 class TestComponent {
   public questionField: NocQuestion;

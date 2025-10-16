@@ -40,7 +40,6 @@ import { cloneDeep } from 'lodash';
   standalone: false,
   selector: 'exui-hearing-edit-summary',
   templateUrl: './hearing-edit-summary.component.html'
-
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private readonly notUpdatedMessage = 'The request has not been updated';

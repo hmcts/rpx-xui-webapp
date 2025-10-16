@@ -18,7 +18,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
   standalone: false,
   selector: 'xuilib-generic-filter',
   template: '<span></span>'
-
 })
 class MockGenericFilterComponent {
   @Input() public config;

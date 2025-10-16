@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   standalone: false,
   selector: 'exui-task-manager',
   templateUrl: './task-manager.component.html'
-
 })
 export class TaskManagerComponent {}

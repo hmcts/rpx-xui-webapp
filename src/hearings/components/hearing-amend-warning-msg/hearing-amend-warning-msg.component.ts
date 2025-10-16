@@ -10,7 +10,6 @@ import { HearingsUtils } from '../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-hearing-amend-warning-msg',
   templateUrl: './hearing-amend-warning-msg.component.html'
-
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
   @Input() public warningMsg: string = '';

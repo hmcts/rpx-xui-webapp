@@ -9,7 +9,6 @@ import { CaseRole } from '../../../role-access/models';
   standalone: false,
   selector: 'exui-role-access-section',
   templateUrl: './role-access-section.component.html'
-
 })
 export class RoleAccessSectionComponent {
   @Input() public title: string;

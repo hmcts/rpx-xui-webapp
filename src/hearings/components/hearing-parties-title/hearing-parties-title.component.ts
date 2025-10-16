@@ -9,7 +9,6 @@ import { HearingsFeatureService } from '../../../hearings/services/hearings-feat
   standalone: false,
   selector: 'exui-hearing-parties-title',
   templateUrl: './hearing-parties-title.component.html'
-
 })
 export class HearingPartiesTitleComponent implements OnInit, OnDestroy {
   public caseTitle: string;

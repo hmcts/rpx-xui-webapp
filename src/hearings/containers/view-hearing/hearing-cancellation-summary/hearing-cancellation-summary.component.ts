@@ -6,7 +6,6 @@ import { Mode } from '../../../models/hearings.enum';
   standalone: false,
   selector: 'exui-hearing-cancellation-summary',
   templateUrl: './hearing-cancellation-summary.component.html'
-
 })
 export class HearingCancellationSummaryComponent {
   public template = HEARING_CANCELLATION_SUMMARY_TEMPLATE;

@@ -14,7 +14,6 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-hearing-requirements-section',
   templateUrl: './hearing-requirements-section.component.html'
-
 })
 export class HearingRequirementsSectionComponent implements OnInit {
   @Input() public caseFlagsRefData: CaseFlagReferenceModel[];

@@ -11,7 +11,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-specific-access-information',
   templateUrl: './specific-access-information.component.html'
-
 })
 export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   @Input() public navEvent: SpecificAccessNavigation;

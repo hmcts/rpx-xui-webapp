@@ -7,7 +7,6 @@ import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
   standalone: false,
   selector: 'ccd-test-component',
   template: ''
-
 })
 class MockCcdComponent {
   @Output() submitted = new EventEmitter();

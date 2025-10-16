@@ -16,7 +16,6 @@ import { handleError } from '../../utils';
   standalone: false,
   selector: 'exui-delete-exclusion',
   templateUrl: './delete-exclusion.component.html'
-
 })
 export class DeleteExclusionComponent implements OnInit {
   public caseworkers$: Observable<Caseworker[]>;

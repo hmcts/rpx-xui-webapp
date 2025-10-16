@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   standalone: false,
   selector: 'exui-not-authorised',
   templateUrl: './not-authorised.component.html'
-
 })
 export class NotAuthorisedComponent {}

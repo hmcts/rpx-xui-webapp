@@ -4,7 +4,6 @@ import { Component, Input } from '@angular/core';
   standalone: false,
   selector: 'exui-url-field',
   templateUrl: './url-field.component.html'
-
 })
 export class UrlFieldComponent {
   /**

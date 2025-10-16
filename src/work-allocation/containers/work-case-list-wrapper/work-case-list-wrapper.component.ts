@@ -33,7 +33,6 @@ import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCA
   standalone: false,
 
   templateUrl: 'work-case-list-wrapper.component.html'
-
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public specificPage: string = '';

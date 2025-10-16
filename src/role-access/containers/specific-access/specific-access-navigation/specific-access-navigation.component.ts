@@ -15,7 +15,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-specific-access-navigation',
   templateUrl: 'specific-access-navigation.component.html'
-
 })
 export class SpecificAccessNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();

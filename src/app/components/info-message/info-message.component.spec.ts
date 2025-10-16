@@ -9,7 +9,6 @@ import { InfoMessageComponent } from './info-message.component';
   standalone: false,
 
   template: '<exui-info-message [type]="type" [message]="message"></exui-info-message>'
-
 })
 class WrapperComponent {
   @ViewChild(InfoMessageComponent, { static: true }) public appComponentRef: InfoMessageComponent;

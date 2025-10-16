@@ -5,7 +5,6 @@ import { CaseRole, TypeOfRole } from '../../role-access/models';
 @Directive({
   standalone: false,
   selector: '[exuiShowAllocateLink]'
-
 })
 export class ShowAllocateLinkDirective implements OnInit {
   private static readonly CASE_MANAGERS_LIMIT = 1;

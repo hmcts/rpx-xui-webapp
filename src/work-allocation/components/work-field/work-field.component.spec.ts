@@ -23,7 +23,6 @@ import { WorkFieldComponent } from './work-field.component';
   standalone: false,
 
   template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>'
-
 })
 class WrapperComponent {
   @ViewChild(WorkFieldComponent, { static: true }) public appComponentRef: WorkFieldComponent;

@@ -6,7 +6,6 @@ import { HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE } from '../../../templates/hear
   standalone: false,
   selector: 'exui-hearing-request-failed-summary',
   templateUrl: './hearing-request-failed-summary.component.html'
-
 })
 export class HearingRequestFailedSummaryComponent {
   public template = HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE;

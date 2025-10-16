@@ -6,7 +6,6 @@ import { Answer } from '../../models';
   standalone: false,
   selector: 'exui-answers',
   templateUrl: './answers.component.html'
-
 })
 
 export class AnswersComponent {

@@ -6,7 +6,6 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
   standalone: false,
   selector: 'exui-noc-phone-uk-field',
   templateUrl: './noc-phone-uk-field.component.html'
-
 })
 export class NocPhoneUkFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public phoneUkControl: FormControl;

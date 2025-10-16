@@ -19,7 +19,6 @@ import * as fromActions from '../../store';
   standalone: false,
   selector: 'exui-app-header',
   templateUrl: './app-header.component.html'
-
 })
 
 /**

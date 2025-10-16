@@ -15,7 +15,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-choose-person-role',
   templateUrl: './choose-person-role.component.html'
-
 })
 export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;

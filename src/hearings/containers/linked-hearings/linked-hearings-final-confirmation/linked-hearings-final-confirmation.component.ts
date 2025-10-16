@@ -7,7 +7,6 @@ import * as fromHearingStore from '../../../store';
   standalone: false,
   selector: 'exui-linked-hearings-final-confirmation',
   templateUrl: './linked-hearings-final-confirmation.component.html'
-
 })
 export class LinkedHearingsFinalConfirmationComponent implements OnInit {
   public heading: string;

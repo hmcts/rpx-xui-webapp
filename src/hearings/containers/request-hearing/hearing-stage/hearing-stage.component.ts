@@ -13,7 +13,6 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   standalone: false,
   selector: 'exui-hearing-stage',
   templateUrl: './hearing-stage.component.html'
-
 })
 export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];

@@ -8,7 +8,6 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
   standalone: false,
   selector: 'exui-additional-instructions-section',
   templateUrl: './additional-instructions-section.component.html'
-
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;

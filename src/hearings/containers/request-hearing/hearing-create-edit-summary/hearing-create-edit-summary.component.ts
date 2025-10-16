@@ -14,7 +14,6 @@ import { Observable } from 'rxjs';
   standalone: false,
   selector: 'exui-hearing-create-edit-summary',
   templateUrl: './hearing-create-edit-summary.component.html'
-
 })
 export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_CREATE_EDIT_SUMMARY_TEMPLATE;

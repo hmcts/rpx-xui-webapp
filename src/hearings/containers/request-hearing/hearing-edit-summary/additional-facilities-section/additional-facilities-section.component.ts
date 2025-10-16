@@ -10,7 +10,6 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-additional-facilities-section',
   templateUrl: './additional-facilities-section.component.html'
-
 })
 export class AdditionalFacilitiesSectionComponent implements OnInit {
   @Input() public additionalFacilitiesRefData: LovRefDataModel[];

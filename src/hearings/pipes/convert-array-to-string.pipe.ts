@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: false,
 
   name: 'convertArrayToString'
-
 })
 export class ConvertArrayToStringPipe implements PipeTransform {
   public transform(reasons: string[]): any {

@@ -9,7 +9,6 @@ import * as fromRoot from '../../store';
   standalone: false,
   selector: 'exui-terms-and-conditions',
   templateUrl: './terms-and-conditions.component.html'
-
 })
 export class TermsAndConditionsComponent implements OnInit, OnDestroy {
   public document: TCDocument = null;

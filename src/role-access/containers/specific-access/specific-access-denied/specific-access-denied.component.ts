@@ -10,7 +10,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-specific-access-denied',
   templateUrl: './specific-access-denied.component.html'
-
 })
 export class SpecificAccessDeniedComponent implements OnDestroy {
   @Input() public navEvent: SpecificAccessNavigation;

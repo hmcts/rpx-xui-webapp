@@ -14,7 +14,6 @@ import { getTitleText } from '../../../utils';
   standalone: false,
   selector: 'exui-choose-allocate-to',
   templateUrl: './choose-allocate-to.component.html'
-
 })
 export class ChooseAllocateToComponent implements OnInit {
   public ERROR_MESSAGE = ERROR_MESSAGE;

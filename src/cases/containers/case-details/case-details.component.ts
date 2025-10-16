@@ -13,7 +13,6 @@ import * as fromCaseCreate from '../../store';
   standalone: false,
   selector: 'exui-case-details',
   templateUrl: './case-details.component.html'
-
 })
 export class CaseDetailsComponent implements OnDestroy, OnInit {
   public caseId: string;

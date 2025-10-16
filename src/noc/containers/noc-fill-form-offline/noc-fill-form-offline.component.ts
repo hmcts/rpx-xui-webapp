@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   standalone: false,
   selector: 'exui-noc-fill-form-offline',
   templateUrl: './noc-fill-form-offline.component.html'
-
 })
 export class NocFillFormOfflineComponent {}

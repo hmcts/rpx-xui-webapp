@@ -10,7 +10,6 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   standalone: false,
   selector: 'exui-my-cases',
   templateUrl: 'my-cases.component.html'
-
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {

@@ -12,7 +12,6 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-add-exclusion-search-person',
   templateUrl: './add-exclusion-search-person.component.html'
-
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;

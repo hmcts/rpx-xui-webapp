@@ -10,7 +10,6 @@ import { CaseTypesUtils } from '../../../../utils/case-types.utils';
   standalone: false,
   selector: 'exui-case-details-section',
   templateUrl: './case-details-section.component.html'
-
 })
 export class CaseDetailsSectionComponent implements OnInit {
   @Input() public caseTypeRefData: LovRefDataModel[];

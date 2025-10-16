@@ -11,7 +11,6 @@ import * as fromCaseCreate from '../../store';
   standalone: false,
   selector: 'exui-case-create-submit',
   templateUrl: 'case-create-submit.component.html'
-
 })
 export class CaseCreateSubmitComponent implements OnInit {
   public eventTrigger: CaseEventTrigger = new CaseEventTrigger();

@@ -28,7 +28,6 @@ import { AllWorkTaskComponent } from './all-work-task.component';
   standalone: false,
 
   template: '<div>Nothing</div>'
-
 })
 class NothingComponent { }
 const USER_DETAILS = {

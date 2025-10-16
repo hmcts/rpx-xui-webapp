@@ -6,7 +6,6 @@ import { Task } from '../../models/tasks';
   standalone: false,
   selector: 'exui-derived-icon-field',
   templateUrl: './derived-icon-field.component.html'
-
 })
 export class DerivedIconFieldComponent {
   /**

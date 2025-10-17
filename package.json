@@ -231,7 +231,7 @@
     "node-html-parser": "^7.0.0",
     "nodemon": "^2.0.19",
     "npm-run-all2": "^7.0.0",
-    "odhin-reports-playwright": "^1.1.8",
+    "odhin-reports-playwright": "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch",
     "pa11y": "^8.0.0",
     "playwright": "^1.52.0",
     "puppeteer": "^24.0.0",

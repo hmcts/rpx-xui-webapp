@@ -1,0 +1,22 @@
+diff --git a/lib/generate.js b/lib/generate.js
+index e36b904dbedea1a34a9aa2367a3636aacc46f16e..a4679f3122e76eb27f18b7019666cf129b3f2b56 100644
+--- a/lib/generate.js
++++ b/lib/generate.js
+@@ -377,8 +377,15 @@ class Generate {
+         if (result.status === "passed" && result.retry > 0) {
+             result.status = "flaky";
+         }
+-        if (result.status === "passed" ||
+-            result.status === "flaky" ||
++        const terminalStatuses = [
++            "passed",
++            "failed",
++            "flaky",
++            "skipped",
++            "timedOut",
++            "interrupted",
++        ];
++        if (terminalStatuses.includes(result.status) ||
+             result.retry === testCase.retries) {
+             // Update Files
+             let fileUpdate = false;

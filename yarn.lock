@@ -19131,7 +19131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"odhin-reports-playwright@npm:^1.1.8":
+"odhin-reports-playwright@npm:1.1.8":
   version: 1.1.8
   resolution: "odhin-reports-playwright@npm:1.1.8"
   dependencies:
@@ -19160,6 +19160,38 @@ __metadata:
     xhr2: "npm:^0.2.1"
     xmlhttprequest: "npm:^1.8.0"
   checksum: 10/a51ea027bd76feb15af5947bcd13dcecc8f2a5011e1006201191db2fc82086efc317820bce994a924b5a7ba54636991ad3fe4a4b57f4aca2276e03cb235c2304
+  languageName: node
+  linkType: hard
+
+"odhin-reports-playwright@patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch":
+  version: 1.1.8
+  resolution: "odhin-reports-playwright@patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch::version=1.1.8&hash=9473ff"
+  dependencies:
+    ansi-to-html: "npm:^0.7.2"
+    autoprefixer: "npm:^10.4.14"
+    axios: "npm:^0.24.0"
+    connect: "npm:^3.7.0"
+    dayjs: "npm:^1.11.7"
+    expres: "npm:^0.0.5"
+    express: "npm:^4.18.2"
+    fetch-base64: "npm:^2.1.2"
+    fs-extra: "npm:^11.1.1"
+    html-minifier: "npm:^4.0.0"
+    http-server: "npm:^14.1.1"
+    js-base64-file: "npm:^2.0.3"
+    lodash: "npm:^4.17.21"
+    node-html-to-image: "npm:^3.3.0"
+    open: "npm:^9.1.0"
+    picocolors: "npm:^1.0.0"
+    portfinder: "npm:^1.0.32"
+    prismjs: "npm:^1.29.0"
+    serve-static: "npm:^1.15.0"
+    static-server: "npm:^2.2.1"
+    tunnel: "npm:^0.0.6"
+    typescript: "npm:^5.1.6"
+    xhr2: "npm:^0.2.1"
+    xmlhttprequest: "npm:^1.8.0"
+  checksum: 10/a6a1d7a34f332ec01555abfd063a33f808385737b1c6b959d4a17570727031a16487456fe9ddf1ab8837c70defd1043d95146d44d0137f30e136444a96e03889
   languageName: node
   linkType: hard
 
@@ -21564,7 +21596,7 @@ __metadata:
     node-http-proxy-json: "npm:^0.1.9"
     nodemon: "npm:^2.0.19"
     npm-run-all2: "npm:^7.0.0"
-    odhin-reports-playwright: "npm:^1.1.8"
+    odhin-reports-playwright: "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch"
     otplib: "npm:^12.0.1"
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"

@@ -1,7 +1,25 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const { cpus } = require('os');
+const { version: appVersion } = require('./package.json');
+
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+
+const resolveWorkerCount = () => {
+  const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
+  if (configured) {
+    return parseInt(configured, 10);
+  }
+  if (process.env.CI) {
+    return 1;
+  }
+  const logical = cpus()?.length ?? 1;
+  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
+  const suggested = Math.min(8, Math.max(2, approxPhysical));
+  return suggested;
+};
+const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
   testDir: './playwright_tests/E2E',
@@ -19,7 +37,7 @@ module.exports = defineConfig({
   reportSlowTests: null,
 
   /* Opt out of parallel tests on CI. */
-  workers: process.env.FUNCTIONAL_TESTS_WORKERS ? parseInt(process.env.FUNCTIONAL_TESTS_WORKERS, 10) : 1,
+  workers: workerCount,
 
   reporter: [
     [process.env.CI ? 'dot' : 'list'],
@@ -27,7 +45,9 @@ module.exports = defineConfig({
       outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
       indexFilename: 'xui-playwright.html',
       title: 'RPX XUI Playwright',
-      testEnvironment: process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local'),
+      testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+      project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+      release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
       startServer: false,
       consoleLog: true,
       consoleError: true,

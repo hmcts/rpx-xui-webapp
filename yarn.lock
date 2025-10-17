@@ -3239,12 +3239,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.49":
-  version: 7.2.49
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.49"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.49-exui-2488-1":
+  version: 7.2.49-exui-2488-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.49-exui-2488-1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/f6f952a59e3024dee4e08c13263b6ed518be33f57c35e7dab9119cd864480c720ae38fe1ab4d2f19dbc3f14ed3f57348d43d4d83d73fe7f3f560e2ac9d4fd2fe
+  checksum: 10/25d7a2668807f06b83ed6b2c9d3c606ba25594b297c122f30cb00d6449cac2baff79f9119f755c34174d8fec5ff52929edf04d9ffc93677bb08e1e1ac7b8a182
   languageName: node
   linkType: hard
 
@@ -3267,9 +3267,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.8":
-  version: 4.1.8
-  resolution: "@hmcts/media-viewer@npm:4.1.8"
+"@hmcts/media-viewer@npm:4.1.8-exui-2488-1":
+  version: 4.1.8-exui-2488-1
+  resolution: "@hmcts/media-viewer@npm:4.1.8-exui-2488-1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3288,7 +3288,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/1ecfff581a918a293e7b512bc2ebf5d73b840371c8403f3e4632df391910d808a1a61ca8f683bf1d5771bac8948efa9a8ea3af1804b8ea32bc4f0b412d55da28
+  checksum: 10/c0ea791a4d863a0ffc626ac6aec9afb00b692ecae55435de53d4d4e9a18207ba8d84d44efe2cd482874c21c1ca91fc277a81ac4a4f3919401ea9791507eab188
   languageName: node
   linkType: hard
 
@@ -20987,10 +20987,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.49"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.49-exui-2488-1"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.8"
+    "@hmcts/media-viewer": "npm:4.1.8-exui-2488-1"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.6"

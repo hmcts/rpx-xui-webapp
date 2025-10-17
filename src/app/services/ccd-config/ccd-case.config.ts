@@ -71,11 +71,6 @@ export class AppConfig extends AbstractAppConfig {
     } as T & { [P in K]: V };
   }
 
-  public getEnableCaseFileViewVersion1_1(): boolean {
-    // Return the feature toggle value from config, defaulting to false if not present
-    return !!this.config.enable_case_file_view_version_1_1;
-  }
-
   public load(): Promise<void> {
     return Promise.resolve();
   }

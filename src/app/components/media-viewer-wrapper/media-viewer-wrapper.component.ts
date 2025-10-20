@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { Title } from '@angular/platform-browser';
 
@@ -62,7 +62,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     }
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
-    this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
+    this.icpEnabled$ = of(true);
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
 
     this.titleService.setTitle(this.mediaFilename + ' - View Document');

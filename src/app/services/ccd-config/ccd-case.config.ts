@@ -37,11 +37,10 @@ export class AppConfig extends AbstractAppConfig {
         const defWACfg: WAFeatureConfig = LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv);
         const obArray: Array<Observable<ConfigValue>> = [];
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.waServiceConfig, defWACfg, obArray);
-        this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpEnabled, false, obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.icpJurisdictions, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.enableServiceSpecificMultiFollowups, ['foo'], obArray);
         this.setUpLaunchDarklyForFeature(AppConstants.FEATURE_NAMES.cdamExclusionList, this.config.documentSecureModeCaseTypeExclusions, obArray);
-        if (obArray.length === 5) {
+        if (obArray.length === 4) {
           combineLatest(obArray).subscribe((items) => {
             this.initialisationComplete = true;
             console.log('LD initialisation complete with ' + items?.length + ' items');

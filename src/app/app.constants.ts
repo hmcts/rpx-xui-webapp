@@ -201,6 +201,8 @@ const caseAllocatorRole: string = 'case-allocator-role';
 const iaJudgeRole: string = 'caseworker-ia-iacjudge';
 const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 
+const activityTrackerMode: string = 'mc-activity-tracker-mode';
+
 export class AppConstants {
   public static FOOTER_DATA = null;
   public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
@@ -218,6 +220,7 @@ export class AppConstants {
   public static IA_JUDGE_ROLE = iaJudgeRole;
   public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
+  public static ACTIVITY_TRACKER_MODE = activityTrackerMode;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
 }
 

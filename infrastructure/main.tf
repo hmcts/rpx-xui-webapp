@@ -104,10 +104,15 @@ data "azurerm_key_vault_secret" "logic_app_acs_connection_string" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
-data "azurerm_log_analytics_workspace" "logic_app_workspace" {
+
+resource "azurerm_log_analytics_workspace" "logic_app_workspace" {
   count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = var.env_log_analytics_workspace_map[var.env]
-  resource_group_name = var.env_log_analytics_rg_map[var.env]
+  name                = "${local.app_full_name}-law-${var.env}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+  tags                = var.common_tags
 }
 
 resource "azurerm_logic_app_workflow" "kql_report_workflow" {
@@ -261,7 +266,7 @@ resource "azurerm_logic_app_action_custom" "acs_email_connection" {
 # Role Assignment for Logic App to access Log Analytics
 resource "azurerm_role_assignment" "logic_app_log_analytics_reader" {
   count                = var.welsh_reporting_enabled ? 1 : 0
-  scope                = data.azurerm_log_analytics_workspace.logic_app_workspace.0.id
+  scope                = azurerm_log_analytics_workspace.logic_app_workspace.0.id
   role_definition_name = "Log Analytics Reader"
   principal_id         = azurerm_logic_app_workflow.kql_report_workflow.0.identity[0].principal_id
 }
@@ -377,7 +382,7 @@ resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
             | order by day asc
             | render columnchart
           QUERY
-          workspace = data.azurerm_log_analytics_workspace.logic_app_workspace.0.id
+          workspace = azurerm_log_analytics_workspace.logic_app_workspace.0.id
         }]
       }
     }
@@ -502,7 +507,7 @@ resource "azurerm_logic_app_action_custom" "welsh_acs_email_connection" {
 # Role Assignment for Welsh Logic App to access Log Analytics
 resource "azurerm_role_assignment" "welsh_logic_app_log_analytics_reader" {
   count                = var.welsh_reporting_enabled ? 1 : 0
-  scope                = data.azurerm_log_analytics_workspace.logic_app_workspace.0.id
+  scope                = azurerm_log_analytics_workspace.logic_app_workspace.0.id
   role_definition_name = "Log Analytics Reader"
   principal_id         = azurerm_logic_app_workflow.welsh_report_workflow.0.identity[0].principal_id
 }

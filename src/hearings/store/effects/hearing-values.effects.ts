@@ -29,15 +29,15 @@ export class HearingValuesEffects {
           (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
         catchError((error) => {
           this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-          return HearingValuesEffects.handleError(error, caseInfo.caseReference);
+          return HearingValuesEffects.handleError(error, caseInfo);
         })
       );
     })
   ));
 
-  public static handleError(error: HttpError, caseId: string): Observable<Action> {
+  public static handleError(error: HttpError, caseInfo: any): Observable<Action> {
     if (error && error.status) {
-      return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${caseId}/hearings`] }));
+      return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${caseInfo?.jurisdictionId}/${caseInfo?.caseType}/${caseInfo.caseReference}/hearings`] }));
     }
   }
 }

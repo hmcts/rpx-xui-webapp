@@ -2,7 +2,7 @@
 <div class="govuk-width-container">
   <div class="page">
     <main id="content" role="main">
-      <a *ngIf="!isConfirmationPage" href="javascript:void(0)" (click)="onBack()" class="govuk-back-link">{{ 'Back' | rpxTranslate }}</a>
+      <a *ngIf="!isConfirmationPage" href="#" (click)="onBack(); $event.preventDefault()" class="govuk-back-link">{{ 'Back' | rpxTranslate }}</a>
       <div *ngIf="showMismatchErrorMessage" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
         <h2 class="govuk-error-summary__title" id="error-summary-title">
           {{'There is a problem' | rpxTranslate}}

@@ -1,4 +1,6 @@
-<a class="govuk-back-link" href="javascript:history.back()">{{ 'Back' | rpxTranslate }}</a>
+<a href="#" class="govuk-back-link" (click)="onBackPage(); $event.preventDefault()">
+  {{ 'Back' | rpxTranslate }}
+</a>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="errors$ | async">
 </xuilib-hmcts-error-summary>
 
@@ -48,7 +50,7 @@
     <div>
       <h2 class="govuk-heading-m">{{ 'Hearing stage and result' | rpxTranslate }}</h2>
       <span class="govuk-body align-right">
-        <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
+        <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
           fragment="hearingStageResult">{{ 'Change' | rpxTranslate }}</a>
       </span>
       <dl class="govuk-summary-list">
@@ -92,7 +94,7 @@
                     </div>
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
+                    <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
                       fragment="hearingDate">{{ 'Change' | rpxTranslate }}</a>
                   </dd>
                 </div>
@@ -106,7 +108,7 @@
                       </div>
                       <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
-                        <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
+                        <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
                           fragment="hearingDate">{{ 'Change' | rpxTranslate }}</a>
                       </dd>
                     </div>
@@ -141,7 +143,7 @@
                       </div>
                       <dd class="govuk-summary-list__value"></dd>
                       <dd class="govuk-summary-list__actions">
-                        <a href="javascript:void(0)" class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
+                        <a class="govuk-link" [routerLink]="hearingActualAddEditUrl()"
                           fragment="hearingDate">{{ 'Change' | rpxTranslate }}</a>
                       </dd>
                     </div>

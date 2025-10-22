@@ -5,6 +5,6 @@
     <span class="error-message" *ngIf="textControl.errors && textControl.touched">{{textControl.errors | nocError | rpxTranslate}}</span>
   </label>
 
-  <input class="govuk-input govuk-input--width-10" [id]="id()" type="text" [formControl]="textControl">
+  <input class="form-control" [id]="id()" type="text" [formControl]="textControl">
 
 </div>

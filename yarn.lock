@@ -3462,12 +3462,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.4-angular-20":
-  version: 7.3.4-angular-20
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.4-angular-20"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.6-angular-20":
+  version: 7.3.6-angular-20
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.6-angular-20"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/64768a671996f930b94dd51da720e1cdf46035e24055133bcc819817b7ff6aca6f83048a73e7fc4fa29081590ed7a554e6abf3f2c9e5b9ecb8c05b5372684275
+  checksum: 10/a181c4d7e111c45e1cb9782516bc996d48b9df392aef2e6febf97d8c1de8f2e2a82433c466931df3e1efa3d788adff716d620c3df2058255efd6d4f625c4bb5a
   languageName: node
   linkType: hard
 
@@ -22208,7 +22208,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.4-angular-20"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.6-angular-20"
     "@hmcts/ccpay-web-component": "npm:6.5.0-cme-779-prerelease"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.9-cme-776-angular-20"

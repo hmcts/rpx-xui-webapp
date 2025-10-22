@@ -47,12 +47,21 @@ describe('HearingViewSummaryComponent', () => {
 
   const httpClientMock = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(httpClientMock);
+  let hearingStoreMock: jasmine.SpyObj<Store<any>>;
 
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
     routerMock = jasmine.createSpyObj('Router', ['navigate']);
+    hearingStoreMock = jasmine.createSpyObj<Store<any>>('hearingStore', ['pipe']);
+    const mockHearingValues = {
+      caseInfo: {
+        jurisdictionId: 'JURIS',
+        caseType: 'CASETYPE'
+      }
+    };
+    hearingStoreMock.pipe.and.returnValue(of(mockHearingValues));
     TestBed.configureTestingModule({
       declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
@@ -99,6 +108,8 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     fixture = TestBed.createComponent(HearingViewSummaryComponent);
     component = fixture.componentInstance;
+    // Replace the hearingStore on the component with the mock
+    (component as any).hearingStore = hearingStoreMock;
     fixture.detectChanges();
   });
 
@@ -129,7 +140,13 @@ describe('HearingViewSummaryComponent', () => {
   it('should navigate to case details page', () => {
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
     component.executeAction(ACTION.BACK);
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1234123412341234', 'hearings']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'JURIS', 'CASETYPE', '1234123412341234', 'hearings']);
+  });
+
+  it('should set jurisdiction and caseType from hearingStore', () => {
+    component.ngOnInit();
+    expect(component.jurisdiction).toBe('JURIS');
+    expect(component.caseType).toBe('CASETYPE');
   });
 
   afterEach(() => {

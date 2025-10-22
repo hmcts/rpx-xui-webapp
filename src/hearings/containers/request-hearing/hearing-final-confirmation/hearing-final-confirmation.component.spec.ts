@@ -42,6 +42,12 @@ describe('HearingFinalConfirmationComponent', () => {
     expect(component.sub.unsubscribe).toHaveBeenCalled();
   });
 
+  it('should set properties correctly in ngOnInit when hearingList and hearingValues are present', () => {
+    component.ngOnInit();
+    expect(component.jurisdiction).toEqual(initialState.hearings.hearingValues.caseInfo.jurisdictionId);
+    expect(component.caseType).toEqual(initialState.hearings.hearingValues.caseInfo.caseType);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

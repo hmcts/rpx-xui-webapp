@@ -3471,15 +3471,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.5.0-cme-779-prerelease":
-  version: 6.5.0-cme-779-prerelease
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.0-cme-779-prerelease"
+"@hmcts/ccpay-web-component@npm:6.5.9-cme-779-prerelease":
+  version: 6.5.9-cme-779-prerelease
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.9-cme-779-prerelease"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/694d4ecc21d660584c344ce08004a21b18e97fdb0819d17d2eaaa57ed24ceae03bb0002c932283d2d47db684f3913ad6949beef5e3e77ceb8bfcbd3fba288421
+  checksum: 10/cd40af41e8b6f6987838e8be6d7368e9dd77b297a5ebdcb1f5d3f12b190f64a6e8983f6067ea8c8d89a424930a630a64c259c87fec4a62d28235f37d0a3c1c6f
   languageName: node
   linkType: hard
 
@@ -22209,7 +22209,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.6-angular-20"
-    "@hmcts/ccpay-web-component": "npm:6.5.0-cme-779-prerelease"
+    "@hmcts/ccpay-web-component": "npm:6.5.9-cme-779-prerelease"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.9-cme-776-angular-20"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"

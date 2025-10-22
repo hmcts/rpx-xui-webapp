@@ -1,12 +1,13 @@
 import { expect, use } from 'chai';
 import { http } from '../lib/http';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as lauService from './lau';
 import { baseURL, ENDPOINTS, AccessLog } from './lau'; // Import the setter for the feature flag
 
 // Using chai expect and sinon-chai for better integration
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 use(sinonChai);
 use(chaiAsPromised);
 

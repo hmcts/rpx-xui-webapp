@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { LEGAL_OPS_TYPE } from './constants';
@@ -27,6 +26,8 @@ import * as utils from '../utils';
 import * as userUtils from './utils';
 import * as nodeLib from '@hmcts/rpx-xui-node-lib';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Index', () => {

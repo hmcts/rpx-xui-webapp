@@ -48,6 +48,17 @@ function overrideConsoleLogforWorkersThreads() {
   };
 }
 
+// TODO: Remove if there is no problem
+/* function setFeatureLogFile(test) {
+  const fileName = getFeatureFileName(test);
+  const folderName = `${__dirname}/../../functional-output/tests/featureLogs-${testType}`;
+  featureLogFile = `${folderName}/${fileName}.txt`;
+  // if (!fs.existsSync(folderName)) {
+  //     fs.mkdirSync(folderName);
+  // }
+  codeceptMochawesomeLog.featureLogFilePath = featureLogFile;
+} */
+
 function getFeatureFileName(test) {
   const filePathSplit = test.file.split('/');
   return filePathSplit[filePathSplit.length - 1];

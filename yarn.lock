@@ -3276,12 +3276,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.50-exui-3209-1":
-  version: 7.2.50-exui-3209-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50-exui-3209-1"
+"@hapi/topo@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@hapi/topo@npm:6.0.2"
+  dependencies:
+    "@hapi/hoek": "npm:^11.0.2"
+  checksum: 10/ef959d3796638e11e5f7a9f2a64295ded7c638d6a21fa37bf1265b14c3a6636da593c9976138826c5b8972830a706d18a82b489e3d902e77026f7f0bec908704
+  languageName: node
+  linkType: hard
+
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.52":
+  version: 7.2.52
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.52"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/0aabe8c6b7a53014548b91103f84b996321ff0d27f832724e98e9ae513ebfb3cd900face8b4602359cb360be1e4320c30d9acd81ff45161c7ab1c3ffdc2c284a
+  checksum: 10/de9f70d0f5f048c40c6bcdd5524f535f75181e5aaab79d73bb1f12712ef2451149df4d4d02dad3339b67c6c36d7b1ec556bc48cbe3738e9c96080eda99aae724
   languageName: node
   linkType: hard
 
@@ -21815,7 +21824,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.50-exui-3209-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.52"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"

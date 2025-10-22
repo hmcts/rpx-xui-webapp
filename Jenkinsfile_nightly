@@ -86,9 +86,9 @@ withNightlyPipeline(type, product, component) {
               allowMissing         : true,
               alwaysLinkToLastBuild: true,
               keepAll              : true,
-              reportDir            : "reports/tests/crossbrowser/",
-              reportFiles          : 'index.html',
-              reportName           : 'XUI Manage Cases Cross Browser Tests'
+              reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+              reportFiles          : 'xui-playwright.html',
+              reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
             }

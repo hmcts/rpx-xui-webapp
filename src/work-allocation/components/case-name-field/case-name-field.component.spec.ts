@@ -135,7 +135,7 @@ describe('WorkAllocation', () => {
 
 @Component({
   template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>',
-  standalone: false,
+  standalone: false
 })
 class Wrapper1Component {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;

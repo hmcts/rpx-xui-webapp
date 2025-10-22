@@ -270,7 +270,7 @@ describe('AvailableTasksComponent', () => {
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
       const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}/tasks`], {
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.id}/tasks`], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS

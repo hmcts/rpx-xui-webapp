@@ -45,6 +45,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public mode: Mode;
   public showSpinner: boolean = true;
   public hearingStageOptions: LovRefDataModel[];
+  public jurisdiction: string;
+  public caseType: string;
 
   public message: string = 'Hearings may be unavailable due to their status, or if they are already linked to another hearing.\nOnly hearings from cases linked to this case will appear in this list.';
 
@@ -74,6 +76,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
           if (state.hearingLinks.lastError) {
             this.errors.push({ id: 'httpError', message: HearingSummaryEnum.BackendError });
           }
+          this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
+          this.caseType = state?.hearingValues?.caseInfo?.caseType;
           this.initForm();
           this.getHearingsAvailable();
           this.showSpinner = false;
@@ -235,19 +239,19 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public navigateToCaseHearing(caseId: string): void {
-    this.router.navigate(['/', 'cases', 'case-details', caseId, 'hearings']);
+    this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, caseId, 'hearings']);
   }
 
   public onBack(): void {
     if (this.isManageLink) {
       this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId]);
     } else {
-      this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+      this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
     }
   }
 
   public onCancel(): void {
-    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+    this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
   }
 
   public ngOnDestroy(): void {

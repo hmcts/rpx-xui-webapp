@@ -12,7 +12,6 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
 import { InitialisationSyncService } from '../../services/ccd-config/initialisation-sync-service';
-
 @Component({
   standalone: false,
   selector: 'exui-root',

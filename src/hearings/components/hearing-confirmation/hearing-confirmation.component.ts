@@ -12,4 +12,6 @@ export class HearingConfirmationComponent {
   @Input() public subheading: string;
   @Input() public subheadingDescription: string;
   @Input() public additionalDescription: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
 }

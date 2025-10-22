@@ -757,6 +757,8 @@ describe('WorkAllocation', () => {
         description: null,
         id: 'The task ID',
         case_id: 'The case reference',
+        jurisdiction: 'The jurisdiction',
+        case_type_id: 'The case type ID',
         caseName: 'The case name',
         caseCategory: 'The case category',
         location: 'The location',
@@ -772,7 +774,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The case reference')); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -780,7 +782,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/NEW CASE REFERENCE')); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -793,8 +795,12 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The case reference'));
-
+      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
+      console.log('testing output £££££££££££££££££££££££');
+      console.log('element.getAttribute(\'href\') --> ', element.getAttribute('href'));
+      console.log('encodeURI - /cases/case-details/The jurisdiction/The case type ID/The case reference --> ', encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
+      // '/cases/case-details/The jurisdiction/The case type ID/The%20case%20reference'
+      // '/cases/case-details/The%20jurisdiction/The%20case%20type%20ID/The%20case%20reference'
       // Make task.link null.
       task.case_id = null;
       fixture.detectChanges();

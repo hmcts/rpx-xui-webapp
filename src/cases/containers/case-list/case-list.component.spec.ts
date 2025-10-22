@@ -92,7 +92,6 @@ describe('CaseListComponent', () => {
     it('should make internal function calls', () => {
       spyOn(component, 'setCaseListFilterDefaults').and.callThrough();
       spyOn(component, 'listenToPaginationMetadata').and.callThrough();
-      spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
 
       mockDefinitionsService.getJurisdictions.and.returnValue(of([{
         id: 'some id',
@@ -106,7 +105,6 @@ describe('CaseListComponent', () => {
 
       expect(component.setCaseListFilterDefaults).toHaveBeenCalled();
       expect(component.listenToPaginationMetadata).toHaveBeenCalled();
-      expect(component.findCaseListPaginationMetadata).toHaveBeenCalled();
     });
   });
 
@@ -738,18 +736,15 @@ describe('CaseListComponent', () => {
       component.resultSubscription = of().subscribe();
       component.paginationSubscription = of().subscribe();
       component.caseFilterToggleSubscription = of().subscribe();
-      component.elasticSearchFlagSubsription = of().subscribe();
       spyOn(component.filterSubscription, 'unsubscribe').and.callThrough();
       spyOn(component.resultSubscription, 'unsubscribe').and.callThrough();
       spyOn(component.paginationSubscription, 'unsubscribe').and.callThrough();
       spyOn(component.caseFilterToggleSubscription, 'unsubscribe').and.callThrough();
-      spyOn(component.elasticSearchFlagSubsription, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.filterSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.resultSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.paginationSubscription.unsubscribe).toHaveBeenCalled();
       expect(component.caseFilterToggleSubscription.unsubscribe).toHaveBeenCalled();
-      expect(component.elasticSearchFlagSubsription.unsubscribe).toHaveBeenCalled();
     });
   });
 

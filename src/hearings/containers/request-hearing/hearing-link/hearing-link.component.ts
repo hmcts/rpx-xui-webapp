@@ -28,6 +28,8 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   public caseName: string;
   public showSpinner: boolean = true;
   public hearingLinksSub: Subscription;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(private readonly router: Router,
               private readonly formBuilder: FormBuilder,
@@ -48,6 +50,8 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
     this.initialiseFromHearingValues();
     this.hearingStore.select(fromHearingStore.caseInfoSelector).pipe(
       tap((caseInfo) => {
+        this.jurisdiction = caseInfo?.jurisdictionId;
+        this.caseType = caseInfo?.caseType;
         this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, hearingId: '' }));
       })
     ).subscribe();

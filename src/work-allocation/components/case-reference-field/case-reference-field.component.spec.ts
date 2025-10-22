@@ -7,17 +7,21 @@ import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-case-reference-field [caseReference]="caseReference"></exui-case-reference-field>'
+  template: '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>'
 })
 class WrapperComponent {
   @ViewChild(CaseReferenceFieldComponent, { static: true }) public appComponentRef: CaseReferenceFieldComponent;
   @Input() public caseReference: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
 }
 
 describe('WorkAllocation', () => {
   describe('CaseReferenceFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_REFERENCE: string = 'Casereference';
+    const JURISDICTION: string = 'IA';
+    const CASETYPE: string = 'Asylum';
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseReferenceFieldComponent;
@@ -43,11 +47,13 @@ describe('WorkAllocation', () => {
 
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
     });
 
     // Test no longer necessary but if formatting to case reference requires removal of spaces in future this may be useful again
@@ -80,11 +86,13 @@ describe('WorkAllocation', () => {
 
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
 
       // Clear out the value of caseReference and we should no longer have the anchor.
       wrapper.caseReference = undefined;
@@ -98,11 +106,13 @@ describe('WorkAllocation', () => {
 
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
 
       // Make caseReference undefined and we should no longer have the anchor.
       wrapper.caseReference = null;
@@ -116,11 +126,13 @@ describe('WorkAllocation', () => {
 
       // Add the caseReference and it should work (showing the link).
       wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
     });
   });
 });

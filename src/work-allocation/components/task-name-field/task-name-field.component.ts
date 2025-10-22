@@ -18,15 +18,19 @@ export class TaskNameFieldComponent implements OnChanges {
    */
   @Input() public taskName: string;
   @Input() public caseId: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
 
   private pHref: string;
   public ngOnChanges(): void {
     let href: string;
     if (this.caseId) {
-      const caseId = this.caseId;
-      if (caseId) {
-        const encodedCaseId = encodeURIComponent(caseId);
-        href = `${AppConstants.CASE_DETAILS_URL}${encodedCaseId}/tasks`;
+      if (this.caseId && this.jurisdiction && this.caseType) {
+        // in future required functionality, this should link to Tasks tab on Case details page
+        const jurisdiction = encodeURIComponent(this.jurisdiction);
+        const caseType = encodeURIComponent(this.caseType);
+        const caseId = encodeURIComponent(this.caseId);
+        href = `${AppConstants.CASE_DETAILS_URL}${jurisdiction}/${caseType}/${caseId}/tasks`;
       }
     }
     this.pHref = href;

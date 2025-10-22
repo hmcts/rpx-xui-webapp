@@ -43,6 +43,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public groupDetails: GroupDetailsModel;
   public groupLinkType = GroupLinkType;
   public hearingStageOptions: LovRefDataModel[];
+  private jurisdiction: string;
+  private caseType: string;
 
   constructor(
     protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -69,6 +71,8 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
           hearingGroup: [this.groupDetails && this.groupDetails.groupLinkType || '', Validators.required],
           hearingOrder: this.fb.array([])
         });
+        this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
+        this.caseType = state?.hearingValues?.caseInfo?.caseType;
       }
     );
     this.caseId = this.route.snapshot.params.caseId;
@@ -224,7 +228,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public onCancel(): void {
-    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+    this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
   }
 
   public ngOnDestroy(): void {

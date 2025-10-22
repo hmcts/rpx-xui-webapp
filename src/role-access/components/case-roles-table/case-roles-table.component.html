@@ -17,8 +17,8 @@
       <td class="govuk-table__cell govuk-body govuk-!-font-size-19">{{item.end | date:'d MMMM yyyy'}}</td>
       <td class="govuk-table__cell">
         <span (click)="openManageLink(items, item)" [hidden]="!showAllocateRoleLink">
-          <a href="javascript:void(0)"
-             class="right_m">Manage</a><span
+          <a href="#"
+             class="right_m" (click)="$event.preventDefault()">Manage</a><span
           class="govuk-accordion-wa__icon" [ngClass]="{'plus': !item.open, 'minus': item.open}"></span>
         </span>
       </td>
@@ -26,7 +26,6 @@
     <tr *ngIf="item.open">
       <td colspan="6" class="right">
         <a *ngFor="let action of item.actions"
-           href="javascript:void(0)"
            [routerLink]="['/', 'role-access', 'allocate-role', action.id]"
            [queryParams]="queryParams(item)" [state]="{backUrl: backUrl}">{{action.title}}</a>
       </td>

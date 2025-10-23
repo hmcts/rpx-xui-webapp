@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
-import { PanelRequirementsModel } from '../../../../../hearings/models/panelRequirements.model';
+import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
+import { PanelRequirementsModel } from '../../../../models/panelRequirements.model';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { MemberType, RadioOptions, RequirementType } from '../../../../models/hearings.enum';
 import { JudicialUserModel } from '../../../../models/judicialUser.model';
@@ -57,7 +57,7 @@ export class JudgeDetailsSectionComponent implements OnInit {
   }
 
   private getNeedJudge(): string {
-    const hasJudgeDetails = this.panelRequirements?.panelPreferences?.filter((panel) => panel.memberType === MemberType.JUDGE);
+    const hasJudgeDetails = this.panelRequirements?.panelPreferences?.filter((panel) => (panel.memberType === MemberType.JUDGE && panel.requirementType === RequirementType.MUSTINC));
     if (hasJudgeDetails?.length > 0) {
       return RadioOptions.YES;
     }

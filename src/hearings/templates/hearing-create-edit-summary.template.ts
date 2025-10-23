@@ -124,6 +124,19 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
     isHiddenSource: IsHiddenSource.WELSH_LOCATION
   },
   {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing panel required</h2>',
+    screenName: 'hearing-panel-required',
+    answers: [
+      {
+        id: 'needPanel',
+        answerTitle: 'Do you require a panel for this hearing?',
+        answerSource: AnswerSource.NEED_PANEL,
+        changeLink: '/hearings/request/hearing-panel-required#hearingPanelRequired'
+      }
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION
+  },
+  {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Judge details</h2>',
     screenName: 'hearing-judge',
     answers: [
@@ -137,22 +150,19 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
         id: 'judgeName',
         answerTitle: 'Name of the judge',
         answerSource: AnswerSource.JUDGE_NAME,
-        changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
-        isHiddenSource: IsHiddenSource.JUDGE_NAME
+        changeLink: '/hearings/request/hearing-judge#inputSelectPerson'
       },
       {
         id: 'judgeTypes',
         answerTitle: 'Select all judge types that apply',
         answerSource: AnswerSource.JUDGE_TYPES,
-        changeLink: '/hearings/request/hearing-judge#judgeTypes',
-        isHiddenSource: IsHiddenSource.JUDGE_TYPES
+        changeLink: '/hearings/request/hearing-judge#judgeTypes'
       },
       {
         id: 'judgeExclusion',
         answerTitle: 'Exclude a judge',
         answerSource: AnswerSource.JUDGE_EXCLUSION,
-        changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
-        isHiddenSource: IsHiddenSource.JUDGE_EXCLUSION
+        changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude'
       }
     ]
   },
@@ -189,6 +199,31 @@ export const HEARING_CREATE_EDIT_SUMMARY_TEMPLATE: Section[] = [
       }
     ],
     isHiddenSource: IsHiddenSource.PANEL_DETAILS_EXCLUSION
+  },
+  {
+    sectionHTMLTitle: '<h2 class="govuk-heading-m">Panel details</h2>',
+    screenName: 'hearing-panel-selector',
+    answers: [
+      {
+        id: 'panelInclusion',
+        answerTitle: 'Include specific panel members',
+        answerSource: AnswerSource.PANEL_INCLUSION,
+        changeLink: '/hearings/request/hearing-panel-selector#inputSelectPersonInclude'
+      },
+      {
+        id: 'panelExclusion',
+        answerTitle: 'Exclude specific panel members',
+        answerSource: AnswerSource.PANEL_EXCLUSION,
+        changeLink: '/hearings/request/hearing-panel-selector#inputSelectPersonExclude'
+      },
+      {
+        id: 'panelRoles',
+        answerTitle: 'Select any other panel roles required',
+        answerSource: AnswerSource.PANEL_ROLES,
+        changeLink: '/hearings/request/hearing-panel-selector#specificPanelSelection'
+      }
+    ],
+    isHiddenSource: IsHiddenSource.HEARING_PANEL_SELECTOR_EXCLUSION
   },
   {
     sectionHTMLTitle: '<h2 class="govuk-heading-m">Length, date and priority level of hearing</h2>',

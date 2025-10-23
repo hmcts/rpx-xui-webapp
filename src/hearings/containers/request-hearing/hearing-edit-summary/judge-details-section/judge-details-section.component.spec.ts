@@ -147,6 +147,57 @@ describe('JudgeDetailsSectionComponent', () => {
     expect(component.excludedJudgeNames).toEqual('Ramon Herrera');
   });
 
+  it('getNeedJudge: returns "No" when no MUSTINC judge but roleType has entries', () => {
+    component.panelRequirements = {
+      panelPreferences: [
+        { memberID: '4100728', memberType: MemberType.JUDGE, requirementType: RequirementType.EXCLUDE }
+      ],
+      roleType: ['Tribunal'] // triggers the NO branch when MUSTINC is absent
+    };
+    component.ngOnInit();
+    expect(component.needJudge).toBe('No'); // RadioOptions.NO
+  });
+
+  it('getNeedJudge: returns empty string when no MUSTINC judge and roleType empty', () => {
+    component.panelRequirements = {
+      panelPreferences: [
+        { memberID: '4100728', memberType: MemberType.JUDGE, requirementType: RequirementType.EXCLUDE }
+      ],
+      roleType: []
+    };
+    component.ngOnInit();
+    expect(component.needJudge).toBe(''); // fallback branch
+  });
+
+  it('getNeedJudge: returns "Yes" when MUSTINC judge exists, regardless of roleType', () => {
+    component.panelRequirements = {
+      panelPreferences: [
+        { memberID: '4917866', memberType: MemberType.JUDGE, requirementType: RequirementType.MUSTINC },
+        { memberID: '4100728', memberType: MemberType.JUDGE, requirementType: RequirementType.EXCLUDE }
+      ],
+      roleType: ['Tribunal', 'dtj']
+    };
+    component.ngOnInit();
+    expect(component.needJudge).toBe('Yes');
+  });
+
+  it('getNeedJudge: does not return "Yes" when only EXCLUDE judges are present', () => {
+    component.panelRequirements = {
+      panelPreferences: [
+        { memberID: '4100728', memberType: MemberType.JUDGE, requirementType: RequirementType.EXCLUDE }
+      ],
+      roleType: []
+    };
+    component.ngOnInit();
+    expect(component.needJudge).toBe(''); // not YES; falls through
+  });
+
+  it('getNeedJudge: is resilient when panelRequirements is undefined', () => {
+    component.panelRequirements = undefined as any;
+    component.ngOnInit();
+    expect(component.needJudge).toBe('');
+  });
+
   it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('needJudge');

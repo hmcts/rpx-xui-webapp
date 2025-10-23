@@ -203,5 +203,3 @@ test('Validate invalid date error message', async ({ page }) => {
   await createTestCaseErrorValidation(page);
   await signOut(page);
 });
-
-

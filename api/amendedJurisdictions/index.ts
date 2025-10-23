@@ -1,6 +1,5 @@
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
-import { trackTrace } from '../lib/appInsights';
 
 const jurisdictions = /aggregated\/.+jurisdictions\?/;
 
@@ -54,7 +53,6 @@ export const checkCachedJurisdictions = (proxyReq, req) => {
   }
   const cached = req.session[sessionKey];
   if (cached) {
-    trackTrace(`Cached returned data ${sessionKey}:-`, cached);
     return cached;
   }
 };

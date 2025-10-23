@@ -3,10 +3,7 @@ import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
-  waServiceConfig: 'wa-service-config',
   waLandingPageRoles: 'wa-landing-page-roles',
-  waAccess: 'wa-access',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
@@ -19,9 +16,7 @@ function featureToAttributeName(key: string): string {
 }
 
 export const featureToAttributeMap = new Map<string, string>([
-  [featureNames.waServiceConfig, featureToAttributeName(featureNames.waServiceConfig)],
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
-  [featureNames.waAccess, featureToAttributeName(featureNames.waAccess)],
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],

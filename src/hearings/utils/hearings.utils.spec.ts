@@ -526,7 +526,7 @@ describe('HearingsUtils', () => {
           'categoryParent': 'ABA5-PRL'
         }
       ],
-      'caseDeepLink': 'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/1690807693531270#Case File View',
+      'caseDeepLink': 'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/IA/Asylum/1690807693531270#Case File View',
       'externalCaseReference': '',
       'caseManagementLocationCode': '283922',
       'autoListFlag': false,

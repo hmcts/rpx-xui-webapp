@@ -2188,7 +2188,8 @@ export const hearingActualsMainModel: HearingActualsMainModel = {
 
 export const caseInfoStore = {
   caseReference: '1111222233334444',
-  jurisdictionId: '',
+  jurisdictionId: 'IA',
+  caseType: 'Asylum',
   hearingId: ''
 };
 

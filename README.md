@@ -186,6 +186,7 @@ Key behaviour:
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
 - Run info shows project, release, environment, branch and worker count. Override defaults via `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `GIT_BRANCH` or `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
+- Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
 
 ### Parallelism
 

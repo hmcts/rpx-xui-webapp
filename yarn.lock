@@ -3276,12 +3276,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.51-test-log-errors-1":
-  version: 7.2.51-test-log-errors-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.51-test-log-errors-1"
+"@hapi/topo@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@hapi/topo@npm:6.0.2"
+  dependencies:
+    "@hapi/hoek": "npm:^11.0.2"
+  checksum: 10/ef959d3796638e11e5f7a9f2a64295ded7c638d6a21fa37bf1265b14c3a6636da593c9976138826c5b8972830a706d18a82b489e3d902e77026f7f0bec908704
+  languageName: node
+  linkType: hard
+
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.53":
+  version: 7.2.53
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.53"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9da684467d37daa8b134836acba3570f034ceba113001d93ef583b87b1c400ecbf102e34653a1b121d28aba94e331ec1ef1804e07f3496fad1ae98bcc3393ec8
+  checksum: 10/1ecdfeec8f6d36393c549ae36ff043b12a10b3e37bf2980b392be2d51568cb6d4a6d07daed6d9c2f019ed6e4fee096bfe8359bfb0947ca649d89b3910bc49b34
   languageName: node
   linkType: hard
 
@@ -6551,6 +6560,7 @@ __metadata:
 "@rollup/rollup-win32-x64-gnu@npm:4.52.5":
   version: 4.52.5
   resolution: "@rollup/rollup-win32-x64-gnu@npm:4.52.5"
+  checksum: 10/8a006755757e6f606c2385500deffebef0e368aebfab6b63daee39579a69defa616663b57f9be900f40e5d2748a216fb2ee9e068205e052a6f2d896191f924ca
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -16682,6 +16692,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsep@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "jsep@npm:1.4.0"
+  checksum: 10/935824fe6ac28fcff3cd13878f508f99f6c13e7f0f53ec9fca0d3db465e6dd15f8af030bcdc75a38b07c78359c656647435923a26aceb91607027021f00c17f2
+  languageName: node
+  linkType: hard
+
 "jsesc@npm:^3.0.2":
   version: 3.1.0
   resolution: "jsesc@npm:3.1.0"
@@ -21810,7 +21827,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.51-test-log-errors-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.53"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"

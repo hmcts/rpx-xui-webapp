@@ -7,6 +7,7 @@ import { SearchTaskParameter, SearchTaskRequest } from '../../models/dtos';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-my-tasks',
   templateUrl: 'my-tasks.component.html'
 })

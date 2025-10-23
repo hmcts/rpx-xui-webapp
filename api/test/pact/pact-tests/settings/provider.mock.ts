@@ -24,3 +24,6 @@ export class PactV3TestSetup {
     });
   }
 }
+
+// Legacy export for backward compatibility
+export const PactTestSetup = PactV3TestSetup;

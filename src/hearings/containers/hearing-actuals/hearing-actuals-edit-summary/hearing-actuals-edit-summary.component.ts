@@ -8,6 +8,7 @@ import * as fromHearingStore from '../../../store';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals-edit-summary',
   templateUrl: './hearing-actuals-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-edit-summary.component.scss'],

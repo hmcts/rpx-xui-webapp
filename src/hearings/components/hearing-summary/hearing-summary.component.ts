@@ -9,6 +9,7 @@ import { Section } from '../../models/section';
 import * as fromHearingStore from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
   styleUrls: ['./hearing-summary.component.scss']

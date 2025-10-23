@@ -19,6 +19,7 @@ import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-r
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-add-exclusion-home',
   templateUrl: './add-exclusion-home.component.html',
   styleUrls: ['./add-exclusion-home.component.scss']

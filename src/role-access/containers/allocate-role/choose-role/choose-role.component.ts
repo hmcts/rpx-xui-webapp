@@ -18,6 +18,7 @@ import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-choose-role',
   templateUrl: './choose-role.component.html'
 })

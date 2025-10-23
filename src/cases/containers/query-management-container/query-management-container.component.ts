@@ -36,6 +36,7 @@ import { ServiceAttachmentHintTextResponse } from '../../models/service-message/
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-query-management-container',
   templateUrl: './query-management-container.component.html',
   styleUrls: ['./query-management-container.component.scss']

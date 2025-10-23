@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearings-error-page',
   templateUrl: './error-page.component.html',
   styleUrls: ['./error-page.component.scss']

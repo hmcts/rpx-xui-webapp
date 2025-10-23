@@ -7725,16 +7725,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.17.0":
-  version: 18.19.130
-  resolution: "@types/node@npm:18.19.130"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10/ebb85c6edcec78df926de27d828ecbeb1b3d77c165ceef95bfc26e171edbc1924245db4eb2d7d6230206fe6b1a1f7665714fe1c70739e9f5980d8ce31af6ef82
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^22.5.5":
+"@types/node@npm:^22.0.0, @types/node@npm:^22.5.5":
   version: 22.18.12
   resolution: "@types/node@npm:22.18.12"
   dependencies:
@@ -21862,7 +21853,7 @@ __metadata:
     "@types/jasmine": "npm:~3.10.0"
     "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^10.0.0"
-    "@types/node": "npm:^18.17.0"
+    "@types/node": "npm:^22.0.0"
     "@types/sinon": "npm:^7.0.13"
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
     "@typescript-eslint/parser": "npm:^7.2.0"
@@ -24126,13 +24117,6 @@ __metadata:
   version: 1.13.7
   resolution: "underscore@npm:1.13.7"
   checksum: 10/1ce3368dbe73d1e99678fa5d341a9682bd27316032ad2de7883901918f0f5d50e80320ccc543f53c1862ab057a818abc560462b5f83578afe2dd8dd7f779766c
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 10/0097779d94bc0fd26f0418b3a05472410408877279141ded2bd449167be1aed7ea5b76f756562cb3586a07f251b90799bab22d9019ceba49c037c76445f7cddd
   languageName: node
   linkType: hard
 

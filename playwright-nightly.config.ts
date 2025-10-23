@@ -60,23 +60,27 @@ module.exports = defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
         headless: headlessMode,
-        trace: 'on-first-retry'
+        trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure'
       }
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'],
-        screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure'
       }
     },
     {
       name: 'webkit',
       use: {
-        screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure'
       }
     }
     // {

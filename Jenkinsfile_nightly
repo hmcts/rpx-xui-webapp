@@ -87,29 +87,7 @@ withNightlyPipeline(type, product, component) {
         //     reportFiles          : 'Report.html',
         //     reportName           : 'Manage Cases a11y Test Report'
         // ])
-    }
-
-    afterSuccess('mutationTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Manage Cases Mutation tests'
-        ])
-    }
-
-  afterSuccess('securityScan') {
-    publishHTML([
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "reports/tests/",
-      reportFiles          : 'activescan.html',
-      reportName           : 'XUIMC ZAP Security Scan Report'
-    ])
-  }
+    
 
       stage('API Test') {
             try {
@@ -172,5 +150,26 @@ withNightlyPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
             }
         }
+    afterSuccess('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Mutation tests'
+        ])
+    }
+
+  afterSuccess('securityScan') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/",
+      reportFiles          : 'activescan.html',
+      reportName           : 'XUIMC ZAP Security Scan Report'
+    ])
+  }
 }
      

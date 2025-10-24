@@ -54,6 +54,10 @@ withNightlyPipeline(type, product, component) {
         yarnBuilder.yarn('cache clean')
     }
 
+    afterSuccess('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
+    
     afterSuccess('build') {
         yarnBuilder.yarn('build')
 
@@ -147,9 +151,7 @@ withNightlyPipeline(type, product, component) {
         // ])
     }
 
-    afterSuccess('fortify-scan') {
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-    }
+
 
     afterSuccess('mutationTest') {
         publishHTML([

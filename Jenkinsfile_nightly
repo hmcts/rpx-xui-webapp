@@ -57,7 +57,7 @@ withNightlyPipeline(type, product, component) {
     afterSuccess('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
-    
+
     afterSuccess('build') {
         yarnBuilder.yarn('build')
 
@@ -78,6 +78,43 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
 
+
+
+        // yarnBuilder.yarn('test:a11y')
+        // publishHTML([
+        //     allowMissing         : true,
+        //     alwaysLinkToLastBuild: true,
+        //     keepAll              : true,
+        //     reportDir            : "reports/tests/a11y/",
+        //     reportFiles          : 'Report.html',
+        //     reportName           : 'Manage Cases a11y Test Report'
+        // ])
+    }
+
+
+
+    afterSuccess('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Mutation tests'
+        ])
+    }
+
+  afterSuccess('securityScan') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/",
+      reportFiles          : 'activescan.html',
+      reportName           : 'XUIMC ZAP Security Scan Report'
+    ])
+  }
+}
       stage('API Test') {
             try {
               yarnBuilder.yarn('test:api')
@@ -139,39 +176,3 @@ withNightlyPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
             }
         }
-
-        // yarnBuilder.yarn('test:a11y')
-        // publishHTML([
-        //     allowMissing         : true,
-        //     alwaysLinkToLastBuild: true,
-        //     keepAll              : true,
-        //     reportDir            : "reports/tests/a11y/",
-        //     reportFiles          : 'Report.html',
-        //     reportName           : 'Manage Cases a11y Test Report'
-        // ])
-    }
-
-
-
-    afterSuccess('mutationTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Manage Cases Mutation tests'
-        ])
-    }
-
-  afterSuccess('securityScan') {
-    publishHTML([
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "reports/tests/",
-      reportFiles          : 'activescan.html',
-      reportName           : 'XUIMC ZAP Security Scan Report'
-    ])
-  }
-}

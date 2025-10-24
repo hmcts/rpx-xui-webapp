@@ -78,8 +78,6 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
 
-
-
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([
         //     allowMissing         : true,
@@ -90,8 +88,6 @@ withNightlyPipeline(type, product, component) {
         //     reportName           : 'Manage Cases a11y Test Report'
         // ])
     }
-
-
 
     afterSuccess('mutationTest') {
         publishHTML([
@@ -114,8 +110,8 @@ withNightlyPipeline(type, product, component) {
       reportName           : 'XUIMC ZAP Security Scan Report'
     ])
   }
-}
-      stage('API Test') {
+
+   stage('API Test') {
             try {
               yarnBuilder.yarn('test:api')
             } catch (Error) {
@@ -176,3 +172,5 @@ withNightlyPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
             }
         }
+}
+     

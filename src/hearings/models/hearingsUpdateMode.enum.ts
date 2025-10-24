@@ -66,6 +66,8 @@ export interface AfterPageVisitProperties {
   hearingFacilitiesChangesConfirmed?: boolean;
   hearingUnavailabilityDatesChanged: boolean;
   hearingUnavailabilityDatesConfirmed?: boolean;
+  additionalInsructionsChangesRequired: boolean;
+  additionalInsructionsChangesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {

@@ -377,6 +377,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             participantAttendanceChangesRequired: this.pageParticipantAttendanceChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
             hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesExists(),
+            additionalInsructionsChangesRequired: this.pageVisitAdditionalInstructionsChangeExists(),
             partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
@@ -508,7 +509,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       this.pageVisitNonReasonableAdjustmentChangeExists() ||
       this.pageParticipantAttendanceChangeExists() ||
       this.pageVisitHearingWindowChangeExists() ||
-      this.pageVisitHearingFacilitiesExists();
+      this.pageVisitHearingFacilitiesExists() ||
+      this.pageVisitAdditionalInstructionsChangeExists();
     // Reset submit updated request event
     this.hearingsService.submitUpdatedRequestClicked = false;
   }
@@ -518,8 +520,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const nonReasonableAdjustmentChanged = this.pageVisitNonReasonableAdjustmentChangeExists();
     const partiesChanged = this.pageParticipantAttendanceChangeExists();
     const hearingWindowChanged = this.pageVisitHearingWindowChangeExists();
+    const additionalInstructionsChanged = this.pageVisitAdditionalInstructionsChangeExists();
 
-    const anyChange = reasonableAdjustmentChanged || nonReasonableAdjustmentChanged || partiesChanged || hearingWindowChanged;
+    const anyChange = reasonableAdjustmentChanged || nonReasonableAdjustmentChanged || partiesChanged || hearingWindowChanged || additionalInstructionsChanged;
 
     if (!anyChange && hasHearingRequestObjectChanged) {
       return false;
@@ -726,6 +729,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+  }
+
+  private pageVisitAdditionalInstructionsChangeExists(): boolean {
+    if (!this.sectionsToDisplay.includes(this.hearingScreenEnum.HEARING_ADDITIONAL_INSTRUCTIONS)) {
+      // Do not consider hearing window changes as hearing timing is not part of the screen flow
+      return false;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInsructionsChangesConfirmed) {
+      // Reasonable adjustment changes already confirmed
+      return false;
+    }
+    return HearingsUtils.hasListingCommentsChange(this.hearingRequestMainModel.hearingDetails?.listingComments, this.serviceHearingValuesModel?.listingComments);
+    // return this.hearingRequestMainModel.hearingDetails?.listingComments !== this.serviceHearingValuesModel?.listingComments;
   }
 
   private defaultStringSort(a: string, b: string): number {

@@ -7517,7 +7517,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:^4.16.1, @types/express@npm:^4.17.21":
+"@types/express@npm:^4.17.21":
   version: 4.17.23
   resolution: "@types/express@npm:4.17.23"
   dependencies:
@@ -7526,6 +7526,17 @@ __metadata:
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
   checksum: 10/cf4d540bbd90801cdc79a46107b8873404698a7fd0c3e8dd42989d52d3bd7f5b8768672e54c20835e41e27349c319bb47a404ad14c0f8db0e9d055ba1cb8a05b
+  languageName: node
+  linkType: hard
+
+"@types/express@npm:^5.0.0":
+  version: 5.0.4
+  resolution: "@types/express@npm:5.0.4"
+  dependencies:
+    "@types/body-parser": "npm:*"
+    "@types/express-serve-static-core": "npm:^5.0.0"
+    "@types/serve-static": "npm:*"
+  checksum: 10/0a07540b8220d0ebeeaca3afad96b6541d815e36f204c9fac202dd4c59fc545ffabea46df2c02f44276c00adbfccb7bb7a98f877cea4aebb0f9f8d4502447fec
   languageName: node
   linkType: hard
 
@@ -21855,7 +21866,7 @@ __metadata:
     "@types/cookie-parser": "npm:^1.4.2"
     "@types/crypto-js": "npm:^4.0.0"
     "@types/ejs": "npm:^3.0.0"
-    "@types/express": "npm:^4.16.1"
+    "@types/express": "npm:^5.0.0"
     "@types/express-session": "npm:^1.17.0"
     "@types/faker": "npm:^6.0.0"
     "@types/global-agent": "npm:^3.0.0"

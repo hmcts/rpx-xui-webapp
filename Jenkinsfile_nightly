@@ -111,7 +111,7 @@ withNightlyPipeline(type, product, component) {
                 alwaysLinkToLastBuild: true,
                 keepAll              : true,
                 reportDir            : "functional-output/tests/codecept-ngIntegration",
-                reportFiles          : 'index.html',
+                reportFiles          : 'cucumber_report.html',
                 reportName           : 'XUI Manage Cases Full functional Tests'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'

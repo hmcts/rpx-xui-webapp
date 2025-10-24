@@ -111,7 +111,7 @@ withNightlyPipeline(type, product, component) {
     ])
   }
 
-   stage('API Test') {
+      stage('API Test') {
             try {
               yarnBuilder.yarn('test:api')
             } catch (Error) {
@@ -128,7 +128,7 @@ withNightlyPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
             }
         }
-      
+          
       stage('Playwright Install') {
             try {
               yarnBuilder.yarn('test:setup:playwright-install')

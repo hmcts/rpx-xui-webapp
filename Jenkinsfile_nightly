@@ -49,7 +49,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
-    enableFullFunctionalTest(120)
+    
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')
     }
@@ -78,7 +78,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
      }
-    afterAlways('fullFunctionalTest') {
+    afterAlways('fortify-scan') {
   
       stage('API Test') {
             try {

@@ -59,7 +59,7 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
-    enableApiGatewayTest()
+    
 
     enablePactAs([
         AppPipelineDsl.PactRoles.CONSUMER
@@ -74,6 +74,7 @@ withPipeline(type, product, component) {
             error(message: "${STAGE_NAME} is unstable: " + Error.toString())
         }  
     }    
+    enableApiGatewayTest()
     }
 
     afterSuccess('test') {

@@ -64,6 +64,8 @@ withPipeline(type, product, component) {
         AppPipelineDsl.PactRoles.CONSUMER
     ])
 
+    enableApiGatewayTest()
+
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')
         stage('Playwright Install') {
@@ -72,7 +74,7 @@ withPipeline(type, product, component) {
         } catch (Error) {
             error(message: "${STAGE_NAME} is unstable: " + Error.toString())
         }  
-    }
+    }    
     }
 
     afterSuccess('test') {

@@ -156,36 +156,36 @@ resource "azurerm_monitor_scheduled_query_rules_alert_v2" "welsh_usage_report" {
   criteria {
     # Note: This query is configured to execute daily, but it will only produce results on the 15th day of each month.
     # This ensures that the alert is triggered and the email is sent out just once per month, regardless of Welsh usage.
-    query = <<-QUERY
-let isReportDay = dayofmonth(now()) == 18;
-    let currentMonth = startofmonth(now());
-    let previousMonth = startofmonth(datetime_add('month', -1, currentMonth));
-    let FilteredRequests = requests
-    | where isReportDay 
-    | where timestamp >= previousMonth and timestamp < currentMonth
-    | where url has "/api/translation/cy"
-    | extend day = startofday(timestamp);
-    let UniqueSessionsPerDay = FilteredRequests
-    | where isnotempty(session_Id)
-    | summarize by day, session_Id
-    | summarize SessionCount = count() by day;
-    let HasNoSession = FilteredRequests
-    | where isempty(session_Id)
-    | summarize HasMissingSessions = count() by day
-    | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-    let WelshUsageData = UniqueSessionsPerDay
-    | join kind=fullouter HasNoSession on day
-    | extend
-        SessionCount = coalesce(SessionCount, 0),
-        NoSessionAddition = coalesce(NoSessionAddition, 0)
-    | extend TotalSessions = SessionCount + NoSessionAddition
-    | project day, TotalSessions
-    | order by day asc;
-    union WelshUsageData, (print day = currentMonth, TotalSessions = 0, reportGenerated = "No Welsh usage in previous month")
-    | where isReportDay
-    | project day, TotalSessions
-    | render columnchart
-    QUERY
+    query = <<-KQL
+let isReportDay = dayofmonth(now()) == 27;
+let currentMonth = startofmonth(now());
+let previousMonth = startofmonth(datetime_add('month', -1, currentMonth));
+let FilteredRequests = requests
+| where isReportDay 
+| where timestamp >= previousMonth and timestamp < currentMonth
+| where url has "/api/translation/cy"
+| extend day = startofday(timestamp);
+let UniqueSessionsPerDay = FilteredRequests
+| where isnotempty(session_Id)
+| summarize by day, session_Id
+| summarize SessionCount = count() by day;
+let HasNoSession = FilteredRequests
+| where isempty(session_Id)
+| summarize HasMissingSessions = count() by day
+| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
+let WelshUsageData = UniqueSessionsPerDay
+| join kind=fullouter HasNoSession on day
+| extend
+    SessionCount = coalesce(SessionCount, 0),
+    NoSessionAddition = coalesce(NoSessionAddition, 0)
+| extend TotalSessions = SessionCount + NoSessionAddition
+| project day, TotalSessions
+| order by day asc;
+union WelshUsageData, (print day = currentMonth, TotalSessions = 0, reportGenerated = "No Welsh usage in previous month")
+| where isReportDay
+| project day, TotalSessions
+| render columnchart
+KQL
 
     time_aggregation_method = "Count"
     threshold               = 0

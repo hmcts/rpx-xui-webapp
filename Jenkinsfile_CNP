@@ -127,14 +127,14 @@ withPipeline(type, product, component) {
         ])
     }
 
-    afterSuccess('apiGatewayTest:preview') {
+    afterSuccess('apiGatewayTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/api_functional/",
             reportFiles          : 'mochawesome.html',
-            reportName           : 'PREVIEW API Functional Test'
+            reportName           : 'API Functional Test'
         ])
     }
 
@@ -157,17 +157,6 @@ withPipeline(type, product, component) {
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
             reportFiles          : 'xui-playwright.html',
             reportName           : 'PREVIEW Playwright E2E'
-        ])
-    }
-
-    afterSuccess('apiGatewayTest:aat') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/api_functional/",
-            reportFiles          : 'mochawesome.html',
-            reportName           : 'AAT API Functional Test'
         ])
     }
 

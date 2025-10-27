@@ -94,13 +94,21 @@ resource "azurerm_resource_group" "rg" {
 # Logic App for Monthly KQL Reports
 data "azurerm_key_vault_secret" "logic_app_email_recipients" {
   count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = var.logic_app_email_recipients_key
+  name         = var.welsh_email_address_key
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
-data "azurerm_key_vault_secret" "logic_app_acs_connection_string" {
+resource "azurerm_communication_service" "acs" {
+  count               = var.welsh_reporting_enabled ? 1 : 0
+  name                = "${local.app_full_name}-acs-${var.env}"
+  resource_group_name = azurerm_resource_group.rg.name
+  data_location       = "United Kingdom"
+}
+
+resource "azurerm_key_vault_secret" "acs_connection_string" {
   count        = var.welsh_reporting_enabled ? 1 : 0
   name         = var.logic_app_acs_connection_string_key
+  value        = azurerm_communication_service.acs.0.primary_connection_string
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 

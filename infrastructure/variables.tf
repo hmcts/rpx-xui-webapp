@@ -68,11 +68,7 @@ variable "logic_app_schedule_frequency" {
   type        = string
 }
 
-variable "logic_app_email_recipients_key" {
-  default     = "kql-report-email-recipients"
-  description = "Key vault key for email recipients list"
-  type        = string
-}
+
 
 variable "logic_app_acs_connection_string_key" {
   default     = "acs-email-connection-string"

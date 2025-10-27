@@ -58,8 +58,7 @@ withPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
     disableLegacyDeployment()
-    syncBranchesWithMaster(branchesToSync)
-    
+    syncBranchesWithMaster(branchesToSync)    
 
     enablePactAs([
         AppPipelineDsl.PactRoles.CONSUMER
@@ -74,7 +73,6 @@ withPipeline(type, product, component) {
             error(message: "${STAGE_NAME} is unstable: " + Error.toString())
         }  
     }    
-    enableApiGatewayTest()
     }
 
     afterSuccess('test') {
@@ -128,17 +126,6 @@ withPipeline(type, product, component) {
         ])
     }
 
-    afterSuccess('apiGatewayTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/api_functional/",
-            reportFiles          : 'mochawesome.html',
-            reportName           : 'API Functional Test'
-        ])
-    }
-
     afterSuccess('smoketest:preview') {
         publishHTML([
             allowMissing         : true,
@@ -148,6 +135,23 @@ withPipeline(type, product, component) {
             reportFiles          : 'cucumber_report.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
+        stage('API Test') {
+            try {
+              yarnBuilder.yarn('test:api')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/api_functional/",
+              reportFiles          : 'mochawesome.html',
+              reportName           : 'PREVIEW API Functional Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
+        }
     }
 
     afterSuccess('functionalTest:preview') {
@@ -170,6 +174,23 @@ withPipeline(type, product, component) {
             reportFiles          : 'cucumber_report.html',
             reportName           : 'AAT Smoke Test'
         ])
+        stage('API Test') {
+            try {
+              yarnBuilder.yarn('test:api')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/api_functional/",
+              reportFiles          : 'mochawesome.html',
+              reportName           : 'AAT API Functional Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
+        }
     }
 
     afterSuccess('functionalTest:aat') {

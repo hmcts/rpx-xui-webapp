@@ -66,6 +66,13 @@ withPipeline(type, product, component) {
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')
+        stage('Playwright Install') {
+        try {
+            yarnBuilder.yarn('test:setup:playwright-install')
+        } catch (Error) {
+            error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+        }  
+    }
     }
 
     afterSuccess('test') {
@@ -106,14 +113,6 @@ withPipeline(type, product, component) {
             reportName           : 'Manage Cases a11y Test Report'
         ])
 
-    }
-
-    stage('Playwright Install') {
-            try {
-              yarnBuilder.yarn('test:setup:playwright-install')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  
     }
 
     afterSuccess('smoketest:demo') {

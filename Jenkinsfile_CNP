@@ -59,12 +59,11 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
+    enableApiGatewayTest()
 
     enablePactAs([
         AppPipelineDsl.PactRoles.CONSUMER
-    ])
-
-    enableApiGatewayTest()
+    ])   
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')

@@ -67,10 +67,6 @@ moved {
   to   = module.application_insights.azurerm_application_insights.this
 }
 
-moved {
-  from = azurerm_monitor_scheduled_query_rules_alert.welsh_usage_report
-  to   = azurerm_monitor_scheduled_query_rules_alert_v2.welsh_usage_report
-}
 
 resource "azurerm_application_insights" "appinsight" {
   name                = "${local.app_full_name}-appinsights-${var.env}-classic"
@@ -130,70 +126,6 @@ resource "azurerm_monitor_action_group" "welsh_usage_alerts" {
     content {
       name          = "welsh-team-${email_receiver.key + 1}"
       email_address = trimspace(email_receiver.value)
-    }
-  }
-
-  tags = var.common_tags
-}
-
-resource "azurerm_monitor_scheduled_query_rules_alert_v2" "welsh_usage_report" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-welsh-usage-${var.env}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  scopes                = [module.application_insights.id]
-  description           = "Monthly Welsh language usage report"
-  enabled               = var.welsh_reporting_enabled
-  severity              = 3
-  evaluation_frequency  = "PT5M"  # 5 minutes in ISO 8601 format
-  window_duration       = "P2D"  
-
-  action {
-    action_groups = [azurerm_monitor_action_group.welsh_usage_alerts.0.id]
-  }
-
-  criteria {
-    # Note: This query is configured to execute daily, but it will only produce results on the 15th day of each month.
-    # This ensures that the alert is triggered and the email is sent out just once per month, regardless of Welsh usage.
-    query = <<-KQL
-let isReportDay = dayofmonth(now()) == 27;
-let currentMonth = startofmonth(now());
-let previousMonth = startofmonth(datetime_add('month', -1, currentMonth));
-let FilteredRequests = requests
-| where isReportDay 
-| where timestamp >= previousMonth and timestamp < currentMonth
-| where url has "/api/translation/cy"
-| extend day = startofday(timestamp);
-let UniqueSessionsPerDay = FilteredRequests
-| where isnotempty(session_Id)
-| summarize by day, session_Id
-| summarize SessionCount = count() by day;
-let HasNoSession = FilteredRequests
-| where isempty(session_Id)
-| summarize HasMissingSessions = count() by day
-| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-let WelshUsageData = UniqueSessionsPerDay
-| join kind=fullouter HasNoSession on day
-| extend
-    SessionCount = coalesce(SessionCount, 0),
-    NoSessionAddition = coalesce(NoSessionAddition, 0)
-| extend TotalSessions = SessionCount + NoSessionAddition
-| project day, TotalSessions
-| order by day asc;
-union WelshUsageData, (print day = currentMonth, TotalSessions = 0, reportGenerated = "No Welsh usage in previous month")
-| where isReportDay
-| project day, TotalSessions
-| render columnchart
-KQL
-
-    time_aggregation_method = "Count"
-    threshold               = 0
-    operator                = "GreaterThan"
-
-    failing_periods {
-      minimum_failing_periods_to_trigger_alert = 1
-      number_of_evaluation_periods             = 1
     }
   }
 

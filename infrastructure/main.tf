@@ -135,12 +135,8 @@ resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
 
   frequency = var.logic_app_schedule_frequency
   interval  = var.logic_app_schedule_interval
-
-  # Schedule to run on the 1st day of each month at 9 AM UTC
-  schedule {
-    hours   = ["9"]
-    minutes = ["0"]
-  }
+  # 1st of every month at 09:00 UTC
+  start_time = formatdate("YYYY-MM-01'T'09:00:00Z", timestamp())
 }
 
 resource "azurerm_logic_app_action_custom" "run_kql_query" {
@@ -305,22 +301,8 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
     type = "SystemAssigned"
   }
 
-  workflow_parameters = jsonencode({
-    "$connections" = {
-      "value" = {
-        "azuremonitorlogs" = {
-          "connectionId"   = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
-          "connectionName" = "azuremonitorlogs"
-          "id"             = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
-        }
-        "azurecommunicationservices" = {
-          "connectionId"   = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
-          "connectionName" = "azurecommunicationservices"
-          "id"             = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
-        }
-      }
-    }
-  })
+  # Empty map – we use managed identity, not API-connections
+  workflow_parameters = {}
 
   tags = var.common_tags
 }

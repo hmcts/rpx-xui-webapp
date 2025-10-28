@@ -135,6 +135,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'cucumber_report.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
         stage('API Test') {
             try {
               yarnBuilder.yarn('test:api')
@@ -154,7 +155,7 @@ withPipeline(type, product, component) {
         }
     }
 
-    afterSuccess('functionalTest:preview') {
+    afterAlways('functionalTest:preview') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -163,6 +164,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'PREVIEW Playwright E2E'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
 
     afterSuccess('smoketest:aat') {
@@ -174,6 +176,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'cucumber_report.html',
             reportName           : 'AAT Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
         stage('API Test') {
             try {
               yarnBuilder.yarn('test:api')

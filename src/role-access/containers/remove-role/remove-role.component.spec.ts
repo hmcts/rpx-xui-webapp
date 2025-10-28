@@ -19,6 +19,7 @@ import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
+  standalone: false,
   template: `
     <exui-remove-role></exui-remove-role>`
 })

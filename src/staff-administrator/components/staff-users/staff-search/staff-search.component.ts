@@ -5,6 +5,7 @@ import { InfoMessageCommService } from '../../../../app/shared/services/info-mes
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-staff-search',
   templateUrl: './staff-search.component.html',
   styleUrls: ['./staff-search.component.scss']

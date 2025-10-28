@@ -6,6 +6,7 @@ import { bookingBackButtonVisibilityStates, bookingCheckVisibilityStates, bookin
 import { BookingNavigation, BookingNavigationEvent, BookingProcess, BookingState } from '../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-booking-wrapper',
   templateUrl: './booking-wrapper.component.html',
   styleUrls: ['./booking-wrapper.component.scss']

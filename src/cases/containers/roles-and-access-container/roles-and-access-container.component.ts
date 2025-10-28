@@ -15,6 +15,7 @@ import { CaseworkerDataService } from '../../../work-allocation/services';
 import { Utils } from '../../utils/utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-roles-and-access-container',
   templateUrl: './roles-and-access-container.component.html'
 })

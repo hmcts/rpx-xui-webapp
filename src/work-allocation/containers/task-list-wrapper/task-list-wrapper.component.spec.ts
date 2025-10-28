@@ -20,7 +20,10 @@ import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationT
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslationMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -155,7 +158,7 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.case_id}/tasks`]);
+      expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.jurisdiction}/${secondTaskAction.task.case_type_id}/${secondTaskAction.task.case_id}/tasks`]);
     });
 
     it('User should be Judicial', () => {

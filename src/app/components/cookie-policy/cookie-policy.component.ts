@@ -10,6 +10,7 @@ interface CookieDetails{
 }
 
 @Component({
+  standalone: false,
   selector: 'exui-cookie-policy',
   templateUrl: './cookie-policy.component.html'
 })

@@ -20,6 +20,7 @@ import { Task } from './../../models/tasks';
 import { WorkFieldComponent } from './work-field.component';
 
 @Component({
+  standalone: false,
   template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>'
 })
 class WrapperComponent {
@@ -28,7 +29,10 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -574,7 +578,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(HMCTS_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(HMCTS_URL);
+      expect(element.getAttribute('href')).toBe(HMCTS_URL);
 
       // Change the value of task.link.
       task.link = GOOGLE_URL;
@@ -582,7 +586,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.link = undefined;
@@ -595,7 +599,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
 
       // Make task.link null.
       task.link = null;
@@ -608,7 +612,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
 
       // Entirely remove the property for task.link.
       expect(task.hasOwnProperty('link')).toBeTruthy();
@@ -704,6 +708,8 @@ describe('WorkAllocation', () => {
         assigneeName: null,
         id: 'The task ID',
         description: null,
+        jurisdiction: 'The jurisdiction',
+        case_type_id: 'The case type ID',
         case_id: 'The case reference',
         caseName: 'The case name',
         caseCategory: 'The case category',
@@ -720,7 +726,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference')); // Spaces allowed
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -728,7 +734,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/NEW CASE REFERENCE')); // Spaces allowed
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -741,7 +747,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference'));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
 
       // Make task.link null.
       task.case_id = null;
@@ -762,6 +768,8 @@ describe('WorkAllocation', () => {
         description: null,
         case_id: '1',
         caseName: 'The case name',
+        jurisdiction: 'The jurisdiction',
+        case_type_id: 'The case type ID',
         caseCategory: 'The case category',
         location: 'The location',
         taskName: 'The task name',
@@ -777,7 +785,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe('/cases/case-details/1');
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/1'));
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -785,7 +793,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/NEW CASE REFERENCE'));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE'));
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -798,7 +806,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference'));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
 
       // Make task.link null.
       task.case_id = null;
@@ -821,6 +829,8 @@ describe('WorkAllocation', () => {
         case_id: '1',
         caseName: 'The case name',
         caseCategory: 'The case category',
+        jurisdiction: 'The jurisdiction',
+        case_type_id: 'The case type ID',
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
@@ -834,7 +844,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe('/cases/case-details/1/tasks');
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/1/tasks'));
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -842,7 +852,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/NEW CASE REFERENCE/tasks'));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE/tasks'));
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -855,7 +865,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The case reference/tasks'));
+      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference/tasks'));
 
       // Make task.link null.
       task.case_id = null;

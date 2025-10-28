@@ -18,6 +18,7 @@ import { MockRouter, getMockTasks } from '../../tests/utils.spec';
 import { TaskListComponent } from './task-list.component';
 
 @Component({
+  standalone: false,
   template: `
     <exui-task-list
       [fields]='fields'
@@ -38,6 +39,7 @@ class WrapperComponent {
 }
 
 // @Component({
+//   standalone: false,
 //   selector: 'exui-task-field',
 //   template: '<div class="xui-task-field">{{task.taskName}}</div>'
 // })

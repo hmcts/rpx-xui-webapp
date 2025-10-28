@@ -3,14 +3,12 @@ import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
 const featureNames = {
-  waServiceConfig: 'wa-service-config',
   waLandingPageRoles: 'wa-landing-page-roles',
-  waAccess: 'wa-access',
-  excludedRolesForCaseTabs: 'mc-excluded-roles-case-tabs',
   icpEnabled: 'icp-enabled',
   icpJurisdictions: 'icp-jurisdictions',
   enableServiceSpecificMultiFollowups: 'enable-service-specific-multi-followups',
-  cdamExclusionList: 'mc-cdam-exclusion-list'
+  cdamExclusionList: 'mc-cdam-exclusion-list',
+  serviceMessagesFeatureToggleKey: 'mc-service-messages-dates'
 };
 
 function featureToAttributeName(key: string): string {
@@ -18,13 +16,12 @@ function featureToAttributeName(key: string): string {
 }
 
 export const featureToAttributeMap = new Map<string, string>([
-  [featureNames.waServiceConfig, featureToAttributeName(featureNames.waServiceConfig)],
   [featureNames.waLandingPageRoles, featureToAttributeName(featureNames.waLandingPageRoles)],
-  [featureNames.waAccess, featureToAttributeName(featureNames.waAccess)],
   [featureNames.icpEnabled, featureToAttributeName(featureNames.icpEnabled)],
   [featureNames.icpJurisdictions, featureToAttributeName(featureNames.icpJurisdictions)],
   [featureNames.enableServiceSpecificMultiFollowups, featureToAttributeName(featureNames.enableServiceSpecificMultiFollowups)],
-  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)]
+  [featureNames.cdamExclusionList, featureToAttributeName(featureNames.cdamExclusionList)],
+  [featureNames.serviceMessagesFeatureToggleKey, featureToAttributeName(featureNames.serviceMessagesFeatureToggleKey)]
 ]);
 
 const footerDataNavigation = {
@@ -200,6 +197,21 @@ const serviceMessageCookie: string = 'service_messages';
 const caseAllocatorRole: string = 'case-allocator-role';
 const iaJudgeRole: string = 'caseworker-ia-iacjudge';
 const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
+const defaultServiceMessage = [
+  {
+    'index': 10,
+    'message_cy': 'Efallai y bydd rhai defnyddwyr yn profi problemau gyda\'r gwasanaeth hwn ar hyn o bryd. Rydym yn gweithio i ddatrys hyn cyn gynted â phosibl.',
+    'message_en': 'Some users may experience problems with this service at the moment. We are working to resolve this as soon as possible.',
+    'roles': '.+'
+  }
+];
+const menuFlags = {
+  'MC_Work_Allocation': true,
+  'MC_Notice_of_Change': true,
+  'feature-global-search': true,
+  'mc-work-allocation-active-feature': 'WorkAllocationRelease2',
+  'feature-refunds': true
+};
 
 const activityTrackerMode: string = 'mc-activity-tracker-mode';
 
@@ -222,6 +234,8 @@ export class AppConstants {
   public static DEFAULT_MENU_ITEMS = defaultMenuItems;
   public static ACTIVITY_TRACKER_MODE = activityTrackerMode;
   public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
+  public static DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
+  public static MENU_FLAGS = menuFlags;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

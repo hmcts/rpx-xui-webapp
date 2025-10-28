@@ -1,5 +1,5 @@
 import { SearchResultViewItem } from '@hmcts/ccd-case-ui-toolkit';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 
 const BLANK_SPACE: string = ' ';
 const EMPTY_SPACE: string = '';

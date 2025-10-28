@@ -13,7 +13,10 @@ import * as fromNocStore from '../../../noc/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -278,29 +281,89 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     });
   });
 
+  it('should call splitAndFilterNavItems on ngOnInit and set left/right items', (done) => {
+    component.items = [{
+      align: 'right',
+      text: 'Right',
+      href: '',
+      active: false,
+      roles: ['pui-case-manager']
+    },
+    {
+      align: 'left',
+      text: 'Left',
+      href: '',
+      active: false,
+      roles: ['pui-case-manager']
+    }];
+    // Ensure userDetails has the required role for filtering
+    userDetails.userInfo.roles = ['pui-case-manager'];
+    storeMock.pipe.and.returnValue(of(userDetails));
+    component.ngOnInit();
+    component.leftItems.subscribe((items) => {
+      expect(items).toEqual([component.items[1]]);
+      component.rightItems.subscribe((right) => {
+        expect(right).toEqual([component.items[0]]);
+        done();
+      });
+    });
+  });
+
+  it('should call splitAndFilterNavItems on ngOnChanges when items change', (done) => {
+    component.items = [{
+      align: 'right',
+      text: 'Right',
+      href: '',
+      active: false,
+      roles: ['pui-case-manager']
+    },
+    {
+      align: null,
+      text: 'Left',
+      href: '',
+      active: false,
+      roles: ['pui-case-manager']
+    }];
+    component.ngOnChanges({
+      items: {
+        currentValue: component.items,
+        previousValue: [],
+        firstChange: false,
+        isFirstChange: () => false
+      }
+    });
+    component.leftItems.subscribe((items) => {
+      expect(items).toEqual([component.items[1]]);
+      component.rightItems.subscribe((right) => {
+        expect(right).toEqual([component.items[0]]);
+        done();
+      });
+    });
+  });
+
   it('filters out menu items for which not all features are enabled', (done) => {
     component.items = [{
       align: 'right',
       text: '1',
       href: '',
       active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleA']
+      flags: ['MC_Work_Allocation'],
+      roles: ['pui-case-manager']
     },
     {
       align: null,
       text: '2',
       href: '',
       active: false,
-      roles: ['roleB']
+      roles: ['pui-case-manager']
     },
     {
       align: 'right',
       text: '3',
       href: '',
       active: false,
-      flags: ['enabledFlag', 'disabledFlag'],
-      roles: ['roleC']
+      flags: ['MC_Work_Allocation', 'disabledFlag'],
+      roles: ['pui-case-manager']
     }];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
@@ -322,8 +385,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
       text: '1',
       href: '',
       active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleA']
+      flags: ['MC_Work_Allocation'],
+      roles: ['pui-case-manager']
     },
     {
       align: null,
@@ -362,8 +425,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
       text: '1',
       href: '',
       active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleA']
+      flags: ['MC_Work_Allocation'],
+      roles: ['pui-case-manager']
     },
     {
       align: null,

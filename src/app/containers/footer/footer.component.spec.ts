@@ -9,6 +9,7 @@ import { NavigationItems } from './footer.model';
 
 describe('FooterComponent', () => {
   @Component({
+    standalone: false,
     selector: 'exui-app-host-dummy-component',
     template: '<exui-app-footer></exui-app-footer>'
   })

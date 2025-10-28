@@ -5,3 +5,18 @@ node_modules
 
 Jenkinsfile*
 README.md
+.git
+.angular/
+.vscode/
+.husky/
+e2e/
+playwright_tests/
+test_codecept/
+test/
+reports/
+coverage/
+debug.log
+dummy.pdf
+dist/
+*.iml
+*.log

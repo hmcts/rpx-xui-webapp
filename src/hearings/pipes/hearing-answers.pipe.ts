@@ -56,6 +56,8 @@ import { State } from '../store';
 import { HearingIdAnswerConverter } from '../converters/hearing-id.converter';
 
 @Pipe({
+  standalone: false,
+
   name: 'transformAnswer'
 })
 export class HearingAnswersPipe implements PipeTransform {

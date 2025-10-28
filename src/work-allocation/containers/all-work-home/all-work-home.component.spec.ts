@@ -12,6 +12,7 @@ import { LocationDataService, WorkAllocationTaskService } from '../../services';
 import { AllWorkHomeComponent } from './all-work-home.component';
 
 @Component({
+  standalone: false,
   template: `
     <exui-all-work-home></exui-all-work-home>`
 })

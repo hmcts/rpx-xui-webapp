@@ -20,6 +20,7 @@ import { RoleCaptionText } from '../../../models/enums/allocation-text';
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-allocate-role-check-answers',
   templateUrl: './allocate-role-check-answers.component.html'
 })

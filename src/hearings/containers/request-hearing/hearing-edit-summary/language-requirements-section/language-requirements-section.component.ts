@@ -6,6 +6,7 @@ import * as fromHearingStore from '../../../../../hearings/store';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-language-requirements-section',
   templateUrl: './language-requirements-section.component.html'
 })

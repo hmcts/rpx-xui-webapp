@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-noc-text-field',
   templateUrl: './noc-text-field.component.html'
 })

@@ -30,6 +30,7 @@ import {
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
+  standalone: false,
   templateUrl: 'task-list-wrapper.component.html'
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
@@ -325,7 +326,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
         this.claimTaskAndGo(taskAction.task);
         return;
       } else if (taskAction.action.id === TaskActionIds.GO) {
-        const goToTaskUrl = `/cases/case-details/${taskAction.task.case_id}/tasks`;
+        const goToTaskUrl = `/cases/case-details/${taskAction.task.jurisdiction}/${taskAction.task.case_type_id}/${taskAction.task.case_id}/tasks`;
         this.router.navigate([goToTaskUrl]);
         return;
       }
@@ -363,7 +364,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    */
   public claimTaskAndGo(task: Task): void {
     this.taskService.claimTask(task.id).subscribe(() => {
-      const goToCaseUrl = `/cases/case-details/${task.case_id}/tasks`;
+      const goToCaseUrl = `/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${task.case_id}/tasks`;
       // navigates to case details page for specific case id
       this.router.navigate([goToCaseUrl], {
         state: {

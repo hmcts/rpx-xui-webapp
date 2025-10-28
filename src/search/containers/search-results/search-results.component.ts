@@ -8,6 +8,7 @@ import { SearchResult, SearchResultDisplay } from '../../models';
 import { SearchService } from '../../services/search.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-search-results',
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.scss']
@@ -53,7 +54,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         service: result.CCDJurisdictionName,
         state: this.getStateName(result.stateId, result.CCDJurisdictionId, result.CCDCaseTypeId),
         location: result.baseLocationName,
-        actionLink: `/cases/case-details/${result.caseReference}`,
+        actionLink: `/cases/case-details/${result.CCDJurisdictionId}/${result.CCDCaseTypeId}/${result.caseReference}`,
         actionLinkText: this.getActionLinkText(result.processForAccess)
       };
 

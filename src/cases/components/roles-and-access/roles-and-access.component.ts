@@ -6,6 +6,7 @@ import { CaseRole, RoleExclusion } from '../../../role-access/models';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 
 @Component({
+  standalone: false,
   selector: 'exui-roles-and-access',
   templateUrl: './roles-and-access.component.html'
 })
@@ -26,6 +27,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public namedExclusions: RoleExclusion[];
   public caseId: string;
   public jurisdiction: string;
+  public caseType: string;
 
   @Input() public exclusions: RoleExclusion[] = [];
   @Input() public showAllocateRoleLink: boolean = false;
@@ -62,6 +64,7 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
 
   public ngOnInit(): void {
     this.caseId = this.caseDetails.case_id;
+    this.caseType = this.caseDetails.case_type.id;
     const jurisdictionField = this.caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
     if (jurisdictionField) {
       this.jurisdiction = jurisdictionField.value;

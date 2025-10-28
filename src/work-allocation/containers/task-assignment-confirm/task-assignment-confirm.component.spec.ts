@@ -21,6 +21,7 @@ import { REDIRECTS } from '../../utils';
 import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.component';
 
 @Component({
+  standalone: false,
   template: `
     <exui-task-assignment-confirm></exui-task-assignment-confirm>`
 })

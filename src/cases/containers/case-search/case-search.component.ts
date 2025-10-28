@@ -15,6 +15,7 @@ import * as fromCasesFeature from '../../store';
  * param TBC
  */
 @Component({
+  standalone: false,
   selector: 'exui-search-case',
   templateUrl: 'case-search.component.html',
   styleUrls: ['case-search.component.scss'],
@@ -54,8 +55,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   public state: any;
   public toggleButtonName: string;
 
-  public elasticSearchFlag: boolean = false;
-  public elasticSearchFlagSubsription: Subscription;
+  public elasticSearchFlag: boolean = true;
 
   public sortParameters;
 
@@ -112,10 +112,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
     this.resultSubscription = this.resultView$.subscribe((resultView) => this.onResultsViewHandler(resultView));
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.getValue('elastic-search', true).subscribe((value) => {
-      this.elasticSearchFlag = value;
-      this.triggerQuery();
-    });
+    this.triggerQuery();
   }
 
   public listenToPaginationMetadata = () => {
@@ -272,9 +269,6 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
-    }
-    if (this.elasticSearchFlagSubsription) {
-      this.elasticSearchFlagSubsription.unsubscribe();
     }
   }
 }

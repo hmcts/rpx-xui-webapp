@@ -11,6 +11,7 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from 'src/app/services';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals-add-edit-summary',
   templateUrl: './hearing-actuals-add-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-add-edit-summary.component.scss'],

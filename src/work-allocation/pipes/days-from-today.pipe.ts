@@ -5,7 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
  *  * Today is shown as 0.
  *  * After today is shown as negative.
  */
-@Pipe({ name: 'daysFromToday' })
+@Pipe({
+  standalone: false,
+  name: 'daysFromToday'
+})
 export class DaysFromTodayPipe implements PipeTransform {
   // The number of seconds in a day, for formatting purposes.
   private readonly SECONDS_IN_A_DAY: number = 60 * 60 * 24;

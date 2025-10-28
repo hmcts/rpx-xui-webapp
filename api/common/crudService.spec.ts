@@ -3,12 +3,13 @@ import { expect } from 'chai';
 import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import * as proxyLib from '../lib/proxy';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('crudService', () => {

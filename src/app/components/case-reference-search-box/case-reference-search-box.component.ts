@@ -14,6 +14,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-reference-search-box',
   templateUrl: './case-reference-search-box.component.html',
   styleUrls: ['./case-reference-search-box.component.scss']

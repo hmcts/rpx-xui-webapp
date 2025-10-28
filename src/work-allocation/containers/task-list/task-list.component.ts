@@ -10,6 +10,7 @@ import { PaginationParameter } from '../../models/dtos';
 import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../models/tasks';
 
 @Component({
+  standalone: false,
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['task-list.component.scss']

@@ -7,6 +7,7 @@ import { SpecificAccessNavigation } from '../../../models/specific-access-naviga
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-specific-access-denied',
   templateUrl: './specific-access-denied.component.html'
 })

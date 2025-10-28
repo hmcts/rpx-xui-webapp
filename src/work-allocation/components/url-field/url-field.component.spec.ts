@@ -6,6 +6,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { UrlFieldComponent } from './url-field.component';
 
 @Component({
+  standalone: false,
   template: '<exui-url-field [href]="href" [label]="label" [target]="target"></exui-url-field>'
 })
 class WrapperComponent {

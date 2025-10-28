@@ -10,6 +10,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-stage',
   templateUrl: './hearing-stage.component.html'
 })

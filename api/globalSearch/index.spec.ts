@@ -3,13 +3,14 @@ import { expect } from 'chai';
 import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
 import { RefDataHMCTSService } from '../ref-data/models/ref-data-hmcts-service.model';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Jurisdiction', () => {

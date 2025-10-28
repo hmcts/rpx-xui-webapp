@@ -16,7 +16,10 @@ import { HearingActualsTimingComponent } from './hearing-actuals-timing.componen
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@Component({ selector: 'exui-app-blank', template: '' })
+@Component({
+  standalone: false,
+  selector: 'exui-app-blank', template: ''
+})
 class BlankComponent { }
 
 const mockActivatedRoute = {

@@ -12,7 +12,7 @@ import {
   WindowService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
@@ -31,6 +31,7 @@ import * as fromCaseList from '../../store/reducers';
  * param TBC
  */
 @Component({
+  standalone: false,
   selector: 'exui-case-list',
   templateUrl: 'case-list.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -86,8 +87,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public jurisdictions: Jurisdiction[];
   public selectedCases: SearchResultViewItem[] = [];
 
-  public elasticSearchFlag: boolean = false;
-  public elasticSearchFlagSubsription: Subscription;
+  public elasticSearchFlag: boolean = true;
 
   public sortParameters;
 
@@ -153,7 +153,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
 
     this.triggerQuery();
 
-    this.elasticSearchFlagSubsription = this.featureToggleService.getValue('elastic-search', true).subscribe((value) => this.elasticSearchFlag = value);
     this.userDetails = this.store.pipe(select(fromRoot.getUserDetails)) as unknown as Observable<any>;
     this.pIsCaseShareVisible$ = combineLatest([
       this.userDetails, this.shareableJurisdictions$, this.jurisdiction$
@@ -447,9 +446,6 @@ export class CaseListComponent implements OnInit, OnDestroy {
     }
     if (this.caseFilterToggleSubscription) {
       this.caseFilterToggleSubscription.unsubscribe();
-    }
-    if (this.elasticSearchFlagSubsription) {
-      this.elasticSearchFlagSubsription.unsubscribe();
     }
 
     this.unsubscribe$.next(null);

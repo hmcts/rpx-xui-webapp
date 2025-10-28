@@ -58,7 +58,6 @@ router.post('/o/token', (req, res) => {
     'id_token': jwt.sign(req.body, privateKey, { algorithm: 'RS256' }),
     'token_type': 'code',
     'expires_in': 'string'
-
   });
 });
 

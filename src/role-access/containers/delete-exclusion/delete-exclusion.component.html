@@ -16,7 +16,7 @@
             </button>
             <div class="govuk-grid-column-full govuk-!-padding-left-0">
               <p>
-                <a class='govuk-body' (click)="onNavEvent(exclusionNavigationEvent.CANCEL)" href="javascript:void(0)">
+                <a class='govuk-body' (click)="onNavEvent(exclusionNavigationEvent.CANCEL); $event.preventDefault()" href="#">
                   Cancel
                 </a>
               </p>

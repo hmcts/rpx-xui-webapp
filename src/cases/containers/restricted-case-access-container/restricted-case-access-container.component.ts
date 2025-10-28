@@ -1,5 +1,6 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
@@ -12,6 +13,7 @@ import { RestrictedCase } from '../../models/restricted-case.model';
 import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-restricted-case-access-container',
   templateUrl: './restricted-case-access-container.component.html'
 })
@@ -25,11 +27,13 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
   public showSpinner$: Observable<boolean>;
 
   constructor(private readonly route: ActivatedRoute,
+              private readonly router: Router,
               private readonly allocateService: AllocateRoleService,
               private readonly caseworkerDataService: CaseworkerDataService,
               private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
               private readonly loadingService: LoadingService,
-              private readonly judicialRefDataService: JudicialRefDataService) {
+              private readonly judicialRefDataService: JudicialRefDataService,
+              private readonly location: Location) {
   }
 
   public ngOnInit(): void {
@@ -58,6 +62,20 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
 
   public ngOnDestroy(): void {
     this.allocateServiceSubscription?.unsubscribe();
+  }
+
+  public onBack(): void {
+    // Prefer an in-app back when we can
+    const sameOriginReferrer =
+      document.referrer && new URL(document.referrer).origin === location.origin;
+
+    if (sameOriginReferrer && history.length > 1) {
+      this.location.back();
+    } else {
+      // Fallback when opened in a new tab/deep link (no useful history)
+      // This can be changed if unsuitable
+      this.router.navigateByUrl('/cases/case-search');
+    }
   }
 
   private getUniqueIdamIds(): string[] {

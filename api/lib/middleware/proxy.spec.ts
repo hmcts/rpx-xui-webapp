@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as httpProxyMiddleware from 'http-proxy-middleware';
@@ -9,6 +8,8 @@ import * as configModule from '../../configuration';
 import * as log4jui from '../log4jui';
 import authInterceptor from './auth';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Proxy Middleware', () => {

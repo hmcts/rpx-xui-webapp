@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import * as moment from 'moment';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -27,6 +27,7 @@ import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { isEmpty } from 'lodash';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-timing',
   templateUrl: './hearing-timing.component.html'
 })

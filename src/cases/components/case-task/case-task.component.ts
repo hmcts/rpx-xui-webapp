@@ -14,6 +14,7 @@ import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/util
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-task',
   templateUrl: './case-task.component.html',
   styleUrls: ['./case-task.component.scss']
@@ -42,7 +43,7 @@ export class CaseTaskComponent implements OnInit {
   }
 
   public get returnUrl(): string {
-    return this.router ? this.router.url : `case-details/${this.task.case_id}/tasks`;
+    return this.router ? this.router.url : `case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.task.case_id}/tasks`;
   }
 
   public get task(): Task {

@@ -5,6 +5,7 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-additional-instructions-section',
   templateUrl: './additional-instructions-section.component.html'
 })

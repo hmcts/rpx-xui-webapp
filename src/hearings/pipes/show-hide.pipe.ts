@@ -30,6 +30,8 @@ import { LocationsDataService } from '../services/locations-data.service';
 import { State } from '../store';
 
 @Pipe({
+  standalone: false,
+
   name: 'isHidden'
 })
 export class ShowHidePipe implements PipeTransform {

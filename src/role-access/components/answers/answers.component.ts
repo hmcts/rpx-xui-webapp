@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Answer } from '../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-answers',
   templateUrl: './answers.component.html'
 })

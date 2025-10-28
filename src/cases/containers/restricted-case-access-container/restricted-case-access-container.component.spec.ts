@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,7 +13,10 @@ import { RestrictedCaseAccessContainerComponent } from './restricted-case-access
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.service';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -34,7 +38,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
       }
     }
   };
-  const firstJudgeResponse =[
+  const firstJudgeResponse = [
     {
       title: 'Ms',
       knownAs: 'jane',
@@ -47,7 +51,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
       personalCode: '1234568'
     }
   ];
-  const secondJudgeResponse =[
+  const secondJudgeResponse = [
     {
       title: 'Mr',
       knownAs: 'bob',
@@ -61,7 +65,11 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     }
   ];
   const mockRouter = {
-    navigate: jasmine.createSpy()
+    navigate: jasmine.createSpy(),
+    navigateByUrl: jasmine.createSpy('navigateByUrl')
+  };
+  const mockLocation = {
+    back: jasmine.createSpy('back')
   };
 
   beforeEach(() => {
@@ -79,6 +87,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
         { provide: LoadingService, useValue: mockLoadingService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        { provide: Location, useValue: mockLocation },
         { provide: JudicialRefDataService, useValue: mockJudicialRefDataService },
         HttpClient,
         HttpHandler
@@ -124,5 +133,63 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     spyOn(component.allocateServiceSubscription, 'unsubscribe').and.callThrough();
     component.ngOnDestroy();
     expect(component.allocateServiceSubscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  describe('onBack()', () => {
+    const resetReferrer = () =>
+      Object.defineProperty(document, 'referrer', { value: '', configurable: true });
+
+    afterEach(() => {
+      // clean up spies and global mutations between tests
+      resetReferrer();
+      mockLocation.back.calls.reset();
+      mockRouter.navigateByUrl.calls.reset();
+    });
+
+    it('uses Location.back() when referrer is same-origin and history > 1', () => {
+      // same-origin referrer
+      Object.defineProperty(document, 'referrer', {
+        value: window.location.origin + '/previous',
+        configurable: true
+      });
+
+      // force history.length > 1 without navigating away
+      spyOnProperty(window.history, 'length', 'get').and.returnValue(2);
+
+      component.onBack();
+
+      expect(mockLocation.back).toHaveBeenCalled();
+      expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
+    });
+
+    it('navigates to /cases/case-search when referrer is cross-origin', () => {
+      Object.defineProperty(document, 'referrer', {
+        value: 'https://external.example/somewhere',
+        configurable: true
+      });
+
+      // even if history > 1, cross-origin should trigger navigate fallback
+      spyOnProperty(window.history, 'length', 'get').and.returnValue(3);
+
+      component.onBack();
+
+      expect(mockLocation.back).not.toHaveBeenCalled();
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/cases/case-search');
+    });
+
+    it('navigates to /cases/case-search when history length <= 1 (no useful history)', () => {
+      Object.defineProperty(document, 'referrer', {
+        value: window.location.origin + '/previous',
+        configurable: true
+      });
+
+      // simulate first page / new tab (no meaningful back)
+      spyOnProperty(window.history, 'length', 'get').and.returnValue(1);
+
+      component.onBack();
+
+      expect(mockLocation.back).not.toHaveBeenCalled();
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/cases/case-search');
+    });
   });
 });

@@ -11,6 +11,7 @@ import { HearingsService } from '../../../hearings/services/hearings.service';
 import * as fromHearingStore from '../../../hearings/store';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-hearings-list',
   templateUrl: './case-hearings-list.component.html',
   styleUrls: ['./case-hearings-list.component.scss']

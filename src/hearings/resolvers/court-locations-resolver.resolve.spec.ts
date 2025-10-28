@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel, LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { initialState } from '../hearing.test.data';

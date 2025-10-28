@@ -1,18 +1,16 @@
 import { AxiosResponse } from 'axios';
-import { expect } from 'chai';
-import 'mocha';
+import { expect, use } from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq } from 'sinon-express-mock';
-
 import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 import * as proxy from '../lib/proxy';
 import { handleGet, handlePost } from './noCService';
 
-const chai = require('chai');
-chai.use(sinonChai);
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
+use(sinonChai);
 
 describe('NoC Service', () => {
   let sandbox: sinon.SinonSandbox;

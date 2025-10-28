@@ -17,6 +17,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-check-your-answers',
   templateUrl: './linked-hearings-check-your-answers.component.html',
   styleUrls: ['./linked-hearings-check-your-answers.component.scss']
@@ -44,6 +45,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public isManageJourneyFinalPage: boolean;
   public showSpinner: boolean = true;
   public hearingStageOptions: LovRefDataModel[];
+  private jurisdiction: string;
+  private caseType: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>,
               private readonly hearingsService: HearingsService,
@@ -74,6 +77,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
             this.setHearingLinkedGroup(this.hearingLinks);
           }
         }
+        this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
+        this.caseType = state?.hearingValues?.caseInfo?.caseType;
         this.showSpinner = false;
       },
       error: () => {
@@ -212,7 +217,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
     if (this.isManageJourneyFinalPage) {
       this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'group-selection']);
     } else if (this.isManageLink) {
-      this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+      this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
     } else {
       this.hearingStore.dispatch(new fromHearingStore.ResetLinkedHearingLastError());
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'group-selection']);
@@ -220,7 +225,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   }
 
   public onCancel(): void {
-    this.router.navigate(['/', 'cases', 'case-details', this.caseId, 'hearings']);
+    this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']);
   }
 
   public ngOnDestroy(): void {

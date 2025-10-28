@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
@@ -12,6 +11,8 @@ import * as lau from '../services/lau';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { challengedAccessRouter, challengedAccessUpdateAttributes } from './';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Challenged Access', (): void => {

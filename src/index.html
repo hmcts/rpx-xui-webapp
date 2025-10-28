@@ -1,13 +1,91 @@
 <!doctype html>
 <html lang="en" class="flexbox no-flexboxtwenner">
+
 <head>
   <meta charset="utf-8">
   <title>HMCTS Manage cases</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ▸ expose the per-request nonce -->
+  <meta name="csp-nonce" content="{{cspNonce}}">
+
+  <!-- ▸ MONKEY-PATCH – must run before any vendor script -->
+  <script nonce="{{cspNonce}}">
+    (() => {
+      // ── run-once guard
+      const FLAG = '__style_nonce_patched__';
+      if (window[FLAG]) return;
+      window[FLAG] = true;
+
+      const n = document.querySelector('meta[name="csp-nonce"]')?.content;
+      if (!n) return;
+
+      // help webpack style-loader / dynamic imports
+      try { Object.defineProperty(window, '__webpack_nonce__', { value: n, writable: false }); } catch { }
+
+      /* capture originals */
+      const _Doc_createElement = Document.prototype.createElement;
+      const _El_insertAdjacentHTML = Element.prototype.insertAdjacentHTML;
+      const ihDesc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+      const _DOM_parseFromString = DOMParser.prototype.parseFromString;
+
+      /* helpers */
+      const isEl = (x) => x && x.nodeType === 1;
+      const stampStyleEl = (el) => {
+        if (isEl(el) && el.localName === 'style' && !el.hasAttribute('nonce')) {
+          el.setAttribute('nonce', n);
+        }
+      };
+      // fast, non-recursive: add nonce to any <style> lacking one in a string
+      const stampStyleInHtml = (html) =>
+        String(html).replace(/<style(?![^>]*\bnonce=)/gi, `<style nonce="${n}"`);
+
+      /* 1) createElement: JS-created <style> and <script> */
+      const _create = _Doc_createElement; // alias to the captured native
+      Document.prototype.createElement = function (tag, opts) {
+        const el = _create.call(this, tag, opts);
+        const t = String(tag).toLowerCase();
+        if ((t === 'style' || t === 'script') && !el.hasAttribute('nonce')) {
+          el.setAttribute('nonce', n); // n is the meta[name=csp-nonce].content above
+        }
+        return el;
+      };
+
+      /* 2) insertAdjacentHTML: stamp string, call native */
+      Element.prototype.insertAdjacentHTML = function (position, html) {
+        return _El_insertAdjacentHTML.call(this, position, stampStyleInHtml(html));
+      };
+
+      /* 3) innerHTML: stamp string, call the ORIGINAL setter */
+      if (ihDesc?.configurable && ihDesc.set) {
+        Object.defineProperty(Element.prototype, 'innerHTML', {
+          configurable: true,
+          enumerable: ihDesc.enumerable,
+          get: ihDesc.get,
+          set: function (html) {
+            ihDesc.set.call(this, stampStyleInHtml(html));
+          }
+        });
+      }
+
+      /* 4) DOMParser: post-stamp parsed docs (covers some libs) */
+      DOMParser.prototype.parseFromString = function (str, type) {
+        const doc = _DOM_parseFromString.call(this, str, type);
+        if (type && /html/i.test(type)) {
+          doc.querySelectorAll('style:not([nonce])').forEach(el => el.setAttribute('nonce', n));
+        }
+        return doc;
+      };
+    })();
+  </script>
+
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+
 <body class="govuk-template__body js-enabled">
   <exui-root></exui-root>
 </body>
+
 </html>

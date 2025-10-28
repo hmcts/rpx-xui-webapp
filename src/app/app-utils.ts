@@ -151,9 +151,9 @@ export class AppUtils {
     return isFeatureEnabled ? workAllocationUrl : null;
   }
 
-  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[]): boolean {
     // isWA enabled for this jurisdiction
-    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every((userRole) => !excludedRoles.includes(userRole));
+    return (waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER));
     // check that userRoles do not have pui-case-manager
   }
 
@@ -232,7 +232,7 @@ export class AppUtils {
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return userInfo.roleCategory === RoleCategory.JUDICIAL
+    return userInfo?.roleCategory === RoleCategory.JUDICIAL
       && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment
         && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
   }

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../../hearings/store';
@@ -13,6 +13,7 @@ import { LocationsDataService } from '../../../services/locations-data.service';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-venue',
   templateUrl: './hearing-venue.component.html',
   styleUrls: ['./hearing-venue.component.scss']

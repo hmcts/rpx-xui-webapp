@@ -3,6 +3,7 @@ import { Helper, Navigation } from '../../containers/footer/footer.model';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
+  standalone: false,
   selector: 'exui-app-hmcts-global-footer',
   templateUrl: './hmcts-global-footer.component.html',
   styleUrls: ['./hmcts-global-footer.component.scss']

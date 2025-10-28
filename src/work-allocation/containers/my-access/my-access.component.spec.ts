@@ -26,7 +26,10 @@ import { WorkCaseListComponent } from '../work-case-list/work-case-list.componen
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 import { MyAccessComponent } from './my-access.component';
 
-@Component({ template: '<exui-my-access></exui-my-access>' })
+@Component({
+  standalone: false,
+  template: '<exui-my-access></exui-my-access>'
+})
 class WrapperComponent {
   @ViewChild(MyAccessComponent) public appComponentRef: MyAccessComponent;
 }

@@ -9,6 +9,7 @@ import * as fromCaseCreate from '../../store/reducers';
  * injected by the root
  */
 @Component({
+  standalone: false,
   selector: 'exui-filter-case',
   template: `
     <exui-page-wrapper [title]="'Create Case' | rpxTranslate">

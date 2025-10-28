@@ -1,11 +1,12 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import { mockReq } from 'sinon-express-mock';
 import { CASE_ALLOCATOR_ROLE, JUDICIAL_TYPE, LEGAL_OPS_TYPE } from '../user/constants';
 import { checkIfCaseAllocator } from './roleService';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 describe('RoleService', () => {
   const roleAssignmentResponse = [

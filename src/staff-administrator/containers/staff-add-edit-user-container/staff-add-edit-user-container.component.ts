@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staff-add-edit-form.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-staff-add-edit-user-container',
   templateUrl: './staff-add-edit-user-container.component.html',
   styleUrls: ['./staff-add-edit-user-container.component.scss'],

@@ -14,6 +14,7 @@ describe('initApplication', () => {
     mockStore = jasmine.createSpyObj<Store<fromApp.State>>('store', ['dispatch', 'pipe']);
     mockStore.dispatch.and.callFake((action) => {
       dispatchedActions.push(action);
+      return { destroy: () => {} };
     });
 
     // Create BehaviorSubject after test setup to avoid timing issues

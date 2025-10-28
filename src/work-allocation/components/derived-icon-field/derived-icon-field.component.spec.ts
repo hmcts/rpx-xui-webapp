@@ -6,6 +6,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
 
 @Component({
+  standalone: false,
   template: '<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>'
 })
 class WrapperComponent {

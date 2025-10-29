@@ -59,8 +59,8 @@ describe('Application', () => {
       // keep it simple and valid for Helmet; object-ness is what matters for the crash
       contentSecurityPolicy: {
         directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"]
+          defaultSrc: ['\'self\''],
+          scriptSrc: ['\'self\'', '\'unsafe-inline\'']
         }
       },
       hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
@@ -76,23 +76,37 @@ describe('Application', () => {
     getConfigStub.withArgs('security.helmet').returns(helmetOpts);
     // IMPORTANT: never feed Helmet a string
     getConfigStub.callsFake((key: string) => {
-      if (key === 'sessionSecret') return 'test-session-secret-12345';
-      if (key === 'protocol') return 'https';
-      if (key === 'HELMET' || key === cfg?.HELMET || key === 'security.helmet') return helmetOpts;
+      if (key === 'sessionSecret') {
+        return 'test-session-secret-12345';
+      }
+      if (key === 'protocol') {
+        return 'https';
+      }
+      if (key === 'HELMET' || key === cfg?.HELMET || key === 'security.helmet') {
+        return helmetOpts;
+      }
       return undefined as any;
     });
 
     // --- ALSO stub the real 'config' package used by application.ts ---
     const configHasStub = sandbox.stub(nodeConfig, 'has').callsFake((key: string) => {
       // Pretend these keys exist so application code paths that use 'config' work
-      if (key === 'security.helmet') return true;
-      if (key === 'featureFlags.enableHelmet') return true;
+      if (key === 'security.helmet') {
+        return true;
+      }
+      if (key === 'featureFlags.enableHelmet') {
+        return true;
+      }
       return false;
     });
 
     const configGetStub = sandbox.stub(nodeConfig, 'get').callsFake((key: string) => {
-      if (key === 'security.helmet') return helmetOpts;                  // <— the critical fix
-      if (key === 'featureFlags.enableHelmet') return !!options.helmetEnabled;
+      if (key === 'security.helmet') {
+        return helmetOpts;
+      } // <— the critical fix
+      if (key === 'featureFlags.enableHelmet') {
+        return !!options.helmetEnabled;
+      }
       return undefined as any;
     });
 

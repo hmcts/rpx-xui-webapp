@@ -3462,12 +3462,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.50-exui-2906-activity-tracker-2":
-  version: 7.2.50-exui-2906-activity-tracker-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50-exui-2906-activity-tracker-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.50-exui-2906-activity-tracker-4":
+  version: 7.2.50-exui-2906-activity-tracker-4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50-exui-2906-activity-tracker-4"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b67f9d432c413c63a7c723309860e1c7ae422e3e5dd91f93e2806a603270cda6eda43218b912e572ef7489d19317453ca53e2c6d7964eb1eab578f232d7dd4d9
+  checksum: 10/eccae8a437b6a52287e333d284a8d1f22bc986fc38c722b710f9572ed222911ec4920d90f4e6fb24255dbbe4c9ba9c2f47f477ebcff01d4d368a65988e08bbdb
   languageName: node
   linkType: hard
 
@@ -22349,7 +22349,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.50-exui-2906-activity-tracker-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.50-exui-2906-activity-tracker-4"
     "@hmcts/ccpay-web-component": "npm:6.5.9-cme-779-prerelease"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.9-cme-776-angular-20"

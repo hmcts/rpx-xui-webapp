@@ -9,6 +9,7 @@ import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-additional-instructions',
   templateUrl: './hearing-additional-instructions.component.html'
 })

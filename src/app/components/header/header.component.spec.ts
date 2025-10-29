@@ -9,7 +9,10 @@ import { of } from 'rxjs';
 import { HeaderComponent } from './header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

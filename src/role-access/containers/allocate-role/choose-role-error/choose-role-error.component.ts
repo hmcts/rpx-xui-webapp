@@ -7,6 +7,7 @@ import {
 } from '../../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-choose-role-error',
   templateUrl: './choose-role-error.component.html'
 })

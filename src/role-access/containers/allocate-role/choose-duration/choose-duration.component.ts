@@ -16,6 +16,7 @@ import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-choose-duration',
   templateUrl: './choose-duration.component.html',
   styleUrls: ['./choose-duration.component.scss']

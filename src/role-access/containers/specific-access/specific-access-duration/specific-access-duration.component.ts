@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
@@ -14,6 +14,7 @@ import { DurationHelperService } from '../../../services/duration-helper.service
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-specific-access-duration',
   templateUrl: './specific-access-duration.component.html',
   styleUrls: ['./specific-access-duration.component.scss']
@@ -131,6 +132,7 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public getPeriod(duration: DurationType): Period {
+    // tslint:disable-next-line:switch-default
     switch (duration) {
       case DurationType.SEVEN_DAYS: {
         return {

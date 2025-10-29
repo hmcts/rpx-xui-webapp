@@ -20,7 +20,10 @@ import { PartyDetailsModel } from '../../../models/partyDetails.model';
 import { IndividualDetailsModel } from '../../../models/individualDetails.model';
 import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
 
-@Pipe({ name: 'transformAnswer' })
+@Pipe({
+  standalone: false,
+  name: 'transformAnswer'
+})
 export class MockHearingAnswersPipe implements PipeTransform {
   public transform(): string {
     return '';
@@ -28,6 +31,7 @@ export class MockHearingAnswersPipe implements PipeTransform {
 }
 
 @Component({
+  standalone: false,
   template: `
     <div>Nothing</div>`
 })

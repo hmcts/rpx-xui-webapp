@@ -1,4 +1,4 @@
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { plainToClass } from 'class-transformer';
 import { Response } from 'express';
 import { EnhancedRequest } from '../lib/models';

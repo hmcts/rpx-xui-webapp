@@ -1,6 +1,6 @@
 import { NavigationExtras } from '@angular/router';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
 
 export const NAVIGATE_TO_SHARE_CASES = '[ShareCase] Navigate To Share Cases';

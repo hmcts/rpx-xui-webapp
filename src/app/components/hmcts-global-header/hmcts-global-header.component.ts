@@ -13,6 +13,7 @@ import { UserService } from '../../services/user/user.service';
 import { AppConstants } from 'src/app/app.constants';
 
 @Component({
+  standalone: false,
   selector: 'exui-hmcts-global-header',
   templateUrl: './hmcts-global-header.component.html',
   styleUrls: ['./hmcts-global-header.component.scss']

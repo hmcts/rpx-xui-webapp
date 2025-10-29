@@ -1,13 +1,14 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { FEATURE_JRD_E_LINKS_V2_ENABLED } from '../../configuration/references';
 import { RAW_JUDICIAL_USERS, ALL_JUDICIAL_USERS } from './data/judicial.mock.data';
 import { transformToJudicialUserModel } from './models/judicialUser.model';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('PRD Judicial Service', () => {

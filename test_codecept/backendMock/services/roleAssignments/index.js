@@ -1,6 +1,7 @@
 
 const roles = require('./roles');
 const { v4 } = require('uuid');
+
 class RoleAssignments {
   constructor() {
     this.serviceUsersRoleAssignments = [];
@@ -171,9 +172,9 @@ class RoleAssignments {
       roleAssignmentResponse: {
         roleRequest: {
           id: 'bf28c9a7-67d7-401b-93c1-fede693b5d1c',
-          authenticatedUserId: '***REMOVED***',
+          authenticatedUserId: 'test-user-id',
           correlationId: 'bc10952c-b000-4c96-bbde-04126a2def46',
-          assignerId: '***REMOVED***',
+          assignerId: 'test-user-id',
           requestType: 'CREATE',
           replaceExisting: false,
           status: 'APPROVED',

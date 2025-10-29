@@ -1,23 +1,24 @@
 import { expect } from 'chai';
 import { CaseAssignmentResponseDto } from '../../pactFixtures';
 import { getCaseAssignments } from '../../pactUtil';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('Get Cases from CaseAssignment Api', () => {
   describe('when requested to get case assignments for array of CaseIds ', () => {
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'Case assignments exist for case Ids',
+        states: [{ description: 'Case assignments exist for case Ids' }],
         uponReceiving: 'a request for those cases',
         withRequest: {
           method: 'GET',
           path: '/case-assignments',
-          query: 'case_ids=12345678,87654321',
+          query: {
+            case_ids: '12345678,87654321'
+          },
           headers: {
             'Content-Type': 'application/json',
             'ServiceAuthorization': 'ServiceAuthToken',
@@ -32,23 +33,16 @@ describe('Get Cases from CaseAssignment Api', () => {
           body: caseAssignmentResponseDto
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
     it('Returns CaseAssignments Response', async () => {
-      const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/case-assignments?case_ids=12345678,87654321`;
-      const resp = getCaseAssignments(taskUrl);
-      resp.then((axResponse) => {
-        const responseDto: CaseAssignmentResponseDto = <CaseAssignmentResponseDto>axResponse.data;
-        try {
-          assertCaseAssignmentResponses(responseDto);
-        } catch (e) {
-          e.toString(`~~~~~Error when trying to assert the response from the call to the ${taskUrl}` + e);
-        }
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const taskUrl: string = `${mockServer.url}/case-assignments?case_ids=12345678,87654321`;
+        const resp = await getCaseAssignments(taskUrl);
+        const responseDto = await resp.data;
+        assertCaseAssignmentResponses(responseDto);
       });
     });
   });
@@ -77,8 +71,8 @@ const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
 
 function assertCaseAssignmentResponses(response: CaseAssignmentResponseDto) {
   expect(response.status_message).to.be.equal('Case-User-Role assignments returned successfully');
-  expect(response.case_assignments[0].sharedWith[0].first_name).to.be.equal('Bill');
-  expect(response.case_assignments[0].sharedWith[0].last_name).to.be.equal('Roberts');
-  expect(response.case_assignments[0].sharedWith[0].case_roles[0]).to.be.equal('Claimant');
-  expect(response.case_assignments[0].sharedWith[0].case_roles[1]).to.be.equal('Defendant');
+  expect(response.case_assignments[0].shared_with[0].first_name).to.be.equal('Bill');
+  expect(response.case_assignments[0].shared_with[0].last_name).to.be.equal('Roberts');
+  expect(response.case_assignments[0].shared_with[0].case_roles[0]).to.be.equal('[Claimant]');
+  expect(response.case_assignments[0].shared_with[0].case_roles[1]).to.be.equal('[Defendant]');
 }

@@ -16,6 +16,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-view-summary.template';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { HearingViewSummaryComponent } from './hearing-view-summary.component';
+import { AppTestConstants } from '../../../../app/app.test-constants.spec';
 
 describe('HearingViewSummaryComponent', () => {
   let component: HearingViewSummaryComponent;
@@ -32,7 +33,7 @@ describe('HearingViewSummaryComponent', () => {
       totalIdleTime: 50
     },
     userInfo: {
-      id: '***REMOVED***',
+      id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
@@ -46,12 +47,21 @@ describe('HearingViewSummaryComponent', () => {
 
   const httpClientMock = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(httpClientMock);
+  let hearingStoreMock: jasmine.SpyObj<Store<any>>;
 
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
     routerMock = jasmine.createSpyObj('Router', ['navigate']);
+    hearingStoreMock = jasmine.createSpyObj<Store<any>>('hearingStore', ['pipe']);
+    const mockHearingValues = {
+      caseInfo: {
+        jurisdictionId: 'JURIS',
+        caseType: 'CASETYPE'
+      }
+    };
+    hearingStoreMock.pipe.and.returnValue(of(mockHearingValues));
     TestBed.configureTestingModule({
       declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
@@ -98,6 +108,8 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     fixture = TestBed.createComponent(HearingViewSummaryComponent);
     component = fixture.componentInstance;
+    // Replace the hearingStore on the component with the mock
+    (component as any).hearingStore = hearingStoreMock;
     fixture.detectChanges();
   });
 
@@ -128,7 +140,13 @@ describe('HearingViewSummaryComponent', () => {
   it('should navigate to case details page', () => {
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
     component.executeAction(ACTION.BACK);
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1234123412341234', 'hearings']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'JURIS', 'CASETYPE', '1234123412341234', 'hearings']);
+  });
+
+  it('should set jurisdiction and caseType from hearingStore', () => {
+    component.ngOnInit();
+    expect(component.jurisdiction).toBe('JURIS');
+    expect(component.caseType).toBe('CASETYPE');
   });
 
   afterEach(() => {

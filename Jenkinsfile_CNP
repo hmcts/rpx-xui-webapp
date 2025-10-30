@@ -153,6 +153,23 @@ withPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
             }
         }
+        stage('Integration Test') {
+            try {
+              yarnBuilder.yarn('test:xuiIntegration')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/codecept-ngIntegration/",
+              reportFiles          : 'cucumber_report.html',
+              reportName           : 'PREVIEW Integration Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
     }
 
     afterAlways('functionalTest:preview') {
@@ -192,6 +209,23 @@ withPipeline(type, product, component) {
               reportName           : 'AAT API Functional Test'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
+        }
+        stage('Integration Test') {
+            try {
+              yarnBuilder.yarn('test:xuiIntegration')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/codecept-ngIntegration/",
+              reportFiles          : 'cucumber_report.html',
+              reportName           : 'AAT Integration Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
             }
         }
     }

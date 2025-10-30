@@ -3,11 +3,7 @@ const menuConfig = {
     {
       'active': true,
       'flags': [
-        'MC_Work_Allocation',
-        {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+        'MC_Work_Allocation'
       ],
       'href': '/work/my-work/list',
       'roles': [
@@ -22,11 +18,7 @@ const menuConfig = {
     {
       'active': false,
       'flags': [
-        'MC_Work_Allocation',
-        {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+        'MC_Work_Allocation'
       ],
       'href': '/work/all-work/tasks',
       'roles': [
@@ -153,11 +145,7 @@ const menuConfig = {
     {
       'active': true,
       'flags': [
-        'MC_Work_Allocation',
-        {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+        'MC_Work_Allocation'
       ],
       'href': '/work/my-work/list',
       'roles': [
@@ -174,11 +162,7 @@ const menuConfig = {
     {
       'active': false,
       'flags': [
-        'MC_Work_Allocation',
-        {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+        'MC_Work_Allocation'
       ],
       'href': '/work/all-work/tasks',
       'roles': [
@@ -189,11 +173,7 @@ const menuConfig = {
     {
       'active': false,
       'flags': [
-        'MC_Work_Allocation',
-        {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease1'
-        }
+        'MC_Work_Allocation'
       ],
       'href': '/tasks',
       'roles': [
@@ -204,11 +184,7 @@ const menuConfig = {
     {
       'active': false,
       'flags': [
-        'MC_Work_Allocation',
-        {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease1'
-        }
+        'MC_Work_Allocation'
       ],
       'href': '/tasks/task-manager',
       'roles': [

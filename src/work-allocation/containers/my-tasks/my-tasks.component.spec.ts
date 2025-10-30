@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angul
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
@@ -52,9 +52,7 @@ describe('MyTasksComponent', () => {
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getUsersFromServices']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
@@ -87,7 +85,6 @@ describe('MyTasksComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
@@ -122,16 +119,12 @@ describe('MyTasksComponent', () => {
     };
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     mockFilterService.getStream.and.returnValue(of(filterFields));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
-    mockFeatureToggleService.getValue.and.returnValue(of(true));
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(tasks));
     fixture.detectChanges();
   }));
 
   it('should make a call to load tasks using the default search request', waitForAsync(() => {
     component.ngOnInit();
-    // tick(500);
     fixture.detectChanges();
     component.getSearchTaskRequestPagination();
     expect(component.tasks).toBeDefined();
@@ -239,9 +232,7 @@ describe('MyTasksComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith([`/work/${task.id}/${actionId}/`], jasmine.any(Object));
   }));
 
-  it('should allow setting the release 2 details', () => {
-    // verifying fields best way to check as the elements (apart from column names) on page will not change
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
+  it('should have R2 fields by default (since feature is removed)', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.fields[0].name).toBe('case_name');

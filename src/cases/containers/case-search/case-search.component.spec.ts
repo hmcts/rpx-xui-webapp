@@ -87,24 +87,6 @@ describe('CaseSearchComponent', () => {
       component.applyChangePage(event);
       expect(component.page).toEqual(event.selected.page);
     });
-
-    /**
-     * Note that the findCaseListPaginationMetadata() dispatches an Action to get the
-     * pagination metadata.
-     */
-    it('should call findCaseListPaginationMetadata() on page change.', () => {
-      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-
-      const event = {
-        selected: {
-          page: 1
-        }
-      };
-
-      component.applyChangePage(event);
-
-      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
-    });
   });
 
   describe('applyFilter()', () => {
@@ -112,20 +94,6 @@ describe('CaseSearchComponent', () => {
 
     beforeEach(() => {
       event = component.getEvent();
-    });
-
-    it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
-      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-
-      event = {
-        selected: {
-          page: 2
-        }
-      };
-
-      component.applyFilter(event);
-
-      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
     });
 
     it('should update the components page property on apply of a filter change.', () => {

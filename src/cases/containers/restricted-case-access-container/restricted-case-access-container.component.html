@@ -13,5 +13,5 @@ C13.7,13.2,13.2,13.7,12.5,13.7z M12.5,0.5c-6.6,0-12,5.4-12,12s5.4,12,12,12s12-5.
   <h1 class="govuk-heading-l">{{caseId | caseReference}}</h1>
   <exui-restricted-case-access [restrictedCases]="restrictedCases"
   ></exui-restricted-case-access>
-  <a href="javascript:history.back()" class="govuk-link">{{ 'Back to search' | rpxTranslate }}</a>
+  <a href="#" class="govuk-link" (click)="onBack(); $event.preventDefault()">{{ 'Back to search' | rpxTranslate }}</a>
 </div>

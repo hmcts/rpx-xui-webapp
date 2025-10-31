@@ -24,7 +24,7 @@
   </div>
   <ul class="hmcts-filter-tags selection-container">
     <li class="location-selection" *ngFor="let judge of judgeList">
-      <a class="hmcts-filter__tag" (click)="removeSelectedJudge(judge)" href="javascript:void(0)">
+      <a class="hmcts-filter__tag" (click)="removeSelectedJudge(judge); $event.preventDefault()" href="#">
         {{displayedJudgeName(judge)}} </a>
     </li>
   </ul>

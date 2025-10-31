@@ -89,7 +89,7 @@
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of (rightItems | async)">
             <a
-              *ngIf="(isUserCaseManager$ | async) || !(isGlobalSearchEnabled$ | async)"
+              *ngIf="(isUserCaseManager$ | async) || !isGlobalSearchEnabled"
               class="hmcts-primary-navigation__link transparent-background"
               [ngClass]="item.ngClass"
               (click)="onEmitSubMenu(item)"
@@ -98,7 +98,7 @@
               {{item.text | rpxTranslate}}
             </a>
             <exui-case-reference-search-box
-              *ngIf="!(isUserCaseManager$ | async) && (isGlobalSearchEnabled$ | async)"
+              *ngIf="!(isUserCaseManager$ | async) && isGlobalSearchEnabled"
               [item]="item"
               [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader">
             </exui-case-reference-search-box>

@@ -8,9 +8,9 @@
     <div class="govuk-summary-list__key">{{'Case number' | rpxTranslate}}</div>
     <div class="govuk-summary-list__value">{{ caseReference$ | async }}</div>
     <div class="govuk-summary-list__actions">
-      <a class="govuk-link" href="javascript:void(0)" (click)="navToRef()">
+      <button type="button" class="govuk-js-link" (click)="navToRef()">
         {{'Change' | rpxTranslate}}
-      </a>
+      </button>
     </div>
   </div>
   <ng-container *ngFor="let qAndA of qAndA$ | async">

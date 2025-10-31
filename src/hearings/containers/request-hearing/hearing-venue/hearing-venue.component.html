@@ -16,16 +16,14 @@
                              findLocationFormGroup.controls.locationSelectedFormControl.errors.required &&
                              findLocationFormGroup.controls.locationSelectedFormControl.dirty"
                   class="govuk-error-message">
-              <a href="javascript:void(0)"
-                 [routerLink]="['/', 'hearings', 'request', 'hearing-venue']"
+              <a [routerLink]="['/', 'hearings', 'request', 'hearing-venue']"
                  [fragment]="'inputLocationSearch'">{{ 'Enter a valid location' | rpxTranslate }}</a>
             </span>
             <span *ngIf="!findLocationFormGroup.controls.locationSelectedFormControl.valid &&
                              findLocationFormGroup.controls.locationSelectedFormControl.errors.addLocation &&
                              findLocationFormGroup.controls.locationSelectedFormControl.dirty"
                   class="govuk-error-message">
-              <a href="javascript:void(0)"
-                 [routerLink]="['/', 'hearings', 'request', 'hearing-venue']"
+              <a [routerLink]="['/', 'hearings', 'request', 'hearing-venue']"
                  [fragment]="'inputLocationSearch'">{{ findLocationFormGroup.controls.locationSelectedFormControl.errors.addLocation | rpxTranslate }}</a>
             </span>
           </li>
@@ -74,14 +72,14 @@
                                       [control]="findLocationFormGroup.controls.locationSelectedFormControl"
                                       [serviceIds]="serviceIds"
                                       [locationType]="'hearing'"></xuilib-search-venue>
-                <a href="javascript:void(0)" (click)="addSelection()" class="govuk-button govuk-button--secondary"
+                <a href="#" (click)="addSelection(); $event.preventDefault()" class="govuk-button govuk-button--secondary"
                    data-module="govuk-button">
                   {{ 'Add location' | rpxTranslate }}
                 </a>
               </div>
               <ul *ngIf="selectedLocations.length" class="hmcts-filter-tags selection-container">
                 <li class="location-selection" *ngFor="let selection of selectedLocations">
-                  <a class="hmcts-filter__tag" (click)="removeSelection(selection)" href="javascript:void(0)">
+                  <a class="hmcts-filter__tag" (click)="removeSelection(selection); $event.preventDefault()" href="#">
                     <span class="sr-only">{{'Click to remove: ' | rpxTranslate}}</span>
                     {{ selection.court_name }}
                   </a>

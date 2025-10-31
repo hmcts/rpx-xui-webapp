@@ -20,7 +20,8 @@ class SummaryTable{
 
   getTableChangeLinkElementXpath(forKey) {
     const keyElement = this.getTableKeyElementXpath(forKey);
-    return `${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//a`;
+    return (`${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//button` +
+    ` | ${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//a`);
   }
 
   getTableActionsElementXpath(forKey) {

@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -203,6 +203,53 @@ describe('HearingActualSummaryComponent', () => {
       component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel
     );
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
+  });
+
+  it('onBackPage should use Location.back() when same-origin referrer and history > 1', () => {
+    const router = TestBed.inject(Router);
+    const backSpy = spyOn((component as any).location, 'back').and.stub();
+    const navSpy = spyOn(router, 'navigate').and.stub();
+
+    // same-origin referrer
+    Object.defineProperty(document, 'referrer', {
+      value: window.location.origin + '/previous',
+      configurable: true
+    });
+
+    // ensure history.length > 1
+    history.pushState({}, '', '/now');
+
+    component.onBackPage();
+
+    expect(backSpy).toHaveBeenCalled();
+    expect(navSpy).not.toHaveBeenCalled();
+
+    // clean up referrer for other tests
+    Object.defineProperty(document, 'referrer', { value: '', configurable: true });
+  });
+
+  it('onBackPage should navigate to hearingActualAddEditUrl() when no same-origin referrer', () => {
+    const router = TestBed.inject(Router);
+    const backSpy = spyOn((component as any).location, 'back').and.stub();
+    const navSpy = spyOn(router, 'navigate').and.stub();
+
+    // different-origin referrer to force the else path
+    Object.defineProperty(document, 'referrer', {
+      value: 'https://other.example/path',
+      configurable: true
+    });
+
+    // stub the URL used by the fallback navigate
+    const target = '/hearings/actuals/1000000/hearing-actual-edit-summary';
+    spyOn(component as any, 'hearingActualAddEditUrl').and.returnValue(target);
+
+    component.onBackPage();
+
+    expect(backSpy).not.toHaveBeenCalled();
+    expect(navSpy).toHaveBeenCalledWith([target]);
+
+    // clean up
+    Object.defineProperty(document, 'referrer', { value: '', configurable: true });
   });
 
   afterEach(() => {

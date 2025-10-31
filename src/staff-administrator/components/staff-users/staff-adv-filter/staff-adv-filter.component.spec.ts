@@ -120,6 +120,11 @@ describe('StaffAdvFilterComponent', () => {
     expect(field.defaultOption.key).toBe('All');
   });
 
+  it('should have All by default in user status', () => {
+    const field = component.filterConfig.fields.find((f) => f.name === 'user-status');
+    expect(field.defaultOption.key).toBe('All');
+  });
+
   describe('filterSub', () => {
     it('should unsubscribe from filterService on destroy', () => {
       // @ts-expect-error -- private property
@@ -160,6 +165,10 @@ describe('StaffAdvFilterComponent', () => {
           {
             value: [],
             name: 'user-role'
+          },
+          {
+            value: ['ACTIVE'],
+            name: 'user-status'
           }
         ],
         reset: false
@@ -208,6 +217,10 @@ describe('StaffAdvFilterComponent', () => {
             {
               value: [],
               name: 'user-role'
+            },
+            {
+              value: [],
+              name: 'user-status'
             }
           ],
           reset: false
@@ -220,6 +233,63 @@ describe('StaffAdvFilterComponent', () => {
       });
 
       it('should set an error when filterService emits no values the genericFilter is submitted', () => {
+        component.genericFilterComponent.submitted = true;
+        fixture.detectChanges();
+        mockFilterStreamSubject.next(filterSetting);
+        // @ts-expect-error - private property
+        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith(
+          // @ts-expect-error - private property
+          [{ name: component.FILTER_NAME, error: component.ERROR_MESSAGE_MIN_ONE_CRITERIA }]
+        );
+      });
+    });
+
+    describe('when filterService only has a status filter', () => {
+      let filterSetting: FilterSetting;
+
+      beforeEach(() => {
+        filterSetting = {
+          id: 'staff-advanced-filters',
+          fields: [
+            {
+              value: [],
+              name: 'user-services'
+            },
+            {
+              value: [],
+              name: 'user-location'
+            },
+            {
+              value: ['All'],
+              name: 'user-type'
+            },
+            {
+              value: ['All'],
+              name: 'user-job-title'
+            },
+            {
+              value: ['All'],
+              name: 'user-skills'
+            },
+            {
+              value: [],
+              name: 'user-role'
+            },
+            {
+              value: ['ACTIVE'],
+              name: 'user-status'
+            }
+          ],
+          reset: false
+        };
+      });
+
+      it('should call setErrors null initially after subscription', () => {
+        // @ts-expect-error - private property
+        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith([]);
+      });
+
+      it('should set an error when only a user status is set', () => {
         component.genericFilterComponent.submitted = true;
         fixture.detectChanges();
         mockFilterStreamSubject.next(filterSetting);

@@ -173,6 +173,7 @@
     "@angular/compiler-cli": "^18.2.13",
     "@angular/language-service": "~18.2.13",
     "@axe-core/playwright": "^4.9.1",
+    "@hmcts/playwright-common": "^1.0.36",
     "@ngrx/schematics": "^17.2.0",
     "@pact-foundation/pact": "^15.0.1",
     "@pact-foundation/pact-node": "^10.18.0",

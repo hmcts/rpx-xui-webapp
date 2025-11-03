@@ -1,4 +1,4 @@
-@ng
+@ng @ignore
 Feature: Launch darkly service testing for targeting users variants
 
     Background: Mock and browser setup

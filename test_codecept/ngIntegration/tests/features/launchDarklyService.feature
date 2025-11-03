@@ -1,4 +1,4 @@
-@ng @ignore
+@ng
 Feature: Launch darkly service testing for targeting users variants
 
     Background: Mock and browser setup
@@ -12,7 +12,7 @@ Feature: Launch darkly service testing for targeting users variants
         Then I validate launch darkly feature toggles response received
         Then I validate launch darkly feature toggle values
             | valueType | name                              | value                  |
-            | string    | mc-work-allocation-active-feature | WorkAllocationRelease2 |
+            | boolean    | MC_Work_Allocation | true |
 
 
     Scenario:  LD values for toggles, user IAC_CaseOfficer_R1_withoutPagination
@@ -22,7 +22,7 @@ Feature: Launch darkly service testing for targeting users variants
         Then I validate launch darkly feature toggles response received
         Then I validate launch darkly feature toggle values
             | valueType | name                              | value                  |
-            | string    | mc-work-allocation-active-feature | WorkAllocationRelease2 |
+            | boolean    | MC_Work_Allocation | true |
 
     Scenario:  LD values for toggles, user IAC_CaseOfficer_R2
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator" with reference "userDetails"
@@ -31,4 +31,4 @@ Feature: Launch darkly service testing for targeting users variants
         Then I validate launch darkly feature toggles response received
         Then I validate launch darkly feature toggle values
             | valueType | name                              | value                  |
-            | string    | mc-work-allocation-active-feature | WorkAllocationRelease2 |
+            | boolean    | MC_Work_Allocation | true |

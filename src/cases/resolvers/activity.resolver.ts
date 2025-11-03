@@ -16,7 +16,7 @@ export class ActivityResolver implements Resolve<boolean> {
       .pipe(filter((mode) => !!mode))
       .subscribe((mode) => {
         this.activityService.mode = ActivityService.MODES[mode] || ActivityService.MODES.off;
-        if (this.activityService.mode !== ActivityService.MODES.off) {
+        if (this.isActivityEnabled){
           this.activityService.verifyUserIsAuthorized();
         }
       });
@@ -24,5 +24,9 @@ export class ActivityResolver implements Resolve<boolean> {
 
   public resolve(): Observable<boolean> {
     return of(this.activityService.mode !== ActivityService.MODES.off);
+  }
+
+  private get isActivityEnabled(): boolean {
+    return this.activityService.mode !== ActivityService.MODES.off;
   }
 }

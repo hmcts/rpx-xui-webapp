@@ -146,33 +146,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.loadBasedOnFilter();
   }
 
-  private setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSServiceDetails[]): HMCTSServiceDetails[] {
-    const supportedJurisdictions = [];
-    detailedWAServices.forEach((jurisdiction) => {
-      // get the serviceIds from the detailed service
-      supportedJurisdictions.push(jurisdiction.serviceId);
-    });
-    this.supportedJurisdictions = supportedJurisdictions;
-    if (!roleServiceIds.includes(null) && roleServiceIds.length > 0) {
-      const roleJurisdictions = [];
-      // get set of serviceIds from jurisdictions within user roles
-      const initialRoleJurisdictions = [...new Set(roleServiceIds)];
-      initialRoleJurisdictions.forEach((serviceId) => {
-        if (supportedJurisdictions.includes(serviceId)) {
-          // if there is a service name for the serviceId, use it
-          const matchingServices = detailedWAServices.filter((x) => x.serviceId === serviceId);
-          const serviceName = matchingServices?.length > 0 ? matchingServices[0].serviceName : serviceId;
-          roleJurisdictions.push({ serviceId, serviceName });
-        } else {
-          roleJurisdictions.push({ serviceId, serviceName: serviceId });
-        }
-      });
-      return roleJurisdictions;
-    }
-    // use provided WA supported services
-    return detailedWAServices;
-  }
-
   private loadBasedOnFilter(): void {
     if (this.hasInitialFilterRan) {
       // added to only reset task list on filter

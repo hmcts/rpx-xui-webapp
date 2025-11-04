@@ -18,10 +18,10 @@ import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder, TaskContext } from '../../../work-allocation/enums';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
+import { setServiceList } from '../../utils';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
@@ -436,10 +436,10 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'SSCS', serviceName: 'Social Security' }
         ];
 
-        const result = (component as any).setServiceList([null], detailedServices);
+        const result = setServiceList([null], detailedServices);
 
-        expect(result).toEqual(detailedServices);
-        expect(component.supportedJurisdictions).toEqual(['IA', 'SSCS']);
+        expect(result).toEqual({ supportedJurisdictions: ['IA', 'SSCS'], detailedWAServices: detailedServices });
+        expect(component.supportedJurisdictions).toEqual(['IA']);
       });
 
       it('should handle matching role jurisdictions', () => {
@@ -448,12 +448,11 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'SSCS', serviceName: 'Social Security' }
         ];
 
-        const result = (component as any).setServiceList(['IA', 'CIVIL'], detailedServices);
-
-        expect(result).toEqual([
-          { serviceId: 'IA', serviceName: 'Immigration' },
-          { serviceId: 'CIVIL', serviceName: 'CIVIL' }
-        ]);
+        const result = setServiceList(['IA', 'CIVIL'], detailedServices);
+        const detailedMockServices = [{ serviceId: 'IA', serviceName: 'Immigration' },
+          { serviceId: 'CIVIL', serviceName: 'CIVIL' }];
+        
+        expect(result).toEqual({ supportedJurisdictions: ['IA', 'SSCS'], detailedWAServices: detailedMockServices });
       });
 
       it('should handle empty roleServiceIds', () => {
@@ -461,9 +460,9 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'IA', serviceName: 'Immigration' }
         ];
 
-        const result = (component as any).setServiceList([], detailedServices);
+        const result = setServiceList([], detailedServices);
 
-        expect(result).toEqual(detailedServices);
+        expect(result).toEqual({ supportedJurisdictions: ['IA'], detailedWAServices: detailedServices });
       });
     });
 

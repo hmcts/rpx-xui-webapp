@@ -132,21 +132,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     return result.length >= baseLocations.value.length;
   }
 
-  // TODO: CAM_BOOKING - remove this
-  // public subscribeToSelectedLocations(): void {
-  //   this.selectedLocationsSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
-  //     .pipe(
-  //       filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-  //     )
-  //     .subscribe((f: FilterSetting) => {
-  //       this.selectedLocations = this.bookingLocations && this.bookingLocations.length > 0 ? this.bookingLocations :  f.fields.find((field) => field.name === TaskListFilterComponent.FILTER_NAME).value;
-  //       this.showFilteredText = this.hasBeenFiltered(f, this.getDefaultLocations());
-  //       this.toggleFilter = false;
-  //     });
-  // }
-
   public ngOnInit(): void {
-    // Clear Fileds to prevent duplication of filter
+    // Clear fields to prevent duplication of filter
     this.fieldsConfig.fields = [];
 
     this.setPersistenceAndDefaultLocations();
@@ -248,8 +235,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
       (userDetails) => {
         const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0
-         && userDetails.roleAssignmentInfo.filter((p) => p.roleType && p.roleType === 'ORGANISATION'
-          && !p.bookable).length === 0;
+         && !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION'
+          && !p.bookable);
         if (isFeePaidJudgeWithNoBooking) {
           localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
         } else if (!isLocationsAvailable) {

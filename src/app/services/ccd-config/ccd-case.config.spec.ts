@@ -22,7 +22,6 @@ class MockConfigService {
       case_data_url: 'test-case-data',
       document_management_url: 'test-dm',
       document_management_url_v2: 'test-dm-v2',
-      document_management_secure_enabled: true,
       remote_document_management_url: 'test-remote-dm',
       postcode_lookup_url: 'test-postcode',
       oauth2_client_id: 'ccd_gateway',
@@ -52,13 +51,13 @@ class MockConfigService {
       case_data_store_api_url: 'test-case-store',
       documentSecureModeCaseTypeExclusions: ['DIVORCE', 'PROBATE'],
       mc_cdam_exclusion_list: ['DIVORCE', 'PROBATE'],
-      enable_case_file_view_version_1_1: true,
       icp_enabled: false,
       icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
       events_to_hide: [
         'queryManagementRespondQuery'
-      ]
+      ],
+      enable_service_specific_multi_followups: ['SERVICE_1']
     };
   }
 
@@ -180,21 +179,8 @@ describe('AppConfiguration', () => {
     expect(service.getDocumentManagementUrlV2).toBeDefined();
   }));
 
-  it('should have getDocumentSecureMode', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getDocumentSecureMode).toBeDefined();
-  }));
-
   it('should have getDocumentManagementUrlV2 return value', inject([AppConfig], (service: AppConfig) => {
     expect(service.getDocumentManagementUrlV2()).toBe('test-dm-v2');
-  }));
-
-  it('should have getDocumentSecureMode return value', inject([AppConfig], (service: AppConfig) => {
-    expect(service.getDocumentSecureMode()).toBe(false);
-  }));
-
-  it('should have getAccessManagementMode return value', inject([AppConfig], (service: AppConfig) => {
-    mockEnvironmentService.get.and.returnValue(true);
-    expect(service.getAccessManagementMode()).toBe(true);
   }));
 
   it('should have getLocationRefApiUrl return value', inject([AppConfig], (service: AppConfig) => {
@@ -229,6 +215,10 @@ describe('AppConfiguration', () => {
     tick(5000);
     expect(service.initialisationComplete).toBeTruthy();
   })));
+
+  it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {
+    expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(['foo']);
+  }));
 
   describe('getCaseDataUrl', () => {
     it('should return case data url', inject([AppConfig], (service: AppConfig) => {
@@ -375,12 +365,6 @@ describe('AppConfiguration', () => {
     }));
   });
 
-  describe('getEnableCaseFileViewVersion1_1', () => {
-    it('should return enable case file view version 1.1 flag', inject([AppConfig], (service: AppConfig) => {
-      expect(service.getEnableCaseFileViewVersion1_1()).toBeTruthy();
-    }));
-  });
-
   describe('getIcpEnable', () => {
     it('should return ICP enabled flag', inject([AppConfig], (service: AppConfig) => {
       expect(service.getIcpEnable()).toBeFalsy();
@@ -428,33 +412,6 @@ describe('AppConfiguration', () => {
       mockEnvironmentService.get.and.returnValue('https://gateway.com');
       expect(service.getActivityUrl()).toBe('https://gateway.com/activity');
       expect(mockEnvironmentService.get).toHaveBeenCalledWith('ccdGatewayUrl');
-    }));
-  });
-
-  describe('getWAServiceConfig', () => {
-    it('should return WA service config when initialization is complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      expect(service.initialisationComplete).toBeTruthy();
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    })));
-
-    it('should return default WA service config when initialization is not complete', inject([AppConfig], (service: AppConfig) => {
-      service.initialisationComplete = false;
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    }));
-  });
-
-  describe('getAccessManagementMode', () => {
-    it('should return true when both config and environment are enabled', inject([AppConfig], (service: AppConfig) => {
-      mockEnvironmentService.get.and.returnValue(true);
-      expect(service.getAccessManagementMode()).toBe(true);
-    }));
-
-    it('should return false when environment is disabled', inject([AppConfig], (service: AppConfig) => {
-      mockEnvironmentService.get.and.returnValue(false);
-      expect(service.getAccessManagementMode()).toBe(false);
     }));
   });
 });
@@ -513,12 +470,6 @@ describe('AppConfiguration with different deployment environments', () => {
       expect(mockEnvironmentServiceForEnv.getDeploymentEnv).toHaveBeenCalled();
       expect((service as any).deploymentEnv).toBe(DeploymentEnvironmentEnum.AAT);
     }));
-
-    it('should return AAT specific WA service config', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    })));
   });
 
   describe('with DEMO deployment environment', () => {
@@ -661,8 +612,6 @@ describe('AppConfiguration edge cases and error scenarios', () => {
 
     it('should handle empty configuration', fakeAsync(inject([AppConfig], (service: AppConfig) => {
       tick(5000);
-      // getDocumentSecureMode returns false from the default feature toggle value
-      expect(service.getDocumentSecureMode()).toBe(false);
       expect(service.getPaginationPageSize()).toBeUndefined();
       expect(service.getActivityNexPollRequestMs()).toBeUndefined();
     })));
@@ -709,12 +658,6 @@ describe('AppConfiguration edge cases and error scenarios', () => {
       tick(5000);
       expect(service.initialisationComplete).toBeTruthy();
     }));
-
-    it('should not mark initialization complete when initialisation sync is false', inject([AppConfig, InitialisationSyncService],
-      (appConfig: AppConfig, initSync: InitialisationSyncService) => {
-        initSync.initialisationComplete(false);
-        expect(appConfig.initialisationComplete).toBeFalsy();
-      }));
   });
 });
 
@@ -732,7 +675,6 @@ describe('AppConfiguration with specific config values', () => {
       case_data_url: 'https://casedata.test.com',
       document_management_url: 'https://dm.test.com',
       document_management_url_v2: 'https://dmv2.test.com',
-      document_management_secure_enabled: true,
       remote_document_management_url: 'https://remote-dm.test.com',
       documentSecureModeCaseTypeExclusions: ['DIVORCE', 'PROBATE'],
       mc_cdam_exclusion_list: ['CIVIL', 'FAMILY'],
@@ -762,7 +704,6 @@ describe('AppConfiguration with specific config values', () => {
       document_data_url: 'https://docdata.test.com',
       rd_common_data_api_url: 'https://rdcommon.test.com',
       case_data_store_api_url: 'https://casestore.test.com',
-      enable_case_file_view_version_1_1: false,
       icp_enabled: true,
       icp_jurisdictions: ['SSCS', 'IMMIGRATION'],
       events_to_hide: ['event1', 'event2', 'event3'],
@@ -773,12 +714,6 @@ describe('AppConfiguration with specific config values', () => {
     mockFeatureToggleServiceConfig.isEnabled.and.returnValue(of(false));
     mockFeatureToggleServiceConfig.getValue.and.callFake((featureName: string, defVal: any) => {
       // Override default values for specific features to match our test config
-      if (featureName === AppConstants.FEATURE_NAMES.secureDocumentStoreEnabled) {
-        return of(true);
-      }
-      if (featureName === AppConstants.FEATURE_NAMES.enableCaseFileViewVersion1_1) {
-        return of(false);
-      }
       if (featureName === AppConstants.FEATURE_NAMES.icpEnabled) {
         return of(true);
       }
@@ -787,9 +722,6 @@ describe('AppConfiguration with specific config values', () => {
       }
       if (featureName === AppConstants.FEATURE_NAMES.cdamExclusionList) {
         return of(['CIVIL', 'FAMILY']);
-      }
-      if (featureName === AppConstants.FEATURE_NAMES.accessManagementMode) {
-        return of(false);
       }
       return of(defVal);
     });
@@ -870,8 +802,6 @@ describe('AppConfiguration with specific config values', () => {
 
   it('should return all configured boolean values correctly', fakeAsync(inject([AppConfig], (service: AppConfig) => {
     tick(5000);
-    expect(service.getDocumentSecureMode()).toBe(true);
-    expect(service.getEnableCaseFileViewVersion1_1()).toBe(false);
     expect(service.getIcpEnable()).toBe(true);
   })));
 
@@ -887,28 +817,6 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getOAuth2ClientId()).toBe('test-client-id');
   }));
 
-  it('should handle access management mode with environment check', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-    tick(5000);
-    // Initially both config and environment are false
-    expect(service.getAccessManagementMode()).toBe(false);
-
-    // Change environment to true, but config is still false
-    mockEnvironmentServiceConfig.get.and.callFake((key: string) => {
-      if (key === 'accessManagementEnabled') {
-        return true;
-      }
-      if (key === 'paymentReturnUrl') {
-        return 'https://payment-return.test.com';
-      }
-      if (key === 'ccdGatewayUrl') {
-        return 'https://gateway.test.com';
-      }
-      return 'default-value';
-    });
-    // Still false because config.access_management_mode is false (from feature toggle)
-    expect(service.getAccessManagementMode()).toBe(false);
-  })));
-
   it('should generate correct derived URLs', inject([AppConfig], (service: AppConfig) => {
     expect(service.getCaseHistoryUrl('1234', '5678')).toBe('https://casedata.test.com/internal/cases/1234/events/5678');
     expect(service.getCreateOrUpdateDraftsUrl('CIVIL')).toBe('https://casedata.test.com/internal/case-types/CIVIL/drafts');
@@ -916,4 +824,95 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getBannersUrl()).toBe('https://casedata.test.com/internal/banners');
     expect(service.getActivityUrl()).toBe('https://gateway.test.com/activity');
   }));
+
+  describe('AppConfig constructor', () => {
+    let mockAppConfigService: any;
+    let mockFeatureToggleService: any;
+    let mockEnvironmentService: any;
+    let mockInitialisationSyncService: any;
+    let mockWindow: any;
+    let mockLoggerService: any;
+
+    beforeEach(() => {
+      mockAppConfigService = jasmine.createSpyObj('AppConfigService', ['getEditorConfiguration']);
+      mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
+      mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['getDeploymentEnv']);
+      mockInitialisationSyncService = jasmine.createSpyObj('InitialisationSyncService', ['waitForInitialisation']);
+      mockWindow = {};
+      mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
+
+      mockAppConfigService.getEditorConfiguration.and.returnValue({ documentSecureModeCaseTypeExclusions: ['DIVORCE'] });
+      mockFeatureToggleService.getValue.and.callFake((featureName: string, defVal: any) => of(defVal));
+      mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
+    });
+
+    it('should set initialisationComplete to true when all LD observables complete', () => {
+      let callback: (init: boolean) => void;
+      mockInitialisationSyncService.waitForInitialisation.and.callFake((cb) => {
+        callback = cb;
+      });
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      callback(true);
+      expect(appConfig.initialisationComplete).toBeTrue();
+    });
+
+    it('should set initialisationComplete to false if initialisation fails', () => {
+      let callback: (init: boolean) => void;
+      mockInitialisationSyncService.waitForInitialisation.and.callFake((cb) => {
+        callback = cb;
+      });
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      spyOn(console, 'error');
+      callback(false);
+      expect(appConfig.initialisationComplete).toBeFalse();
+      expect(console.error).toHaveBeenCalledWith('InitialisationSyncService indicated initialisation failed, using default config values');
+    });
+
+    it('should call setUpLaunchDarklyForFeature for each feature when initialisation is true', () => {
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
+      mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](true);
+      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(5);
+    });
+
+    it('should call setUpLaunchDarklyForFeature only for serviceMessagesFeatureToggleKey when initialisation is false', () => {
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
+      mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](false);
+      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(1);
+      const actualArgs = (appConfig as any).setUpLaunchDarklyForFeature.calls.mostRecent().args;
+      expect(actualArgs[0]).toBe(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey);
+      expect(actualArgs[1]).toEqual(AppConstants.DEFAULT_SERVICE_MESSAGE);
+      // Accept any array as the third argument, including an array with an Observable
+      expect(Array.isArray(actualArgs[2])).toBeTrue();
+    });
+  });
 });

@@ -248,13 +248,13 @@ describe('SpecificAccessDurationComponent', () => {
       component.formGroup = new FormGroup({});
 
       const period = component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(period.hasOwnProperty('startDate') && period.hasOwnProperty('endDate')).toEqual(true);
+      expect(period?.hasOwnProperty('startDate') && period?.hasOwnProperty('endDate')).toEqual(true);
       date = new Date();
       date.setUTCHours(0, 0, 0, 0);
       expect(period.startDate).toEqual(date);
       date = new Date(2035, 6, 7);
       date.setUTCHours(23, 59, 59, 999);
-      expect(period.endDate).toEqual(date);
+      expect(period?.endDate).toEqual(date);
     });
 
     it('should return control values when getRawData called', () => {

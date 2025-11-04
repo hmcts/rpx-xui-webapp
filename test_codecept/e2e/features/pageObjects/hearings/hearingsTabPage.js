@@ -78,7 +78,8 @@ class HearingsTable {
       const xPath = `${tdXpath}/strong`;
       return elementByXpath(xPath);
     } else if (valueForHeader === 'Actions') {
-      const xPath = `${tdXpath}/div[contains(@class,'div-action')]/a`;
+      const xPath = `${tdXpath}/div[contains(@class,'div-action')]/button` +
+    ` | ${tdXpath}/div[contains(@class,'div-action')]/a`;
       return elementsByXpath(xPath);
     }
     throw new Error(`Unknown column ${valueForHeader}`);

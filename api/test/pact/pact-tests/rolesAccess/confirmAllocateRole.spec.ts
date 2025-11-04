@@ -3,11 +3,14 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_confirmAllocateRole', port: 8000 });
+const pact = new PactV3TestSetup({
+  provider: 'am_roleAssignment_confirmAllocateRole',
+  port: 8000
+});
 
 const REQUEST_BODY = {
   caseId: '1234123412341234',
@@ -70,9 +73,8 @@ describe('access management service, confirm allocate role', () => {
     });
 
     before(async() => {
-      await pactSetUp.provider.setup();
       const roleAssignmentInteraction = {
-        state: 'Confirm allocate role for user',
+        states: [{ description: 'Confirm allocate role for user' }],
         uponReceiving: 'confirm role allocation',
         withRequest: {
           method: 'POST',
@@ -93,7 +95,7 @@ describe('access management service, confirm allocate role', () => {
         }
       };
       const refreshRoleAssignmentInteraction = {
-        state: 'An actor with provided id is available in role assignment service',
+        states: [{ description: 'An actor with provided id is available in role assignment service' }],
         uponReceiving: 'refresh role assignment for user',
         withRequest: {
           method: 'GET',
@@ -112,10 +114,8 @@ describe('access management service, confirm allocate role', () => {
         }
       };
 
-      // @ts-ignore
-      pactSetUp.provider.addInteraction(roleAssignmentInteraction);
-      // @ts-ignore
-      pactSetUp.provider.addInteraction(refreshRoleAssignmentInteraction);
+      pact.provider.addInteraction(roleAssignmentInteraction);
+      pact.provider.addInteraction(refreshRoleAssignmentInteraction);
     });
 
     afterEach(() => {
@@ -124,38 +124,38 @@ describe('access management service, confirm allocate role', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pact.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(
+          mockServer.url
+        );
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { confirmAllocateRole } = requireReloaded('../../../../roleAccess/index');
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          session: { passport: { user: { userinfo: { id: '123' } } } },
+          body: REQUEST_BODY
+        });
+
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await confirmAllocateRole(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
-
-      const { confirmAllocateRole } = requireReloaded('../../../../roleAccess/index');
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        session: { passport: { user: { userinfo: { id: '123' } } } },
-        body: REQUEST_BODY
-      });
-
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await confirmAllocateRole(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

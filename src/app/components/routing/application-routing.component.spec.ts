@@ -37,8 +37,7 @@ describe('ApplicationRoutingComponent', () => {
   });
 
   it('should call navigateBasedOnUserRole on ngOnInit and return nothing', () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: ['caseworker-ia'] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     router.url = '/something';
     component.ngOnInit();
@@ -46,54 +45,48 @@ describe('ApplicationRoutingComponent', () => {
   });
 
   it('should call navigateBasedOnUserRole on ngOnInit and call booking url', () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: ['caseworker-ia'] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roleCategory: 'JUDICIAL' }, roleAssignmentInfo: [{ bookable: true }] }));
     component.ngOnInit();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.bookingUrl]);
   });
 
   it('should navigateBasedOnUserRole caseworker-civil', () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia'] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: ['caseworker-ia'] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
 
   it('should navigateBasedOnUserRole caseworker-ia-iacjudge', fakeAsync(async () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: [AppTestConstants.IA_JUDGE_ROLE] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: [AppTestConstants.IA_JUDGE_ROLE] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: [AppTestConstants.IA_JUDGE_ROLE] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
 
   it('should navigateBasedOnUserRole caseworker-civil', () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);
   });
 
   it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-ia', 'caseworker-civil'] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: ['caseworker-ia', 'caseworker-civil'] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['caseworker-civil'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
 
   it('should navigateBasedOnUserRole caseworker-ia-caseofficer', fakeAsync(async () => {
-    featureToggleMock.getValueOnce.and.returnValue(of(true));
-    featureToggleMock.getValue.and.returnValue(of({ roles: [AppTestConstants.IA_LEGAL_OPS_ROLE] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: [AppTestConstants.IA_LEGAL_OPS_ROLE] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: [AppTestConstants.IA_LEGAL_OPS_ROLE] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultWAPage]);
   }));
 
   it('should navigateBasedOnUserRole non judge role', () => {
-    featureToggleMock.getValue.and.returnValue(of({ roles: ['caseworker-is'] }));
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: ['caseworker-is'] }));
     mockStore.pipe.and.returnValue(of({ userInfo: { roles: ['somerole'] } }));
     component.navigateBasedOnUserRole();
     expect(router.navigate).toHaveBeenCalledWith([ApplicationRoutingComponent.defaultPage]);

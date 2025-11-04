@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
     pipelineTriggers([
-    cron('H 07 * * *')
+    cron('30 07 * * *')
     ])
 ])
 
@@ -45,19 +45,20 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
-
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
-    enableFullFunctionalTest(120)
-
-
+    
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')
     }
 
-    afterSuccess('build') {
+    afterSuccess('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
+
+  afterSuccess('build') {
         yarnBuilder.yarn('build')
 
         publishHTML([
@@ -76,7 +77,54 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
-        stage('Cross Browser Test') {
+     }
+    afterAlways('fortify-scan') {
+  
+      stage('API Test') {
+            try {
+              yarnBuilder.yarn('test:api')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/api_functional/",
+              reportFiles          : 'mochawesome.html',
+              reportName           : 'API Functional Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
+        }
+      
+      stage('Playwright Install') {
+            try {
+              yarnBuilder.yarn('test:setup:playwright-install')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
+
+      stage('UI Integration Test') {
+            try {
+              yarnBuilder.yarn('test:xuiIntegration')
+            } catch (Error) {
+              unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output/tests/codecept-ngIntegration",
+                reportFiles          : 'cucumber_report.html',
+                reportName           : 'XUI Manage Cases Full functional Tests'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
+
+      stage('Cross Browser Test') {
             try {
               yarnBuilder.yarn('test:crossbrowser')
             } catch (Error) {
@@ -90,9 +138,10 @@ withNightlyPipeline(type, product, component) {
               reportFiles          : 'xui-playwright.html',
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/tests-results/CaseAPIFunctional/*'
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
             }
         }
+
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([
         //     allowMissing         : true,
@@ -104,38 +153,7 @@ withNightlyPipeline(type, product, component) {
         // ])
     }
 
-    afterSuccess('fortify-scan') {
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-    }
 
-    afterSuccess('fullFunctionalTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Manage Cases Full functional Tests'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/api_functional/",
-            reportFiles          : 'mochawesome.html',
-            reportName           : 'API Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAT NG Integration Test'
-        ])
-    }
 
     afterSuccess('mutationTest') {
         publishHTML([

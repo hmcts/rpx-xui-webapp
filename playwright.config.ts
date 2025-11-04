@@ -58,10 +58,13 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
-        trace: 'on-first-retry'
+        trace: 'retain-on-failure',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure'
       }
     }
   ]

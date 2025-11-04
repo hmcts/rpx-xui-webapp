@@ -13,7 +13,6 @@ import { SessionStorageService } from '../../app/services';
 import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
-import { Booking } from '../../booking/models';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
 import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';

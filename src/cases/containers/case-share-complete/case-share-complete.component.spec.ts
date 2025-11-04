@@ -8,7 +8,10 @@ import { of } from 'rxjs';
 import * as fromCasesFeature from '../../store';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

@@ -14,6 +14,7 @@ import { FormValidatorsService } from './form-validators.service';
 import { PaletteService } from './palette.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-noc-field',
   template: `
     <div>

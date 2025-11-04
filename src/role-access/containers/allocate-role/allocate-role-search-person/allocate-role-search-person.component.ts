@@ -20,6 +20,7 @@ import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-allocate-role-search-person',
   templateUrl: './allocate-role-search-person.component.html'
 })

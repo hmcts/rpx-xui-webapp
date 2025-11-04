@@ -6,7 +6,10 @@ import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocTimeFieldComponent } from './noc-time-field.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

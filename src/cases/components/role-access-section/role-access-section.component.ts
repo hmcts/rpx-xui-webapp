@@ -6,6 +6,7 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole } from '../../../role-access/models';
 
 @Component({
+  standalone: false,
   selector: 'exui-role-access-section',
   templateUrl: './role-access-section.component.html'
 })

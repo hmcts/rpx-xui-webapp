@@ -3,9 +3,10 @@ import { expect } from 'chai';
 import * as log4js from 'log4js';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptors';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('interceptors', () => {

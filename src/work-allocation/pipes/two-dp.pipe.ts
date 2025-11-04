@@ -7,7 +7,10 @@ import { Pipe, PipeTransform } from '@angular/core';
  *  * Today is shown as 0.
  *  * After today is shown as negative.
  */
-@Pipe({ name: 'twoDP' })
+@Pipe({
+  standalone: false,
+  name: 'twoDP'
+})
 export class TwoDPPipe implements PipeTransform {
   private readonly DIGITS_INFO: string = '1.2-2';
   private readonly decimalPipe: DecimalPipe = new DecimalPipe('en-US');

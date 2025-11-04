@@ -5,7 +5,10 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

@@ -5,6 +5,7 @@ import { Subscription, tap } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-linked-hearings',
   templateUrl: './linked-hearings.component.html',
   styleUrls: ['./linked-hearings.component.scss']

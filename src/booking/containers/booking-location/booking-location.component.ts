@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BookingCheckType, SearchLocationComponent } from '@hmcts/rpx-xui-common-lib';
-import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationByEPIMMSModel as LocationByEpimmsModel } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../../../app/store';
 import { BookingNavigationEvent, BookingProcess } from '../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
   styleUrls: ['./booking-location.component.scss']

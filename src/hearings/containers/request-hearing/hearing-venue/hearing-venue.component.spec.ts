@@ -18,6 +18,7 @@ import { HearingVenueComponent } from './hearing-venue.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-parties-title',
   template: ''
 })
@@ -35,6 +36,7 @@ class MockAutoCompleteInputBox {
 }
 
 @Component({
+  standalone: false,
   selector: 'exui-search-location',
   template: ''
 })

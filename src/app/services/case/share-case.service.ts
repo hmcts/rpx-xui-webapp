@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 
 @Injectable()

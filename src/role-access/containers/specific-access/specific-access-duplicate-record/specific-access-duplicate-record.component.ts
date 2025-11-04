@@ -5,6 +5,7 @@ import { ACTION } from '../../../../work-allocation/services/work-allocation-tas
 import { SpecificAccessNavigation } from '../../../models';
 
 @Component({
+  standalone: false,
   selector: 'exui-specific-access-duplicate-record',
   templateUrl: './specific-access-duplicate-record.component.html',
   styleUrls: ['./specific-access-duplicate-record.component.scss']

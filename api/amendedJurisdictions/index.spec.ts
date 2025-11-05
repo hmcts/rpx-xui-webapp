@@ -50,7 +50,7 @@ describe('Amended Jurisdiction', () => {
       }
     ];
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req, res);
     // Unknown jurisdiction should be filtered
     const expected = [
       {
@@ -71,14 +71,14 @@ describe('Amended Jurisdiction', () => {
     ];
     req.url = '/aggregated/some/other/url';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
+    const response = amendedJurisdictions.getJurisdictions(expected, req, res);
     expect(response).to.eql(expected);
   });
 
   it('should send empty array', () => {
     const expected = [];
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
+    const response = amendedJurisdictions.getJurisdictions(expected, req, res);
     expect(response).to.eql(expected);
   });
 
@@ -86,7 +86,7 @@ describe('Amended Jurisdiction', () => {
     const data = 'not an array';
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data as any);
+    const response = amendedJurisdictions.getJurisdictions(data as any, req, res);
     expect(response).to.equal(data);
   });
 
@@ -94,7 +94,7 @@ describe('Amended Jurisdiction', () => {
     const data = null;
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req, res);
     expect(response).to.equal(null);
   });
 
@@ -102,7 +102,7 @@ describe('Amended Jurisdiction', () => {
     const data = undefined;
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req, res);
     expect(response).to.equal(undefined);
   });
 
@@ -115,7 +115,7 @@ describe('Amended Jurisdiction', () => {
     const sessionKey = 'readJurisdictions';
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req, res);
 
     expect(req.session[sessionKey]).to.deep.equal([
       { id: 'PROBATE' },

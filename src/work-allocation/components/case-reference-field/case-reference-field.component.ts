@@ -22,14 +22,12 @@ export class CaseReferenceFieldComponent implements OnChanges {
     let jurisdiction = this.jurisdiction;
     let caseType = this.caseType;
     let caseReference = this.caseReference;
-    if (caseReference) {
-      // Get rid of the spaces in the caseReference.
-      if (caseReference && jurisdiction && caseType) {
-        caseReference = encodeURIComponent(this.caseReference);
-        jurisdiction = encodeURIComponent(this.jurisdiction);
-        caseType = encodeURIComponent(this.caseType);
-        href = `${AppConstants.CASE_DETAILS_URL}${jurisdiction}/${caseType}/${caseReference}`;
-      }
+    // Get rid of the spaces in the caseReference.
+    if (caseReference && jurisdiction && caseType) {
+      caseReference = encodeURIComponent(this.caseReference);
+      jurisdiction = encodeURIComponent(this.jurisdiction);
+      caseType = encodeURIComponent(this.caseType);
+      href = `${AppConstants.CASE_DETAILS_URL}${jurisdiction}/${caseType}/${caseReference}`;
     }
     this.pHref = href;
   }

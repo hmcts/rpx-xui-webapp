@@ -23,7 +23,7 @@ export class ActivityResolver implements Resolve<boolean> {
   }
 
   public resolve(): Observable<boolean> {
-    return of(this.activityService.mode !== ActivityService.MODES.off);
+    return of(this.isActivityEnabled);
   }
 
   private get isActivityEnabled(): boolean {

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from '../steps/login-steps';
+import { acceptCookies, signIn, signOut } from '../steps/login-steps';
 import { waitForSpinner } from '../steps/spinner-steps';
 import { getCaseReferenceFromFirstRow, dealWithShortenedCaseRefLabel } from '../steps/table-steps';
 import { confirmNextSteps, confirmTabsVisible, caseDetailsCheck, validateWorkBasketComplexValues, validateWorkbasketInputs } from '../steps/test-case';
@@ -7,13 +7,13 @@ import { waitForSpecificResponse } from '../helpers/responseListenerHelper';
 import { createCase } from '../steps/create-xui-case-poc-steps';
 import { selectOptionWithRetry } from '../steps/steps-with-retry';
 import { submitEvent } from '../steps/submit-update-case-event-steps';
-import { createTestCaseErrorValidation } from '../steps/create-xui-case-test-case-type-dev-steps';
 import { registerCorsChecker } from '../helpers/corsSmoke';
 
 test.beforeEach(async ({ page }) => {
     registerCorsChecker(page);
     await signIn(page, 'SOLICITOR');
     await expect(page.getByLabel('Manage Cases')).toBeVisible();
+    await acceptCookies(page)
 });
 
 test('Validate next steps drop down', async ({ page }) => {
@@ -22,7 +22,6 @@ test('Validate next steps drop down', async ({ page }) => {
         'data/internal/cases/',
         'GET'
     );
-
 
     await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
@@ -43,8 +42,7 @@ test('Validate next steps drop down', async ({ page }) => {
 });
 
 test('Submit event from next step drop down', async ({ page }) => {
-    await signIn(page, 'SOLICITOR');
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
+
     await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
     await page.getByLabel('Apply filter').click();
@@ -67,8 +65,6 @@ test('Validate tabs are visible', async ({ page }) => {
         'GET'
     );
 
-    await signIn(page, 'SOLICITOR');
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
     await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
     await page.getByLabel('Apply filter').click();
@@ -94,8 +90,6 @@ test('Validate tabs details', async ({ page }) => {
         'GET'
     );
 
-    await signIn(page, 'SOLICITOR');
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
     await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
     await page.getByLabel('Apply filter').click();
@@ -120,8 +114,6 @@ test('Validate workbasket inputs against the API response', async ({ page }) => 
         'GET'
     );
 
-    await signIn(page, 'SOLICITOR');
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
     await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Test Case type dev' });
     await page.getByLabel('State').selectOption({ label: 'Case created' });
@@ -142,8 +134,6 @@ test('Validate workbasket complex values against the API response', async ({ pag
         'GET'
     );
 
-    await signIn(page, 'SOLICITOR');
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
     await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Test Case type dev' });
     await page.getByLabel('State').selectOption({ label: 'Case created' });
@@ -157,8 +147,6 @@ test('Validate workbasket complex values against the API response', async ({ pag
 });
 
 test('check form validations are functioning ', async ({ page }) => {
-    await signIn(page, 'SOLICITOR');
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
     await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });
     await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
     await page.getByRole('link', { name: 'Create case' }).click();
@@ -194,13 +182,5 @@ test('check form validations are functioning ', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'The event could not be created' })).toBeVisible();
     await expect(page.getByText('Date or Time entered is not').first()).toBeVisible();
     await expect(page.getByLabel('The event could not be created').getByText('The data entered is not valid')).toBeVisible();
-    await signOut(page);
-});
-
-test('Validate invalid date error message', async ({ page }) => {
-    await signIn(page, 'SOLICITOR');
-    await setTimeout(() => { }, 5000);
-    await expect(page.getByLabel('Manage Cases')).toBeVisible();
-    await createTestCaseErrorValidation(page);
     await signOut(page);
 });

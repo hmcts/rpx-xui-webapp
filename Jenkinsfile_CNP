@@ -58,14 +58,21 @@ withPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
     disableLegacyDeployment()
-    syncBranchesWithMaster(branchesToSync)
+    syncBranchesWithMaster(branchesToSync)    
 
     enablePactAs([
         AppPipelineDsl.PactRoles.CONSUMER
-    ])
+    ])   
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')
+        stage('Playwright Install') {
+        try {
+            yarnBuilder.yarn('test:setup:playwright-install')
+        } catch (Error) {
+            error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+        }  
+    }    
     }
 
     afterSuccess('test') {
@@ -113,8 +120,8 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
-            reportFiles          : 'index.html',
+            reportDir            : "functional-output/tests/codecept-smoke/",
+            reportFiles          : 'cucumber_report.html',
             reportName           : 'DEMO Smoke Test'
         ])
     }
@@ -124,40 +131,48 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/smoke/",
-            reportFiles          : 'index.html',
+            reportDir            : "functional-output/tests/codecept-smoke/",
+            reportFiles          : 'cucumber_report.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
+        stage('API Test') {
+            try {
+              yarnBuilder.yarn('test:api')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/api_functional/",
+              reportFiles          : 'mochawesome.html',
+              reportName           : 'PREVIEW API Functional Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
+        }
+        stage('Integration Test') {
+            try {
+              yarnBuilder.yarn('test:xuiIntegration')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/codecept-ngIntegration/",
+              reportFiles          : 'cucumber_report.html',
+              reportName           : 'PREVIEW Integration Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
     }
 
-    afterSuccess('functionalTest:preview') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/api_functional/",
-            reportFiles          : 'mochawesome.html',
-            reportName           : 'PREVIEW API Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW NG Integration Test'
-        ])
-
+    afterAlways('functionalTest:preview') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -166,47 +181,56 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'PREVIEW Playwright E2E'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
-
 
     afterSuccess('smoketest:aat') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/smoke/",
-            reportFiles          : 'index.html',
+            reportDir            : "functional-output/tests/codecept-smoke/",
+            reportFiles          : 'cucumber_report.html',
             reportName           : 'AAT Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
+        stage('API Test') {
+            try {
+              yarnBuilder.yarn('test:api')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/api_functional/",
+              reportFiles          : 'mochawesome.html',
+              reportName           : 'AAT API Functional Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
+        }
+        stage('Integration Test') {
+            try {
+              yarnBuilder.yarn('test:xuiIntegration')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/codecept-ngIntegration/",
+              reportFiles          : 'cucumber_report.html',
+              reportName           : 'AAT Integration Test'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
     }
 
     afterSuccess('functionalTest:aat') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAT Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/api_functional/",
-            reportFiles          : 'mochawesome.html',
-            reportName           : 'AAT API Functional Test'
-        ])
-         publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAT NG Integration Test'
-        ])
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

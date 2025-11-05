@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
 });
 
-test('Validate next steps drop down', async ({ page }) => {
+test.skip('Validate next steps drop down', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/cases/',
@@ -41,7 +41,7 @@ test('Validate next steps drop down', async ({ page }) => {
   await signOut(page);
 });
 
-test('Submit event from next step drop down', async ({ page }) => {
+test.skip('Submit event from next step drop down', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });

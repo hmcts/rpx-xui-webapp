@@ -1,7 +1,7 @@
 import { test as baseTest } from "@playwright/test";
 import getPort from "get-port";
 import { PageFixtures, pageFixtures } from "./page-objects/pages";
-import { UtilsFixtures, utilsFixtures } from "./utils";
+import { UtilsFixtures, utilsFixtures } from "../newE2E/utils/";
 
 // Gather all fixture types into a common type
 export type CustomFixtures = PageFixtures & UtilsFixtures;

@@ -7,7 +7,7 @@ export async function signIn(page: any, userIdentifier: string, goToCaseBaseURL:
   );
   const email = matchingUsers[0].email;
   if (goToCaseBaseURL) await page.goto(config.CaseBaseURL);
-  else await page.goto(config.AppBaseURL);
+  else await page.goto(config.AppBaseURL);  
   await page.getByLabel("Email address").click();
   await page.getByLabel("Email address").fill(email);
   await page.getByLabel("Password").click();
@@ -15,6 +15,14 @@ export async function signIn(page: any, userIdentifier: string, goToCaseBaseURL:
   await page.getByRole("button", { name: "Sign in" }).click();
   console.log("Signed in as " + email);
   
+}
+
+export async function acceptCookies(page: any) {
+  try {
+    await page.locator('button[name="cookies"][value="accept"]').click();
+  } catch (error) {
+    console.log(`Accept cookies failed: ${error}`);
+  }
 }
 
 export async function signOut(page) {

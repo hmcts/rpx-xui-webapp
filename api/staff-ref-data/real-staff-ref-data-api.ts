@@ -117,24 +117,6 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
     }
   }
 
-  async getStatus(req, res: Response, next: NextFunction) {
-    const apiPath: string = `${this.baseCaseWorkerRefUrl}/refdata/case-worker/up_idam_status`;
-
-    try {
-      const { status, data }: { status: number, data } = await sendGet(apiPath, req);
-
-      const options: StaffFilterOption[] = [];
-      data.up_idam_status.forEach((element) => {
-        console.log(element);
-        options.push({ key: String(element.role_id), label: element.role_description });
-      });
-
-      res.status(status).send(this.sortArray(options));
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async getUsersByPartialName(req, res: Response, next: NextFunction) {
     const searchParam = req.query.search ? req.query.search : '';
     const pageSize = req.headers['page-size'] || 20;

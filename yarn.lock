@@ -3285,12 +3285,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.55":
-  version: 7.2.55
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.55"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.56":
+  version: 7.2.56
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.56"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d08ac40a5f4d5cdfb5eeb244784bc5cea47d9c63dc52f3b94e27165b5075316c248f25e802a2f6ed212c97265012341794ae02e7b4b11e7a3369593a5210153a
+  checksum: 10/fed710f4505b519c5c883393c19800197605fc797ccb0ee91634a78b6db4b5f475df0b19265571424ce0d5b2feecb9345ba0f197a31186afa2cda067a1034c5e
   languageName: node
   linkType: hard
 
@@ -3313,9 +3313,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.8":
-  version: 4.1.8
-  resolution: "@hmcts/media-viewer@npm:4.1.8"
+"@hmcts/media-viewer@npm:4.1.9":
+  version: 4.1.9
+  resolution: "@hmcts/media-viewer@npm:4.1.9"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3334,7 +3334,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/1ecfff581a918a293e7b512bc2ebf5d73b840371c8403f3e4632df391910d808a1a61ca8f683bf1d5771bac8948efa9a8ea3af1804b8ea32bc4f0b412d55da28
+  checksum: 10/4b05afef2bb83816390cb57da887f70180734e62e23b5f470aa0b13afc7bcff44c9913feb305da839c54a4f7651f948f992d4e6322be354fb79318182c9b9192
   languageName: node
   linkType: hard
 
@@ -21824,10 +21824,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.55"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.56"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.8"
+    "@hmcts/media-viewer": "npm:4.1.9"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.9"

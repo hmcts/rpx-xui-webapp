@@ -102,7 +102,7 @@ resource "azurerm_communication_service" "acs" {
   count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-acs-${var.env}"
   resource_group_name = azurerm_resource_group.rg.name
-  data_location       = "United Kingdom"
+  data_location       = "UK"
 }
 
 resource "azurerm_key_vault_secret" "acs_connection_string" {
@@ -258,13 +258,13 @@ resource "azurerm_logic_app_action_custom" "acs_email_connection" {
       }
       name = "azurecommunicationservices"
       parameterValues = {
-        connectionString = data.azurerm_key_vault_secret.logic_app_acs_connection_string.0.value
+        connectionString = azurerm_key_vault_secret.acs_connection_string.0.value
       }
     }
     type = "ApiConnection"
   })
 
-  depends_on = [data.azurerm_key_vault_secret.logic_app_acs_connection_string]
+  depends_on = [azurerm_key_vault_secret.acs_connection_string]
 }
 
 # Role Assignment for Logic App to access Log Analytics
@@ -485,13 +485,13 @@ resource "azurerm_logic_app_action_custom" "welsh_acs_email_connection" {
       }
       name = "azurecommunicationservices"
       parameterValues = {
-        connectionString = data.azurerm_key_vault_secret.logic_app_acs_connection_string.0.value
+        connectionString = azurerm_key_vault_secret.acs_connection_string.0.value
       }
     }
     type = "ApiConnection"
   })
 
-  depends_on = [data.azurerm_key_vault_secret.logic_app_acs_connection_string]
+  depends_on = [azurerm_key_vault_secret.acs_connection_string]
 }
 
 # Role Assignment for Welsh Logic App to access Log Analytics

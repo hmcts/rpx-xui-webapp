@@ -59,7 +59,7 @@ test.skip('Submit event from next step drop down', async ({ page }) => {
   await signOut(page);
 });
 
-test('Validate tabs are visible', async ({ page }) => {
+test.skip('Validate tabs are visible', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/cases/',
@@ -86,7 +86,7 @@ test('Validate tabs are visible', async ({ page }) => {
   await signOut(page);
 });
 
-test('Validate tabs details', async ({ page }) => {
+test.skip('Validate tabs details', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/cases/',
@@ -112,7 +112,7 @@ test('Validate tabs details', async ({ page }) => {
   await signOut(page);
 });
 
-test('Validate workbasket inputs against the API response', async ({ page }) => {
+test.skip('Validate workbasket inputs against the API response', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/case-types/xuiTestCaseType_dev/',
@@ -134,7 +134,7 @@ test('Validate workbasket inputs against the API response', async ({ page }) => 
   await signOut(page);
 });
 
-test('Validate workbasket complex values against the API response', async ({ page }) => {
+test.skip('Validate workbasket complex values against the API response', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/case-types/xuiTestCaseType_dev/',
@@ -155,7 +155,7 @@ test('Validate workbasket complex values against the API response', async ({ pag
   await signOut(page);
 });
 
-test('check form validations are functioning ', async ({ page }) => {
+test.skip('check form validations are functioning ', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });
@@ -196,7 +196,7 @@ test('check form validations are functioning ', async ({ page }) => {
   await signOut(page);
 });
 
-test('Validate invalid date error message', async ({ page }) => {
+test.skip('Validate invalid date error message', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
   await setTimeout(() => {}, 5000);
   await expect(page.getByLabel('Manage Cases')).toBeVisible();

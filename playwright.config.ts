@@ -63,7 +63,10 @@ module.exports = defineConfig({
         channel: 'chrome',
         headless: headlessMode,
         trace: 'retain-on-failure',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     }

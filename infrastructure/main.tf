@@ -325,10 +325,10 @@ resource "azurerm_logic_app_trigger_recurrence" "welsh_monthly_trigger" {
   frequency = "Month"
   interval  = 1
   schedule {
-    # Run on the 6th day of each month at 3 PM UTC
-    on_these_days    = [6]
-    at_these_hours   = [15]
-    at_these_minutes = [0]
+    # Run on the 6th day of each month at 3:15 PM UTC
+    on_these_month_days = [6]
+    at_these_hours      = [15]
+    at_these_minutes    = [15]
   }
 }
 

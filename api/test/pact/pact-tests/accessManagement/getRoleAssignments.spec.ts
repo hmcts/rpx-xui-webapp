@@ -1,13 +1,13 @@
 import * as config from 'config';
 import * as sinon from 'sinon';
-import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { mockReq } from 'sinon-express-mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getAccessManagementServiceAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'am_roleAssignment_getAssignment', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_getAssignment', port: 8000 });
 
 const actorId = '12345';
 
@@ -52,9 +52,8 @@ describe('access management service, get role assignments of actor', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'An actor with provided id is available in role assignment service',
+        states: [{ description: 'An actor with provided id is available in role assignment service' }],
         uponReceiving: 'get roles assignments for actorId',
         withRequest: {
           method: 'GET',
@@ -73,7 +72,7 @@ describe('access management service, get role assignments of actor', () => {
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
+
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -83,92 +82,36 @@ describe('access management service, get role assignments of actor', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { refreshRoleAssignmentForUser } = requireReloaded('../../../../user/index');
+        const { refreshRoleAssignmentForUser } = requireReloaded('../../../../user/index');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        params: {
-          actorId: actorId
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json'
+          },
+          params: {
+            actorId: actorId
+          }
+        });
+
+        const userInfo = {
+          uid: '12345',
+          roles: []
+        };
+
+        try {
+          await refreshRoleAssignmentForUser(userInfo, req);
+        } catch (err) {
+          throw new Error(err);
         }
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      const userInfo = {
-        uid: '12345',
-        roles: []
-      };
-      // let roleAssignments = null;
-      try {
-        await refreshRoleAssignmentForUser(userInfo, req);
-        // roleAssignments = await refreshRoleAssignmentForUser(userInfo, req);
-        // assertResponses(roleAssignments);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        // console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
-    });
-
-    it('returns the correct response given null userInfo', async () => {
-      const configValues = getAccessManagementServiceAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
-
-      const { refreshRoleAssignmentForUser } = requireReloaded('../../../../user/index');
-
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        params: {
-          actorId: actorId
-        }
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      // let roleAssignments = null;
-      try {
-        await refreshRoleAssignmentForUser(null, req);
-        // roleAssignments = await refreshRoleAssignmentForUser(userInfo, req);
-        // assertResponses(roleAssignments);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });
-
-// function assertResponses(dto: any) {
-//   expect(dto.length).to.be.equal(1);
-// }
-

@@ -11,13 +11,8 @@ import {
 } from '../../../configuration/references';
 
 const publish = async (): Promise<void> => {
-  function getPactBrokerURL() {
-    return getConfigValue(PACT_BROKER_URL).includes('localhost') ? getConfigValue(PACT_BROKER_URL)
-      : `https://${getConfigValue(PACT_BROKER_URL)}`;
-  }
-
   try {
-    const pactBroker = getConfigValue(PACT_BROKER_URL) ? getPactBrokerURL() : 'http://localhost:80';
+    const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
       getConfigValue(PACT_BRANCH_NAME) : 'Dev';
 

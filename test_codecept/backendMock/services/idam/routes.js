@@ -95,16 +95,6 @@ router.post('/o/authrorize', (req, res) => {
   res.send();
 });
 
-// router.get('/oauth2/callback', (req, res) => {
-//     res.set('Location', 'http://localhost:3000/');
-//     res.cookie('XSRF-TOKEN','***REMOVED***')
-//     res.cookie('__userid__', '***REMOVED***')
-//     res.cookie('__auth__', '***REMOVED***')
-//     res.cookie('xui-webapp', 's%3AW9lK_bl38LqrPZqQWg_-nYn9buWbJAS0.LShMQ2AkUvRcXzkFVx4zXdIS7W377O4OQbsSGrlR%2F6w')
-
-//     res.status(302).send();
-// });
-
 router.post('/o/token', (req, res) => {
   res.send({
     'access_token': 'string',

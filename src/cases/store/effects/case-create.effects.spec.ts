@@ -36,7 +36,7 @@ describe('CaseCreate Effects', () => {
     it('should apply case action', () => {
       const action = new ApplyChange({});
       const completion = new CreateCaseGo({
-        path: ['/cases/case-details/undefined'],
+        path: ['/cases/case-details/undefined/undefined/undefined'],
         caseId: undefined
       });
       actions$ = hot('-a', { a: action });

@@ -60,7 +60,9 @@ export const aatHearingJurisdictions = {
     },
     {
       includeCaseTypes: [
-        'CIVIL'
+        'GENERALAPPLICATION',
+        'CIVIL',
+        '(Civil-|CIVIL-)\\d+'
       ],
       jurisdiction: 'CIVIL'
     }

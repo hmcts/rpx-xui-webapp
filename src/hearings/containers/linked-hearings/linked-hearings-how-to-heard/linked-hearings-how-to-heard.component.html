@@ -1,4 +1,4 @@
-<a class="govuk-back-link" href="javascript:void(0)" (click)="onBack()">{{ 'Back' | rpxTranslate }}</a>
+<a class="govuk-back-link" href="#" (click)="onBack(); $event.preventDefault()">{{ 'Back' | rpxTranslate }}</a>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <xuilib-hmcts-error-summary [errorMessages]="validationErrors" [header]="'There is a problem' | rpxTranslate">
@@ -89,6 +89,6 @@
   </div>
   <div>
     <button class="govuk-button" data-module="govuk-button" (click)="onSubmit()">{{ 'Continue' | rpxTranslate }}</button>
-    <a href="javascript:void(0)" class="link-cancel" (click)="onCancel()">{{ 'Cancel' | rpxTranslate }}</a>
+    <a href="#" class="link-cancel" (click)="onCancel(); $event.preventDefault()">{{ 'Cancel' | rpxTranslate }}</a>
   </div>
 </form>

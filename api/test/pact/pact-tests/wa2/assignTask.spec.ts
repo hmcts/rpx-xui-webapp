@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_assign_task_by_id', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_assign_task_by_id', port: 8000 });
 
 describe('Task management api, assign a task to user', () => {
   let next;
@@ -23,9 +23,8 @@ describe('Task management api, assign a task to user', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'assign a task using taskId',
+        states: [{ description: 'assign a task using taskId' }],
         uponReceiving: 'taskId to assign a task',
         withRequest: {
           method: 'POST',
@@ -42,7 +41,6 @@ describe('Task management api, assign a task to user', () => {
           headers: {}
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -52,43 +50,41 @@ describe('Task management api, assign a task to user', () => {
     });
 
     it('returns the correct response', async () => {
-      const configValues = getSearchTaskOverrides(pactSetUp.provider.mockService.baseUrl);
-      await sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getSearchTaskOverrides(mockServer.url);
+        await sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
+
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          params: {
+            taskId: taskId,
+            action: 'assign'
+          },
+          body: mockRequest
+
+        });
+        let resStatus = null;
+        const response = mockRes();
+        response.status = (ret) => {
+          resStatus = ret;
+        };
+
+        try {
+          await postTaskAction(req, response, next);
+          expect(resStatus).to.equal(204);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
       });
-
-      const { postTaskAction } = requireReloaded('../../../../workAllocation/index');
-
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        params: {
-          taskId: taskId,
-          action: 'assign'
-        },
-        body: mockRequest
-
-      });
-      let resStatus = null;
-      const response = mockRes();
-      response.status = (ret) => {
-        resStatus = ret;
-      };
-
-      try {
-        await postTaskAction(req, response, next);
-        expect(resStatus).to.equal(204);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

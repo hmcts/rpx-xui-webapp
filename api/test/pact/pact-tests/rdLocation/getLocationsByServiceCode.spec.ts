@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getLocationsRefDataAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'referenceData_location', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'referenceData_location', port: 8000 });
 
 const service = 'IA';
 const serviceCode = 'BFA1';
@@ -70,14 +70,15 @@ describe('Locations ref data api, get matching location for service code', () =>
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'Search for locations',
+        states: [{ description: 'Search for locations' }],
         uponReceiving: 'get list of court venues for given service code',
         withRequest: {
           method: 'GET',
           path: '/refdata/location/court-venues/services',
-          query: `service_code=${serviceCode}`,
+          query: {
+            service_code: serviceCode
+          },
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -92,7 +93,6 @@ describe('Locations ref data api, get matching location for service code', () =>
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -102,43 +102,41 @@ describe('Locations ref data api, get matching location for service code', () =>
     });
 
     it('returns the correct response', async () => {
-      const configValues = getLocationsRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      // @ts-ignore
-      configValues.serviceRefDataMapping = [
-        { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
-      ];
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getLocationsRefDataAPIOverrides(mockServer.url);
+        // @ts-ignore
+        configValues.serviceRefDataMapping = [
+          { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
+        ];
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
+
+        const { getLocations } = requireReloaded('../../../../workAllocation/locationController');
+
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          query: { serviceCodes: service }
+
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await getLocations(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
       });
-
-      const { getLocations } = requireReloaded('../../../../workAllocation/locationController');
-
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        query: { serviceCodes: service }
-
-      });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await getLocations(req, response, next);
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

@@ -56,7 +56,9 @@ describe('ExclusionHomeComponent', () => {
           useValue: {
             snapshot: {
               queryParams: {
-                caseId: '111111'
+                caseId: '111111',
+                jurisdiction: 'IA',
+                caseType: 'Asylum'
               }
             }
           }
@@ -178,7 +180,7 @@ describe('ExclusionHomeComponent', () => {
   describe('Click cancel button', () => {
     it('should navigate to role and access tab when click cancel button', () => {
       component.navigationHandler(ExclusionNavigationEvent.CANCEL);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/IA/Asylum/111111/roles-and-access');
     });
   });
 

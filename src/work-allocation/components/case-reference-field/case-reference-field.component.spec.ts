@@ -133,5 +133,63 @@ describe('WorkAllocation', () => {
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
     });
+
+    describe('ngOnChanges', () => {
+      const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
+
+      let component: CaseReferenceFieldComponent;
+
+      beforeEach(() => {
+        component = new CaseReferenceFieldComponent();
+      });
+
+      it('should set href with jurisdiction and caseType when all inputs are provided', () => {
+        component.caseReference = '123456';
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}IA/Asylum/123456`);
+      });
+
+      it('should set href with only caseReference when jurisdiction and caseType are missing', () => {
+        component.caseReference = '654321';
+        component.jurisdiction = undefined;
+        component.caseType = undefined;
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}654321`);
+      });
+
+      it('should set href with only caseReference when jurisdiction and caseType are empty strings', () => {
+        component.caseReference = '654321';
+        component.jurisdiction = '';
+        component.caseType = '';
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}654321`);
+      });
+
+      it('should not set href if caseReference is undefined', () => {
+        component.caseReference = undefined;
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+
+      it('should not set href if caseReference is null', () => {
+        component.caseReference = null;
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+
+      it('should not set href if caseReference is an empty string', () => {
+        component.caseReference = '';
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+    });
   });
 });

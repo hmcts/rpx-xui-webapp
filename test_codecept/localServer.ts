@@ -1,65 +1,81 @@
-/**
- * Local.ts used to run the application locally.
- */
-import { app } from '../api/application';
+// localServer.ts
+import { createApp } from '../api/application';
 import { applicationConfiguration } from '../api/configuration/appConfig';
 import { appInsights } from '../api/lib/appInsights';
 import errorHandler from '../api/lib/error.handler';
 
 import axios from 'axios';
-
-import * as ejs from 'ejs';
 import * as express from 'express';
 import * as path from 'path';
+import { existsSync, readFileSync } from 'fs';
 
 import { removeCacheHeaders } from '../api/lib/middleware/removeCacheHeaders';
-/**
- * Show the developer the application configuration when they are developing locally.
- */
 
-app.engine('html', ejs.renderFile);
-app.set('view engine', 'html');
-app.set('views', path.join(__dirname, ''));
+function loadIndexHtml(): string {
+  const built = path.join(__dirname, '../dist/rpx-exui', 'index.html');
+  return readFileSync(built, 'utf8');
+}
+const indexHtmlRaw = loadIndexHtml();
 
-app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })]);
-app.use([removeCacheHeaders, express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })]);
+function injectNonce(html: string, nonce: string): string {
+  return html.replace(/{{\s*cspNonce\s*}}/g, nonce);
+}
 
-app.use('/*', (req, res) => {
-  res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
-  res.render('../dist/rpx-exui/index', {
-    providers: [
-      { provide: 'REQUEST', useValue: req },
-      { provide: 'RESPONSE', useValue: res }
-    ],
-    req,
-    res
-  });
-});
+class ApplicationServer {
+  server: any;
+  app: any;
 
-console.log(applicationConfiguration());
+  async initialize() {
+    this.app = await createApp();
 
-app.use(appInsights);
-app.use(errorHandler);
+    // Serve static assets only (don’t let static serve index)
+    this.app.use([
+      removeCacheHeaders,
+      express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })
+    ]);
+    this.app.use([
+      removeCacheHeaders,
+      express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })
+    ]);
 
-// app.listen(3000)
-class ApplicationServer{
-  server:any;
-  async start(){
-    this.server = await app.listen(3000);
+    // Catch-all → send the nonce-injected HTML
+    this.app.get('/*', (req, res) => {
+      res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
+      const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+      res.type('html').send(html);
+    });
+
+    console.log(applicationConfiguration());
+
+    this.app.use(appInsights);
+    this.app.use(errorHandler);
+  }
+
+  async start() {
+    if (process.env.SSR_ALREADY_RUNNING === 'true') {
+      console.log('[localServer] SSR already up – skipping second listen()');
+      return;
+    }
+    if (!this.app) {
+      await this.initialize();
+    }
+    this.server = await this.app.listen(3000);
     try {
       const res = await axios.get('http://localhost:3000/auth/isAuthenticated');
       console.log(res.data);
-    } catch (err){
+    } catch (err) {
       console.log(err);
     }
   }
 
-  async stop(){
-    return await this.server.close();
+  async stop() {
+    if (!this.server) {
+      console.log('[SSR] stop() called but no server instance - skipping');
+      return;
+    }
+    await this.server.close();
   }
 }
 
 const applicationServer = new ApplicationServer();
-
-// applicationServer.start()
 export default applicationServer;

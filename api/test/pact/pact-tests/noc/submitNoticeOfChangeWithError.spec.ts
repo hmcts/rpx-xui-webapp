@@ -3,13 +3,13 @@ import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { NocAnswer } from '../../../../../src/noc/models';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getNocAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-const pactSetUp = new PactTestSetup({ provider: 'acc_manageCaseAssignment_Noc', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'acc_manageCaseAssignment', port: 8000 });
 
 describe('submitNoCEvents API', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
@@ -23,7 +23,7 @@ describe('submitNoCEvents API', () => {
     value: 'test@email.com'
   }];
   const mockRequest = {
-    case_id: '1234567812345678',
+    case_id: '1234567812345670',
     answers: answers
   };
 
@@ -36,8 +36,8 @@ describe('submitNoCEvents API', () => {
     body: mockRequest
   });
 
-  function setUpMockConfigForFunction() {
-    const configValues = getNocAPIOverrides(pactSetUp.provider.mockService.baseUrl);
+  function setUpMockConfigForFunction(url) {
+    const configValues = getNocAPIOverrides(url);
     sandbox.stub(config, 'get').callsFake((prop) => {
       return configValues[prop];
     });
@@ -46,9 +46,8 @@ describe('submitNoCEvents API', () => {
   }
   describe('when an error occurs', () => {
     before(async () => {
-      await pactSetUp.provider.setup();
-      await pactSetUp.provider.addInteraction({
-        state: 'A NoC answer request with invalid case ID',
+      pactSetUp.provider.addInteraction({
+        states: [{ description: 'A NoC answer request with invalid case ID' }],
         uponReceiving: 'a request to verify NoC answers',
         withRequest: {
           method: 'POST',
@@ -68,26 +67,24 @@ describe('submitNoCEvents API', () => {
     });
 
     it('should return an error response', async () => {
-      const submitNoCEvents = setUpMockConfigForFunction();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-      const nextSpy = sinon.spy();
-      try {
-        await submitNoCEvents(req, response, nextSpy);
-        const error = nextSpy.args[0][0];
-        assertError(error);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const submitNoCEvents = setUpMockConfigForFunction(mockServer.url);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+        const nextSpy = sinon.spy();
+        try {
+          await submitNoCEvents(req, response, nextSpy);
+          const error = nextSpy.args[0][0];
+          assertError(error);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
+        }
+      });
     });
   });
 });

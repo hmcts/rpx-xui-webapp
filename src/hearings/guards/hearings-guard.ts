@@ -45,7 +45,7 @@ export class HearingsGuard {
                 )
               );
             }
-            this.router.navigate([`/cases/case-details/${caseInfo.caseReference}`]);
+            this.router.navigate([`/cases/case-details/${caseInfo.jurisdictionId}/${caseInfo.caseType}/${caseInfo.caseReference}`]);
             return of(false);
           }),
           map((result) => !!result)

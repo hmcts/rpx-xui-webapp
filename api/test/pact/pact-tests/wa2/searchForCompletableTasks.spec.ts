@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getSearchTaskOverrides } from '../utils/configOverride';
 import { DateTimeMatcher } from '../utils/matchers';
 import { requireReloaded } from '../utils/moduleUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, term } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'wa_task_management_api_search_completable', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_search_completable', port: 8000 });
 
 const taskId = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
 
@@ -57,9 +57,8 @@ describe('Task management api, Search for completable tasks on case event', () =
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction = {
-        state: 'appropriate tasks are returned by search for completable',
+        states: [{ description: 'appropriate tasks are returned by search for completable' }],
         uponReceiving: 'taskId to search for tasks completable',
         withRequest: {
           method: 'POST',
@@ -77,7 +76,6 @@ describe('Task management api, Search for completable tasks on case event', () =
           body: RESPONSE_BODY
         }
       };
-      // @ts-ignore
       pactSetUp.provider.addInteraction(interaction);
     });
 
@@ -87,46 +85,43 @@ describe('Task management api, Search for completable tasks on case event', () =
     });
 
     it('returns the correct response', async () => {
-      const configValues = getSearchTaskOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getSearchTaskOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { postTaskSearchForCompletable } = requireReloaded('../../../../workAllocation/index');
+        const { postTaskSearchForCompletable } = requireReloaded('../../../../workAllocation/index');
 
-      const req = mockReq({
-        headers: {
-          Authorization: 'Bearer someAuthorizationToken',
-          ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        body: {
-          searchRequest: {
-            ccdId: mockRequest.case_id,
-            jurisdiction: mockRequest.case_jurisdiction,
-            caseTypeId: mockRequest.case_type,
-            eventId: mockRequest.event_id
+        const req = mockReq({
+          headers: {
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          body: {
+            searchRequest: {
+              ccdId: mockRequest.case_id,
+              jurisdiction: mockRequest.case_jurisdiction,
+              caseTypeId: mockRequest.case_type,
+              eventId: mockRequest.event_id
+            }
           }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await postTaskSearchForCompletable(req, response, next);
+          assertResponses(returnedResponse);
+        } catch (err) {
+          console.log(err.stack);
+          throw new Error(err);
         }
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await postTaskSearchForCompletable(req, response, next);
-
-        assertResponses(returnedResponse);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (err) {
-        console.log(err.stack);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(err);
-      }
     });
   });
 });

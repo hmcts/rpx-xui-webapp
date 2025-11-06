@@ -26,7 +26,7 @@ export class ChangeNavigation implements Action {
 
 export class ExclusionSetCaseId implements Action {
   public readonly type = ExclusionActionTypes.EXCLUSION_SET_CASE_ID;
-  constructor(public caseId: string, public jurisdiction: string) {}
+  constructor(public caseId: string, public jurisdiction: string, public caseType: string) {}
 }
 
 export class UpdateDescribeExclusionText implements Action {

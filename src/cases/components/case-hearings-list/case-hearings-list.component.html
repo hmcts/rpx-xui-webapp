@@ -30,36 +30,36 @@
     <td class="govuk-table__cell govuk-table-width-30-percent">
       <div *ngIf="hasUpdateAction" class="div-action">
         <ng-container *ngIf="!isAwaitingActual(hearing.exuiDisplayStatus) && !isNonCancellable(hearing.exuiDisplayStatus)">
-          <a *ngIf="!(isHearingAmendmentsEnabled)" id="link-view-or-edit-{{hearing.hearingID}}" href="javascript:void(0)"
-             (click)="viewAndEdit(hearing.hearingID)">{{ 'View or edit' | rpxTranslate }}</a>
-          <a *ngIf="isHearingAmendmentsEnabled" id="link-view-details-{{hearing.hearingID}}" href="javascript:void(0)"
-             (click)="viewAndEdit(hearing.hearingID)">{{ 'View details' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="button" *ngIf="!(isHearingAmendmentsEnabled)" id="link-view-or-edit-{{hearing.hearingID}}" class="govuk-js-link"
+             (click)="viewAndEdit(hearing.hearingID)">{{ 'View or edit' | rpxTranslate }}</button>
+          <button type="button" *ngIf="isHearingAmendmentsEnabled" id="link-view-details-{{hearing.hearingID}}" class="govuk-js-link"
+             (click)="viewAndEdit(hearing.hearingID)">{{ 'View details' | rpxTranslate }}</button>&nbsp;&nbsp;&nbsp;&nbsp;
         </ng-container>
         <ng-container *ngIf="isAwaitingActual(hearing.exuiDisplayStatus)">
-          <a id="link-add-or-edit-{{hearing.hearingID}}"
-             href="javascript:void(0)"
-             (click)="addAndEdit(hearing.hearingID)">{{ 'Add or edit' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="button" id="link-add-or-edit-{{hearing.hearingID}}"
+             class="govuk-js-link"
+             (click)="addAndEdit(hearing.hearingID)">{{ 'Add or edit' | rpxTranslate }}</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </ng-container>
       </div>
       <div *ngIf="hasDeleteAction && !isNonCancellable(hearing.exuiDisplayStatus) && !isAwaitingActual(hearing.exuiDisplayStatus)" class="div-action">
-        <a id="link-cancel-{{hearing.hearingID}}"
-           href="javascript:void(0)"
-           (click)="cancelHearing(hearing.hearingID)">{{ 'Cancel' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" id="link-cancel-{{hearing.hearingID}}"
+           class="govuk-js-link"
+           (click)="cancelHearing(hearing.hearingID)">{{ 'Cancel' | rpxTranslate }}</button>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && hearing.hearingIsLinkedFlag && !isManageLinksEnabled(hearing.hearingGroupRequestId) && isLinkableStatus(hearing.exuiDisplayStatus)" class="div-action">
-        <a id="link-hearing-link-{{hearing.hearingID}}"
-           href="javascript:void(0)"
-           (click)="linkHearing(hearing.hearingID)">{{ 'Link hearing' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" id="link-hearing-link-{{hearing.hearingID}}"
+           class="govuk-js-link"
+           (click)="linkHearing(hearing.hearingID)">{{ 'Link hearing' | rpxTranslate }}</button>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasUpdateAction && !isNonCancellable(hearing.exuiDisplayStatus) && isManageLinksEnabled(hearing.hearingGroupRequestId) && isLinkableStatus(hearing.exuiDisplayStatus)" class="div-action">
-        <a id="link-manage-links-{{hearing.hearingID}}"
-           href="javascript:void(0)"
-           (click)="manageLinks(hearing)">{{ 'Manage links' | rpxTranslate }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" id="link-manage-links-{{hearing.hearingID}}"
+           class="govuk-js-link"
+           (click)="manageLinks(hearing)">{{ 'Manage links' | rpxTranslate }}</button>&nbsp;&nbsp;&nbsp;&nbsp;
       </div>
       <div *ngIf="hasReadOnlyAction || isNonCancellable(hearing.exuiDisplayStatus)" class="div-action">
-        <a id="link-view-details-{{hearing.hearingID}}"
-           href="javascript:void(0)"
-           (click)="viewDetails(hearing)">{{ 'View details' | rpxTranslate }}</a>
+        <button type="button" id="link-view-details-{{hearing.hearingID}}"
+           class="govuk-js-link"
+           (click)="viewDetails(hearing)">{{ 'View details' | rpxTranslate }}</button>
       </div>
     </td>
   </tr>

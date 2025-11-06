@@ -1,11 +1,12 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { selectOptionWithRetry } from './steps-with-retry';
 
 export async function createTestCaseErrorValidation(page) {
   await page.getByRole('link', { name: 'Create case' }).click();
   await expect(page.getByRole('heading', { name: 'Create Case' })).toBeVisible();
   await page.getByText('Create Case Jurisdiction--').click();
-  await page.getByLabel('Jurisdiction').selectOption('DIVORCE');
-  await page.getByLabel('Case type').selectOption('xuiTestCaseType_dev');
+  await selectOptionWithRetry(page, 'DIVORCE', false, { label: 'Jurisdiction' });
+  await selectOptionWithRetry(page, 'xuiTestCaseType_dev', false, { label: 'Case type' });
   await page.getByRole('button', { name: 'Start' }).click();
   await expect(page.getByText('Page 1 header')).toBeVisible();
   await page.getByRole('textbox', { name: 'Text Field' }).click();

@@ -1,15 +1,14 @@
-import { InteractionObject } from '@pact-foundation/pact/src/dsl/interaction';
 import { expect } from 'chai';
 import * as config from 'config';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import { PactTestSetup } from '../settings/provider.mock';
+import { PactV3TestSetup } from '../settings/provider.mock';
 import { getHearingsAPIOverrides } from '../utils/configOverride';
 import { requireReloaded } from '../utils/moduleUtil';
+import { Matchers, V3Interaction } from '@pact-foundation/pact';
 
-const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'hmc_hearingGroup', port: 8000 });
+const pactSetUp = new PactV3TestSetup({ provider: 'hmc_hearingGroup', port: 8000 });
 
 const groupId = '123456789';
 
@@ -25,9 +24,8 @@ describe('Hearings, delete single hearing linked group by a given groupId', () =
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
-      const interaction: InteractionObject = {
-        state: 'delete single hearing linked group for given groupId',
+      const interaction: V3Interaction = {
+        states: [{ description: 'delete single hearing linked group for given groupId' }],
         uponReceiving: 'delete single hearing linked group for given groupId',
         withRequest: {
           method: 'DELETE',
@@ -56,38 +54,38 @@ describe('Hearings, delete single hearing linked group by a given groupId', () =
     });
 
     it('returns the correct response', async () => {
-      const configValues = getHearingsAPIOverrides(pactSetUp.provider.mockService.baseUrl);
-      sandbox.stub(config, 'get').callsFake((prop) => {
-        return configValues[prop];
-      });
+      return pactSetUp.provider.executeTest(async (mockServer) => {
+        const configValues = getHearingsAPIOverrides(mockServer.url);
+        sandbox.stub(config, 'get').callsFake((prop) => {
+          return configValues[prop];
+        });
 
-      const { deleteLinkedHearingGroup } = requireReloaded('../../../../hearings/hmc.index.ts');
+        const { deleteLinkedHearingGroup } = requireReloaded('../../../../hearings/hmc.index.ts');
 
-      const req = mockReq({
-        headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
-        },
-        query: {
-          hearingGroupId: groupId
+        const req = mockReq({
+          headers: {
+            'Authorization': 'Bearer someAuthorizationToken',
+            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json'
+          },
+          query: {
+            hearingGroupId: groupId
+          }
+        });
+        let returnedResponse = null;
+        const response = mockRes();
+        response.send = (ret) => {
+          returnedResponse = ret;
+        };
+
+        try {
+          await deleteLinkedHearingGroup(req, response, next);
+        } catch (err) {
+          throw new Error(err);
         }
+
+        assertResponses(returnedResponse);
       });
-      let returnedResponse = null;
-      const response = mockRes();
-      response.send = (ret) => {
-        returnedResponse = ret;
-      };
-
-      try {
-        await deleteLinkedHearingGroup(req, response, next);
-      } catch (err) {
-        throw new Error(err);
-      }
-
-      assertResponses(returnedResponse);
-      pactSetUp.provider.verify();
-      pactSetUp.provider.finalize();
     });
   });
 });

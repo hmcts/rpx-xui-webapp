@@ -1,10 +1,11 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
-import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   selector: 'exui-hearing-actuals-edit-summary',
@@ -14,6 +15,7 @@ import { DatePipe } from '@hmcts/ccd-case-ui-toolkit';
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   constructor(
+    public readonly location: Location,
     public readonly hearingStore: Store<fromHearingStore.State>,
     public readonly hearingsService: HearingsService,
     public readonly route: ActivatedRoute,
@@ -31,5 +33,19 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
 
   public onSubmitHearingDetails(): void {
     this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+  }
+
+  // Note: Already onBack on extended component but does not work for this use case
+  public onBackPage(): void {
+    // Prefer an in-app back when we can
+    const sameOriginReferrer =
+      document.referrer && new URL(document.referrer).origin === location.origin;
+
+    if (sameOriginReferrer && history.length > 1) {
+      this.location.back();
+    } else {
+      // Fallback when opened in a new tab/deep link (no useful history)
+      this.router.navigate([this.hearingActualAddEditUrl()]);
+    }
   }
 }

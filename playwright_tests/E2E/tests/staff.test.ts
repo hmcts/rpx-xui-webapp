@@ -1,16 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from '../steps/login-steps';
+import { acceptCookies, signIn, signOut } from '../steps/login-steps';
 import { clickToStaffPage } from '../steps/staff-steps';
 import { registerCorsChecker } from '../helpers/corsSmoke';
 
 test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
+  await signIn(page, 'STAFF_ADMIN');
+  await clickToStaffPage(page);
+  await acceptCookies(page)
 });
 
 test('staff user details', async ({ page }) => {
-  await signIn(page, 'STAFF_ADMIN');
-  await clickToStaffPage(page);
-  console.log('Using user simple search');
   await page.locator('#content').getByRole('textbox').click();
   await page.locator('#content').getByRole('textbox').fill('xui');
   await page.getByRole('button', { name: 'Search', exact: true }).click();
@@ -29,13 +29,9 @@ test('staff user details', async ({ page }) => {
   await expect(page.getByText('Status')).toBeVisible();
   expect(page.locator('dl')).toContainText('xui caseworker all services');
   await expect(page.locator('dl')).toContainText('Legal office');
-  await signOut(page);
 });
 
 test('staff user details advanced search', async ({ page }) => {
-  await signIn(page, 'STAFF_ADMIN');
-  await clickToStaffPage(page);
-  console.log('Using user advanced search');
   await page.getByRole('button', { name: 'Advanced search' }).click();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'User type' }).first()).toBeVisible();
   await expect(page.locator('#staff-advanced-filters div').filter({ hasText: 'Job title' }).first()).toBeVisible();
@@ -48,13 +44,9 @@ test('staff user details advanced search', async ({ page }) => {
   await page.getByRole('link', { name: 'Add location' }).click();
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByText('Showing')).toBeVisible();
-  await signOut(page);
 });
 
 test('Add new user work flow - back, cancel and change', async ({ page }) => {
-  await signIn(page, 'STAFF_ADMIN');
-  await clickToStaffPage(page);
-  console.log('Adding new user then cancel');
   await page.getByRole('button', { name: 'Add new user' }).click();
   await expect(page.getByRole('heading', { name: 'Add user' })).toBeVisible();
   await page.locator('#first_name').click();
@@ -122,5 +114,4 @@ test('Add new user work flow - back, cancel and change', async ({ page }) => {
   await page.getByRole('button', { name: 'Cancel' }).click();
   await expect(page.getByRole('heading', { name: 'User search' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Add new user' })).toBeVisible();
-  await signOut(page);
 });

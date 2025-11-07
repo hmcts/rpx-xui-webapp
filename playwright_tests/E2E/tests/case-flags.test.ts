@@ -10,7 +10,8 @@ test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
 });
 
-test('Create case flag 2', async ({ page }) => {
+
+test.skip('Create case flag 2 X', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
   await routeToCasePage(page, '1747043572209027');

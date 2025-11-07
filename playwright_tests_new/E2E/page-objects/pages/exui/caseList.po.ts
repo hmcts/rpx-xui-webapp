@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
-import { config } from "../../../utils";
-import { Base } from "../../base";
+import config from "../../../utils/config.utils.js";
+import { Base } from "../../base.js";
 
-export class ExuiCaseListPage extends Base {
+export class CaseListPage extends Base {
   readonly container = this.page.locator("exui-case-home");
 
   constructor(page: Page) {

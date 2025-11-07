@@ -1,4 +1,4 @@
-import { expect } from "../fixtures";
+import { expect } from "../fixtures.js";
 
 export class ValidatorUtils {
   /**

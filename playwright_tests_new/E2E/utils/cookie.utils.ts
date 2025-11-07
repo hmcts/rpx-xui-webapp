@@ -1,6 +1,6 @@
 import fs from "fs";
 import { Cookie } from "playwright-core";
-import { config } from "./config.utils.ts";
+import { config } from "./config.utils.js";
 
 export class CookieUtils {
   // public async addAnalyticsCookie(user: UserCredentials): Promise<void> {

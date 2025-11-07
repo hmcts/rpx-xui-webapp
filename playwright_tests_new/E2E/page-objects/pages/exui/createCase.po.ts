@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
-import { Base } from "../../base";
+import { Base } from "../../base.ts";
+import {faker} from '@faker-js/faker';
 
 export class CreateCasePage extends Base {
   readonly container = this.page.locator("exui-case-home");
@@ -29,35 +30,36 @@ export class CreateCasePage extends Base {
     await this.caseTypeSelect.selectOption('xuiTestJurisdiction'); */
 
   async createCase(jurisdiction: string, caseType: string) {
+    const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     await this.createCaseButton.click();
     await this.jurisdictionSelect.selectOption(jurisdiction);
     await this.caseTypeSelect.selectOption(caseType);
     await this.startButton.click();
-    await this.page.getByLabel('Male', { exact: true }).check();
+    await this.page.getByLabel(gender, { exact: true }).check();
     await this.person1Title.click();
-    await this.person1Title.fill('Mr');
+    await this.person1Title.fill(faker.name.prefix());
     await this.person1Title.press('Tab');
-    await this.firstNameInput.fill('Jack');
+    await this.firstNameInput.fill(faker.name.firstName());
     await this.firstNameInput.press('Tab');
-    await this.lastNameInput.fill('Vaz');
+    await this.lastNameInput.fill(faker.name.lastName());
     await this.lastNameInput.press('Tab');
-    await this.genderSelect.selectOption('1: male');
+    await this.genderSelect.selectOption(gender);
     await this.jobTitleInput.click();
-    await this.jobTitleInput.fill('Musician');
+    await this.jobTitleInput.fill(faker.name.jobTitle());
     await this.jobDescriptionInput.click();
-    await this.jobDescriptionInput.fill('Guitarist');
+    await this.jobDescriptionInput.fill(faker.lorem.sentence());
     await this.continueButton.click();
     await this.textField0Input.click();
-    await this.textField0Input.fill('Field');
+    await this.textField0Input.fill(faker.lorem.word());
     await this.textField0Input.press('Tab');
-    await this.textField3Input.fill('Field');
+    await this.textField3Input.fill(faker.lorem.word());
     await this.textField3Input.press('Tab');
-    await this.textField1Input.fill('Field');
+    await this.textField1Input.fill(faker.lorem.word());
     await this.textField1Input.press('Tab');
-    await this.textField2Input.fill('Field');
+    await this.textField2Input.fill(faker.lorem.word());
     await this.continueButton.click();
     await this.testSubmitButton.click();
-    await this.page.getByRole('link', { name: 'Case list' }).click();
+    await this.exuiSpinnerComponent.wait()
   };
 
 }

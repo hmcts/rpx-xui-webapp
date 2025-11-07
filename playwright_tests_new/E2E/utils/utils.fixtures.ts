@@ -12,9 +12,10 @@ import {
 import os from "os";
 import path from "path";
 import { chromium, Page } from "playwright/test";
-import { config, Config } from "./config.utils";
-import { CookieUtils } from "./cookie.utils";
-import { ValidatorUtils } from "./validator.utils";
+import { config, Config } from "./config.utils.js";
+import { CookieUtils } from "./cookie.utils.js";
+import { ValidatorUtils } from "./validator.utils.js";
+import { UserUtils } from "./user.utils.js";
 
 export interface UtilsFixtures {
   config: Config;
@@ -30,6 +31,7 @@ export interface UtilsFixtures {
   idamUtils: IdamUtils;
   localeUtils: LocaleUtils;
   serviceAuthUtils: ServiceAuthUtils;
+  userUtils: UserUtils;
 }
 
 export const utilsFixtures = {
@@ -101,4 +103,7 @@ export const utilsFixtures = {
     process.env.S2S_URL = config.urls.serviceAuthUrl;
     await use(new ServiceAuthUtils());
   },
+  userUtils: async ({}, use) => {
+    await use(new UserUtils());
+  }
 };

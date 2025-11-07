@@ -1,9 +1,18 @@
 import dotenv from "dotenv";
-import path from "path";
 import { fileURLToPath } from "url";
+import * as path from 'node:path';
+import {UserUtils} from "./user.utils.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const sessionPath = path.resolve(__dirname, "../../.sessions/");
 
 // This needs to be placed somewhere before attempting to access any environment variables
-dotenv.config({ quiet: true });
+dotenv.config();
+
+// This should be removed when we move to API based user creation
+const userUtils = new UserUtils();
+const caseManager =  userUtils.getUserCredentials("IAC_CaseOfficer_R1");
+const judge =  userUtils.getUserCredentials("IAC_Judge_WA_R1");
 
 export interface UserCredentials {
   username: string;
@@ -32,19 +41,19 @@ export interface Config {
 export const config: Config = {
   users: {
     caseManager: {
-      username: getEnvVar("CASEMANAGER_USERNAME"),
-      password: getEnvVar("CASEMANAGER_PASSWORD"),
+      username: caseManager.email,
+      password: caseManager.password,
       sessionFile:
-        path.join(fileURLToPath(import.meta.url), "../../.sessions/") +
-        `${getEnvVar("CASEMANAGER_USERNAME")}.json`,
+        sessionPath +
+        `${caseManager.email}.json`,
       cookieName: "xui-webapp",
     },
     judge: {
-      username: getEnvVar("JUDGE_USERNAME"),
-      password: getEnvVar("JUDGE_PASSWORD"),
+      username: judge.email,
+      password: judge.password,
       sessionFile:
-        path.join(fileURLToPath(import.meta.url), "../../.sessions/") +
-        `${getEnvVar("JUDGE_USERNAME")}.json`,
+        sessionPath +
+        `${judge.email}.json`,
       cookieName: "xui-webapp",
     },
   },
@@ -75,3 +84,4 @@ function getEnvVar(name: string): string {
   }
   return value;
 }
+export default config;

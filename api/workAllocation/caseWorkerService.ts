@@ -3,10 +3,8 @@ import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 
 const logger: JUILogger = log4jui.getLogger('caseworker-service');
-const MAX_RECORDS: number = 100000;
 
 export async function handleUsersGet(path: string, req: EnhancedRequest): Promise<any> {
   logger.info('getting users for', path);
@@ -62,46 +60,9 @@ export async function handlePostSearch(path: string, payload: string | any, req:
   return await http.post(path, payload, { headers });
 }
 
-export async function handlePostRoleAssignments(path: string, payload: any, req: EnhancedRequest): Promise<any> {
-  const headers = setHeaders(req);
-  headers.pageNumber = 0;
-  headers.size = MAX_RECORDS;
-  // sort
-  // direction
+export async function handlePostRoleAssignments(path: string, payload: any, headers: any): Promise<any> {
   const response: AxiosResponse = await http.post(path, payload, { headers });
-  if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
-    logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
-  }
-  return response;
-}
-
-export async function handlePostRoleAssignmentsWithNewUsers(path: string, payload: any, headers: any): Promise<any> {
-  // sort
-  // direction
-  const response: AxiosResponse = await http.post(path, payload, { headers });
-  if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
-    logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
-  }
-  return response;
-}
-
-export async function handleCaseWorkersForServicesPost(path: string, payloads: CaseworkerPayload [], req: EnhancedRequest):
- Promise<ServiceCaseworkerData[]> {
-  const headers = setHeaders(req);
-  headers.pageNumber = 0;
-  headers.size = MAX_RECORDS;
-  const data = new Array<ServiceCaseworkerData>();
-  // sort
-  // direction
-  for (const payload of payloads) {
-    const response: AxiosResponse = await http.post(path, payload, { headers });
-    if (response.data.roleAssignmentResponse.length >= MAX_RECORDS) {
-      logger.warn('Case workers now returning MAX_RECORDS', response.data.roleAssignmentResponse.length);
-    }
-    const caseworkerService = { jurisdiction: payload.attributes.jurisdiction[0], data: response.data };
-    data.push(caseworkerService);
-  }
-  return data;
+  return response.data.roleAssignmentResponse;
 }
 
 export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisdiction: any, req: EnhancedRequest): Promise<any> {

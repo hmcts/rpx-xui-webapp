@@ -16,8 +16,6 @@ import {
   handleNewUsersGet,
   handlePostSearch,
   handlePostRoleAssignments,
-  handlePostRoleAssignmentsWithNewUsers,
-  handleCaseWorkersForServicesPost,
   handlePostCaseWorkersRefData,
   handlePostJudicialWorkersRefData,
   getUserIdsFromRoleApiResponse,
@@ -232,7 +230,7 @@ describe('CaseWorker Service', () => {
   });
 
   describe('handlePostRoleAssignments', () => {
-    it('should make a post request with MAX_RECORDS size', async () => {
+    it('should make a post request with path and payload', async () => {
       const mockResponse = {
         status: 200,
         data: {
@@ -244,35 +242,13 @@ describe('CaseWorker Service', () => {
       const payload = { jurisdiction: 'SSCS' };
       const req = mockReq();
 
-      const response = await handlePostRoleAssignments(path, payload, req);
+      const roleAssignments = await handlePostRoleAssignments(path, payload, req);
 
-      expect(response).to.deep.equal(mockResponse);
+      expect(roleAssignments).to.deep.equal(mockResponse.data.roleAssignmentResponse);
       expect(http.post).to.have.been.calledOnce;
       const callArgs = (http.post as sinon.SinonStub).getCall(0).args;
       expect(callArgs[0]).to.equal(path);
       expect(callArgs[1]).to.deep.equal(payload);
-      expect(callArgs[2].headers.pageNumber).to.equal(0);
-      expect(callArgs[2].headers.size).to.equal(100000);
-    });
-
-    it('should handle response with MAX_RECORDS (100000 items)', async () => {
-      const roleAssignments = Array(100000).fill({ id: 'test' });
-      const mockResponse = {
-        status: 200,
-        data: {
-          roleAssignmentResponse: roleAssignments
-        }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/role-assignments';
-      const payload = { jurisdiction: 'SSCS' };
-      const req = mockReq();
-
-      const response = await handlePostRoleAssignments(path, payload, req);
-
-      // Verify the function completes successfully even with MAX_RECORDS
-      expect(response).to.deep.equal(mockResponse);
-      expect(response.data.roleAssignmentResponse).to.have.length(100000);
     });
 
     it('should handle empty response', async () => {
@@ -287,144 +263,9 @@ describe('CaseWorker Service', () => {
       const payload = {};
       const req = mockReq();
 
-      const response = await handlePostRoleAssignments(path, payload, req);
+      const roleAssignments = await handlePostRoleAssignments(path, payload, req);
 
-      expect(response.data.roleAssignmentResponse).to.be.empty;
-    });
-  });
-
-  describe('handlePostRoleAssignmentsWithNewUsers', () => {
-    it('should make a post request with provided headers', async () => {
-      const mockResponse = {
-        status: 200,
-        data: {
-          roleAssignmentResponse: [{ id: '1' }]
-        }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/role-assignments';
-      const payload = { jurisdiction: 'SSCS' };
-      const headers = { 'Authorization': 'Bearer token' };
-
-      const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
-
-      expect(response).to.deep.equal(mockResponse);
-      expect(http.post).to.have.been.calledWith(path, payload, { headers });
-    });
-
-    it('should handle response with MAX_RECORDS (100000 items) for new users', async () => {
-      const roleAssignments = Array(100000).fill({ id: 'test' });
-      const mockResponse = {
-        status: 200,
-        data: {
-          roleAssignmentResponse: roleAssignments
-        }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/role-assignments';
-      const payload = { jurisdiction: 'SSCS' };
-      const headers = {};
-
-      const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
-
-      // Verify the function completes successfully even with MAX_RECORDS
-      expect(response).to.deep.equal(mockResponse);
-      expect(response.data.roleAssignmentResponse).to.have.length(100000);
-    });
-  });
-
-  describe('handleCaseWorkersForServicesPost', () => {
-    it('should make multiple post requests for each payload', async () => {
-      const payloads = [
-        {
-          attributes: { jurisdiction: ['SSCS'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        },
-        {
-          attributes: { jurisdiction: ['IA'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
-      ];
-      const mockResponses = [
-        { status: 200, data: { roleAssignmentResponse: [{ id: '1' }] } },
-        { status: 200, data: { roleAssignmentResponse: [{ id: '2' }] } }
-      ];
-      const httpStub = sandbox.stub(http, 'post');
-      httpStub.onCall(0).resolves(mockResponses[0]);
-      httpStub.onCall(1).resolves(mockResponses[1]);
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-
-      expect(result).to.have.length(2);
-      expect(result[0]).to.deep.equal({ jurisdiction: 'SSCS', data: mockResponses[0].data });
-      expect(result[1]).to.deep.equal({ jurisdiction: 'IA', data: mockResponses[1].data });
-      expect(httpStub).to.have.been.calledTwice;
-    });
-
-    it('should handle empty payloads array', async () => {
-      const payloads: any[] = [];
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-
-      expect(result).to.be.empty;
-    });
-
-    it('should handle response with MAX_RECORDS (100000 items) for any service', async () => {
-      const payloads = [
-        {
-          attributes: { jurisdiction: ['SSCS'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
-      ];
-      const roleAssignments = Array(100000).fill({ id: 'test' });
-      const mockResponse = {
-        status: 200,
-        data: { roleAssignmentResponse: roleAssignments }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-
-      // Verify the function completes successfully even with MAX_RECORDS
-      expect(result).to.have.length(1);
-      expect(result[0].jurisdiction).to.equal('SSCS');
-      expect(result[0].data.roleAssignmentResponse).to.have.length(100000);
-    });
-
-    it('should handle post request error in loop', async () => {
-      const payloads = [
-        {
-          attributes: { jurisdiction: ['SSCS'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        },
-        {
-          attributes: { jurisdiction: ['IA'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
-      ];
-      const httpStub = sandbox.stub(http, 'post');
-      httpStub.onCall(0).resolves({ status: 200, data: { roleAssignmentResponse: [] } });
-      httpStub.onCall(1).rejects(new Error('Service error'));
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      await expect(handleCaseWorkersForServicesPost(path, payloads, req)).to.be.rejectedWith('Service error');
+      expect(roleAssignments).to.be.empty;
     });
   });
 

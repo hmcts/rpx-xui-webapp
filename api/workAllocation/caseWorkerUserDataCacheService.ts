@@ -2,11 +2,13 @@ import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 
 import { getConfigValue } from '../configuration';
-import { CASEWORKER_PAGE_SIZE, IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
+import { CASEWORKER_PAGE_SIZE, IDAM_SECRET, MICROSERVICE, ROLE_ASSIGNMENT_PAGE_SIZE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
+import { setHeaders } from '../lib/proxy';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
-import { handleNewUsersGet, handlePostRoleAssignments, handlePostRoleAssignmentsWithNewUsers, handleUsersGet } from './caseWorkerService';
+import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { handleNewUsersGet, handlePostRoleAssignments, handleUsersGet } from './caseWorkerService';
 import { FullUserDetailCache } from './fullUserDetailCache';
 import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
 import { CachedCaseworker, LocationApi } from './interfaces/common';
@@ -131,6 +133,48 @@ async function fetchAllUserPages(
   return allUsers;
 }
 
+// Helper function to fetch all pages of role assignments
+async function fetchAllRoleAssignmentPages(
+  req?: EnhancedRequest
+): Promise<RoleAssignment[]> {
+  let pageNumber = 0;
+  let hasMoreData = true;
+  let allRoles: RoleAssignment[] = [];
+  // Default to 20000 if ROLE_ASSIGNMENT_PAGE_SIZE is missing or not a valid number
+  const configPageSize = getConfigValue(ROLE_ASSIGNMENT_PAGE_SIZE);
+  const pageSize = !isNaN(parseInt(configPageSize)) ? parseInt(configPageSize) : 20000;
+
+  while (hasMoreData) {
+    const roleApiPath = prepareRoleApiUrl(baseRoleAssignmentUrl);
+    const jurisdictions = getStaffSupportedJurisdictionsList();
+    const payload = prepareRoleApiRequest(jurisdictions, null, true);
+
+    const roleAssignmentHeaders = {
+      ...(req ? setHeaders(req) : getRequestHeaders()),
+      pageNumber,
+      size: pageSize
+    };
+    // Use headers (instead of req) to support both contexts
+    const roleResponse = await handlePostRoleAssignments(roleApiPath, payload, roleAssignmentHeaders);
+
+    // Stop if no results or less than pageSize (last page)
+    if (!roleResponse || roleResponse.length === 0) {
+      hasMoreData = false;
+    } else {
+      allRoles = allRoles.concat(roleResponse);
+
+      // If less than pageSize, this is the last page
+      if (roleResponse.length < pageSize) {
+        hasMoreData = false;
+      } else {
+        // If exactly pageSize, check if next page is empty before continuing
+        pageNumber++;
+      }
+    }
+  }
+  return allRoles;
+}
+
 // For backward compatibility
 export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
   return fetchUserData();
@@ -141,12 +185,12 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
  */
 export async function fetchRoleAssignments(
   cachedUserData: StaffUserDetails[],
-  req: EnhancedRequest,
-  next: NextFunction
+  req?: EnhancedRequest,
+  next?: NextFunction
 ): Promise<CachedCaseworker[]> {
   try {
     if (state.refreshRoles || !state.cachedUsersWithRoles) {
-      const roleAssignments = await fetchRoleAssignmentsFromApi(req);
+      const roleAssignments = await fetchAllRoleAssignmentPages(req);
       state.cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
       FullUserDetailCache.setUserDetails(state.cachedUsersWithRoles);
     }
@@ -156,6 +200,10 @@ export async function fetchRoleAssignments(
     if (FullUserDetailCache.getAllUserDetails()) {
       return FullUserDetailCache.getAllUserDetails();
     }
+    if (!next) {
+      return null;
+    }
+
     next(error);
   }
 }
@@ -163,20 +211,7 @@ export async function fetchRoleAssignments(
 export async function fetchRoleAssignmentsForNewUsers(
   cachedUserData: StaffUserDetails[]
 ): Promise<CachedCaseworker[]> {
-  try {
-    if (state.refreshRoles && !state.cachedUsersWithRoles) {
-      const roleAssignments = await fetchRoleAssignmentsWithHeaders();
-      state.cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-      FullUserDetailCache.setUserDetails(state.cachedUsersWithRoles);
-    }
-
-    return FullUserDetailCache.getAllUserDetails();
-  } catch (error) {
-    if (FullUserDetailCache.getAllUserDetails()) {
-      return FullUserDetailCache.getAllUserDetails();
-    }
-    return null;
-  }
+  return fetchRoleAssignments(cachedUserData);
 }
 
 /**
@@ -224,7 +259,7 @@ export function hasTTLExpired(): boolean {
     return true;
   }
 
-  const hasExpired = Date.now() > state.timestamp.getTime() + (TTL_IN_SECONDS * 1000);
+  const hasExpired = Date.now() > state.timestamp.getTime() + (TTL_IN_SECONDS * 1);
 
   if (hasExpired) {
     state.timestamp = new Date();
@@ -235,29 +270,6 @@ export function hasTTLExpired(): boolean {
 
 export function timestampExists(): boolean {
   return !!state.timestamp;
-}
-
-// Helper function for fetching role assignments with request
-async function fetchRoleAssignmentsFromApi(req: EnhancedRequest): Promise<any[]> {
-  const roleApiPath = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = getStaffSupportedJurisdictionsList();
-  const payload = prepareRoleApiRequest(jurisdictions, null, true);
-  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
-  return data.roleAssignmentResponse;
-}
-
-// Helper function for fetching role assignments with headers
-async function fetchRoleAssignmentsWithHeaders(): Promise<any[]> {
-  const roleApiPath = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const jurisdictions = getStaffSupportedJurisdictionsList();
-  const payload = prepareRoleApiRequest(jurisdictions, null, true);
-  const roleAssignmentHeaders = {
-    ...getRequestHeaders(),
-    pageNumber: 0,
-    size: 10000
-  };
-  const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
-  return data.roleAssignmentResponse;
 }
 
 /**

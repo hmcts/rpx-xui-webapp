@@ -1016,6 +1016,9 @@ export function getAppropriateLocation(services: string[], locations: Location[]
 }
 
 export function searchAndReturnRefinedUsers(services: string[], term: string, users: CachedCaseworker[]): Caseworker[] {
+  if (!users) {
+    return [];
+  }
   if (services) {
     // filter out the caseworkers who are of the services required
     users = users.filter((user) => services.some((service) => user.services?.includes(service)));

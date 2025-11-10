@@ -26,7 +26,7 @@ export class CreateCasePage extends Base {
     super(page);
   }
 
-  async createCase(jurisdiction: string, caseType: string, textField0:string) {
+  async createDivorceCase(jurisdiction: string, caseType: string, textField0:string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     await this.createCaseButton.click();
     await this.jurisdictionSelect.selectOption(jurisdiction);

@@ -17,7 +17,7 @@ test.describe("Verify creating cases works as expected", () => {
         let textField0 = faker.lorem.word();
 
         await test.step("Create a case and validate the case number", async () => {
-            await createCasePage.createCase("DIVORCE", "XUI Case PoC", textField0);
+            await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
             expect(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
             caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
             validatorUtils.validateDivorceCaseNumber(caseNumber);

@@ -1,7 +1,7 @@
-import { expect, test } from "../../fixtures.js";
+import { expect, test } from "../../fixtures.ts";
 
 test.describe("Verify filtering cases works as expected", () => {
-  test.beforeEach(async ({idamPage, page, userUtils, config}) => {
+  test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
     const { email, password } = userUtils.getUserCredentials("SOLICITOR");
     await idamPage.login({
@@ -10,13 +10,15 @@ test.describe("Verify filtering cases works as expected", () => {
     });
   });
 
-  test("Verify filtering by case status returns the only cases with status 'Decided'", async ({ caseListPage, tableUtils }) => {
-    await caseListPage.exuiCaseListComponent.searchByCaseState("Decided");
+  test("Verify filtering by case status returns the only cases with status 'Open'", async ({ caseListPage, tableUtils }) => {
+    await caseListPage.searchByJurisdiction("Public Law");
+    await caseListPage.searchByCaseType("Public Law Applications");
+    await caseListPage.exuiCaseListComponent.searchByCaseState("Open");
     const table = await tableUtils.mapExuiTable(
       caseListPage.exuiCaseListComponent.caseListTable
     );
     table.forEach((row) => {
-      expect(row["Status"]).toEqual("Decided");
+      expect(row["State"]).toEqual("Open");
     });
   });
 });

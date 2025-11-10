@@ -26,10 +26,7 @@ export class CreateCasePage extends Base {
     super(page);
   }
 
-  /*    await this.jurisdictionSelect.selectOption('DIVORCE');
-    await this.caseTypeSelect.selectOption('xuiTestJurisdiction'); */
-
-  async createCase(jurisdiction: string, caseType: string) {
+  async createCase(jurisdiction: string, caseType: string, textField0:string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     await this.createCaseButton.click();
     await this.jurisdictionSelect.selectOption(jurisdiction);
@@ -50,7 +47,7 @@ export class CreateCasePage extends Base {
     await this.jobDescriptionInput.fill(faker.lorem.sentence());
     await this.continueButton.click();
     await this.textField0Input.click();
-    await this.textField0Input.fill(faker.lorem.word());
+    await this.textField0Input.fill(textField0);
     await this.textField0Input.press('Tab');
     await this.textField3Input.fill(faker.lorem.word());
     await this.textField3Input.press('Tab');

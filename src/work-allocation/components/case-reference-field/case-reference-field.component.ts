@@ -12,6 +12,8 @@ export class CaseReferenceFieldComponent implements OnChanges {
    * The caseReference to use for display purposes.
    */
   @Input() public caseReference: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
 
   private pHref: string;
   public ngOnChanges(): void {
@@ -19,7 +21,11 @@ export class CaseReferenceFieldComponent implements OnChanges {
     if (this.caseReference) {
       // Get rid of the spaces in the caseReference.
       const caseId = this.caseReference;
-      if (caseId) {
+      const jurisdictionId = this.jurisdiction;
+      const caseTypeId = this.caseType;
+      if (caseId && jurisdictionId && caseTypeId) {
+        href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
+      } else if (caseId) {
         href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
       }
     }

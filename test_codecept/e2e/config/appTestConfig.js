@@ -135,6 +135,12 @@ const data = {
         key: 'Welcome01'
       },
       {
+        idamId: '209b2cfc-6d06-4f6a-a9ef-2ae3f12cd252',
+        email: 'employment_service@mailinator.com',
+        release: 'restricted-case-file-view-v1.1-on', userIdentifier: 'SEARCH_EMPLOYMENT_CASE',
+        key: 'Nagoya0102'
+      },
+      {
         idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
         email: 'xui_casefileview_v11_off@mailinator.com',
         release: 'restricted-case-file-view-v1.1-off', userIdentifier: 'RESTRICTED_CASE_FILE_VIEW_V1.1_OFF',

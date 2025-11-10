@@ -8,10 +8,10 @@
       {{ hearingPanel }}
     </div>
     <div class="govuk-summary-list__actions">
-      <a id="hearingPanel"
-        class="govuk-link"
-        href="javascript:void(0)"
-        (click)="onChange('hearingPanel')">Change</a>
+      <button id="hearingPanel"
+        class="govuk-js-link"
+        type="button"
+        (click)="onChange('hearingPanel')">Change</button>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="includedPanelMembers?.length > 0">
@@ -22,10 +22,10 @@
       {{ includedPanelMembers }}
     </div>
     <div class="govuk-summary-list__actions">
-      <a id="panelInclusion"
-        class="govuk-link"
-        href="javascript:void(0)"
-        (click)="onChange('panelInclusion')">Change</a>
+      <button id="panelInclusion"
+        class="govuk-js-link"
+        type="button"
+        (click)="onChange('panelInclusion')">Change</button>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="excludedPanelMembers?.length > 0">
@@ -36,10 +36,10 @@
       {{ excludedPanelMembers }}
     </div>
     <div class="govuk-summary-list__actions">
-      <a id="panelExclusion"
-        class="govuk-link"
-        href="javascript:void(0)"
-        (click)="onChange('panelExclusion')">Change</a>
+      <button id="panelExclusion"
+        class="govuk-js-link"
+        type="button"
+        (click)="onChange('panelExclusion')">Change</button>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="panelRoles?.length > 0">
@@ -50,10 +50,10 @@
       {{ panelRoles }}
     </div>
     <div class="govuk-summary-list__actions">
-      <a id="panelRoles"
-        class="govuk-link"
-        href="javascript:void(0)"
-        (click)="onChange('panelRoles')">Change</a>
+      <button id="panelRoles"
+        class="govuk-js-link"
+        type="button"
+        (click)="onChange('panelRoles')">Change</button>
     </div>
   </div>
 </div>

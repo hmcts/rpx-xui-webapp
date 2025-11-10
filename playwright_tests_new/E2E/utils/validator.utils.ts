@@ -7,10 +7,9 @@ export class ValidatorUtils {
    * @param caseNumber {@link string} - the case number
    *
    */
-  public validateCaseNumber(caseNumber: string) {
-    // TODO: There may be a specification around case numbers somewhere?
-    // For now, this just validates it's only digits
-    expect(caseNumber).toMatch(/^\d+$/);
+  public validateDivorceCaseNumber(caseNumber: string) {
+    // Matches for the Divorce case number format: #1234-5678-9012-3456
+    expect(caseNumber).toMatch(/^#\d{4}-\d{4}-\d{4}-\d{4}$/);
   }
 
   /**

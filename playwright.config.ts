@@ -22,7 +22,11 @@ const resolveWorkerCount = () => {
 const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
-  testDir: './playwright_tests/E2E',
+  testDir: '.',
+  testMatch: [
+    'playwright_tests/**/*.test.ts',
+    'playwright_tests_new/**/*.spec.ts',
+  ],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

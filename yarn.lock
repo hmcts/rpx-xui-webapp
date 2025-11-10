@@ -3515,9 +3515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/playwright-common@npm:^1.0.37":
-  version: 1.0.37
-  resolution: "@hmcts/playwright-common@npm:1.0.37"
+"@hmcts/playwright-common@npm:^1.0.39":
+  version: 1.0.39
+  resolution: "@hmcts/playwright-common@npm:1.0.39"
   dependencies:
     "@axe-core/playwright": "npm:^4.10.0"
     "@eslint/js": "npm:^9.11.1"
@@ -3539,7 +3539,7 @@ __metadata:
   bin:
     delete-nightly-dev-branch: ./dist/scripts/delete-nightly-dev-branch.js
     get-secrets: ./dist/scripts/get-secrets.js
-  checksum: 10/29056a06e37063d7b1a6e26727bea98c157f2a5857ce89e781a3ae254d304137d5436a13ccb5cb52bc743d1344266e8162d263e8b6166e77517951b2baa46666
+  checksum: 10/8ca8d4a45e92a44fd95b75ef5de98bbd8c079789898e94b58c67e51e603afe9673a35a4d017febea1205c2adeb284961401b743b153bdacd6e60bb14f27190c6
   languageName: node
   linkType: hard
 
@@ -23309,7 +23309,7 @@ __metadata:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.8"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
-    "@hmcts/playwright-common": "npm:^1.0.37"
+    "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.9"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"

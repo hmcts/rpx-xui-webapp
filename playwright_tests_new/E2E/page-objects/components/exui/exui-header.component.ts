@@ -4,7 +4,7 @@ import { expect, Page } from "@playwright/test";
 export class ExuiHeaderComponent {
   readonly header = this.page.locator("exui-header");
   readonly results = this.page.locator("ccd-search-result");
-  readonly headerMenuItems = this.page.locator('hmcts-primary-navigation__item');
+  readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation__item');
   private waitUtils = new WaitUtils();
 
   constructor(private page: Page) {}

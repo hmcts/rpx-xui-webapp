@@ -39,9 +39,7 @@ export const pageFixtures = {
     await use(new CaseDetailsPage(determinePage));
   },
   caseListPage: async ({ determinePage }, use) => {
-    const caseListPage = new CaseListPage(determinePage);
-    await caseListPage.goto();
-    await use(caseListPage);
+    await use(new CaseListPage(determinePage));
   },
   createCasePage: async ({ determinePage }, use) => {
     await use(new CreateCasePage(determinePage));

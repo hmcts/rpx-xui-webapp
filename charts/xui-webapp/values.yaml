@@ -110,6 +110,7 @@ nodejs:
     # Services Idam
     SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_CLIENT_ID: xuiwebapp
+
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_INDEX_URL: /
     SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
@@ -145,7 +146,6 @@ nodejs:
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
     FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: false
-    FEATURE_QUERY_IDAM_SERVICE_OVERRIDE: true
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

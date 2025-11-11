@@ -9,12 +9,12 @@ const axiosInstance = axios.create({
   validateStatus: null
 });
 class IdamLogin{
-  constructor(){
-    this.conf = {
-      xuiBaseUrl: 'http://localhost:3000',
-      idamBaseUrl: 'https://idam-web-public.aat.platform.hmcts.net',
-      idamClientId: 'xuiwebapp'
-    };
+    constructor(){
+        this.conf = {
+            xuiBaseUrl: 'http://localhost:3000',
+            idamBaseUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+            idamClientId: 'xuiwebapp',
+        }
 
     this.authToken = '';
 
@@ -189,36 +189,38 @@ class IdamLogin{
     reportLogger.AddMessage('API: IDAM get call success');
   }
 
-  async onIdamLoginPost(){
-    const formdata = {
-      username: this.username,
-      password: this.password,
-      selfRegistrationEnabled: 'false',
-      azureLoginEnabled: 'true',
-      mojLoginEnabled: 'true',
-      _csrf: this.idamLoginGetResponse.details.csrf
+    async onIdamLoginPost(){
+        const formdata = {
+            username: this.username,
+        password: this.password,
+        selfRegistrationEnabled: 'true',
+        azureLoginEnabled: 'true',
+        mojLoginEnabled: 'true',
+        _csrf: this.idamLoginGetResponse.details.csrf
 
-    };
-    const cookiesString = `${this.getCookieString(this.idamAuthorizeResponse.details.setCookies)};seen_cookie_message=yes; cookies_policy={"essential":true,"analytics":false,"apm":false}; cookies_preferences_set=false`;
+        }
+        const cookiesString = `${this.getCookieString(this.idamAuthorizeResponse.details.setCookies)};seen_cookie_message=yes; cookies_policy={"essential":true,"analytics":false,"apm":false}; cookies_preferences_set=false;`
+
 
     const params = new URLSearchParams(formdata);
 
-    const response = await axiosInstance.post(`${this.conf.idamBaseUrl}/login?client_id=${this.conf.idamClientId}&redirect_uri=${this.conf.xuiBaseUrl}/oauth2/callback&state=${this.idamAuthorizeResponse.details.state}&nonce=${this.idamAuthorizeResponse.details.nonce}&response_type=code&scope=profile%20openid%20roles%20manage-user%20create-user%20search-user&prompt=`,
-      params,
-      {
-        maxRedirects: 0,
-        validateStatus: null,
-        headers: {
-          Cookie: cookiesString,
-          'content-type': 'application/x-www-form-urlencoded',
-          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
-        }
-      }
-    );
-    this.idamLoginresponse.status = this.getResponseStatus(response);
-    this.idamLoginresponse.details = {
-      xuiCallback: response.headers.location,
-      setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
+        
+        const response = await axiosInstance.post(this.idamAuthorizeResponse.details.idamLoginRedirect,
+            params,
+            {
+                maxRedirects: 0,
+                validateStatus: null,
+                headers: {
+                    Cookie: cookiesString,
+                    'content-type':'application/x-www-form-urlencoded',
+                    'accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
+                }
+            }
+        );
+        this.idamLoginresponse.status = this.getResponseStatus(response);
+        this.idamLoginresponse.details = {
+            xuiCallback:response.headers.location,
+            setCookies: this.getCookiesFromSetCookies(response.headers['set-cookie'])
 
     };
     reportLogger.AddMessage('API: IDAM login post call success');

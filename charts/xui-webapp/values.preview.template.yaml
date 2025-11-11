@@ -18,7 +18,7 @@ nodejs:
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
      SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
      STUB: false
-     DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
+     DEBUG: xuiNode:*,-xuiNode:auth:s2s
      FEATURE_WORKALLOCATION_ENABLED: true
      SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
      SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal

@@ -21,13 +21,14 @@ export class CaseNameFieldComponent implements OnChanges {
   private pHref: string;
   public ngOnChanges(): void {
     let href: string;
-    if (this.caseId) {
-      if (this.caseId && this.jurisdiction && this.caseType) {
-        const jurisdictionId = encodeURIComponent(this.jurisdiction);
-        const caseTypeId = encodeURIComponent(this.caseType);
-        const caseId = encodeURIComponent(this.caseId);
-        href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
-      }
+    let jurisdictionId = this.jurisdiction;
+    let caseTypeId = this.caseType;
+    let caseId = this.caseId;
+    if (caseId && jurisdictionId && caseTypeId) {
+      jurisdictionId = encodeURIComponent(this.jurisdiction);
+      caseTypeId = encodeURIComponent(this.caseType);
+      caseId = encodeURIComponent(this.caseId);
+      href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
     }
     this.pHref = href;
   }

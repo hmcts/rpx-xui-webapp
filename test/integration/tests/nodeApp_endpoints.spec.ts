@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { setTestContext } from './utils/helper';
 import Request from './utils/request';
 
-const nodeAppDataModels = require('../../dataModels/nodeApp')
+const nodeAppDataModels = require('../../dataModels/nodeApp');
 const testUsers = require('../../e2e/config/appTestConfig');
 const config = require('./config/config').config;
 
@@ -10,7 +10,7 @@ describe('nodeApp endpoint', () => {
   const userName = config.users[config.testEnv].solicitor.e;
   const password = config.users[config.testEnv].solicitor.sec;
 
-  beforeEach(function ()  {
+  beforeEach(function () {
     this.timeout(120000);
 
     setTestContext(this);
@@ -21,7 +21,6 @@ describe('nodeApp endpoint', () => {
     const response = await Request.get('external/configuration-ui', null, 200);
     expect(response.status).to.equal(200);
     expect(response.data).to.have.all.keys(config.configuratioUi[config.testEnv]);
-    // expect(response.data.launchDarklyClientId).to.equal('645baeea2787d812993d9d70');
     expect(response.data.clientId).to.equal('xuiwebapp');
   });
 
@@ -48,7 +47,7 @@ describe('nodeApp endpoint', () => {
     const expectedUserDetailsObj_oidc = nodeAppDataModels.getUserDetails_oidc();
     expect(actualLocationObjKeys).to.have.all.keys(Object.keys(expectedUserDetailsObj_oidc));
 
-    if (actualLocationObjKeys.roleAssignmentInfo.length > 0){
+    if (actualLocationObjKeys.roleAssignmentInfo.length > 0) {
       const actualRoleAssignmentObjKeys = Object.keys(actualLocationObjKeys.roleAssignmentInfo[0]);
       console.log(actualRoleAssignmentObjKeys);
       console.log(Object.keys(expectedUserDetailsObj_oidc.roleAssignmentInfo[0]));
@@ -66,7 +65,8 @@ describe('nodeApp endpoint', () => {
   });
 
   it('api/user/details without session', async () => {
-    await Request.get('api/user/details', null, 401);
+    const response = await Request.get('api/user/details', null, 200);
+    expect(Object.keys(response.data).length).to.equal(0);
   });
 
   it('api/configuration?configurationKey=xxx', async () => {

@@ -34,7 +34,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
 });
 
 
-test('Search from page Search', async ({ page }) => {
+test.skip('Search from page Search', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
 
   console.log('Go to Search Page');

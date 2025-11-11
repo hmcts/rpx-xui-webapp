@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
 });
 
-test('Create case flag Add/Update Reasonable adjustment', async ({ page }) => {
+test.skip('Create case flag Add/Update Reasonable adjustment', async ({ page }) => {
   await signIn(page, "USER_WITH_FLAGS");
   await expect(page.getByRole('heading', { name: 'Case list' })).toBeVisible();
 

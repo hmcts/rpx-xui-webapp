@@ -5,6 +5,7 @@ nodejs:
      NODE_TLS_REJECT_UNAUTHORIZED: 0
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
+     SERVICES_CCD_ACTIVITY_API: https://ccd-case-activity-api-pr-276.preview.platform.hmcts.net
      REDISCLOUD_URL: redis://${SERVICE_NAME}-redis-master:6379
      HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
      HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
@@ -18,6 +19,7 @@ nodejs:
      HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
      SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
      STUB: false
+     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
      DEBUG: xuiNode:*,-xuiNode:auth:s2s,-xuiNode:auth:oauth2
      FEATURE_WORKALLOCATION_ENABLED: true
      SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
@@ -28,6 +30,7 @@ nodejs:
      FEATURE_JRD_E_LINKS_V2_ENABLED: true
      FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
      SERVICES_IDAM_SERVICE_OVERRIDE: false
+     FEATURE_OIDC_ENABLED: true
   keyVaults:
     rpx:
       secrets:

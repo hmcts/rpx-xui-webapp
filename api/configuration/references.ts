@@ -26,7 +26,7 @@ export const MAX_LOG_LINE = 'maxLogLine';
 export const HEALTH = 'health';
 
 export const SERVICES_CCD_COMPONENT_API_PATH = 'services.ccd.componentApi';
-export const SERVICES_CCD_ACTIVITY_API_PATH = 'services.ccd.activityApi';
+export const SERVICES_CCD_ACTIVITY_API = 'services.ccd.activityApi';
 export const SERVICES_CCD_DATA_STORE_API_PATH = 'services.ccd.dataApi';
 export const SERVICES_CCD_CASE_ASSIGNMENT_API_PATH = 'services.ccd.caseAssignmentApi';
 export const SERVICES_WORK_ALLOCATION_TASK_API_PATH = 'services.work_allocation.taskApi';
@@ -150,3 +150,22 @@ export const PACT_BRANCH_NAME = 'pact.branchName';
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion';
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername';
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword';
+
+export const proxiedReferences = {
+  SERVICES_CCD_ACTIVITY_API,
+  SERVICES_CCD_COMPONENT_API_PATH,
+  SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH,
+  SERVICES_DOCUMENTS_API_PATH_V2,
+  SERVICES_EM_ANNO_API_URL,
+  SERVICES_EM_DOCASSEMBLY_API_URL,
+  SERVICES_EM_HRS_API_PATH,
+  SERVICES_ICP_API_URL,
+  SERVICES_LOCATION_REF_API_URL,
+  SERVICES_MARKUP_API_URL,
+  SERVICES_PAYMENTS_URL,
+  SERVICES_PRD_COMMONDATA_API,
+  SERVICES_REFUNDS_API_URL,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+  SERVICES_NOTIFICATIONS_API_URL
+};

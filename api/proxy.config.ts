@@ -5,6 +5,7 @@ import { getConfigValue } from './configuration';
 import {
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICES_CCD_ACTIVITY_API,
   SERVICES_DOCUMENTS_API_PATH,
   SERVICES_DOCUMENTS_API_PATH_V2,
   SERVICES_EM_ANNO_API_URL,
@@ -24,6 +25,14 @@ import * as searchCases from './searchCases';
 import * as documents from './documents';
 
 export const initProxy = (app: Express) => {
+  applyProxy(app, {
+    rewrite: true,
+    rewriteUrl: '/socket.io',
+    source: '/socket.io',
+    target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
+    ws: true
+  });
+
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: '/activity',

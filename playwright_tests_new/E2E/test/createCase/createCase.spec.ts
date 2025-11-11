@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures.ts";
-import { Locator } from "@playwright/test";
 
 test.describe("Verify creating cases works as expected", () => {
     test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
@@ -38,5 +37,4 @@ test.describe("Verify creating cases works as expected", () => {
             expect(table[0]["Case reference"]).toBe(`${caseNumber.slice(1)}`);
         });
     });
-
 });

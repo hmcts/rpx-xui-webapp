@@ -26,6 +26,8 @@ export class CaseNameFieldComponent implements OnChanges {
       const caseId = this.caseId;
       if (caseId && jurisdictionId && caseTypeId) {
         href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
+      } else if (caseId) {
+        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
       }
     }
     this.pHref = href;

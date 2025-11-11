@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { expect, test } from "../../fixtures.js";
+import { expect, test } from "../../fixtures.ts";
 import { Locator } from "@playwright/test";
 
 test.describe("Verify creating cases works as expected", () => {

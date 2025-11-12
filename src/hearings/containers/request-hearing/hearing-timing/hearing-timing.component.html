@@ -74,15 +74,12 @@
             <div id="first-hearing-date-container"
               [ngClass]="{'js-hidden': checkedHearingAvailability!=='Yes'}"
               class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3">
-              <div class="govuk-form-group">
-                <div class="govuk-!-margin-right-1 first-hearing-date" style="position: relative;">
-                  <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
-                  <exui-amendment-label id="first-date-amendment-label"
-                                        style="position: absolute; top: 0; left: 310px;"
-                                        *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && firstDateTimeMustBeChanged"
-                                        [displayLabel]="amendmentLabelEnum.AMENDED">
-                  </exui-amendment-label>
-                </div>
+              <div class="govuk-form-group" style="position: relative;">
+                <xuilib-gov-uk-date [config]="firstHearingDate" [formGroup]="firstHearingFormGroup" [errorMessage]="firstDateOfHearingError"></xuilib-gov-uk-date>
+                <exui-amendment-label id="first-date-amendment-label"
+                                      *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && firstDateTimeMustBeChanged"
+                                      [displayLabel]="amendmentLabelEnum.AMENDED">
+                </exui-amendment-label>
               </div>
             </div>
             <div class="govuk-radios__item">
@@ -96,25 +93,19 @@
                 <span class="govuk-error-message" *ngIf="dateRangeWeekendError">
                   <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{dateRangeWeekendError | rpxTranslate }}
                 </span>
-                <div class="govuk-form-group">
-                  <div class="earliest-hearing-date" style="position: relative;">
-                    <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
-                    <exui-amendment-label id="earliest-hearing-date-amendment-label"
-                                          style="position: absolute; top: 0; left: 165px;"
-                                          *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeStartChanged"
-                                          [displayLabel]="amendmentLabelEnum.AMENDED">
-                    </exui-amendment-label>
-                  </div>
+                <div class="govuk-form-group" style="position: relative;">
+                  <xuilib-gov-uk-date [config]="earliestHearingDate" [formGroup]="earliestHearingFormGroup" [errorMessage]="earliestDateOfHearingError"></xuilib-gov-uk-date>
+                  <exui-amendment-label id="earliest-hearing-date-amendment-label"
+                                        *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeStartChanged"
+                                        [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
                 </div>
-                <div class="govuk-form-group">
-                  <div class="latest-hearing-date" style="position: relative;">
-                    <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
-                    <exui-amendment-label id="latest-hearing-date-amendment-label"
-                                          style="position: absolute; top: 0; left: 145px;"
-                                          *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeEndChanged"
-                                          [displayLabel]="amendmentLabelEnum.AMENDED">
-                    </exui-amendment-label>
-                  </div>
+                <div class="govuk-form-group" style="position: relative;">
+                  <xuilib-gov-uk-date [config]="latestHearingDate" [formGroup]="latestHearingFormGroup" [errorMessage]="latestDateOfHearingError"></xuilib-gov-uk-date>
+                  <exui-amendment-label id="latest-hearing-date-amendment-label"
+                                        *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && dateRangeEndChanged"
+                                        [displayLabel]="amendmentLabelEnum.AMENDED">
+                  </exui-amendment-label>
                 </div>
               </div>
             </div>

@@ -3285,12 +3285,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.57":
-  version: 7.2.57
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.57"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.58":
+  version: 7.2.58
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.58"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/e5b0fd8be189d44c47940863df97ef6456ca6b2df249799e8f068d61e0a6af5d7fbfa533d7aab1421acfa51ecae51b2d49b5ccdb2958e2c4f18a739850dd0e41
+  checksum: 10/b03b50981db12dd1a12f80c0a3f683804fc7ee88a0a116b7712f3d4866c409175949e2a31db52666c7ea7e7948d19aaf00139a239e3328e74c4ab0a1a49a7b98
   languageName: node
   linkType: hard
 
@@ -3313,9 +3313,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.9":
-  version: 4.1.9
-  resolution: "@hmcts/media-viewer@npm:4.1.9"
+"@hmcts/media-viewer@npm:4.1.10":
+  version: 4.1.10
+  resolution: "@hmcts/media-viewer@npm:4.1.10"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3334,7 +3334,7 @@ __metadata:
     "@ngrx/router-store": ^17.0.0
     "@ngrx/store": ^17.0.0
     "@ngrx/store-devtools": ^17.0.0
-  checksum: 10/4b05afef2bb83816390cb57da887f70180734e62e23b5f470aa0b13afc7bcff44c9913feb305da839c54a4f7651f948f992d4e6322be354fb79318182c9b9192
+  checksum: 10/ba36eec0bbcc75d7c17a76e9869c605a2224ed89e49d1814c351975ce94cc853dd6386c30159485596c55b7af69b8f0f6a51b60476cfa61e228d95c7d2f0eb1e
   languageName: node
   linkType: hard
 
@@ -21824,10 +21824,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.57"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.58"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.9"
+    "@hmcts/media-viewer": "npm:4.1.10"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.9"

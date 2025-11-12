@@ -10,7 +10,7 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
-          <a href="javascript:void(0)" (click)="setFocusOn('inputSelectPerson')">You must select a name</a>
+          <button type="button" class="govuk-js-link" (click)="setFocusOn('inputSelectPerson')">You must select a name</button>
         </li>
       </ul>
     </div>
@@ -28,5 +28,5 @@
   </xuilib-find-person>
 
   <button class="govuk-button govuk-!-margin-right-1" type="submit" (click)="assign()">Continue</button>
-  <p><a (click)="cancel()" href="javascript:void(0)">Cancel</a></p>
+  <p><button (click)="cancel()" type="button" class="govuk-js-link">Cancel</button></p>
 </main>

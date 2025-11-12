@@ -7,12 +7,14 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
-  template: '<exui-case-name-field [caseName]="caseName" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
+  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
 })
 class WrapperComponent {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
   @Input() public caseName: string;
   @Input() public caseId: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
   @Input() public hasAccess: boolean;
 }
 
@@ -20,6 +22,8 @@ describe('WorkAllocation', () => {
   describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';
+    const JURISDICTION: string = 'IA';
+    const CASETYPE: string = 'Asylum';
     const CASE_ID: string = 'CaseId';
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,13 +52,15 @@ describe('WorkAllocation', () => {
 
       // Add the caseName and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       wrapper.caseId = CASE_ID;
       wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
     });
 
     it('should remove the link if case id is changed to undefined', () => {
@@ -63,13 +69,15 @@ describe('WorkAllocation', () => {
 
       // Add the caseId and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       wrapper.caseId = CASE_ID;
       wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
 
       // Clear out the value of caseId and we should no longer have the anchor.
       wrapper.caseId = undefined;
@@ -83,13 +91,15 @@ describe('WorkAllocation', () => {
 
       // Add the caseId and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       wrapper.caseId = CASE_ID;
       wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
 
       // Make caseId null and we should no longer have the anchor.
       wrapper.caseId = null;
@@ -103,13 +113,15 @@ describe('WorkAllocation', () => {
 
       // Add the caseId and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       wrapper.caseId = CASE_ID;
       wrapper.hasAccess = true;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
 
       // Make hasAccess false and we should no longer have the anchor but instead a label.
       wrapper.hasAccess = false;
@@ -121,12 +133,14 @@ describe('WorkAllocation', () => {
 });
 
 @Component({
-  template: '<exui-case-name-field [caseName]="caseName" [caseId]="caseId" ></exui-case-name-field>'
+  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>'
 })
 class Wrapper1Component {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
   @Input() public caseName: string;
   @Input() public caseId: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
   @Input() public hasAccess: boolean;
 }
 
@@ -134,6 +148,8 @@ describe('WorkAllocation', () => {
   describe('CaseNameFieldComponent', () => {
     const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
     const CASE_NAME: string = 'Casename';
+    const JURISDICTION: string = 'IA';
+    const CASETYPE: string = 'Asylum';
     const CASE_ID: string = 'CaseId';
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -162,12 +178,62 @@ describe('WorkAllocation', () => {
 
       // Add the caseName and it should work (showing the link).
       wrapper.caseName = CASE_NAME;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
       wrapper.caseId = CASE_ID;
       fixture.detectChanges();
       const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
-      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_ID}`); // No spaces
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
+    });
+
+    describe('ngOnChanges', () => {
+      let caseNameFieldComponent: CaseNameFieldComponent;
+
+      beforeEach(() => {
+        caseNameFieldComponent = new CaseNameFieldComponent();
+      });
+
+      it('should set href with jurisdiction, caseType and caseId', () => {
+        caseNameFieldComponent.caseId = '123';
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}JUR/TYPE/123`);
+      });
+
+      it('should set href with only caseId if jurisdiction and caseType are missing', () => {
+        caseNameFieldComponent.caseId = '456';
+        caseNameFieldComponent.jurisdiction = undefined;
+        caseNameFieldComponent.caseType = undefined;
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}456`);
+      });
+
+      it('should set href with only caseId if jurisdiction and caseType are empty strings', () => {
+        caseNameFieldComponent.caseId = '789';
+        caseNameFieldComponent.jurisdiction = '';
+        caseNameFieldComponent.caseType = '';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}789`);
+      });
+
+      it('should set href to undefined if caseId is undefined', () => {
+        caseNameFieldComponent.caseId = undefined;
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBeUndefined();
+      });
+
+      it('should set href to undefined if caseId is null', () => {
+        caseNameFieldComponent.caseId = null;
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBeUndefined();
+      });
     });
   });
 });

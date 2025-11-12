@@ -88,7 +88,7 @@
               <label class="govuk-label govuk-radios__label" for="hearingDateRange">{{ 'Choose a date range' | rpxTranslate }}</label>
             </div>
             <div class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3" [ngClass]="{'js-hidden': checkedHearingAvailability!=='Choose a date range'}">
-              <div class="govuk-hint">{{ 'YOU can enter either or both dates.' | rpxTranslate }}</div>
+              <div class="govuk-hint">{{ 'You can enter either or both dates.' | rpxTranslate }}</div>
               <div [ngClass]="{'govuk-form-group--error': dateRangeWeekendError}">
                 <span class="govuk-error-message" *ngIf="dateRangeWeekendError">
                   <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{dateRangeWeekendError | rpxTranslate }}

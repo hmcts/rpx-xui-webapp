@@ -136,22 +136,20 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-        stage('API Test') {
-            try {
-              yarnBuilder.yarn('test:api')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
+        stage('API Tests') {
+            // Run tests; non-zero exit will fail this stage/build
+            yarnBuilder.yarn('test:api')
+        }
+        stage('Publish API Test Report') {
+            publishHTML([
               allowMissing         : true,
               alwaysLinkToLastBuild: true,
               keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
+              reportDir            : 'functional-output/tests/api_functional/',
               reportFiles          : 'mochawesome.html',
               reportName           : 'PREVIEW API Functional Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
-            }
+            ])
+            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
         }
         stage('Integration Test') {
             try {
@@ -194,22 +192,19 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-        stage('API Test') {
-            try {
-              yarnBuilder.yarn('test:api')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
+        stage('API Tests') {
+            yarnBuilder.yarn('test:api')
+        }
+        stage('Publish API Test Report') {
+            publishHTML([
               allowMissing         : true,
               alwaysLinkToLastBuild: true,
               keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
+              reportDir            : 'functional-output/tests/api_functional/',
               reportFiles          : 'mochawesome.html',
               reportName           : 'AAT API Functional Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
-            }
+            ])
+            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
         }
         stage('Integration Test') {
             try {

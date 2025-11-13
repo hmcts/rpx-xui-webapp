@@ -140,7 +140,7 @@ withPipeline(type, product, component) {
            def failed = false
             try {
               // Run and capture exit code
-              def status = sh(script: 'set -euo pipefail; yarn test:api', returnStatus: true)
+              def status = sh(script: 'bash -euo pipefail -c "yarn test:api"', returnStatus: true)
               if (status != 0) {
                 echo "API Test exited with ${status}"
                 failed = true
@@ -166,7 +166,7 @@ withPipeline(type, product, component) {
     stage('Integration Test (Preview)') {
             def failed = false
             try {
-              def status = sh(script: 'set -euo pipefail; yarn test:xuiIntegration', returnStatus: true)
+              def status = sh(script: 'bash -euo pipefail -c "yarn test:xuiIntegration"', returnStatus: true)
               if (status != 0) {
                 echo "Integration Test exited with ${status}"
                 failed = true
@@ -235,7 +235,7 @@ withPipeline(type, product, component) {
           def failed = false
             try {
               // Run and capture exit code
-              def status = sh(script: 'set -euo pipefail; yarn test:api', returnStatus: true)
+              def status = sh(script: 'bash -euo pipefail -c "yarn test:api"', returnStatus: true)
               if (status != 0) {
                 echo "API Test exited with ${status}"
                 failed = true
@@ -262,7 +262,7 @@ withPipeline(type, product, component) {
     stage('Integration Test (AAT)') {
             def failed = false
             try {
-              def status = sh(script: 'set -euo pipefail; yarn test:xuiIntegration', returnStatus: true)
+              def status = sh(script: 'bash -euo pipefail -c "yarn test:xuiIntegration"', returnStatus: true)
               if (status != 0) {
                 echo "Integration Test exited with ${status}"
                 failed = true

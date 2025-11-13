@@ -6126,6 +6126,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@panva/asn1.js@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@panva/asn1.js@npm:1.0.0"
+  checksum: 10/e62b1218a8c57ee5b5432f5ac1c65d3fc5419a1d6a71517cdbe9b1b13d1576dcc9ea7a49437c14317aca1248d61fc71ef332a799c8177d7324690ae830b9a82c
+  languageName: node
+  linkType: hard
+
 "@paralleldrive/cuid2@npm:^2.2.2":
   version: 2.2.2
   resolution: "@paralleldrive/cuid2@npm:2.2.2"
@@ -16648,10 +16655,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.15.5":
-  version: 4.15.9
-  resolution: "jose@npm:4.15.9"
-  checksum: 10/256234b6f85cdc080b1331f2d475bd58c8ccf459cb20f70ac5e4200b271bce10002b1c2f8e5b96dd975d83065ae5a586d52cdf89d28471d56de5d297992f9905
+"jose@npm:^1.27.1":
+  version: 1.28.2
+  resolution: "jose@npm:1.28.2"
+  dependencies:
+    "@panva/asn1.js": "npm:^1.0.0"
+  checksum: 10/bb131d6ea857b08c0dc8b9abb725cf1e0d21c8be57b6314e7cf1ff8532317b95c98c69dc221465490f72c114c8b1006f97a939daa422a2f0c61bfd166015059f
   languageName: node
   linkType: hard
 

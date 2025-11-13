@@ -136,10 +136,13 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-    stage('API Test (Preview)') {
+    }
+
+    // Run Preview functional tests (non-smoke) after smoketest:preview passes
+    afterSuccess('functionalTest:preview') {
+        stage('API Test') {
            def failed = false
             try {
-              // Run and capture exit code
               def status = sh(script: 'bash -euo pipefail -c "yarn test:api"', returnStatus: true)
               if (status != 0) {
                 echo "API Test exited with ${status}"
@@ -150,12 +153,12 @@ withPipeline(type, product, component) {
               failed = true
             } finally {
               publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'PREVIEW API Functional Test'
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output/tests/api_functional/",
+                reportFiles          : 'mochawesome.html',
+                reportName           : 'PREVIEW API Functional Test'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
             }
@@ -163,7 +166,7 @@ withPipeline(type, product, component) {
               error("${STAGE_NAME} failed")
             }
         }
-    stage('Integration Test (Preview)') {
+        stage('Integration Test') {
             def failed = false
             try {
               def status = sh(script: 'bash -euo pipefail -c "yarn test:xuiIntegration"', returnStatus: true)

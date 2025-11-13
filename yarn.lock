@@ -3559,9 +3559,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.10-additional-logging-rc10":
-  version: 2.30.10-additional-logging-rc10
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.10-additional-logging-rc10"
+"@hmcts/rpx-xui-node-lib@npm:2.30.10-additional-logging-rc12":
+  version: 2.30.10-additional-logging-rc12
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.10-additional-logging-rc12"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     "@hapi/joi": "npm:^17.1.1"
@@ -3584,7 +3584,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/d4981e6a64542f740202cf7c1ce79649b36378cb23701a50ab1a2b3ba4da150730b4ab842830aa7ea03f02895db6677b8f2bc1e5090af365b9f180dc7f5e042c
+  checksum: 10/5234b78e221741263e911ca42cc2860a48e3c75a54c5932af557f5fe95445587b0aa0f3fa7fd02093a2f26e77513fb073683ee2a678a52d6a460999c9e79782a
   languageName: node
   linkType: hard
 
@@ -21839,7 +21839,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:2.1.9"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.10-additional-logging-rc10"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.10-additional-logging-rc12"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

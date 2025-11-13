@@ -91,10 +91,10 @@
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.2.57",
+    "@hmcts/ccd-case-ui-toolkit": "7.2.59",
     "@hmcts/ccpay-web-component": "6.3.3",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.1.9",
+    "@hmcts/media-viewer": "4.1.10",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "2.1.9",
@@ -278,7 +278,8 @@
     "tar-fs": "^3.0.9",
     "xml2js": "^0.6.2",
     "tough-cookie": "4.1.3",
-    "semver": "^7.6.3"
+    "semver": "^7.6.3",
+    "jose": "^4.15.5"
   },
   "packageManager": "yarn@4.7.0"
 }

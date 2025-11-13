@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';

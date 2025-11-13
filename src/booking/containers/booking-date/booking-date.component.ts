@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/models';
+import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
 import { BookingDateValidationError, BookingNavigationEvent, BookingProcess } from '../../models';
 import { DateValidators } from '../utils';
 

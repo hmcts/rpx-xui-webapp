@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib';
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import { initAll } from 'govuk-frontend';

@@ -12,7 +12,7 @@ import {
   WindowService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';

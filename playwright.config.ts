@@ -6,6 +6,8 @@ const { version: appVersion } = require('./package.json');
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
+const useSystemChrome = process.env.PLAYWRIGHT_USE_SYSTEM_CHROME === "true";
+
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
   if (configured) {
@@ -23,6 +25,7 @@ const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
   testDir: './playwright_tests/E2E',
+  globalSetup: require.resolve('./playwright_tests/E2E/global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -60,7 +63,7 @@ module.exports = defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        channel: 'chrome',
+        ...(useSystemChrome ? { channel: 'chrome' } : {}),
         headless: headlessMode,
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',

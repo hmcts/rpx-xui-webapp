@@ -100,6 +100,32 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.checkUnavailableDatesList(this.unavailabilityDateList);
   }
 
+  public ngAfterViewInit(): void {
+    this.fragmentFocus();
+    // Position amendment labels dynamically after view is rendered
+    setTimeout(() => {
+      this.positionAmendmentLabel('firstHearingDate', 'first-date-amendment-label');
+      this.positionAmendmentLabel('earliestHearingDate', 'earliest-hearing-date-amendment-label');
+      this.positionAmendmentLabel('latestHearingDate', 'latest-hearing-date-amendment-label');
+    }, 0);
+  }
+
+  private positionAmendmentLabel(dateComponentId: string, amendmentLabelId: string): void {
+    // Find the legend element within the date component that contains the label text
+    const legendElement = document.querySelector(`#${dateComponentId}-date`)?.closest('.govuk-form-group')?.querySelector('.govuk-fieldset__legend');
+    const amendmentLabel = document.getElementById(amendmentLabelId);
+
+    if (legendElement && amendmentLabel) {
+      // Get the width of the legend text
+      const legendWidth = legendElement.getBoundingClientRect().width;
+
+      // Position the amendment label right after the legend text
+      amendmentLabel.style.position = 'absolute';
+      amendmentLabel.style.top = '0';
+      amendmentLabel.style.left = `${legendWidth + 8}px`; // 8px gap after the text
+    }
+  }
+
   setSourceOfData() {
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (this.hearingsService.propertiesUpdatedOnPageVisit?.hasOwnProperty('hearingWindow')) {
@@ -532,10 +558,6 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   public isFormValid(): boolean {
     return this.validationErrors.length === 0;
-  }
-
-  public ngAfterViewInit(): void {
-    this.fragmentFocus();
   }
 
   public ngOnDestroy(): void {

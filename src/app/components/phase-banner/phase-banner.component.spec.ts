@@ -67,18 +67,18 @@ describe('PhaseBannerComponent', () => {
 
   it('should close banner', () => {
     component.closeBanner();
-    expect(component.noBanner).toEqual(false);
+    expect(component.bannerPresent).toEqual(false);
     expect(mockSessionStorageService.setItem).toHaveBeenCalled();
   });
 
-  it('should set noBanner to true when language is "cy"', () => {
+  it('should set bannerPresent to true when language is "cy"', () => {
     component.toggleLanguage('cy');
-    expect(component.noBanner).toBe(true);
+    expect(component.bannerPresent).toBe(true);
   });
 
-  it('should set noBanner to false when language is not "cy"', () => {
+  it('should set bannerPresent to false when language is not "cy"', () => {
     component.toggleLanguage('en');
-    expect(component.noBanner).toBe(false);
+    expect(component.bannerPresent).toBe(false);
   });
 
   it('should update the language in langService', () => {

@@ -136,11 +136,18 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-        stage('API Test') {
+    stage('API Test (Preview)') {
+           def failed = false
             try {
-              yarnBuilder.yarn('test:api')
+              // Run and capture exit code
+              def status = sh(script: 'set -euo pipefail; yarn test:api', returnStatus: true)
+              if (status != 0) {
+                echo "API Test exited with ${status}"
+                failed = true
+              }
             } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+              echo "${STAGE_NAME} threw: ${Error}"
+              failed = true
             } finally {
               publishHTML([
               allowMissing         : true,
@@ -152,22 +159,34 @@ withPipeline(type, product, component) {
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
             }
+            if (failed) {
+              error("${STAGE_NAME} failed")
+            }
         }
-        stage('Integration Test') {
+    stage('Integration Test (Preview)') {
+            def failed = false
             try {
-              yarnBuilder.yarn('test:xuiIntegration')
+              def status = sh(script: 'set -euo pipefail; yarn test:xuiIntegration', returnStatus: true)
+              if (status != 0) {
+                echo "Integration Test exited with ${status}"
+                failed = true
+              }
             } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+              echo "${STAGE_NAME} threw: ${Error}"
+              failed = true
             } finally {
               publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/codecept-ngIntegration/",
-              reportFiles          : 'cucumber_report.html',
-              reportName           : 'PREVIEW Integration Test'
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output/tests/codecept-ngIntegration/",
+                reportFiles          : 'cucumber_report.html',
+                reportName           : 'PREVIEW Integration Test'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+            if (failed) {
+              error("${STAGE_NAME} failed")
             }
         }
     }
@@ -182,6 +201,23 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Playwright E2E'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+
+        // Assert after publishing so report is available even on failure
+        stage('Verify Playwright E2E (Preview)') {
+            script {
+                def failures = 0
+                def summary = 'functional-output/tests/playwright-e2e/odhin-report/summary.json'
+                if (fileExists(summary)) {
+                    def json = readJSON(file: summary)
+                    failures = (json?.stats?.failures ?: json?.failures ?: 0) as Integer
+                } else {
+                    echo "Playwright summary.json not found; skipping strict check"
+                }
+                if (failures > 0) {
+                    error("Playwright E2E reported ${failures} failures")
+                }
+            }
+        }
     }
 
     afterSuccess('smoketest:aat') {
@@ -194,11 +230,19 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-        stage('API Test') {
+        
+    stage('API Test (AAT)') {
+          def failed = false
             try {
-              yarnBuilder.yarn('test:api')
+              // Run and capture exit code
+              def status = sh(script: 'set -euo pipefail; yarn test:api', returnStatus: true)
+              if (status != 0) {
+                echo "API Test exited with ${status}"
+                failed = true
+              }
             } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+              echo "${STAGE_NAME} threw: ${Error}"
+              failed = true
             } finally {
               publishHTML([
               allowMissing         : true,
@@ -210,27 +254,40 @@ withPipeline(type, product, component) {
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
             }
+            if (failed) {
+              error("${STAGE_NAME} failed")
+            }
         }
-        stage('Integration Test') {
+
+    stage('Integration Test (AAT)') {
+            def failed = false
             try {
-              yarnBuilder.yarn('test:xuiIntegration')
+              def status = sh(script: 'set -euo pipefail; yarn test:xuiIntegration', returnStatus: true)
+              if (status != 0) {
+                echo "Integration Test exited with ${status}"
+                failed = true
+              }
             } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+              echo "${STAGE_NAME} threw: ${Error}"
+              failed = true
             } finally {
               publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/codecept-ngIntegration/",
-              reportFiles          : 'cucumber_report.html',
-              reportName           : 'AAT Integration Test'
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output/tests/codecept-ngIntegration/",
+                reportFiles          : 'cucumber_report.html',
+                reportName           : 'AAT Integration Test'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+            if (failed) {
+              error("${STAGE_NAME} failed")
             }
         }
     }
 
-    afterSuccess('functionalTest:aat') {
+    afterAlways('functionalTest:aat') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -239,5 +296,22 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'AAT Playwright E2E'
         ])
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+
+        stage('Verify Playwright E2E (AAT)') {
+            script {
+                def failures = 0
+                def summary = 'functional-output/tests/playwright-e2e/odhin-report/summary.json'
+                if (fileExists(summary)) {
+                    def json = readJSON(file: summary)
+                    failures = (json?.stats?.failures ?: json?.failures ?: 0) as Integer
+                } else {
+                    echo "Playwright summary.json not found; skipping strict check"
+                }
+                if (failures > 0) {
+                    error("Playwright E2E reported ${failures} failures")
+                }
+            }
+        }
     }
 }

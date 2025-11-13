@@ -12,7 +12,11 @@
         <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error': hearingLengthErrorValue}">
           <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint" id="hearing-length">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-              <h1 class="govuk-fieldset__heading">{{ 'Length of hearing' | rpxTranslate }}</h1>
+              <h1 class="govuk-fieldset__heading">{{ 'Length of hearing' | rpxTranslate }}
+              <exui-amendment-label id="length-of-hearing-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && durationChanged"
+                                    [displayLabel]="amendmentLabelEnum.AMENDED">
+              </exui-amendment-label>
+              </h1>
             </legend>
             <span class="govuk-error-message" *ngIf="hearingLengthErrorValue">
               <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{hearingLengthErrorValue | rpxTranslate }}
@@ -39,9 +43,6 @@
                     name="durationmins" type="text" inputmode="numeric" value="" formControlName="minutes">
                 </div>
               </div>
-              <exui-amendment-label id="length-of-hearing-label" *ngIf="!hearingWindowChangesConfirmed && hearingWindowChangesRequired && durationChanged"
-                                    [displayLabel]="amendmentLabelEnum.AMENDED">
-              </exui-amendment-label>
             </div>
           </fieldset>
         </div>

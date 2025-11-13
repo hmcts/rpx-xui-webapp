@@ -40,6 +40,10 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 
   logger.info('Setting session and cookies');
 
+  logger.info(user);
+  logger.info(cookieToken);
+  logger.info(cookieUserId);
+
   res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
   res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
 

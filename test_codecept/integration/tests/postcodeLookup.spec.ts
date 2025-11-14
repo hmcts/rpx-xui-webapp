@@ -18,7 +18,7 @@ describe('CCD Endpoints', () => {
     Request.clearSession();
   });
 
-  it('Get postcode addresswa', async () => {
+  it('Get postcode address', async () => {
     await Request.withSession(userName, password);
 
     const xsrfToken = await getXSRFToken(userName, password);

@@ -9847,13 +9847,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bufferhelper@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "bufferhelper@npm:0.2.1"
-  checksum: 10/e655de617b2184ffe97f4d5b1f0a315429c816d55a28c1f68862eeed3f5d8ee038c5de68fd63261f3a4d058f4859556ca89a313ead704f7e7b1ae704cda5fbc8
-  languageName: node
-  linkType: hard
-
 "buffers@npm:~0.1.1":
   version: 0.1.1
   resolution: "buffers@npm:0.1.1"
@@ -10795,18 +10788,6 @@ __metadata:
   version: 0.0.1
   resolution: "concat-map@npm:0.0.1"
   checksum: 10/9680699c8e2b3af0ae22592cb764acaf973f292a7b71b8a06720233011853a58e256c89216a10cbe889727532fd77f8bcd49a760cedfde271b8e006c20e079f2
-  languageName: node
-  linkType: hard
-
-"concat-stream@npm:^1.5.1":
-  version: 1.6.2
-  resolution: "concat-stream@npm:1.6.2"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    inherits: "npm:^2.0.3"
-    readable-stream: "npm:^2.2.2"
-    typedarray: "npm:^0.0.6"
-  checksum: 10/71db903c84fc073ca35a274074e8d26c4330713d299f8623e993c448c1f6bf8b967806dd1d1a7b0f8add6f15ab1af7435df21fe79b4fe7efd78420c89e054e28
   languageName: node
   linkType: hard
 
@@ -19114,16 +19095,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-http-proxy-json@npm:^0.1.9":
-  version: 0.1.9
-  resolution: "node-http-proxy-json@npm:0.1.9"
-  dependencies:
-    bufferhelper: "npm:^0.2.1"
-    concat-stream: "npm:^1.5.1"
-  checksum: 10/efa21f2c000b09baf3217bcb578ad34f53fc1107b2f95b97e82108b74054807573e6bf570832540fe43572798f6e16114e8f5bec401b09b3016c5c78264df513
-  languageName: node
-  linkType: hard
-
 "node-int64@npm:^0.4.0":
   version: 0.4.0
   resolution: "node-int64@npm:0.4.0"
@@ -21127,7 +21098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^2.0.0, readable-stream@npm:^2.0.1, readable-stream@npm:^2.0.2, readable-stream@npm:^2.0.5, readable-stream@npm:^2.2.2, readable-stream@npm:~2.3.6":
+"readable-stream@npm:^2.0.0, readable-stream@npm:^2.0.1, readable-stream@npm:^2.0.2, readable-stream@npm:^2.0.5, readable-stream@npm:~2.3.6":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
   dependencies:
@@ -21936,7 +21907,6 @@ __metadata:
     ngx-pagination: "npm:^6.0.3"
     node-fetch: "npm:^3.0.0"
     node-html-parser: "npm:^7.0.0"
-    node-http-proxy-json: "npm:^0.1.9"
     nodemon: "npm:^2.0.19"
     npm-run-all2: "npm:^7.0.0"
     odhin-reports-playwright: "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch"
@@ -23991,13 +23961,6 @@ __metadata:
   dependencies:
     is-typedarray: "npm:^1.0.0"
   checksum: 10/7c850c3433fbdf4d04f04edfc751743b8f577828b8e1eb93b95a3bce782d156e267d83e20fb32b3b47813e69a69ab5e9b5342653332f7d21c7d1210661a7a72c
-  languageName: node
-  linkType: hard
-
-"typedarray@npm:^0.0.6":
-  version: 0.0.6
-  resolution: "typedarray@npm:0.0.6"
-  checksum: 10/2cc1bcf7d8c1237f6a16c04efc06637b2c5f2d74e58e84665445cf87668b85a21ab18dd751fa49eee6ae024b70326635d7b79ad37b1c370ed2fec6aeeeb52714
   languageName: node
   linkType: hard
 

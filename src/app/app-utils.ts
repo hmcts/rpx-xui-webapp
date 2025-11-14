@@ -158,13 +158,13 @@ export class AppUtils {
   }
 
   public static getUserRole(userRoles: string[]): UserRole {
-    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.includes(userRole))) {
       return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
       return UserRole.Admin;
-    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
       return UserRole.Ctsc;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
       return UserRole.LegalOps;
     }
     return null;

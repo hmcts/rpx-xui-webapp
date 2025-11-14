@@ -33,6 +33,7 @@ const caseManager = new CaseManager();
 
 When('I click on create case button', async function () {
   //await caseListPage.clickCreateNewCaseButton();
+  await expect(true, 'Forced failure for pipeline check').to.be.false;
   await headerPage().clickCreateCase();
 });
 

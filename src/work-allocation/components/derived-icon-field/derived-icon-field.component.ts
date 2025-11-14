@@ -29,7 +29,7 @@ export class DerivedIconFieldComponent {
 
   public message: string;
   public get showIcon(): boolean {
-    if (!this.task || !this.sourceColumn || this.task[this.sourceColumn] !== this.matchValue || !this.task.warning_list) {
+    if (!this.task?.warning_list?.values?.length || !this.sourceColumn || this.task[this.sourceColumn] !== this.matchValue) {
       return false;
     }
 
@@ -41,7 +41,7 @@ export class DerivedIconFieldComponent {
       return false;
     }
 
-    // if one message left after dublicates removed, it should show that message.Otherwise it should show general message
+    // if one message left after duplicates removed, it should show that message.Otherwise it should show general message
     if (distinctMessages.length === 1) {
       this.message = distinctMessages[0].warningText;
     } else {

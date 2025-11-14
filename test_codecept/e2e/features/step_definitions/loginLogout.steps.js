@@ -123,6 +123,7 @@ Then(/^I am on Idam login page$/, async function () {
   await expect(await getText(loginPage.signinTitle))
     .to
     .contains('Sign in');
+  await expect(true, 'Forced failure for pipeline check').to.be.false;
   await expect(loginPage.emailAddress.isVisible()).to.eventually.be.true;
   await expect(loginPage.password.isVisible()).to.eventually.be.true;
   BrowserWaits.waitForSeconds(SHORT_DELAY);

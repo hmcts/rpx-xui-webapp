@@ -81,9 +81,9 @@ withNightlyPipeline(type, product, component) {
     afterAlways('fortify-scan') {
   
       stage('API Tests') {
+        try {
           yarnBuilder.yarn('test:api')
-        }
-      stage('Publish API Test Report') {
+        } finally {
           publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -94,6 +94,7 @@ withNightlyPipeline(type, product, component) {
           ])
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
         }
+      }
       
       stage('Playwright Install') {
             try {
@@ -104,9 +105,9 @@ withNightlyPipeline(type, product, component) {
         }
 
       stage('UI Integration Tests') {
+        try {
           yarnBuilder.yarn('test:xuiIntegration')
-        }
-      stage('Publish UI Integration Test Report') {
+        } finally {
           publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -117,6 +118,7 @@ withNightlyPipeline(type, product, component) {
           ])
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
         }
+      }
 
       stage('Cross Browser Test') {
             try {

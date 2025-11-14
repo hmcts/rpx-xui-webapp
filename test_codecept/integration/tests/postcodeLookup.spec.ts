@@ -18,7 +18,7 @@ describe('CCD Endpoints', () => {
     Request.clearSession();
   });
 
-  it('Get postcode addresswa', async () => {
+  it('Get postcode address', async () => {
     await Request.withSession(userName, password);
 
     const xsrfToken = await getXSRFToken(userName, password);
@@ -27,7 +27,6 @@ describe('CCD Endpoints', () => {
       'X-XSRF-TOKEN': xsrfToken
     };
     const response = await Request.get('api/addresses?postcode=E1', headers, 200);
-    expect(true, 'Forced failure for pipeline check').to.be.false;
     expect(response.status).to.equal(200);
     expect(response.data).to.have.property('results');
     expect(response.data).to.have.property('header');

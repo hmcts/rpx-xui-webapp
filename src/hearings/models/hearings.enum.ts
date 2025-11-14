@@ -36,9 +36,10 @@ export enum HearingListingStatusEnum {
 }
 
 export enum ListingStatus {
-  DRAFT = 'Draft',
-  PROVISIONAL = 'Provisional',
-  FIXED = 'Fixed',
+  DRAFT = 'DRAFT',
+  PROVISIONAL = 'PROV',
+  FIXED = 'FIXED',
+  CANCELLED = 'CNCL'
 }
 
 export enum LaCaseStatus {

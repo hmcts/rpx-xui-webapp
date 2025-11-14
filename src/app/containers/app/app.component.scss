@@ -79,6 +79,10 @@ a.hmcts-search-toggle__button {
     vertical-align: middle;
     width: 20px;
   }
+
+  &:focus::after {
+    background-image: url(#{$hmcts-images-path}icon-search-black.svg);
+  }
 }
 
 table,

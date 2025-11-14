@@ -1,9 +1,10 @@
 import { NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { RpxTranslationService } from 'rpx-xui-translation';
+import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { SessionStorageService } from './../../../app/services';
 import { PhaseBannerComponent } from './phase-banner.component';
+import { BehaviorSubject } from 'rxjs';
 
 const mockSessionStorageService = {
   getItem: jasmine.createSpy('getItem').and.returnValue(JSON.parse('false')),
@@ -97,22 +98,132 @@ describe('PhaseBannerComponent', () => {
       }
     }));
   });
+});
 
-  it('should update client context if already existing', () => {
-    const existingContext = {
-      client_context: {
-        some_other_data: 'data'
-      }
-    };
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify(existingContext));
-    component.toggleLanguage('en');
-    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify({
-      client_context: {
-        some_other_data: 'data',
-        user_language: {
-          language: 'en'
+describe('PhaseBannerComponent additional tests', () => {
+  let fixture: ComponentFixture<PhaseBannerComponent>;
+  let component: PhaseBannerComponent;
+  let mockSessionStorage: any;
+
+  class MockTranslationService {
+    private _language: RpxLanguage = 'en';
+    public language$ = new BehaviorSubject<RpxLanguage>(this._language);
+    public get language(): RpxLanguage {
+      return this._language;
+    }
+
+    public set language(lang: RpxLanguage) {
+      this._language = lang;
+      this.language$.next(lang);
+    }
+  }
+
+  beforeEach(() => {
+    mockSessionStorage = {
+      getItem: jasmine.createSpy('getItem').and.callFake((key: string) => {
+        if (key === 'bannerClosed') {
+          return 'false';
         }
+        if (key === 'clientContext') {
+          return null;
+        }
+        return null;
+      }),
+      setItem: jasmine.createSpy('setItem')
+    };
+
+    TestBed.configureTestingModule({
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [PhaseBannerComponent, RpxTranslateMockPipe],
+      providers: [
+        { provide: RpxTranslationService, useClass: MockTranslationService },
+        { provide: SessionStorageService, useValue: mockSessionStorage }
+      ]
+    });
+
+    fixture = TestBed.createComponent(PhaseBannerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should show banner on init when initial language is cy and not previously closed', () => {
+    const langService = TestBed.inject(RpxTranslationService);
+    langService.language = 'cy';
+    component.ngOnInit();
+    expect(component.bannerPresent).toBeTrue();
+  });
+
+  it('should not show banner on init when banner previously closed in Welsh', () => {
+    mockSessionStorage.getItem.and.callFake((key: string) => key === 'bannerClosed' ? 'true' : null);
+    const langService = TestBed.inject(RpxTranslationService);
+    langService.language = 'cy';
+    component.ngOnInit();
+    expect(component.bannerPresent).toBeFalse();
+  });
+
+  it('should reset bannerClosed flag to false when language$ emits en', () => {
+    const langService = TestBed.inject(RpxTranslationService);
+    mockSessionStorage.getItem.and.returnValue('true'); // previously closed
+    component.ngOnInit();
+    langService.language = 'en'; // trigger subscription
+    expect(mockSessionStorage.setItem).toHaveBeenCalledWith('bannerClosed', 'false');
+  });
+
+  it('should not keep banner closed after closeBanner if language toggles back to cy via subscription', () => {
+    const langService = TestBed.inject(RpxTranslationService);
+    component.ngOnInit();
+    component.closeBanner();
+    expect(component.bannerPresent).toBeFalse();
+    langService.language = 'cy';
+    expect(component.bannerPresent).toBeTrue();
+  });
+
+  it('should update client context on init', () => {
+    const langService = TestBed.inject(RpxTranslationService);
+    langService.language = 'en';
+    component.ngOnInit();
+    expect(mockSessionStorage.setItem).toHaveBeenCalledWith(
+      'clientContext',
+      JSON.stringify({
+        client_context: {
+          user_language: { language: 'en' }
+        }
+      })
+    );
+  });
+
+  it('should preserve existing client context properties when updating language', () => {
+    const existingContext = {
+      client_context: { existingKey: 'keepMe' },
+      topLevelKeep: 'stillHere'
+    };
+    mockSessionStorage.getItem.and.callFake((key: string) => {
+      if (key === 'bannerClosed') {
+        return 'false';
       }
-    }));
+      if (key === 'clientContext') {
+        return JSON.stringify(existingContext);
+      }
+      return null;
+    });
+    component.ngOnInit();
+    const langService = TestBed.inject(RpxTranslationService);
+    langService.language = 'cy'; // triggers subscription and update
+    const expectedContext = {
+      client_context: {
+        existingKey: 'keepMe',
+        user_language: { language: 'cy' }
+      },
+      topLevelKeep: 'stillHere'
+    };
+    expect(mockSessionStorage.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(expectedContext));
+  });
+
+  it('should unsubscribe on destroy', () => {
+    component.ngOnInit();
+    const sub = (component as any).langSub;
+    spyOn(sub, 'unsubscribe').and.callThrough();
+    component.ngOnDestroy();
+    expect(sub.unsubscribe).toHaveBeenCalled();
   });
 });

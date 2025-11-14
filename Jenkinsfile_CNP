@@ -75,7 +75,7 @@ withPipeline(type, product, component) {
     }    
     }
 
-    afterSuccess('test') {
+    afterAlways('test') {
 
         publishHTML ( [
             allowMissing         : true,
@@ -121,7 +121,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'cucumber_report.html',
+            reportFiles          : 'smoke_test_report.html',
             reportName           : 'DEMO Smoke Test'
         ])
     }
@@ -132,29 +132,30 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'cucumber_report.html',
+            reportFiles          : 'smoke_test_report.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
+
         stage('API Tests') {
-            // Run tests; non-zero exit will fail this stage/build
-            yarnBuilder.yarn('test:api')
-        }
-        stage('Publish API Test Report') {
-            publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/tests/api_functional/',
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'PREVIEW API Functional Test'
-            ])
-            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            try {
+                yarnBuilder.yarn('test:api')
+            } finally {
+                publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : 'functional-output/tests/api_functional/',
+                  reportFiles          : 'mochawesome.html',
+                  reportName           : 'PREVIEW API Functional Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
         }
                 stage('Integration Tests') {
+                    try {
                         yarnBuilder.yarn('test:xuiIntegration')
-                }
-                stage('Publish Integration Test Report') {
+                    } finally {
                         publishHTML([
                             allowMissing         : true,
                             alwaysLinkToLastBuild: true,
@@ -164,6 +165,7 @@ withPipeline(type, product, component) {
                             reportName           : 'PREVIEW Integration Test'
                         ])
                         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+                    }
                 }
     }
 
@@ -179,34 +181,37 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
 
-    afterSuccess('smoketest:aat') {
+    afterAlways('smoketest:aat') {
+      
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'cucumber_report.html',
+            reportFiles          : 'smoke_test_report.html',
             reportName           : 'AAT Smoke Test'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
+
         stage('API Tests') {
-            yarnBuilder.yarn('test:api')
-        }
-        stage('Publish API Test Report') {
-            publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : 'functional-output/tests/api_functional/',
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'AAT API Functional Test'
-            ])
-            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            try {
+                yarnBuilder.yarn('test:api')
+            } finally {
+                publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : 'functional-output/tests/api_functional/',
+                  reportFiles          : 'mochawesome.html',
+                  reportName           : 'AAT API Functional Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            }
         }
                 stage('Integration Tests') {
+                    try {
                         yarnBuilder.yarn('test:xuiIntegration')
-                }
-                stage('Publish Integration Test Report') {
+                    } finally {
                         publishHTML([
                             allowMissing         : true,
                             alwaysLinkToLastBuild: true,
@@ -216,10 +221,11 @@ withPipeline(type, product, component) {
                             reportName           : 'AAT Integration Test'
                         ])
                         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+                    }
                 }
     }
 
-    afterSuccess('functionalTest:aat') {
+    afterAlways('functionalTest:aat') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

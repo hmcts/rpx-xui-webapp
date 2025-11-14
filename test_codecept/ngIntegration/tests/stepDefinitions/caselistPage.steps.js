@@ -10,7 +10,6 @@ const { getTestJurisdiction } = require('../../mockData/ccdCaseMock');
 const ccdApi = require('../../mockData/ccd/ccdApi');
 
 Then('I see case list page displayed', async function () {
-      await expect(true, 'Forced failure for pipeline check').to.be.false;
   expect(await caseListPage.amOnPage(), 'Case list page is not displayed').to.be.true;
 });
 

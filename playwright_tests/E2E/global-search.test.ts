@@ -12,9 +12,6 @@ test.beforeEach(async ({ page }) => {
 
 test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
-
-  expect(true, 'Forced failure for pipeline check').toBeFalsy();
-
   console.log('Search from menu 16-digit find control');
   const caseId = findCaseId(page)
   await waitForSpinner(page);

@@ -23,6 +23,9 @@ When(/^I click on search button$/, async function () {
 
 When('I click on Case list', async function(){
   let attemptCounter = 0;
+  
+    await expect(true, 'Forced failure for pipeline check').to.be.false;
+
   await BrowserWaits.retryWithActionCallback(async () => {
     if (attemptCounter > 0){
       await headerPage().refreshBrowser();

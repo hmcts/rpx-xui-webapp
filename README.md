@@ -179,6 +179,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 Run `HEAD=true TEST_URL=https://manage-case.aat.platform.hmcts.net yarn test:playwrightE2E` to execute the pure playwright end-to-end tests on aat via [Playwright](https://playwright.dev/).
 Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing.
 
+The `playwright_tests_new` folder contains the beginnings of the updated framework structure and test form. Tests are now structured by functionality with step containers for each stage of the test. A page object pattern has been introduced in place of using selectors in the tests themselves. Follow this pattern for any new tests, or ones you wish to migrate. 
+
 ### Playwright reporting
 
 Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright.html`.  

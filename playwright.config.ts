@@ -22,7 +22,11 @@ const resolveWorkerCount = () => {
 const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
-  testDir: './playwright_tests/E2E',
+  testDir: '.',
+  testMatch: [
+    'playwright_tests/**/*.test.ts',
+    'playwright_tests_new/**/*.spec.ts',
+  ],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -58,10 +62,16 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
-        trace: 'on-first-retry'
+        trace: 'retain-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
+        video: 'retain-on-failure'
       }
     }
   ]

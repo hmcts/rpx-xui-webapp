@@ -1,4 +1,4 @@
-# Manage Cases 
+# Manage Cases  
  
 To run the application locally please make sure you follow the prerequisite task of
 Setting up Secrets locally as documented below.
@@ -179,6 +179,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 Run `HEAD=true TEST_URL=https://manage-case.aat.platform.hmcts.net yarn test:playwrightE2E` to execute the pure playwright end-to-end tests on aat via [Playwright](https://playwright.dev/).
 Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing.
 
+The `playwright_tests_new` folder contains the beginnings of the updated framework structure and test form. Tests are now structured by functionality with step containers for each stage of the test. A page object pattern has been introduced in place of using selectors in the tests themselves. Follow this pattern for any new tests, or ones you wish to migrate. 
+
 ### Playwright reporting
 
 Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright.html`.  
@@ -186,6 +188,7 @@ Key behaviour:
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
 - Run info shows project, release, environment, branch and worker count. Override defaults via `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `GIT_BRANCH` or `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
+- Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
 
 ### Parallelism
 

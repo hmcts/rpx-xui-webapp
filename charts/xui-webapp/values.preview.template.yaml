@@ -28,7 +28,7 @@ nodejs:
      PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${CHANGE_ID}
      FEATURE_JRD_E_LINKS_V2_ENABLED: true
      FEATURE_OIDC_ENABLED: true
-     FEATURE_SECURE_COOKIE_ENABLED: false
+     FEATURE_SECURE_COOKIE_ENABLED: true
   keyVaults:
     rpx:
       secrets:

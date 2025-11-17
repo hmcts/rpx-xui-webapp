@@ -15,18 +15,20 @@
       <div>
         <div *ngIf="showReviewBox">
           <div>
-            <div id="additional-insrtuctions-view-hint"
-                 class="govuk-hint">{{ 'Below are the additional instructions previously requested for this hearing' | rpxTranslate }}
+            <div id="additional-instructions-view-hint"
+                 class="govuk-hint">{{ 'These are the additional instructions that were previously requested for this hearing. This section is read-only. You can copy them into the box below if they’re still relevant to the new journey.' | rpxTranslate }}
             </div>
             <form class="form" [formGroup]="instructionsFormViewOnly">
             <textarea class="govuk-textarea govuk-!-margin-bottom-1" id="additionalInstructionsViewOnlyTextarea"
                       formControlName="instructionsViewOnly" name="additional-instructions-view-only-text" value=""
-                      rows="5" maxlength="{{instructionLength}}" readonly></textarea>
+                      rows="5" maxlength="{{instructionLength}}" readonly>
+            </textarea>
             </form>
           </div>
 
-          <div id="additional-insrtuctions-edit-hint"
-               class="govuk-hint">{{ 'There may have been some changes to the case since the last hearing request was updated. Below are some additional instructions that may need to be updated, please make any necessary amendments..' | rpxTranslate }}
+          <div id="additional-instructions-edit-hint"
+               class="govuk-hint">{{ 'Check the instructions above and copy them here if still relevant.\n' +
+          'This box may include system-generated comments. You can also edit or add additional instructions as needed.' | rpxTranslate }}
           </div>
         </div>
         <form class="form" [formGroup]="instructionsForm">

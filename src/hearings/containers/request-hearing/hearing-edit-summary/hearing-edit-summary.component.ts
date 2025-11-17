@@ -377,7 +377,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
             participantAttendanceChangesRequired: this.pageParticipantAttendanceChangeExists(),
             hearingWindowChangesRequired: this.pageVisitHearingWindowChangeExists(),
             hearingFacilitiesChangesRequired: this.pageVisitHearingFacilitiesExists(),
-            additionalInsructionsChangesRequired: this.pageVisitAdditionalInstructionsChangeExists(),
+            additionalInstructionsChangesRequired: this.pageVisitAdditionalInstructionsChangeExists(),
             partyDetailsAnyChangesRequired: this.hasHearingRequestPartiesUnavailableDatesChanged(),
             hearingUnavailabilityDatesChanged: HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
           }
@@ -736,7 +736,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider hearing window changes as hearing timing is not part of the screen flow
       return false;
     }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInsructionsChangesConfirmed) {
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesConfirmed) {
       // Reasonable adjustment changes already confirmed
       return false;
     }

@@ -534,7 +534,8 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -564,7 +565,8 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: true
+        hearingUnavailabilityDatesChanged: true,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -586,7 +588,8 @@ describe('HearingTimingComponent', () => {
         participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -629,7 +632,8 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
 
@@ -651,7 +655,8 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
 
@@ -673,7 +678,8 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
 
@@ -756,7 +762,8 @@ describe('HearingTimingComponent', () => {
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
-        hearingFacilitiesChangesRequired: false
+        hearingFacilitiesChangesRequired: false,
+        additionalInstructionsChangesRequired: false
       }
     };
 

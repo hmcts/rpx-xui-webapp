@@ -31,13 +31,18 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   }
 
   public initForm(): void {
-    this.instructionsForm = this.formBuilder.group({
-      instructions: [this.hearingRequestMainModel.hearingDetails.listingComments]
-    });
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
-      this.showReviewBox = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInsructionsChangesRequired;
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired) {
+      this.showReviewBox = true;
+      this.instructionsForm = this.formBuilder.group({
+        instructions: [this.serviceHearingValuesModel?.listingComments]
+      });
       this.instructionsFormViewOnly = this.formBuilder.group({
-        instructionsViewOnly: [this.serviceHearingValuesModel?.listingComments] });
+        instructionsViewOnly: [this.hearingRequestMainModel.hearingDetails.listingComments]
+      });
+    } else {
+      this.instructionsForm = this.formBuilder.group({
+        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments]
+      });
     }
   }
 
@@ -63,7 +68,7 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       }
     };
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
-      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInsructionsChangesConfirmed = true;
+      this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed = true;
     }
   }
 

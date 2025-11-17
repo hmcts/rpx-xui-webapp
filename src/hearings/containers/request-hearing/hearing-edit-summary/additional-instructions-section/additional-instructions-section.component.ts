@@ -43,8 +43,8 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.listingComments
     );
 
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInsructionsChangesRequired
-      && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInsructionsChangesConfirmed){
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired
+      && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesConfirmed){
       this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
       if (additionalInsrtuctionsChanged) {

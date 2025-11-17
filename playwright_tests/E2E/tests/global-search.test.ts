@@ -29,7 +29,7 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Current progress of the case' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Do this next' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Case details' })).toBeVisible();
-  await expect(page.getByText('Home Office Reference/Case ID')).toBeVisible();
+  await expect(page.getByText('Home Office UAN or GWF reference')).toBeVisible();
   // await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
 });
 

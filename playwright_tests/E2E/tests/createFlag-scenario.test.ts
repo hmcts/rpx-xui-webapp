@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import config from '../config'
-import { signIn } from './steps/login-steps';
-import axeTest from "./helpers/accessibilityTestHelper";
-import { registerCorsChecker } from './helpers/corsSmoke';
+import config from '../../config'
+import { signIn } from '../steps/login-steps';
+import axeTest from "../helpers/accessibilityTestHelper";
+import { registerCorsChecker } from '../helpers/corsSmoke';
 
 test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);

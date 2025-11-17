@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
-import { HearingsUtils } from '../../../../utils/hearings.utils';
 import { HearingsService } from '../../../../services/hearings.service';
 
 @Component({

@@ -1383,7 +1383,6 @@ describe('HearingEditSummaryComponent', () => {
       component.hearingRequestMainModel.hearingDetails.listingComments = 'Same';
       component.serviceHearingValuesModel.listingComments = 'Same';
 
-
       const result = (component as any).pageVisitAdditionalInstructionsChangeExists();
 
       expect(result).toBe(false);

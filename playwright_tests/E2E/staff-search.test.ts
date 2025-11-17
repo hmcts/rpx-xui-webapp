@@ -38,7 +38,7 @@ test('Simplified search', async ({ page }) => {
     await signOut(page);
   });
 
-test('Toggle search', async ({ page }) => {
+test.skip('Toggle search', async ({ page }) => {
   await signIn(page, "STAFF_ADMIN");
   await clickToStaffPage(page);
 

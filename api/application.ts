@@ -58,6 +58,27 @@ export async function createApp() {
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));
     app.use(helmet.referrerPolicy({ policy: ['origin'] }));
+    app.use((req, res, next) => {
+      res.setHeader('X-Robots-Tag', 'noindex');
+      res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+      next();
+    });
+    app.get('/robots.txt', (req, res) => {
+      res.type('text/plain');
+      res.send('User-agent: *\nDisallow: /');
+    });
+    app.get('/sitemap.xml', (req, res) => {
+      res.type('text/xml');
+      res.send('User-agent: *\nDisallow: /');
+    });
+    app.disable('x-powered-by');
+    app.disable('X-Powered-By');
+  }
+  if (showFeature(FEATURE_HELMET_ENABLED)) {
+    app.use(helmet(getConfigValue(HELMET)));
+    app.use(helmet.noSniff());
+    app.use(helmet.frameguard({ action: 'deny' }));
+    app.use(helmet.referrerPolicy({ policy: ['origin'] }));
     app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));

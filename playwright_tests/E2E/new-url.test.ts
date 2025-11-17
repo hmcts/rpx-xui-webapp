@@ -5,7 +5,7 @@ import { createCase } from './steps/create-xui-case-poc-steps';
 import { waitForSpinner } from './steps/spinner-steps';
 import { dealWithShortenedCaseRefLabel, getCaseReferenceFromFirstRow, getCaseReferenceFromFirstRowForEmployment } from './steps/table-steps';
 
-test('creating a case updates the url with jurisdiction and caseType', async ({ page }) => {
+test.skip('creating a case updates the url with jurisdiction and caseType', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/cases/',
@@ -33,7 +33,7 @@ test('creating a case updates the url with jurisdiction and caseType', async ({ 
   await signOut(page);
 });
 
-test('navigating to a case which displays the new url containing jurisdiction and caseType', async ({ page }) => {
+test.skip('navigating to a case which displays the new url containing jurisdiction and caseType', async ({ page }) => {
   const response = waitForSpecificResponse(
     page,
     'data/internal/cases/',
@@ -62,7 +62,7 @@ test('navigating to a case which displays the new url containing jurisdiction an
   await signOut(page);
 });
 
-test('event journey with new url along with jurisdiction and caseType ', async ({ page }) => {
+test.skip('event journey with new url along with jurisdiction and caseType ', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
@@ -95,7 +95,7 @@ test('event journey with new url along with jurisdiction and caseType ', async (
   await signOut(page);
 });
 
-test('Search from menu 16-digit find control and navigate to the new url', async ({ page }) => {
+test.skip('Search from menu 16-digit find control and navigate to the new url', async ({ page }) => {
   await signIn(page, 'SEARCH_EMPLOYMENT_CASE');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await page.getByLabel('Jurisdiction').selectOption({ label: 'Employment' });

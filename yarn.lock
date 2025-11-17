@@ -3519,12 +3519,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.55-markdown-add-validation-2":
-  version: 7.2.55-markdown-add-validation-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.55-markdown-add-validation-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.59-markdown-add-validation":
+  version: 7.2.59-markdown-add-validation
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.59-markdown-add-validation"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/6bfb4166814d2a085bd162ba3a78022d76d91fa7b828dec9300e11f94ee6675a26b9b9cdfc178ae57e2846be049a457cc114e24a9cb7741ab91dde0caeaa7da4
+  checksum: 10/88bf9dc316ac973479610d778fb70b917120968e6fd01ba00c80c1b79002ca0685048bc1b2bffdf22e24adc2212423de8b15cd632cae422dfc31062e14cf0eef
   languageName: node
   linkType: hard
 
@@ -23404,7 +23404,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.55-markdown-add-validation-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.59-markdown-add-validation"
     "@hmcts/ccpay-web-component": "npm:6.3.3"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.1.10"

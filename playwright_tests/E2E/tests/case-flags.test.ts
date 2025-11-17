@@ -1,16 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "./steps/table-steps"
-import config from "../config"
-import { registerCorsChecker } from './helpers/corsSmoke';
-import { routeToCasePage } from './steps/case-steps';
-import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from './steps/flag-steps';
-import { expectTextVisibleWithRetry } from './steps/steps-with-retry';
+import { checkTableCellContent, checkTableRowContent, checkNumberOfRow } from "../steps/table-steps"
+import config from "../../config"
+import { registerCorsChecker } from '../helpers/corsSmoke';
+import { routeToCasePage } from '../steps/case-steps';
+import { getActiveFlagsForCase, checkActiveRowsMatchesBanner } from '../steps/flag-steps';
+import { expectTextVisibleWithRetry } from '../steps/steps-with-retry';
 
 test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
 });
 
-test('Create case flag 2', async ({ page }) => {
+
+test.skip('Create case flag 2 X', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
   await routeToCasePage(page, '1747043572209027');

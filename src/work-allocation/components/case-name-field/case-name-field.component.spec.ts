@@ -189,5 +189,53 @@ describe('WorkAllocation', () => {
       expect(element.textContent.trim()).toBe(CASE_NAME);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
     });
+
+    describe('ngOnChanges', () => {
+      let caseNameFieldComponent: CaseNameFieldComponent;
+
+      beforeEach(() => {
+        caseNameFieldComponent = new CaseNameFieldComponent();
+      });
+
+      it('should set href with jurisdiction, caseType and caseId', () => {
+        caseNameFieldComponent.caseId = '123';
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}JUR/TYPE/123`);
+      });
+
+      it('should set href with only caseId if jurisdiction and caseType are missing', () => {
+        caseNameFieldComponent.caseId = '456';
+        caseNameFieldComponent.jurisdiction = undefined;
+        caseNameFieldComponent.caseType = undefined;
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}456`);
+      });
+
+      it('should set href with only caseId if jurisdiction and caseType are empty strings', () => {
+        caseNameFieldComponent.caseId = '789';
+        caseNameFieldComponent.jurisdiction = '';
+        caseNameFieldComponent.caseType = '';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}789`);
+      });
+
+      it('should set href to undefined if caseId is undefined', () => {
+        caseNameFieldComponent.caseId = undefined;
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBeUndefined();
+      });
+
+      it('should set href to undefined if caseId is null', () => {
+        caseNameFieldComponent.caseId = null;
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBeUndefined();
+      });
+    });
   });
 });

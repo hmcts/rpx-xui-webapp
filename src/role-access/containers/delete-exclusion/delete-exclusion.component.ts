@@ -76,11 +76,13 @@ export class DeleteExclusionComponent implements OnInit {
     this.answers.push({ label: AnswerLabelText.DateAdded, value: moment.parseZone(new Date(exclusion.added)).format('D MMMM YYYY') });
   }
 
+  // EXUI-2071 - Almost certainly no longer needed - kept for safety
+  // EXUI-2645 - To be reviewed
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
       this.caseworkerDataService.getUsersFromServices([this.jurisdiction]).pipe(first()).subscribe((caseworkers) => {
         const caseworker = caseworkers.find((givenCaseworker) => givenCaseworker.idamId === this.roleExclusion.actorId);
-        this.roleExclusion.name = `${caseworker.firstName}-${caseworker.lastName}`;
+        this.roleExclusion.name = `${caseworker.firstName} ${caseworker.lastName}`;
         this.answers = [];
         this.populateAnswers(this.roleExclusion);
       });

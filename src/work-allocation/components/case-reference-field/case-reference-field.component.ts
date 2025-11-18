@@ -26,8 +26,8 @@ export class CaseReferenceFieldComponent implements OnChanges {
         const jurisdictionId = encodeURIComponent(this.jurisdiction);
         const caseTypeId = encodeURIComponent(this.caseType);
         href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
-      } else if (caseId) {
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+      } else if (this.caseReference) {
+        href = `${AppConstants.CASE_DETAILS_URL}${this.caseReference}`;
       }
     }
     this.pHref = href;

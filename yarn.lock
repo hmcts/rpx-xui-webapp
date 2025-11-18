@@ -3696,24 +3696,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.1-srt-rc1":
-  version: 7.3.1-srt-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.1-srt-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.0":
+  version: 7.3.0
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.0"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/e4af7a6ef4a58fea377ce0caac422bc52ef121ac7f5ad6c25961ea85897209a9de4e23c06c43428750fd0e1c1ef3a25ec45c1f3933c1bfac5a9b8305f49441d2
+  checksum: 10/8b58c2a881883d6eeb2697ae0722d20ad25abc91d51ec2600fc0305435be9208c9520029a169922d16733e9331acc4ce246027fbcc4a53ab7df5d43e2c2e5ae6
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.5.9-cme-779-prerelease":
-  version: 6.5.9-cme-779-prerelease
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.9-cme-779-prerelease"
+"@hmcts/ccpay-web-component@npm:6.5.14":
+  version: 6.5.14
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.14"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^18.2.13
-    "@angular/core": ^18.2.13
-  checksum: 10/cd40af41e8b6f6987838e8be6d7368e9dd77b297a5ebdcb1f5d3f12b190f64a6e8983f6067ea8c8d89a424930a630a64c259c87fec4a62d28235f37d0a3c1c6f
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+  checksum: 10/db9415edf6cd2a26b5e15a2cbbe72c729038c15b9c13313837f92da0bcbbd764d8d7bb6e2a7b54e820879bffe48a705ae84fffbc019e16279311f3b611235731
   languageName: node
   linkType: hard
 
@@ -3724,9 +3724,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.1.9-cme-776-angular-20":
-  version: 4.1.9-cme-776-angular-20
-  resolution: "@hmcts/media-viewer@npm:4.1.9-cme-776-angular-20"
+"@hmcts/media-viewer@npm:4.2.0":
+  version: 4.2.0
+  resolution: "@hmcts/media-viewer@npm:4.2.0"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3745,7 +3745,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/9ee138d7057e807b64312aa3a8ed0038dbcaa414c6df874dd77a413eed110167c25c934b45a46347ee5f4b119e9e57f699ba0126e6d8ed94942dd6c47e2aa99b
+  checksum: 10/231cbc6a91766a1a24cc8648041a6bdb9193595364fb723366f80e841fd195a9f1f66bdeecb7c458fcc073a3e4cdfc456b698b2d1134cd2e165713db39e876fc
   languageName: node
   linkType: hard
 
@@ -3812,16 +3812,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.1.5-cme-778-prerelease":
-  version: 3.1.5-cme-778-prerelease
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.1.5-cme-778-prerelease"
+"@hmcts/rpx-xui-common-lib@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.0"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/c6ef95d6bc0892e3bb9b0ec5a7ed0f986189a2b1d010375d5365ee2564422bdd7998de305bfe6836fa7b0b7a446aef2c75b4b5bec349d766319b07f54548266f
+  checksum: 10/dffc0fd583699505076a68a718e11e82412eec8784669d6cfc55d4d6d11206bbcf333a2957605c6296252d52e0bc782327b8d1be8544b5b366d7458a545e9485
   languageName: node
   linkType: hard
 
@@ -23779,14 +23779,14 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.1-srt-rc1"
-    "@hmcts/ccpay-web-component": "npm:6.5.9-cme-779-prerelease"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.0"
+    "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.1.9-cme-776-angular-20"
+    "@hmcts/media-viewer": "npm:4.2.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.1.5-cme-778-prerelease"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.0"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -23903,7 +23903,7 @@ __metadata:
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.1.2-CME-780-9"
+    rpx-xui-translation: "npm:1.2.0"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -23933,9 +23933,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.1.2-CME-780-9":
-  version: 1.1.2-CME-780-9
-  resolution: "rpx-xui-translation@npm:1.1.2-CME-780-9"
+"rpx-xui-translation@npm:1.2.0":
+  version: 1.2.0
+  resolution: "rpx-xui-translation@npm:1.2.0"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -23943,7 +23943,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ^20.3.1
-  checksum: 10/82126cfbc5984c0e3718a173e8e29d35c18f56e01dbe10241b7bd3f17ce5df065421dffc030db0dc88ec807597aa5aadb55b3349c03ac8335dc44189886aec0a
+  checksum: 10/5eea929cc08f8d089adc64790201fbb24c248c29e8a9fcc5d35eac70c0e9f47bce211dec291eddfece69a8ba0ee5ffbcac3a3e1fb749a316a47f3b6fed48e7ec
   languageName: node
   linkType: hard
 

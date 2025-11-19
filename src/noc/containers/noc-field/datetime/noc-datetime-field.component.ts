@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 import { AppUtils } from '../../../../app/app-utils';
 import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 
@@ -27,17 +28,18 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
       second: [null, Validators.required]
     });
     if (this.datetimeControl.value) {
-      const [datePart, timePart] = this.datetimeControl.value.split('T');
-      const dateValues = datePart.split('-');
-      this.datetimeGroup.controls.year.setValue(dateValues[0] || '');
-      this.datetimeGroup.controls.month.setValue(dateValues[1] || '');
-      this.datetimeGroup.controls.day.setValue(dateValues[2] || '');
-      if (timePart) {
-        const timeParts = timePart.replace('.000', '').split(':');
-        this.datetimeGroup.controls.hour.setValue(timeParts[0] || '');
-        this.datetimeGroup.controls.minute.setValue(timeParts[1] || '');
-        this.datetimeGroup.controls.second.setValue(timeParts[2] || '');
-      }
+      // convert UTC datetime to local time for display
+      const utcValue = this.datetimeControl.value;
+      const utcMoment = moment.utc(utcValue);
+      const localMoment = utcMoment.local();
+
+      // extract local date and time components
+      this.datetimeGroup.controls.year.setValue(localMoment.year().toString());
+      this.datetimeGroup.controls.month.setValue(AppUtils.pad((localMoment.month() + 1).toString()));
+      this.datetimeGroup.controls.day.setValue(AppUtils.pad(localMoment.date().toString()));
+      this.datetimeGroup.controls.hour.setValue(AppUtils.pad(localMoment.hours().toString()));
+      this.datetimeGroup.controls.minute.setValue(AppUtils.pad(localMoment.minutes().toString()));
+      this.datetimeGroup.controls.second.setValue(AppUtils.pad(localMoment.seconds().toString()));
     }
   }
 
@@ -53,7 +55,18 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
         this.datetimeGroup.value.minute !== null ? AppUtils.pad(this.datetimeGroup.value.minute) : '',
         this.datetimeGroup.value.second !== null ? AppUtils.pad(this.datetimeGroup.value.second) : ''
       ].join(':');
-      this.datetimeControl.setValue(`${date}T${time}.000`);
+      const localDateTimeString = `${date}T${time}.000`;
+
+      // convert local time to UTC datetime for storage
+      const localMoment = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');
+      if (localMoment.isValid()) {
+        const utcMoment = localMoment.utc();
+        const utcValue = utcMoment.format('YYYY-MM-DDTHH:mm:ss.SSS');
+        this.datetimeControl.setValue(utcValue);
+      } else {
+        // set the local datetime string to be caught by validation
+        this.datetimeControl.setValue(localDateTimeString);
+      }
     });
   }
 

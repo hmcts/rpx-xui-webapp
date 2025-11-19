@@ -145,7 +145,7 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
   }
 
   public calculateEarliestHearingDate(hearingDays: ActualHearingDayModel[]): string {
-    const moments: moment.Moment[] = hearingDays.map((d) => moment.tz(this.convertUTCDateToLocalDate(new Date(d.hearingStartTime)), moment.tz.guess()));
+    const moments: moment.Moment[] = hearingDays.map((d) => this.convertUTCDateToLocalDate(d.hearingStartTime));
     if (moments.length > 1) {
       return `${moment.min(moments).format('DD MMM YYYY')} - ${moment.max(moments).format('DD MMM YYYY')}`;
     }
@@ -157,8 +157,8 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     return this.getTime(ActualHearingsUtils.getPauseDateTime(day, state));
   }
 
-  private convertUTCDateToLocalDate(date): Date {
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+  private convertUTCDateToLocalDate(utcDateTimeString): moment.Moment {
+    return moment.utc(utcDateTimeString).local();
   }
 
   // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe

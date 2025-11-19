@@ -13,6 +13,7 @@ import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
 
 @Component({
+  standalone: false,
   template: `
     <exui-delete-exclusion></exui-delete-exclusion>`
 })

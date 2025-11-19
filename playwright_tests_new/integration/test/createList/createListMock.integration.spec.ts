@@ -3,8 +3,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
 import { buildCaseListMock } from '../../mocks/caseList.mock';
 
-// Select user via env or default to SOLICITOR
-const userIdentifier = process.env.PW_USER_IDENTIFIER || 'SOLICITOR';
+const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
 
 test.beforeAll(() => {

@@ -6,6 +6,7 @@ import * as fromHearingStore from '../../store';
 import { HearingsFeatureService } from '../../../hearings/services/hearings-feature.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-parties-title',
   templateUrl: './hearing-parties-title.component.html'
 })

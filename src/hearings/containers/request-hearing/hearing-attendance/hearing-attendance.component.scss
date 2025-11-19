@@ -5,6 +5,18 @@
 
 .party-row {
   margin-bottom: 20px;
+
+  // Amendment label styling for party names
+  .govuk-label {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  exui-amendment-label {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
 }
 
 strong {
@@ -18,3 +30,25 @@ strong {
 .checkbox-row {
   display: flex;
 }
+
+// Amendment label styling for checkboxes
+.govuk-checkboxes__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  exui-amendment-label {
+    margin-left: 5px;
+  }
+}
+
+// Amendment label styling for radio buttons
+.govuk-radios__item {
+  display: flex;
+  align-items: center;
+
+  exui-amendment-label {
+    margin-left: 10px;
+  }
+}
+

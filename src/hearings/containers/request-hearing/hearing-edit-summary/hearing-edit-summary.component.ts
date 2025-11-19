@@ -746,6 +746,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.additionalInstructionsChangesRequired) {
       return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesConfirmed;
     }
+    return false;
   }
 
   private defaultStringSort(a: string, b: string): number {

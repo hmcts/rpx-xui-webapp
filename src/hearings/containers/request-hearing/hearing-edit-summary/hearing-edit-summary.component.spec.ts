@@ -2137,6 +2137,7 @@ describe('HearingEditSummaryComponent', () => {
     spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
     spyOn<any>(component, 'pageParticipantAttendanceChangeExists').and.returnValue(false);
     spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitAdditionalInstructionsChangeExists').and.returnValue(false);
 
     const result = (component as any).pageVisitChangesNotConfirmed(true);
 
@@ -2150,6 +2151,7 @@ describe('HearingEditSummaryComponent', () => {
     spyOn<any>(component, 'pageVisitNonReasonableAdjustmentChangeExists').and.returnValue(false);
     spyOn<any>(component, 'pageParticipantAttendanceChangeExists').and.returnValue(false);
     spyOn<any>(component, 'pageVisitHearingWindowChangeExists').and.returnValue(false);
+    spyOn<any>(component, 'pageVisitAdditionalInstructionsChangeExists').and.returnValue(false);
 
     const result = (component as any).pageVisitChangesNotConfirmed(false);
 

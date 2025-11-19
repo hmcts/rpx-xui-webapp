@@ -7,7 +7,8 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 
 @Component({
   selector: 'exui-panel-requirements-section',
-  templateUrl: './panel-requirements-section.component.html'
+  templateUrl: './panel-requirements-section.component.html',
+  standalone: false
 })
 export class PanelRequirementsSectionComponent {
   @Input() public isAPanelFlag: boolean;

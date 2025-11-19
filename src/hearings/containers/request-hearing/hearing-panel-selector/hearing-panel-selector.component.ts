@@ -20,7 +20,8 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-panel-selector',
-  templateUrl: './hearing-panel-selector.component.html'
+  templateUrl: './hearing-panel-selector.component.html',
+  standalone: false
 })
 export class HearingPanelSelectorComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public panelJudgeForm: FormGroup;

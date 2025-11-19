@@ -13,7 +13,8 @@ import { PanelRequirementsModel } from 'api/hearings/models/panelRequirements.mo
 
 @Component({
   selector: 'exui-hearing-panel-required',
-  templateUrl: './hearing-panel-required.component.html'
+  templateUrl: './hearing-panel-required.component.html',
+  standalone: false
 })
 export class HearingPanelRequiredComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingPanelRequiredForm: FormGroup;

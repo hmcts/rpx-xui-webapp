@@ -35,13 +35,6 @@ export enum HearingListingStatusEnum {
   ADJOURNED = 'ADJOURNED',
 }
 
-export enum ListingStatus {
-  DRAFT = 'DRAFT',
-  PROVISIONAL = 'PROV',
-  FIXED = 'FIXED',
-  CANCELLED = 'CNCL'
-}
-
 export enum LaCaseStatus {
   LISTED = 'LISTED',
   PENDING_RELISTING = 'PENDING_RELISTING',

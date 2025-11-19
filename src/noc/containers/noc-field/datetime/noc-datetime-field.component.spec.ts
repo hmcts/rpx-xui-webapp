@@ -77,7 +77,6 @@ describe('NocDateTimeFieldComponent', () => {
 
   describe('UTC to local conversion on initialization', () => {
     it('should convert UTC datetime to local time for display', () => {
-      // set a UTC datetime value
       const utcValue = '2022-07-15T14:30:00.000';
       component.datetimeControl.setValue(utcValue);
 
@@ -104,10 +103,8 @@ describe('NocDateTimeFieldComponent', () => {
 
   describe('Local to UTC conversion on value change', () => {
     it('should convert local datetime to UTC for storage', () => {
-      // set up the valueChanges subscription
       component.ngAfterViewInit();
 
-      // set local datetime values in the form
       component.datetimeGroup.controls.year.setValue('2025');
       component.datetimeGroup.controls.month.setValue('04');
       component.datetimeGroup.controls.day.setValue('15');
@@ -115,7 +112,6 @@ describe('NocDateTimeFieldComponent', () => {
       component.datetimeGroup.controls.minute.setValue('30');
       component.datetimeGroup.controls.second.setValue('45');
 
-      // construct expected values for verification
       const localDateTimeString = '2025-04-15T14:30:45.000';
       const localMoment = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');
       const expectedUtcValue = localMoment.utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
@@ -125,7 +121,7 @@ describe('NocDateTimeFieldComponent', () => {
       expect(component.datetimeControl.value).toBe(expectedUtcValue);
       expect(component.datetimeControl.value).toBe('2025-04-15T13:30:45.000');
       expect(moment.utc(component.datetimeControl.value).isValid()).toBe(true);
-      
+
       // verify the UTC value converts back to the original local time
       const convertedBackToLocal = moment.utc(component.datetimeControl.value).local();
       const originalLocalTime = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');

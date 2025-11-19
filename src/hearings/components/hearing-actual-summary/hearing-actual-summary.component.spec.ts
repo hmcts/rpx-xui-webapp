@@ -500,6 +500,7 @@ describe('HearingActualSummaryComponent', () => {
   describe('convertUTCDateToLocalDate', () => {
     it('should convert UTC datetime string to local moment object', () => {
       const utcString = '2025-04-18T20:20:24.976537';
+      // eslint-disable-next-line dot-notation
       const result = component['convertUTCDateToLocalDate'](utcString);
       const expected = moment.utc(utcString).local();
 
@@ -512,6 +513,7 @@ describe('HearingActualSummaryComponent', () => {
 
     it('should handle UTC datetime with Z suffix', () => {
       const utcString = '2025-04-17T16:14:53.844Z';
+      // eslint-disable-next-line dot-notation
       const result = component['convertUTCDateToLocalDate'](utcString);
       const expected = moment.utc(utcString).local();
 
@@ -524,6 +526,7 @@ describe('HearingActualSummaryComponent', () => {
 
     it('should handle UTC datetime without Z suffix', () => {
       const utcString = '2025-04-17T16:16:43.548';
+      // eslint-disable-next-line dot-notation
       const result = component['convertUTCDateToLocalDate'](utcString);
       const expected = moment.utc(utcString).local();
 

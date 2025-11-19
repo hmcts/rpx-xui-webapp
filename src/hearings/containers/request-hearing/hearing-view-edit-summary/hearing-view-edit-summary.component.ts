@@ -15,6 +15,7 @@ import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
 import { HearingResponseError } from '../../../models/hearingResponseError.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-view-edit-summary',
   templateUrl: './hearing-view-edit-summary.component.html'
 })

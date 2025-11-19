@@ -38,6 +38,7 @@ import { cloneDeep } from 'lodash';
 import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-edit-summary',
   templateUrl: './hearing-edit-summary.component.html'
 })

@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from "./steps/login-steps";
-import { waitForSpecificResponse } from './helpers/responseListenerHelper';
-import { createCase } from './steps/create-xui-case-poc-steps';
-import { waitForSpinner } from './steps/spinner-steps';
-import { dealWithShortenedCaseRefLabel, getCaseReferenceFromFirstRow, getCaseReferenceFromFirstRowForEmployment } from './steps/table-steps';
+import { signIn, signOut } from "../steps/login-steps";
+import { waitForSpecificResponse } from '../helpers/responseListenerHelper';
+import { createCase } from '../steps/create-xui-case-poc-steps';
+import { waitForSpinner } from '../steps/spinner-steps';
+import { dealWithShortenedCaseRefLabel, getCaseReferenceFromFirstRow, getCaseReferenceFromFirstRowForEmployment } from '../steps/table-steps';
 
 test('creating a case updates the url with jurisdiction and caseType', async ({ page }) => {
   const response = waitForSpecificResponse(
@@ -30,7 +30,6 @@ test('creating a case updates the url with jurisdiction and caseType', async ({ 
   const jurisdiction = responseData?.case_type?.jurisdiction?.id;
   expect(pageUrl).toContain('/' + caseType);
   expect(pageUrl).toContain('/' + jurisdiction);
-  await signOut(page);
 });
 
 test('navigating to a case which displays the new url containing jurisdiction and caseType', async ({ page }) => {
@@ -59,7 +58,6 @@ test('navigating to a case which displays the new url containing jurisdiction an
   const jurisdiction = responseData?.case_type?.jurisdiction?.id;
   expect(pageUrl).toContain('/' + caseType);
   expect(pageUrl).toContain('/' + jurisdiction);
-  await signOut(page);
 });
 
 test('event journey with new url along with jurisdiction and caseType ', async ({ page }) => {
@@ -92,7 +90,6 @@ test('event journey with new url along with jurisdiction and caseType ', async (
   pageUrl = page.url();
   afterCaseDetails = pageUrl.split('case-details/')[1];
   expect(afterCaseDetails).toMatch(/^DIVORCE\/xuiTestJurisdiction\//);
-  await signOut(page);
 });
 
 test('Search from menu 16-digit find control and navigate to the new url', async ({ page }) => {

@@ -31,6 +31,8 @@ import { State } from '../store';
 import { HearingPanelSelectorHiddenConverter } from '../converters/hearing-panel-selector.hidden.converter';
 
 @Pipe({
+  standalone: false,
+
   name: 'isHidden'
 })
 export class ShowHidePipe implements PipeTransform {

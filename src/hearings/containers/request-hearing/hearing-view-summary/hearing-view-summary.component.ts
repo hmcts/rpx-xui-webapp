@@ -18,6 +18,7 @@ import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-viewsummary',
   templateUrl: './hearing-view-summary.component.html',
   styleUrls: ['./hearing-view-summary.component.scss']

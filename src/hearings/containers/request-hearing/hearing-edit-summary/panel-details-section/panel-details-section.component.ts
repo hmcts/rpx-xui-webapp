@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 
 @Component({
+  standalone: false,
   selector: 'exui-panel-details-section',
   templateUrl: './panel-details-section.component.html'
 })

@@ -4,6 +4,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 import { YesNoService } from './yes-no.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-noc-yes-no-field',
   templateUrl: './noc-yes-no-field.component.html'
 })

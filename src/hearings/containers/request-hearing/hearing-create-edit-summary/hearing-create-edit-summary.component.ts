@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-create-edit-summary',
   templateUrl: './hearing-create-edit-summary.component.html'
 })

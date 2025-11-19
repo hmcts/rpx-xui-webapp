@@ -36,6 +36,7 @@ import {
 } from '../../../../../api/hearings/data/defaultScreenFlow.data';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-parties-title',
   template: ''
 })

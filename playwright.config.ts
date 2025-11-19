@@ -25,7 +25,7 @@ module.exports = defineConfig({
   testDir: '.',
   testMatch: [
     'playwright_tests/**/*.test.ts',
-    'playwright_tests_new/**/*.spec.ts',
+    'playwright_tests_new/E2E/**/*.spec.ts',
   ],
   /* Run tests in files in parallel */
   fullyParallel: true,

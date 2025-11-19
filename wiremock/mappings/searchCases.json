@@ -1,0 +1,85 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/data/internal/searchCases"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "columns": [
+        {
+          "label": "Case reference",
+          "order": 1,
+          "metadata": true,
+          "case_field_id": "[CASE_REFERENCE]",
+          "case_field_type": {"id": "Text", "type": "Text"},
+          "display_context_parameter": null
+        },
+        {
+          "label": "Text Field 0",
+          "order": 2,
+          "metadata": false,
+          "case_field_id": "TextField0",
+          "case_field_type": {"id": "Text", "type": "Text"},
+          "display_context_parameter": null
+        },
+        {
+          "label": "Text Field 1",
+          "order": 3,
+          "metadata": false,
+          "case_field_id": "TextField1",
+          "case_field_type": {"id": "Text", "type": "Text"},
+          "display_context_parameter": null
+        },
+        {
+          "label": "Text Field 2",
+          "order": 4,
+          "metadata": false,
+          "case_field_id": "TextField2",
+          "case_field_type": {"id": "Text", "type": "Text"},
+          "display_context_parameter": null
+        }
+      ],
+      "results": [
+        {
+          "case_id": "#1763-5442-4345-7183",
+          "supplementary_data": null,
+          "case_fields": {
+            "TextField0": "alpha",
+            "[STATE]": "CaseCreated",
+            "[SECURITY_CLASSIFICATION]": "PUBLIC",
+            "[JURISDICTION]": "DIVORCE",
+            "[LAST_STATE_MODIFIED_DATE]": "2025-05-12T15:24:53.977",
+            "[CREATED_DATE]": "2025-05-12T15:24:53.977",
+            "TextField2": "alpha",
+            "[CASE_TYPE]": "xuiTestJurisdiction",
+            "TextField1": "alpha",
+            "[CASE_REFERENCE]": "#1763-5442-4345-7183",
+            "[LAST_MODIFIED_DATE]": "2025-10-09T13:43:59.362"
+          }
+        },
+        {
+          "case_id": "1747063493980829",
+          "supplementary_data": null,
+          "case_fields": {
+            "TextField0": "cake",
+            "[STATE]": "CaseCreated",
+            "[SECURITY_CLASSIFICATION]": "PUBLIC",
+            "[JURISDICTION]": "DIVORCE",
+            "[LAST_STATE_MODIFIED_DATE]": "2025-05-12T15:24:53.977",
+            "[CREATED_DATE]": "2025-05-12T15:24:53.977",
+            "TextField2": "is",
+            "[CASE_TYPE]": "xuiTestJurisdiction",
+            "TextField1": "not true",
+            "[CASE_REFERENCE]": "1747063493980829",
+            "[LAST_MODIFIED_DATE]": "2025-10-09T13:43:59.362"
+          }
+        }
+      ],
+      "total": 2
+    }
+  }
+}

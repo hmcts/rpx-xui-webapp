@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { AmendmentLabelStatus } from '../../../../../hearings/models/hearingsUpdateMode.enum';
+import { AmendmentLabelStatus } from '../../../../models/hearingsUpdateMode.enum';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingsService } from '../../../../services/hearings.service';
@@ -22,10 +22,6 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.showAmmended = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.listingComments,
-      this.hearingRequestMainModel.hearingDetails.listingComments
-    );
     this.additionalInstructions = this.hearingRequestMainModel.hearingDetails.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
 
     this.setAmendmentLabels();
@@ -37,7 +33,7 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels() {
-    const additionalInsrtuctionsChanged = !_.isEqual(
+    this.showAmmended = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails.listingComments,
       this.hearingRequestMainModel.hearingDetails.listingComments
     );
@@ -46,7 +42,7 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
       && !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesConfirmed){
       this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
-      if (additionalInsrtuctionsChanged) {
+      if (this.showAmmended) {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.AMENDED;
       } else {
         this.pageTitleDisplayLabel = AmendmentLabelStatus.EMPTY;

@@ -740,8 +740,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
-    return HearingsUtils.hasListingCommentsChange(this.hearingRequestMainModel.hearingDetails?.listingComments, this.serviceHearingValuesModel?.listingComments);
-    // return this.hearingRequestMainModel.hearingDetails?.listingComments !== this.serviceHearingValuesModel?.listingComments;
+    if (HearingsUtils.hasListingCommentsChange(this.hearingRequestMainModel.hearingDetails?.listingComments, this.serviceHearingValuesModel?.listingComments)) {
+      return true;
+    }
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.additionalInstructionsChangesRequired) {
+      return !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesConfirmed;
+    }
   }
 
   private defaultStringSort(a: string, b: string): number {

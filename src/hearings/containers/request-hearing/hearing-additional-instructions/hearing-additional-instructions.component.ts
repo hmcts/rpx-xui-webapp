@@ -10,7 +10,8 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
   selector: 'exui-hearing-additional-instructions',
-  templateUrl: './hearing-additional-instructions.component.html'
+  templateUrl: './hearing-additional-instructions.component.html',
+  styleUrls: ['./hearing-additional-instructions.component.scss']
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public instructionsForm: FormGroup;
@@ -58,11 +59,12 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   }
 
   public prepareHearingRequestData(): void {
+    const listingComments = this.instructionsForm.value.instructions ? this.santiseHTML(this.instructionsForm.value.instructions) : undefined;
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        listingComments: this.santiseHTML(this.instructionsForm.value.instructions),
+        listingComments: listingComments,
         autolistFlag: this.getAutoListFlag(),
         listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode()
       }

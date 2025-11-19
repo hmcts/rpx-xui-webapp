@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MemberType, RequirementType } from '../models/hearings.enum';
+import { MemberType, Mode, RequirementType } from '../models/hearings.enum';
 import { JudicialUserModel } from '../models/judicialUser.model';
 import { State } from '../store';
 import { AnswerConverter } from './answer.converter';
@@ -14,7 +14,7 @@ export class PanelExclusionAnswerConverter implements AnswerConverter {
 
     return hearingState$.pipe(
       map((state) => {
-        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+        const panelRequirements = (state.hearingConditions?.isHearingAmendmentsEnabled && state.hearingConditions?.mode === Mode.VIEW_EDIT)
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
         const excludedJudges: string[] = panelRequirements?.panelPreferences.filter((preferences) => preferences.memberType === MemberType.PANEL_MEMBER && preferences.requirementType === RequirementType.EXCLUDE).map((preferences) => preferences.memberID);

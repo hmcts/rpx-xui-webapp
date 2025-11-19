@@ -35,4 +35,71 @@ describe('JudgeExclusionHiddenConverter', () => {
     const expected = cold('(b|)', { b: false });
     expect(result$).toBeObservable(expected);
   });
+  it('should return false when amendments are enabled (ignores panelRequirements = null)', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingConditions = {
+      ...STATE.hearingConditions,
+      isHearingAmendmentsEnabled: true
+    } as any;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = null;
+
+    const result$ = judgeExclusionHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: false });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return false when amendments are enabled (even if there are excluded judges)', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingConditions = {
+      ...STATE.hearingConditions,
+      isHearingAmendmentsEnabled: true
+    } as any;
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [{
+        memberID: 'P0000001',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE
+      }]
+    } as any;
+
+    const result$ = judgeExclusionHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: false });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when panelPreferences has no JUDGE/EXCLUDE entries', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: [
+        // Non-judge exclude
+        { memberID: 'X0001', memberType: MemberType.PANEL_MEMBER, requirementType: RequirementType.EXCLUDE },
+        // Judge but not exclude
+        { memberID: 'P0000002', memberType: MemberType.JUDGE, requirementType: RequirementType.MUSTINC }
+      ]
+    } as any;
+
+    const result$ = judgeExclusionHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when panelPreferences is an empty array', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
+      panelPreferences: []
+    } as any;
+
+    const result$ = judgeExclusionHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
+
+  it('should return true when panelRequirements is undefined', () => {
+    const STATE: State = _.cloneDeep(initialState.hearings);
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = undefined as any;
+
+    const result$ = judgeExclusionHiddenConverter.transformHidden(of(STATE));
+    const expected = cold('(b|)', { b: true });
+    expect(result$).toBeObservable(expected);
+  });
 });

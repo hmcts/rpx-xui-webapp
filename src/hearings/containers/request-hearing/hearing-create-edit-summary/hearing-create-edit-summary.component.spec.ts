@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { ReplaySubject } from 'rxjs';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, AnswerSource, IsHiddenSource } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
@@ -15,6 +17,9 @@ import {
   HEARING_WELSH,
   replaceResultValue
 } from '../../../../../api/hearings/data/defaultScreenFlow.data';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import * as fromHearingStore from '../../../store';
 
 let component: HearingCreateEditSummaryComponent;
 let fixture: ComponentFixture<HearingCreateEditSummaryComponent>;
@@ -196,6 +201,13 @@ const template: Section[] = [
   }
 ];
 
+const mockHearingsFeatureService = {
+  hearingAmendmentsEnabled: jasmine.createSpy('hearingAmendmentsEnabled').and.returnValue(of(false))
+};
+const mockFeatureToggleService = {
+  getValue: jasmine.createSpy('getValue').and.returnValue(of(false))
+};
+
 describe('WHERE a panel is requested ensure the judge screen is removed.', () => {
   beforeEach(() => {
     const state = JSON.parse(JSON.stringify(initialState));
@@ -206,7 +218,9 @@ describe('WHERE a panel is requested ensure the judge screen is removed.', () =>
       declarations: [HearingCreateEditSummaryComponent],
       providers: [
         provideMockStore({ initialState: state }),
-        { provide: HearingsService, useValue: hearingsService }
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: HearingsFeatureService, useValue: mockHearingsFeatureService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
@@ -265,6 +279,66 @@ describe('WHERE a panel is requested ensure the judge screen is removed.', () =>
   });
 });
 
+describe('ngOnInit: hearing amendments toggle behaviour', () => {
+  let toggle$: ReplaySubject<boolean>;
+  let store: Store<any>;
+
+  beforeEach(() => {
+    toggle$ = new ReplaySubject<boolean>(1);
+
+    TestBed.resetTestingModule();
+    const state = JSON.parse(JSON.stringify(initialState));
+
+    TestBed.configureTestingModule({
+      declarations: [HearingCreateEditSummaryComponent],
+      providers: [
+        provideMockStore({ initialState: state }),
+        { provide: HearingsService, useValue: hearingsService },
+        {
+          provide: HearingsFeatureService,
+          useValue: { hearingAmendmentsEnabled: jasmine.createSpy('hearingAmendmentsEnabled').and.returnValue(toggle$.asObservable()) }
+        },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HearingCreateEditSummaryComponent);
+    component = fixture.componentInstance;
+    store = TestBed.inject(Store);
+  });
+
+  it('should subscribe and dispatch SaveHearingConditions with true when amendments are enabled', () => {
+    const dispatchSpy = spyOn(store, 'dispatch');
+    component.ngOnInit();
+
+    // emit TRUE from the feature stream
+    toggle$.next(true);
+    fixture.detectChanges();
+
+    expect(component.isHearingAmendmentsEnabled).toBeTrue();
+    expect(component.featureToggleServiceSubscription).toBeDefined();
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.SaveHearingConditions({ isHearingAmendmentsEnabled: true })
+    );
+  });
+
+  it('should subscribe and dispatch SaveHearingConditions with false when amendments are disabled', () => {
+    const dispatchSpy = spyOn(store, 'dispatch');
+    component.ngOnInit();
+
+    // emit FALSE from the feature stream
+    toggle$.next(false);
+    fixture.detectChanges();
+
+    expect(component.isHearingAmendmentsEnabled).toBeFalse();
+    expect(component.featureToggleServiceSubscription).toBeDefined();
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.SaveHearingConditions({ isHearingAmendmentsEnabled: false })
+    );
+  });
+});
+
 describe('WHERE a panel is not requested ensure the panel screen is removed.', () => {
   beforeEach(() => {
     const state = JSON.parse(JSON.stringify(initialState));
@@ -275,7 +349,9 @@ describe('WHERE a panel is not requested ensure the panel screen is removed.', (
       declarations: [HearingCreateEditSummaryComponent],
       providers: [
         provideMockStore({ initialState: state }),
-        { provide: HearingsService, useValue: hearingsService }
+        { provide: HearingsService, useValue: hearingsService },
+        { provide: HearingsFeatureService, useValue: mockHearingsFeatureService },
+        { provide: FeatureToggleService, useValue: mockFeatureToggleService }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();

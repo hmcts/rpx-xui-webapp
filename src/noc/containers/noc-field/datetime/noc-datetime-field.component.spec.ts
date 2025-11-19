@@ -127,5 +127,98 @@ describe('NocDateTimeFieldComponent', () => {
       const originalLocalTime = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');
       expect(convertedBackToLocal.format('YYYY-MM-DDTHH:mm:ss')).toBe(originalLocalTime.format('YYYY-MM-DDTHH:mm:ss'));
     });
+
+    it('should handle invalid datetime and set raw value for validation', () => {
+      component.ngAfterViewInit();
+
+      component.datetimeGroup.controls.year.setValue('2025');
+      component.datetimeGroup.controls.month.setValue('13'); // invalid month
+      component.datetimeGroup.controls.day.setValue('32'); // invalid day
+      component.datetimeGroup.controls.hour.setValue('25'); // invalid hour
+      component.datetimeGroup.controls.minute.setValue('60'); // invalid minute
+      component.datetimeGroup.controls.second.setValue('60'); // invalid second
+
+      const invalidString = '2025-13-32T25:60:60.000';
+      const invalidMoment = moment(invalidString, 'YYYY-MM-DDTHH:mm:ss.SSS');
+
+      expect(invalidMoment.isValid()).toBe(false);
+      expect(component.datetimeControl.value).toBe(invalidString);
+    });
+
+    it('should pad single digit values correctly', () => {
+      component.ngAfterViewInit();
+
+      component.datetimeGroup.controls.year.setValue('2025');
+      component.datetimeGroup.controls.month.setValue('4'); // single digit
+      component.datetimeGroup.controls.day.setValue('5'); // single digit
+      component.datetimeGroup.controls.hour.setValue('9'); // single digit
+      component.datetimeGroup.controls.minute.setValue('8'); // single digit
+      component.datetimeGroup.controls.second.setValue('7'); // single digit
+
+      const localDateTimeString = '2025-04-05T09:08:07.000';
+      const localMoment = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');
+      const expectedUtcValue = localMoment.utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
+
+      expect(component.datetimeControl.value).toBe(expectedUtcValue);
+    });
+
+    it('should handle midnight correctly (00:00:00)', () => {
+      component.ngAfterViewInit();
+
+      component.datetimeGroup.controls.year.setValue('2025');
+      component.datetimeGroup.controls.month.setValue('01');
+      component.datetimeGroup.controls.day.setValue('01');
+      component.datetimeGroup.controls.hour.setValue('0');
+      component.datetimeGroup.controls.minute.setValue('0');
+      component.datetimeGroup.controls.second.setValue('0');
+
+      const localMidnight = moment('2025-01-01T00:00:00.000', 'YYYY-MM-DDTHH:mm:ss.SSS');
+      const expectedUtcValue = localMidnight.utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
+
+      expect(component.datetimeControl.value).toBe(expectedUtcValue);
+      expect(moment.utc(component.datetimeControl.value).isValid()).toBe(true);
+    });
+
+    it('should handle end of day correctly (23:59:59)', () => {
+      component.ngAfterViewInit();
+
+      component.datetimeGroup.controls.year.setValue('2025');
+      component.datetimeGroup.controls.month.setValue('12');
+      component.datetimeGroup.controls.day.setValue('31');
+      component.datetimeGroup.controls.hour.setValue('23');
+      component.datetimeGroup.controls.minute.setValue('59');
+      component.datetimeGroup.controls.second.setValue('59');
+
+      const localEndOfDay = moment('2025-12-31T23:59:59.000', 'YYYY-MM-DDTHH:mm:ss.SSS');
+      const expectedUtcValue = localEndOfDay.utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
+
+      expect(component.datetimeControl.value).toBe(expectedUtcValue);
+      expect(moment.utc(component.datetimeControl.value).isValid()).toBe(true);
+    });
+
+    it('should properly build datetime string from form values', () => {
+      component.ngAfterViewInit();
+
+      component.datetimeGroup.controls.year.setValue('2025');
+      component.datetimeGroup.controls.month.setValue('7');
+      component.datetimeGroup.controls.day.setValue('15');
+      component.datetimeGroup.controls.hour.setValue('14');
+      component.datetimeGroup.controls.minute.setValue('30');
+      component.datetimeGroup.controls.second.setValue('0');
+
+      // the internal string building should create: 2025-07-15T14:30:00.000
+      const utcValue = component.datetimeControl.value;
+      expect(utcValue).toBeDefined();
+      expect(moment.utc(utcValue).isValid()).toBe(true);
+
+      // verify it converts back to the same local time
+      const backToLocal = moment.utc(utcValue).local();
+      expect(backToLocal.year()).toBe(2025);
+      expect(backToLocal.month()).toBe(6); // 0-indexed
+      expect(backToLocal.date()).toBe(15);
+      expect(backToLocal.hours()).toBe(14);
+      expect(backToLocal.minutes()).toBe(30);
+      expect(backToLocal.seconds()).toBe(0);
+    });
   });
 });

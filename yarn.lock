@@ -23528,7 +23528,7 @@ __metadata:
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "npm:1.1.2"
+    rpx-xui-translation: "npm:1.1.3-welsh-translation-fix"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -23558,9 +23558,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.1.2":
-  version: 1.1.2
-  resolution: "rpx-xui-translation@npm:1.1.2"
+"rpx-xui-translation@npm:1.1.3-welsh-translation-fix":
+  version: 1.1.3-welsh-translation-fix
+  resolution: "rpx-xui-translation@npm:1.1.3-welsh-translation-fix"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -23568,7 +23568,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^18.2.13
     "@angular/core": ^18.2.13
-  checksum: 10/a96aad3ca088de43a5898a8c31a2a48d0ad2fde765dcf4f98c96afe5393446aa25846cc324f7afa9f31844f193641d8a91244400fe8abf86206054718c661b04
+  checksum: 10/9d05369214e7a9290bf84424e95b1b06628c401e608a428914119edfe8fe386f380921412aae22d3e7d4ef46a679444909363d099eaf672c09ffe41dc5be1cfa
   languageName: node
   linkType: hard
 

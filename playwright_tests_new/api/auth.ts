@@ -34,6 +34,16 @@ export async function ensureStorageState(role: ApiUserRole): Promise<string> {
   return storagePromises.get(cacheKey)!;
 }
 
+export async function getStoredCookie(role: ApiUserRole, cookieName: string): Promise<string | undefined> {
+  const storagePath = await ensureStorageState(role);
+  const raw = await fs.readFile(storagePath, 'utf8');
+  const state = JSON.parse(raw);
+  const cookie = Array.isArray(state?.cookies)
+    ? state.cookies.find((c: { name?: string }) => c.name === cookieName)
+    : undefined;
+  return cookie?.value;
+}
+
 async function createStorageState(role: ApiUserRole): Promise<string> {
   const storagePath = path.join(storageRoot, config.testEnv, `${role}.json`);
   await fs.mkdir(path.dirname(storagePath), { recursive: true });

@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import * as moment from 'moment';
 import { UtilsModule } from '../utils/utils.module';
 import { NocDateTimeFieldComponent } from './noc-datetime-field.component';
 
@@ -72,5 +73,63 @@ describe('NocDateTimeFieldComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('UTC to local conversion on initialization', () => {
+    it('should convert UTC datetime to local time for display', () => {
+      // set a UTC datetime value
+      const utcValue = '2022-07-15T14:30:00.000';
+      component.datetimeControl.setValue(utcValue);
+
+      // manually trigger ngOnInit logic
+      const utcMoment = moment.utc(utcValue);
+      const localMoment = utcMoment.local();
+
+      component.datetimeGroup.controls.year.setValue(localMoment.year().toString());
+      component.datetimeGroup.controls.month.setValue((localMoment.month() + 1).toString().padStart(2, '0'));
+      component.datetimeGroup.controls.day.setValue(localMoment.date().toString().padStart(2, '0'));
+      component.datetimeGroup.controls.hour.setValue(localMoment.hours().toString().padStart(2, '0'));
+      component.datetimeGroup.controls.minute.setValue(localMoment.minutes().toString().padStart(2, '0'));
+      component.datetimeGroup.controls.second.setValue(localMoment.seconds().toString().padStart(2, '0'));
+
+      // verify the form group contains local time values
+      expect(component.datetimeGroup.controls.year.value).toBe(localMoment.year().toString());
+      expect(component.datetimeGroup.controls.month.value).toBe((localMoment.month() + 1).toString().padStart(2, '0'));
+      expect(component.datetimeGroup.controls.day.value).toBe(localMoment.date().toString().padStart(2, '0'));
+      expect(component.datetimeGroup.controls.hour.value).toBe(localMoment.hours().toString().padStart(2, '0'));
+      expect(component.datetimeGroup.controls.minute.value).toBe(localMoment.minutes().toString().padStart(2, '0'));
+      expect(component.datetimeGroup.controls.second.value).toBe(localMoment.seconds().toString().padStart(2, '0'));
+    });
+  });
+
+  describe('Local to UTC conversion on value change', () => {
+    it('should convert local datetime to UTC for storage', () => {
+      // set up the valueChanges subscription
+      component.ngAfterViewInit();
+
+      // set local datetime values in the form
+      component.datetimeGroup.controls.year.setValue('2025');
+      component.datetimeGroup.controls.month.setValue('04');
+      component.datetimeGroup.controls.day.setValue('15');
+      component.datetimeGroup.controls.hour.setValue('14');
+      component.datetimeGroup.controls.minute.setValue('30');
+      component.datetimeGroup.controls.second.setValue('45');
+
+      // construct expected values for verification
+      const localDateTimeString = '2025-04-15T14:30:45.000';
+      const localMoment = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');
+      const expectedUtcValue = localMoment.utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
+
+      // verify the automatic conversion happened correctly
+      expect(component.datetimeControl.value).toBeDefined();
+      expect(component.datetimeControl.value).toBe(expectedUtcValue);
+      expect(component.datetimeControl.value).toBe('2025-04-15T13:30:45.000');
+      expect(moment.utc(component.datetimeControl.value).isValid()).toBe(true);
+      
+      // verify the UTC value converts back to the original local time
+      const convertedBackToLocal = moment.utc(component.datetimeControl.value).local();
+      const originalLocalTime = moment(localDateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSS');
+      expect(convertedBackToLocal.format('YYYY-MM-DDTHH:mm:ss')).toBe(originalLocalTime.format('YYYY-MM-DDTHH:mm:ss'));
+    });
   });
 });

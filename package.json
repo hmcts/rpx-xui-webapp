@@ -52,6 +52,7 @@
     "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration",
     "test:playwrightE2E": "yarn playwright install && npx playwright test --project chromium",
+    "test:api:pw": "yarn playwright install && npx playwright test --project node-api",
     "test:functional1": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",
     "test:functional": "yarn test:playwrightE2E",
     "test:functionalApiE2e": "yarn run test:api && yarn run",

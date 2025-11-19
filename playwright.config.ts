@@ -62,6 +62,7 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: ['playwright_tests_new/api/**'],
       use: {
         ...devices['Desktop Chrome'],
         channel: 'chrome',
@@ -72,6 +73,16 @@ module.exports = defineConfig({
           fullPage: true
         },
         video: 'retain-on-failure'
+      }
+    },
+    {
+      name: 'node-api',
+      testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+      use: {
+        headless: true,
+        screenshot: 'off',
+        video: 'off',
+        trace: 'off'
       }
     }
   ]

@@ -1,4 +1,4 @@
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationModel } from './organisation.model';
 
 export class DataBaseModel {

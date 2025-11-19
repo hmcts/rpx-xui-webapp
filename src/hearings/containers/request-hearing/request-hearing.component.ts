@@ -10,6 +10,7 @@ import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.mod
 import { Subscription } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'exui-request-hearing',
   templateUrl: './request-hearing.component.html',
   styleUrls: ['./request-hearing.component.scss']

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from "./steps/login-steps";
-import axeTest from "./helpers/accessibilityTestHelper";
-import { registerCorsChecker } from './helpers/corsSmoke';
+import { signIn, signOut } from "../steps/login-steps";
+import axeTest from "../helpers/accessibilityTestHelper";
+import { registerCorsChecker } from '../helpers/corsSmoke';
 
 test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);

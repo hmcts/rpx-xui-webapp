@@ -8,6 +8,7 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-stage-section',
   templateUrl: './hearing-stage-section.component.html'
 })

@@ -10,6 +10,7 @@ import { BookingService } from '../../services';
 import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/booking-error-handler';
 
 @Component({
+  standalone: false,
   selector: 'exui-booking-check',
   templateUrl: './booking-check.component.html',
   styleUrls: ['./booking-check.component.scss']

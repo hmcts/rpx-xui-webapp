@@ -6,6 +6,7 @@ import { StaffAdvancedSearchFilters } from '../../../models/staff-search-filters
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-staff-adv-filter',
   templateUrl: './staff-adv-filter.component.html',
   styleUrls: ['./staff-adv-filter.component.scss']

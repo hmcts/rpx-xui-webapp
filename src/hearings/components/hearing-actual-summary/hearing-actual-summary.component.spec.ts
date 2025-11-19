@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
+import * as moment from 'moment';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
 import { HearingResult } from '../../models/hearings.enum';
@@ -494,6 +495,44 @@ describe('HearingActualSummaryComponent', () => {
   it('should set empty hearing type description', () => {
     fixture.detectChanges();
     expect(component.hearingTypeDescription).toEqual('');
+  });
+
+  describe('convertUTCDateToLocalDate', () => {
+    it('should convert UTC datetime string to local moment object', () => {
+      const utcString = '2025-04-18T20:20:24.976537';
+      const result = component['convertUTCDateToLocalDate'](utcString);
+      const expected = moment.utc(utcString).local();
+
+      expect(result).toBeDefined();
+      expect(moment.isMoment(result)).toBe(true);
+      expect(result.isValid()).toBe(true);
+      expect(result.isSame(expected)).toBe(true);
+      expect(result.format('YYYY-MM-DDTHH:mm:ss')).toEqual(expected.format('YYYY-MM-DDTHH:mm:ss'));
+    });
+
+    it('should handle UTC datetime with Z suffix', () => {
+      const utcString = '2025-04-17T16:14:53.844Z';
+      const result = component['convertUTCDateToLocalDate'](utcString);
+      const expected = moment.utc(utcString).local();
+
+      expect(result).toBeDefined();
+      expect(moment.isMoment(result)).toBe(true);
+      expect(result.isValid()).toBe(true);
+      expect(result.isSame(expected)).toBe(true);
+      expect(result.format('YYYY-MM-DDTHH:mm:ss')).toEqual(expected.format('YYYY-MM-DDTHH:mm:ss'));
+    });
+
+    it('should handle UTC datetime without Z suffix', () => {
+      const utcString = '2025-04-17T16:16:43.548';
+      const result = component['convertUTCDateToLocalDate'](utcString);
+      const expected = moment.utc(utcString).local();
+
+      expect(result).toBeDefined();
+      expect(moment.isMoment(result)).toBe(true);
+      expect(result.isValid()).toBe(true);
+      expect(result.isSame(expected)).toBe(true);
+      expect(result.format('YYYY-MM-DDTHH:mm:ss')).toEqual(expected.format('YYYY-MM-DDTHH:mm:ss'));
+    });
   });
 
   afterEach(() => {

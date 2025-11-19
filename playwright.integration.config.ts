@@ -11,12 +11,14 @@ module.exports = defineConfig({
   expect: { timeout: 30_000 },
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? 'dot' : 'list',
-  use: {
-    baseURL: process.env.MANAGE_CASES_BASE_URL || 'https://manage-case.aat.platform.hmcts.net',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    headless: headlessMode,
+  globalSetup: require.resolve('./playwright_tests_new/integration/playwright.global.setup.ts'),
+    use: {
+      baseURL: process.env.MANAGE_CASES_BASE_URL || 'https://manage-case.aat.platform.hmcts.net',
+      trace: 'on-first-retry',
+      screenshot: 'only-on-failure',
+      video: 'retain-on-failure',
+      headless: headlessMode,
+      storageState: `${process.cwd()}/.sessions/xui_auto_test_user_solicitor@mailinator.com.storage.json`
   },
   projects: [
     {

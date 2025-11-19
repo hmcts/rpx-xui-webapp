@@ -27,7 +27,13 @@ async function globalSetup(_full: FullConfig) {
       await page.goto(config.urls.exuiDefaultUrl);
       await page.waitForSelector('#username', { timeout: 30000 });
       await idamPage.login({ username: email, password });
-      await page.waitForURL(/manage-case.*\/cases/, { timeout: 60000 });
+      // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
+      try {
+        await page.waitForSelector('exui-header', { timeout: 60000 });
+        console.log(`GlobalSetup: EXUI header detected for ${id}`);
+      } catch (headerErr) {
+        console.warn(`GlobalSetup: EXUI header not detected for ${id} within timeout`, headerErr);
+      }
     } catch (e) {
       console.warn(`GlobalSetup: login failed for ${id}`, e);
     }

@@ -119,7 +119,6 @@ describe('NocDateTimeFieldComponent', () => {
       // verify the automatic conversion happened correctly
       expect(component.datetimeControl.value).toBeDefined();
       expect(component.datetimeControl.value).toBe(expectedUtcValue);
-      expect(component.datetimeControl.value).toBe('2025-04-15T13:30:45.000');
       expect(moment.utc(component.datetimeControl.value).isValid()).toBe(true);
 
       // verify the UTC value converts back to the original local time

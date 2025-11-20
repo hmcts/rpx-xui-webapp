@@ -127,14 +127,6 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "Benefit",
-        "SSCS_ExceptionRecord"
-      ],
-      "releaseVersion": "4",
-      "serviceName": "SSCS"
-    },
-    {
-      "caseTypes": [
         "CARE_SUPERVISION_EPO"
       ],
       "releaseVersion": "4",

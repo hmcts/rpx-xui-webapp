@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/test';
+import { request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { config } from '../../test_codecept/integration/tests/config/config';
@@ -6,17 +6,7 @@ import { config } from '../../test_codecept/integration/tests/config/config';
 type UsersConfig = typeof config.users[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 
-const chromeArgs = [
-  '--disable-gpu',
-  '--no-sandbox',
-  '--disable-setuid-sandbox',
-  '--disable-dev-shm-usage',
-  '--disable-crash-reporter',
-  '--use-mock-keychain',
-  '--no-default-browser-check',
-  '--disable-component-update'
-];
-
+const baseUrl = stripTrailingSlash(config.baseUrl);
 const storageRoot = path.resolve(
   process.cwd(),
   'functional-output',
@@ -49,40 +39,41 @@ async function createStorageState(role: ApiUserRole): Promise<string> {
   await fs.mkdir(path.dirname(storagePath), { recursive: true });
 
   const credentials = getCredentials(role);
-  const browser = await chromium.launch({
-    headless: true,
-    args: chromeArgs,
+  const context = await request.newContext({
+    baseURL: baseUrl,
     ignoreHTTPSErrors: true,
-    channel: 'chrome'
-  });
-  const context = await browser.newContext({
-    ignoreHTTPSErrors: true
+    maxRedirects: 10
   });
 
   try {
-    const page = await context.newPage();
-    const baseUrl = config.baseUrl;
-    const manageCaseHost = new URL(baseUrl).host;
-
-    await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
-    try {
-      await page.waitForURL('**/login**', { timeout: 60_000 });
-    } catch {
-      // ignore – selector wait below will fail if login page never appears
+    const loginPage = await context.get('auth/login');
+    if (loginPage.status() >= 400) {
+      throw new Error(`GET /auth/login responded with ${loginPage.status()}`);
     }
-    await page.waitForSelector('#username', { timeout: 60_000 });
 
-    await page.fill('#username', credentials.username);
-    await page.fill('#password', credentials.password);
-    await page.click('.button');
+    const loginUrl = loginPage.url();
+    const csrfToken = extractCsrf(await loginPage.text());
+    const formPayload: Record<string, string> = {
+      username: credentials.username,
+      password: credentials.password,
+      save: 'Sign in'
+    };
+    if (csrfToken) {
+      formPayload._csrf = csrfToken;
+    }
 
-    await page.waitForURL(`**${manageCaseHost}**`, { timeout: 120_000 });
-    await page.waitForSelector('.hmcts-primary-navigation', { timeout: 120_000 });
+    const loginResponse = await context.post(loginUrl, { form: formPayload });
+    if (loginResponse.status() >= 400) {
+      throw new Error(`POST ${loginUrl} responded with ${loginResponse.status()}`);
+    }
+
+    // Ensure XSRF/session cookies are refreshed on the application domain
+    await context.get('/');
     await context.storageState({ path: storagePath });
   } catch (error) {
     throw new Error(`Failed to login as ${role}: ${(error as Error).message}`);
   } finally {
-    await browser.close();
+    await context.dispose();
   }
 
   return storagePath;
@@ -99,4 +90,13 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
     username: userConfig.e,
     password: userConfig.sec
   };
+}
+
+function extractCsrf(html: string): string | undefined {
+  const match = html.match(/name="_csrf"\s+value="([^"]+)"/i);
+  return match?.[1];
+}
+
+function stripTrailingSlash(value: string): string {
+  return value.replace(/\/+$/, '');
 }

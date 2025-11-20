@@ -12,7 +12,6 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
@@ -31,6 +30,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public amendmentLabelEnum = AmendmentLabelStatus;
   public hearingFacilitiesChangesRequired: boolean;
   public hearingFacilitiesChangesConfirmed: boolean;
+  public additionalSecurityRequiredChanged: boolean;
+  public additionalFacilitiesChanged: boolean;
 
   constructor(private fb: FormBuilder,
               protected readonly hearingStore: Store<fromHearingStore.State>,
@@ -46,6 +47,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       this.hearingFacilitiesChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
       this.hearingFacilitiesChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+      this.additionalSecurityRequiredChanged = this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+      this.additionalFacilitiesChanged = this.checkAdditionalFacilitiesChanged();
     }
 
     this.setNonReasonableAdjustmentFlags();
@@ -60,6 +63,12 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     } else {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
     }
+  }
+
+  private checkAdditionalFacilitiesChanged(): boolean {
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+    return CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
   }
 
   public ngAfterViewInit(): void {
@@ -137,7 +146,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = this.haveUpdatesMadeToSelections();
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
       }
       if (propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
@@ -167,7 +176,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)) {
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.participantAttendanceChangesRequired)) {
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails
         : this.hearingRequestToCompareMainModel.partyDetails;
@@ -178,14 +187,5 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.displayCaseFlagsGroup(this.serviceHearingValuesModel?.caseFlags?.flags,
         this.caseFlagsRefData, this.caseFlagType);
     }
-  }
-
-  private haveUpdatesMadeToSelections() {
-    const { caseAdditionalSecurityFlagChanged, facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
-      this.hearingRequestMainModel,
-      this.hearingRequestToCompareMainModel
-    );
-
-    return caseAdditionalSecurityFlagChanged || facilitiesChanged;
   }
 }

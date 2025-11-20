@@ -107,10 +107,11 @@ describe('ParticipantAttendanceSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -127,11 +128,12 @@ describe('ParticipantAttendanceSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        partyDetailsChangesConfirmed: true,
+        participantAttendanceChangesRequired: true,
+        participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -148,10 +150,11 @@ describe('ParticipantAttendanceSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -189,10 +192,11 @@ describe('ParticipantAttendanceSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
         }
       };
       component.hearingRequestMainModel = {
@@ -215,10 +219,11 @@ describe('ParticipantAttendanceSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
         }
       };
       component.hearingRequestMainModel = {
@@ -241,10 +246,11 @@ describe('ParticipantAttendanceSectionComponent', () => {
         afterPageVisit: {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
-          partyDetailsChangesRequired: false,
+          participantAttendanceChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
         }
       };
       component.hearingRequestMainModel = {
@@ -268,11 +274,12 @@ describe('ParticipantAttendanceSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          partyDetailsChangesRequired: true,
-          partyDetailsChangesConfirmed: false,
+          participantAttendanceChangesRequired: true,
+          participantAttendanceChangesConfirmed: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
         }
       };
       component.ngOnInit();
@@ -289,11 +296,12 @@ describe('ParticipantAttendanceSectionComponent', () => {
           reasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesRequired: false,
           nonReasonableAdjustmentChangesConfirmed: false,
-          partyDetailsChangesRequired: true,
-          partyDetailsChangesConfirmed: true,
+          participantAttendanceChangesRequired: true,
+          participantAttendanceChangesConfirmed: true,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
         }
       };
       component.ngOnInit();

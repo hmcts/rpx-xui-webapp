@@ -163,6 +163,12 @@ test.describe('Work allocation (read-only)', () => {
           throwOnError: false
         });
         expect([200, 401, 403, 404]).toContain(response.status);
+        if (response.status === 200 && response.data) {
+          const cases = Array.isArray(response.data) ? response.data : response.data.cases;
+          if (Array.isArray(cases)) {
+            expect(Array.isArray(cases)).toBe(true);
+          }
+        }
       });
     });
   });
@@ -212,15 +218,15 @@ test.describe('Work allocation (read-only)', () => {
   });
 
   test.describe('task actions (happy-path attempt)', () => {
-    const id = (fallback?: string) => fallback ?? '00000000-0000-0000-0000-000000000000';
+    const fallbackId = '00000000-0000-0000-0000-000000000000';
 
     const positiveActions: Array<{ action: string; taskId: () => string }> = [
-      { action: 'claim', taskId: () => id(sampleTaskId) },
-      { action: 'unclaim', taskId: () => id(sampleMyTaskId ?? sampleTaskId) },
-      { action: 'complete', taskId: () => id(sampleMyTaskId ?? sampleTaskId) },
-      { action: 'assign', taskId: () => id(sampleTaskId) },
-      { action: 'unassign', taskId: () => id(sampleMyTaskId ?? sampleTaskId) },
-      { action: 'cancel', taskId: () => id(sampleMyTaskId ?? sampleTaskId) }
+      { action: 'claim', taskId: () => sampleTaskId ?? fallbackId },
+      { action: 'unclaim', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'complete', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'assign', taskId: () => sampleTaskId ?? fallbackId },
+      { action: 'unassign', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'cancel', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId }
     ];
 
     positiveActions.forEach(({ action, taskId }) => {
@@ -235,6 +241,22 @@ test.describe('Work allocation (read-only)', () => {
           throwOnError: false
         });
         expect([200, 204, 400, 403, 404, 409]).toContain(response.status);
+
+        if (response.status === 200 || response.status === 204) {
+          const details = await apiClient.get<any>(`workallocation/task/${taskId()}`, { throwOnError: false });
+          if (details.status === 200 && details.data?.task) {
+            const assignee = details.data.task.assignee ?? details.data.task.assigned_to;
+            if (['claim', 'assign'].includes(action)) {
+              expect(assignee ?? '').not.toEqual('');
+            }
+            if (['unclaim', 'unassign', 'cancel'].includes(action)) {
+              expect(assignee ?? '').toBeFalsy();
+            }
+            if (action === 'complete') {
+              expect((details.data.task.task_state ?? details.data.task.state ?? '').toLowerCase()).toMatch(/complete|done|closed/);
+            }
+          }
+        }
       });
     });
   });

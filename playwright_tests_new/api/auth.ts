@@ -17,7 +17,7 @@ const storageRoot = path.resolve(
 const storagePromises = new Map<string, Promise<string>>();
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
-  const cacheKey = `${config.testEnv}-${role}`;
+  const cacheKey = getCacheKey(role);
   if (!storagePromises.has(cacheKey)) {
     storagePromises.set(cacheKey, createStorageState(role));
   }
@@ -25,10 +25,21 @@ export async function ensureStorageState(role: ApiUserRole): Promise<string> {
 }
 
 export async function getStoredCookie(role: ApiUserRole, cookieName: string): Promise<string | undefined> {
-  const storagePath = await ensureStorageState(role);
-  const raw = await fs.readFile(storagePath, 'utf8');
-  const state = JSON.parse(raw);
-  const cookie = Array.isArray(state?.cookies)
+  let storagePath = await ensureStorageState(role);
+  let state = await tryReadState(storagePath);
+
+  if (!state) {
+    // corrupted or empty state – rebuild
+    storagePromises.delete(getCacheKey(role));
+    storagePath = await ensureStorageState(role);
+    state = await tryReadState(storagePath);
+  }
+
+  if (!state) {
+    throw new Error(`Unable to read storage state for role "${role}".`);
+  }
+
+  const cookie = Array.isArray(state.cookies)
     ? state.cookies.find((c: { name?: string }) => c.name === cookieName)
     : undefined;
   return cookie?.value;
@@ -99,4 +110,21 @@ function extractCsrf(html: string): string | undefined {
 
 function stripTrailingSlash(value: string): string {
   return value.replace(/\/+$/, '');
+}
+
+function getCacheKey(role: ApiUserRole): string {
+  return `${config.testEnv}-${role}`;
+}
+
+async function tryReadState(storagePath: string): Promise<{ cookies?: Array<{ name?: string }> } | undefined> {
+  try {
+    const raw = await fs.readFile(storagePath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') {
+      return parsed;
+    }
+  } catch {
+    // swallow and signal failure
+  }
+  return undefined;
 }

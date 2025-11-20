@@ -6,6 +6,7 @@ import { MockRpxTranslatePipe } from './../../shared/test/mock-rpx-translate.pip
 import { InfoMessageComponent } from './info-message.component';
 
 @Component({
+  standalone: false,
   template: '<exui-info-message [type]="type" [message]="message"></exui-info-message>'
 })
 class WrapperComponent {

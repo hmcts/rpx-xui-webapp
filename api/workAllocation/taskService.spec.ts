@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { HttpMock } from '../common/httpMock';
 import { http } from '../lib/http';
@@ -12,6 +11,8 @@ import * as util from './util';
 import { ASSIGNED_TASKS, JUDICIAL_MY_TASKS } from './constants/mock.data';
 import { TASK_ROLES as TASK_ROLES_MOCK } from './constants/task-roles.mock.data';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('workAllocation.taskService', () => {

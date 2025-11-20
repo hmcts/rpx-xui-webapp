@@ -92,7 +92,8 @@ describe('HearingTimingSectionComponent', () => {
         participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -116,7 +117,8 @@ describe('HearingTimingSectionComponent', () => {
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        hearingUnavailabilityDatesConfirmed: true
+        hearingUnavailabilityDatesConfirmed: true,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -139,7 +141,8 @@ describe('HearingTimingSectionComponent', () => {
         participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -167,7 +170,8 @@ describe('HearingTimingSectionComponent', () => {
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: true,
-        hearingUnavailabilityDatesConfirmed: true
+        hearingUnavailabilityDatesConfirmed: true,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -197,7 +201,8 @@ describe('HearingTimingSectionComponent', () => {
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: true,
-        hearingUnavailabilityDatesConfirmed: false
+        hearingUnavailabilityDatesConfirmed: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();

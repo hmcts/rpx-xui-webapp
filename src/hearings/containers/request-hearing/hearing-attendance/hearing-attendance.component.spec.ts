@@ -222,7 +222,8 @@ describe('HearingAttendanceComponent', () => {
         participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.prepareHearingRequestData();
@@ -307,7 +308,8 @@ describe('HearingAttendanceComponent', () => {
         participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -365,7 +367,8 @@ describe('HearingAttendanceComponent', () => {
         participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -391,7 +394,8 @@ describe('HearingAttendanceComponent', () => {
         participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -424,7 +428,8 @@ describe('HearingAttendanceComponent', () => {
         participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.ngOnInit();
@@ -445,7 +450,8 @@ describe('HearingAttendanceComponent', () => {
         participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false
       }
     };
     component.initialiseFromHearingValuesForAmendments();

@@ -329,4 +329,10 @@ export class HearingsUtils {
     }
     return 'noDate';
   }
+
+  static hasListingCommentsChange(listingCommentsinput1: string | undefined, listingCommentsinput2: string | undefined) {
+    const listingComments1 = listingCommentsinput1 ? listingCommentsinput1.trim() : '';
+    const listingComments2 = listingCommentsinput2 ? listingCommentsinput2.trim() : '';
+    return listingComments1 !== listingComments2;
+  }
 }

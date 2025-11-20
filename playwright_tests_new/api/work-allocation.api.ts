@@ -8,6 +8,7 @@ test.describe('Work allocation (read-only)', () => {
   let cachedLocationId: string | undefined;
   let userId: string | undefined;
   let sampleTaskId: string | undefined;
+  let sampleMyTaskId: string | undefined;
 
   test.beforeAll(async ({ apiClient }) => {
     const userRes = await apiClient.get<any>('api/user/details', { throwOnError: false });
@@ -22,10 +23,15 @@ test.describe('Work allocation (read-only)', () => {
       cachedLocationId = listResponse.data[0]?.id;
     }
 
-    // seed one task id for action tests
+    // seed tasks for action tests
     const taskRes = await fetchFirstTask(apiClient, cachedLocationId);
     if (taskRes?.id) {
       sampleTaskId = taskRes.id;
+    }
+
+    const myTaskRes = await fetchFirstTask(apiClient, cachedLocationId, ['assigned'], 'MyTasks');
+    if (myTaskRes?.id) {
+      sampleMyTaskId = myTaskRes.id;
     }
   });
 
@@ -146,6 +152,21 @@ test.describe('Work allocation (read-only)', () => {
     });
   });
 
+  test.describe('my-work dashboards', () => {
+    const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
+    endpoints.forEach((endpoint) => {
+      test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
+        await ensureStorageState('solicitor');
+        const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+        const response = await apiClient.get(endpoint, {
+          headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
+          throwOnError: false
+        });
+        expect([200, 401, 403, 404]).toContain(response.status);
+      });
+    });
+  });
+
   test.describe('task actions (negative)', () => {
     const actions = ['claim', 'unclaim', 'assign', 'unassign', 'complete', 'cancel'] as const;
     const taskId = () => sampleTaskId ?? '00000000-0000-0000-0000-000000000000';
@@ -183,6 +204,34 @@ test.describe('Work allocation (read-only)', () => {
           headers: {
             'X-XSRF-TOKEN': xsrf
           },
+          throwOnError: false
+        });
+        expect([200, 204, 400, 403, 404, 409]).toContain(response.status);
+      });
+    });
+  });
+
+  test.describe('task actions (happy-path attempt)', () => {
+    const id = (fallback?: string) => fallback ?? '00000000-0000-0000-0000-000000000000';
+
+    const positiveActions: Array<{ action: string; taskId: () => string }> = [
+      { action: 'claim', taskId: () => id(sampleTaskId) },
+      { action: 'unclaim', taskId: () => id(sampleMyTaskId ?? sampleTaskId) },
+      { action: 'complete', taskId: () => id(sampleMyTaskId ?? sampleTaskId) },
+      { action: 'assign', taskId: () => id(sampleTaskId) },
+      { action: 'unassign', taskId: () => id(sampleMyTaskId ?? sampleTaskId) },
+      { action: 'cancel', taskId: () => id(sampleMyTaskId ?? sampleTaskId) }
+    ];
+
+    positiveActions.forEach(({ action, taskId }) => {
+      test(`${action} returns allowed status with XSRF`, async ({ apiClient }) => {
+        await ensureStorageState('solicitor');
+        const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+        expect(xsrf).toBeDefined();
+
+        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+          data: {},
+          headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
           throwOnError: false
         });
         expect([200, 204, 400, 403, 404, 409]).toContain(response.status);
@@ -230,6 +279,13 @@ test.describe('Work allocation (read-only)', () => {
       });
       expect([200, 400, 403]).toContain(response.status);
     });
+
+    test('roles category endpoint responds', async ({ apiClient }) => {
+      const response = await apiClient.get('workallocation/exclusion/rolesCategory', {
+        throwOnError: false
+      });
+      expect([200, 401, 403, 404]).toContain(response.status);
+    });
   });
 });
 
@@ -265,10 +321,15 @@ function expectTaskListPayload(payload: any) {
   }
 }
 
-async function fetchFirstTask(apiClient: any, locationId?: string): Promise<any | undefined> {
-  const body = buildTaskSearchRequest('AllWork', {
+async function fetchFirstTask(
+  apiClient: any,
+  locationId?: string,
+  states: string[] = ['assigned', 'unassigned'],
+  view: 'AllWork' | 'MyTasks' = 'AllWork'
+): Promise<any | undefined> {
+  const body = buildTaskSearchRequest(view, {
     locations: locationId ? [locationId] : [],
-    states: ['assigned', 'unassigned'],
+    states,
     searchBy: 'caseworker',
     pageSize: 5
   });

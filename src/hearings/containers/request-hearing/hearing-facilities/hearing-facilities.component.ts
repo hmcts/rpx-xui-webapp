@@ -14,6 +14,7 @@ import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-facilities',
   templateUrl: './hearing-facilities.component.html'
 })

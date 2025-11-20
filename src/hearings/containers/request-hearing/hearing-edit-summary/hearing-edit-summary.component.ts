@@ -38,6 +38,7 @@ import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.mo
 import { HearingWindowModel } from '../../../models/hearingWindow.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-edit-summary',
   templateUrl: './hearing-edit-summary.component.html'
 })

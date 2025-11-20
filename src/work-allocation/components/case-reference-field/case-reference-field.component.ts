@@ -3,6 +3,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-reference-field',
   templateUrl: './case-reference-field.component.html',
   styleUrls: ['case-reference-field.component.scss']
@@ -20,13 +21,13 @@ export class CaseReferenceFieldComponent implements OnChanges {
     let href: string;
     if (this.caseReference) {
       // Get rid of the spaces in the caseReference.
-      const caseId = this.caseReference;
-      const jurisdictionId = this.jurisdiction;
-      const caseTypeId = this.caseType;
-      if (caseId && jurisdictionId && caseTypeId) {
+      if (this.caseReference && this.jurisdiction && this.caseType) {
+        const caseId = encodeURIComponent(this.caseReference);
+        const jurisdictionId = encodeURIComponent(this.jurisdiction);
+        const caseTypeId = encodeURIComponent(this.caseType);
         href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
-      } else if (caseId) {
-        href = `${AppConstants.CASE_DETAILS_URL}${caseId}`;
+      } else if (this.caseReference) {
+        href = `${AppConstants.CASE_DETAILS_URL}${this.caseReference}`;
       }
     }
     this.pHref = href;

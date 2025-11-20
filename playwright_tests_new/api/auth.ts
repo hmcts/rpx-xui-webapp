@@ -24,6 +24,11 @@ export async function ensureStorageState(role: ApiUserRole): Promise<string> {
   const storagePath = await storagePromises.get(cacheKey)!;
   const state = await tryReadState(storagePath);
   if (!state) {
+    try {
+      await fs.unlink(storagePath);
+    } catch {
+      // ignore unlink errors
+    }
     storagePromises.set(cacheKey, createStorageState(role));
     return storagePromises.get(cacheKey)!;
   }

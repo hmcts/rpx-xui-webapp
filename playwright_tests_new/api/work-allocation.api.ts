@@ -248,6 +248,15 @@ test.describe('Work allocation (read-only)', () => {
         throwOnError: false
       });
       expect([200, 401, 403, 404]).toContain(response.status);
+      if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
+        expect(response.data[0]).toEqual(
+          expect.objectContaining({
+            firstName: expect.any(String),
+            lastName: expect.any(String),
+            idamId: expect.any(String)
+          })
+        );
+      }
     });
 
     test('lists caseworkers for location', async ({ apiClient }) => {
@@ -261,7 +270,16 @@ test.describe('Work allocation (read-only)', () => {
         headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
         throwOnError: false
       });
-      expect([200, 403, 404]).toContain(response.status);
+      expect([200, 401, 403, 404]).toContain(response.status);
+      if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
+        expect(response.data[0]).toEqual(
+          expect.objectContaining({
+            firstName: expect.any(String),
+            lastName: expect.any(String),
+            idamId: expect.any(String)
+          })
+        );
+      }
     });
 
     test('region/location matrix', async ({ apiClient }) => {

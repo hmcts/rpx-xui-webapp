@@ -29,5 +29,7 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
 - Node shell (`node-app-endpoints.api.ts`) verifies `auth/isAuthenticated` true/false behaviour, `/api/user/details` payload shape (user info, role assignments, timeout metadata) and feature flag responses, not just status codes.
 - CCD and case-share suites check required keys/arrays (jurisdictions, work-basket inputs, profile, organisations/users/cases/assignments) with `expect.objectContaining` schema checks.
 - Postcode lookup asserts result/header structure and sample DPA fields when present.
-- Work Allocation covers locations (list/id), catalogues (task names/types of work), task search for `MyTasks`/`AvailableTasks`/`AllWork`, and negative task actions (unauthenticated / missing XSRF / guarded statuses for claim/unclaim/assign/unassign/complete/cancel).
+- Work Allocation covers locations (list/id), catalogues (task names/types of work), task search for `MyTasks`/`AvailableTasks`/`AllWork`, my-work dashboards, negative task actions (unauthenticated / missing XSRF / guarded statuses for claim/unclaim/assign/unassign/complete/cancel), and basic caseworker/person endpoints.
+- Global search and ref-data: `/api/globalSearch/services` + `/api/globalSearch/results`, WA/staff supported jurisdictions, and locations endpoint with auth/XSRF where needed.
 - Every spec captures the underlying API calls via `ApiClient` so failures include the request/response log for debugging.
+- Global search and ref-data: `/api/globalSearch/services` + `/api/globalSearch/results`, `/data/internal/searchCases` proxy smoke, WA/staff supported jurisdictions, locations, staff-ref-data, and role-access/AM smoke checks.

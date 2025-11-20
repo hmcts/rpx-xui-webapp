@@ -10,9 +10,9 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { HEARING_VIEW_EDIT_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-edit-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
-import { Section } from '../../../../hearings/models/section';
-import { ScreenNavigationModel } from '../../../../hearings/models/screenNavigation.model';
-import { HearingResponseError } from '../../../../hearings/models/hearingResponseError.model';
+import { Section } from '../../../models/section';
+import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
+import { HearingResponseError } from '../../../models/hearingResponseError.model';
 
 @Component({
   standalone: false,

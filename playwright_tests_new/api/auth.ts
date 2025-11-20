@@ -65,7 +65,11 @@ async function createStorageState(role: ApiUserRole): Promise<string> {
     const manageCaseHost = new URL(baseUrl).host;
 
     await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
-    await page.waitForURL('**/login**', { timeout: 60_000 });
+    try {
+      await page.waitForURL('**/login**', { timeout: 60_000 });
+    } catch {
+      // ignore – selector wait below will fail if login page never appears
+    }
     await page.waitForSelector('#username', { timeout: 60_000 });
 
     await page.fill('#username', credentials.username);

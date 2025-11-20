@@ -21,7 +21,13 @@ export async function ensureStorageState(role: ApiUserRole): Promise<string> {
   if (!storagePromises.has(cacheKey)) {
     storagePromises.set(cacheKey, createStorageState(role));
   }
-  return storagePromises.get(cacheKey)!;
+  const storagePath = await storagePromises.get(cacheKey)!;
+  const state = await tryReadState(storagePath);
+  if (!state) {
+    storagePromises.set(cacheKey, createStorageState(role));
+    return storagePromises.get(cacheKey)!;
+  }
+  return storagePath;
 }
 
 export async function getStoredCookie(role: ApiUserRole, cookieName: string): Promise<string | undefined> {

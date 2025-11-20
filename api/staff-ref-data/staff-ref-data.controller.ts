@@ -9,7 +9,7 @@ const StaffRefDataService = require('./staff-ref-data.service');
 // Use below line to use real staff ref API
 const staffRefDataService = new StaffRefDataService(new RealStaffRefDataAPI());
 
-export async function getFilteredUsers(req: any, res: Response, next: NextFunction) {
+export async function getFilteredUsers(req, res: Response, next: NextFunction) {
   staffRefDataService.getFilteredUsers(req, res, next);
 }
 

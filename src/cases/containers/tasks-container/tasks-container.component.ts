@@ -9,7 +9,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
-import { getAssigneeName } from '../../../work-allocation/utils';
+import { getAssigneeNameFromList } from '../../../work-allocation/utils';
 
 @Component({
   selector: 'exui-tasks-container',
@@ -77,7 +77,7 @@ export class TasksContainerComponent implements OnInit {
   private getAssignedNamesForTasks(): Observable<Task[]> {
     const assignedJudicialUsers: string[] = [];
     this.tasks.forEach((task) => {
-      task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+      task.assigneeName = getAssigneeNameFromList(this.caseworkers, task.assignee);
       if (!task.assigneeName && task.assignee) {
         assignedJudicialUsers.push(task.assignee);
       }

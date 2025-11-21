@@ -121,10 +121,17 @@ export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], ses
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
 };
 
-export const getAssigneeName = (caseworkers: any[], assignee: string): string => {
+export const getAssigneeNameFromList = (caseworkers: any[], assignee: string): string => {
   if (assignee && caseworkers && caseworkers.some((cw) => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
+  }
+  return null;
+};
+
+export const getAssigneeName = (caseworker: Caseworker, assignee: string): string => {
+  if (assignee && caseworker) {
+    return `${caseworker.firstName} ${caseworker.lastName}`;
   }
   return null;
 };

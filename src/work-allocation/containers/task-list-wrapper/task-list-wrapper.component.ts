@@ -27,7 +27,7 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeNameFromList, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   templateUrl: 'task-list-wrapper.component.html'
@@ -414,7 +414,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach((task) => {
-        task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+        task.assigneeName = getAssigneeNameFromList(this.caseworkers, task.assignee);
         if (!task.assigneeName && task.assignee) {
           assignedJudicialUsers.push(task.assignee);
         }

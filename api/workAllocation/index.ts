@@ -571,6 +571,73 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
   }
 }
 
+export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const services = req.body.services;
+    const idamIds = req.body.idamIds;
+    let idamUsers = [];
+    let firstEntry = true;
+    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if cache exists, use it
+        firstEntry = false;
+        idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
+        // note: the below line is only to ensure all users are for relevant services
+        idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
+        res.send(idamUsers).status(200);
+      }
+      // always update the cache after getting the cache if needed
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
+        // note: the below line is only to ensure all users are for relevant services
+        idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
+        res.send(idamUsers).status(200);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserByIdamId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const idamId = req.body.idamId;
+    let idamUser = null;
+    let firstEntry = true;
+    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if cache exists, use it
+        firstEntry = false;
+        idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        // check for services not needed as only one user is being fetched
+        // Note - if needed in future can add check here
+        res.send(idamUser).status(200);
+      }
+      // always update the cache after getting the cache if needed
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        res.send(idamUser).status(200);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 /**
  * getNewUsersByServiceName
  */

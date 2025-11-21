@@ -82,8 +82,8 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
-                    task: { task: mockTasks[0] }, caseworkers: []
+                  taskAndCaseworker: {
+                    task: { task: mockTasks[0] }, caseworker: {}
                   },
                   ...TaskActionConstants.Unassign
                 }
@@ -300,8 +300,8 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                  taskAndCaseworker: {
+                    task: { task: mockTask[0] }, caseworker: {}
                   },
                   ...TaskActionConstants.Unassign
                 }
@@ -382,8 +382,8 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                  taskAndCaseworker: {
+                    task: { task: mockTask[0] }, caseworker: {}
                   },
                   ...TaskActionConstants.Unassign
                 }
@@ -458,8 +458,8 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                  taskAndCaseworker: {
+                    task: { task: mockTask[0] }, caseworker: {}
                   },
                   ...TaskActionConstants.Unassign
                 }
@@ -533,8 +533,8 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                  taskAndCaseworker: {
+                    task: { task: mockTask[0] }, caseworker: {}
                   },
                   ...TaskActionConstants.Unassign
                 }

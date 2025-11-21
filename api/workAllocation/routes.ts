@@ -20,7 +20,9 @@ import {
   searchTask,
   showAllocateRoleLink,
   getTaskNames,
-  getUsersByServiceName
+  getUsersByServiceName,
+  getUsersByIdamIds,
+  getUserByIdamId
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';
@@ -31,6 +33,8 @@ const router = Router({ mergeParams: true });
 router.use(authInterceptor);
 
 router.post('/caseworker/getUsersByServiceName', getUsersByServiceName);
+router.post('/caseworker/getUsersByIdamIds', getUsersByIdamIds);
+router.post('/caseworker/getUserByIdamId', getUserByIdamId);
 router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService);
 router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);
 router.use('/caseworker/service/:serviceId', getCaseWorkersForService);

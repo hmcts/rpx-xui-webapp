@@ -179,26 +179,26 @@ describe('HMC Hearings API', () => {
     });
 
     it('should handle submitHearingRequest validation error', async () => {
-      req.body = { invalid: 'data' };
+      req.body = { invalid: 'data', caseDetails: { caseDeepLink: '1234123412341234' } };
       const error = { status: 400, message: 'Invalid request', data: undefined };
 
       handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error: (400) : undefined');
+      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error for caseID:: 1234123412341234: (400) : undefined');
       expect(next).to.have.been.calledWith(error);
     });
 
     it('should handle submitHearingRequest server error', async () => {
-      req.body = { ...HEARING_REQUEST_RESULTS[0] };
+      req.body = { ...HEARING_REQUEST_RESULTS[0], caseDetails: { caseDeepLink: '1234123412341234' } };
       const error = { status: 500, message: 'Server error', data: undefined };
 
       handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error: (500) : undefined');
+      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error for caseID:: 1234123412341234: (500) : undefined');
       expect(next).to.have.been.calledWith(error);
     });
   });

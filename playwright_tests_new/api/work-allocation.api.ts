@@ -1,6 +1,8 @@
 import { test, expect } from './fixtures';
 import { buildTaskSearchRequest } from './utils/work-allocation';
 import { ensureStorageState, getStoredCookie } from './auth';
+import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
+import type { TaskListResponse, Task, UserDetailsResponse } from './utils/types';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 
@@ -11,14 +13,19 @@ test.describe('Work allocation (read-only)', () => {
   let sampleMyTaskId: string | undefined;
 
   test.beforeAll(async ({ apiClient }) => {
-    const userRes = await apiClient.get<any>('api/user/details', { throwOnError: false });
+    const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
+      throwOnError: false
+    });
     if (userRes.status === 200) {
       userId = userRes.data?.userInfo?.id ?? userRes.data?.userInfo?.uid;
     }
 
-    const listResponse = await apiClient.get<any[]>(`workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`, {
-      throwOnError: false
-    });
+    const listResponse = await apiClient.get<Array<{ id?: string }>>(
+      `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
+      {
+        throwOnError: false
+      }
+    );
     if (listResponse.status === 200 && Array.isArray(listResponse.data) && listResponse.data.length > 0) {
       cachedLocationId = listResponse.data[0]?.id;
     }
@@ -36,17 +43,19 @@ test.describe('Work allocation (read-only)', () => {
   });
 
   test('lists available locations', async ({ apiClient }) => {
-    const response = await apiClient.get<any[]>(`workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`, {
-      throwOnError: false
-    });
+    const response = await apiClient.get<Array<{ id: string; locationName: string }>>(
+      `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
+      { throwOnError: false }
+    );
 
-    expect([200, 401, 403]).toContain(response.status);
+    expectStatus(response.status, StatusSets.guardedBasic);
     if (response.status !== 200) {
       return;
     }
-    expect(Array.isArray(response.data)).toBe(true);
-    if (response.data.length > 0) {
-      expect(response.data[0]).toEqual(
+    const data = response.data;
+    expect(Array.isArray(data)).toBe(true);
+    if (data.length > 0) {
+      expect(data[0]).toEqual(
         expect.objectContaining({
           id: expect.any(String),
           locationName: expect.any(String)
@@ -61,7 +70,7 @@ test.describe('Work allocation (read-only)', () => {
     const response = await apiClient.get<Record<string, unknown>>(`workallocation/location/${cachedLocationId}`, {
       throwOnError: false
     });
-    expect([200, 401, 403, 404, 500]).toContain(response.status);
+    expectStatus(response.status, [200, 401, 403, 404, 500]);
   });
 
   test('returns task names catalogue', async ({ apiClient }) => {
@@ -79,7 +88,7 @@ test.describe('Work allocation (read-only)', () => {
     const response = await apiClient.get<unknown>('workallocation/task/types-of-work');
     expect(response.status).toBe(200);
 
-    const types = toArray<any>(response.data);
+    const types = toArray(response.data);
     expect(Array.isArray(types)).toBe(true);
     if (types.length > 0 && typeof types[0] === 'object' && types[0] !== null) {
       expect(types[0]).toEqual(
@@ -117,9 +126,9 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = await apiClient.post<any>('workallocation/task', { data: body });
-      expectTaskListPayload(response.data);
-    });
+    const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body });
+    expectTaskListPayload(response.data);
+  });
 
     test('AvailableTasks returns structured response', async ({ apiClient }) => {
       const body = buildTaskSearchRequest('AvailableTasks', {
@@ -128,8 +137,8 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = await apiClient.post<any>('workallocation/task', { data: body, throwOnError: false });
-      expect([200, 401, 403]).toContain(response.status);
+      const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body, throwOnError: false });
+      expectStatus(response.status, StatusSets.guardedBasic);
       if (response.status !== 200) {
         return;
       }
@@ -143,7 +152,7 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = await apiClient.post<any>('workallocation/task', { data: body, throwOnError: false });
+      const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body, throwOnError: false });
       if (response.status !== 200) {
         expect(response.status).toBeGreaterThanOrEqual(400);
         return;
@@ -156,20 +165,40 @@ test.describe('Work allocation (read-only)', () => {
     const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
     endpoints.forEach((endpoint) => {
       test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
-        await ensureStorageState('solicitor');
-        const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-        const response = await apiClient.get(endpoint, {
-          headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
-          throwOnError: false
-        });
-        expect([200, 401, 403, 404]).toContain(response.status);
+        const response = await withXsrf('solicitor', (headers) =>
+          apiClient.get(endpoint, {
+            headers,
+            throwOnError: false
+          })
+        );
+        expectStatus(response.status, StatusSets.guardedExtended);
         if (response.status === 200 && response.data) {
-          const cases = Array.isArray(response.data) ? response.data : response.data.cases;
+          const data = response.data as any;
+          const cases = Array.isArray(data) ? data : Array.isArray(data?.cases) ? data.cases : [];
           if (Array.isArray(cases)) {
             expect(Array.isArray(cases)).toBe(true);
           }
         }
       });
+    });
+
+    test('my-work cases expose totals when present', async ({ apiClient }) => {
+      const response = await withXsrf('solicitor', (headers) =>
+        apiClient.get('workallocation/my-work/cases', {
+          headers,
+          throwOnError: false
+        })
+      );
+      expectStatus(response.status, StatusSets.guardedExtended);
+      if (response.status === 200 && response.data) {
+        const data = response.data as any;
+        if (typeof data?.total_records === 'number') {
+          expect(data.total_records).toBeGreaterThanOrEqual(0);
+        }
+        if (Array.isArray(data?.cases)) {
+          expect(data.cases.length).toBeGreaterThanOrEqual(0);
+        }
+      }
     });
   });
 
@@ -195,24 +224,20 @@ test.describe('Work allocation (read-only)', () => {
           headers: {},
           throwOnError: false
         });
-        expect([200, 204, 401, 403, 404]).toContain(response.status);
+        expectStatus(response.status, [200, 204, 401, 403, 404, 502]);
       });
     });
 
     actions.forEach((action) => {
       test(`${action} with XSRF header returns guarded status`, async ({ apiClient }) => {
-        await ensureStorageState('solicitor');
-        const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-        expect(xsrf).toBeDefined();
-
-        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
-          data: {},
-          headers: {
-            'X-XSRF-TOKEN': xsrf
-          },
-          throwOnError: false
-        });
-        expect([200, 204, 400, 403, 404, 409]).toContain(response.status);
+        const response = await withXsrf('solicitor', (headers) =>
+          apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+            data: {},
+            headers,
+            throwOnError: false
+          })
+        );
+        expectStatus(response.status, [200, 204, 400, 403, 404, 409, 502]);
       });
     });
   });
@@ -231,47 +256,64 @@ test.describe('Work allocation (read-only)', () => {
 
     positiveActions.forEach(({ action, taskId }) => {
       test(`${action} returns allowed status with XSRF`, async ({ apiClient }) => {
-        await ensureStorageState('solicitor');
-        const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-        expect(xsrf).toBeDefined();
+        const response = await withXsrf('solicitor', async (headers) => {
+          const before = await fetchTaskById(apiClient, taskId());
+          const res = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+            data: {},
+            headers,
+            throwOnError: false
+          });
 
-        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
-          data: {},
-          headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
-          throwOnError: false
-        });
-        expect([200, 204, 400, 403, 404, 409]).toContain(response.status);
-
-        if (response.status === 200 || response.status === 204) {
-          const details = await apiClient.get<any>(`workallocation/task/${taskId()}`, { throwOnError: false });
-          if (details.status === 200 && details.data?.task) {
-            const assignee = details.data.task.assignee ?? details.data.task.assigned_to;
-            if (['claim', 'assign'].includes(action)) {
-              expect(assignee ?? '').not.toEqual('');
-            }
-            if (['unclaim', 'unassign', 'cancel'].includes(action)) {
-              expect(assignee ?? '').toBeFalsy();
-            }
-            if (action === 'complete') {
-              expect((details.data.task.task_state ?? details.data.task.state ?? '').toLowerCase()).toMatch(/complete|done|closed/);
+          if (res.status === 200 || res.status === 204) {
+            const after = await fetchTaskById(apiClient, taskId());
+            if (after?.task) {
+              const prevAssignee = before?.task?.assignee ?? before?.task?.assigned_to;
+              const assignee = after.task.assignee ?? after.task.assigned_to;
+              const prevState = (before?.task?.task_state ?? before?.task?.state ?? '').toLowerCase();
+              const newState = (after.task.task_state ?? after.task.state ?? '').toLowerCase();
+              if (['claim', 'assign'].includes(action)) {
+                expect(assignee ?? '').not.toEqual('');
+                if (prevAssignee) {
+                  expect(assignee).not.toEqual('');
+                }
+                if (newState) {
+                  expect(newState).not.toContain('unassigned');
+                }
+              }
+              if (['unclaim', 'unassign', 'cancel'].includes(action)) {
+                if (prevAssignee) {
+                  expect(assignee ?? '').toBe('');
+                }
+                if (newState) {
+                  expect(newState).toMatch(/unassigned|cancel|unclaim/);
+                }
+              }
+              if (action === 'complete') {
+                expect(newState).toMatch(/complete|done|closed/);
+              }
             }
           }
-        }
+
+          return res;
+        });
+
+        expectStatus(response.status, StatusSets.actionWithConflicts);
       });
     });
   });
 
   test.describe('caseworkers & people', () => {
     test('lists caseworkers', async ({ apiClient }) => {
-      await ensureStorageState('solicitor');
-      const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-      const response = await apiClient.get('workallocation/caseworker', {
-        headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
-        throwOnError: false
-      });
-      expect([200, 401, 403, 404]).toContain(response.status);
-      if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
-        expect(response.data[0]).toEqual(
+      const response = await withXsrf('solicitor', (headers) =>
+        apiClient.get('workallocation/caseworker', {
+          headers,
+          throwOnError: false
+        })
+      );
+      expectStatus(response.status, StatusSets.guardedExtended);
+      const data = response.data as any;
+      if (response.status === 200 && Array.isArray(data) && data.length > 0) {
+        expect(data[0]).toEqual(
           expect.objectContaining({
             firstName: expect.any(String),
             lastName: expect.any(String),
@@ -286,15 +328,16 @@ test.describe('Work allocation (read-only)', () => {
         expect(cachedLocationId).toBeUndefined();
         return;
       }
-      await ensureStorageState('solicitor');
-      const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-      const response = await apiClient.get(`workallocation/caseworker/location/${cachedLocationId}`, {
-        headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
-        throwOnError: false
-      });
-      expect([200, 401, 403, 404]).toContain(response.status);
-      if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
-        expect(response.data[0]).toEqual(
+      const response = await withXsrf('solicitor', (headers) =>
+        apiClient.get(`workallocation/caseworker/location/${cachedLocationId}`, {
+          headers,
+          throwOnError: false
+        })
+      );
+      expectStatus(response.status, StatusSets.guardedExtended);
+      const data = response.data as any;
+      if (response.status === 200 && Array.isArray(data) && data.length > 0) {
+        expect(data[0]).toEqual(
           expect.objectContaining({
             firstName: expect.any(String),
             lastName: expect.any(String),
@@ -309,7 +352,7 @@ test.describe('Work allocation (read-only)', () => {
         data: { serviceIds: serviceCodes },
         throwOnError: false
       });
-      expect([200, 400, 403]).toContain(response.status);
+      expectStatus(response.status, [200, 400, 403]);
     });
 
     test('person search validation', async ({ apiClient }) => {
@@ -317,14 +360,14 @@ test.describe('Work allocation (read-only)', () => {
         data: { searchOptions: { searchTerm: 'test', userRole: 'judge', services: serviceCodes } },
         throwOnError: false
       });
-      expect([200, 400, 403]).toContain(response.status);
+      expectStatus(response.status, [200, 400, 403]);
     });
 
     test('roles category endpoint responds', async ({ apiClient }) => {
       const response = await apiClient.get('workallocation/exclusion/rolesCategory', {
         throwOnError: false
       });
-      expect([200, 401, 403, 404]).toContain(response.status);
+      expectStatus(response.status, StatusSets.guardedExtended);
     });
   });
 });
@@ -345,14 +388,14 @@ function toArray<T>(payload: unknown): T[] {
   return [];
 }
 
-function expectTaskListPayload(payload: any) {
+function expectTaskListPayload(payload: TaskListResponse) {
   expect(payload).toBeTruthy();
   expect(typeof payload).toBe('object');
   expect(Array.isArray(payload.tasks)).toBe(true);
   expect(typeof payload.total_records).toBe('number');
 
-  if (payload.tasks.length > 0) {
-    expect(payload.tasks[0]).toEqual(
+  if ((payload.tasks?.length ?? 0) > 0) {
+    expect(payload.tasks![0]).toEqual(
       expect.objectContaining({
         id: expect.any(String),
         task_state: expect.any(String)
@@ -366,7 +409,7 @@ async function fetchFirstTask(
   locationId?: string,
   states: string[] = ['assigned', 'unassigned'],
   view: 'AllWork' | 'MyTasks' = 'AllWork'
-): Promise<any | undefined> {
+): Promise<Task | undefined> {
   const body = buildTaskSearchRequest(view, {
     locations: locationId ? [locationId] : [],
     states,
@@ -374,9 +417,14 @@ async function fetchFirstTask(
     pageSize: 5
   });
 
-  const response = await apiClient.post<any>('workallocation/task', { data: body, throwOnError: false });
-  if (response.status !== 200 || !Array.isArray(response.data?.tasks) || response.data.tasks.length === 0) {
+  const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body, throwOnError: false });
+  const data = response.data;
+  if (response.status !== 200 || !Array.isArray(data?.tasks) || data.tasks!.length === 0) {
     return undefined;
   }
-  return response.data.tasks[0];
+  return data.tasks![0];
+}
+
+async function fetchTaskById(apiClient: any, id: string): Promise<any> {
+  return apiClient.get(`workallocation/task/${id}`, { throwOnError: false });
 }

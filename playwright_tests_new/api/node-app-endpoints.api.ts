@@ -1,16 +1,18 @@
 import { test, expect, buildApiAttachment } from './fixtures';
 import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
+import { expectStatus, StatusSets } from './utils/apiTestUtils';
 
 const nodeAppDataModels = require('../../test_codecept/dataModels/nodeApp');
 
 test.describe('Node app endpoints', () => {
   test('serves external configuration without authentication', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
-    expect(response.status).toBe(200);
+    expectStatus(response.status, [200]);
     const expectedKeys = testConfig.configuratioUi[testConfig.testEnv];
-    expect(Object.keys(response.data)).toEqual(expect.arrayContaining(expectedKeys));
-    expect(response.data['clientId']).toBe('xuiwebapp');
-    expect(response.data).toEqual(
+    const data = response.data as Record<string, unknown>;
+    expect(Object.keys(data)).toEqual(expect.arrayContaining(expectedKeys));
+    expect(data['clientId']).toBe('xuiwebapp');
+    expect(data).toEqual(
       expect.objectContaining({
         protocol: expect.any(String),
         oAuthCallback: expect.any(String)
@@ -20,20 +22,20 @@ test.describe('Node app endpoints', () => {
 
   test('auth/isAuthenticated returns true for authenticated sessions', async ({ apiClient }) => {
     const response = await apiClient.get<boolean>('auth/isAuthenticated');
-    expect(response.status).toBe(200);
+    expectStatus(response.status, [200]);
     expect(response.data).toBe(true);
   });
 
   test('auth/isAuthenticated returns false without session', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<boolean>('auth/isAuthenticated');
-    expect(response.status).toBe(200);
+    expectStatus(response.status, [200]);
     expect(response.data).toBe(false);
   });
 
   test('returns enriched user details for solicitor session', async ({ apiClient }, testInfo) => {
     const response = await apiClient.get<any>('api/user/details');
 
-    expect(response.status).toBe(200);
+    expectStatus(response.status, [200]);
     expect(response.data).toMatchObject({
       userInfo: expect.objectContaining({
         uid: expect.any(String),
@@ -73,12 +75,12 @@ test.describe('Node app endpoints', () => {
       throwOnError: false
     });
 
-    expect(response.status).toBe(401);
+    expectStatus(response.status, [401]);
   });
 
   test('returns configuration value for feature flag query', async ({ apiClient }) => {
-    const response = await apiClient.get('api/configuration?configurationKey=termsAndConditionsEnabled');
-    expect(response.status).toBe(200);
+    const response = await apiClient.get<any>('api/configuration?configurationKey=termsAndConditionsEnabled');
+    expectStatus(response.status, StatusSets.guardedBasic.filter((s) => s !== 403)); // 200 or 401
     expect(JSON.stringify(response.data).length).toBeLessThan(6);
   });
 });

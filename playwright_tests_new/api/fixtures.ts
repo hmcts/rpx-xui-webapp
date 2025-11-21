@@ -1,4 +1,5 @@
 import { test as base, expect, request } from '@playwright/test';
+import { promises as fs } from 'node:fs';
 import type { Logger } from 'winston';
 import {
   ApiClient as PlaywrightApiClient,
@@ -77,14 +78,34 @@ async function createNodeApiClient(
   entries: ApiLogEntry[]
 ): Promise<PlaywrightApiClient> {
   const storageState = role === 'anonymous' ? undefined : await ensureStorageState(role);
-  const context = await request.newContext({
-    baseURL: baseUrl,
-    storageState,
-    ignoreHTTPSErrors: true,
-    extraHTTPHeaders: {
-      'Content-Type': 'application/json'
+  const buildContext = async (statePath?: string) =>
+    request.newContext({
+      baseURL: baseUrl,
+      storageState: statePath,
+      ignoreHTTPSErrors: true,
+      extraHTTPHeaders: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+  let context;
+  try {
+    context = await buildContext(role === 'anonymous' ? undefined : storageState);
+  } catch (error) {
+    const message = (error as Error)?.message ?? '';
+    const statePath = role === 'anonymous' ? undefined : storageState;
+    if (statePath && /Unexpected end of JSON input/i.test(message)) {
+      try {
+        await fs.unlink(statePath);
+      } catch {
+        // ignore
+      }
+      const rebuiltPath = await ensureStorageState(role);
+      context = await buildContext(rebuiltPath);
+    } else {
+      throw error;
     }
-  });
+  }
 
   return new PlaywrightApiClient({
     baseUrl,

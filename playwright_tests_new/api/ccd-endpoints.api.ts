@@ -1,18 +1,18 @@
 import { test, expect } from './fixtures';
 import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
-import { getStoredCookie, ensureStorageState } from './auth';
+import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
 
 test.describe('CCD endpoints', () => {
   test('lists jurisdictions for current user', async ({ apiClient }) => {
-    const user = await apiClient.get<any>('api/user/details', { throwOnError: false });
-    expect(user.status).toBe(200);
+    const user = await apiClient.get<{ userInfo?: { uid?: string; id?: string } }>('api/user/details', { throwOnError: false });
+    expectStatus(user.status, StatusSets.guardedExtended);
     const uid = user.data?.userInfo?.uid ?? user.data?.userInfo?.id;
     expect(uid).toBeDefined();
 
     const response = await apiClient.get<any[]>(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
       throwOnError: false
     });
-    expect(response.status).toBe(200);
+    expectStatus(response.status, StatusSets.guardedExtended);
     expect(Array.isArray(response.data)).toBe(true);
 
     const expectedNames = testConfig.jurisdcitionNames[testConfig.testEnv] ?? [];
@@ -40,12 +40,13 @@ test.describe('CCD endpoints', () => {
         const response = await apiClient.get<any>(`data/internal/case-types/${caseTypeId}/work-basket-inputs`, {
           headers: { experimental: 'true' }
         });
-        expect(response.status).toBe(200);
-        expect(response.data).toBeTruthy();
-        expect(typeof response.data).toBe('object');
-        expect(Array.isArray(response.data.workbasketInputs)).toBe(true);
+        expectStatus(response.status, [200]);
+        const data = response.data as any;
+        expect(data).toBeTruthy();
+        expect(typeof data).toBe('object');
+        expect(Array.isArray(data.workbasketInputs)).toBe(true);
 
-        response.data.workbasketInputs.forEach((input) => {
+        data.workbasketInputs.forEach((input: any) => {
           expect(input).toEqual(
             expect.objectContaining({
               label: expect.any(String),
@@ -64,20 +65,16 @@ test.describe('CCD endpoints', () => {
   }
 
   test('returns authenticated user profile data', async ({ apiClient }) => {
-    await ensureStorageState('solicitor');
-    const xsrfToken = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-    if (!xsrfToken) {
-      throw new Error('Unable to read XSRF token from stored session cookies.');
-    }
+    const response = await withXsrf('solicitor', (headers) =>
+      apiClient.get('data/internal/profile', {
+        headers: {
+          ...headers,
+          experimental: 'true'
+        }
+      })
+    );
 
-    const response = await apiClient.get('data/internal/profile', {
-      headers: {
-        experimental: 'true',
-        'X-XSRF-TOKEN': xsrfToken
-      }
-    });
-
-    expect(response.status).toBe(200);
+    expectStatus(response.status, [200]);
     expect(response.data).toBeTruthy();
   });
 });

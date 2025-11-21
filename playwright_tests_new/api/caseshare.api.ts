@@ -1,16 +1,5 @@
 import { test, expect } from './fixtures';
-import { getStoredCookie } from './auth';
-
-async function authHeaders(): Promise<Record<string, string>> {
-  const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-  if (!xsrf) {
-    throw new Error('Missing XSRF token for solicitor user.');
-  }
-  return {
-    experimental: 'true',
-    'X-XSRF-TOKEN': xsrf
-  };
-}
+import { withXsrf } from './utils/apiTestUtils';
 
 const CASESHARE_ENDPOINTS = [
   {
@@ -50,16 +39,17 @@ const CASESHARE_ENDPOINTS = [
 test.describe('Case share endpoints', () => {
   for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path}`, async ({ apiClient }) => {
-      const headers = await authHeaders();
-      const response = await apiClient.get(path, { headers });
-      expect(response.status).toBe(200);
-      expect(response.data).toBeTruthy();
+      await withXsrf('solicitor', async (headers) => {
+        const response = await apiClient.get(path, { headers: { ...headers, experimental: 'true' } });
+        expect(response.status).toBe(200);
+        expect(response.data).toBeTruthy();
 
-      const entries = resolveEntries(response.data, property);
-      expect(Array.isArray(entries)).toBe(true);
-      if (entries.length > 0) {
-        expect(entries[0]).toEqual(schema);
-      }
+        const entries = resolveEntries(response.data, property);
+        expect(Array.isArray(entries)).toBe(true);
+        if (entries.length > 0) {
+          expect(entries[0]).toEqual(schema);
+        }
+      });
     });
   }
 });

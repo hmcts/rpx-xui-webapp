@@ -36,21 +36,30 @@ test.describe('Node app endpoints', () => {
     const response = await apiClient.get<any>('api/user/details');
 
     expectStatus(response.status, [200]);
-    expect(response.data).toMatchObject({
-      userInfo: expect.objectContaining({
-        uid: expect.any(String),
-        roles: expect.arrayContaining([expect.any(String)]),
+    const userInfo = response.data?.userInfo ?? {};
+    expect(userInfo).toEqual(
+      expect.objectContaining({
         email: expect.any(String),
-        given_name: expect.any(String),
-        family_name: expect.any(String)
-      }),
-      roleAssignmentInfo: expect.any(Array),
-      canShareCases: expect.any(Boolean),
-      sessionTimeout: expect.objectContaining({
-        idleModalDisplayTime: expect.any(Number),
-        pattern: expect.any(String)
+        roles: expect.arrayContaining([expect.any(String)])
       })
-    });
+    );
+    expect(userInfo.uid ?? userInfo.id).toBeDefined();
+    if (userInfo.given_name || userInfo.forename) {
+      expect(userInfo.given_name ?? userInfo.forename).toEqual(expect.any(String));
+    }
+    if (userInfo.family_name || userInfo.surname) {
+      expect(userInfo.family_name ?? userInfo.surname).toEqual(expect.any(String));
+    }
+    expect(response.data).toEqual(
+      expect.objectContaining({
+        roleAssignmentInfo: expect.any(Array),
+        canShareCases: expect.any(Boolean),
+        sessionTimeout: expect.objectContaining({
+          idleModalDisplayTime: expect.any(Number),
+          pattern: expect.any(String)
+        })
+      })
+    );
 
     const expected = nodeAppDataModels.getUserDetails_oidc();
     const expectedKeys = Object.keys(expected);

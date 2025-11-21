@@ -1,7 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
-import { buildCaseListMock } from '../../mocks/caseList.mock';
+// Load stub mapping JSON formerly used by WireMock.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const searchCasesStub = require('../../../../wiremock/mappings/searchCases.json');
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
@@ -18,6 +20,11 @@ test.beforeEach(async ({ page, config }) => {
   if (sessionCookies.length) {
     await page.context().addCookies(sessionCookies);
   }
+	// Intercept searchCases endpoint and fulfill with stub body.
+	await page.route('**/data/internal/searchCases', async route => {
+		const body = JSON.stringify(searchCasesStub.response.jsonBody);
+		await route.fulfill({ status: 200, contentType: 'application/json', body });
+	});
   await page.goto(config.urls.manageCaseBaseUrl);
 });
 
@@ -26,16 +33,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 		const caseNumber: string = '#1763-5442-4345-7183';
 		const textField0 = faker.lorem.word();
 
-		await test.step('Mock case list response', async () => {
-			const mock = buildCaseListMock(caseNumber);
-			await page.route('**/data/internal/searchCases?**', async (route) => {
-				if (route.request().method() === 'POST') {
-					await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mock) });
-				} else {
-					await route.continue();
-				}
-			});
-		});
+		// Using route interception with mapping JSON for /data/internal/searchCases.
 
 		await test.step('Navigate & perform search', async () => {
 			await caseListPage.goto();

@@ -8,7 +8,8 @@ import { IdamPage } from '@hmcts/playwright-common';
 
 // Global setup captures storageState for multiple users so tests can reuse sessions.
 async function globalSetup(_full: FullConfig) {
-  const identifiers = ['SOLICITOR', 'STAFF_ADMIN', 'IAC_CaseOfficer_R2'];
+  // WireMock removed; no stub server startup.
+  const identifiers = ['SOLICITOR']//, 'STAFF_ADMIN', 'IAC_CaseOfficer_R2'];
   const userUtils = new UserUtils();
   const cookieUtils = new CookieUtils();
   const sessionsDir = path.join(process.cwd(), '.sessions');

@@ -97,7 +97,7 @@ async function createNodeApiClient(
   } catch (error) {
     const message = (error as Error)?.message ?? '';
     const statePath = role === 'anonymous' ? undefined : storageState;
-    if (statePath && /Unexpected end of JSON input/i.test(message)) {
+    if (role !== 'anonymous' && statePath && /Unexpected end of JSON input/i.test(message)) {
       try {
         await fs.unlink(statePath);
       } catch {

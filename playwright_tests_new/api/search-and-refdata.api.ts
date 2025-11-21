@@ -1,22 +1,12 @@
 import { test, expect } from './fixtures';
 import { config } from '../../test_codecept/integration/tests/config/config';
-import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
+import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
 import { RoleAssignmentContainer } from './utils/types';
-
-const expectRoleShape = (role: any) => {
-  expect(role).toEqual(
-    expect.objectContaining({
-      roleCategory: expect.any(String),
-      roleName: expect.any(String)
-    })
-  );
-  if (role.actorId !== undefined) {
-    expect(typeof role.actorId).toBe('string');
-  }
-  if (role.actions !== undefined) {
-    expect(Array.isArray(role.actions)).toBe(true);
-  }
-};
+import { expectRoleAssignmentShape } from './utils/assertions';
+import { ROLE_ACCESS_CASE_ID } from './data/testIds';
+import { request } from '@playwright/test';
+import { promises as fs } from 'node:fs';
+import { ensureStorageState } from './auth';
 
 test.describe('Global search', () => {
   test('lists available services', async ({ apiClient }) => {
@@ -111,7 +101,7 @@ test.describe('Ref data and supported jurisdictions', () => {
 });
 
 test.describe('Role access / AM', () => {
-  const roleAccessCaseId = process.env.ROLE_ACCESS_CASE_ID ?? '1234567890123456';
+  const roleAccessCaseId = ROLE_ACCESS_CASE_ID;
   const hasCaseOfficer = !!(config.users?.[config.testEnv as keyof typeof config.users]?.caseOfficer_r1);
   test('rejects unauthenticated role access calls', async ({ anonymousClient }) => {
     const res = await anonymousClient.post('api/role-access/allocate-role/confirm', {
@@ -131,9 +121,13 @@ test.describe('Role access / AM', () => {
   });
 
   test('get-my-access-new-count', async ({ apiClient }) => {
-    const res = await apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
-      throwOnError: false
-    });
+    const res = await withRetry(
+      () =>
+        apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
+          throwOnError: false
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
     expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
     const data = res.data as any;
     if (res.status === 200) {
@@ -148,16 +142,20 @@ test.describe('Role access / AM', () => {
   });
 
   test('roles/access-get responds', async ({ apiClient }) => {
-    const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/roles/access-get', {
-      data: { caseIds: [roleAccessCaseId] },
-      throwOnError: false
-    });
+    const res = await withRetry(
+      () =>
+        apiClient.post<RoleAssignmentContainer>('api/role-access/roles/access-get', {
+          data: { caseIds: [roleAccessCaseId] },
+          throwOnError: false
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
     expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
     if (res.status === 200) {
       if (Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleShape(res.data[0]);
+        expectRoleAssignmentShape(res.data[0] as any);
       } else if (Array.isArray((res.data as RoleAssignmentContainer)?.roleAssignmentResponse) && (res.data as RoleAssignmentContainer).roleAssignmentResponse!.length > 0) {
-        expectRoleShape((res.data as RoleAssignmentContainer).roleAssignmentResponse![0]);
+        expectRoleAssignmentShape((res.data as RoleAssignmentContainer).roleAssignmentResponse![0] as any);
       } else {
         expect(res.data).toEqual(expect.anything());
       }
@@ -189,7 +187,7 @@ test.describe('Role access / AM', () => {
     expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
     const data = res.data as any;
     if (res.status === 200 && Array.isArray(data?.roleAssignmentResponse)) {
-      expectRoleShape(data.roleAssignmentResponse[0]);
+      expectRoleAssignmentShape(data.roleAssignmentResponse[0] as any);
     }
   });
 
@@ -219,7 +217,7 @@ test.describe('Role access / AM', () => {
       });
       expectStatus(res.status, StatusSets.allocateRole);
       if ([200, 201].includes(res.status) && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleShape(res.data[0]);
+        expectRoleAssignmentShape(res.data[0] as any);
       }
     });
   });
@@ -250,7 +248,7 @@ test.describe('Role access / AM', () => {
       });
       expectStatus(res.status, StatusSets.allocateRole);
       if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleShape(res.data[0]);
+        expectRoleAssignmentShape(res.data[0] as any);
       }
     });
   });
@@ -264,7 +262,7 @@ test.describe('Role access / AM', () => {
       });
       expectStatus(res.status, StatusSets.allocateRole);
       if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleShape(res.data[0]);
+        expectRoleAssignmentShape(res.data[0] as any);
       }
     });
   });
@@ -278,7 +276,7 @@ test.describe('Role access / AM', () => {
       });
       expectStatus(res.status, StatusSets.allocateRole);
       if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleShape(res.data[0]);
+        expectRoleAssignmentShape(res.data[0] as any);
       }
     });
   });
@@ -294,6 +292,29 @@ test.describe('Role access / AM', () => {
       throwOnError: false
     });
     expectStatus(res.status, [401, 403, 500]);
+  });
+
+  test('role access confirm returns guarded status for stale session', async () => {
+    const statePath = await ensureStorageState('solicitor');
+    const raw = await fs.readFile(statePath, 'utf8');
+    const state = JSON.parse(raw);
+    const expiredCookies = Array.isArray(state.cookies)
+      ? state.cookies.map((c: any) => ({ ...c, expires: 0 }))
+      : [];
+
+    const ctx = await request.newContext({
+      baseURL: config.baseUrl.replace(/\/+$/, ''),
+      ignoreHTTPSErrors: true
+    });
+    if (expiredCookies.length) {
+      await ctx.storageState({ cookies: expiredCookies, origins: [] });
+    }
+    const res = await ctx.post('api/role-access/allocate-role/confirm', {
+      data: { caseId: roleAccessCaseId },
+      failOnStatusCode: false
+    });
+    expectStatus(res.status(), [401, 403]);
+    await ctx.dispose();
   });
 
   test('roles/manageLabellingRoleAssignment responds', async ({ apiClient }) => {

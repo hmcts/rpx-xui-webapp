@@ -3,6 +3,8 @@ import { buildTaskSearchRequest } from './utils/work-allocation';
 import { ensureStorageState, getStoredCookie } from './auth';
 import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
 import type { TaskListResponse, Task, UserDetailsResponse } from './utils/types';
+import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
+import { expectTaskList } from './utils/assertions';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 
@@ -11,8 +13,8 @@ test.describe('Work allocation (read-only)', () => {
   let userId: string | undefined;
   let sampleTaskId: string | undefined;
   let sampleMyTaskId: string | undefined;
-  const envTaskId = process.env.WA_SAMPLE_TASK_ID;
-  const envAssignedTaskId = process.env.WA_SAMPLE_ASSIGNED_TASK_ID;
+  const envTaskId = WA_SAMPLE_TASK_ID;
+  const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
 
   test.beforeAll(async ({ apiClient }) => {
     const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
@@ -131,7 +133,7 @@ test.describe('Work allocation (read-only)', () => {
     const response = (await apiClient.post('workallocation/task', {
       data: body
     })) as { data: TaskListResponse; status: number };
-    expectTaskListPayload(response.data);
+    expectTaskList(response.data);
   });
 
     test('AvailableTasks returns structured response', async ({ apiClient }) => {
@@ -149,7 +151,7 @@ test.describe('Work allocation (read-only)', () => {
       if (response.status !== 200) {
         return;
       }
-      expectTaskListPayload(response.data);
+      expectTaskList(response.data);
     });
 
     test('AllWork returns structured response', async ({ apiClient }) => {
@@ -167,7 +169,7 @@ test.describe('Work allocation (read-only)', () => {
         expect(response.status).toBeGreaterThanOrEqual(400);
         return;
       }
-      expectTaskListPayload(response.data);
+      expectTaskList(response.data);
     });
   });
 
@@ -436,22 +438,6 @@ function toArray<T>(payload: unknown): T[] {
     return (payload as any).typesOfWork as T[];
   }
   return [];
-}
-
-function expectTaskListPayload(payload: TaskListResponse) {
-  expect(payload).toBeTruthy();
-  expect(typeof payload).toBe('object');
-  expect(Array.isArray(payload.tasks)).toBe(true);
-  expect(typeof payload.total_records).toBe('number');
-
-  if ((payload.tasks?.length ?? 0) > 0) {
-    expect(payload.tasks![0]).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        task_state: expect.any(String)
-      })
-    );
-  }
 }
 
 async function fetchFirstTask(

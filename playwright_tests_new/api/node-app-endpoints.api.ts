@@ -1,6 +1,9 @@
 import { test, expect, buildApiAttachment } from './fixtures';
 import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
+import { request } from '@playwright/test';
+import { promises as fs } from 'node:fs';
+import { ensureStorageState } from './auth';
 
 const nodeAppDataModels = require('../../test_codecept/dataModels/nodeApp');
 
@@ -85,6 +88,26 @@ test.describe('Node app endpoints', () => {
     });
 
     expectStatus(response.status, [401]);
+  });
+
+  test('stale session cookie returns guarded status', async () => {
+    const statePath = await ensureStorageState('solicitor');
+    const raw = await fs.readFile(statePath, 'utf8');
+    const state = JSON.parse(raw);
+    const expiredCookies = Array.isArray(state.cookies)
+      ? state.cookies.map((c: any) => ({ ...c, expires: 0 }))
+      : [];
+
+    const ctx = await request.newContext({
+      baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
+      ignoreHTTPSErrors: true
+    });
+    if (expiredCookies.length) {
+      await ctx.storageState({ cookies: expiredCookies, origins: [] });
+    }
+    const res = await ctx.get('api/user/details', { failOnStatusCode: false });
+    expectStatus(res.status(), [401, 403]);
+    await ctx.dispose();
   });
 
   test('returns configuration value for feature flag query', async ({ apiClient }) => {

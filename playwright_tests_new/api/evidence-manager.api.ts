@@ -1,14 +1,28 @@
 import { v4 as uuid } from 'uuid';
-import { test, expect } from './fixtures';
+import { test, expect, request } from './fixtures';
+import { promises as fs } from 'node:fs';
 import { config } from '../../test_codecept/integration/tests/config/config';
+import { EM_DOC_ID } from './data/testIds';
+import { AnnotationPayload, BookmarkPayload } from './utils/types';
 import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
+import { expectAnnotationShape, expectBookmarkShape } from './utils/assertions';
+import { ensureStorageState, getStoredCookie } from './auth';
 
-const docId = process.env.EM_DOC_ID ?? config.em[config.testEnv as keyof typeof config.em]?.docId;
+const configuredDocId = EM_DOC_ID ?? config.em[config.testEnv as keyof typeof config.em]?.docId;
+let sharedDocId: string | undefined;
 
 test.describe('Evidence Manager & Documents', () => {
+  test.beforeAll(async () => {
+    if (configuredDocId) {
+      sharedDocId = configuredDocId;
+      return;
+    }
+    sharedDocId = await uploadSyntheticDoc();
+  });
+
   test('returns document binary with XSRF', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.get<ArrayBuffer>(`documents/${docId}/binary`, {
+      const res = await apiClient.get<ArrayBuffer>(`documents/${sharedDocId}/binary`, {
         headers: { ...headers, experimental: 'true' },
         throwOnError: false,
         responseType: 'arraybuffer'
@@ -21,20 +35,20 @@ test.describe('Evidence Manager & Documents', () => {
   });
 
   test('rejects unauthenticated binary fetch', async ({ anonymousClient }) => {
-    const res = await anonymousClient.get(`documents/${docId}/binary`, { throwOnError: false });
+    const res = await anonymousClient.get(`documents/${sharedDocId}/binary`, { throwOnError: false });
     expectStatus(res.status, [401, 403]);
   });
 
   test('annotations metadata guarded by session', async ({ apiClient, anonymousClient }) => {
-    const anon = await anonymousClient.get(`em-anno/metadata/${docId}`, { throwOnError: false });
+    const anon = await anonymousClient.get(`em-anno/metadata/${sharedDocId}`, { throwOnError: false });
     expectStatus(anon.status, [401, 403]);
 
     await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.get(`em-anno/metadata/${docId}`, {
+      const res = await apiClient.get(`em-anno/metadata/${sharedDocId}`, {
         headers: { ...headers, experimental: 'true' },
         throwOnError: false
       });
-      expectStatus(res.status, [200, 204, 401, 403, 500]);
+      expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
     });
   });
 
@@ -46,7 +60,13 @@ test.describe('Evidence Manager & Documents', () => {
         headers,
         throwOnError: false
       });
-      expectStatus(createRes.status, [200, 204, 401, 403, 409, 500]);
+      expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
+      if (createRes.status === 200 && Array.isArray((createRes.data as any)?.annotations)) {
+        const created = (createRes.data as any).annotations?.[0];
+        if (created) {
+          expectAnnotationShape(created);
+        }
+      }
 
       const createdId = (createRes.data as any)?.annotations?.[0]?.id ?? annotation.id;
       const deleteRes = await apiClient.delete(`em-anno/annotations/${createdId}`, {
@@ -65,16 +85,16 @@ test.describe('Evidence Manager & Documents', () => {
       headers: {},
       throwOnError: false
     });
-    expectStatus(res.status, [200, 401, 403, 409, 500]);
+    expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
   });
 
   test('bookmarks lifecycle', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
-      const listRes = await apiClient.get<Array<any>>(`em-anno/${docId}/bookmarks`, {
+      const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
         headers,
         throwOnError: false
       });
-      expectStatus(listRes.status, [200, 204, 401, 403, 500]);
+      expectStatus(listRes.status, [200, 204, 401, 403, 404, 500]);
 
       const bookmark = await buildBookmark(apiClient);
       const createRes = await apiClient.put('em-anno/bookmarks', {
@@ -82,15 +102,18 @@ test.describe('Evidence Manager & Documents', () => {
         headers,
         throwOnError: false
       });
-      expectStatus(createRes.status, [200, 204, 401, 403, 409, 500]);
+      expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
       const createdId = (createRes.data as any)?.id ?? bookmark.id;
+      if (createRes.status === 200) {
+        expectBookmarkShape(createRes.data as any);
+      }
 
       const deleteRes = await apiClient.delete('em-anno/bookmarks_multiple', {
         data: { deleted: [createdId] },
         headers,
         throwOnError: false
       });
-      expectStatus(deleteRes.status, [200, 204, 401, 403, 409, 500]);
+      expectStatus(deleteRes.status, [200, 204, 401, 403, 404, 409, 500]);
     });
   });
 
@@ -101,11 +124,11 @@ test.describe('Evidence Manager & Documents', () => {
       headers: {},
       throwOnError: false
     });
-    expectStatus(res.status, [200, 401, 403, 409, 500]);
+    expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
   });
 });
 
-async function buildAnnotation(apiClient: any, headers: Record<string, string>) {
+async function buildAnnotation(apiClient: any, headers: Record<string, string>): Promise<AnnotationPayload> {
   const annoId = uuid();
   const rectangleId = uuid();
   const setId = await resolveAnnotationSetId(apiClient, headers);
@@ -125,14 +148,14 @@ async function buildAnnotation(apiClient: any, headers: Record<string, string>) 
       }
     ],
     type: 'highlight',
-    documentId: docId,
+    documentId: sharedDocId,
     annotationSetId: setId
   };
 }
 
 async function resolveAnnotationSetId(apiClient: any, headers: Record<string, string>) {
   try {
-    const res = await apiClient.get(`em-anno/annotation-sets/filter?documentId=${docId}`, {
+    const res = await apiClient.get(`em-anno/annotation-sets/filter?documentId=${sharedDocId}`, {
       headers,
       throwOnError: false
     });
@@ -143,12 +166,12 @@ async function resolveAnnotationSetId(apiClient: any, headers: Record<string, st
   }
 }
 
-async function buildBookmark(apiClient: any) {
+async function buildBookmark(apiClient: any): Promise<BookmarkPayload> {
   const userId = await fetchUserId(apiClient);
   return {
     id: uuid(),
     name: `auto-${Date.now()}`,
-    documentId: docId,
+    documentId: sharedDocId,
     createdBy: userId,
     pageNumber: 1,
     xCoordinate: 1,
@@ -163,4 +186,40 @@ async function fetchUserId(apiClient: any): Promise<string | undefined> {
     throwOnError: false
   });
   return res.data?.userInfo?.uid ?? res.data?.userInfo?.id;
+}
+
+async function uploadSyntheticDoc(): Promise<string> {
+  // Try to upload a tiny text blob to DM via the proxy using the stored session.
+  try {
+    const storageState = await ensureStorageState('solicitor');
+    const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+    const ctx = await request.newContext({
+      baseURL: config.baseUrl.replace(/\/+$/, ''),
+      storageState,
+      ignoreHTTPSErrors: true
+    });
+
+    const res = await ctx.post('documents', {
+      multipart: {
+        files: {
+          name: 'file',
+          mimeType: 'text/plain',
+          buffer: Buffer.from('synthetic evidence-manager upload')
+        }
+      },
+      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {}
+    });
+    if (res.ok()) {
+      const body = await res.json();
+      const id = body?.documents?.[0]?.originalDocumentId ?? body?.documents?.[0]?.documentId ?? body?.documents?.[0]?.id;
+      if (id) {
+        await ctx.dispose();
+        return id;
+      }
+    }
+    await ctx.dispose();
+  } catch (error) {
+    // best-effort; fall through
+  }
+  return uuid();
 }

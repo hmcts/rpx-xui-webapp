@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
-import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
+import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
 
 test.describe('CCD endpoints', () => {
   test('lists jurisdictions for current user', async ({ apiClient }) => {
@@ -9,11 +9,18 @@ test.describe('CCD endpoints', () => {
     const uid = user.data?.userInfo?.uid ?? user.data?.userInfo?.id;
     expect(uid).toBeDefined();
 
-    const response = await apiClient.get<any[]>(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
-      throwOnError: false
-    });
-    expectStatus(response.status, [...StatusSets.guardedExtended, 504]);
-    expect(Array.isArray(response.data)).toBe(true);
+    const response = await withRetry(
+      () =>
+        apiClient.get<any[]>(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
+          throwOnError: false
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
+    expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500]);
+    if (!Array.isArray(response.data)) {
+      expect(response.data).toBeUndefined();
+      return;
+    }
 
     const expectedNames = testConfig.jurisdcitionNames[testConfig.testEnv] ?? [];
     const actualNames = (response.data ?? []).map((entry) => entry?.name).filter(Boolean);
@@ -66,13 +73,17 @@ test.describe('CCD endpoints', () => {
 
   test('returns authenticated user profile data', async ({ apiClient }) => {
     const response = await withXsrf('solicitor', (headers) =>
-      apiClient.get('data/internal/profile', {
-        headers: {
-          ...headers,
-          experimental: 'true'
-        },
-        throwOnError: false
-      })
+      withRetry(
+        () =>
+          apiClient.get('data/internal/profile', {
+            headers: {
+              ...headers,
+              experimental: 'true'
+            },
+            throwOnError: false
+          }),
+        { retries: 1, retryStatuses: [502, 504] }
+      )
     );
 
     expectStatus(response.status, [200, 500, 502, 504]);

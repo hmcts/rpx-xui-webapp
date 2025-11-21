@@ -1,5 +1,8 @@
 import { test, expect } from './fixtures';
 import { withXsrf } from './utils/apiTestUtils';
+import { expectCaseShareShape } from './utils/assertions';
+import { CaseShareResponseVariant } from './utils/types';
+import { expectRoleAssignmentShape } from './utils/assertions';
 
 const CASESHARE_ENDPOINTS = [
   {
@@ -21,18 +24,12 @@ const CASESHARE_ENDPOINTS = [
   {
     path: 'caseshare/cases',
     property: 'cases',
-    schema: expect.objectContaining({
-      caseId: expect.any(String),
-      sharedWith: expect.any(Array)
-    })
+    schema: expectCaseShareShape
   },
   {
     path: 'caseshare/case-assignments',
     property: 'sharedCases',
-    schema: expect.objectContaining({
-      caseId: expect.any(String),
-      sharedWith: expect.any(Array)
-    })
+    schema: expectCaseShareShape
   }
 ] as const;
 
@@ -47,7 +44,11 @@ test.describe('Case share endpoints', () => {
         const entries = resolveEntries(response.data, property);
         expect(Array.isArray(entries)).toBe(true);
         if (entries.length > 0) {
-          expect(entries[0]).toEqual(schema);
+          if (typeof schema === 'function') {
+            schema(response.data as CaseShareResponseVariant, property);
+          } else {
+            expect(entries[0]).toEqual(schema);
+          }
         }
       });
     });

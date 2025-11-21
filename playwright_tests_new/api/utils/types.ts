@@ -93,6 +93,40 @@ export interface AddressLookupResponse {
   [key: string]: unknown;
 }
 
+export interface AnnotationRectangle {
+  id?: string;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  [key: string]: unknown;
+}
+
+export interface AnnotationPayload {
+  id?: string;
+  color?: string;
+  comments?: unknown[];
+  page?: number;
+  rectangles?: AnnotationRectangle[];
+  type?: string;
+  documentId?: string;
+  annotationSetId?: string;
+  [key: string]: unknown;
+}
+
+export interface BookmarkPayload {
+  id?: string;
+  name?: string;
+  documentId?: string;
+  createdBy?: string;
+  pageNumber?: number;
+  xCoordinate?: number;
+  yCoordinate?: number;
+  parent?: string | null;
+  previous?: string | null;
+  [key: string]: unknown;
+}
+
 export function isTaskList(payload: unknown): payload is TaskListResponse {
   return !!payload && typeof payload === 'object' && Array.isArray((payload as any).tasks);
 }
@@ -110,4 +144,8 @@ export function extractCaseShareEntries(payload: CaseShareResponseVariant, prope
     return (nested as any)[property];
   }
   return [];
+}
+
+export function isAddressLookup(payload: unknown): payload is AddressLookupResponse {
+  return !!payload && typeof payload === 'object' && Array.isArray((payload as any).results);
 }

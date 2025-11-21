@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures';
 import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
 import type { AddressLookupResponse } from './utils/types';
+import { expectAddressLookupShape } from './utils/assertions';
 
 test.describe('Postcode lookup', () => {
   test('returns address data for postcode E1', async ({ apiClient }) => {
@@ -15,20 +16,7 @@ test.describe('Postcode lookup', () => {
         return;
       }
 
-      expect(response.data).toHaveProperty('results');
-      expect(response.data).toHaveProperty('header');
-      expect(Array.isArray(response.data.results)).toBe(true);
-      if ((response.data.results?.length ?? 0) > 0) {
-        const dpa = response.data.results![0]?.DPA;
-        expect(dpa).toBeTruthy();
-        expect(dpa).toEqual(
-          expect.objectContaining({
-            POSTCODE: expect.any(String),
-            ADDRESS: expect.any(String),
-            POST_TOWN: expect.any(String)
-          })
-        );
-      }
+      expectAddressLookupShape(response.data);
     });
   });
 });

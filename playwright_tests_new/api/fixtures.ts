@@ -8,6 +8,7 @@ import {
 } from '@hmcts/playwright-common';
 import { config } from '../../test_codecept/integration/tests/config/config';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
+import { randomUUID } from 'crypto';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
@@ -83,7 +84,8 @@ async function createNodeApiClient(
       : await ensureStorageState(role as ApiUserRole);
 
   const defaultHeaders: Record<string, string> = {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-Correlation-Id': randomUUID()
   };
   if (role !== 'anonymous' && shouldAutoInjectXsrf()) {
     const xsrf = await getStoredCookie(role as ApiUserRole, 'XSRF-TOKEN');

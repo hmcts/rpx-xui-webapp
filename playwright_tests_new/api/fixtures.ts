@@ -7,7 +7,7 @@ import {
   createLogger
 } from '@hmcts/playwright-common';
 import { config } from '../../test_codecept/integration/tests/config/config';
-import { ensureStorageState, type ApiUserRole } from './auth';
+import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
@@ -81,14 +81,23 @@ async function createNodeApiClient(
     role === 'anonymous'
       ? undefined
       : await ensureStorageState(role as ApiUserRole);
+
+  const defaultHeaders: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+  if (role !== 'anonymous' && shouldAutoInjectXsrf()) {
+    const xsrf = await getStoredCookie(role as ApiUserRole, 'XSRF-TOKEN');
+    if (xsrf) {
+      defaultHeaders['X-XSRF-TOKEN'] = xsrf;
+    }
+  }
+
   const buildContext = async (statePath?: string) =>
     request.newContext({
       baseURL: baseUrl,
       storageState: statePath,
       ignoreHTTPSErrors: true,
-      extraHTTPHeaders: {
-        'Content-Type': 'application/json'
-      }
+      extraHTTPHeaders: defaultHeaders
     });
 
   let context;
@@ -122,4 +131,9 @@ async function createNodeApiClient(
 
 function stripTrailingSlash(value: string): string {
   return value.replace(/\/+$/, '');
+}
+
+function shouldAutoInjectXsrf(): boolean {
+  const flag = process.env.API_AUTO_XSRF ?? process.env.API_AUTH_AUTO_XSRF;
+  return flag ? ['1', 'true', 'yes', 'on'].includes(flag.toLowerCase()) : false;
 }

@@ -17,8 +17,9 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
   `yarn test:api:pw:coverage`
 
 ## Authentication model
-- The `auth.ts` helper now signs in via HTTP (no browser). It follows the `/auth/login` → IDAM form flow with the configured username/password, stores the resulting Playwright storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`, and reuses it for all tests.
-- Helper methods (`ensureStorageState`, `getStoredCookie`) expose the session/XSRF cookies so tests can add CSRF headers when needed. No Puppeteer/Chromium login is used.
+- Default: the `auth.ts` helper signs in via HTTP (no browser) by following the `/auth/login` form flow with the configured username/password, storing the resulting Playwright storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`.
+- **Token/S2S bootstrap (optional):** set `API_AUTH_MODE=token` (or `API_USE_TOKEN_LOGIN=true`) to attempt login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken`. Required env vars: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `IDAM_OAUTH2_SCOPE` (optional), `IDAM_RETURN_URL` (optional), `S2S_URL`, and `S2S_MICROSERVICE_NAME`/`MICROSERVICE`. If token bootstrap fails, the helper falls back to the form flow automatically.
+- XSRF handling: set `API_AUTO_XSRF=true` to auto-inject the `X-XSRF-TOKEN` header from stored cookies. By default the header is not injected so negative/CSRF tests can opt-in explicitly (via `withXsrf` or manual headers).
 
 ## Outputs
 - API call logs are attached automatically per test as `node-api-calls.json`.

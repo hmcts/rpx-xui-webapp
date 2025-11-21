@@ -20,6 +20,17 @@ test.describe('CORS and OPTIONS', () => {
           failOnStatusCode: false
         });
         expectStatus(res.status(), expected);
+        const headers = res.headers();
+        if (expected === StatusSets.corsAllowed && res.status() < 500) {
+          const allowOrigin = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
+          if (allowOrigin) {
+            expect(allowOrigin).toBe(origin);
+          }
+        }
+        if (expected === StatusSets.corsDisallowed && res.status() < 500) {
+          const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
+          expect(allowed === origin).toBe(false);
+        }
       } catch (error) {
         const message = (error as Error)?.message ?? '';
         if (/ENOTFOUND|ECONNREFUSED/.test(message)) {

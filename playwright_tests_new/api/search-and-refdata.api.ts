@@ -110,6 +110,23 @@ test.describe('Ref data and supported jurisdictions', () => {
 });
 
 test.describe('Role access / AM', () => {
+  test('rejects unauthenticated role access calls', async ({ anonymousClient }) => {
+    const res = await anonymousClient.post('api/role-access/allocate-role/confirm', {
+      data: {},
+      throwOnError: false
+    });
+    expectStatus(res.status, [401, 403]);
+  });
+
+  test('rejects role access mutation with invalid CSRF token', async ({ apiClient }) => {
+    const res = await apiClient.post('api/role-access/allocate-role/confirm', {
+      data: {},
+      headers: { 'X-XSRF-TOKEN': 'invalid-token' },
+      throwOnError: false
+    });
+    expectStatus(res.status, [400, 401, 403, 409, 500]);
+  });
+
   test('get-my-access-new-count', async ({ apiClient }) => {
     const res = await apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
       throwOnError: false

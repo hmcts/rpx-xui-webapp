@@ -237,6 +237,18 @@ test.describe('Work allocation (read-only)', () => {
     });
 
     actions.forEach((action) => {
+      test(`rejects ${action} with invalid XSRF token`, async ({ apiClient }) => {
+        await ensureStorageState('solicitor');
+        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+          data: {},
+          headers: { 'X-XSRF-TOKEN': 'invalid-token' },
+          throwOnError: false
+        });
+        expectStatus(response.status, [400, 401, 403, 409, 500, 502]);
+      });
+    });
+
+    actions.forEach((action) => {
       test(`${action} with XSRF header returns guarded status`, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
           apiClient.post(`workallocation/task/${taskId()}/${action}`, {

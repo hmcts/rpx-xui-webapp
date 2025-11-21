@@ -7,12 +7,18 @@ import { ROLE_ACCESS_CASE_ID } from './data/testIds';
 import { request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
 import { ensureStorageState } from './auth';
+import { extractCaseShareEntries } from './utils/types';
+import { seedRoleAccessCaseId } from './utils/role-access';
 
 test.describe('Global search', () => {
   test('lists available services', async ({ apiClient }) => {
-    const response = await apiClient.get<Array<{ serviceId: string; serviceName: string }>>('api/globalSearch/services', {
-      throwOnError: false
-    });
+    const response = await withRetry(
+      () =>
+        apiClient.get<Array<{ serviceId: string; serviceName: string }>>('api/globalSearch/services', {
+          throwOnError: false
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
     expectStatus(response.status, StatusSets.guardedBasic);
     if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
       expect(response.data[0]).toEqual(
@@ -32,14 +38,21 @@ test.describe('Global search', () => {
     expectStatus(response.status, StatusSets.globalSearch);
     if (response.status === 200 && response.data) {
       expect(response.data).toHaveProperty('results');
+      if (Array.isArray((response.data as any).results) && (response.data as any).results.length > 0) {
+        expect((response.data as any).results[0]).toEqual(expect.anything());
+      }
     }
   });
 
   test('searchCases proxy responds or guards', async ({ apiClient }) => {
-    const response = await apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
-      data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
-      throwOnError: false
-    });
+    const response = await withRetry(
+      () =>
+        apiClient.post<{ total?: number; cases?: unknown[] }>('data/internal/searchCases?ctid=xuiTestCaseType', {
+          data: { size: 1, from: 0, sort: [], native_es_query: { match_all: {} } },
+          throwOnError: false
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
     expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
     // Some environments return a stub payload with full fields; otherwise just ensure a response object exists.
     if (response.status === 200 && response.data) {
@@ -101,8 +114,17 @@ test.describe('Ref data and supported jurisdictions', () => {
 });
 
 test.describe('Role access / AM', () => {
-  const roleAccessCaseId = ROLE_ACCESS_CASE_ID;
+  let roleAccessCaseId = ROLE_ACCESS_CASE_ID ?? '1234567890123456';
   const hasCaseOfficer = !!(config.users?.[config.testEnv as keyof typeof config.users]?.caseOfficer_r1);
+  test.beforeAll(async ({ apiClient }) => {
+    if (roleAccessCaseId) {
+      return;
+    }
+    const seeded = await seedRoleAccessCaseId(apiClient);
+    if (seeded) {
+      roleAccessCaseId = seeded;
+    }
+  });
   test('rejects unauthenticated role access calls', async ({ anonymousClient }) => {
     const res = await anonymousClient.post('api/role-access/allocate-role/confirm', {
       data: {},
@@ -318,13 +340,20 @@ test.describe('Role access / AM', () => {
   });
 
   test('roles/manageLabellingRoleAssignment responds', async ({ apiClient }) => {
-    await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.post('api/role-access/roles/manageLabellingRoleAssignment/1234567890123456', {
-        data: { caseId: roleAccessCaseId },
-        headers,
-        throwOnError: false
-      });
-      expectStatus(res.status, StatusSets.allocateRole);
-    });
+    const res = await withRetry(
+      () =>
+        withXsrf('solicitor', async (headers) =>
+          apiClient.post('api/role-access/roles/manageLabellingRoleAssignment/1234567890123456', {
+            data: { caseId: roleAccessCaseId },
+            headers,
+            throwOnError: false
+          })
+        ),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
+    expectStatus(res.status, StatusSets.allocateRole);
+    if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
+      expectRoleAssignmentShape(res.data[0] as any);
+    }
   });
 });

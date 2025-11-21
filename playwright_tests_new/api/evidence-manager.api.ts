@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
-import { test, expect, request } from './fixtures';
+import { test, expect } from './fixtures';
+import { request as playwrightRequest } from '@playwright/test';
 import { promises as fs } from 'node:fs';
 import { config } from '../../test_codecept/integration/tests/config/config';
 import { EM_DOC_ID } from './data/testIds';
@@ -10,6 +11,7 @@ import { ensureStorageState, getStoredCookie } from './auth';
 
 const configuredDocId = EM_DOC_ID ?? config.em[config.testEnv as keyof typeof config.em]?.docId;
 let sharedDocId: string | undefined;
+const invalidDocId = uuid();
 
 test.describe('Evidence Manager & Documents', () => {
   test.beforeAll(async () => {
@@ -52,6 +54,16 @@ test.describe('Evidence Manager & Documents', () => {
     });
   });
 
+  test('returns 404 for missing document', async ({ apiClient }) => {
+    await withXsrf('solicitor', async (headers) => {
+      const res = await apiClient.get(`documents/${invalidDocId}/binary`, {
+        headers,
+        throwOnError: false
+      });
+      expectStatus(res.status, [400, 404]);
+    });
+  });
+
   test('creates and deletes annotation with valid XSRF', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const annotation = await buildAnnotation(apiClient, headers);
@@ -88,6 +100,18 @@ test.describe('Evidence Manager & Documents', () => {
     expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
   });
 
+  test('rejects annotation mutation with invalid payload', async ({ apiClient }) => {
+    await withXsrf('solicitor', async (headers) => {
+      const badPayload = { id: uuid(), rectangles: [] };
+      const res = await apiClient.put('em-anno/annotations', {
+        data: badPayload,
+        headers,
+        throwOnError: false
+      });
+      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+    });
+  });
+
   test('bookmarks lifecycle', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
@@ -117,6 +141,16 @@ test.describe('Evidence Manager & Documents', () => {
     });
   });
 
+  test('rejects bookmark creation with invalid XSRF token', async ({ apiClient }) => {
+    const bookmark = await buildBookmark(apiClient);
+    const res = await apiClient.put('em-anno/bookmarks', {
+      data: bookmark,
+      headers: { 'X-XSRF-TOKEN': 'invalid' },
+      throwOnError: false
+    });
+    expectStatus(res.status, [400, 401, 403, 409, 500]);
+  });
+
   test('rejects bookmark creation without XSRF', async ({ apiClient }) => {
     const bookmark = await buildBookmark(apiClient);
     const res = await apiClient.put('em-anno/bookmarks', {
@@ -125,6 +159,57 @@ test.describe('Evidence Manager & Documents', () => {
       throwOnError: false
     });
     expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
+  });
+
+  test('rejects bookmark mutation with invalid payload', async ({ apiClient }) => {
+    await withXsrf('solicitor', async (headers) => {
+      const res = await apiClient.put('em-anno/bookmarks', {
+        data: { id: uuid(), name: 'bad' },
+        headers,
+        throwOnError: false
+      });
+      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+    });
+  });
+
+  test('rejects document upload when no file provided', async () => {
+    const storageState = await ensureStorageState('solicitor');
+    const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+    const ctx = await playwrightRequest.newContext({
+      baseURL: config.baseUrl.replace(/\/+$/, ''),
+      storageState,
+      ignoreHTTPSErrors: true
+    });
+    const res = await ctx.post('documents', {
+      multipart: {},
+      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
+      failOnStatusCode: false
+    });
+    expect([400, 401, 403, 415, 500]).toContain(res.status());
+    await ctx.dispose();
+  });
+
+  test('returns guarded status for invalid document id on delete', async ({ apiClient }) => {
+    await withXsrf('solicitor', async (headers) => {
+      const bogusId = uuid();
+      const res = await apiClient.delete(`em-anno/annotations/${bogusId}`, {
+        data: {},
+        headers,
+        throwOnError: false
+      });
+      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+    });
+  });
+
+  test('rejects bookmark delete for missing document', async ({ apiClient }) => {
+    await withXsrf('solicitor', async (headers) => {
+      const res = await apiClient.delete('em-anno/bookmarks_multiple', {
+        data: { deleted: [uuid()] },
+        headers,
+        throwOnError: false
+      });
+      expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
+    });
   });
 });
 

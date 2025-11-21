@@ -131,10 +131,6 @@ export function isTaskList(payload: unknown): payload is TaskListResponse {
   return !!payload && typeof payload === 'object' && Array.isArray((payload as any).tasks);
 }
 
-export function isAddressLookup(payload: unknown): payload is AddressLookupResponse {
-  return !!payload && typeof payload === 'object' && Array.isArray((payload as any).results);
-}
-
 export function extractCaseShareEntries(payload: CaseShareResponseVariant, property: string): unknown[] {
   if (!payload || typeof payload !== 'object') return [];
   const direct = (payload as any)[property];
@@ -144,8 +140,4 @@ export function extractCaseShareEntries(payload: CaseShareResponseVariant, prope
     return (nested as any)[property];
   }
   return [];
-}
-
-export function isAddressLookup(payload: unknown): payload is AddressLookupResponse {
-  return !!payload && typeof payload === 'object' && Array.isArray((payload as any).results);
 }

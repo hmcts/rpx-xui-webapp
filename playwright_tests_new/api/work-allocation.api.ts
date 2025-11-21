@@ -1,10 +1,11 @@
 import { test, expect } from './fixtures';
 import { buildTaskSearchRequest } from './utils/work-allocation';
 import { ensureStorageState, getStoredCookie } from './auth';
-import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
+import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import type { TaskListResponse, Task, UserDetailsResponse } from './utils/types';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectTaskList } from './utils/assertions';
+import { seedTaskId } from './utils/work-allocation';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 
@@ -35,14 +36,13 @@ test.describe('Work allocation (read-only)', () => {
     }
 
     // seed tasks for action tests
-    const taskRes = await fetchFirstTask(apiClient, cachedLocationId);
-    if (taskRes?.id) {
-      sampleTaskId = taskRes.id;
-    }
-
-    const myTaskRes = await fetchFirstTask(apiClient, cachedLocationId, ['assigned'], 'MyTasks');
-    if (myTaskRes?.id) {
-      sampleMyTaskId = myTaskRes.id;
+    const seeded = await seedTaskId(apiClient, cachedLocationId);
+    if (seeded?.id) {
+      if (seeded.type === 'assigned') {
+        sampleMyTaskId = seeded.id;
+      } else {
+        sampleTaskId = seeded.id;
+      }
     }
   });
 
@@ -123,16 +123,20 @@ test.describe('Work allocation (read-only)', () => {
         return;
       }
 
-      const body = buildTaskSearchRequest('MyTasks', {
-        userIds: [userId!],
-        locations: cachedLocationId ? [cachedLocationId] : [],
-        states: ['assigned'],
-        searchBy: 'caseworker'
-      });
+    const body = buildTaskSearchRequest('MyTasks', {
+      userIds: [userId!],
+      locations: cachedLocationId ? [cachedLocationId] : [],
+      states: ['assigned'],
+      searchBy: 'caseworker'
+    });
 
-    const response = (await apiClient.post('workallocation/task', {
-      data: body
-    })) as { data: TaskListResponse; status: number };
+    const response = (await withRetry(
+      () =>
+        apiClient.post('workallocation/task', {
+          data: body
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    )) as { data: TaskListResponse; status: number };
     expectTaskList(response.data);
   });
 
@@ -143,10 +147,14 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = (await apiClient.post('workallocation/task', {
-        data: body,
-        throwOnError: false
-      })) as { data: TaskListResponse; status: number };
+      const response = (await withRetry(
+        () =>
+          apiClient.post('workallocation/task', {
+            data: body,
+            throwOnError: false
+          }),
+        { retries: 1, retryStatuses: [502, 504] }
+      )) as { data: TaskListResponse; status: number };
       expectStatus(response.status, StatusSets.guardedBasic);
       if (response.status !== 200) {
         return;
@@ -161,10 +169,14 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = (await apiClient.post('workallocation/task', {
-        data: body,
-        throwOnError: false
-      })) as { data: TaskListResponse; status: number };
+      const response = (await withRetry(
+        () =>
+          apiClient.post('workallocation/task', {
+            data: body,
+            throwOnError: false
+          }),
+        { retries: 1, retryStatuses: [502, 504] }
+      )) as { data: TaskListResponse; status: number };
       if (response.status !== 200) {
         expect(response.status).toBeGreaterThanOrEqual(400);
         return;
@@ -318,32 +330,7 @@ test.describe('Work allocation (read-only)', () => {
 
           if (res.status === 200 || res.status === 204) {
             const after = await fetchTaskById(apiClient, taskId());
-            if (after?.task) {
-              const prevAssignee = before?.task?.assignee ?? before?.task?.assigned_to;
-              const assignee = after.task.assignee ?? after.task.assigned_to;
-              const prevState = (before?.task?.task_state ?? before?.task?.state ?? '').toLowerCase();
-              const newState = (after.task.task_state ?? after.task.state ?? '').toLowerCase();
-              if (['claim', 'assign'].includes(action)) {
-                expect(assignee ?? '').not.toEqual('');
-                if (prevAssignee) {
-                  expect(assignee).not.toEqual('');
-                }
-                if (newState) {
-                  expect(newState).not.toContain('unassigned');
-                }
-              }
-              if (['unclaim', 'unassign', 'cancel'].includes(action)) {
-                if (prevAssignee) {
-                  expect(assignee ?? '').toBe('');
-                }
-                if (newState) {
-                  expect(newState).toMatch(/unassigned|cancel|unclaim/);
-                }
-              }
-              if (action === 'complete') {
-                expect(newState).toMatch(/complete|done|closed/);
-              }
-            }
+            assertStateTransition(action, before?.task, after?.task);
           }
 
           return res;
@@ -453,10 +440,14 @@ async function fetchFirstTask(
     pageSize: 5
   });
 
-  const response = (await apiClient.post('workallocation/task', {
-    data: body,
-    throwOnError: false
-  })) as { data: TaskListResponse; status: number };
+  const response = (await withRetry(
+    () =>
+      apiClient.post('workallocation/task', {
+        data: body,
+        throwOnError: false
+      }),
+    { retries: 1, retryStatuses: [502, 504] }
+  )) as { data: TaskListResponse; status: number };
   const data = response.data;
   if (response.status !== 200 || !Array.isArray(data?.tasks) || data.tasks!.length === 0) {
     return undefined;
@@ -466,4 +457,32 @@ async function fetchFirstTask(
 
 async function fetchTaskById(apiClient: any, id: string): Promise<any> {
   return apiClient.get(`workallocation/task/${id}`, { throwOnError: false });
+}
+
+function assertStateTransition(action: string, before?: any, after?: any) {
+  if (!after) return;
+  const prevAssignee = before?.assignee ?? before?.assigned_to;
+  const assignee = after.assignee ?? after.assigned_to;
+  const prevState = (before?.task_state ?? before?.state ?? '').toLowerCase();
+  const newState = (after.task_state ?? after.state ?? '').toLowerCase();
+  if (['claim', 'assign'].includes(action)) {
+    expect(assignee ?? '').not.toEqual('');
+    if (prevAssignee) {
+      expect(assignee).not.toEqual('');
+    }
+    if (newState) {
+      expect(newState).not.toContain('unassigned');
+    }
+  }
+  if (['unclaim', 'unassign', 'cancel'].includes(action)) {
+    if (prevAssignee) {
+      expect(assignee ?? '').toBe('');
+    }
+    if (newState) {
+      expect(newState).toMatch(/unassigned|cancel|unclaim/);
+    }
+  }
+  if (action === 'complete') {
+    expect(newState).toMatch(/complete|done|closed/);
+  }
 }

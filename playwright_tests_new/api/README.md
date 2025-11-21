@@ -21,10 +21,11 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
 - Required for token bootstrap: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `S2S_URL`, `S2S_MICROSERVICE_NAME` (or `MICROSERVICE`), optional `IDAM_OAUTH2_SCOPE`, `IDAM_RETURN_URL`. Opt out with `API_AUTH_MODE=form`.
 - XSRF handling: set `API_AUTO_XSRF=true` to auto-inject the `X-XSRF-TOKEN` header from stored cookies. By default the header is not injected so negative/CSRF tests can opt-in explicitly (via `withXsrf` or manual headers).
 - Correlation IDs: every API client sets `X-Correlation-Id` per request (UUID) for traceability.
-- Env-driven IDs for deterministic branches: `WA_SAMPLE_TASK_ID`, `WA_SAMPLE_ASSIGNED_TASK_ID`, `ROLE_ACCESS_CASE_ID`, `EM_DOC_ID` (see `playwright_tests_new/api/data/testIds.ts`).
+- Env-driven IDs for deterministic branches: `WA_SAMPLE_TASK_ID`, `WA_SAMPLE_ASSIGNED_TASK_ID`, `ROLE_ACCESS_CASE_ID`, `EM_DOC_ID` (see `playwright_tests_new/api/data/testIds.ts`). If absent, WA tries to seed a task ID via `seedTaskId` and EM uploads a synthetic doc.
 
 ## Reports
 - Odhin report for node-api: `functional-output/tests/playwright-api/odhin-report/xui-playwright.html` (copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing).
+- When raising PRs, you can link the API Odhin report from the build artifacts for quick access.
 
 ## Outputs
 - API call logs are attached automatically per test as `node-api-calls.json`.

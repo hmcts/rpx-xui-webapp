@@ -1,8 +1,32 @@
 # API Test Suite Improvement Plan
 
-> Scope: `playwright_tests_new/api` directory (current branch: `test/EXUI-3710_migrate_api_test`).
+> Scope: `playwright_tests_new/api` directory (branch: `test/EXUI-3710_migrate_api_test`).
 > Goal: Elevate tests to HMCTS engineering standards: security, reliability, maintainability, observability.
-> Status: Planning only – no code changes applied.
+> Status: UPDATED – Phase 0 complete (utilities added), partial Phase 1 refactors applied (2 files), no breaking changes.
+
+---
+## Progress Snapshot (2025-11-21)
+| Phase | Description | Progress | Notes |
+|-------|-------------|----------|-------|
+| 0 | Utilities & types scaffolding | 100% ✅ | `utils/types.ts`, `utils/apiTestUtils.ts` created |
+| 1 | Low-risk helper adoption | 25% 🟡 | `postcode-lookup.api.ts`, `caseshare.api.ts` migrated |
+| 2 | Typing expansion | 12% 🔴 | Interfaces defined; limited in-file adoption |
+| 3 | Consolidation / file splits | 0% 🔴 | Large files untouched (`work-allocation`, `search-and-refdata`) |
+| 4 | Security hardening | 0% 🔴 | No negative/sensitive-field tests yet |
+| 5 | Metrics & evaluation layer | 0% 🔴 | Planned; not implemented |
+
+### Quick Metrics
+| Metric | Current | Target | Status |
+|--------|---------|--------|--------|
+| Files using `withXsrf` | 2 / 8 | 8 / 8 | 🟡 Partial |
+| Remaining inline status arrays | ~48 | < 10 | 🔴 High debt |
+| `any` occurrences (API tests) | 7 | < 10 (justified) | 🟢 Acceptable |
+| Hard-coded IDs | 15+ | 0 | 🔴 Not started |
+| Assertion helpers centralised | 0 | ≥3 | 🔴 Not started |
+| Endpoint coverage attachment | 0 | 1 | 🔴 Not started |
+| Volatility tracking | 0 | Implemented | 🔴 Not started |
+
+---
 
 ---
 ## 1. Current Strengths
@@ -35,14 +59,16 @@
 7. Observability: Consistent logging, optional structured attachments for complex responses.
 8. Gradual Migration: Non‑breaking phased refactor to avoid large diff risk.
 
-## 4. Proposed Utilities & Types (New Files – Not Yet Implemented)
-| File | Purpose | Notes |
-|------|---------|-------|
-| `utils/types.ts` | Interfaces, guards (Task, TaskListResponse, RoleAssignment, CaseShare*, AddressLookup) | Permissive optional fields to avoid brittle tests |
-| `utils/apiTestUtils.ts` | `StatusSets`, `expectStatus()`, `buildXsrfHeaders()`, `withXsrf()` | Reduces repetition & magic arrays |
-| `utils/payloadExtractors.ts` | Functions: `extractCaseShareEntries()`, `extractTaskList()`, `safeArray()` | Simplifies test body logic |
-| `utils/assertions.ts` | Common `expectRoleShape()`, `expectTaskShape()`, `expectNoSensitiveFields()` | Central schema; easier updates |
-| `data/testIds.ts` | Central source for test fixture IDs (case IDs, UUID fallbacks) | Enables environment conditional overrides |
+## 4. Utilities & Types Status
+| File | Purpose | Status | Next Action |
+|------|---------|--------|-------------|
+| `utils/types.ts` | Domain interfaces + guards | ✅ Implemented | Adopt across remaining tests |
+| `utils/apiTestUtils.ts` | Status sets, XSRF helpers | ✅ Implemented | Expand `StatusSets` coverage |
+| `utils/payloadExtractors.ts` | List extraction helpers | ⏳ Not yet | Add after typing adoption (Phase 2) |
+| `utils/assertions.ts` | Central reusable expectations | ⏳ Not yet | Create before large file splits |
+| `data/testIds.ts` | Normalised test IDs/constants | ⏳ Not yet | High priority (remove literals) |
+
+---
 
 ## 5. Detailed Recommendations
 ### 5.1 Typing & Interfaces
@@ -91,28 +117,38 @@
 - Latency: Record duration; warn if p95 > threshold (e.g. 2s for internal APIs).
 - Flakiness: Re-run small set of critical endpoints (user details, role access confirm) nightly; diff structural schema hashes.
 
-### 5.10 Migration Strategy (Phased)
-| Phase | Scope | Actions | Success Criteria |
-|-------|-------|--------|------------------|
-| 0 | Planning | Create utilities & types (no test refactor yet) | New files compile; no existing tests changed |
-| 1 | Low-Risk Refactors | Apply `withXsrf` + status sets to 1–2 files | Green tests; smaller diffs |
-| 2 | Typing Expansion | Introduce interfaces into role-access & case share tests | >50% reduction in `any` usage |
-| 3 | Consolidation | Refactor large `work-allocation.api.ts` using helpers | File complexity reduced (function count, lines) |
-| 4 | Security Hardening | Add negative/absence assertions, multi-role permutations | New tests pass consistently across envs |
-| 5 | Metrics Layer | Add endpoint coverage summary & volatility tracking | Attachment produced; stable pipeline |
+### 5.10 Migration Strategy (Updated)
+| Phase | Status | Refined Actions | Measurable Exit |
+|-------|--------|-----------------|-----------------|
+| 0 Utilities | ✅ Done | (Completed) | Types + helpers available |
+| 1 Adoption Pilot | 🟡 Partial | Convert 3 more small files to helpers (`authenticated-routes`, `cors-and-role-access`, `ccd-endpoints`) | ≥5/8 files using `withXsrf` & status sets |
+| 2 Typing Expansion | 🔴 Pending | Replace remaining `any` with interfaces, add `assertions.ts` | ≤3 justified `any`; shared assertions file present |
+| 3 Consolidation | 🔴 Pending | Split large files; introduce `payloadExtractors.ts` | `work-allocation` & `search-and-refdata` split; cyclomatic complexity reduced |
+| 4 Security Hardening | 🔴 Pending | Add negative tests (CSRF mismatch, sensitive field absence), multi-role permutations | 5+ security-focused tests added |
+| 5 Metrics Layer | 🔴 Pending | Implement coverage + volatility + latency attachments | Artifact published in CI per run |
+
+---
 
 ### 5.11 Risk Mitigation
 - Perform refactors in small batches (<200 LOC change per PR).
 - Keep legacy arrays for first pass alongside new helper until confidence gained, then remove.
 - Use feature flag (`USE_API_HELPERS=1`) to toggle new utilities if rollback needed.
 
-## 6. Prioritized Backlog
-1. Add `utils/types.ts` & `utils/apiTestUtils.ts` (foundational).
-2. Refactor postcode lookup & one role access test to demonstrate helpers.
-3. Roll out status sets + XSRF abstraction across remaining files.
-4. Introduce domain interfaces & replace inline schemas.
-5. Implement security negative tests & sensitive field absence checks.
-6. Add evaluation attachments & volatility analysis.
+## 6. Updated Prioritized Backlog
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 1 | Expand helper adoption to small/simple files | NEW | High | Fast wins build momentum |
+| 2 | Add `data/testIds.ts` and replace literals | NEW | High | Reduces brittleness early |
+| 3 | Extend `StatusSets` to cover all unique combos | NEW | High | Enables broad replacement |
+| 4 | Refactor `search-and-refdata.api.ts` (split optional) | Existing | High | Largest duplication source |
+| 5 | Refactor `work-allocation.api.ts` (split) | Existing | High | Complex, needs staged approach |
+| 6 | Create `utils/assertions.ts` | Existing | Medium | Enables consolidation |
+| 7 | Replace remaining `any` usage with interfaces | Existing | Medium | After assertions util exists |
+| 8 | Add security negative tests & sensitive-field checks | Existing | Medium | Requires assertions util |
+| 9 | Implement metrics layer (coverage, volatility, latency) | Existing | Low | After structural stability |
+| 10 | Add `utils/payloadExtractors.ts` | Existing | Low | Helps file split maintainability |
+
+---
 
 ## 7. Acceptance Criteria (Definition of Done)
 - No `any` used where stable shape known (target: <10 remaining occurrences, all justified).
@@ -128,7 +164,13 @@
 - Confirm threshold for latency warning (1s vs 2s) with team.
 
 ## 9. Next Step
-Review this plan. On approval, proceed with Phase 0 (adding utilities *without modifying existing tests*). Provide a follow-up PR with those files only for quick feedback.
+Proceed with Phase 1 expansion sprint:
+1. Migrate three simple remaining files to helpers (`authenticated-routes.api.ts`, `cors-and-role-access.api.ts`, `ccd-endpoints.api.ts`).
+2. Introduce `data/testIds.ts` and replace hard-coded case/task IDs.
+3. Extend `StatusSets` and batch replace status arrays using search & replace (verify uniqueness before change).
+4. Open PR labeled "API Refactor Phase 1 Expansion" for review.
+
+---
 
 ---
 ## 10. Quick Reference (Glossary)
@@ -137,5 +179,5 @@ Review this plan. On approval, proceed with Phase 0 (adding utilities *without m
 - Negative Assertion: Test verifying absence of data (e.g. secret fields) rather than presence.
 
 ---
-Prepared by: Automation Refactor Plan
-Date: 2025-11-21
+Prepared by: Automation Refactor Plan (Updated)
+Last Updated: 2025-11-21

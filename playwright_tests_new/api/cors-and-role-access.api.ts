@@ -1,11 +1,12 @@
 import { test, expect, request } from '@playwright/test';
 import { config } from '../../test_codecept/integration/tests/config/config';
+import { expectStatus, StatusSets } from './utils/apiTestUtils';
 
 const baseURL = config.baseUrl.replace(/\/+$/, '');
 
 const origins = [
-  { label: 'allowed', origin: baseURL, expected: [200, 204, 400, 401, 403] },
-  { label: 'disallowed', origin: 'https://example.invalid', expected: [200, 204, 400, 401, 403, 404] }
+  { label: 'allowed', origin: baseURL, expected: StatusSets.corsAllowed },
+  { label: 'disallowed', origin: 'https://example.invalid', expected: StatusSets.corsDisallowed }
 ];
 
 test.describe('CORS and OPTIONS', () => {
@@ -18,7 +19,7 @@ test.describe('CORS and OPTIONS', () => {
           headers: { origin },
           failOnStatusCode: false
         });
-        expect(expected).toContain(res.status());
+        expectStatus(res.status(), expected);
       } catch (error) {
         const message = (error as Error)?.message ?? '';
         if (/ENOTFOUND|ECONNREFUSED/.test(message)) {

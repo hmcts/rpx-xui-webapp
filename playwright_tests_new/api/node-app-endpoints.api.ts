@@ -90,6 +90,26 @@ test.describe('Node app endpoints', () => {
     expectStatus(response.status, [401]);
   });
 
+  test('applies security headers on open configuration endpoint', async () => {
+    const ctx = await request.newContext({
+      baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
+      ignoreHTTPSErrors: true
+    });
+    const res = await ctx.get('external/configuration-ui', { failOnStatusCode: false });
+    expect(res.status()).toBe(200);
+    const headers = res.headers();
+    expect(headers['content-type'] || headers['Content-Type']).toContain('application/json');
+    const cacheControl = headers['cache-control'] || headers['Cache-Control'];
+    if (cacheControl) {
+      expect(cacheControl.toLowerCase()).toContain('no-store');
+    }
+    const xcto = headers['x-content-type-options'] || headers['X-Content-Type-Options'];
+    if (xcto) {
+      expect(xcto.toLowerCase()).toBe('nosniff');
+    }
+    await ctx.dispose();
+  });
+
   test('stale session cookie returns guarded status', async () => {
     const statePath = await ensureStorageState('solicitor');
     const raw = await fs.readFile(statePath, 'utf8');

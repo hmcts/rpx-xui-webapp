@@ -189,6 +189,29 @@ test.describe('Evidence Manager & Documents', () => {
     await ctx.dispose();
   });
 
+  test('rejects document upload with unsupported mime type', async () => {
+    const storageState = await ensureStorageState('solicitor');
+    const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+    const ctx = await playwrightRequest.newContext({
+      baseURL: config.baseUrl.replace(/\/+$/, ''),
+      storageState,
+      ignoreHTTPSErrors: true
+    });
+    const res = await ctx.post('documents', {
+      multipart: {
+        files: {
+          name: 'file',
+          mimeType: 'application/x-msdownload',
+          buffer: Buffer.from('bogus exe content')
+        }
+      },
+      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
+      failOnStatusCode: false
+    });
+    expect([400, 401, 403, 415, 500]).toContain(res.status());
+    await ctx.dispose();
+  });
+
   test('returns guarded status for invalid document id on delete', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const bogusId = uuid();

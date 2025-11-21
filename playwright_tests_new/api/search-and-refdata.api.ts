@@ -39,7 +39,11 @@ test.describe('Global search', () => {
     if (response.status === 200 && response.data) {
       expect(response.data).toHaveProperty('results');
       if (Array.isArray((response.data as any).results) && (response.data as any).results.length > 0) {
-        expect((response.data as any).results[0]).toEqual(expect.anything());
+        const first = (response.data as any).results[0];
+        expect(first).toEqual(expect.objectContaining({ }));
+        if (first.caseReference) {
+          expect(typeof first.caseReference).toBe('string');
+        }
       }
     }
   });
@@ -58,6 +62,9 @@ test.describe('Global search', () => {
     if (response.status === 200 && response.data) {
       if (typeof response.data.total === 'number' && Array.isArray(response.data.cases)) {
         expect(response.data.total).toBeGreaterThanOrEqual(0);
+        if (response.data.cases.length > 0) {
+          expect(response.data.cases[0]).toEqual(expect.anything());
+        }
       } else {
         expect(response.data).toEqual(expect.anything());
       }

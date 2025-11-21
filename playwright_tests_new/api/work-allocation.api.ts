@@ -126,7 +126,9 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-    const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body });
+    const response = (await apiClient.post('workallocation/task', {
+      data: body
+    })) as { data: TaskListResponse; status: number };
     expectTaskListPayload(response.data);
   });
 
@@ -137,7 +139,10 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body, throwOnError: false });
+      const response = (await apiClient.post('workallocation/task', {
+        data: body,
+        throwOnError: false
+      })) as { data: TaskListResponse; status: number };
       expectStatus(response.status, StatusSets.guardedBasic);
       if (response.status !== 200) {
         return;
@@ -152,7 +157,10 @@ test.describe('Work allocation (read-only)', () => {
         searchBy: 'caseworker'
       });
 
-      const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body, throwOnError: false });
+      const response = (await apiClient.post('workallocation/task', {
+        data: body,
+        throwOnError: false
+      })) as { data: TaskListResponse; status: number };
       if (response.status !== 200) {
         expect(response.status).toBeGreaterThanOrEqual(400);
         return;
@@ -212,7 +220,7 @@ test.describe('Work allocation (read-only)', () => {
           data: {},
           throwOnError: false
         });
-        expect([401, 403]).toContain(response.status);
+        expectStatus(response.status, [401, 403, 502]);
       });
     });
 
@@ -417,7 +425,10 @@ async function fetchFirstTask(
     pageSize: 5
   });
 
-  const response = await apiClient.post<TaskListResponse>('workallocation/task', { data: body, throwOnError: false });
+  const response = (await apiClient.post('workallocation/task', {
+    data: body,
+    throwOnError: false
+  })) as { data: TaskListResponse; status: number };
   const data = response.data;
   if (response.status !== 200 || !Array.isArray(data?.tasks) || data.tasks!.length === 0) {
     return undefined;

@@ -37,7 +37,7 @@
     "test:node": "cd api && yarn coverage",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "test": "cd api && yarn coverage",
-    "test:api": "mkdir -p functional-output/tests/api_functional && PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-api/odhin-report npx playwright test --project node-api && if [ -d \"functional-output/tests/playwright-api/odhin-report\" ]; then cp -r functional-output/tests/playwright-api/odhin-report functional-output/tests/api_functional/; fi",
+    "test:api": "PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-api/odhin-report npx playwright test --project node-api && node ./scripts/copy-odhin-report.js",
     "test:apiGateway": "yarn test:api",
     "test:coverage": "yarn test:coverage:ng",
     "test:coverage:all": "yarn test:coverage:ng && yarn test:coverage:node",

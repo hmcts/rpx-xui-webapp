@@ -1,6 +1,6 @@
 import { test as base, expect, request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
-import type { Logger } from 'winston';
+import type { Logger as WinstonLogger } from 'winston';
 import {
   ApiClient as PlaywrightApiClient,
   type ApiLogEntry,
@@ -17,7 +17,7 @@ export interface ApiFixtures {
   anonymousClient: PlaywrightApiClient;
   apiClientFor: (role: ApiUserRole) => Promise<PlaywrightApiClient>;
   apiLogs: ApiLogEntry[];
-  logger: Logger;
+  logger: WinstonLogger;
 }
 
 export const test = base.extend<ApiFixtures>({
@@ -74,7 +74,7 @@ export { expect, buildApiAttachment };
 
 async function createNodeApiClient(
   role: ApiUserRole | 'anonymous',
-  logger: Logger,
+  logger: WinstonLogger,
   entries: ApiLogEntry[]
 ): Promise<PlaywrightApiClient> {
   const storageState = role === 'anonymous' ? undefined : await ensureStorageState(role);

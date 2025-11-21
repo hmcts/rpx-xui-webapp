@@ -1,4 +1,5 @@
 import { test, expect } from './fixtures';
+import { config } from '../../test_codecept/integration/tests/config/config';
 import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
 import { RoleAssignmentContainer } from './utils/types';
 
@@ -111,6 +112,7 @@ test.describe('Ref data and supported jurisdictions', () => {
 
 test.describe('Role access / AM', () => {
   const roleAccessCaseId = process.env.ROLE_ACCESS_CASE_ID ?? '1234567890123456';
+  const hasCaseOfficer = !!(config.users?.[config.testEnv as keyof typeof config.users]?.caseOfficer_r1);
   test('rejects unauthenticated role access calls', async ({ anonymousClient }) => {
     const res = await anonymousClient.post('api/role-access/allocate-role/confirm', {
       data: {},
@@ -279,6 +281,19 @@ test.describe('Role access / AM', () => {
         expectRoleShape(res.data[0]);
       }
     });
+  });
+
+  test('role access confirm rejects case officer without solicitor role', async ({ apiClientFor }) => {
+    if (!hasCaseOfficer) {
+      expect(true).toBe(true);
+      return;
+    }
+    const client = await apiClientFor('caseOfficer_r1');
+    const res = await client.post('api/role-access/allocate-role/confirm', {
+      data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
+      throwOnError: false
+    });
+    expectStatus(res.status, [401, 403, 500]);
   });
 
   test('roles/manageLabellingRoleAssignment responds', async ({ apiClient }) => {

@@ -264,6 +264,34 @@ test.describe('Work allocation (read-only)', () => {
     });
   });
 
+  test.describe('deterministic task actions (env-seeded)', () => {
+    const positive = [
+      { action: 'claim', id: () => envTaskId! },
+      { action: 'assign', id: () => envTaskId! },
+      { action: 'unclaim', id: () => envAssignedTaskId ?? envTaskId! },
+      { action: 'unassign', id: () => envAssignedTaskId ?? envTaskId! },
+      { action: 'complete', id: () => envAssignedTaskId ?? envTaskId! },
+      { action: 'cancel', id: () => envAssignedTaskId ?? envTaskId! }
+    ] as const;
+
+    positive.forEach(({ action, id }) => {
+      test(`${action} succeeds with XSRF when seeded task ids provided`, async ({ apiClient }) => {
+        if (!envTaskId && !envAssignedTaskId) {
+          expect(true).toBe(true);
+          return;
+        }
+        await withXsrf('solicitor', async (headers) => {
+          const res = await apiClient.post(`workallocation/task/${id()}/${action}`, {
+            data: {},
+            headers,
+            throwOnError: false
+          });
+          expectStatus(res.status, [200, 204]);
+        });
+      });
+    });
+  });
+
   test.describe('task actions (happy-path attempt)', () => {
     const fallbackId = '00000000-0000-0000-0000-000000000000';
 

@@ -1,7 +1,6 @@
 // Minimal mock response for case list search endpoint used in integration test.
 // Shape based on ngIntegration CCDApi.getWorkbasketCases() but trimmed to required columns.
-import { faker } from '@faker-js/faker';
-export function buildCaseListMock(caseReference: string, field: string = faker.lorem.word()) {
+export function buildCaseListMock(caseReference: string = '#1763-5442-4345-7183') {
     return {
         columns: [
             {
@@ -78,15 +77,15 @@ export function buildCaseListMock(caseReference: string, field: string = faker.l
                 case_id: caseReference,
                 supplementary_data: null,
                 case_fields: {
-                    TextField0: field,
+                    TextField0: 'alpha',
                     "[STATE]": "CaseCreated",
                     "[SECURITY_CLASSIFICATION]": "PUBLIC",
                     "[JURISDICTION]": "DIVORCE",
                     "[LAST_STATE_MODIFIED_DATE]": "2025-05-12T15:24:53.977",
                     "[CREATED_DATE]": "2025-05-12T15:24:53.977",
-                    TextField2: field,
+                    TextField2: 'alpha',
                     "[CASE_TYPE]": "xuiTestJurisdiction",
-                    TextField1: field,
+                    TextField1: 'alpha',
                     "[CASE_REFERENCE]": caseReference,
                     "[LAST_MODIFIED_DATE]": "2025-10-09T13:43:59.362"
                 },
@@ -95,20 +94,20 @@ export function buildCaseListMock(caseReference: string, field: string = faker.l
                 case_id: "1747063493980829",
                 supplementary_data: null,
                 case_fields: {
-                    TextField0: "cake",
+                    TextField0: "Luna",
                     "[STATE]": "CaseCreated",
                     "[SECURITY_CLASSIFICATION]": "PUBLIC",
                     "[JURISDICTION]": "DIVORCE",
                     "[LAST_STATE_MODIFIED_DATE]": "2025-05-12T15:24:53.977",
                     "[CREATED_DATE]": "2025-05-12T15:24:53.977",
-                    TextField2: 'is',
+                    TextField2: 'Cute',
                     "[CASE_TYPE]": "xuiTestJurisdiction",
-                    TextField1: 'not true',
+                    TextField1: 'Potatoes are yummy',
                     "[CASE_REFERENCE]": "1747063493980829",
                     "[LAST_MODIFIED_DATE]": "2025-10-09T13:43:59.362"
                 },
             }],
-        total: 1
+        total: 2
     };
 }
 

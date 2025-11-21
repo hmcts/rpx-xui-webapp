@@ -3,7 +3,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
 // Load stub mapping JSON formerly used by WireMock.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const searchCasesStub = require('../../../../wiremock/mappings/searchCases.json');
+const searchCasesStub = require('../../mocks');
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
@@ -47,6 +47,14 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 			const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
 			expect(table.length).toBe(2);
 			expect(table[0]['Case reference']).toBe(caseNumber);
+			// Additional field checks from stub mapping
+			expect(table[0]['Text Field 0']).toBe('alpha');
+			expect(table[0]['Text Field 1']).toBe('alpha');
+			expect(table[0]['Text Field 2']).toBe('alpha');
+			expect(table[1]['Case reference']).toBe('1747063493980829');
+			expect(table[1]['Text Field 0']).toBe('Luna');
+			expect(table[1]['Text Field 1']).toBe('Potatoes are yummy');
+			expect(table[1]['Text Field 2']).toBe('Cute');
 		});
 	});
 });

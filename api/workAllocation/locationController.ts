@@ -2,9 +2,9 @@ import { NextFunction, Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 import { CourtVenue, Location } from './interfaces/location';
 import { commonGetFullLocation, getRegionLocationsForServices, handleLocationGet } from './locationService';
-import { prepareGetLocationByIdUrl } from './util';
-
-export const baseUrl: string = 'http://localhost:8080';
+import { prepareGetSpecificLocationUrl } from './util';
+import { getConfigValue } from '../configuration';
+import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 
 // TODO: Get rid of this - does not connect with API and cannot see it used elsewhere
 /**
@@ -14,7 +14,8 @@ export const baseUrl: string = 'http://localhost:8080';
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const path: string = prepareGetLocationByIdUrl(baseUrl, req.params.locationId);
+    const locationBaseUrl = getConfigValue(SERVICES_LOCATION_API_PATH);
+    const path: string = prepareGetSpecificLocationUrl(locationBaseUrl, req.params.locationId);
     const locationById = await handleLocationGet(path, req);
 
     res.status(200);

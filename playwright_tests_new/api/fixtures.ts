@@ -1,6 +1,5 @@
 import { test as base, expect, request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
-import type { Logger as WinstonLogger } from 'winston';
 import {
   ApiClient as PlaywrightApiClient,
   type ApiLogEntry,
@@ -11,13 +10,14 @@ import { config } from '../../test_codecept/integration/tests/config/config';
 import { ensureStorageState, type ApiUserRole } from './auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
+type LoggerInstance = ReturnType<typeof createLogger>;
 
 export interface ApiFixtures {
   apiClient: PlaywrightApiClient;
   anonymousClient: PlaywrightApiClient;
   apiClientFor: (role: ApiUserRole) => Promise<PlaywrightApiClient>;
   apiLogs: ApiLogEntry[];
-  logger: WinstonLogger;
+  logger: LoggerInstance;
 }
 
 export const test = base.extend<ApiFixtures>({
@@ -74,10 +74,13 @@ export { expect, buildApiAttachment };
 
 async function createNodeApiClient(
   role: ApiUserRole | 'anonymous',
-  logger: WinstonLogger,
+  logger: LoggerInstance,
   entries: ApiLogEntry[]
 ): Promise<PlaywrightApiClient> {
-  const storageState = role === 'anonymous' ? undefined : await ensureStorageState(role);
+  const storageState =
+    role === 'anonymous'
+      ? undefined
+      : await ensureStorageState(role as ApiUserRole);
   const buildContext = async (statePath?: string) =>
     request.newContext({
       baseURL: baseUrl,

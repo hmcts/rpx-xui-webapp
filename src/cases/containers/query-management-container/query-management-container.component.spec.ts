@@ -26,7 +26,10 @@ import { RaiseQueryErrorMessage } from '../../models/raise-query-error-message.e
 import { QueryManagementContainerComponent } from './query-management-container.component';
 import { FormControl } from '@angular/forms';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class MockRpxTranslatePipe implements PipeTransform {
   transform(value: string): string {
     return value;

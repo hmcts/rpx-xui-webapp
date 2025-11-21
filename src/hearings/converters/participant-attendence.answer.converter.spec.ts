@@ -5,7 +5,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { initialState, partyChannelsRefData, partySubChannelsRefData } from '../hearing.test.data';
-import { LaCaseStatus, ListingStatus, PartyType, UnavailabilityType } from '../models/hearings.enum';
+import { HearingListingStatusEnum, LaCaseStatus, PartyType, UnavailabilityType } from '../models/hearings.enum';
 import { State } from '../store';
 import { ParticipantAttendenceAnswerConverter } from './participant-attendence.answer.converter';
 
@@ -146,7 +146,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
             responseVersion: 1,
             receivedDateTime: '2021-11-30T09:00:00.000Z',
             laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-            listingStatus: ListingStatus.FIXED,
+            listingStatus: HearingListingStatusEnum.COMPLETED,
             hearingCancellationReason: '',
             hearingDaySchedule: [{
               hearingStartDateTime: '2022-12-12T09:00:00.000Z',
@@ -300,7 +300,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
             responseVersion: 1,
             receivedDateTime: '2021-11-30T09:00:00.000Z',
             laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-            listingStatus: ListingStatus.FIXED,
+            listingStatus: HearingListingStatusEnum.COMPLETED,
             hearingCancellationReason: '',
             hearingDaySchedule: [{
               hearingStartDateTime: '2022-12-12T09:00:00.000Z',

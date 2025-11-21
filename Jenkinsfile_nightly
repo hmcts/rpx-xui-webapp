@@ -92,7 +92,7 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'mochawesome.html',
             reportName           : 'API Functional Test'
           ])
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
         }
       }
       

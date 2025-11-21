@@ -19,6 +19,21 @@ try {
   // Best-effort clean copy
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
+
+  // Create a lightweight redirect so Jenkins HTML publisher (expecting mochawesome.html) links to Odhin.
+  const redirectHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="refresh" content="0; url=./odhin-report/xui-playwright.html" />
+    <link rel="canonical" href="./odhin-report/xui-playwright.html" />
+    <title>Playwright API Report</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href="./odhin-report/xui-playwright.html">Playwright API Report</a>...</p>
+  </body>
+</html>
+`;
+  fs.writeFileSync(path.join(targetRoot, 'mochawesome.html'), redirectHtml, 'utf8');
 } catch (error) {
   console.warn(`copy-odhin-report: ${error.message}`);
   process.exit(0); // do not fail the build if copy fails

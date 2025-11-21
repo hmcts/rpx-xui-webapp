@@ -149,7 +149,7 @@ withPipeline(type, product, component) {
                   reportFiles          : 'mochawesome.html',
                   reportName           : 'PREVIEW API Functional Test'
                 ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
             }
         }
                 stage('Integration Tests') {
@@ -205,7 +205,7 @@ withPipeline(type, product, component) {
                   reportFiles          : 'mochawesome.html',
                   reportName           : 'AAT API Functional Test'
                 ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
             }
         }
                 stage('Integration Tests') {

@@ -227,7 +227,15 @@ async function tryReadState(storagePath: string): Promise<{ cookies?: Array<{ na
 }
 
 function isTokenBootstrapEnabled(): boolean {
-  const flag = process.env.API_AUTH_MODE ?? process.env.API_USE_TOKEN_LOGIN;
-  if (!flag) return false;
-  return ['token', 'true', '1', 'yes'].includes(flag.toLowerCase());
+  const mode = process.env.API_AUTH_MODE ?? process.env.API_USE_TOKEN_LOGIN;
+  if (mode && ['form', 'off', 'false', '0', 'no'].includes(mode.toLowerCase())) {
+    return false;
+  }
+  if (mode && ['token', 'true', '1', 'yes'].includes(mode.toLowerCase())) {
+    return true;
+  }
+  // Default: attempt token bootstrap when required IDAM/S2S env vars exist; otherwise fall back to form.
+  const hasIdamEnv = !!process.env.IDAM_SECRET && !!process.env.IDAM_WEB_URL && !!process.env.IDAM_TESTING_SUPPORT_URL;
+  const hasS2S = !!process.env.S2S_URL;
+  return hasIdamEnv && hasS2S;
 }

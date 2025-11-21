@@ -17,8 +17,8 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
   `yarn test:api:pw:coverage`
 
 ## Authentication model
-- Default: the `auth.ts` helper signs in via HTTP (no browser) by following the `/auth/login` form flow with the configured username/password, storing the resulting Playwright storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`.
-- **Token/S2S bootstrap (optional):** set `API_AUTH_MODE=token` (or `API_USE_TOKEN_LOGIN=true`) to attempt login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken`. Required env vars: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `IDAM_OAUTH2_SCOPE` (optional), `IDAM_RETURN_URL` (optional), `S2S_URL`, and `S2S_MICROSERVICE_NAME`/`MICROSERVICE`. If token bootstrap fails, the helper falls back to the form flow automatically.
+- Default behaviour: the `auth.ts` helper will first attempt token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken` when the required env vars exist. If token bootstrap fails or the env vars are absent, it falls back to the `/auth/login` form flow and caches storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`.
+- Required for token bootstrap: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `S2S_URL`, `S2S_MICROSERVICE_NAME` (or `MICROSERVICE`), optional `IDAM_OAUTH2_SCOPE`, `IDAM_RETURN_URL`. Opt out with `API_AUTH_MODE=form`.
 - XSRF handling: set `API_AUTO_XSRF=true` to auto-inject the `X-XSRF-TOKEN` header from stored cookies. By default the header is not injected so negative/CSRF tests can opt-in explicitly (via `withXsrf` or manual headers).
 
 ## Outputs

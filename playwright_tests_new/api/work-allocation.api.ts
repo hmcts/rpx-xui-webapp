@@ -11,6 +11,8 @@ test.describe('Work allocation (read-only)', () => {
   let userId: string | undefined;
   let sampleTaskId: string | undefined;
   let sampleMyTaskId: string | undefined;
+  const envTaskId = process.env.WA_SAMPLE_TASK_ID;
+  const envAssignedTaskId = process.env.WA_SAMPLE_ASSIGNED_TASK_ID;
 
   test.beforeAll(async ({ apiClient }) => {
     const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
@@ -266,12 +268,12 @@ test.describe('Work allocation (read-only)', () => {
     const fallbackId = '00000000-0000-0000-0000-000000000000';
 
     const positiveActions: Array<{ action: string; taskId: () => string }> = [
-      { action: 'claim', taskId: () => sampleTaskId ?? fallbackId },
-      { action: 'unclaim', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'complete', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'assign', taskId: () => sampleTaskId ?? fallbackId },
-      { action: 'unassign', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'cancel', taskId: () => sampleMyTaskId ?? sampleTaskId ?? fallbackId }
+      { action: 'claim', taskId: () => envTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'unclaim', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'complete', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'assign', taskId: () => envTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'unassign', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId },
+      { action: 'cancel', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId }
     ];
 
     positiveActions.forEach(({ action, taskId }) => {

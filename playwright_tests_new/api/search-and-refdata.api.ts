@@ -110,6 +110,7 @@ test.describe('Ref data and supported jurisdictions', () => {
 });
 
 test.describe('Role access / AM', () => {
+  const roleAccessCaseId = process.env.ROLE_ACCESS_CASE_ID ?? '1234567890123456';
   test('rejects unauthenticated role access calls', async ({ anonymousClient }) => {
     const res = await anonymousClient.post('api/role-access/allocate-role/confirm', {
       data: {},
@@ -146,7 +147,7 @@ test.describe('Role access / AM', () => {
 
   test('roles/access-get responds', async ({ apiClient }) => {
     const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/roles/access-get', {
-      data: { caseIds: ['1234567890123456'] },
+      data: { caseIds: [roleAccessCaseId] },
       throwOnError: false
     });
     expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
@@ -180,7 +181,7 @@ test.describe('Role access / AM', () => {
 
   test('roles/access-get-by-caseId responds with roles when present', async ({ apiClient }) => {
     const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/roles/access-get-by-caseId', {
-      data: { case_id: '1234567890123456' },
+      data: { case_id: roleAccessCaseId },
       throwOnError: false
     });
     expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
@@ -205,7 +206,7 @@ test.describe('Role access / AM', () => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/allocate-role/confirm', {
         data: {
-          caseId: '1234567890123456',
+          caseId: roleAccessCaseId,
           caseType: 'xuiTestCaseType',
           jurisdiction: 'DIVORCE',
           roleCategory: 'LEGAL_OPERATIONS',
@@ -225,7 +226,7 @@ test.describe('Role access / AM', () => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.post('api/role-access/allocate-role/reallocate', {
         data: {
-          caseId: '1234567890123456',
+          caseId: roleAccessCaseId,
           caseType: 'xuiTestCaseType',
           jurisdiction: 'DIVORCE',
           roleCategory: 'LEGAL_OPERATIONS',
@@ -269,7 +270,7 @@ test.describe('Role access / AM', () => {
   test('roles/post responds with XSRF header', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.post<RoleAssignmentContainer>('api/role-access/roles/post', {
-        data: { caseId: '1234567890123456', caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
+        data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
         headers,
         throwOnError: false
       });
@@ -283,7 +284,7 @@ test.describe('Role access / AM', () => {
   test('roles/manageLabellingRoleAssignment responds', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.post('api/role-access/roles/manageLabellingRoleAssignment/1234567890123456', {
-        data: { caseId: '1234567890123456' },
+        data: { caseId: roleAccessCaseId },
         headers,
         throwOnError: false
       });

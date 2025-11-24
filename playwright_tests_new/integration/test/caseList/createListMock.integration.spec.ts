@@ -1,25 +1,24 @@
-import { faker } from '@faker-js/faker';
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
-import {buildCaseListMock} from '../../mocks/caseList.mock';
+import { buildCaseListMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
 const mockResponse = buildCaseListMock(124);
 
 test.beforeAll(() => {
-  const { cookies, storageFile } = loadSessionCookies(userIdentifier);
-  sessionCookies = cookies;
-  if (cookies.length === 0) {
-    console.warn(`No cookies loaded for ${userIdentifier}; file checked: ${storageFile}`);
-  }
+	const { cookies, storageFile } = loadSessionCookies(userIdentifier);
+	sessionCookies = cookies;
+	if (cookies.length === 0) {
+		console.warn(`No cookies loaded for ${userIdentifier}; file checked: ${storageFile}`);
+	}
 });
 
 test.beforeEach(async ({ page, config }) => {
-  if (sessionCookies.length) {
-    await page.context().addCookies(sessionCookies);
-  }
-  await page.goto(config.urls.manageCaseBaseUrl);
+	if (sessionCookies.length) {
+		await page.context().addCookies(sessionCookies);
+	}
+	await page.goto(config.urls.manageCaseBaseUrl);
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {
@@ -32,7 +31,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 			});
 		});
 
-		await test.step('Navigate to the search page', async () => {			
+		await test.step('Navigate to the search page', async () => {
 			await caseListPage.goto();
 		});
 

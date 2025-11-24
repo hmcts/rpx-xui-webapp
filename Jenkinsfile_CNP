@@ -138,18 +138,25 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
 
         stage('API Tests') {
-            try {
-                yarnBuilder.yarn('test:api')
-            } finally {
-                publishHTML([
-                  allowMissing         : true,
-                  alwaysLinkToLastBuild: true,
-                  keepAll              : true,
-                  reportDir            : 'functional-output/tests/api_functional/',
-                  reportFiles          : 'mochawesome.html',
-                  reportName           : 'PREVIEW API Functional Test'
-                ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+            environment {
+                FUNCTIONAL_TESTS_WORKERS = '6'
+            }
+            steps {
+                script {
+                    try {
+                        yarnBuilder.yarn('test:api')
+                    } finally {
+                        publishHTML([
+                          allowMissing         : true,
+                          alwaysLinkToLastBuild: true,
+                          keepAll              : true,
+                          reportDir            : 'functional-output/tests/api_functional/',
+                          reportFiles          : 'mochawesome.html',
+                          reportName           : 'PREVIEW API Functional Test'
+                        ])
+                        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                    }
+                }
             }
         }
                 stage('Integration Tests') {

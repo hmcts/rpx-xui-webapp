@@ -88,8 +88,8 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : 'functional-output/tests/api_functional/',
-            reportFiles          : 'mochawesome.html',
+            reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+            reportFiles          : 'xui-playwright.html',
             reportName           : 'API Functional Test'
           ])
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'

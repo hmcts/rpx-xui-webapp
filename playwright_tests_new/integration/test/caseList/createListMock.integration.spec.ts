@@ -5,7 +5,7 @@ import {buildCaseListMock} from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
-const mockResponse = buildCaseListMock(24);
+const mockResponse = buildCaseListMock(124);
 
 test.beforeAll(() => {
   const { cookies, storageFile } = loadSessionCookies(userIdentifier);
@@ -36,7 +36,8 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 			await caseListPage.goto();
 		});
 
-		await test.step('Verify user can see a list of cases returned by the mock api call', async () => {
+		await test.step('Verify user can see a list shows the expected layout given the mock response', async () => {
+			expect(await caseListPage.caseListResultsAmount.textContent()).toBe(`Showing 1 to ${Math.min(mockResponse.results.length, 25)} of ${mockResponse.total} results`);
 			const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
 			expect(table.length).toBe(mockResponse.results.length);
 			for (let i = 0; i < mockResponse.results.length; i++) {
@@ -48,7 +49,4 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 			}
 		});
 	});
-
-
 });
-

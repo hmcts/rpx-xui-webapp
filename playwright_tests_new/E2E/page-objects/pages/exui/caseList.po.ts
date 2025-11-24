@@ -7,6 +7,7 @@ export class CaseListPage extends Base {
   readonly jurisdictionSelect = this.page.locator("#wb-jurisdiction")
   readonly caseTypeSelect = this.page.locator("#wb-case-type")
   readonly textField0Input = this.page.locator("#TextField0")
+  readonly caseListResultsAmount = this.page.locator("#search-result .pagination-top");
 
   constructor(page: Page) {
     super(page);

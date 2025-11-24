@@ -72,7 +72,8 @@ export function buildCaseListMock(rowCount: number = 2) {
         }
     ];
 
-    const results = Array.from({ length: rowCount }, (_, i) => {
+    const maxResults = 25;
+    const results = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
         const caseReference = `#${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}`;
         return {
             case_id: caseReference,

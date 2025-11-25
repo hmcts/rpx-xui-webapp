@@ -4,7 +4,7 @@ import { buildCaseListMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
-const mockResponse = buildCaseListMock(124);
+const caseListMockResponse = buildCaseListMock(124);
 
 test.beforeAll(() => {
 	const { cookies, storageFile } = loadSessionCookies(userIdentifier);
@@ -26,7 +26,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 
 		await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
 			await page.route('**/data/internal/searchCases*', async route => {
-				const body = JSON.stringify(mockResponse);
+				const body = JSON.stringify(caseListMockResponse);
 				await route.fulfill({ status: 200, contentType: 'application/json', body });
 			});
 		});
@@ -36,11 +36,11 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 		});
 
 		await test.step('Verify user can see a list shows the expected layout given the mock response', async () => {
-			expect(await caseListPage.caseListResultsAmount.textContent()).toBe(`Showing 1 to ${Math.min(mockResponse.results.length, 25)} of ${mockResponse.total} results`);
+			expect(await caseListPage.caseListResultsAmount.textContent()).toBe(`Showing 1 to ${Math.min(caseListMockResponse.results.length, 25)} of ${caseListMockResponse.total} results`);
 			const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
-			expect(table.length).toBe(mockResponse.results.length);
-			for (let i = 0; i < mockResponse.results.length; i++) {
-				const expectedFields = mockResponse.results[i].case_fields;
+			expect(table.length).toBe(caseListMockResponse.results.length);
+			for (let i = 0; i < caseListMockResponse.results.length; i++) {
+				const expectedFields = caseListMockResponse.results[i].case_fields;
 				expect(table[i]['Case reference']).toBe(expectedFields['[CASE_REFERENCE]']);
 				expect(table[i]['Text Field 0']).toBe(expectedFields['TextField0']);
 				expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);

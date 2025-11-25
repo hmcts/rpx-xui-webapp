@@ -1,9 +1,11 @@
-import { test, expect, buildApiAttachment } from './fixtures';
-import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
-import { expectStatus, StatusSets } from './utils/apiTestUtils';
-import { request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
+
+import { request } from '@playwright/test';
+
+import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
 import { ensureStorageState } from './auth';
+import { test, expect, buildApiAttachment } from './fixtures';
+import { expectStatus, StatusSets } from './utils/apiTestUtils';
 
 const nodeAppDataModels = require('../../test_codecept/dataModels/nodeApp');
 

@@ -1,14 +1,16 @@
-import { test as base, expect, request } from '@playwright/test';
+import { randomUUID } from 'crypto';
 import { promises as fs } from 'node:fs';
+
 import {
   ApiClient as PlaywrightApiClient,
   type ApiLogEntry,
   buildApiAttachment,
   createLogger
 } from '@hmcts/playwright-common';
+import { test as base, expect, request } from '@playwright/test';
+
 import { config } from '../../test_codecept/integration/tests/config/config';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
-import { randomUUID } from 'crypto';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;

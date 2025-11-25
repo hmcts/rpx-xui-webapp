@@ -1,13 +1,15 @@
-import { v4 as uuid } from 'uuid';
-import { test, expect } from './fixtures';
-import { request as playwrightRequest } from '@playwright/test';
 import { promises as fs } from 'node:fs';
+
+import { request as playwrightRequest } from '@playwright/test';
+import { v4 as uuid } from 'uuid';
+
 import { config } from '../../test_codecept/integration/tests/config/config';
-import { EM_DOC_ID } from './data/testIds';
-import { AnnotationPayload, BookmarkPayload } from './utils/types';
-import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
-import { expectAnnotationShape, expectBookmarkShape } from './utils/assertions';
 import { ensureStorageState, getStoredCookie } from './auth';
+import { test, expect } from './fixtures';
+import { EM_DOC_ID } from './data/testIds';
+import { expectAnnotationShape, expectBookmarkShape } from './utils/assertions';
+import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
+import { AnnotationPayload, BookmarkPayload } from './utils/types';
 
 const configuredDocId = EM_DOC_ID ?? config.em[config.testEnv as keyof typeof config.em]?.docId;
 let sharedDocId: string | undefined;

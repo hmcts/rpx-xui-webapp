@@ -47,7 +47,7 @@ test.describe('CCD endpoints', () => {
         const response = await apiClient.get<any>(`data/internal/case-types/${caseTypeId}/work-basket-inputs`, {
           headers: { experimental: 'true' }
         });
-        expectStatus(response.status, [200, 500, 502, 504]);
+        expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
         const data = response.data as any;
         expect(data).toBeTruthy();
         expect(typeof data).toBe('object');

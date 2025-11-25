@@ -1,14 +1,15 @@
-import { test, expect } from './fixtures';
-import { config } from '../../test_codecept/integration/tests/config/config';
-import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
-import { RoleAssignmentContainer } from './utils/types';
-import { expectRoleAssignmentShape } from './utils/assertions';
-import { ROLE_ACCESS_CASE_ID } from './data/testIds';
-import { request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
+
+import { request } from '@playwright/test';
+
+import { config } from '../../test_codecept/integration/tests/config/config';
 import { ensureStorageState } from './auth';
-import { extractCaseShareEntries } from './utils/types';
+import { test, expect } from './fixtures';
+import { ROLE_ACCESS_CASE_ID } from './data/testIds';
+import { expectRoleAssignmentShape } from './utils/assertions';
+import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
+import { RoleAssignmentContainer } from './utils/types';
 
 test.describe('Global search', () => {
   test('lists available services', async ({ apiClient }) => {
@@ -146,7 +147,7 @@ test.describe('Role access / AM', () => {
       headers: { 'X-XSRF-TOKEN': 'invalid-token' },
       throwOnError: false
     });
-    expectStatus(res.status, [400, 401, 403, 409, 500]);
+    expectStatus(res.status, StatusSets.allocateRole);
   });
 
   test('get-my-access-new-count', async ({ apiClient }) => {

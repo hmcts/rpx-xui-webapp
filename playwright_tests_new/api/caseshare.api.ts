@@ -2,7 +2,6 @@ import { test, expect } from './fixtures';
 import { withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { CaseShareResponseVariant } from './utils/types';
-import { expectRoleAssignmentShape } from './utils/assertions';
 
 const CASESHARE_ENDPOINTS = [
   {

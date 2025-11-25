@@ -1,11 +1,10 @@
 import { test, expect } from './fixtures';
-import { buildTaskSearchRequest } from './utils/work-allocation';
-import { ensureStorageState, getStoredCookie } from './auth';
-import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
-import type { TaskListResponse, Task, UserDetailsResponse } from './utils/types';
+import { ensureStorageState } from './auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
+import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { expectTaskList } from './utils/assertions';
-import { seedTaskId } from './utils/work-allocation';
+import type { Task, TaskListResponse, UserDetailsResponse } from './utils/types';
+import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 
@@ -123,22 +122,22 @@ test.describe('Work allocation (read-only)', () => {
         return;
       }
 
-    const body = buildTaskSearchRequest('MyTasks', {
-      userIds: [userId!],
-      locations: cachedLocationId ? [cachedLocationId] : [],
-      states: ['assigned'],
-      searchBy: 'caseworker'
-    });
+      const body = buildTaskSearchRequest('MyTasks', {
+        userIds: [userId!],
+        locations: cachedLocationId ? [cachedLocationId] : [],
+        states: ['assigned'],
+        searchBy: 'caseworker'
+      });
 
-    const response = (await withRetry(
-      () =>
-        apiClient.post('workallocation/task', {
-          data: body
-        }),
-      { retries: 1, retryStatuses: [502, 504] }
-    )) as { data: TaskListResponse; status: number };
-    expectTaskList(response.data);
-  });
+      const response = (await withRetry(
+        () =>
+          apiClient.post('workallocation/task', {
+            data: body
+          }),
+        { retries: 1, retryStatuses: [502, 504] }
+      )) as { data: TaskListResponse; status: number };
+      expectTaskList(response.data);
+    });
 
     test('AvailableTasks returns structured response', async ({ apiClient }) => {
       const body = buildTaskSearchRequest('AvailableTasks', {

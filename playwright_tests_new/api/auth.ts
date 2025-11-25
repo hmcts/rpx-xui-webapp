@@ -1,7 +1,9 @@
-import { request } from '@playwright/test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+
 import { IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-common';
+import { request } from '@playwright/test';
+
 import { config } from '../../test_codecept/integration/tests/config/config';
 
 type UsersConfig = typeof config.users[keyof typeof config.users];

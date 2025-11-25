@@ -19,7 +19,7 @@ const storageRoot = path.resolve(
 );
 const storagePromises = new Map<string, Promise<string>>();
 
-const logger = createLogger({ serviceName: 'node-api-auth' });
+const logger = createLogger({ serviceName: 'node-api-auth', format: 'pretty' });
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
   const cacheKey = getCacheKey(role);

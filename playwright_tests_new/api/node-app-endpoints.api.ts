@@ -78,9 +78,13 @@ test.describe('Node app endpoints', () => {
     const attachment = buildApiAttachment(response.logEntry, {
       includeRaw: process.env.PLAYWRIGHT_DEBUG_API === '1'
     });
-    await testInfo.attach(attachment.name, {
-      body: attachment.body,
-      contentType: attachment.contentType
+    const prettyBody =
+      typeof attachment.body === 'string'
+        ? attachment.body
+        : JSON.stringify(attachment.body, null, 2);
+    await testInfo.attach(`${attachment.name}-pretty`, {
+      body: prettyBody,
+      contentType: 'application/json'
     });
   });
 

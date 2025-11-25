@@ -27,7 +27,8 @@ export const test = base.extend<ApiFixtures>({
   logger: async ({}, use, workerInfo) => {
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
-      defaultMeta: { workerId: workerInfo.workerIndex }
+      defaultMeta: { workerId: workerInfo.workerIndex },
+      format: 'pretty'
     });
     await use(logger);
   },
@@ -35,9 +36,14 @@ export const test = base.extend<ApiFixtures>({
     const entries: ApiLogEntry[] = [];
     await use(entries);
     if (entries.length) {
+      const pretty = entries.map((entry) => JSON.stringify(entry, null, 2)).join('\n\n---\n\n');
       await testInfo.attach('node-api-calls.json', {
         body: JSON.stringify(entries, null, 2),
         contentType: 'application/json'
+      });
+      await testInfo.attach('node-api-calls.pretty.txt', {
+        body: pretty,
+        contentType: 'text/plain'
       });
     }
   },

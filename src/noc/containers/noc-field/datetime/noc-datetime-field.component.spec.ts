@@ -7,7 +7,10 @@ import * as moment from 'moment';
 import { UtilsModule } from '../utils/utils.module';
 import { NocDateTimeFieldComponent } from './noc-datetime-field.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

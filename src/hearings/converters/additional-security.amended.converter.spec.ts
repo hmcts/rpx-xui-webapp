@@ -1,7 +1,7 @@
 import { cold } from 'jasmine-marbles';
 import { of } from 'rxjs';
 import { hearingActualsMainModel, serviceHearingValuesModel } from '../hearing.test.data';
-import { CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HMCLocationType, HMCStatus, LaCaseStatus, ListingStatus, PartyType, UnavailabilityType } from '../models/hearings.enum';
+import { CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HMCLocationType, HMCStatus, LaCaseStatus, PartyType, UnavailabilityType } from '../models/hearings.enum';
 import { State } from '../store/reducers';
 import { AdditionalSecurityAmendedConverter } from './additional-security.amended.converter';
 
@@ -192,7 +192,7 @@ describe('AdditionalSecurityAmendedConverter', () => {
             responseVersion: 1,
             receivedDateTime: '2021-11-30T09:00:00.000Z',
             laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-            listingStatus: ListingStatus.FIXED,
+            listingStatus: HearingListingStatusEnum.COMPLETED,
             hearingCancellationReason: '',
             hearingDaySchedule: [{
               hearingStartDateTime: '2022-12-12T09:00:00.000Z',

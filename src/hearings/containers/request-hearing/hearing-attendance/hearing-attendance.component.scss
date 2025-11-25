@@ -36,9 +36,11 @@ strong {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-right: 10px; // Add space between checkbox items
 
   exui-amendment-label {
     margin-left: 5px;
+    margin-right: 10px; // Add space after amendment label
   }
 }
 

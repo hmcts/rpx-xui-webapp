@@ -672,21 +672,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitPartiesChangeExists(): boolean {
-    const partiesSHV = this.serviceHearingValuesModel.parties;
-    const partiesHMC = this.hearingRequestMainModel.partyDetails;
-    // Return true if the number of parties in SHV and HMC are different
-    if (partiesSHV.length !== partiesHMC.length) {
-      return true;
-    }
-    for (const partySHV of partiesSHV) {
-      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (!party || party.partyType !== partySHV.partyType ||
-        HearingsUtils.hasPartyNameChanged(party, partySHV) ||
-        HearingsUtils.hasPartyHearingChannelChanged(party, partySHV)) {
-        return true;
-      }
-    }
-    return false;
+    return HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
   }
 
   private methodsOfAttendanceChangeExists(): boolean {

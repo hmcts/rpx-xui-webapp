@@ -12,6 +12,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
@@ -176,7 +177,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     const propertiesUpdatedOnPageVisit = this.hearingsService.propertiesUpdatedOnPageVisit;
     if (this.hearingCondition.mode === Mode.VIEW_EDIT &&
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || propertiesUpdatedOnPageVisit?.afterPageVisit.participantAttendanceChangesRequired)) {
+        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired || HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails))) {
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails
         : this.hearingRequestToCompareMainModel.partyDetails;

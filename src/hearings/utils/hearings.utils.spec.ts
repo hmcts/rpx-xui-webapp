@@ -1095,4 +1095,60 @@ describe('HearingsUtils', () => {
       expect(result).toBe('specificDate');
     });
   });
+  describe('HearingsUtils.havePartyDetailsChanged', () => {
+    it('returns true when parties arrays have different lengths', () => {
+      const partiesSHV: PartyDetailsModel[] = [{
+        partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' },
+        partyRole: ''
+      }];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' }
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when a party is missing in HMC', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' }
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' }
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when partyType differs', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' }
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.ORG, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' }
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when party name differs', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'Jane', lastName: 'Smith' }, partyRole: '' }
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' }
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns false when all parties match in id, type, and name', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' }
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' }
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(false);
+    });
+  });
 });

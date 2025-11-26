@@ -157,7 +157,6 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    const hearingChannels = this.hearingRequestMainModel.hearingDetails?.hearingChannels || [];
 
     this.isPaperHearingChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR),
@@ -172,7 +171,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
     this.methodOfAttendanceChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
-      hearingChannels
+      this.hearingRequestMainModel.hearingDetails?.hearingChannels || []
     );
 
     this.participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);

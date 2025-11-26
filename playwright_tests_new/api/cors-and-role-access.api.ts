@@ -26,6 +26,11 @@ test.describe('CORS and OPTIONS', () => {
           if (allowOrigin) {
             expect(allowOrigin).toBe(origin);
           }
+          const allowMethods = headers['access-control-allow-methods'] || headers['Access-Control-Allow-Methods'];
+          if (allowMethods) {
+            expect(allowMethods.toLowerCase()).toContain('options');
+            expect(allowMethods.toLowerCase()).toContain('get');
+          }
         }
         if (expected === StatusSets.corsDisallowed && res.status() < 500) {
           const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
@@ -57,6 +62,11 @@ test.describe('CORS and OPTIONS', () => {
           const allowOrigin = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
           if (allowOrigin) {
             expect(allowOrigin).toBe(origin);
+          }
+          const allowMethods = headers['access-control-allow-methods'] || headers['Access-Control-Allow-Methods'];
+          if (allowMethods) {
+            expect(allowMethods.toLowerCase()).toContain('options');
+            expect(allowMethods.toLowerCase()).toContain('get');
           }
         }
         if (expected === StatusSets.corsDisallowed && res.status() < 500) {

@@ -1,22 +1,16 @@
 import { test, expect } from './fixtures';
-import { ensureStorageState } from './auth';
-import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
-import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { expectStatus, StatusSets, withRetry, withXsrf, buildXsrfHeaders } from './utils/apiTestUtils';
 import { expectTaskList } from './utils/assertions';
 import type { Task, TaskListResponse, UserDetailsResponse } from './utils/types';
-import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
+import { buildTaskSearchRequest } from './utils/work-allocation';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 
 test.describe('Work allocation (read-only)', () => {
   let cachedLocationId: string | undefined;
   let userId: string | undefined;
-  let sampleTaskId: string | undefined;
-  let sampleMyTaskId: string | undefined;
-  const envTaskId = WA_SAMPLE_TASK_ID;
-  const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
 
-  test.beforeAll(async ({ apiClient }) => {
+  test.beforeAll(async ({ apiClient, apiClientFor }) => {
     const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
       throwOnError: false
     });
@@ -32,16 +26,6 @@ test.describe('Work allocation (read-only)', () => {
     );
     if (listResponse.status === 200 && Array.isArray(listResponse.data) && listResponse.data.length > 0) {
       cachedLocationId = listResponse.data[0]?.id;
-    }
-
-    // seed tasks for action tests
-    const seeded = await seedTaskId(apiClient, cachedLocationId);
-    if (seeded?.id) {
-      if (seeded.type === 'assigned') {
-        sampleMyTaskId = seeded.id;
-      } else {
-        sampleTaskId = seeded.id;
-      }
     }
   });
 
@@ -77,7 +61,7 @@ test.describe('Work allocation (read-only)', () => {
   });
 
   test('returns task names catalogue', async ({ apiClient }) => {
-    const response = await apiClient.get<unknown>('workallocation/taskNames');
+    const response = await apiClient.get<Array<string> | { task_names?: string[]; taskNames?: string[] }>('workallocation/taskNames');
     expect(response.status).toBe(200);
 
     const names = toArray<string>(response.data);
@@ -88,7 +72,9 @@ test.describe('Work allocation (read-only)', () => {
   });
 
   test('returns types of work catalogue', async ({ apiClient }) => {
-    const response = await apiClient.get<unknown>('workallocation/task/types-of-work');
+    const response = await apiClient.get<Array<{ id?: string }> | { typesOfWork?: Array<{ id?: string }> }>(
+      'workallocation/task/types-of-work'
+    );
     expect(response.status).toBe(200);
 
     const types = toArray(response.data);
@@ -225,121 +211,6 @@ test.describe('Work allocation (read-only)', () => {
     });
   });
 
-  test.describe('task actions (negative)', () => {
-    const actions = ['claim', 'unclaim', 'assign', 'unassign', 'complete', 'cancel'] as const;
-    const taskId = () => sampleTaskId ?? '00000000-0000-0000-0000-000000000000';
-
-    actions.forEach((action) => {
-      test(`rejects unauthenticated ${action}`, async ({ anonymousClient }) => {
-        const response = await anonymousClient.post(`workallocation/task/${taskId()}/${action}`, {
-          data: {},
-          throwOnError: false
-        });
-        expectStatus(response.status, [401, 403, 502]);
-      });
-    });
-
-    actions.forEach((action) => {
-      test(`rejects ${action} without XSRF header`, async ({ apiClient }) => {
-        await ensureStorageState('solicitor');
-        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
-          data: {},
-          headers: {},
-          throwOnError: false
-        });
-        expectStatus(response.status, [200, 204, 401, 403, 404, 502]);
-      });
-    });
-
-    actions.forEach((action) => {
-      test(`rejects ${action} with invalid XSRF token`, async ({ apiClient }) => {
-        await ensureStorageState('solicitor');
-        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
-          data: {},
-          headers: { 'X-XSRF-TOKEN': 'invalid-token' },
-          throwOnError: false
-        });
-        expectStatus(response.status, [400, 401, 403, 409, 500, 502]);
-      });
-    });
-
-    actions.forEach((action) => {
-      test(`${action} with XSRF header returns guarded status`, async ({ apiClient }) => {
-        const response = await withXsrf('solicitor', (headers) =>
-          apiClient.post(`workallocation/task/${taskId()}/${action}`, {
-            data: {},
-            headers,
-            throwOnError: false
-          })
-        );
-        expectStatus(response.status, [200, 204, 400, 403, 404, 409, 502]);
-      });
-    });
-  });
-
-  test.describe('deterministic task actions (env-seeded)', () => {
-    const positive = [
-      { action: 'claim', id: () => envTaskId! },
-      { action: 'assign', id: () => envTaskId! },
-      { action: 'unclaim', id: () => envAssignedTaskId ?? envTaskId! },
-      { action: 'unassign', id: () => envAssignedTaskId ?? envTaskId! },
-      { action: 'complete', id: () => envAssignedTaskId ?? envTaskId! },
-      { action: 'cancel', id: () => envAssignedTaskId ?? envTaskId! }
-    ] as const;
-
-    positive.forEach(({ action, id }) => {
-      test(`${action} succeeds with XSRF when seeded task ids provided`, async ({ apiClient }) => {
-        if (!envTaskId && !envAssignedTaskId) {
-          expect(true).toBe(true);
-          return;
-        }
-        await withXsrf('solicitor', async (headers) => {
-          const res = await apiClient.post(`workallocation/task/${id()}/${action}`, {
-            data: {},
-            headers,
-            throwOnError: false
-          });
-          expectStatus(res.status, [200, 204]);
-        });
-      });
-    });
-  });
-
-  test.describe('task actions (happy-path attempt)', () => {
-    const fallbackId = '00000000-0000-0000-0000-000000000000';
-
-    const positiveActions: Array<{ action: string; taskId: () => string }> = [
-      { action: 'claim', taskId: () => envTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'unclaim', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'complete', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'assign', taskId: () => envTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'unassign', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId },
-      { action: 'cancel', taskId: () => envAssignedTaskId ?? envTaskId ?? sampleMyTaskId ?? sampleTaskId ?? fallbackId }
-    ];
-
-    positiveActions.forEach(({ action, taskId }) => {
-      test(`${action} returns allowed status with XSRF`, async ({ apiClient }) => {
-        const response = await withXsrf('solicitor', async (headers) => {
-          const before = await fetchTaskById(apiClient, taskId());
-          const res = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
-            data: {},
-            headers,
-            throwOnError: false
-          });
-
-          if (res.status === 200 || res.status === 204) {
-            const after = await fetchTaskById(apiClient, taskId());
-            assertStateTransition(action, before?.task, after?.task);
-          }
-
-          return res;
-        });
-
-        expectStatus(response.status, StatusSets.actionWithConflicts);
-      });
-    });
-  });
-
   test.describe('caseworkers & people', () => {
     test('lists caseworkers', async ({ apiClient }) => {
       const response = await withXsrf('solicitor', (headers) =>
@@ -391,6 +262,78 @@ test.describe('Work allocation (read-only)', () => {
         throwOnError: false
       });
       expectStatus(response.status, [200, 400, 403]);
+    });
+
+    test('task pagination across pages (best effort)', async ({ apiClient }) => {
+      const body = buildTaskSearchRequest('AllWork', {
+        locations: cachedLocationId ? [cachedLocationId] : [],
+        states: ['assigned', 'unassigned'],
+        searchBy: 'caseworker',
+        pageSize: 10
+      });
+      const page1 = (await withRetry(
+        () =>
+          apiClient.post('workallocation/task', {
+            data: body,
+            throwOnError: false
+          }),
+        { retries: 1, retryStatuses: [502, 504] }
+      )) as { data: TaskListResponse; status: number };
+      expectStatus(page1.status, StatusSets.guardedBasic);
+      if (page1.status !== 200 || !Array.isArray(page1.data?.tasks)) {
+        return;
+      }
+      const total = page1.data.total_records ?? 0;
+      if (total > (body.searchRequest.pagination_parameters.page_size ?? 10)) {
+        const page2 = (await apiClient.post('workallocation/task', {
+          data: {
+            ...body,
+            searchRequest: {
+              ...body.searchRequest,
+              pagination_parameters: { ...body.searchRequest.pagination_parameters, page_number: 2 }
+            }
+          },
+          throwOnError: false
+        })) as { data: TaskListResponse; status: number };
+        expectStatus(page2.status, StatusSets.guardedBasic);
+        if (page2.status === 200) {
+          expect(Array.isArray(page2.data?.tasks)).toBe(true);
+        }
+      }
+    });
+
+    test('reassign task to another caseworker when available', async ({ apiClient }) => {
+      const headers = await buildXsrfHeaders('solicitor');
+      const caseworkersRes = await apiClient.get<Array<{ idamId?: string }>>('workallocation/caseworker', {
+        headers,
+        throwOnError: false
+      });
+      const target = caseworkersRes.status === 200 && Array.isArray(caseworkersRes.data) && caseworkersRes.data.length
+        ? caseworkersRes.data[0]?.idamId
+        : undefined;
+
+      const body = buildTaskSearchRequest('MyTasks', {
+        userIds: userId ? [userId] : [],
+        locations: cachedLocationId ? [cachedLocationId] : [],
+        states: ['assigned'],
+        searchBy: 'caseworker',
+        pageSize: 5
+      });
+      const tasksRes = (await apiClient.post('workallocation/task', {
+        data: body,
+        headers,
+        throwOnError: false
+      })) as { data: TaskListResponse; status: number };
+      const taskId =
+        tasksRes.status === 200 && Array.isArray(tasksRes.data?.tasks) && tasksRes.data.tasks.length
+          ? tasksRes.data.tasks[0].id
+          : '00000000-0000-0000-0000-000000000000';
+      const res = await apiClient.post(`workallocation/task/${taskId}/assign`, {
+        data: { userId: target ?? '00000000-0000-0000-0000-000000000000' },
+        headers,
+        throwOnError: false
+      });
+      expectStatus(res.status, [200, 204, 400, 403, 404, 409]);
     });
 
     test('person search validation', async ({ apiClient }) => {

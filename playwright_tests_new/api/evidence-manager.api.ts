@@ -34,6 +34,10 @@ test.describe('Evidence Manager & Documents', () => {
       expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
       if (res.status === 200) {
         expect((res.data as ArrayBuffer)?.byteLength ?? 0).toBeGreaterThan(0);
+        const contentType = (res as any)?.headers?.['content-type'] ?? (res as any)?.headers?.['Content-Type'];
+        if (typeof contentType === 'string') {
+          expect(contentType.toLowerCase()).toContain('application');
+        }
       }
     });
   });
@@ -83,12 +87,32 @@ test.describe('Evidence Manager & Documents', () => {
       }
 
       const createdId = (createRes.data as any)?.annotations?.[0]?.id ?? annotation.id;
+      if ([200, 204].includes(createRes.status)) {
+        const afterCreate = await apiClient.get(`em-anno/annotation-sets/filter?documentId=${sharedDocId}`, {
+          headers: { ...headers, experimental: 'true' },
+          throwOnError: false
+        });
+        if (afterCreate.status === 200 && Array.isArray((afterCreate.data as any)?.annotations)) {
+          const found = (afterCreate.data as any).annotations.some((entry: any) => entry?.id === createdId);
+          expect(found).toBe(true);
+        }
+      }
       const deleteRes = await apiClient.delete(`em-anno/annotations/${createdId}`, {
         data: annotation,
         headers,
         throwOnError: false
       });
       expectStatus(deleteRes.status, [200, 204, 401, 403, 409, 500]);
+      if (deleteRes.status === 200 || deleteRes.status === 204) {
+        const afterDelete = await apiClient.get(`em-anno/annotation-sets/filter?documentId=${sharedDocId}`, {
+          headers: { ...headers, experimental: 'true' },
+          throwOnError: false
+        });
+        if (afterDelete.status === 200 && Array.isArray((afterDelete.data as any)?.annotations)) {
+          const stillPresent = (afterDelete.data as any).annotations.some((entry: any) => entry?.id === createdId);
+          expect(stillPresent).toBe(false);
+        }
+      }
     });
   });
 
@@ -114,6 +138,15 @@ test.describe('Evidence Manager & Documents', () => {
     });
   });
 
+  test('rejects annotation delete without XSRF', async ({ apiClient }) => {
+    const res = await apiClient.delete(`em-anno/annotations/${uuid()}`, {
+      data: {},
+      headers: {},
+      throwOnError: false
+    });
+    expectStatus(res.status, [200, 204, 400, 401, 403, 404, 409, 500]);
+  });
+
   test('bookmarks lifecycle', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
@@ -134,12 +167,33 @@ test.describe('Evidence Manager & Documents', () => {
         expectBookmarkShape(createRes.data as any);
       }
 
+      if ([200, 204].includes(createRes.status)) {
+        const afterCreate = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
+          headers,
+          throwOnError: false
+        });
+        if (afterCreate.status === 200 && Array.isArray(afterCreate.data)) {
+          const found = afterCreate.data.some((entry: any) => entry?.id === createdId);
+          expect(found).toBe(true);
+        }
+      }
+
       const deleteRes = await apiClient.delete('em-anno/bookmarks_multiple', {
         data: { deleted: [createdId] },
         headers,
         throwOnError: false
       });
       expectStatus(deleteRes.status, [200, 204, 401, 403, 404, 409, 500]);
+      if (deleteRes.status === 200 || deleteRes.status === 204) {
+        const afterDelete = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
+          headers,
+          throwOnError: false
+        });
+        if (afterDelete.status === 200 && Array.isArray(afterDelete.data)) {
+          const stillPresent = afterDelete.data.some((entry: any) => entry?.id === createdId);
+          expect(stillPresent).toBe(false);
+        }
+      }
     });
   });
 
@@ -163,6 +217,37 @@ test.describe('Evidence Manager & Documents', () => {
     expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
   });
 
+  test('rejects bookmark delete without XSRF', async ({ apiClient }) => {
+    const res = await apiClient.delete('em-anno/bookmarks_multiple', {
+      data: { deleted: [uuid()] },
+      headers: {},
+      throwOnError: false
+    });
+    expectStatus(res.status, [200, 204, 400, 401, 403, 404, 409, 500]);
+  });
+
+  test('creates bookmark with valid XSRF and deletes it', async ({ apiClient }) => {
+    const bookmark = await buildBookmark(apiClient);
+    await withXsrf('solicitor', async (headers) => {
+      const createRes = await apiClient.put('em-anno/bookmarks', {
+        data: bookmark,
+        headers,
+        throwOnError: false
+      });
+      expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
+      if (createRes.status === 200) {
+        expectBookmarkShape(createRes.data as any);
+      }
+      const createdId = (createRes.data as any)?.id ?? bookmark.id;
+      const deleteRes = await apiClient.delete('em-anno/bookmarks_multiple', {
+        data: { deleted: [createdId] },
+        headers,
+        throwOnError: false
+      });
+      expectStatus(deleteRes.status, [200, 204, 401, 403, 404, 409, 500]);
+    });
+  });
+
   test('rejects bookmark mutation with invalid payload', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.put('em-anno/bookmarks', {
@@ -175,20 +260,40 @@ test.describe('Evidence Manager & Documents', () => {
   });
 
   test('rejects document upload when no file provided', async () => {
-    const storageState = await ensureStorageState('solicitor');
-    const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-    const ctx = await playwrightRequest.newContext({
-      baseURL: config.baseUrl.replace(/\/+$/, ''),
-      storageState,
-      ignoreHTTPSErrors: true
-    });
-    const res = await ctx.post('documents', {
-      multipart: {},
-      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
-      failOnStatusCode: false
-    });
-    expect([400, 401, 403, 415, 500]).toContain(res.status());
-    await ctx.dispose();
+    let storageState: string | undefined;
+    let attempts = 0;
+    while (attempts < 2) {
+      try {
+        storageState = await ensureStorageState('solicitor');
+        const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+        const ctx = await playwrightRequest.newContext({
+          baseURL: config.baseUrl.replace(/\/+$/, ''),
+          storageState,
+          ignoreHTTPSErrors: true
+        });
+        const res = await ctx.post('documents', {
+          multipart: {},
+          headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
+          failOnStatusCode: false
+        });
+        expect([400, 401, 403, 415, 500]).toContain(res.status());
+        await ctx.dispose();
+        return;
+      } catch (error) {
+        const message = (error as Error)?.message ?? '';
+        if (/Unexpected end of JSON input/i.test(message) && storageState) {
+          try {
+            await fs.unlink(storageState);
+          } catch {
+            // ignore unlink errors
+          }
+          attempts++;
+          continue;
+        }
+        throw error;
+      }
+    }
+    expect(storageState).toBeDefined(); // guard: if we get here, we could not recover storage state
   });
 
   test('rejects document upload with unsupported mime type', async () => {
@@ -212,6 +317,21 @@ test.describe('Evidence Manager & Documents', () => {
     });
     expect([400, 401, 403, 415, 500]).toContain(res.status());
     await ctx.dispose();
+  });
+
+  test('uploads document and reads it back', async ({ apiClient }) => {
+    const id = await uploadSyntheticDoc();
+    await withXsrf('solicitor', async (headers) => {
+      const res = await apiClient.get<ArrayBuffer>(`documents/${id}/binary`, {
+        headers: { ...headers, experimental: 'true' },
+        throwOnError: false,
+        responseType: 'arraybuffer'
+      });
+      expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
+      if (res.status === 200) {
+        expect((res.data as ArrayBuffer)?.byteLength ?? 0).toBeGreaterThan(0);
+      }
+    });
   });
 
   test('returns guarded status for invalid document id on delete', async ({ apiClient }) => {
@@ -300,36 +420,41 @@ async function fetchUserId(apiClient: any): Promise<string | undefined> {
 
 async function uploadSyntheticDoc(): Promise<string> {
   // Try to upload a tiny text blob to DM via the proxy using the stored session.
-  try {
-    const storageState = await ensureStorageState('solicitor');
-    const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-    const ctx = await request.newContext({
-      baseURL: config.baseUrl.replace(/\/+$/, ''),
-      storageState,
-      ignoreHTTPSErrors: true
-    });
+  let attempts = 0;
+  while (attempts < 2) {
+    try {
+      const storageState = await ensureStorageState('solicitor');
+      const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
+      const ctx = await request.newContext({
+        baseURL: config.baseUrl.replace(/\/+$/, ''),
+        storageState,
+        ignoreHTTPSErrors: true
+      });
 
-    const res = await ctx.post('documents', {
-      multipart: {
-        files: {
-          name: 'file',
-          mimeType: 'text/plain',
-          buffer: Buffer.from('synthetic evidence-manager upload')
-        }
-      },
-      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {}
-    });
-    if (res.ok()) {
-      const body = await res.json();
-      const id = body?.documents?.[0]?.originalDocumentId ?? body?.documents?.[0]?.documentId ?? body?.documents?.[0]?.id;
-      if (id) {
+      const res = await ctx.post('documents', {
+        multipart: {
+          files: {
+            name: 'file',
+            mimeType: 'text/plain',
+            buffer: Buffer.from('synthetic evidence-manager upload')
+          }
+        },
+        headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {}
+      });
+      if (res.ok()) {
+        const body = await res.json();
+        const id = body?.documents?.[0]?.originalDocumentId ?? body?.documents?.[0]?.documentId ?? body?.documents?.[0]?.id;
         await ctx.dispose();
-        return id;
+        if (id) {
+          return id;
+        }
+      } else {
+        await ctx.dispose();
       }
+    } catch {
+      // best-effort retry
     }
-    await ctx.dispose();
-  } catch (error) {
-    // best-effort; fall through
+    attempts++;
   }
   return uuid();
 }

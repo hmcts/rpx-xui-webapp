@@ -16,10 +16,7 @@ const resolveWorkerCount = () => {
   if (process.env.CI) {
     return 1;
   }
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
+  return 10;
 };
 const workerCount = resolveWorkerCount();
 
@@ -80,6 +77,7 @@ module.exports = defineConfig({
     {
       name: 'node-api',
       testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+      workers: process.env.CI ? 1 : 30,
       use: {
         headless: true,
         screenshot: 'off',

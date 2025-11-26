@@ -11,6 +11,7 @@ import { test as base, expect, request } from '@playwright/test';
 
 import { config } from '../../test_codecept/integration/tests/config/config';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
+import { buildXsrfHeaders } from './utils/apiTestUtils';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
@@ -21,6 +22,7 @@ export interface ApiFixtures {
   apiClientFor: (role: ApiUserRole) => Promise<PlaywrightApiClient>;
   apiLogs: ApiLogEntry[];
   logger: LoggerInstance;
+  xsrfHeaders: (role: ApiUserRole) => Promise<Record<string, string>>;
 }
 
 export const test = base.extend<ApiFixtures>({
@@ -76,10 +78,46 @@ export const test = base.extend<ApiFixtures>({
     } finally {
       await Promise.all(clients.map((client) => client.dispose()));
     }
+  },
+  xsrfHeaders: async ({}, use) => {
+    const cache = new Map<ApiUserRole, Promise<Record<string, string>>>();
+    const getter = (role: ApiUserRole) => {
+      if (!cache.has(role)) {
+        cache.set(role, buildXsrfHeaders(role));
+      }
+      return cache.get(role)!;
+    };
+    await use(getter);
   }
 });
 
 export { expect, buildApiAttachment };
+
+export function redactHeaders(headers?: Record<string, unknown>): Record<string, unknown> | undefined {
+  if (!headers || typeof headers !== 'object') {
+    return headers;
+  }
+  const sensitive = new Set(['authorization', 'serviceauthorization', 'cookie', 'set-cookie', 'x-xsrf-token']);
+  const redacted: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(headers)) {
+    if (sensitive.has(key.toLowerCase())) {
+      redacted[key] = '<redacted>';
+    } else {
+      redacted[key] = value;
+    }
+  }
+  return redacted;
+}
+
+export function redactEntry(entry: ApiLogEntry): ApiLogEntry {
+  return {
+    ...entry,
+    request: entry.request ? { ...entry.request, headers: redactHeaders(entry.request.headers) } : entry.request,
+    response: entry.response ? { ...entry.response, headers: redactHeaders(entry.response.headers) } : entry.response,
+    rawRequest: entry.rawRequest ? { ...entry.rawRequest, headers: redactHeaders(entry.rawRequest.headers) } : entry.rawRequest,
+    rawResponse: entry.rawResponse ? { ...entry.rawResponse, headers: redactHeaders(entry.rawResponse.headers) } : entry.rawResponse
+  };
+}
 
 async function createNodeApiClient(
   role: ApiUserRole | 'anonymous',
@@ -111,20 +149,34 @@ async function createNodeApiClient(
     });
 
   let context;
-  try {
-    context = await buildContext(role === 'anonymous' ? undefined : storageState);
-  } catch (error) {
-    const message = (error as Error)?.message ?? '';
-    const statePath = role === 'anonymous' ? undefined : storageState;
-    if (role !== 'anonymous' && statePath && /Unexpected end of JSON input/i.test(message)) {
-      try {
-        await fs.unlink(statePath);
-      } catch {
-        // ignore
+  let attempts = 0;
+  while (attempts < 2) {
+    try {
+      context = await buildContext(role === 'anonymous' ? undefined : storageState);
+      break;
+    } catch (error) {
+      const message = (error as Error)?.message ?? '';
+      const statePath = role === 'anonymous' ? undefined : storageState;
+      const recoverable =
+        role !== 'anonymous' &&
+        statePath &&
+        (/Unexpected end of JSON input/i.test(message) ||
+          /ENOENT: no such file or directory/i.test(message) ||
+          /Unexpected non-whitespace character after JSON/i.test(message));
+      if (recoverable) {
+        try {
+          await fs.unlink(statePath);
+        } catch {
+          // ignore
+        }
+        const rebuiltPath = await ensureStorageState(role);
+        attempts++;
+        if (attempts >= 2) {
+          context = await buildContext(rebuiltPath);
+          break;
+        }
+        continue;
       }
-      const rebuiltPath = await ensureStorageState(role);
-      context = await buildContext(rebuiltPath);
-    } else {
       throw error;
     }
   }
@@ -134,7 +186,7 @@ async function createNodeApiClient(
     name: `node-api-${role}`,
     logger,
     captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1',
-    onResponse: (entry) => entries.push(entry),
+    onResponse: (entry) => entries.push(redactEntry(entry)),
     requestFactory: async () => context
   });
 }

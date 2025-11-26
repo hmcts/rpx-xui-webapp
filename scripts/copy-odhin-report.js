@@ -9,6 +9,8 @@ const path = require('path');
 const source = path.resolve('functional-output', 'tests', 'playwright-api', 'odhin-report');
 const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
 const target = path.join(targetRoot, 'odhin-report');
+const coverageSummaryFile = path.join(source, 'coverage', 'coverage-summary.json');
+const testsRoot = path.resolve('playwright_tests_new', 'api');
 
 try {
   if (!fs.existsSync(source)) {
@@ -19,7 +21,212 @@ try {
   // Best-effort clean copy
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
+
+  const { endpoints, totalHits } = gatherEndpoints(testsRoot);
+  if (endpoints.length) {
+    injectEndpointsBlocks(source, endpoints, totalHits);
+    injectEndpointsBlocks(target, endpoints, totalHits);
+  }
+
+  // Generate a human-readable coverage summary next to the Odhin report (source and copied)
+  if (fs.existsSync(coverageSummaryFile)) {
+    const { textSummary, totals } = buildCoverageSummary(coverageSummaryFile);
+    const summaryName = 'coverage-summary.txt';
+    const sourceSummary = path.join(source, summaryName);
+    const targetSummary = path.join(target, summaryName);
+    fs.writeFileSync(sourceSummary, textSummary, 'utf8');
+    fs.writeFileSync(targetSummary, textSummary, 'utf8');
+
+    // Inject coverage block into HTML reports (both source and copied)
+    injectCoverageBlocks(source, totals);
+    injectCoverageBlocks(target, totals);
+  } else {
+    console.log('copy-odhin-report: coverage summary not found; skipping coverage injection.');
+  }
 } catch (error) {
   console.warn(`copy-odhin-report: ${error.message}`);
   process.exit(0); // do not fail the build if copy fails
+}
+
+function buildCoverageSummary(summaryPath) {
+  try {
+    const raw = fs.readFileSync(summaryPath, 'utf8');
+    const json = JSON.parse(raw);
+    const total = json.total || {};
+    const fmt = (n) => (typeof n === 'number' ? n.toFixed(2) : 'n/a');
+    const lines = [];
+    lines.push('Node API Coverage Summary');
+    lines.push('=========================');
+    lines.push(`Lines:      ${fmt(total.lines?.pct)}% (${total.lines?.covered ?? 0}/${total.lines?.total ?? 0})`);
+    lines.push(`Functions:  ${fmt(total.functions?.pct)}% (${total.functions?.covered ?? 0}/${total.functions?.total ?? 0})`);
+    lines.push(`Branches:   ${fmt(total.branches?.pct)}% (${total.branches?.covered ?? 0}/${total.branches?.total ?? 0})`);
+    lines.push(`Statements: ${fmt(total.statements?.pct)}% (${total.statements?.covered ?? 0}/${total.statements?.total ?? 0})`);
+    return { textSummary: lines.join('\n'), totals: total };
+  } catch (err) {
+    return { textSummary: `Coverage summary unavailable: ${err.message}`, totals: {} };
+  }
+}
+
+function injectCoverageBlocks(reportFolder, totals) {
+  const fmt = (n) => (typeof n === 'number' ? n.toFixed(2) : 'n/a');
+  const rows = [
+    ['Lines', totals.lines],
+    ['Functions', totals.functions],
+    ['Branches', totals.branches],
+    ['Statements', totals.statements]
+  ].map(([label, data]) => {
+    const pct = fmt(data?.pct);
+    const covered = data?.covered ?? 0;
+    const total = data?.total ?? 0;
+    return `<tr>
+      <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${label}</td>
+      <td class="text-secondary-emphasis">${pct}%</td>
+      <td class="text-secondary-emphasis">${covered}</td>
+      <td class="text-secondary-emphasis">${total}</td>
+    </tr>`;
+  }).join('\n');
+
+  const block = `
+<div class="col-12">
+  <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
+    <div class="info-box-header">Coverage</div>
+    <div class="odhin-table-no-scroll">
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th class="odhin-text-2">Metric</th>
+              <th class="odhin-text-2">Percent</th>
+              <th class="odhin-text-2">Covered</th>
+              <th class="odhin-text-2">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+  const files = fs.readdirSync(reportFolder).filter((f) => f.toLowerCase().endsWith('.html'));
+  files.forEach((file) => {
+    const fullPath = path.join(reportFolder, file);
+    try {
+      let html = fs.readFileSync(fullPath, 'utf8');
+      if (html.includes('info-box-header">Coverage')) {
+        return;
+      }
+      const statusBlock = /<div class="col-12">\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">\s*Status by project\s*<\/div>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/;
+      const tabDashboardPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<div[^>]+id="TabTests")/;
+
+      if (statusBlock.test(html)) {
+        html = html.replace(statusBlock, (match) => `${match}\n${block}`);
+      } else if (tabDashboardPattern.test(html)) {
+        html = html.replace(tabDashboardPattern, (_m, before, after) => `${before}\n${block}\n${after}`);
+      } else if (html.includes('</body>')) {
+        html = html.replace('</body>', `${block}\n</body>`);
+      }
+      fs.writeFileSync(fullPath, html, 'utf8');
+    } catch {
+      // ignore
+    }
+  });
+}
+
+function gatherEndpoints(root) {
+  if (!fs.existsSync(root)) return { endpoints: [], totalHits: 0 };
+  const files = walk(root).filter((f) => f.endsWith('.ts'));
+  const counts = new Map();
+  const regex = /\b(apiClient|anonymousClient|client)\.(get|post|put|delete)\s*\(\s*['"`]([^'"`]+)['"`]/g;
+  for (const file of files) {
+    const content = fs.readFileSync(file, 'utf8');
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      const key = match[3];
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+  const endpoints = Array.from(counts.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([endpoint, hits]) => ({ endpoint, hits }));
+  const totalHits = Array.from(counts.values()).reduce((sum, n) => sum + n, 0);
+  return { endpoints, totalHits };
+}
+
+function walk(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  let out = [];
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      out = out.concat(walk(full));
+    } else if (entry.isFile()) {
+      out.push(full);
+    }
+  }
+  return out;
+}
+
+function injectEndpointsBlocks(reportFolder, endpoints, totalHits) {
+  if (!endpoints.length) return;
+  const fmt = (n) => (typeof n === 'number' ? n.toFixed(2) : 'n/a');
+  const rows = endpoints
+    .map(({ endpoint, hits }) => {
+      const pct = totalHits ? fmt((hits / totalHits) * 100) : '0.00';
+      return `<tr>
+        <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${endpoint}</td>
+        <td class="text-secondary-emphasis">${hits}</td>
+        <td class="text-secondary-emphasis">${pct}%</td>
+      </tr>`;
+    })
+    .join('\n');
+
+  const block = `
+<div class="col-12">
+  <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
+    <div class="info-box-header">API endpoints under test</div>
+    <div class="odhin-table-no-scroll">
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th class="odhin-text-2">Endpoint</th>
+              <th class="odhin-text-2">Tests</th>
+              <th class="odhin-text-2">Percent of API calls</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+  const files = fs.readdirSync(reportFolder).filter((f) => f.toLowerCase().endsWith('.html'));
+  files.forEach((file) => {
+    const fullPath = path.join(reportFolder, file);
+    try {
+      let html = fs.readFileSync(fullPath, 'utf8');
+      if (html.includes('info-box-header">API endpoints under test')) {
+        return;
+      }
+      const statusBlock = /<div class="col-12">\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">\s*Status by project\s*<\/div>[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/;
+      const tabDashboardPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<div[^>]+id="TabTests")/;
+
+      if (statusBlock.test(html)) {
+        html = html.replace(statusBlock, (match) => `${match}\n${block}`);
+      } else if (tabDashboardPattern.test(html)) {
+        html = html.replace(tabDashboardPattern, (_m, before, after) => `${before}\n${block}\n${after}`);
+      } else if (html.includes('</body>')) {
+        html = html.replace('</body>', `${block}\n</body>`);
+      }
+      fs.writeFileSync(fullPath, html, 'utf8');
+    } catch {
+      // ignore
+    }
+  });
 }

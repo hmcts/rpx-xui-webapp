@@ -19,4 +19,17 @@ test.describe('Postcode lookup', () => {
       expectAddressLookupShape(response.data);
     });
   });
+
+  test('invalid postcode returns guarded status', async ({ apiClient }) => {
+    await withXsrf('solicitor', async (headers) => {
+      const response = await apiClient.get<AddressLookupResponse>('api/addresses?postcode=INVALID123', {
+        headers,
+        throwOnError: false
+      });
+      expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+      if (response.status === 200) {
+        expect(Array.isArray(response.data?.results)).toBe(true);
+      }
+    });
+  });
 });

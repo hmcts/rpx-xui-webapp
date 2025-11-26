@@ -7,7 +7,7 @@ import { request } from '@playwright/test';
 import { config } from '../../test_codecept/integration/tests/config/config';
 
 type UsersConfig = typeof config.users[keyof typeof config.users];
-export type ApiUserRole = keyof UsersConfig;
+export type ApiUserRole = keyof UsersConfig | 'caseManager' | 'caseWorker';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 const storageRoot = path.resolve(
@@ -191,7 +191,22 @@ async function createStorageStateViaForm(
 
 function getCredentials(role: ApiUserRole): { username: string; password: string } {
   const envUsers = config.users[config.testEnv as keyof typeof config.users];
-  const userConfig = envUsers?.[role];
+  const userConfig = (envUsers as any)?.[role];
+
+  // Fallback to env-driven users for custom roles
+  if (!userConfig && role === 'caseManager' && process.env.CASEMANAGER_USERNAME && process.env.CASEMANAGER_PASSWORD) {
+    return {
+      username: process.env.CASEMANAGER_USERNAME,
+      password: process.env.CASEMANAGER_PASSWORD
+    };
+  }
+  if (!userConfig && role === 'caseWorker' && process.env.CASEWORKER_USERNAME && process.env.CASEWORKER_PASSWORD) {
+    return {
+      username: process.env.CASEWORKER_USERNAME,
+      password: process.env.CASEWORKER_PASSWORD
+    };
+  }
+
   if (!userConfig) {
     throw new Error(`No credentials configured for role "${role}" in environment "${config.testEnv}"`);
   }

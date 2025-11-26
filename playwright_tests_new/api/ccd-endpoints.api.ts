@@ -91,4 +91,19 @@ test.describe('CCD endpoints', () => {
       expect(response.data).toBeTruthy();
     }
   });
+
+  test('work-basket inputs reject unauthenticated access', async ({ anonymousClient }) => {
+    const res = await anonymousClient.get<any>('data/internal/case-types/xuiTestCaseType/work-basket-inputs', {
+      throwOnError: false
+    });
+    expectStatus(res.status, [401, 403]);
+  });
+
+  test('work-basket inputs handle invalid case type gracefully', async ({ apiClient }) => {
+    const res = await apiClient.get<any>('data/internal/case-types/invalid-case-type/work-basket-inputs', {
+      headers: { experimental: 'true' },
+      throwOnError: false
+    });
+    expectStatus(res.status, [400, 401, 403, 404, 500, 502, 504]);
+  });
 });

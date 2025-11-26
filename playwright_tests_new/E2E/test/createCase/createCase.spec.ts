@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { expect, test } from "../../fixtures.ts";
+import { expect, test } from "../../fixtures";
 
 test.describe("Verify creating cases works as expected", () => {
     test.beforeEach(async ({ idamPage, page, userUtils, config }) => {

@@ -13,7 +13,10 @@ import { StaffAdvFilterComponent } from './staff-adv-filter.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 // tslint:disable-next-line:component-selector -- this is a stub component -- it is imported from common lib which has a different prefix
-@Component({ selector: 'xuilib-generic-filter', template: '' })
+@Component({
+  standalone: false,
+  selector: 'xuilib-generic-filter', template: ''
+})
 class GenericFilterStubComponent {
   public submitted = false;
 }

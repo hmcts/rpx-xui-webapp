@@ -7,6 +7,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
+  standalone: false,
   template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
 })
 class WrapperComponent {
@@ -133,7 +134,8 @@ describe('WorkAllocation', () => {
 });
 
 @Component({
-  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>'
+  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>',
+  standalone: false
 })
 class Wrapper1Component {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;

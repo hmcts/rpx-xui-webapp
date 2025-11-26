@@ -80,23 +80,21 @@ withNightlyPipeline(type, product, component) {
      }
     afterAlways('fortify-scan') {
   
-      stage('API Test') {
-            try {
-              yarnBuilder.yarn('test:api')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'API Functional Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
-            }
+      stage('API Tests') {
+        try {
+          yarnBuilder.yarn('test:api')
+        } finally {
+          publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'API Functional Test'
+          ])
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
         }
+      }
       
       stage('Playwright Install') {
             try {
@@ -106,23 +104,21 @@ withNightlyPipeline(type, product, component) {
             }  
         }
 
-      stage('UI Integration Test') {
-            try {
-              yarnBuilder.yarn('test:xuiIntegration')
-            } catch (Error) {
-              unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
-                allowMissing         : true,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "functional-output/tests/codecept-ngIntegration",
-                reportFiles          : 'cucumber_report.html',
-                reportName           : 'XUI Manage Cases Full functional Tests'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-            }
+      stage('UI Integration Tests') {
+        try {
+          yarnBuilder.yarn('test:xuiIntegration')
+        } finally {
+          publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : 'functional-output/tests/codecept-ngIntegration',
+            reportFiles          : 'cucumber_report.html',
+            reportName           : 'XUI Manage Cases Full functional Tests'
+          ])
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
         }
+      }
 
       stage('Cross Browser Test') {
             try {

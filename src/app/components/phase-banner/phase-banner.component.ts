@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 
 @Component({
+  standalone: false,
   selector: 'exui-phase-banner',
   templateUrl: './phase-banner.component.html'
 })

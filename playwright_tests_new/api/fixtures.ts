@@ -16,6 +16,11 @@ import { buildXsrfHeaders } from './utils/apiTestUtils';
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
 
+// Default attachments to timeline-style unless explicitly overridden.
+if (!process.env.API_REPORT_DETAIL && !process.env.API_ATTACH_CALLS) {
+  process.env.API_REPORT_DETAIL = 'timeline';
+}
+
 export interface ApiFixtures {
   apiClient: PlaywrightApiClient;
   anonymousClient: PlaywrightApiClient;

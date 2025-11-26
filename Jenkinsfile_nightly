@@ -82,7 +82,7 @@ withNightlyPipeline(type, product, component) {
   
       stage('API Tests') {
         try {
-          yarnBuilder.yarn('test:api')
+          yarnBuilder.yarn('test:api:pw:coverage')
         } finally {
           publishHTML([
             allowMissing         : true,

@@ -140,7 +140,7 @@ withPipeline(type, product, component) {
         stage('API Tests') {
             withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
                 try {
-                    yarnBuilder.yarn('test:api')
+                    yarnBuilder.yarn('test:api:pw:coverage')
                 } finally {
                     publishHTML([
                       allowMissing         : true,
@@ -198,7 +198,7 @@ withPipeline(type, product, component) {
         stage('API Tests') {
             withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
                 try {
-                    yarnBuilder.yarn('test:api')
+                    yarnBuilder.yarn('test:api:pw:coverage')
                 } finally {
                     publishHTML([
                       allowMissing         : true,

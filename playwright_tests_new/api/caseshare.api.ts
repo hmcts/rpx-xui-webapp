@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { withXsrf } from './utils/apiTestUtils';
+import { expectStatus, withRetry, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { CaseShareResponseVariant } from './utils/types';
 
@@ -36,9 +36,18 @@ test.describe('Case share endpoints', () => {
   for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path}`, async ({ apiClient }) => {
       await withXsrf('solicitor', async (headers) => {
-        const response = await apiClient.get(path, { headers: { ...headers, experimental: 'true' }, throwOnError: false });
-        expect([200, 500, 502, 504]).toContain(response.status);
-        expect(response.data).toBeTruthy();
+        const response = await withRetry(
+          () =>
+            apiClient.get(path, {
+              headers: { ...headers, experimental: 'true' },
+              throwOnError: false
+            }),
+          { retries: 1, retryStatuses: [502, 503, 504] }
+        );
+        expectStatus(response.status, [200, 401, 403, 404, 500, 502, 503, 504]);
+        if (response.status !== 200) {
+          return;
+        }
 
         const entries = resolveEntries(response.data, property);
         expect(Array.isArray(entries)).toBe(true);

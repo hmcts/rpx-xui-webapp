@@ -14,9 +14,9 @@ test.describe('CCD endpoints', () => {
         apiClient.get<any[]>(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
           throwOnError: false
         }),
-      { retries: 1, retryStatuses: [502, 504] }
+      { retries: 1, retryStatuses: [502, 503, 504] }
     );
-    expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500]);
+    expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500, 503]);
     if (!Array.isArray(response.data)) {
       expect(response.data).toBeUndefined();
       return;

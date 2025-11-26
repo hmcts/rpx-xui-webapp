@@ -76,7 +76,7 @@ module.exports = defineConfig({
     },
     {
       name: 'node-api',
-      testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+      testMatch: ['playwright_tests_new/api/**/*.api.ts', 'playwright_tests_new/api/**/*.spec.ts'],
       workers: process.env.CI ? 1 : 30,
       use: {
         headless: true,

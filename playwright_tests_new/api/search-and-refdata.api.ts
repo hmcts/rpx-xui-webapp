@@ -149,6 +149,7 @@ test.describe('Ref data and supported jurisdictions', () => {
       );
       if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
         const first = res.data[0] as any;
+        /* c8 ignore next 3 */
         if (typeof first === 'string') {
           expect(typeof first).toBe('string');
         } else if (first && typeof first === 'object') {

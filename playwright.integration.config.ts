@@ -13,13 +13,12 @@ module.exports = defineConfig({
   reporter: process.env.CI ? 'dot' : 'list',
   globalSetup: require.resolve('./playwright_tests_new/integration/playwright.global.setup.ts'),
   globalTeardown: require.resolve('./playwright_tests_new/integration/playwright.global.teardown.ts'),
-    use: {
-      // Default to local dev server to enable WireMock stubbing; override via MANAGE_CASES_BASE_URL.
-      baseURL: process.env.MANAGE_CASES_BASE_URL || 'http://localhost:3000',
-      trace: 'on-first-retry',
-      screenshot: 'only-on-failure',
-      video: 'retain-on-failure',
-      headless: headlessMode
+  use: {
+    baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    headless: headlessMode
   },
   projects: [
     {

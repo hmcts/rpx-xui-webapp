@@ -676,8 +676,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private methodsOfAttendanceChangeExists(): boolean {
-    const methodsOfAttendanceSHV = this.serviceHearingValuesModel.hearingChannels?.sort(this.defaultStringSort);
-    const methodsOfAttendanceHMC = this.hearingRequestMainModel.hearingDetails.hearingChannels?.sort(this.defaultStringSort);
+    const methodsOfAttendanceSHV = (this.serviceHearingValuesModel.hearingChannels ?? []).slice().sort(this.defaultStringSort);
+    const methodsOfAttendanceHMC = (this.hearingRequestMainModel.hearingDetails.hearingChannels ?? []).slice().sort(this.defaultStringSort);
 
     if (methodsOfAttendanceSHV.length !== methodsOfAttendanceHMC.length) {
       return true;

@@ -157,7 +157,6 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-
     this.isPaperHearingChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR),
       (this.hearingRequestMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR)

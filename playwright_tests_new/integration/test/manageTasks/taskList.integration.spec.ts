@@ -1,11 +1,12 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
-import { buildTaskListMock } from '../../mocks/taskList.mock';
+import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from 'playwright_tests_new/integration/utils/extractUserIdFromCookies';
+import { readTaskTable, formatUiDate } from '../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
-let taskListMockResponse ;
+let taskListMockResponse;
 
 test.beforeAll(() => {
     const { cookies, storageFile } = loadSessionCookies(userIdentifier);
@@ -16,37 +17,66 @@ test.beforeAll(() => {
 });
 
 test.beforeEach(async ({ page, config }) => {
+    await page.addInitScript(() => {
+        localStorage.clear();
+    });
     if (sessionCookies.length) {
         await page.context().addCookies(sessionCookies);
         const userId = extractUserIdFromCookies(sessionCookies);
-        taskListMockResponse = buildTaskListMock(124, userId);
+        taskListMockResponse = buildMyTaskListMock(160, userId);
     }
-    await page.goto(config.urls.exuiDefaultUrl+'/work/my-work/list');
+
 });
 
-test.describe(`Case List as ${userIdentifier}`, () => {
-    test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, tableUtils, page, config }) => {
+test.describe(`Task List as ${userIdentifier}`, () => {
+    test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, spinnerUtils }) => {
 
-        await test.step('Intercept tasks endpoint and fulfill with mock body', async () => {
+        await test.step('Setup route mock for task list', async () => {
             await page.route('**/workallocation/task*', async route => {
                 const body = JSON.stringify(taskListMockResponse);
                 await route.fulfill({ status: 200, contentType: 'application/json', body });
             });
         });
 
-        await test.step('Navigate to the search page', async () => {
-           await page.goto(config.urls.exuiDefaultUrl+'/work/my-work/list');
+        await test.step('Navigate to the my tasks list page', async () => {
+            await taskListPage.goto();
+            await expect(taskListPage.taskListTable).toBeVisible();
+            await spinnerUtils.waitForSpinner(page);
         });
 
         await test.step('Verify user can see a list shows the expected layout given the mock response', async () => {
-            //expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
-
-            const table = await tableUtils.mapExuiTable(taskListPage.taskListTable);
-            expect(table.length).toBe(taskListMockResponse.tasks.length);
-            for (let i = 0; i < taskListMockResponse.tasks.length; i++) {
-                const expectedFields = taskListMockResponse.tasks[i].case_fields;
-                expect(table[i]['Case name']).toBe(expectedFields['Case name']);
+            expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
+            const table = await readTaskTable(taskListPage.taskListTable);
+            for (let i = 0; i < table.length; i++) {
+                const expectedCaseName = taskListMockResponse.tasks[i].case_name;
+                expect(table[i]['Case name']).toBe(expectedCaseName);
+                // Check additional columns
+                expect(table[i]['Case category']).toBe(taskListMockResponse.tasks[i].case_category);
+                expect(table[i]['Location']).toBe(taskListMockResponse.tasks[i].location_name);
+                expect(table[i]['Task']).toBe(taskListMockResponse.tasks[i].task_title);
+                expect(table[i]['Due date']).toBe(formatUiDate(taskListMockResponse.tasks[i].due_date));
+                // Hearing date: allow empty string or null
+                const expectedHearingDate = taskListMockResponse.tasks[i].next_hearing_date || '';
+                expect(table[i]['Hearing date']).toBe(formatUiDate(expectedHearingDate));
             }
+        });
+    });
+
+    test(`User ${userIdentifier} sees no tasks when mock is empty`, async ({ taskListPage, page, spinnerUtils }) => {
+        const emptyMockResponse = { tasks: [], total_records: 0 };
+        await test.step('Setup route mock for empty task list', async () => {
+            await page.route('**/workallocation/task*', async route => {
+                const body = JSON.stringify(emptyMockResponse);
+                await route.fulfill({ status: 200, contentType: 'application/json', body });
+            });
+        });
+        await test.step('Navigate to the my tasks list page', async () => {
+            await taskListPage.goto();
+            await expect(taskListPage.taskListTable).toBeVisible();
+            await spinnerUtils.waitForSpinner(page);
+        });
+        await test.step('Verify table shows no results for empty mock', async () => {      
+            expect(await taskListPage.taskListTable.textContent()).toContain('You have no assigned tasks.');
         });
     });
 });

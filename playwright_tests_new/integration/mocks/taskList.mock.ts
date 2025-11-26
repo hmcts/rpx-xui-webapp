@@ -21,7 +21,7 @@ export const dateOptions = [
     { label: 'future', value: faker.date.soon({ days: faker.number.int({ min: 14, max: 180 }) }) }
 ];
 
-export function buildTaskListMock(rowCount: number = 3, assignee: string ) {
+export function buildMyTaskListMock(rowCount: number = 3, assignee: string ) {
     const maxResults = 25;
     const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
         // Created date: always in the past (up to 90 days ago)
@@ -29,8 +29,8 @@ export function buildTaskListMock(rowCount: number = 3, assignee: string ) {
         // Due date: pick from options
         const dueOpt = faker.helpers.arrayElement(dateOptions);
         const dueDate = dueOpt.value;
-        // Hearing date: random future date (or null)
-        const hearingDate = faker.datatype.boolean() ? faker.date.soon({ days: faker.number.int({ min: 1, max: 90 }) }) : null;
+            // Hearing date: random future date (or null)
+            const hearingDate = faker.datatype.boolean() ? faker.date.soon({ days: faker.number.int({ min: 1, max: 90 }) }) : null;
         // Format as ISO8601 with timezone
         const formatDate = (d: Date | null) => d ? d.toISOString().replace(/\.\d{3}Z$/, '+0000') : '';
         // Priority: random int 1-10
@@ -40,16 +40,6 @@ export function buildTaskListMock(rowCount: number = 3, assignee: string ) {
         const caseCategory = 'Protection';
         const locationName = 'Taylor House';
         const taskTitle = faker.word.words({ count: { min: 2, max: 5 } });
-        // Compose case_fields for table mapping
-        const case_fields = {
-            'Case name': caseName,
-            'Case category': caseCategory,
-            'Location': locationName,
-            'Task': taskTitle,
-            'Due date': formatDate(dueDate),
-            'Hearing date': formatDate(hearingDate),
-            'Priority': priority,
-        };
         return {
             id: faker.string.uuid(),
             name: taskTitle,
@@ -84,7 +74,14 @@ export function buildTaskListMock(rowCount: number = 3, assignee: string ) {
             priority_date: formatDate(dueDate),
             dueDate: formatDate(dueDate),
             actions,
-            case_fields
+            // Flattened case fields
+            case_name_field: caseName,
+            case_category_field: caseCategory,
+            location_field: locationName,
+            task_field: taskTitle,
+            due_date_field: formatDate(dueDate),
+            next_hearing_date: hearingDate ? formatDate(hearingDate) : null,
+            priority_field: priority
         };
     });
 
@@ -93,3 +90,4 @@ export function buildTaskListMock(rowCount: number = 3, assignee: string ) {
         total_records: rowCount
     };
 }
+

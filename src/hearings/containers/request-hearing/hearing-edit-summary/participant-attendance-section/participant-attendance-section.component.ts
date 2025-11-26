@@ -157,10 +157,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    let hearingChannels = this.hearingRequestMainModel.hearingDetails?.hearingChannels || [];
-    if (!!this.hearingRequestMainModel.hearingDetails.isPaperHearing) {
-      hearingChannels = [...hearingChannels, HearingChannelEnum.ONPPR];
-    }
+    const hearingChannels = this.hearingRequestMainModel.hearingDetails?.hearingChannels || [];
 
     this.isPaperHearingChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels?.includes(HearingChannelEnum.ONPPR),

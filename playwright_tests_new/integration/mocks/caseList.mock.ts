@@ -73,8 +73,15 @@ export function buildCaseListMock(rowCount: number = 2) {
     ];
 
     const maxResults = 25;
+    const now = new Date();
     const results = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
         const caseReference = `#${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}`;
+
+        // Generate dates: created < last state modified < last modified
+        const createdDate = faker.date.between({ from: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), to: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000) });
+        const lastStateModifiedDate = faker.date.between({ from: createdDate, to: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000) });
+        const lastModifiedDate = faker.date.between({ from: lastStateModifiedDate, to: now });
+
         return {
             case_id: caseReference,
             supplementary_data: null,
@@ -83,13 +90,13 @@ export function buildCaseListMock(rowCount: number = 2) {
                 "[STATE]": "CaseCreated",
                 "[SECURITY_CLASSIFICATION]": "PUBLIC",
                 "[JURISDICTION]": "DIVORCE",
-                "[LAST_STATE_MODIFIED_DATE]": "2025-05-12T15:24:53.977",
-                "[CREATED_DATE]": "2025-05-12T15:24:53.977",
+                "[LAST_STATE_MODIFIED_DATE]": lastStateModifiedDate.toISOString(),
+                "[CREATED_DATE]": createdDate.toISOString(),
                 TextField2: faker.lorem.word(),
                 "[CASE_TYPE]": "xuiTestJurisdiction",
                 TextField1: faker.lorem.word(),
                 "[CASE_REFERENCE]": caseReference,
-                "[LAST_MODIFIED_DATE]": "2025-10-09T13:43:59.362"
+                "[LAST_MODIFIED_DATE]": lastModifiedDate.toISOString()
             },
         };
     });

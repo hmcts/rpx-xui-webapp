@@ -8,7 +8,6 @@ import {
   HMCLocationType,
   HMCStatus,
   LaCaseStatus,
-  ListingStatus,
   MemberType,
   PartyType,
   RequirementType,
@@ -2015,7 +2014,7 @@ export const hearingRequestMainModel: HearingRequestMainModel = {
     receivedDateTime: '2021-11-30T09:00:00.000Z',
     responseVersion: 0,
     laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-    listingStatus: ListingStatus.DRAFT,
+    listingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
     hearingCancellationReason: '123456543',
     hearingDaySchedule: [{
       hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -2442,7 +2441,7 @@ export const initialState = {
           responseVersion: 1,
           receivedDateTime: '2021-11-30T09:00:00.000Z',
           laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-          listingStatus: ListingStatus.FIXED,
+          listingStatus: HearingListingStatusEnum.COMPLETED,
           hearingCancellationReason: '',
           hearingDaySchedule: [{
             hearingStartDateTime: '2022-12-12T09:00:00.000Z',
@@ -3092,7 +3091,7 @@ export const initialStateImmutable = {
           responseVersion: 1,
           receivedDateTime: '2021-11-30T09:00:00.000Z',
           laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-          listingStatus: ListingStatus.FIXED,
+          listingStatus: HearingListingStatusEnum.COMPLETED,
           hearingCancellationReason: '',
           hearingDaySchedule: [{
             hearingStartDateTime: '2022-12-12T09:00:00.000Z',

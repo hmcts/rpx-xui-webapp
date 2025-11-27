@@ -138,18 +138,20 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
 
         stage('API Tests') {
-            try {
-                yarnBuilder.yarn('test:api')
-            } finally {
-                publishHTML([
-                  allowMissing         : true,
-                  alwaysLinkToLastBuild: true,
-                  keepAll              : true,
-                  reportDir            : 'functional-output/tests/api_functional/',
-                  reportFiles          : 'mochawesome.html',
-                  reportName           : 'PREVIEW API Functional Test'
-                ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
+                try {
+                    yarnBuilder.yarn('test:api')
+                } finally {
+                    publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'PREVIEW API Functional Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                }
             }
         }
                 stage('Integration Tests') {
@@ -194,18 +196,20 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
 
         stage('API Tests') {
-            try {
-                yarnBuilder.yarn('test:api')
-            } finally {
-                publishHTML([
-                  allowMissing         : true,
-                  alwaysLinkToLastBuild: true,
-                  keepAll              : true,
-                  reportDir            : 'functional-output/tests/api_functional/',
-                  reportFiles          : 'mochawesome.html',
-                  reportName           : 'AAT API Functional Test'
-                ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
+                try {
+                    yarnBuilder.yarn('test:api')
+                } finally {
+                    publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'AAT API Functional Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                }
             }
         }
                 stage('Integration Tests') {

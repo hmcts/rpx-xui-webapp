@@ -64,9 +64,15 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
-    logger.error('SubmitHearingRequest error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
+    const deepLink: string | undefined = req.body?.caseDetails?.caseDeepLink;
+    let inferredCaseId: string | undefined;
+    if (typeof deepLink === 'string') {
+      const specific = deepLink.match(/\/case-details\/(\d+)/);
+      inferredCaseId = specific?.[1] ?? deepLink.match(/\d{10,}/)?.[0];
+    }
+    logger.error(`SubmitHearingRequest error: caseID: ${inferredCaseId} ${error.status} ${markupPath}`, error.statusText, JSON.stringify(error.data));
     if (error.status >= 400 && error.status < 600) {
-      trackTrace(`SubmitHearingRequest error: (${error.status}) : ${JSON.stringify(error.data)}`);
+      trackTrace(`SubmitHearingRequest error for caseID:: ${inferredCaseId}: (${error.status}) : ${JSON.stringify(error.data)}`);
     }
     next(error);
   }

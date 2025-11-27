@@ -1,7 +1,7 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from 'playwright_tests_new/integration/utils/extractUserIdFromCookies';
+import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { readTaskTable, formatUiDate } from '../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';

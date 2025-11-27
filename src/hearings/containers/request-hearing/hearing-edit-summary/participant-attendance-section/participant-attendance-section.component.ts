@@ -26,7 +26,6 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   public partyChannelsRefDataCombined: LovRefDataModel[] = [];
   public isPaperHearing : string;
-  // public participantChannels: string[] = [];
   public participantChannels: HearingChannelMode[] = [];
   public participantAttendanceModes: ParticipantAttendanceMode[] = [];
   public numberOfPhysicalAttendees: number;

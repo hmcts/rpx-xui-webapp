@@ -192,7 +192,7 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
             reportFiles          : 'xui-playwright.html',
-            reportName           : 'PREVIEW Playwright Smoke'
+            reportName           : 'AAT Playwright Smoke'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
 

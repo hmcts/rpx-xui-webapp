@@ -93,22 +93,6 @@ module.exports = defineConfig({
         video: 'off',
         trace: 'off'
       }
-    },
-    {
-      name: 'integration',
-      testDir: 'playwright_tests_new/integration',
-      testMatch: ['playwright_tests_new/integration/**/*.spec.ts'],
-      use: {
-        ...devices['Desktop Chrome'],
-        channel: 'chrome',
-        headless: headlessMode,
-        trace: 'retain-on-failure',
-        screenshot: {
-          mode: 'only-on-failure',
-          fullPage: true
-        },
-        video: 'retain-on-failure'
-      }
     }
   ]
 });

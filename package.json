@@ -52,6 +52,7 @@
     "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn playwright install && npm-run-all -p -l -n -c test:api test:xuiIntegration",
     "test:playwrightE2E": "yarn playwright install && npx playwright test --project chromium",
+    "test:playwright:integration": "npx playwright test --config=playwright.integration.config.ts",
     "test:api:pw": "yarn playwright install && npx playwright test --project node-api",
     "test:api:pw:coverage": "yarn playwright install && NODE_V8_COVERAGE=./reports/tests/coverage/api-playwright npx playwright test --project node-api",
     "test:functional1": "yarn run test:xuiIntegration && yarn run test:functionalApiE2e",

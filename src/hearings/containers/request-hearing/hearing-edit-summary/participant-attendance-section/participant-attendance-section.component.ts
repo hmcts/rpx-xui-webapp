@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingChannelEnum, PartyType } from '../../../../models/hearings.enum';
-import { AmendmentLabelStatus, ParticipantAttendanceMode } from '../../../../models/hearingsUpdateMode.enum';
+import { AmendmentLabelStatus, HearingChannelMode, ParticipantAttendanceMode } from '../../../../models/hearingsUpdateMode.enum';
 import { LovRefDataModel } from '../../../../models/lovRefData.model';
 import { PartyDetailsModel } from '../../../../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../../../../models/serviceHearingValues.model';
@@ -26,7 +26,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
   public partyChannelsRefDataCombined: LovRefDataModel[] = [];
   public isPaperHearing : string;
-  public participantChannels: string[] = [];
+  // public participantChannels: string[] = [];
+  public participantChannels: HearingChannelMode[] = [];
   public participantAttendanceModes: ParticipantAttendanceMode[] = [];
   public numberOfPhysicalAttendees: number;
   public pageTitleDisplayLabel: string;
@@ -78,12 +79,14 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       : 'No';
   }
 
-  private getParticipantChannels(): string[] {
-    const participantChannels: string[] = [];
+  private getParticipantChannels(): HearingChannelMode[] {
+    const participantChannels: HearingChannelMode[] = [];
     this.hearingRequestMainModel.hearingDetails?.hearingChannels?.forEach((hearingChannel) => {
       const partyChannelFromRefData = this.partyChannelsRefDataCombined.find((partyChannel) => partyChannel.key === hearingChannel);
       if (partyChannelFromRefData) {
-        participantChannels.push(partyChannelFromRefData.value_en);
+        participantChannels.push({
+          hearingChannel: partyChannelFromRefData.value_en,
+          hearingChannelChanged: this.getHearingChannelChanged(partyChannelFromRefData.key) });
       }
     });
     return participantChannels;
@@ -141,6 +144,11 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  private getHearingChannelChanged(hearingChannel: string): boolean {
+    const hearingChannelInHMCToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels.find((hearingChannelToCompare) => hearingChannel === hearingChannelToCompare);
+    return !hearingChannelInHMCToCompare;
   }
 
   private getPartyChannelChanged(partyDetails: PartyDetailsModel): boolean {

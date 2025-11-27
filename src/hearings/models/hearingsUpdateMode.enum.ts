@@ -100,3 +100,8 @@ export interface ParticipantAttendanceMode {
   partyNameChanged: boolean;
   partyChannelChanged: boolean;
 }
+
+export interface HearingChannelMode {
+  hearingChannel: string;
+  hearingChannelChanged: boolean;
+}

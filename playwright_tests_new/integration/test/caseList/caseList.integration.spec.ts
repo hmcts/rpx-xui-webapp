@@ -47,25 +47,26 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 				expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
 			}
 		});
+	});
 
-		test(`User ${userIdentifier} sees empty case list message when searchCases returns empty response`, async ({ caseListPage, tableUtils, page }) => {
-			
-			await test.step('Intercept searchCases endpoint and fulfill with empty mock body', async () => {
-				await page.route('**/data/internal/searchCases*', async route => {
-					const body = JSON.stringify({ columns: [], results: [], total: 0 });
-					await route.fulfill({ status: 200, contentType: 'application/json', body });
-				});
-			});
+	test(`User ${userIdentifier} sees empty case list message when searchCases returns empty response`, async ({ caseListPage, tableUtils, page }) => {
 
-			await test.step('Navigate to the search page', async () => {
-				await caseListPage.goto();
+		await test.step('Intercept searchCases endpoint and fulfill with empty mock body', async () => {
+			await page.route('**/data/internal/searchCases*', async route => {
+				const body = JSON.stringify({ columns: [], results: [], total: 0 });
+				await route.fulfill({ status: 200, contentType: 'application/json', body });
 			});
+		});
 
-			await test.step('Verify user sees empty case list UI', async () => {
-				 expect(await caseListPage.exuiCaseListComponent.caseListTable.textContent()).toContain('You have no assigned cases.');
-				const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
-				expect(table.length).toBe(0);
-			});
+		await test.step('Navigate to the search page', async () => {
+			await caseListPage.goto();
+		});
+
+		await test.step('Verify user sees empty case list UI', async () => {
+			expect(await caseListPage.exuiCaseListComponent.caseListTable.textContent()).toContain('You have no assigned cases.');
+			const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
+			expect(table.length).toBe(0);
 		});
 	});
 });
+

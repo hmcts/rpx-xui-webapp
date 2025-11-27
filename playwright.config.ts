@@ -80,15 +80,15 @@ module.exports = defineConfig({
         video: 'retain-on-failure'
       }
     },
-        {
-          name: 'smoke',
-          testMatch: ['playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
-          use: {
-            baseURL: process.env.SMOKE_TEST_BASE_URL || 'https://manage-case.aat.platform.hmcts.net',
-            ...devices['Desktop Chrome'],
-            channel: 'chrome',
-            headless: headlessMode,
-            trace: 'retain-on-failure',
+    {
+      name: 'smoke',
+      testMatch: ['playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+      use: {
+        baseURL: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net',
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        headless: headlessMode,
+        trace: 'retain-on-failure',
         screenshot: {
           mode: 'only-on-failure',
           fullPage: true

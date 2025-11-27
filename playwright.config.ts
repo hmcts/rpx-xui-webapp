@@ -8,17 +8,18 @@ export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 const odhinOutputFolder =
   process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
-const resolveWorkerCount = () => {
-  const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-  if (configured) {
-    return parseInt(configured, 10);
-  }
-  if (process.env.CI) {
-    return 1;
-  }
-  return 10;
+const parseWorkerCount = (value?: string) => {
+  const parsed = value ? Number.parseInt(value, 10) : Number.NaN;
+  return Number.isFinite(parsed) ? parsed : undefined;
 };
-const workerCount = resolveWorkerCount();
+
+const resolveWorkerCount = (ciDefault: number, localDefault: number) => {
+  const configured = parseWorkerCount(process.env.FUNCTIONAL_TESTS_WORKERS);
+  return configured ?? (process.env.CI ? ciDefault : localDefault);
+};
+const workerCount = resolveWorkerCount(1, 10);
+const nodeApiWorkerCount = resolveWorkerCount(8, 8);
+const reporterWorkerCount = parseWorkerCount(process.env.FUNCTIONAL_TESTS_WORKERS) ?? workerCount;
 
 module.exports = defineConfig({
   testDir: '.',
@@ -48,7 +49,7 @@ module.exports = defineConfig({
       outputFolder: odhinOutputFolder,
       indexFilename: 'xui-playwright.html',
       title: 'RPX XUI Playwright',
-      testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+      testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${reporterWorkerCount}`,
       project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
       release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
       startServer: false,
@@ -77,7 +78,7 @@ module.exports = defineConfig({
     {
       name: 'node-api',
       testMatch: ['playwright_tests_new/api/**/*.api.ts', 'playwright_tests_new/api/**/*.spec.ts'],
-      workers: process.env.CI ? 1 : 30,
+      workers: nodeApiWorkerCount,
       use: {
         headless: true,
         screenshot: 'off',

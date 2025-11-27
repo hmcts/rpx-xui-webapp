@@ -138,7 +138,7 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
 
         stage('API Tests') {
-            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
+            withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
                 try {
                     yarnBuilder.yarn('test:api:pw:coverage')
                 } finally {
@@ -196,7 +196,7 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
 
         stage('API Tests') {
-            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
+            withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
                 try {
                     yarnBuilder.yarn('test:api:pw:coverage')
                 } finally {

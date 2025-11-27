@@ -96,6 +96,7 @@ module.exports = defineConfig({
     },
     {
       name: 'integration',
+      testDir: 'playwright_tests_new/integration',
       testMatch: ['playwright_tests_new/integration/**/*.spec.ts'],
       use: {
         ...devices['Desktop Chrome'],

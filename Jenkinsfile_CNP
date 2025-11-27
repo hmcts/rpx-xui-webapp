@@ -66,9 +66,9 @@ withPipeline(type, product, component) {
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')
-        stage('Playwright Install') {
+        stage('Playwright Install Chromium') {
         try {
-            yarnBuilder.yarn('test:setup:playwright-install')
+            yarnBuilder.yarn('test:setup:playwright-install-chromium')
         } catch (Error) {
             error(message: "${STAGE_NAME} is unstable: " + Error.toString())
         }  

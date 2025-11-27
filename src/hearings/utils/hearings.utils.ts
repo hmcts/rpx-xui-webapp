@@ -335,4 +335,21 @@ export class HearingsUtils {
     const listingComments2 = listingCommentsinput2 ? listingCommentsinput2.trim() : '';
     return listingComments1 !== listingComments2;
   }
+
+  static havePartyDetailsChanged(partiesSHV: PartyDetailsModel[], partiesHMC: PartyDetailsModel[]) {
+    if (partiesSHV.length !== partiesHMC.length) {
+      return true;
+    }
+    // Number of parties are the same in both SHV and HMC
+    // Loop through the parties in SHV, locate the corresponding party in HMC
+    // and return true if there are any changes in the party name of party type
+    for (const partySHV of partiesSHV) {
+      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
+      if (!party || party.partyType !== partySHV.partyType ||
+        this.hasPartyNameChanged(party, partySHV)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

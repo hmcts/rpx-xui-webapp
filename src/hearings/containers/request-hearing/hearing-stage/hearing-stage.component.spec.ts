@@ -16,6 +16,7 @@ import { HearingsService } from '../../../services/hearings.service';
 import { HearingStageComponent } from './hearing-stage.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-parties-title',
   template: ''
 })

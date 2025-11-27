@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
 import { SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -16,6 +15,8 @@ import * as workAllocation from '../workAllocation';
 import * as lau from '../services/lau';
 import { getTaskType, orchestrationRequestMoreInformation, orchestrationSpecificAccessRequest, postCreateTask, specificAccessRequestCreateAmRole, specificAccessRequestUpdateAttributes } from './index';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('postCreateTask', () => {

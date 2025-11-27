@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { NextFunction } from 'express';
@@ -9,6 +8,8 @@ import * as crudService from '../../common/crudService';
 import { getCaseFlagRefData } from './index';
 import { CASE_FLAG_REFERENCE_VALUES } from './data/caseFlagReference.mock.data';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Case Flag', () => {

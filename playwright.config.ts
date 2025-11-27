@@ -24,6 +24,9 @@ const resolveWorkerCount = () => {
 const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
+  use: {
+    baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
+  },
   testDir: '.',
   testMatch: [
     'playwright_tests/**/*.test.ts',
@@ -64,8 +67,12 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      testIgnore: ['playwright_tests_new/api/**'],
+      testIgnore: [
+        'playwright_tests_new/api/**',
+        'playwright_tests_new/integration/**'
+      ],
       use: {
+        baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
         ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
@@ -85,6 +92,21 @@ module.exports = defineConfig({
         screenshot: 'off',
         video: 'off',
         trace: 'off'
+      }
+    },
+    {
+      name: 'integration',
+      testMatch: ['playwright_tests_new/integration/**/*.spec.ts'],
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        headless: headlessMode,
+        trace: 'retain-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
+        video: 'retain-on-failure'
       }
     }
   ]

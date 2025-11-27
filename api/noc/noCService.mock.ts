@@ -30,7 +30,7 @@ export const generator = (schema, min = 1, max) => {
 };
 
 export const init = () => {
-  const mock: MockAdapter = new MockAdapter(httpMock);
+  const mock: MockAdapter = new MockAdapter(httpMock as any);
 
   // schema
   const questionsSchema: NoCQuestion[] = [

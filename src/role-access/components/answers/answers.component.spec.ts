@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AnswersComponent } from './answers.component';
 
 @Component({
+  standalone: false,
   template: '<exui-answers [caption]="caption" [heading]="heading" [hint]="hint" [answers]="answers" (navigate)="onNavigate($event)"></exui-answers>'
 })
 class WrapperComponent {

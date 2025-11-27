@@ -9,6 +9,7 @@ import { LovRefDataModel } from '../../../models/lovRefData.model';
 import * as fromHearingStore from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-adjourned-summary',
   templateUrl: './hearing-adjourned-summary.component.html'
 })

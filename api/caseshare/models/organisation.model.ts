@@ -1,4 +1,4 @@
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib';
 
 export interface OrganisationModel {
   orgId: string;

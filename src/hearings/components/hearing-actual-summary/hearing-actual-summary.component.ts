@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActualHearingDayModel, HearingActualsMainModel, PlannedHearingDayModel } from '../../models/hearingActualsMainModel';
@@ -8,6 +8,7 @@ import * as fromHearingStore from '../../store';
 import * as moment from 'moment';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
   styleUrls: ['./hearing-actual-summary.component.scss']
@@ -30,23 +31,14 @@ export class HearingActualSummaryComponent implements OnInit {
   public caseReference: string;
 
   public ngOnInit(): void {
-    const hearingOutcome = this.hearingActualsMainModel &&
-      this.hearingActualsMainModel.hearingActuals &&
-      this.hearingActualsMainModel.hearingActuals.hearingOutcome;
-    this.isCompleted = hearingOutcome && hearingOutcome.hearingResult === HearingResult.COMPLETED;
-    this.isAdjourned = hearingOutcome && hearingOutcome.hearingResult === HearingResult.ADJOURNED;
+    this.applyActualsModel();
+  }
 
-    if (this.isAdjourned) {
-      const adjournReasonType = this.adjournReasons.find((reason) => reason.key === hearingOutcome.hearingResultReasonType);
-      this.adjournReasonTypeValue = adjournReasonType ? adjournReasonType.value_en : hearingOutcome.hearingResultReasonType;
+  public ngOnChanges(changes: SimpleChanges): void {
+    // EXUI-3639 - Ensure we re-apply model when data changes
+    if (changes.hearingActualsMainModel && changes.hearingActualsMainModel.currentValue) {
+      this.applyActualsModel();
     }
-
-    this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
-      map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
-    );
-    this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
-    this.hearingId = history.state?.hearingId ?? '';
-    this.caseReference = history.state?.caseRef ?? '';
   }
 
   private getHearingTypeDescription(hearingType: string): string {
@@ -67,6 +59,25 @@ export class HearingActualSummaryComponent implements OnInit {
 
   private convertUTCDateToLocalDate(date): Date {
     return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+  }
+
+  private applyActualsModel(): void {
+    const hearingOutcome = this.hearingActualsMainModel &&
+      this.hearingActualsMainModel.hearingActuals &&
+      this.hearingActualsMainModel.hearingActuals.hearingOutcome;
+    this.isCompleted = hearingOutcome && hearingOutcome.hearingResult === HearingResult.COMPLETED;
+    this.isAdjourned = hearingOutcome && hearingOutcome.hearingResult === HearingResult.ADJOURNED;
+    if (this.isAdjourned) {
+      const adjournReasonType = this.adjournReasons.find((reason) => reason.key === hearingOutcome.hearingResultReasonType);
+      this.adjournReasonTypeValue = adjournReasonType ? adjournReasonType.value_en : hearingOutcome.hearingResultReasonType;
+    }
+
+    this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
+      map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
+    );
+    this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
+    this.hearingId = history.state?.hearingId ?? '';
+    this.caseReference = history.state?.caseRef ?? '';
   }
 
   public actualMultiDaysHearingDates(): string {

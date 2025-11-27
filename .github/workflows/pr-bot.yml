@@ -7,10 +7,14 @@ on:
   status:
 
 permissions:
-    contents: read
-    pull-requests: write
-    issues: write
-    statuses: read
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: read
+
+concurrency:
+  group: pr-bot-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
   slack-notification:

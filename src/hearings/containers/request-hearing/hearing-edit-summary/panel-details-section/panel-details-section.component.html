@@ -1,11 +1,16 @@
-<h2 class="govuk-heading-m">Panel details</h2>
+<h2 class="govuk-heading-m">Panel details
+<exui-amendment-label  *ngIf="showAmendedLabelForPageTitle" [displayLabel]="amendmentLabelEnum.AMENDED">
+</exui-amendment-label>
+</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
-  <div class="govuk-summary-list__row">
+  <div class="govuk-summary-list__row" *ngIf="!isAPanelFlag">
     <div class="govuk-summary-list__key">
       Do you require a panel for this hearing?
     </div>
     <div class="govuk-summary-list__value">
       {{ hearingPanel }}
+      <exui-amendment-label *ngIf="showAmmendedForNeedPanel" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <button id="hearingPanel"
@@ -14,12 +19,14 @@
         (click)="onChange('hearingPanel')">Change</button>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="includedPanelMembers?.length > 0">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Include specific panel members
     </div>
     <div class="govuk-summary-list__value">
       {{ includedPanelMembers }}
+      <exui-amendment-label *ngIf="showAmmendedForIncludedPanelNames" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <button id="panelInclusion"
@@ -28,12 +35,14 @@
         (click)="onChange('panelInclusion')">Change</button>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="excludedPanelMembers?.length > 0">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Exclude specific panel members
     </div>
     <div class="govuk-summary-list__value">
       {{ excludedPanelMembers }}
+      <exui-amendment-label *ngIf="showAmmendedForExcludedPanelNames" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <button id="panelExclusion"
@@ -42,12 +51,14 @@
         (click)="onChange('panelExclusion')">Change</button>
     </div>
   </div>
-  <div class="govuk-summary-list__row" *ngIf="panelRoles?.length > 0">
+  <div class="govuk-summary-list__row">
     <div class="govuk-summary-list__key">
       Select any other panel roles required
     </div>
     <div class="govuk-summary-list__value">
       {{ panelRoles }}
+      <exui-amendment-label *ngIf="showAmmendedForPanelType" [displayLabel]="amendmentLabelEnum.AMENDED">
+      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <button id="panelRoles"

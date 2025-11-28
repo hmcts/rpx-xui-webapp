@@ -213,7 +213,7 @@
     "cross-env": "^10.0.0",
     "cucumber-html-report": "0.6.5",
     "cucumber-html-reporter": "^7.1.1",
-    "eslint": "^8.37.0",
+    "eslint": "^9.0.0",
     "husky": "^9.1.7",
     "jasmine-marbles": "^0.9.1",
     "jasmine-spec-reporter": "~7.0.0",

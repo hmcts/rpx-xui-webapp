@@ -9,23 +9,16 @@ let sessionCookies: any[] = [];
 let taskListMockResponse;
 
 test.beforeAll(() => {
-    const { cookies, storageFile } = loadSessionCookies(userIdentifier);
+    const { cookies } = loadSessionCookies(userIdentifier);
     sessionCookies = cookies;
-    if (cookies.length === 0) {
-        console.warn(`No cookies loaded for ${userIdentifier}; file checked: ${storageFile}`);
-    }
 });
 
-test.beforeEach(async ({ page, config }) => {
-    await page.addInitScript(() => {
-        localStorage.clear();
-    });
+test.beforeEach(async ({ page }) => {
     if (sessionCookies.length) {
         await page.context().addCookies(sessionCookies);
         const userId = extractUserIdFromCookies(sessionCookies);
         taskListMockResponse = buildMyTaskListMock(160, userId);
     }
-
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
@@ -80,7 +73,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         });
     });
 
-    test(`User ${userIdentifier} sees deterministic tasks with specific due dates`, async ({ taskListPage, page, spinnerUtils }) => {
+    test(`User ${userIdentifier} sees all types of priority tasks with specific due dates`, async ({ taskListPage, page, spinnerUtils }) => {
         const deterministicMockResponse = buildDeterministicMyTasksListMock('deterministic-assignee');
         await test.step('Setup route mock for deterministic task list', async () => {
             await page.route('**/workallocation/task*', async route => {
@@ -93,7 +86,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
             await expect(taskListPage.taskListTable).toBeVisible();
             await spinnerUtils.waitForSpinner(page);
         });
-        await test.step('Verify table shows deterministic tasks and due dates', async () => {
+        await test.step('Verify table shows deterministic priority tasks and due dates', async () => {
             expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to 4 of 4 results`);
             const table = await readTaskTable(taskListPage.taskListTable);
             expect(table.length).toBe(4);

@@ -7,11 +7,8 @@ let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
 
 test.beforeAll(() => {
-	const { cookies, storageFile } = loadSessionCookies(userIdentifier);
+	const { cookies } = loadSessionCookies(userIdentifier);
 	sessionCookies = cookies;
-	if (cookies.length === 0) {
-		console.warn(`No cookies loaded for ${userIdentifier}; file checked: ${storageFile}`);
-	}
 });
 
 test.beforeEach(async ({ page, config }) => {
@@ -46,6 +43,8 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 				expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);
 				expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
 			}
+			expect(await caseListPage.pagination.isVisible()).toBeTruthy();
+			expect(await caseListPage.getPaginationFinalItem()).toBe('Next'); 
 		});
 	});
 
@@ -63,10 +62,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 		});
 
 		await test.step('Verify user sees empty case list UI', async () => {
-			expect(await caseListPage.exuiCaseListComponent.caseListTable.textContent()).toContain('You have no assigned cases.');
-			const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
-			expect(table.length).toBe(0);
+			expect(await caseListPage.caseSearchResultsMessage.textContent()).toContain('No cases found. Try using different filters.');
 		});
 	});
 });
-

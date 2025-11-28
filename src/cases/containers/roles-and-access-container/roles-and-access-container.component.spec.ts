@@ -3,7 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig, AlertService, AuthService, CaseField, CaseNotifier, CaseView, CasesService, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
@@ -122,7 +122,6 @@ const CASE_VIEW: CaseView = {
 };
 
 describe('RolesContainerComponent', () => {
-  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -132,7 +131,7 @@ describe('RolesContainerComponent', () => {
   const store = jasmine.createSpyObj('store', ['pipe', 'select']);
   const roleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('allocateService', ['getCaseRoles', 'getCaseRolesUserDetails']);
-  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersFromServices']);
+  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersByIdamIds']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
@@ -156,13 +155,6 @@ describe('RolesContainerComponent', () => {
         {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService
-        },
-        {
-          provide: FeatureToggleService,
-          useValue: {
-            isEnabled: (flag) => of(flags[flag]),
-            getValue: (flag) => of(flags[flag])
-          }
         },
         provideMockStore({ initialState: initialMockState }),
         {
@@ -235,30 +227,29 @@ describe('RolesContainerComponent', () => {
   // });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
 
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
 
   it('ngOnit', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
 
     spyOn(component, 'applyJurisdiction');
     spyOn(component, 'loadExclusions');
     spyOn(component, 'loadRoles');
-    caseworkerDataService.getUsersFromServices.and.returnValue(of({}));
+    caseworkerDataService.getUsersByIdamIds.and.returnValue(of({}));
 
     component.ngOnInit();
 
-    expect(caseworkerDataService.getUsersFromServices).toHaveBeenCalled();
     expect(component.applyJurisdiction).toHaveBeenCalled();
     expect(component.loadExclusions).toHaveBeenCalled();
     expect(component.loadRoles).toHaveBeenCalled();
   });
 
   it('loadRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
@@ -288,7 +279,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadRoles should update with caseRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
@@ -315,7 +306,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadExclusions', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [
@@ -340,7 +331,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadExclusions should update exclusions with empty array', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [];
@@ -354,7 +345,7 @@ describe('RolesContainerComponent', () => {
   });
 
   it('applyJurisdiction', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService);
     spyOn(component, 'setDisplayAllocateLink');
 
     store.select.and.returnValue(of({}));

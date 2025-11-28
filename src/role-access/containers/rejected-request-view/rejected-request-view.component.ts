@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
-import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
+import { CaseworkerDataService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { first } from 'rxjs/operators';
 
 @Component({
   standalone: false,
@@ -29,7 +30,6 @@ export class RejectedRequestViewComponent implements OnInit {
 
   constructor(private readonly route: ActivatedRoute,
               private readonly router: Router,
-              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
               private readonly caseworkerDataService: CaseworkerDataService,
               private readonly allocateRoleService: AllocateRoleService) {
     this.caseName = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseName ?
@@ -69,14 +69,10 @@ export class RejectedRequestViewComponent implements OnInit {
         }
       );
     } else {
-      this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
-        this.caseworkerDataService.getUsersFromServices(services).subscribe(
-          (caseworkers) => {
-            const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
-            if (caseworker) {
-              this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
-            }
-          });
+      this.caseworkerDataService.getUserByIdamId(this.reviewer).pipe(first()).subscribe((caseworker) => {
+        if (caseworker) {
+          this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
+        }
       });
     }
   }

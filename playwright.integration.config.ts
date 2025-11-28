@@ -24,8 +24,8 @@ module.exports = defineConfig({
   testDir: 'playwright_tests_new/integration',
   testMatch: ['**/test/**/*.spec.ts'],
   retries: process.env.CI ? 1 : 0,
-  timeout: 60_000,
-  expect: { timeout: 30_000 },
+  timeout: 30_000,
+  expect: { timeout: 15_000 },
   workers: process.env.CI ? 2 : undefined,
     reporter: [
     [process.env.CI ? 'dot' : 'list'],

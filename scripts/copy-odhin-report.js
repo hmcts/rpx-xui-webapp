@@ -99,40 +99,47 @@ function injectCoverageLink(reportFolder, relativeCoveragePath, totals) {
     : '';
 
   const block = `
-<div class="col-12">
-  <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
-    <div class="info-box-header">Coverage</div>
-    <div class="odhin-table-no-scroll">
-      <div class="table-responsive">
-        <table class="table table-sm mb-0">
-          <thead>
-            <tr>
-              <th class="odhin-text-2">Metric</th>
-              <th class="odhin-text-2">Percent</th>
-              <th class="odhin-text-2">Covered</th>
-              <th class="odhin-text-2">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows || '<tr><td colspan="4" class="text-secondary-emphasis">Summary unavailable</td></tr>'}
-            <tr>
-              <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">HTML report</td>
-              <td colspan="3"><a href="${relativeCoveragePath}" target="_blank" rel="noopener">Open coverage report</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>`;
+          <div class="row ms-3 me-3">
+            <div class="col-12">
+              <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
+                <div class="info-box-header">Coverage</div>
+                <p class="text-secondary-emphasis small mb-2 ps-2">
+                  Scope: totals from coverage-summary.json (all instrumented files in this run). Embedded HTML report may be folder-specific.
+                </p>
+                <div class="odhin-table">
+                  <div class="table-responsive">
+                    <table class="table table-sm mb-0 testcase-run-info-table">
+                      <thead>
+                        <tr>
+                          <th class="odhin-text-3">Metric</th>
+                          <th class="odhin-text-3">Percent</th>
+                          <th class="odhin-text-3">Covered</th>
+                          <th class="odhin-text-3">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${rows || '<tr><td colspan="4" class="text-secondary-emphasis">Summary unavailable</td></tr>'}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`;
   files.forEach((file) => {
     const fullPath = path.join(reportFolder, file);
     try {
       let html = fs.readFileSync(fullPath, 'utf8');
-      if (html.includes('info-box-header">Coverage') || !html.includes('id="TabDashboard"')) {
+      if (!html.includes('id="TabDashboard"')) {
         return;
       }
-      html = html.replace(/(<div[^>]+id="TabDashboard"[\s\S]*?)(<div[^>]+id="TabTests")/, (_m, before, after) => `${before}\n${block}\n${after}`);
+      // Remove any previously injected coverage block
+      html = html.replace(/<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">Coverage[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/m, '');
+
+      const tabDashPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<\/div>\s*<div[^>]+id="TabTests")/m;
+      if (tabDashPattern.test(html)) {
+        html = html.replace(tabDashPattern, (_m, before, after) => `${before}\n${block}\n</div>\n${after}`);
+      }
       fs.writeFileSync(fullPath, html, 'utf8');
     } catch {
       // ignore
@@ -156,6 +163,9 @@ function injectCoverageTab(reportFolder, relativeCoveragePath) {
       <div class="col-12">
         <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
           <div class="info-box-header">Coverage report</div>
+          <p class="text-secondary-emphasis small mb-3 ps-2">
+            Source: ${relativeCoveragePath} (may be folder-specific).
+          </p>
           <div class="odhin-table-no-scroll">
             <div class="table-responsive">
               <iframe src="${relativeCoveragePath}" style="width:100%;min-height:900px;border:0;"></iframe>

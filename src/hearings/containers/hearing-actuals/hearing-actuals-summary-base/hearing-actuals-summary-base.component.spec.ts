@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
+import * as moment from 'moment';
 import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION } from '../../../models/hearings.enum';
@@ -264,6 +265,84 @@ describe('HearingActualsSummaryBaseComponent', () => {
       const time = '2021-03-12T09:20:00.000Z';
       const formattedTime = component.getTime(time, 'local');
       expect(formattedTime).toBe('09:20');
+    });
+  });
+
+  describe('convertUTCDateToLocalDate', () => {
+    it('should convert UTC datetime string to local moment object', () => {
+      const utcString = '2025-04-18T20:20:24.976537';
+      // eslint-disable-next-line dot-notation
+      const result = component['convertUTCDateToLocalDate'](utcString);
+      const expected = moment.utc(utcString).local();
+
+      expect(moment.isMoment(result)).toBe(true);
+      expect(result.isValid()).toBe(true);
+      expect(result.isSame(expected)).toBe(true);
+      expect(result.format('YYYY-MM-DDTHH:mm:ss')).toEqual(expected.format('YYYY-MM-DDTHH:mm:ss'));
+    });
+
+    it('should handle UTC datetime with Z suffix', () => {
+      const utcString = '2025-11-17T16:14:53.844Z';
+      // eslint-disable-next-line dot-notation
+      const result = component['convertUTCDateToLocalDate'](utcString);
+      const expected = moment.utc(utcString).local();
+
+      expect(result.format('YYYY-MM-DDTHH:mm:ss')).toEqual(expected.format('YYYY-MM-DDTHH:mm:ss'));
+    });
+
+    it('should handle UTC datetime without Z suffix', () => {
+      const utcString = '2025-11-17T16:16:43.548';
+      // eslint-disable-next-line dot-notation
+      const result = component['convertUTCDateToLocalDate'](utcString);
+      const expected = moment.utc(utcString).local();
+
+      expect(result.format('YYYY-MM-DDTHH:mm:ss')).toEqual(expected.format('YYYY-MM-DDTHH:mm:ss'));
+    });
+  });
+
+  describe('calculateEarliestHearingDate', () => {
+    it('should return formatted date range for multiple hearing days', () => {
+      const hearingDays: ActualHearingDayModel[] = [
+        {
+          hearingDate: '2025-03-12',
+          hearingStartTime: '2025-03-12T09:00:00.000Z',
+          hearingEndTime: '2025-03-12T17:00:00.000Z',
+          pauseDateTimes: [],
+          notRequired: false,
+          actualDayParties: []
+        },
+        {
+          hearingDate: '2025-03-14',
+          hearingStartTime: '2025-03-14T09:00:00.000Z',
+          hearingEndTime: '2025-03-14T17:00:00.000Z',
+          pauseDateTimes: [],
+          notRequired: false,
+          actualDayParties: []
+        }
+      ];
+
+      const result = component.calculateEarliestHearingDate(hearingDays);
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+      expect(result).toBe('12 Mar 2025 - 14 Mar 2025');
+    });
+
+    it('should return single date for one hearing day', () => {
+      const hearingDays: ActualHearingDayModel[] = [
+        {
+          hearingDate: '2025-03-12',
+          hearingStartTime: '2025-03-12T09:00:00.000Z',
+          hearingEndTime: '2025-03-12T17:00:00.000Z',
+          pauseDateTimes: [],
+          notRequired: false,
+          actualDayParties: []
+        }
+      ];
+
+      const result = component.calculateEarliestHearingDate(hearingDays);
+      expect(result).toBeDefined();
+      expect(typeof result).toBe('string');
+      expect(result).toBe('12 Mar 2025');
     });
   });
 

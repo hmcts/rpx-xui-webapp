@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
+import * as moment from 'moment';
 
 import { getConfigValue } from '../configuration';
 import { CASEWORKER_PAGE_SIZE, SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
@@ -918,11 +919,7 @@ export function getAccessStatus(roleAssignment: RoleAssignment): boolean {
 }
 
 export function formatDate(date: Date) {
-  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-  const day = date.toLocaleString('default', { day: '2-digit' });
-  const month = date.toLocaleString('default', { month: 'short' });
-  const year = date.toLocaleString('default', { year: 'numeric' });
-  return `${day} ${month} ${year}`;
+  return moment(date).format('DD MMM YYYY');
 }
 
 export function getAccessType(roleAssignment: RoleAssignment) {

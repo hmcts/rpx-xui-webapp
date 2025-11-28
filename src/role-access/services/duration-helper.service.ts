@@ -141,8 +141,7 @@ export class DurationHelperService {
     if (!date) {
       return null;
     }
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    return date;
+    return moment.utc(moment(date).format('YYYY-MM-DDTHH:mm:ss')).toDate();
   }
 
   public setStartTimeOfDay(date: Date): Date {

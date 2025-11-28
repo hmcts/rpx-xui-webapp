@@ -29,12 +29,13 @@
     <div class="govuk-summary-list__value">
       <ul id="participant-channels">
         <li *ngFor="let participantChannel of participantChannels">
-          {{ participantChannel  }}
+          {{ participantChannel.hearingChannel }}
+          <exui-amendment-label
+            *ngIf="participantChannel.hearingChannelChanged"
+            [displayLabel]="amendmentLabelEnum.AMENDED">
+          </exui-amendment-label>
         </li>
       </ul>
-      <exui-amendment-label *ngIf="methodOfAttendanceChanged"
-        [displayLabel]="amendmentLabelEnum.AMENDED">
-      </exui-amendment-label>
     </div>
     <div class="govuk-summary-list__actions">
       <button id="howParticipantsAttendant"

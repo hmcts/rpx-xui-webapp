@@ -91,7 +91,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
 
   it('should set participant attendance details', () => {
     expect(component.isPaperHearing).toEqual('No');
-    expect(component.participantChannels).toEqual(['By phone']);
+    expect(component.participantChannels.length).toEqual(1);
+    expect(component.participantChannels[0].hearingChannel).toContain('By phone');
     expect(component.participantAttendanceModes).toEqual(
       [{ partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true }]
     );
@@ -306,6 +307,150 @@ describe('ParticipantAttendanceSectionComponent', () => {
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
+    });
+  });
+  describe('ParticipantAttendanceSectionComponent - getPartyChannelChanged', () => {
+    let testComponent: ParticipantAttendanceSectionComponent;
+
+    beforeEach(() => {
+      testComponent = new ParticipantAttendanceSectionComponent({} as any);
+
+      // Default partyDetails setup
+      testComponent.hearingRequestMainModel = {
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: 'IND',
+            partyRole: 'appellant',
+            individualDetails: { preferredHearingChannel: 'INPERSON' }
+          },
+          {
+            partyID: 'P2',
+            partyType: 'IND',
+            partyRole: 'appellant',
+            individualDetails: { preferredHearingChannel: 'VIDEO' }
+          }
+        ]
+      } as any;
+
+      testComponent.hearingRequestToCompareMainModel = {
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: 'IND',
+            partyRole: 'appellant',
+            individualDetails: { preferredHearingChannel: 'INPERSON' }
+          },
+          {
+            partyID: 'P2',
+            partyType: 'IND',
+            partyRole: 'appellant',
+            individualDetails: { preferredHearingChannel: 'INPERSON' }
+          }
+        ]
+      } as any;
+    });
+
+    it('returns false when preferredHearingChannel is unchanged', () => {
+      const partyDetails = {
+        partyID: 'P1',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: 'INPERSON' }
+      } as any;
+      // eslint-disable-next-line dot-notation
+      expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
+    });
+
+    it('returns true when preferredHearingChannel has changed', () => {
+      const partyDetails = {
+        partyID: 'P2',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: 'VIDEO' }
+      } as any;
+      // eslint-disable-next-line dot-notation
+      expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
+    });
+
+    it('returns false when party is missing in both models', () => {
+      const partyDetails = {
+        partyID: 'P3',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: 'VIDEO' }
+      } as any;
+      // eslint-disable-next-line dot-notation
+      expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
+    });
+
+    it('returns true when preferredHearingChannel is undefined in one model', () => {
+      testComponent.hearingRequestMainModel.partyDetails.push({
+        partyID: 'P4',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: undefined }
+      } as any);
+      testComponent.hearingRequestToCompareMainModel.partyDetails.push({
+        partyID: 'P4',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: 'VIDEO' }
+      } as any);
+      const partyDetails = {
+        partyID: 'P4',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: undefined }
+      } as any;
+      // eslint-disable-next-line dot-notation
+      expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
+    });
+
+    it('returns false when both preferredHearingChannel are undefined', () => {
+      testComponent.hearingRequestMainModel.partyDetails.push({
+        partyID: 'P5',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: undefined }
+      } as any);
+      testComponent.hearingRequestToCompareMainModel.partyDetails.push({
+        partyID: 'P5',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: undefined }
+      } as any);
+      const partyDetails = {
+        partyID: 'P5',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: undefined }
+      } as any;
+      // eslint-disable-next-line dot-notation
+      expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
+    });
+
+    it('returns true when individualDetails is missing in one model', () => {
+      testComponent.hearingRequestMainModel.partyDetails.push({
+        partyID: 'P6',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: null
+      } as any);
+      testComponent.hearingRequestToCompareMainModel.partyDetails.push({
+        partyID: 'P6',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: { preferredHearingChannel: 'VIDEO' }
+      } as any);
+      const partyDetails = {
+        partyID: 'P6',
+        partyType: 'IND',
+        partyRole: 'appellant',
+        individualDetails: null
+      } as any;
+      // eslint-disable-next-line dot-notation
+      expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
     });
   });
 });

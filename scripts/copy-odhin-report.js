@@ -23,6 +23,12 @@ try {
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
 
+  const apiRoot = path.resolve('playwright_tests_new', 'api');
+  const { endpoints, totalHits } = collectApiEndpoints(apiRoot);
+  if (endpoints.length) {
+    injectNodeApiTab(target, endpoints, totalHits);
+  }
+
   if (coverageLinkFlag && fs.existsSync(coverageRoot)) {
     fs.rmSync(coverageTarget, { recursive: true, force: true });
     fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
@@ -182,6 +188,115 @@ function injectCoverageTab(reportFolder, relativeCoveragePath) {
     try {
       let html = fs.readFileSync(fullPath, 'utf8');
       if (html.includes('id="TabCoverage"')) {
+        return;
+      }
+      const tabBlock = /(<div class="tab">[\s\S]*?)(<\/div>\s*<\/div>\s*<\/div>\s*<\/div>)/m;
+      if (tabBlock.test(html)) {
+        html = html.replace(tabBlock, `$1${tabButton}$2`);
+      }
+      html = html.replace('</body>', `${tabPane}\n</body>`);
+      fs.writeFileSync(fullPath, html, 'utf8');
+    } catch {
+      // ignore
+    }
+  });
+}
+
+function collectApiEndpoints(rootDir) {
+  if (!fs.existsSync(rootDir)) {
+    return { endpoints: [], totalHits: 0 };
+  }
+  const files = walkFiles(rootDir).filter((f) => f.endsWith('.ts'));
+  const counts = new Map();
+  const apiRegex = /\b(apiClient|anonymousClient|client)\.(get|post|put|delete)\s*\(\s*['"`]([^'"`]+)['"`]/g;
+  files.forEach((file) => {
+    const content = fs.readFileSync(file, 'utf8');
+    let match;
+    while ((match = apiRegex.exec(content)) !== null) {
+      const endpoint = match[3];
+      counts.set(endpoint, (counts.get(endpoint) ?? 0) + 1);
+    }
+  });
+  const totalHits = Array.from(counts.values()).reduce((sum, n) => sum + n, 0);
+  const endpoints = Array.from(counts.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([endpoint, hits]) => ({ endpoint, hits }));
+  return { endpoints, totalHits };
+}
+
+function walkFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  let files = [];
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(walkFiles(full));
+    } else if (entry.isFile()) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+function injectNodeApiTab(reportFolder, endpoints, totalHits) {
+  const files = fs.readdirSync(reportFolder).filter((f) => f.toLowerCase().endsWith('.html'));
+  const rows = endpoints.length
+    ? endpoints
+        .map(({ endpoint, hits }) => {
+          const pct = totalHits ? ((hits / totalHits) * 100).toFixed(2) : '0.00';
+          return `<tr>
+        <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${endpoint}</td>
+        <td class="text-secondary-emphasis">${hits}</td>
+        <td class="text-secondary-emphasis">${pct}%</td>
+      </tr>`;
+        })
+        .join('\n')
+    : '<tr><td colspan="3" class="text-secondary-emphasis">No API endpoints found</td></tr>';
+
+  const tabButton = `
+\t\t\t\t\t\t<button
+\t\t\t\t\t\t\tclass="main-tablinks"
+\t\t\t\t\t\t\tonclick="openMainTab(event, 'TabNodeApi')"
+\t\t\t\t\t\t>
+\t\t\t\t\t\t\tTested NodeJs API
+\t\t\t\t\t\t</button>`;
+  const tabPane = `
+<div id="TabNodeApi" style="display: none" class="main-tabcontent">
+  <div class="container-fluid text-center mt-3 mb-5">
+    <div class="row ms-3 me-3">
+      <div class="col-12">
+        <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
+          <div class="info-box-header">Tested NodeJs API endpoints</div>
+          <p class="text-secondary-emphasis small mb-3 ps-4">
+            Counts come from apiClient/anonymousClient/client calls in Playwright node-api specs; percent is share of total calls.
+          </p>
+          <div class="odhin-table-no-scroll">
+            <div class="table-responsive">
+              <table class="table table-sm mb-0">
+                <thead>
+                  <tr>
+                    <th class="odhin-text-3">Endpoint</th>
+                    <th class="odhin-text-3">Calls</th>
+                    <th class="odhin-text-3">Percent of calls</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+  files.forEach((file) => {
+    const fullPath = path.join(reportFolder, file);
+    try {
+      let html = fs.readFileSync(fullPath, 'utf8');
+      if (html.includes('id="TabNodeApi"')) {
         return;
       }
       const tabBlock = /(<div class="tab">[\s\S]*?)(<\/div>\s*<\/div>\s*<\/div>\s*<\/div>)/m;

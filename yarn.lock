@@ -23951,6 +23951,7 @@ __metadata:
     webpack-cli: "npm:^6.0.0"
     webpack-node-externals: "npm:^3.0.0"
     webpack-source-map-support: "npm:^2.0.1"
+    zod: "npm:^3.23.8"
     zone.js: "npm:~0.15.0"
   languageName: unknown
   linkType: soft

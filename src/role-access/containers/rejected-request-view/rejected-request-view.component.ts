@@ -5,6 +5,7 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
+import { first } from 'rxjs/operators';
 
 @Component({
   standalone: false,
@@ -68,7 +69,7 @@ export class RejectedRequestViewComponent implements OnInit {
         }
       );
     } else {
-      this.caseworkerDataService.getUserByIdamId(this.reviewer).subscribe((caseworker) => {
+      this.caseworkerDataService.getUserByIdamId(this.reviewer).pipe(first()).subscribe((caseworker) => {
         if (caseworker) {
           this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
         }

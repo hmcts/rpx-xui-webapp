@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, Jurisdiction, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, FilterService, FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
@@ -27,7 +27,7 @@ import {
   WorkAllocationCaseService
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
-import { getAssigneeNameFromList, handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
+import { handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   standalone: false,
@@ -215,29 +215,22 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public setupCaseWorkers(): void {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getUsersFromServices(jurisdictions)
-    ));
     this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
       this.rolesService.getValidRoles(jurisdictions)
     )).subscribe((roles) => this.allRoles = roles);
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation
-    caseworkersByService$.subscribe((caseworkers) => {
-      this.caseworkers = caseworkers;
-      const userInfoStr = this.sessionStorageService.getItem('userDetails');
-      if (userInfoStr) {
-        const userInfo: UserInfo = JSON.parse(userInfoStr);
-        const userId = userInfo.id ? userInfo.id : userInfo.uid;
-        const currentCW = this.caseworkers.find((cw) => cw.idamId === userId);
-        if (currentCW && currentCW.location && currentCW.location.id) {
-          this.defaultLocation = currentCW.location.id;
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      this.caseworkerService.getUserByIdamId(userId).pipe(first()).subscribe((caseworker) => {
+        if (caseworker && caseworker.location && caseworker.location.id) {
+          this.defaultLocation = caseworker.location.id;
         }
-      }
-    }, (error) => {
-      handleFatalErrors(error.status, this.router);
-    });
+      });
+    }
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
@@ -401,9 +394,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       this.casesTotal = result.total_records;
       this.uniqueCases = result.unique_cases;
       this.cases.forEach((item) => {
-        if (item.role_category !== RoleCategory.JUDICIAL) {
-          item.actorName = getAssigneeNameFromList(this.caseworkers, item.assignee);
-        }
         if (this.allJurisdictions && this.allJurisdictions.find((jur) => jur.id === item.jurisdiction)) {
           item.jurisdiction = this.allJurisdictions.find((jur) => jur.id === item.jurisdiction).name;
         } else if (servicesMap[item.jurisdiction]) {

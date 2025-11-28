@@ -40,7 +40,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
     const jurisdiction = this.caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
     // Keeping call for now - in unlikely event exclusion has missing details
     // Will look to redesign this (EXUI-2645) for only users within exclusions (if names are actually missing)
-    this.caseworkers$ = this.caseworkerDataService.getUsersFromServices([jurisdiction.value]).pipe(first());
     this.setRolesAndExclusions(jurisdiction);
   }
 
@@ -69,6 +68,10 @@ export class RolesAndAccessContainerComponent implements OnInit {
           );
         }
         return of(caseRoles);
+      }),
+      tap((roles: CaseRole[]) => {
+        const userIds = Utils.getNonJudicialUserIds(roles);
+        this.caseworkers$ = this.caseworkerDataService.getUsersByIdamIds(userIds, [jurisdiction.value]).pipe(first());
       }),
       tap((roles) => {
         if (roles && roles.length > 0) {

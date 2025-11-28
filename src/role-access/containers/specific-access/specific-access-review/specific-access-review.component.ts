@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserDetails } from '../../../../app/models';
 import { CaseworkerDataService } from '../../../../work-allocation/services';
@@ -73,11 +73,11 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
         }
       );
     } else {
-      this.caseworkerDataService.getUserByIdamId(this.specificAccessStateData.actorId).subscribe((caseworker) => {
+      this.caseworkerDataService.getUserByIdamId(this.specificAccessStateData.actorId).pipe(first()).subscribe((caseworker) => {
         if (caseworker) {
           this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
         }
-      })
+      });
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({

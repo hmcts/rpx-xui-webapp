@@ -79,7 +79,7 @@ export class DeleteExclusionComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.roleExclusion.name) {
-      this.caseworkerDataService.getUserByIdamId(this.roleExclusion.actorId).subscribe((caseworker) => {
+      this.caseworkerDataService.getUserByIdamId(this.roleExclusion.actorId).pipe(first()).subscribe((caseworker) => {
         if (caseworker) {
           this.roleExclusion.name = `${caseworker.firstName} ${caseworker.lastName}`;
           this.answers = [];

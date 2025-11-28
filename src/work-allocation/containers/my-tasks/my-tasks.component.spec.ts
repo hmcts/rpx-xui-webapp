@@ -52,7 +52,7 @@ describe('MyTasksComponent', () => {
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getUsersFromServices']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getUserByIdamId']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
@@ -103,7 +103,7 @@ describe('MyTasksComponent', () => {
     store = TestBed.inject(Store);
     const tasks: Task[] = getMockTasks();
     mockTaskService.searchTask.and.returnValue(of({ tasks }));
-    mockCaseworkerService.getUsersFromServices.and.returnValue(of([]));
+    mockCaseworkerService.getUserByIdamId.and.returnValue(of(null));
     const filterFields: FilterSetting = {
       id: 'locations',
       fields: [

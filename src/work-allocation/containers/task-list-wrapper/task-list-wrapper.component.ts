@@ -27,7 +27,7 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService
 } from '../../services';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeNameFromList, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   standalone: false,
@@ -194,21 +194,6 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getUsersFromServices(jurisdictions)
-    ));
-    // similar to case list wrapper changes
-    caseworkersByService$.subscribe((caseworkers) => {
-      this.caseworkers = caseworkers;
-      // EUI-2027 - Load tasks again in case this is start of new caching of caseworkers
-      // note: the if is relevant to stop the same request happening at exactly the same time on available tasks causing an error
-      if (this.tasks.length > 0) {
-        this.doLoad();
-      }
-    }, (error) => {
-      handleFatalErrors(error.status, this.router);
-    });
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
@@ -415,8 +400,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
       const assignedJudicialUsers: string[] = [];
       result.tasks.forEach((task) => {
-        task.assigneeName = getAssigneeNameFromList(this.caseworkers, task.assignee);
         if (!task.assigneeName && task.assignee) {
+          // EXUI-2645 - only needs to be added for judicial users now
           assignedJudicialUsers.push(task.assignee);
         }
       });

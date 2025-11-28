@@ -4,7 +4,7 @@ import { HMCTSServiceDetails, UserInfo } from '../../app/models';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
-import { TaskPermission, TaskRole } from '../models/tasks';
+import { Task, TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
   url: string;
@@ -127,6 +127,15 @@ export const getAssigneeNameFromList = (caseworkers: any[], assignee: string): s
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
   return null;
+};
+
+export const getAssigneeIdsFromTasks = (tasks: Task[]): string[] => {
+  if (tasks && tasks.length > 0) {
+    const ids = tasks
+      .map((task) => task.assignee)
+      .filter((id) => !!id);
+    return [...new Set(ids)];
+  }
 };
 
 export const getAssigneeName = (caseworker: Caseworker, assignee: string): string => {

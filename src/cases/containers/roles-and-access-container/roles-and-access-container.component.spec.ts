@@ -131,7 +131,7 @@ describe('RolesContainerComponent', () => {
   const store = jasmine.createSpyObj('store', ['pipe', 'select']);
   const roleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('allocateService', ['getCaseRoles', 'getCaseRolesUserDetails']);
-  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersFromServices']);
+  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersByIdamIds']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
@@ -239,11 +239,10 @@ describe('RolesContainerComponent', () => {
     spyOn(component, 'applyJurisdiction');
     spyOn(component, 'loadExclusions');
     spyOn(component, 'loadRoles');
-    caseworkerDataService.getUsersFromServices.and.returnValue(of({}));
+    caseworkerDataService.getUsersByIdamIds.and.returnValue(of({}));
 
     component.ngOnInit();
 
-    expect(caseworkerDataService.getUsersFromServices).toHaveBeenCalled();
     expect(component.applyJurisdiction).toHaveBeenCalled();
     expect(component.loadExclusions).toHaveBeenCalled();
     expect(component.loadRoles).toHaveBeenCalled();

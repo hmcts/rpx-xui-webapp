@@ -25,7 +25,7 @@ import {
 import { fetchNewUserData, fetchRoleAssignments, fetchRoleAssignmentsForNewUsers, fetchUserData, timestampExists } from './caseWorkerUserDataCacheService';
 import { ViewType } from './constants/actions';
 import { FullUserDetailCache } from './fullUserDetailCache';
-import { CaseList } from './interfaces/case';
+import { Case, CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseDataType } from './interfaces/common';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
@@ -38,6 +38,8 @@ import {
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
+  getAssigneeIdsFromCases,
+  getAssigneeIdsFromTasks,
   getCaseIdListFromRoles,
   getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
@@ -60,6 +62,7 @@ import {
   searchCasesById
 } from './util';
 import { PUI_CASE_MANAGER } from '../user/utils';
+import { Task } from './interfaces/task';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -151,11 +154,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
+    let tasksWithActions = assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      const assigneeIds = getAssigneeIdsFromTasks(tasksWithActions);
+      if (assigneeIds.length > 0) {
+        tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds, req, next);
+      }
       returnData = {
-        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        tasks: tasksWithActions,
         total_records: data.total_records
       };
     }
@@ -163,6 +171,38 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   } catch (error) {
     next(error);
   }
+}
+
+// This will put assignee names in tasks based on cached user details
+// Note: Judges will not have their names populated until refresh within the Angular layer
+export async function setAssigneeNamesInTasks(tasks: Task[], assigneeIds: string[], req: EnhancedRequest, next: NextFunction): Promise<Task[]> {
+  let assigneeDetails = [];
+  if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+    assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+  } else {
+    try {
+      // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
+      // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+    } catch (error) {
+      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
+      assigneeDetails = []; // proceed without assignee names
+    }
+  }
+  if (assigneeDetails.length > 0) {
+    const nameMap = new Map(
+      assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`])
+    );
+    tasks.forEach((taskWithAssignee) => {
+      const userId = taskWithAssignee.assignee;
+      if (userId && nameMap.has(userId)) {
+        taskWithAssignee.assigneeName = nameMap.get(userId);
+      }
+    });
+  }
+  return tasks;
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
@@ -520,12 +560,52 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
-    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    let casesWithActions = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    const assigneeIds = getAssigneeIdsFromCases(casesWithActions);
+    if (assigneeIds.length > 0) {
+      casesWithActions = await setAssigneeNamesInCases(casesWithActions, assigneeIds);
+    }
+    result.cases = casesWithActions;
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);
     next(error);
   }
+}
+
+// This will put assignee names in cases based on cached user details
+// Note: Judges will not have their names populated until refresh within the Angular layer
+export async function setAssigneeNamesInCases(cases: Case[], assigneeIds: string[]): Promise<Case[]> {
+  let assigneeDetails = [];
+  if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+    assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+  } else {
+    // Names are not actually needed for all work cases (as they will be filtered by individual) so commenting out to improve performance
+    /* try {
+      // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
+      // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+    } catch (error) {
+      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
+      assigneeDetails = []; // proceed without assignee names
+    } */
+  }
+  if (assigneeDetails.length > 0) {
+    const nameMap = new Map(
+      assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`])
+    );
+    cases.forEach((caseWithAssignee) => {
+      const userId = caseWithAssignee.assignee;
+      if (userId && nameMap.has(userId)) {
+        caseWithAssignee.assigneeName = nameMap.get(userId);
+        // references to actor name in filters and components so added below
+        caseWithAssignee.actorName = nameMap.get(userId);
+      }
+    });
+  }
+  return cases;
 }
 
 export async function getTaskNames(req: EnhancedRequest, res: Response): Promise<Response> {

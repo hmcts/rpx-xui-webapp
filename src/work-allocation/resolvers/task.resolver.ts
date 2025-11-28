@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { EMPTY, forkJoin, Observable } from 'rxjs';
-import { catchError, mergeMap } from 'rxjs/operators';
+import { catchError, first, mergeMap } from 'rxjs/operators';
 import { Caseworker } from '../models/dtos';
 
 import { Task } from '../models/tasks';
@@ -26,7 +26,7 @@ export class TaskResolver {
     const caseworker$ = task$
       .pipe(
         mergeMap((task) => {
-          return this.caseworkerService.getUserByIdamId(task.assignee);
+          return this.caseworkerService.getUserByIdamId(task.task.assignee).pipe(first());
         })
       );
     return forkJoin({ task: task$, caseworker: caseworker$ });

@@ -82,7 +82,7 @@ withNightlyPipeline(type, product, component) {
   
       stage('API Tests') {
         try {
-          yarnBuilder.yarn('test:api')
+          yarnBuilder.yarn('test:api:pw:coverage')
         } finally {
           publishHTML([
             allowMissing         : true,
@@ -96,9 +96,9 @@ withNightlyPipeline(type, product, component) {
         }
       }
       
-      stage('Playwright Install') {
+      stage('Playwright Install All Browsers') {
             try {
-              yarnBuilder.yarn('test:setup:playwright-install')
+              yarnBuilder.yarn('test:setup:playwright-install-all')
             } catch (Error) {
               error(message: "${STAGE_NAME} is unstable: " + Error.toString())
             }  

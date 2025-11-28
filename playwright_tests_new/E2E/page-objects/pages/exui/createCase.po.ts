@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { Base } from "../../base.ts";
+import { Base } from "../../base";
 import {faker} from '@faker-js/faker';
 
 export class CreateCasePage extends Base {

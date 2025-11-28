@@ -2151,4 +2151,34 @@ describe('workAllocation.utils', () => {
       });
     });
   });
+
+  // Tests getAssigneeIdsFromCases by extension
+  describe('getAssigneeIdsFromTasks', () => {
+    it('should return empty array when tasks is null/undefined or empty', () => {
+      expect(util.getAssigneeIdsFromTasks(undefined as any)).to.deep.equal([]);
+      expect(util.getAssigneeIdsFromTasks(null as any)).to.deep.equal([]);
+      expect(util.getAssigneeIdsFromTasks([] as any)).to.deep.equal([]);
+    });
+
+    it('should ignore tasks without assignee', () => {
+      const tasks = [
+        { id: 'task1', assignee: null },
+        { id: 'task2' }, // no assignee field
+        { id: 'task3', assignee: undefined },
+        { id: 'task4', assignee: 'user-1' }
+      ] as any[];
+      expect(util.getAssigneeIdsFromTasks(tasks)).to.deep.equal(['user-1']);
+    });
+
+    it('should return unique assignee ids (deduplicated)', () => {
+      const tasks = [
+        { id: 'task1', assignee: 'user-1' },
+        { id: 'task2', assignee: 'user-2' },
+        { id: 'task3', assignee: 'user-1' },
+        { id: 'task4', assignee: 'user-3' },
+        { id: 'task5', assignee: 'user-2' }
+      ] as any[];
+      expect(util.getAssigneeIdsFromTasks(tasks)).to.deep.equal(['user-1', 'user-2', 'user-3']);
+    });
+  });
 });

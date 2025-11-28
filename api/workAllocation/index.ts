@@ -665,7 +665,6 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
         // if cache exists, use it
         firstEntry = false;
         idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
-        // note: the below line is only to ensure all users are for relevant services
         idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
         res.send(idamUsers).status(200);
       }
@@ -676,7 +675,6 @@ export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, nex
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
-        // note: the below line is only to ensure all users are for relevant services
         idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
         res.send(idamUsers).status(200);
       }
@@ -699,8 +697,8 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         // if cache exists, use it
         firstEntry = false;
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
-        // check for services not needed as only one user is being fetched
-        // Note - if needed in future can add check here
+        // Below to get correct location and service details - not strictly necessary depending on usage
+        idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
         res.send(idamUser).status(200);
       }
       // always update the cache after getting the cache if needed
@@ -710,6 +708,7 @@ export async function getUserByIdamId(req: EnhancedRequest, res: Response, next:
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
         res.send(idamUser).status(200);
       }
     }

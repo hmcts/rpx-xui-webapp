@@ -47,7 +47,7 @@ describe('RemoveRoleComponent', () => {
   const locationMock = jasmine.createSpyObj('Location', [
     'back'
   ]);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUserByIdamId']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
@@ -230,6 +230,63 @@ describe('RemoveRoleComponent', () => {
 
     afterEach(() => {
       fixture.destroy();
+    });
+  });
+
+  describe('RemoveRoleComponent getNamesIfNeeded', () => {
+    let fixture: ComponentFixture<RemoveRoleComponent>;
+    let component: RemoveRoleComponent;
+    let mockCaseworkerService: jasmine.SpyObj<CaseworkerDataService>;
+
+    beforeEach(() => {
+      // Reuse existing TestBed (already configured in previous beforeEach(waitForAsync))
+      fixture = TestBed.createComponent(RemoveRoleComponent);
+      component = fixture.componentInstance;
+      mockCaseworkerService = TestBed.inject(CaseworkerDataService) as jasmine.SpyObj<CaseworkerDataService>;
+
+      // Role with missing name/email to trigger fetch logic
+      component.role = {
+        id: 'role123',
+        actorId: '999999999',
+        added: Date.UTC(2024, 0, 1),
+        roleName: TypeOfRole.CaseManager,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        name: undefined,
+        email: undefined,
+        notes: ''
+      } as any;
+
+      component.answers = [];
+      mockCaseworkerService.getUserByIdamId.calls.reset();
+      mockCaseworkerService.getUserByIdamId.and.returnValue(of({
+        idamId: '999999999',
+        firstName: 'Fetch',
+        lastName: 'Target',
+        email: 'fetch.target@test.com'
+      } as Caseworker));
+
+      fixture.detectChanges();
+
+      // Invoke private method
+      component.role.name = undefined;
+      (component as any).getNamesIfNeeded();
+      fixture.detectChanges();
+    });
+
+    it('should fetch and populate name/email when missing', () => {
+      expect(mockCaseworkerService.getUserByIdamId).toHaveBeenCalledWith('999999999');
+      expect(component.role.name).toBe('Fetch Target');
+      expect(component.role.email).toBe('fetch.target@test.com');
+      expect(component.answers.length).toBe(2);
+      expect(component.answers[1].value).toContain('Fetch Target');
+      expect(component.answers[1].value).toContain('fetch.target@test.com');
+    });
+
+    it('should not call service when name already present', () => {
+      mockCaseworkerService.getUserByIdamId.calls.reset();
+      component.role.name = 'Already Present';
+      (component as any).getNamesIfNeeded();
+      expect(mockCaseworkerService.getUserByIdamId).not.toHaveBeenCalled();
     });
   });
 });

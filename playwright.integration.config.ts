@@ -32,7 +32,7 @@ module.exports = defineConfig({
     ['odhin-reports-playwright', {
       outputFolder: odhinOutputFolder,
       indexFilename: 'xui-playwright.html',
-      title: 'RPX XUI Playwright',
+      title: 'RPX XUI Playwright Integration',
       testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
       project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
       release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
@@ -57,13 +57,6 @@ module.exports = defineConfig({
       use: { 
         ...devices['Desktop Chrome'],
         channel: 'chrome',
-        headless: headlessMode,
-        trace: 'retain-on-failure',
-        screenshot: {
-          mode: 'only-on-failure',
-          fullPage: true
-        },
-        video: 'retain-on-failure'
       }
     }
   ]

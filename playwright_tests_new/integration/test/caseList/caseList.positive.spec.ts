@@ -15,7 +15,6 @@ test.beforeEach(async ({ page, config }) => {
 	if (sessionCookies.length) {
 		await page.context().addCookies(sessionCookies);
 	}
-	await page.goto(config.urls.manageCaseBaseUrl);
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {

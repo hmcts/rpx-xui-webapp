@@ -138,12 +138,12 @@ withPipeline(type, product, component) {
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
 
-        stage('API Tests') {
-            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
-                try {
-                    yarnBuilder.yarn('test:api')
-                } finally {
-                    publishHTML([
+          stage('API Tests') {
+              withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+                  try {
+                      yarnBuilder.yarn('test:api:pw:coverage')
+                  } finally {
+                      publishHTML([
                       allowMissing         : true,
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,

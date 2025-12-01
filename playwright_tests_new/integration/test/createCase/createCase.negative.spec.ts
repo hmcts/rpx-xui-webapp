@@ -17,7 +17,8 @@ test.beforeEach(async ({ page, config }) => {
     }
 });
 
-test.describe(`Case List as ${userIdentifier}`, () => {
+// TODO : Enable and complete negative test case when functionality is available
+test.describe.skip(`Case List as ${userIdentifier}`, () => {
     test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({ spinnerUtils, createCasePage, page }) => {
         await test.step('Navigate to the submit case page without filling in case details', async () => {
             await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);

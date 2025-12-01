@@ -26,7 +26,7 @@ module.exports = defineConfig({
   retries: process.env.CI ? 1 : 0,
   timeout: 120_000,
   expect: { timeout: 30_000 },
-  workers: process.env.CI ? 2 : undefined,
+  workers: workerCount,
     reporter: [
     [process.env.CI ? 'dot' : 'list'],
     ['odhin-reports-playwright', {

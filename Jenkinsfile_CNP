@@ -192,16 +192,16 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
             reportFiles          : 'xui-playwright.html',
-            reportName           : 'PREVIEW Playwright Smoke'
+            reportName           : 'AAT Playwright Smoke'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
 
-          stage('API Tests') {
-              withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
-                  try {
-                      yarnBuilder.yarn('test:api:pw:coverage')
-                  } finally {
-                      publishHTML([
+        stage('API Tests') {
+            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
+                try {
+                    yarnBuilder.yarn('test:api')
+                } finally {
+                    publishHTML([
                       allowMissing         : true,
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,

@@ -22,7 +22,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
-    test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, spinnerUtils }) => {
+    test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page }) => {
 
         await test.step('Setup route mock for task list', async () => {
             await page.route('**/workallocation/task*', async route => {
@@ -34,7 +34,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         await test.step('Navigate to the my tasks list page', async () => {
             await taskListPage.goto();
             await expect(taskListPage.taskListTable).toBeVisible();
-            await spinnerUtils.waitForSpinner(page);
+            await taskListPage.exuiSpinnerComponent.wait();
         });
 
         await test.step('Verify user can see a list shows the expected layout given the mock response', async () => {
@@ -55,7 +55,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         });
     });
 
-    test(`User ${userIdentifier} sees the no tasks message if there are no assigned tasks`, async ({ taskListPage, page, spinnerUtils }) => {
+    test(`User ${userIdentifier} sees the no tasks message if there are no assigned tasks`, async ({ taskListPage, page }) => {
         const emptyMockResponse = { tasks: [], total_records: 0 };
         await test.step('Setup route mock for empty task list', async () => {
             await page.route('**/workallocation/task*', async route => {
@@ -66,14 +66,14 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         await test.step('Navigate to the my tasks list page', async () => {
             await taskListPage.goto();
             await expect(taskListPage.taskListTable).toBeVisible();
-            await spinnerUtils.waitForSpinner(page);
+            await taskListPage.exuiSpinnerComponent.wait();
         });
         await test.step('Verify table shows no results for empty mock', async () => {      
             expect(await taskListPage.taskListTable.textContent()).toContain('You have no assigned tasks.');
         });
     });
 
-    test(`User ${userIdentifier} sees all types of priority tasks with specific due dates`, async ({ taskListPage, page, spinnerUtils }) => {
+    test(`User ${userIdentifier} sees all types of priority tasks with specific due dates`, async ({ taskListPage, page }) => {
         const deterministicMockResponse = buildDeterministicMyTasksListMock('deterministic-assignee');
         await test.step('Setup route mock for deterministic task list', async () => {
             await page.route('**/workallocation/task*', async route => {
@@ -84,7 +84,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         await test.step('Navigate to the my tasks list page', async () => {
             await taskListPage.goto();
             await expect(taskListPage.taskListTable).toBeVisible();
-            await spinnerUtils.waitForSpinner(page);
+            await taskListPage.exuiSpinnerComponent.wait();
         });
         await test.step('Verify table shows deterministic priority tasks and due dates', async () => {
             expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to 4 of 4 results`);

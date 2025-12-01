@@ -16,7 +16,6 @@ import { config, Config } from "./config.utils.js";
 import { CookieUtils } from "./cookie.utils.js";
 import { ValidatorUtils } from "./validator.utils.js";
 import { UserUtils } from "./user.utils.js";
-import { SpinnerUtils } from "./spinner.utils.js";
 
 export interface UtilsFixtures {
   config: Config;
@@ -33,7 +32,6 @@ export interface UtilsFixtures {
   localeUtils: LocaleUtils;
   serviceAuthUtils: ServiceAuthUtils;
   userUtils: UserUtils;
-  spinnerUtils: SpinnerUtils;
 }
 
 export const utilsFixtures = {
@@ -59,9 +57,6 @@ export const utilsFixtures = {
     const axeUtils = new AxeUtils(page);
     await use(axeUtils);
     await axeUtils.generateReport(testInfo);
-  },
-  spinnerUtils: async ({}, use) => {
-    await use(new SpinnerUtils());
   },
   SessionUtils: async ({}, use) => {
     await use(SessionUtils);

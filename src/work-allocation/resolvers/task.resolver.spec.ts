@@ -7,9 +7,9 @@ import { TaskResolver } from './task.resolver';
 describe('Task Resolver', () => {
   it('resolves on success', () => {
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
-    const mockCaseWorkerService = jasmine.createSpyObj('CaseworkerDataService', ['getUsersFromServices']);
+    const mockCaseWorkerService = jasmine.createSpyObj('CaseworkerDataService', ['getUserByIdamId']);
     mockService.getTask.and.returnValue(of({ task: getMockTasks()[0] }));
-    mockCaseWorkerService.getUsersFromServices.and.returnValue(of([] as Caseworker[]));
+    mockCaseWorkerService.getUserByIdamId.and.returnValue(of({} as Caseworker));
     const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     const taskResolver = new TaskResolver(mockService, mockRouter, mockCaseWorkerService);
     const route = jasmine.createSpyObj('Route', ['']);
@@ -19,10 +19,10 @@ describe('Task Resolver', () => {
       }
     };
 
-    const taskCaseWorkers$ = taskResolver.resolve(route);
-    taskCaseWorkers$.subscribe((taskCaseWorkers) => {
-      expect(taskCaseWorkers.task.task).toEqual(getMockTasks()[0]);
-      expect(taskCaseWorkers.caseworkers).toEqual([]);
+    const taskCaseWorker$ = taskResolver.resolve(route);
+    taskCaseWorker$.subscribe((taskCaseWorker) => {
+      expect(taskCaseWorker.task.task).toEqual(getMockTasks()[0]);
+      expect(taskCaseWorker.caseworker).toEqual({} as Caseworker);
       expect(mockService.getTask).toHaveBeenCalledWith('somevalue');
     });
   });

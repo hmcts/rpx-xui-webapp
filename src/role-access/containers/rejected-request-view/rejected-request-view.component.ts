@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
+import { first } from 'rxjs/operators';
 
 import { CaseworkerDataService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
-import { first } from 'rxjs/operators';
 
 @Component({
   standalone: false,

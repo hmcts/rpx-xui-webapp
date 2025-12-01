@@ -14,6 +14,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { PUI_CASE_MANAGER } from '../user/utils';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -28,6 +29,7 @@ import { FullUserDetailCache } from './fullUserDetailCache';
 import { Case, CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseDataType } from './interfaces/common';
+import { Task } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -61,8 +63,6 @@ import {
   searchAndReturnRefinedUsers,
   searchCasesById
 } from './util';
-import { PUI_CASE_MANAGER } from '../user/utils';
-import { Task } from './interfaces/task';
 
 caseServiceMock.init();
 roleServiceMock.init();

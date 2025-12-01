@@ -122,7 +122,7 @@ export function getUserName(actorId: string): string {
   const cachedCaseworker = FullUserDetailCache.getUserByIdamId(actorId);
   if (cachedCaseworker) {
     // Note: Seems to be discrepancy between whether dash or space between names on different screens
-    // EXUI-2071 - Kept dash as consistent with previous intended implementation
+    // EXUI-2071 - Removed dash from name concatenation
     return `${cachedCaseworker.firstName} ${cachedCaseworker.lastName}`;
   }
 }

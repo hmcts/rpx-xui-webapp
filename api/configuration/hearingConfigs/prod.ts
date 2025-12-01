@@ -5,6 +5,13 @@ export const prodEnableHearingAmendment = {
         'CIVIL'
       ],
       jurisdiction: 'CIVIL'
+    },
+    {
+      includeCaseTypes: [
+        'Asylum',
+        'Bail'
+      ],
+      jurisdiction: 'IA'
     }
   ]
 };

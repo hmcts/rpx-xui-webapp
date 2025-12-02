@@ -103,8 +103,8 @@ export class HearingTimingSectionComponent implements OnInit {
       specificDateSelection = RadioOptions.CHOOSE_DATE_RANGE;
       earliestHearingDate = moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth);
       latestHearingDate = hearingWindow.dateRangeEnd && moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += earliestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Earliest start date: ${earliestHearingDate}` : '';
-      specificDateSelection += latestHearingDate && latestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Latest end date: ${latestHearingDate}` : '';
+      specificDateSelection += earliestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Must list after: ${earliestHearingDate}` : '';
+      specificDateSelection += latestHearingDate && latestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Must list before: ${latestHearingDate}` : '';
     } else if (hearingWindow?.firstDateTimeMustBe) {
       specificDateSelection = RadioOptions.YES;
       const firstDate = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth);

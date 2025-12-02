@@ -79,7 +79,7 @@ export function getUserRoleCategory(roles: string[]): string {
   } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)
     || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
-  } else if(hasRoleCategory(roles, SSCS_DWP_RESPONSE_WRITER) || hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER)
+  } else if (hasRoleCategory(roles, SSCS_DWP_RESPONSE_WRITER) || hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER)
     || hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER)) {
     return OTHER_GOV_DEPARTMENT_ROLE;
   }

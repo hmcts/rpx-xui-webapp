@@ -672,7 +672,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitPartiesChangeExists(): boolean {
-    return HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
+    return HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails) ||
+      HearingsUtils.havePartyHearingChannelChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
   }
 
   private methodsOfAttendanceChangeExists(): boolean {

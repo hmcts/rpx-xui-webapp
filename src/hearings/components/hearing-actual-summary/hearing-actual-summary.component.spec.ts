@@ -9,6 +9,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
+import { HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
@@ -437,6 +438,30 @@ describe('HearingActualSummaryComponent', () => {
   it('should create', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should detect changes', () => {
+    // Confirm updates to hearing actuals are processed
+    component.adjournReasons = [{ key: 'Some Reason', value_en: 'Some Reason', value_cy: '' }] as LovRefDataModel[];
+    hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult = HearingResult.ADJOURNED;
+    hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType = 'Some Reason';
+    component.hearingActualsMainModel = hearingActualsMainModel;
+    const changes = {
+      hearingActualsMainModel: {
+        currentValue: hearingActualsMainModel,
+        previousValue: null,
+        firstChange: true,
+        isFirstChange: () => true
+      }
+    };
+    component.ngOnChanges(changes);
+    expect(component.adjournReasonTypeValue).toEqual('Some Reason');
+
+    // Confirm changes can be reverted
+    hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult = HearingResult.CANCELLED;
+    changes.hearingActualsMainModel.currentValue = hearingActualsMainModel;
+    component.ngOnChanges(changes);
+    expect(component.isAdjourned).toBeFalse();
   });
 
   it('should set hearing type description', () => {

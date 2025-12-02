@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import config from "../config"
-import { signIn } from './steps/login-steps';
-import axeTest from "./helpers/accessibilityTestHelper";
+import config from "../../config"
+import { signIn } from '../steps/login-steps';
+import axeTest from "../helpers/accessibilityTestHelper";
 
 test.skip('Support request Add/Update Reasonable adjustment', async ({ page }) => {
   await signIn(page, "USER_WITH_FLAGS");

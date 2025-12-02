@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { AxiosResponse } from 'axios';
@@ -16,6 +15,8 @@ import {
   router
 } from './';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 const createMockResponse = (status: number, data: any, statusText: string = 'OK'): AxiosResponse => ({

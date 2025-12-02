@@ -15,6 +15,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-judge',
   templateUrl: './hearing-judge.component.html'
 })

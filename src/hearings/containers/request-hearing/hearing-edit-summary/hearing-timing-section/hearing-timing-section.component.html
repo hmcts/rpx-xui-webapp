@@ -35,12 +35,12 @@
       </exui-amendment-label>
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
         <div *ngIf="earliestHearingDate.length > 0">
-          Earliest start date: {{ earliestHearingDate }}
+          Must list after: {{ earliestHearingDate }}
         <exui-amendment-label *ngIf="dateRangeStartChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>
         </div>
         <div *ngIf="latestHearingDate.length > 0">
-          Latest end date: {{ latestHearingDate }}
+          Must list beforeF: {{ latestHearingDate }}
 
         <exui-amendment-label *ngIf="dateRangeEndChanged" [displayLabel]="amendmentLabelEnum.AMENDED">
         </exui-amendment-label>

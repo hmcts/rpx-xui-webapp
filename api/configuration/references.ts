@@ -133,6 +133,8 @@ export const FEATURE_JRD_E_LINKS_V2_ENABLED = 'jrdELinksV2Enabled';
 
 export const FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED = 'lauSpecificChallengedEnabled';
 
+export const FEATURE_FORCE_NEW_DEFAULT_SCREEN_FLOW = 'forceNewDefaultScreenFlow';
+
 export const HELMET = 'helmet';
 
 export const REDIS_KEY_PREFIX = 'redis.prefix';

@@ -14,6 +14,8 @@ import * as fromHearingStore from '../../../store';
 import { HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE } from '../../../templates/hearing-request-view-summary.template';
 import { HEARING_VIEW_ONLY_SUMMARY_TEMPLATE } from '../../../templates/hearing-view-only-summary.template';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
+import { HearingsUtils } from '../../../utils/hearings.utils';
+import { ScreenNavigationModel } from '../../../models/screenNavigation.model';
 
 @Component({
   standalone: false,
@@ -56,9 +58,11 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
 
     combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$])
       .subscribe(([isHearingAmendmentsEnabled, isHearingManager]) => {
-        this.template = isHearingAmendmentsEnabled && isHearingManager
-          ? HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE
-          : HEARING_VIEW_ONLY_SUMMARY_TEMPLATE;
+        let template = isHearingAmendmentsEnabled && isHearingManager ? HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE : HEARING_VIEW_ONLY_SUMMARY_TEMPLATE;
+        if (this.serviceHearingValuesModel?.screenFlow.some((sr: ScreenNavigationModel) => sr.screenName === 'hearing-panel-required')) {
+          template = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, this.hearingRequestMainModel?.hearingDetails?.isAPanelFlag);
+        }
+        this.template = template;
       });
   }
 

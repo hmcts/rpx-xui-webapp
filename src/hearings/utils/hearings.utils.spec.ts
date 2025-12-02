@@ -8,7 +8,9 @@ import { HearingsUtils } from './hearings.utils';
 import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
+import { Section } from '../models/section';
 import * as moment from 'moment';
+import { LovRefDataModel } from '../models/lovRefData.model';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -596,6 +598,76 @@ describe('HearingsUtils', () => {
       expect(moment(response.hearingDetails.hearingWindow.dateRangeEnd).year()).toEqual(expectedYear + 1);
     });
   });
+  describe('Test the panel required funcionality, removing of not required screens', () => {
+    describe('Test the removal of templates', () => {
+      it('should filter out "hearing-judge" screen when isAPanelFlag is true', () => {
+        const template: Section[] = [
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
+        ];
+        const isAPanelFlag = true;
+        const result = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, isAPanelFlag);
+        expect(result).toEqual([
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
+        ]);
+      });
+
+      it('should filter out "hearing-panel" screen when isAPanelFlag is false', () => {
+        const template: Section[] = [
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
+        ];
+        const isAPanelFlag = false;
+        const result = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, isAPanelFlag);
+        expect(result).toEqual([
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
+        ]);
+      });
+
+      it('should return the same template when no screens to filter', () => {
+        const template: Section[] = [
+          { screenName: 'hearing-panel-required', insetInfo: 'hearing-panel-required', sectionHTMLTitle: 'Hearing panel required' },
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
+        ];
+        const isAPanelFlag = undefined;
+        const result = HearingsUtils.checkTemplateForHearingPanelRequiremnts(template, isAPanelFlag);
+        expect(result).toEqual([
+          { screenName: 'hearing-panel-required', insetInfo: 'hearing-panel-required', sectionHTMLTitle: 'Hearing panel required' },
+          { screenName: 'hearing-judge', insetInfo: 'hearing-judge', sectionHTMLTitle: 'Judge details' },
+          { screenName: 'hearing-panel', insetInfo: 'hearing-panel', sectionHTMLTitle: 'Panel details' },
+          { screenName: 'hearing-details', insetInfo: 'hearing-details', sectionHTMLTitle: 'Hearing details' }
+        ]);
+      });
+    });
+    describe('Test the removal of strings from array\'', () => {
+      it('should filter out "hearing-judge" screen when isAPanelFlag is true', () => {
+        const sectionsToDisplay: string[] = ['hearing-judge', 'hearing-panel-selector', 'hearing-details'];
+        const isAPanelFlag = true;
+        const result = HearingsUtils.checkScreensForHearingPanelRequiremnts(sectionsToDisplay, isAPanelFlag);
+        expect(result).toEqual(['hearing-panel-selector', 'hearing-details']);
+      });
+
+      it('should filter out "hearing-panel-selector" screen when isAPanelFlag is false', () => {
+        const sectionsToDisplay: string[] = ['hearing-judge', 'hearing-panel-selector', 'hearing-details'];
+        const isAPanelFlag = false;
+        const result = HearingsUtils.checkScreensForHearingPanelRequiremnts(sectionsToDisplay, isAPanelFlag);
+        expect(result).toEqual(['hearing-judge', 'hearing-details']);
+      });
+
+      it('should return the same template when no screens to filter', () => {
+        const sectionsToDisplay: string[] = ['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details'];
+        const isAPanelFlag = undefined;
+        const result = HearingsUtils.checkScreensForHearingPanelRequiremnts(sectionsToDisplay, isAPanelFlag);
+        expect(result).toEqual(['hearing-panel-required', 'hearing-judge', 'hearing-panel', 'hearing-details']);
+      });
+    });
+  });
   it('should return true if additional facilities have changed', () => {
     const hearingRequestMainModel = {
       hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
@@ -730,5 +802,432 @@ describe('HearingsUtils', () => {
     // eslint-disable-next-line dot-notation
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
+  });
+});
+
+describe('returnPanelRoles', () => {
+  // Helper factory function to create panel roles test data
+  const createTestPanelRoles = (): LovRefDataModel[] => {
+    return [
+      {
+        key: 'role1',
+        value_en: 'Role 1',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: [
+          {
+            key: 'spec1',
+            value_en: 'Specialization 1',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role1',
+            child_nodes: []
+          },
+          {
+            key: 'spec2',
+            value_en: 'Specialization 2',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role1',
+            child_nodes: []
+          },
+          {
+            key: 'spec3',
+            value_en: 'Specialization 3',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role1',
+            child_nodes: []
+          }
+        ]
+      },
+      {
+        key: 'role2',
+        value_en: 'Role 2',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 2,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: []
+      },
+      {
+        key: 'role3',
+        value_en: 'Role 3',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 3,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: []
+      },
+      {
+        key: 'role4',
+        value_en: 'Role 4',
+        value_cy: '',
+        category_key: 'panel_roles',
+        active_flag: 'Y',
+        hint_text_en: '',
+        hint_text_cy: '',
+        lov_order: 1,
+        parent_category: '',
+        parent_key: '',
+        child_nodes: [
+          {
+            key: 'spec41',
+            value_en: 'Specialization 41',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role4',
+            child_nodes: []
+          },
+          {
+            key: 'spec42',
+            value_en: 'Specialization 42',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role4',
+            child_nodes: []
+          },
+          {
+            key: 'spec43',
+            value_en: 'Specialization 43',
+            value_cy: '',
+            category_key: 'specializations',
+            active_flag: 'Y',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 1,
+            parent_category: 'panel_roles',
+            parent_key: 'role4',
+            child_nodes: []
+          }
+        ]
+      }
+    ];
+  };
+
+  it('should return formatted panel roles with separator', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2', 'role3'];
+    const selectedPanelSpecialism = ['spec1'];
+    const separator = ', ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2, Role 3, Role 1 - Specialization 1');
+  });
+
+  it('should handle empty selections', () => {
+    const panelRoles = createTestPanelRoles();
+    const result = HearingsUtils.returnPanelRoles(
+      [],
+      [],
+      panelRoles,
+      '; '
+    );
+
+    expect(result).toBe('');
+  });
+
+  it('should handle roles with no matching specialisms', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2'];
+    const selectedPanelSpecialism = ['spec5']; // This doesn't exist
+    const separator = ' | ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2');
+  });
+
+  it('should use different separators correctly', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2'];
+    const selectedPanelSpecialism = ['spec1'];
+    const separator = ' | ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2 | Role 1 - Specialization 1');
+  });
+
+  it('should ignore roles that do not match', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role5']; // This doesn't exist
+    const selectedPanelSpecialism = [];
+    const separator = ', ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('');
+  });
+
+  it('should output roles with child nodes, when child nodes have not been selected', () => {
+    const panelRoles = createTestPanelRoles();
+    const selectedPanelRoles = ['role2', 'role1', 'role1'];
+    const selectedPanelSpecialism = ['spec1'];
+    const separator = ', ';
+
+    const result = HearingsUtils.returnPanelRoles(
+      selectedPanelSpecialism,
+      selectedPanelRoles,
+      panelRoles,
+      separator
+    );
+
+    expect(result).toBe('Role 2, Role 1, Role 1 - Specialization 1');
+  });
+
+  describe('extractSimpleRows', () => {
+    // Helper to create LovRefDataModel
+    const createRole = (key: string, value_en: string, child_nodes: any[] = []) => ({
+      key,
+      value_en,
+      child_nodes
+    } as LovRefDataModel);
+
+    it('should add matching simple roles to panelRolesRequired', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1'),
+        createRole('role2', 'Role 2', [{ key: 'child1', value_en: 'Child 1', child_nodes: [] }]),
+        createRole('role3', 'Role 3')
+      ];
+      const selectedPanelRoles = ['role1', 'role3'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 1', 'Role 3']);
+    });
+
+    it('should ignore selected roles that do not exist in panelRoles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1'),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role3'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should not add roles with child nodes', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'child1', value_en: 'Child 1', child_nodes: [] }]),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role1', 'role2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 2']);
+    });
+
+    it('should handle duplicate selected roles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1'),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role1', 'role1', 'role2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 1', 'Role 1', 'Role 2']);
+    });
+
+    it('should handle empty selectedPanelRoles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1')
+      ];
+      const selectedPanelRoles: string[] = [];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should handle empty panelRoles', () => {
+      const panelRoles: LovRefDataModel[] = [];
+      const selectedPanelRoles = ['role1'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSimpleRows(selectedPanelRoles, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+  });
+  describe('extractSpecialismWithNoSelections', () => {
+    const createRole = (key: string, value_en: string, child_nodes: any[] = []) => ({
+      key,
+      value_en,
+      child_nodes
+    } as LovRefDataModel);
+
+    it('should add parent role when selected but no matching specialism', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'spec1', value_en: 'Spec 1', child_nodes: [] }]),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelRoles = ['role1', 'role1'];
+      const panelRolesRequired: string[] = [];
+      const selectedPanelSpecialism: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismWithNoSelections(selectedPanelRoles, panelRoles, panelRolesRequired, selectedPanelSpecialism);
+
+      expect(panelRolesRequired).toEqual(['Role 1', 'Role 1']);
+    });
+
+    it('should not add parent role when all selections have matching specialisms', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'spec1', value_en: 'Spec 1', child_nodes: [] }])
+      ];
+      const selectedPanelRoles = ['role1', 'role1'];
+      const panelRolesRequired: string[] = [];
+      const selectedPanelSpecialism: string[] = ['spec1', 'spec1'];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismWithNoSelections(selectedPanelRoles, panelRoles, panelRolesRequired, selectedPanelSpecialism);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should add parent role only for unmatched selections', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [{ key: 'spec1', value_en: 'Spec 1', child_nodes: [] }])
+      ];
+      const selectedPanelRoles = ['role1', 'role1', 'role1'];
+      const panelRolesRequired: string[] = [];
+      const selectedPanelSpecialism: string[] = ['spec1', 'spec1'];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismWithNoSelections(selectedPanelRoles, panelRoles, panelRolesRequired, selectedPanelSpecialism);
+
+      expect(panelRolesRequired).toEqual(['Role 1']);
+    });
+  });
+
+  describe('extractSpecialismRows', () => {
+    const createRole = (key: string, value_en: string, child_nodes: any[] = []) => ({
+      key,
+      value_en,
+      child_nodes
+    } as LovRefDataModel);
+
+    it('should add formatted labels for selected specialisms', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [
+          { key: 'spec1', value_en: 'Spec 1', child_nodes: [] },
+          { key: 'spec2', value_en: 'Spec 2', child_nodes: [] }
+        ]),
+        createRole('role2', 'Role 2')
+      ];
+      const selectedPanelSpecialism = ['spec1', 'spec2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismRows(selectedPanelSpecialism, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual(['Role 1 - Spec 1', 'Role 1 - Spec 2']);
+    });
+
+    it('should ignore specialisms not present in panelRoles', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [
+          { key: 'spec1', value_en: 'Spec 1', child_nodes: [] }
+        ])
+      ];
+      const selectedPanelSpecialism = ['spec2'];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismRows(selectedPanelSpecialism, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
+
+    it('should handle empty selectedPanelSpecialism', () => {
+      const panelRoles = [
+        createRole('role1', 'Role 1', [
+          { key: 'spec1', value_en: 'Spec 1', child_nodes: [] }
+        ])
+      ];
+      const selectedPanelSpecialism: string[] = [];
+      const panelRolesRequired: string[] = [];
+
+      // @ts-ignore
+      HearingsUtils.extractSpecialismRows(selectedPanelSpecialism, panelRoles, panelRolesRequired);
+
+      expect(panelRolesRequired).toEqual([]);
+    });
   });
 });

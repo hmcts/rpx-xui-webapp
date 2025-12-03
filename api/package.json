@@ -13,5 +13,8 @@
         "test:watch": "npx mocha --watch --recursive --watch-extensions ts -r ts-node/register",
         "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
     },
-    "private": true
+    "private": true,
+    "devDependencies": {
+        "nyc": "^17.1.0"
+    }
 }

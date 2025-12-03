@@ -1,4 +1,3 @@
-// Converted from JS to TypeScript
 export interface User {
   idamId: string;
   email: string;

@@ -24,7 +24,7 @@ async function globalSetup(_full: FullConfig) {
     const idamPage = new IdamPage(page);
     console.log(`GlobalSetup: Logging in as ${id} (${email})`);
     try {
-      await page.goto(config.urls.exuiDefaultUrl);
+      await page.goto(process.env.TEST_URL || config.urls.exuiDefaultUrl);
       await page.waitForSelector('#username', { timeout: 30000 });
       await idamPage.login({ username: email, password });
       // Wait for presence of the standard EXUI header component to confirm the app shell loaded.

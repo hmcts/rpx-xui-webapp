@@ -37,6 +37,7 @@
     "test:node": "cd api && yarn coverage",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "test": "cd api && yarn coverage",
+    "test:node:local": "cd api && NODE_CONFIG_DIR=../config NODE_CONFIG_ENV=development ALLOW_CONFIG_MUTATIONS=1 npx mocha --config ./test/.mocharc.json -r dotenv-extended/config",
     "test:api": "PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-api/odhin-report npx playwright test --project node-api && node ./scripts/copy-odhin-report.js",
     "test:apiGateway": "yarn test:api",
     "test:coverage": "yarn test:coverage:ng",

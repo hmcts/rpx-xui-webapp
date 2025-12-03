@@ -66,9 +66,9 @@ withPipeline(type, product, component) {
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')
-        stage('Playwright Install') {
+        stage('Playwright Install Chromium') {
         try {
-            yarnBuilder.yarn('test:setup:playwright-install')
+            yarnBuilder.yarn('test:setup:playwright-install-chromium')
         } catch (Error) {
             error(message: "${STAGE_NAME} is unstable: " + Error.toString())
         }  
@@ -120,10 +120,11 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'smoke_test_report.html',
-            reportName           : 'DEMO Smoke Test'
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'DEMO Playwright Smoke'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
 
     afterSuccess('smoketest:preview') {
@@ -131,18 +132,18 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'smoke_test_report.html',
-            reportName           : 'PREVIEW Smoke Test'
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'PREVIEW Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
 
-        stage('API Tests') {
-            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
-                try {
-                    yarnBuilder.yarn('test:api')
-                } finally {
-                    publishHTML([
+          stage('API Tests') {
+              withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+                  try {
+                      yarnBuilder.yarn('test:api:pw:coverage')
+                  } finally {
+                      publishHTML([
                       allowMissing         : true,
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,
@@ -189,11 +190,11 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'smoke_test_report.html',
-            reportName           : 'AAT Smoke Test'
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'AAT Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
 
         stage('API Tests') {
             withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {

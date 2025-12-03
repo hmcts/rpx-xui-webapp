@@ -68,15 +68,31 @@ withPipeline(type, product, component) {
         yarnBuilder.yarn('build:dev')  
     }
 
-    ['smoketest:demo', 'smoketest:preview', 'smoketest:aat', 'smoketest:prod'].each { stg ->
-        before(stg) {
-            stage('Playwright Install Chromium') {
-                try {
-                    yarnBuilder.yarn('test:setup:playwright-install-chromium')
-                } catch (Error) {
-                    error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-                }
-            }
+    afterAlways('deploy:aat'){
+        stage('Playwright Install Chromium') {
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
+    }
+    afterAlways('deploy:preview'){
+        stage('Playwright Install Chromium') {
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
+    }
+    afterAlways('deploy:demo'){
+        stage('Playwright Install Chromium') {
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
         }
     }
 

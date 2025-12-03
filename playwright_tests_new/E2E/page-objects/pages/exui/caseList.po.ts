@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import config from "../../../utils/config.utils";
+import {config } from "../../../utils/config.utils";
 import { Base } from "../../base";
 
 export class CaseListPage extends Base {

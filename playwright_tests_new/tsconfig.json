@@ -12,6 +12,6 @@
     "allowJs": true,
     "noImplicitAny": false,
   },
-  "include":["../E2E/**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
-  "extends": "../../tsconfig.json"
+  "include":["../**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
+  "extends": "../tsconfig.json"
 }

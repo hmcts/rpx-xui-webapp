@@ -24,6 +24,12 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
+## API docs (Swagger UI)
+
+- Swagger UI is available on lower environments when the `feature.docsEnabled` flag is true and `environment` is not `production`.
+- Locally: ensure `config/local-development.json` is in place (includes `docsEnabled: true`), start the Node service (`yarn start:node`), then browse to `http://localhost:3000/api/docs`.
+- The raw OpenAPI document is served at `http://localhost:3000/api/docs/openapi.json`.
+
 ## Running unit tests 
 
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 

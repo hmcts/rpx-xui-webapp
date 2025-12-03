@@ -28,6 +28,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 		});
 
 		await test.step('Navigate to the search page', async () => {
+			console.log('Cookies before navigation:', await page.context().cookies());
 			await caseListPage.goto();
 		});
 

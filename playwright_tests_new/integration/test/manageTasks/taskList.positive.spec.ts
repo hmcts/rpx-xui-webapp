@@ -18,8 +18,7 @@ test.beforeEach(async ({ page }) => {
         await page.context().addCookies(sessionCookies);
         const userId = extractUserIdFromCookies(sessionCookies);
         taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
-    }
-   
+    }   
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {

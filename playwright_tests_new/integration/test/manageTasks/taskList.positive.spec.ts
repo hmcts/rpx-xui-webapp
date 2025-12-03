@@ -17,14 +17,17 @@ test.beforeEach(async ({ page }) => {
     if (sessionCookies.length) {
         await page.context().addCookies(sessionCookies);
         const userId = extractUserIdFromCookies(sessionCookies);
-        taskListMockResponse = buildMyTaskListMock(160, userId);
+        taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
     }
+   
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
     test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page }) => {
 
         await test.step('Setup route mock for task list', async () => {
+            console.log('Cookies before navigation:', await page.context().cookies());
+
             await page.route('**/workallocation/task*', async route => {
                 const body = JSON.stringify(taskListMockResponse);
                 await route.fulfill({ status: 200, contentType: 'application/json', body });

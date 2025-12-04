@@ -68,25 +68,7 @@ withPipeline(type, product, component) {
         yarnBuilder.yarn('build:dev')  
     }
 
-    afterAlways('deploy:aat'){
-        stage('Playwright Install Chromium') {
-            try {
-                yarnBuilder.yarn('test:setup:playwright-install-chromium')
-            } catch (Error) {
-                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  
-        }
-    }
-    afterAlways('deploy:preview'){
-        stage('Playwright Install Chromium') {
-            try {
-                yarnBuilder.yarn('test:setup:playwright-install-chromium')
-            } catch (Error) {
-                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  
-        }
-    }
-    afterAlways('deploy:demo'){
+    afterSuccess('build'){
         stage('Playwright Install Chromium') {
             try {
                 yarnBuilder.yarn('test:setup:playwright-install-chromium')

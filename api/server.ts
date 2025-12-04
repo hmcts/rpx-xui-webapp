@@ -22,9 +22,6 @@ createApp()
     app.set('view engine', 'html');
     app.set('views', __dirname);
 
-    app.set('view engine', 'html');
-    app.set('views', __dirname);
-
     app.use(corsMw);
 
     app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);

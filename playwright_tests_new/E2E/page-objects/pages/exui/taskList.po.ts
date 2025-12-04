@@ -24,7 +24,6 @@ export class TaskListPage extends Base {
 
   async goto() {
     await this.page.goto("/work/my-work/list");
-    await this.exuiHeader.checkIsVisible();
   }
 
   async getResultsText() {

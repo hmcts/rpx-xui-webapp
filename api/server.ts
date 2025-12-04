@@ -41,18 +41,18 @@ createApp()
 
     app.use(appInsights);
     app.use(errorHandler);
-    
+
     const server = http.createServer(app);
-    
+
     // Handle WebSocket upgrade requests - required for socket.io proxy to work
     // http-proxy-middleware with ws: true needs the HTTP server to emit 'upgrade' events
     // which are then handled by the middleware's upgrade handler
-    server.on('upgrade', (req, socket, head) => {
+    server.on('upgrade', (req, socket) => {
       // When using http-proxy-middleware with ws: true, we need to manually trigger
       // the middleware stack for upgrade requests since Express doesn't do this automatically
       const res: any = new http.ServerResponse(req);
       res.assignSocket(socket);
-      
+
       // Trigger the middleware chain - this allows http-proxy-middleware to intercept
       // WebSocket upgrade requests for paths like /socket.io
       app.handle(req, res, () => {
@@ -60,7 +60,7 @@ createApp()
         socket.destroy();
       });
     });
-    
+
     server.listen(process.env.PORT || 3000, () => {
       console.log('Server listening on port 3000!');
     });

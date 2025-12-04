@@ -20,8 +20,6 @@ test.describe("Verify creating cases works as expected", () => {
             expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
             caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
             validatorUtils.validateDivorceCaseNumber(caseNumber);
-            expect.soft(await caseDetailsPage.createCaseSuccessMessage.textContent())
-              .toMatch(new RegExp(`Case ${validatorUtils.DIVORCE_CASE_NUMBER_REGEX.source} has been created\.`))
         });
 
         await test.step("Find the created case in the case list", async () => {

@@ -46,8 +46,8 @@ createApp()
     app.use(appInsights);
     app.use(errorHandler);
 
-const server = http.createServer(app);
-    
+    const server = http.createServer(app);
+
     // Create a dedicated WebSocket proxy for socket.io
     // This bypasses the auth middleware which doesn't work with WebSocket upgrades
     const wsProxy = legacyCreateProxyMiddleware({
@@ -58,7 +58,7 @@ const server = http.createServer(app);
         '^/socket.io': '/socket.io'
       }
     });
-    
+
     // Handle WebSocket upgrade requests
     server.on('upgrade', (req, socket: net.Socket, head) => {
       if (req.url && req.url.startsWith('/socket.io')) {
@@ -67,7 +67,7 @@ const server = http.createServer(app);
         socket.destroy();
       }
     });
-    
+
     server.listen(process.env.PORT || 3000, () => {
       console.log('Server listening on port 3000!');
     });

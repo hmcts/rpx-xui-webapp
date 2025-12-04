@@ -120,12 +120,12 @@ Then('In Length, date and priority level of hearing page, I see AMENDED label di
 
 Then('In Length, date and priority level of hearing page, I see AMENDED label displayed for the latest end date', async function () {
   const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('Must list before')).to.be.true;
+  expect(await page.isActionNeededLabelDisplayedForField('Latest end date')).to.be.true;
 });
 
 Then('In Length, date and priority level of hearing page, I see no label displayed for the earliest end date', async function () {
   const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('Must list after')).to.be.false;
+  expect(await page.isActionNeededLabelDisplayedForField('Earliest start date')).to.be.false;
 });
 
 Then('In Length, date and priority level of hearing page, I dont see ACTION NEEDED label displayed for The first date of the hearing must be', async function () {

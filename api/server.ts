@@ -61,9 +61,12 @@ createApp()
 
     // Handle WebSocket upgrade requests
     server.on('upgrade', (req, socket: net.Socket, head) => {
+      console.log('🔧 UPGRADE EVENT TRIGGERED:', req.url, req.headers);
       if (req.url && req.url.startsWith('/socket.io')) {
+        console.log('✅ Upgrading socket.io connection');
         wsProxy.upgrade(req, socket, head);
       } else {
+        console.log('❌ Non-socket.io upgrade request, destroying:', req.url);
         socket.destroy();
       }
     });

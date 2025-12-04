@@ -55,7 +55,7 @@ createApp()
 
       // Trigger the middleware chain - this allows http-proxy-middleware to intercept
       // WebSocket upgrade requests for paths like /socket.io
-      app.handle(req, res, () => {
+      (app as any).handle(req, res, () => {
         // If no middleware handled it, destroy the socket
         socket.destroy();
       });

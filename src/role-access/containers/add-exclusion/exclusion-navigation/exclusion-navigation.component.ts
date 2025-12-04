@@ -12,6 +12,7 @@ import { ExclusionNavigationEvent, ExclusionState } from '../../../models';
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-exclusion-navigation',
   templateUrl: 'exclusion-navigation.component.html'
 })

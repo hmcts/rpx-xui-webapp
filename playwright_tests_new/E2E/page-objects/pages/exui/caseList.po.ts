@@ -35,7 +35,7 @@ export class CaseListPage extends Base {
   }
 
   async goto() {
-    await this.page.goto('/cases/case-list');
+    await this.page.goto('/cases');
     await this.exuiHeader.checkIsVisible();
   }
 

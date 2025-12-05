@@ -11,7 +11,7 @@ test.describe("Verify creating cases works as expected", () => {
         });
     });
 
-    test.only("Verify creating a case works as expected", async ({ validatorUtils, createCasePage, caseListPage, caseDetailsPage, tableUtils }) => {
+    test("Verify creating a case works as expected", async ({ validatorUtils, createCasePage, caseListPage, caseDetailsPage, tableUtils }) => {
         let caseNumber: string;
         let textField0 = faker.lorem.word();
 

@@ -10,7 +10,10 @@ import * as fromRoot from '../../../app/store/reducers';
 import * as fromCaseSearchStore from '../../store';
 import { CaseSearchComponent } from './case-search.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslationMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

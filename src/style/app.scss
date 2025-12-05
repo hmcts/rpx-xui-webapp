@@ -426,8 +426,8 @@ form.check-your-answers table td .markdown p {
 
 header {
   .govuk-skip-link {
-    &:link, &:visited {
-      color: #fff;
+    &:focus {
+      color: #0b0c0c;
     }
   }
 }

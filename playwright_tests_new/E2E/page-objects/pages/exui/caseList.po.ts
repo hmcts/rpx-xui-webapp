@@ -34,8 +34,7 @@ export class CaseListPage extends Base {
   }
 
   async goto() {
-    await this.page.goto('/cases');
-    await this.exuiHeader.checkIsVisible();
+    await this.exuiHeader.selectHeaderMenuItem('Case list');
   }
 
   async getPaginationFinalItem(): Promise<string | undefined> {

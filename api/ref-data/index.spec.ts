@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
 import { SERVICES_LOCATION_REF_API_URL } from '../configuration/references';
@@ -14,6 +13,8 @@ import { RefDataRegion } from './models/ref-data-region.model';
 
 const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 describe('RefDataEndpoint', () => {
   let sandbox: sinon.SinonSandbox;

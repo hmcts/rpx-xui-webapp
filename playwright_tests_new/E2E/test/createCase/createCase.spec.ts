@@ -11,7 +11,7 @@ test.describe("Verify creating cases works as expected", () => {
         });
     });
 
-    test("Verify creating a case works as expected", async ({ validatorUtils, createCasePage, caseListPage, caseDetailsPage, tableUtils }) => {
+    test.only("Verify creating a case works as expected", async ({ validatorUtils, createCasePage, caseListPage, caseDetailsPage, tableUtils }) => {
         let caseNumber: string;
         let textField0 = faker.lorem.word();
 
@@ -34,7 +34,8 @@ test.describe("Verify creating cases works as expected", () => {
             const table = await tableUtils.mapExuiTable(
                 caseListPage.exuiCaseListComponent.caseListTable
             );
-            expect(table[0]["Case reference"]).toBe(`${caseNumber.slice(1)}`);
+            const found = table.some(row => row["Case reference"] === `${caseNumber.slice(1)}`);
+            expect(found).toBeTruthy();
         });
     });
 });

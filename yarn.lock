@@ -3696,12 +3696,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.0":
-  version: 7.3.0
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.0"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.2":
+  version: 7.3.2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/8b58c2a881883d6eeb2697ae0722d20ad25abc91d51ec2600fc0305435be9208c9520029a169922d16733e9331acc4ce246027fbcc4a53ab7df5d43e2c2e5ae6
+  checksum: 10/3d1f1f8e60c36023b20c841930ba3ec22cf245d9e3ff588a25ac2b326f9af93d7df18ea5315ea241fc8abcaa05ec342a777cfb22cfb99930bc3d59c5e60282a4
   languageName: node
   linkType: hard
 
@@ -7752,6 +7752,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scarf/scarf@npm:=1.4.0":
+  version: 1.4.0
+  resolution: "@scarf/scarf@npm:1.4.0"
+  checksum: 10/1b39a18fa29e91cfbc134c588e20c5f01a1b21ec4473614123801155b48378e9c3bf72adaca8c67e433ae951ab653268e9502cc5733230d8927532f74a6b89c9
+  languageName: node
+  linkType: hard
+
 "@schematics/angular@npm:20.3.6":
   version: 20.3.6
   resolution: "@schematics/angular@npm:20.3.6"
@@ -9154,6 +9161,16 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10/72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/swagger-ui-express@npm:^4.1.6":
+  version: 4.1.8
+  resolution: "@types/swagger-ui-express@npm:4.1.8"
+  dependencies:
+    "@types/express": "npm:*"
+    "@types/serve-static": "npm:*"
+  checksum: 10/bf4d84fb21c11e820238685cdc102f8d5e82d4382df9450a358bf80f70f5f0699c87645a291c52beee1eba5c0ee594e03714b236f1a0737272941a8708218f8f
   languageName: node
   linkType: hard
 
@@ -11316,6 +11333,27 @@ __metadata:
   version: 3.1.2
   resolution: "bytes@npm:3.1.2"
   checksum: 10/a10abf2ba70c784471d6b4f58778c0beeb2b5d405148e66affa91f23a9f13d07603d0a0354667310ae1d6dc141474ffd44e2a074be0f6e2254edb8fc21445388
+  languageName: node
+  linkType: hard
+
+"c8@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "c8@npm:9.1.0"
+  dependencies:
+    "@bcoe/v8-coverage": "npm:^0.2.3"
+    "@istanbuljs/schema": "npm:^0.1.3"
+    find-up: "npm:^5.0.0"
+    foreground-child: "npm:^3.1.1"
+    istanbul-lib-coverage: "npm:^3.2.0"
+    istanbul-lib-report: "npm:^3.0.1"
+    istanbul-reports: "npm:^3.1.6"
+    test-exclude: "npm:^6.0.0"
+    v8-to-istanbul: "npm:^9.0.0"
+    yargs: "npm:^17.7.2"
+    yargs-parser: "npm:^21.1.1"
+  bin:
+    c8: bin/c8.js
+  checksum: 10/6c11f156960181ef069d9bb33f67c108088d09671934e273cb8a25453e9d5030f61f9b74b72bea3236d5bb8bfeb8d59b359d2eb488c2d378c9491d725cec4574
   languageName: node
   linkType: hard
 
@@ -15631,7 +15669,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"foreground-child@npm:^3.1.0, foreground-child@npm:^3.3.1":
+"foreground-child@npm:^3.1.0, foreground-child@npm:^3.1.1, foreground-child@npm:^3.3.1":
   version: 3.3.1
   resolution: "foreground-child@npm:3.3.1"
   dependencies:
@@ -17494,7 +17532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-report@npm:^3.0.0":
+"istanbul-lib-report@npm:^3.0.0, istanbul-lib-report@npm:^3.0.1":
   version: 3.0.1
   resolution: "istanbul-lib-report@npm:3.0.1"
   dependencies:
@@ -17540,7 +17578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-reports@npm:^3.0.2, istanbul-reports@npm:^3.0.5, istanbul-reports@npm:^3.1.3":
+"istanbul-reports@npm:^3.0.2, istanbul-reports@npm:^3.0.5, istanbul-reports@npm:^3.1.3, istanbul-reports@npm:^3.1.6":
   version: 3.2.0
   resolution: "istanbul-reports@npm:3.2.0"
   dependencies:
@@ -18682,6 +18720,72 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jui@workspace:api":
+  version: 0.0.0-use.local
+  resolution: "jui@workspace:api"
+  dependencies:
+    "@dr.pogodin/csurf": "npm:^1.16.5"
+    "@faker-js/faker": "npm:^9.2.0"
+    "@hmcts/nodejs-healthcheck": "npm:1.8.5"
+    "@hmcts/properties-volume": "npm:^1.2.0"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.0"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
+    "@pact-foundation/pact": "npm:^15.0.1"
+    "@pact-foundation/pact-node": "npm:^10.18.0"
+    "@types/config": "npm:^3.0.0"
+    "@types/cookie-parser": "npm:^1.4.2"
+    "@types/express": "npm:^4.16.1"
+    "@types/express-session": "npm:^1.17.0"
+    "@types/mocha": "npm:^10.0.0"
+    "@types/node": "npm:^20.19.0"
+    "@types/sinon": "npm:^7.0.13"
+    "@types/swagger-ui-express": "npm:^4.1.6"
+    "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
+    "@typescript-eslint/parser": "npm:^7.2.0"
+    applicationinsights: "npm:1.8.10"
+    axios: "npm:1.8.4"
+    axios-mock-adapter: "npm:^1.22.0"
+    body-parser: "npm:^1.20.3"
+    c8: "npm:^9.1.0"
+    chai: "npm:^4.3.10"
+    chai-as-promised: "npm:7.1.2"
+    class-transformer: "npm:^0.5.0"
+    compression: "npm:^1.7.4"
+    config: "npm:^3.2.5"
+    cookie-parser: "npm:^1.4.4"
+    cors: "npm:^2.8.5"
+    dotenv-extended: "npm:^2.7.1"
+    ejs: "npm:^3.1.10"
+    eslint: "npm:^8.37.0"
+    exception-formatter: "npm:1.0.7"
+    express: "npm:^4.21.2"
+    global-agent: "npm:^3.0.0"
+    helmet: "npm:^7.2.0"
+    http-proxy-middleware: "npm:3.0.3"
+    lodash: "npm:^4.17.21"
+    log4js: "npm:^6.9.1"
+    mocha: "npm:^10.0.0"
+    node-http-proxy-json: "npm:^0.1.9"
+    nodemon: "npm:^2.0.19"
+    otplib: "npm:^12.0.1"
+    qs: "npm:^6.14.0"
+    sinon: "npm:^7.3.2"
+    sinon-chai: "npm:^3.3.0"
+    sinon-express-mock: "npm:^2.2.0"
+    source-map-support: "npm:^0.5.21"
+    striptags: "npm:^3.1.1"
+    swagger-ui-express: "npm:^5.0.1"
+    terser-webpack-plugin: "npm:^5.3.3"
+    ts-loader: "npm:^9.4.4"
+    ts-node: "npm:~10.9.0"
+    typescript: "npm:~5.8.0"
+    uuid: "npm:^11.0.0"
+    webpack: "npm:^5.94.0"
+    webpack-cli: "npm:^6.0.0"
+    webpack-node-externals: "npm:^3.0.0"
+  languageName: unknown
+  linkType: soft
+
 "just-extend@npm:^4.0.2":
   version: 4.2.1
   resolution: "just-extend@npm:4.2.1"
@@ -19551,7 +19655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"log4js@npm:^6.4.1":
+"log4js@npm:^6.4.1, log4js@npm:^6.9.1":
   version: 6.9.1
   resolution: "log4js@npm:6.9.1"
   dependencies:
@@ -23779,7 +23883,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.0"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.2"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.0"
@@ -23820,6 +23924,7 @@ __metadata:
     "@types/mocha": "npm:^10.0.0"
     "@types/node": "npm:^20.19.0"
     "@types/sinon": "npm:^7.0.13"
+    "@types/swagger-ui-express": "npm:^4.1.6"
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"
     "@typescript-eslint/parser": "npm:^7.2.0"
     accessibility-checker: "npm:^4.0.0"
@@ -23829,6 +23934,7 @@ __metadata:
     axios: "npm:1.8.4"
     axios-mock-adapter: "npm:^1.22.0"
     base-64: "npm:^1.0.0"
+    c8: "npm:^9.1.0"
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.0"
@@ -23849,6 +23955,7 @@ __metadata:
     eslint: "npm:^8.37.0"
     exceljs: "npm:^4.4.0"
     exception-formatter: "npm:1.0.7"
+    express: "npm:^4.21.2"
     file-saver: "npm:^2.0.2"
     form-data: "npm:^2.5.5"
     get-port: "npm:^7.0.0"
@@ -23915,6 +24022,7 @@ __metadata:
     start-server-and-test: "npm:^2.0.13"
     stream: "npm:^0.0.3"
     striptags: "npm:^3.1.1"
+    swagger-ui-express: "npm:^5.0.1"
     terser-webpack-plugin: "npm:^5.3.3"
     ts-enum-util: "npm:4.1.0"
     ts-loader: "npm:^9.4.4"
@@ -23929,6 +24037,7 @@ __metadata:
     webpack-cli: "npm:^6.0.0"
     webpack-node-externals: "npm:^3.0.0"
     webpack-source-map-support: "npm:^2.0.1"
+    zod: "npm:^3.23.8"
     zone.js: "npm:~0.15.0"
   languageName: unknown
   linkType: soft
@@ -25319,6 +25428,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"swagger-ui-dist@npm:>=5.0.0":
+  version: 5.30.3
+  resolution: "swagger-ui-dist@npm:5.30.3"
+  dependencies:
+    "@scarf/scarf": "npm:=1.4.0"
+  checksum: 10/366bccae74817bead1bc19da650b22376e4aa9b97e8a4bb0e60f1e47619104ec091b0916842cef9ada13bb98fae0fc22dc5b223afe25caaf86b24eae78a86c53
+  languageName: node
+  linkType: hard
+
+"swagger-ui-express@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "swagger-ui-express@npm:5.0.1"
+  dependencies:
+    swagger-ui-dist: "npm:>=5.0.0"
+  peerDependencies:
+    express: ">=4.0.0 || >=5.0.0-beta"
+  checksum: 10/13d95e6683214717f98dd53063bf398751ea798e971c43ece949b67a45102cc48995da319547002b2acc262d39f1994bd4af39828d99e95658966d6b332b585e
+  languageName: node
+  linkType: hard
+
 "symbol-tree@npm:^3.2.4":
   version: 3.2.4
   resolution: "symbol-tree@npm:3.2.4"
@@ -26566,7 +26695,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@npm:^9.0.1":
+"v8-to-istanbul@npm:^9.0.0, v8-to-istanbul@npm:^9.0.1":
   version: 9.3.0
   resolution: "v8-to-istanbul@npm:9.3.0"
   dependencies:

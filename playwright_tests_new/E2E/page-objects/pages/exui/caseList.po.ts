@@ -18,18 +18,17 @@ export class CaseListPage extends Base {
 
   public async searchByJurisdiction(jurisdiction: string): Promise<void> {
     await this.jurisdictionSelect.selectOption(jurisdiction);
-    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
-    await this.exuiSpinnerComponent.wait();
   }
 
   public async searchByCaseType(caseType: string): Promise<void> {
     await this.caseTypeSelect.selectOption(caseType);
-    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
-    await this.exuiSpinnerComponent.wait();
   }
 
   public async searchByTextField0(textField0: string): Promise<void> {
     await this.textField0Input.fill(textField0);
+  }
+
+  public async applyFilters(): Promise<void> {
     await this.exuiCaseListComponent.filters.applyFilterBtn.click();
     await this.exuiSpinnerComponent.wait();
   }

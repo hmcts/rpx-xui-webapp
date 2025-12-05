@@ -27,10 +27,11 @@ test.describe("Verify creating cases works as expected", () => {
             await caseListPage.searchByJurisdiction("Family Divorce");
             await caseListPage.searchByCaseType("XUI Case PoC");
             await caseListPage.searchByTextField0(textField0);
+            await caseListPage.exuiCaseListComponent.searchByCaseState("Case created");
+            await caseListPage.applyFilters();
         });
 
-        await test.step("Confirm the created case is in the search results", async () => {
-            await caseListPage.exuiCaseListComponent.searchByCaseState("Case created");
+        await test.step("Confirm the created case is in the search results", async () => {            
             const table = await tableUtils.mapExuiTable(
                 caseListPage.exuiCaseListComponent.caseListTable
             );

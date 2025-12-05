@@ -109,12 +109,22 @@ describe('HMC Hearings API', () => {
 
     it('should handle getHearings error', async () => {
       req.query = { caseId: '1584618195804035' };
-      const error = new Error('API failure');
+      req.body = {
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/1234567890'
+        }
+      };
+      const error = { status: 500, statusText: 'Internal Server Error', data: { message: 'API failure' } };
 
       handleGetStub.rejects(error);
 
       await hmcIndex.getHearings(req, res, next);
 
+      // Verify trackTrace was called with proper error information
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.match(/getHearings error for caseID: 1234567890 hearingID: undefined/);
+
+      // Verify next middleware was called with the error
       expect(next).to.have.been.calledWith(error);
       expect(res.status).to.not.have.been.called;
       expect(res.send).to.not.have.been.called;
@@ -145,12 +155,19 @@ describe('HMC Hearings API', () => {
 
     it('should handle getHearing error', async () => {
       req.query = { hearingId: 'h100001' };
-      const error = new Error('Hearing not found');
+      req.body = {
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/9876543210'
+        }
+      };
+      const error = { status: 404, statusText: 'Not Found', data: { message: 'Hearing not found' } };
 
       handleGetStub.rejects(error);
 
       await hmcIndex.getHearing(req, res, next);
 
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.match(/getHearing error for caseID: 9876543210 hearingID: h100001/);
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -179,26 +196,38 @@ describe('HMC Hearings API', () => {
     });
 
     it('should handle submitHearingRequest validation error', async () => {
-      req.body = { invalid: 'data' };
-      const error = { status: 400, message: 'Invalid request', data: undefined };
+      req.body = {
+        invalid: 'data',
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/1111111111'
+        }
+      };
+      const error = { status: 400, statusText: 'Bad Request', message: 'Invalid request', data: { error: 'validation failed' } };
 
       handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error: (400) : undefined');
+      expect(trackTraceStub).to.have.been.calledTwice; // Once for 'submitting hearing request', once for error
+      expect(trackTraceStub.secondCall.args[0]).to.match(/SubmitHearingRequest error for caseID: 1111111111 hearingID: undefined/);
       expect(next).to.have.been.calledWith(error);
     });
 
     it('should handle submitHearingRequest server error', async () => {
-      req.body = { ...HEARING_REQUEST_RESULTS[0] };
-      const error = { status: 500, message: 'Server error', data: undefined };
+      req.body = {
+        ...HEARING_REQUEST_RESULTS[0],
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/2222222222'
+        }
+      };
+      const error = { status: 500, statusText: 'Internal Server Error', message: 'Server error', data: { error: 'server failure' } };
 
       handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith('SubmitHearingRequest error: (500) : undefined');
+      expect(trackTraceStub).to.have.been.calledTwice; // Once for 'submitting hearing request', once for error
+      expect(trackTraceStub.secondCall.args[0]).to.match(/SubmitHearingRequest error for caseID: 2222222222 hearingID: undefined/);
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -229,12 +258,20 @@ describe('HMC Hearings API', () => {
 
     it('should handle cancelHearingRequest error', async () => {
       req.query = { hearingId: 'h100001' };
-      const error = new Error('Cannot cancel hearing');
+      req.body = {
+        cancellationReason: 'No longer required',
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/3333333333'
+        }
+      };
+      const error = { status: 400, statusText: 'Bad Request', message: 'Cannot cancel hearing', data: { error: 'cancellation not allowed' } };
 
       handleDeleteStub.rejects(error);
 
       await hmcIndex.cancelHearingRequest(req, res, next);
 
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.match(/cancelHearingRequest error for caseID: 3333333333 hearingID: h100001/);
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -265,12 +302,20 @@ describe('HMC Hearings API', () => {
 
     it('should handle updateHearingRequest error', async () => {
       req.query = { hearingId: 'h100001' };
-      const error = new Error('Update failed');
+      req.body = {
+        duration: 60,
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/4444444444'
+        }
+      };
+      const error = { status: 422, statusText: 'Unprocessable Entity', message: 'Update failed', data: { error: 'invalid update' } };
 
       handlePutStub.rejects(error);
 
       await hmcIndex.updateHearingRequest(req, res, next);
 
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.match(/updateHearingRequest error for caseID: 4444444444 hearingID: h100001/);
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -552,6 +597,101 @@ describe('HMC Hearings API', () => {
       expect(req.headers['Role-Assignment-Url']).to.be.undefined;
       expect(req.headers['Data-Store-Url']).to.be.undefined;
       expect(next).to.have.been.called;
+    });
+  });
+
+  describe('handleHearingError', () => {
+    it('should log error with case ID and hearing ID when deepLink is provided', async () => {
+      req.query = { hearingId: 'h999999' };
+      req.body = {
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/5555555555'
+        }
+      };
+      const error = { status: 500, statusText: 'Server Error', data: { message: 'test error' } };
+
+      handleDeleteStub.rejects(error);
+
+      await hmcIndex.cancelHearingRequest(req, res, next);
+
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.equal(
+        'cancelHearingRequest error for caseID: 5555555555 hearingID: h999999 : (500) : ' + JSON.stringify(error.data)
+      );
+      expect(next).to.have.been.calledWith(error);
+    });
+
+    it('should log error with undefined case ID when deepLink is missing', async () => {
+      req.query = { hearingId: 'h888888' };
+      req.body = {};
+      const error = { status: 400, statusText: 'Bad Request', data: { message: 'missing data' } };
+
+      handleDeleteStub.rejects(error);
+
+      await hmcIndex.cancelHearingRequest(req, res, next);
+
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.equal(
+        'cancelHearingRequest error for caseID: undefined hearingID: h888888 : (400) : ' + JSON.stringify(error.data)
+      );
+      expect(next).to.have.been.calledWith(error);
+    });
+
+    it('should log error with undefined hearing ID when not in query', async () => {
+      req.query = {};
+      req.body = {
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/6666666666'
+        }
+      };
+      const error = { status: 404, statusText: 'Not Found', data: { message: 'hearing not found' } };
+
+      handleDeleteStub.rejects(error);
+
+      await hmcIndex.cancelHearingRequest(req, res, next);
+
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.equal(
+        'cancelHearingRequest error for caseID: 6666666666 hearingID: undefined : (404) : ' + JSON.stringify(error.data)
+      );
+      expect(next).to.have.been.calledWith(error);
+    });
+
+    it('should extract case ID from fallback pattern when specific pattern fails', async () => {
+      req.query = { hearingId: 'h777777' };
+      req.body = {
+        caseDetails: {
+          caseDeepLink: 'https://example.com/some-other-path/7777777777'
+        }
+      };
+      const error = { status: 403, statusText: 'Forbidden', data: { message: 'access denied' } };
+
+      handlePutStub.rejects(error);
+
+      await hmcIndex.updateHearingRequest(req, res, next);
+
+      expect(trackTraceStub).to.have.been.calledOnce;
+      expect(trackTraceStub.firstCall.args[0]).to.equal(
+        'updateHearingRequest error for caseID: 7777777777 hearingID: h777777 : (403) : ' + JSON.stringify(error.data)
+      );
+      expect(next).to.have.been.calledWith(error);
+    });
+
+    it('should not track trace for non-4xx/5xx errors', async () => {
+      req.query = { hearingId: 'h111111' };
+      req.body = {
+        caseDetails: {
+          caseDeepLink: 'https://example.com/case-details/8888888888'
+        }
+      };
+      const error = { status: 302, statusText: 'Found', data: { message: 'redirect' } };
+
+      handleDeleteStub.rejects(error);
+
+      await hmcIndex.cancelHearingRequest(req, res, next);
+
+      expect(trackTraceStub).to.not.have.been.called;
+      expect(next).to.have.been.calledWith(error);
     });
   });
 

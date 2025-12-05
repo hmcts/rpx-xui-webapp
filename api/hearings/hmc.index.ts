@@ -18,6 +18,34 @@ export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPO
 const logger: JUILogger = log4jui.getLogger('hmc-index');
 
 /**
+ * handleHearingError - reusable error handler for hearing requests
+ */
+function handleHearingError(error: any, operationName: string, req: EnhancedRequest, markupPath: string, next: NextFunction): void {
+  const hearingId = req.query.hearingId;
+  const deepLink: string | undefined = req.body?.caseDetails?.caseDeepLink;
+  let inferredCaseId: string | undefined;
+
+  if (typeof deepLink === 'string') {
+    const specific = deepLink.match(/\/case-details\/(\d+)/);
+    inferredCaseId = specific?.[1] ?? deepLink.match(/\d{10,}/)?.[0];
+  }
+
+  logger.error(
+    `${operationName} error: caseID: ${inferredCaseId} hearingID: ${hearingId} : ${error.status} ${markupPath}`,
+    error.statusText,
+    JSON.stringify(error.data)
+  );
+
+  if (error.status >= 400 && error.status < 600) {
+    trackTrace(
+      `${operationName} error for caseID: ${inferredCaseId} hearingID: ${hearingId} : (${error.status}) : ${JSON.stringify(error.data)}`
+    );
+  }
+
+  next(error);
+}
+
+/**
  * getHearings from case ID
  */
 export async function getHearings(req: EnhancedRequest, res: Response, next: NextFunction) {
@@ -33,7 +61,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
       }));
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'getHearings', req, markupPath, next);
   }
 }
 
@@ -49,7 +77,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
     const { status, data }: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'getHearing', req, markupPath, next);
   }
 }
 
@@ -64,11 +92,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
-    logger.error('SubmitHearingRequest error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
-    if (error.status >= 400 && error.status < 600) {
-      trackTrace(`SubmitHearingRequest error: (${error.status}) : ${JSON.stringify(error.data)}`);
-    }
-    next(error);
+    handleHearingError(error, 'SubmitHearingRequest', req, markupPath, next);
   }
 }
 
@@ -84,7 +108,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'cancelHearingRequest', req, markupPath, next);
   }
 }
 
@@ -99,7 +123,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: any } = await handlePut(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'updateHearingRequest', req, markupPath, next);
   }
 }
 
@@ -108,12 +132,13 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
+  const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
     const { status, data }: { status: number, data: HearingActualsMainModel } =
       await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}`, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'getHearingActuals', req, markupPath, next);
   }
 }
 
@@ -128,7 +153,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
     const { status, data }: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'updateHearingActuals', req, markupPath, next);
   }
 }
 
@@ -142,8 +167,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
     const { status }: { status: number } = await handlePost(markupPath, null, req);
     res.status(status).send(null);
   } catch (error) {
-    logger.error('submitHearingActuals error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
-    next(error);
+    handleHearingError(error, 'submitHearingActuals', req, markupPath, next);
   }
 }
 
@@ -157,7 +181,7 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
     const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'getLinkedHearingGroup', req, markupPath, next);
   }
 }
 
@@ -171,8 +195,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
-    logger.error('postLinkedHearingGroup error: ' + error.status + ' ' + markupPath, error.statusText, JSON.stringify(error.data));
-    next(error);
+    handleHearingError(error, 'postLinkedHearingGroup', req, markupPath, next);
   }
 }
 
@@ -187,7 +210,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'putLinkedHearingGroup', req, markupPath, next);
   }
 }
 
@@ -202,7 +225,7 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
-    next(error);
+    handleHearingError(error, 'deleteLinkedHearingGroup', req, markupPath, next);
   }
 }
 

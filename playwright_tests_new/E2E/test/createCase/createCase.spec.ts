@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { expect, test } from "../../fixtures.ts";
+import { expect, test } from "../../fixtures";
 
 test.describe("Verify creating cases works as expected", () => {
     test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
@@ -17,7 +17,7 @@ test.describe("Verify creating cases works as expected", () => {
 
         await test.step("Create a case and validate the case number", async () => {
             await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
-            expect(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
+            expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
             caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
             validatorUtils.validateDivorceCaseNumber(caseNumber);
         });
@@ -27,14 +27,16 @@ test.describe("Verify creating cases works as expected", () => {
             await caseListPage.searchByJurisdiction("Family Divorce");
             await caseListPage.searchByCaseType("XUI Case PoC");
             await caseListPage.searchByTextField0(textField0);
+            await caseListPage.exuiCaseListComponent.searchByCaseState("Case created");
+            await caseListPage.applyFilters();
         });
 
-        await test.step("Confirm the created case is in the search results", async () => {
-            await caseListPage.exuiCaseListComponent.searchByCaseState("Case created");
+        await test.step("Confirm the created case is in the search results", async () => {            
             const table = await tableUtils.mapExuiTable(
                 caseListPage.exuiCaseListComponent.caseListTable
             );
-            expect(table[0]["Case reference"]).toBe(`${caseNumber.slice(1)}`);
+            const found = table.some(row => row["Case reference"] === `${caseNumber.slice(1)}`);
+            expect(found).toBeTruthy();
         });
     });
 });

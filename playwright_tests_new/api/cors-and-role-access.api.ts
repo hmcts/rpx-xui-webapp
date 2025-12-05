@@ -1,5 +1,5 @@
 import { test, expect, request } from '@playwright/test';
-import { config } from '../../test_codecept/integration/tests/config/config';
+import { config } from '../common/apiTestConfig';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
 
 const baseURL = config.baseUrl.replace(/\/+$/, '');

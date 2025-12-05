@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
+import { config as testConfig } from '../common/apiTestConfig';
 import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
 
 test.describe('CCD endpoints', () => {
@@ -22,7 +22,7 @@ test.describe('CCD endpoints', () => {
       return;
     }
 
-    const expectedNames = testConfig.jurisdcitionNames[testConfig.testEnv] ?? [];
+    const expectedNames = testConfig.jurisdictionNames[testConfig.testEnv] ?? [];
     const actualNames = (response.data ?? []).map((entry) => entry?.name).filter(Boolean);
     expectedNames.forEach((name) => {
       expect(actualNames).toContain(name);

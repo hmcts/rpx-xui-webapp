@@ -1,5 +1,5 @@
 // This code block will need to be removed when the frameworks supports creating users on the fly
-import testConfig from "../../../test_codecept/e2e/config/appTestConfig.js"
+import testConfig from "../../common/appTestConfig";
 
 export class UserUtils {
   public getUserCredentials(userIdentifier: string) {

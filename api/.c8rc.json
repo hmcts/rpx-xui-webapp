@@ -50,9 +50,9 @@
   "reporter": [
     "lcov",
     "html",
+    "text",
     "text-summary"
   ],
-  "cache": true,
   "all": true,
   "report-dir": "../reports/tests/coverage/node"
 }

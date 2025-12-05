@@ -32,12 +32,6 @@ export enum LaCaseStatus {
   EXCEPTION = 'EXCEPTION',
 }
 
-export enum ListingStatus {
-  DRAFT = 'Draft',
-  PROVISIONAL = 'Provisional',
-  FIXED = 'Fixed',
-}
-
 export enum HearingListingStatusEnum {
   AWAITING_LISTING = 'AWAITING LISTING',
   UPDATE_REQUESTED = 'UPDATE REQUESTED',

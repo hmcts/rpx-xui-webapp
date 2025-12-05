@@ -25,8 +25,6 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page }) => {
 
         await test.step('Setup route mock for task list', async () => {
-            console.log('Cookies before navigation:', await page.context().cookies());
-
             await page.route('**/workallocation/task*', async route => {
                 const body = JSON.stringify(taskListMockResponse);
                 await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -39,7 +37,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
             await taskListPage.exuiSpinnerComponent.wait();
         });
 
-        await test.step('Verify user can see a list shows the expected layout given the mock response', async () => {
+        await test.step('Verify user can see a list shows the expected layout and data, given the mock response', async () => {
             expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
             const table = await readTaskTable(taskListPage.taskListTable);
             for (let i = 0; i < table.length; i++) {

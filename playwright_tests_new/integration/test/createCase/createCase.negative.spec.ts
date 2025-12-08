@@ -1,3 +1,4 @@
+import { PageEvent } from '@angular/material/paginator';
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
 
@@ -24,13 +25,17 @@ test.describe.skip(`Case List as ${userIdentifier}`, () => {
             await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
         });
 
-        await test.step('Attempt to submit the case without filling in required fields', async () => {
-            await createCasePage.testSubmitButton.click(); 
-            await createCasePage.exuiSpinnerComponent.wait();           
+        await test.step('Check the submit case page is not displayed', async () => {
+            await expect(createCasePage.exuiHeader.header).toBeVisible();
+            await expect(createCasePage.testSubmitButton).not.toBeInViewport();
+            await expect(createCasePage.refreshModalConfirmButton).toBeVisible()
+            await expect(createCasePage.refreshModal).toBeVisible();            
+            await createCasePage.refreshModalConfirmButton.click();
         });
 
         await test.step('Verify that the case is not created and the user is not taken to the case details page', async () => {
-            expect(await createCasePage.exuiCaseDetailsComponent.caseHeader.isVisible()).toBeFalsy();           
+            await expect(createCasePage.exuiCaseDetailsComponent.caseHeader).not.toBeVisible();
+            await expect(page).not.toHaveURL(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
         });
     });
 });

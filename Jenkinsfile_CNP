@@ -64,15 +64,18 @@ withPipeline(type, product, component) {
         AppPipelineDsl.PactRoles.CONSUMER
     ])   
 
-    afterAlways('build') {
-        yarnBuilder.yarn('build:dev')
+    afterSuccess('build') {
+        yarnBuilder.yarn('build:dev')  
+    }
+
+    afterAlways('checkout'){
         stage('Playwright Install Chromium') {
-        try {
-            yarnBuilder.yarn('test:setup:playwright-install-chromium')
-        } catch (Error) {
-            error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-        }  
-    }    
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
     }
 
     afterAlways('test') {

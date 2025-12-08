@@ -5,7 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
  *  * false => 'No'
  *  * undefined => undefined;
  */
-@Pipe({ name: 'yesNo' })
+@Pipe({
+  standalone: false,
+  name: 'yesNo'
+})
 export class YesNoPipe implements PipeTransform {
   public transform(value: boolean): string {
     if (value === true) {

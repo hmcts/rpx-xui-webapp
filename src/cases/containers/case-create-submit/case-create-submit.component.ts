@@ -8,6 +8,7 @@ import * as fromCases from '../../../cases/store';
 import * as fromCaseCreate from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-create-submit',
   templateUrl: 'case-create-submit.component.html'
 })

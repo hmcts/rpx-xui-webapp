@@ -22,10 +22,10 @@ async function globalSetup(_full: FullConfig) {
     const context = await browser.newContext();
     const page = await context.newPage();
     const idamPage = new IdamPage(page);
-    console.log(`GlobalSetup: Logging in as ${id} (${email})`);
+    console.log(`GlobalSetup: Logging in as ${id} (${email}) to ${process.env.TEST_URL || config.urls.exuiDefaultUrl}`);
     try {
       await page.goto(process.env.TEST_URL || config.urls.exuiDefaultUrl);
-      await page.waitForSelector('#username', { timeout: 30000 });
+      await page.waitForSelector('#username', { timeout: 60000 });
       await idamPage.login({ username: email, password });
       // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
       try {
@@ -36,6 +36,7 @@ async function globalSetup(_full: FullConfig) {
       }
     } catch (e) {
       console.warn(`GlobalSetup: login failed for ${id}`, e);
+      throw e
     }
     const cookies = await context.cookies();
     const sessionPath = path.join(sessionsDir, `${email}.storage.json`);
@@ -47,6 +48,7 @@ async function globalSetup(_full: FullConfig) {
       console.log(`GlobalSetup: Stored storage state for ${id} at ${sessionPath}`);
     } catch (err) {
       console.warn(`GlobalSetup: failed to persist storageState for ${id}`, err);
+      throw err
     }
     await browser.close();
   }

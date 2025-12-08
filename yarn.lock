@@ -3696,12 +3696,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.2-exui-3807-3726-3739":
-  version: 7.3.2-exui-3807-3726-3739
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.2-exui-3807-3726-3739"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.3":
+  version: 7.3.3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.3"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7d874ec35c9def14cab50128d74890db129f5445f7fc075345ff3efb5b9c0bef2affc4700072027624d708aa6f1fe31202aefc837f1a155e6d1986654f359959
+  checksum: 10/b294fc8bc3407280918b9699815f231e2387c73d8001455a77e1730ea724734a4c076966510b0ade750cac466e5510d534da7860517666a2bee36e5831ecae05
   languageName: node
   linkType: hard
 
@@ -3724,9 +3724,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.0-exui-3807-3726-3739":
-  version: 4.2.0-exui-3807-3726-3739
-  resolution: "@hmcts/media-viewer@npm:4.2.0-exui-3807-3726-3739"
+"@hmcts/media-viewer@npm:4.2.1":
+  version: 4.2.1
+  resolution: "@hmcts/media-viewer@npm:4.2.1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3745,7 +3745,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/11083dfa495916386f8feeb66f2a5cce88bb733ff9ea07c0c2f2b52ddf13554e33e38f7b36f238b64a4119f31eac531a32b5b13af511d1a9a1619c94bdfc259e
+  checksum: 10/0d3dfbc8a31ff83b53c3bd882726ac0b6ba4eec95524153b330cd1d11e640d9cdbfe42742dbdd23b9034fa4e6e75dc0a72c8740ffc4fcac589555904fa1decfc
   languageName: node
   linkType: hard
 
@@ -23883,10 +23883,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.2-exui-3807-3726-3739"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.3"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.0-exui-3807-3726-3739"
+    "@hmcts/media-viewer": "npm:4.2.1"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"

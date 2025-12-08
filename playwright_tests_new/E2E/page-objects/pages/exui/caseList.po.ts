@@ -37,6 +37,10 @@ export class CaseListPage extends Base {
     await this.exuiHeader.selectHeaderMenuItem('Case list');
   }
 
+  async navigateTo(){
+    await this.page.goto(`/cases`);
+  }
+
   async getPaginationFinalItem(): Promise<string | undefined> {
     const items = (await this.pagination.locator('li').allTextContents()).map(i => i.trim());
     return items.length > 0 ? items[items.length - 1] : undefined;

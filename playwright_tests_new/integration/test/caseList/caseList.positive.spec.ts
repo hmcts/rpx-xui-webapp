@@ -1,6 +1,7 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
 import { buildCaseListMock } from '../../mocks/caseList.mock';
+import c from 'config';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
@@ -29,7 +30,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 
 		await test.step('Navigate to the search page', async () => {
 			console.log('Cookies before navigation:', await page.context().cookies());
-			await caseListPage.goto();
+			await caseListPage.navigateTo();
 		});
 
 		await test.step('Verify user can see a list shows the expected layout given the mock response', async () => {
@@ -44,7 +45,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 				expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
 			}
 			expect(await caseListPage.pagination.isVisible()).toBeTruthy();
-			expect(await caseListPage.getPaginationFinalItem()).toBe('Next'); 
+			expect(await caseListPage.getPaginationFinalItem()).toBe('Next');
 		});
 	});
 
@@ -52,16 +53,22 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 
 		await test.step('Intercept searchCases endpoint and fulfill with empty mock body', async () => {
 			await page.route('**/data/internal/searchCases*', async route => {
-				const body = JSON.stringify({ columns: [], results: [], total: 0 });
+				const body = JSON.stringify({
+					"columns": [],
+					"results": [],
+					"total": 0
+				});
 				await route.fulfill({ status: 200, contentType: 'application/json', body });
 			});
 		});
 
 		await test.step('Navigate to the search page', async () => {
-			await caseListPage.goto();
+			await caseListPage.navigateTo();
+			await expect(caseListPage.exuiHeader.header).toBeVisible();
 		});
 
 		await test.step('Verify user sees empty case list UI', async () => {
+			await expect(caseListPage.jurisdictionSelect).toBeVisible();
 			expect(await caseListPage.caseSearchResultsMessage.textContent()).toContain('No cases found. Try using different filters.');
 		});
 	});

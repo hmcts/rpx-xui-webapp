@@ -3825,9 +3825,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-idam-token-fix.1":
-  version: 2.30.7-idam-token-fix.1
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-idam-token-fix.1"
+"@hmcts/rpx-xui-node-lib@npm:2.30.7-idam-token-fix.2":
+  version: 2.30.7-idam-token-fix.2
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-idam-token-fix.2"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.11.0"
@@ -3849,7 +3849,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/14ab880d9047156cd5defea1675279ac25fc8bd0b9d2bdee7cab795bc51e45e09869e668e7fa7870cbb80422e54d93a232780bee4607a4d448253a5dd37c9208
+  checksum: 10/76bd87bc5dd617e5f83da2e717eadaa1730b80f873a1a8bc94d036da31d582d8a4731a7dc585bfe24732546cd57dbe6ab2b36114eae59d5db1e02f6dce910cd1
   languageName: node
   linkType: hard
 
@@ -23932,7 +23932,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.0"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-idam-token-fix.1"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-idam-token-fix.2"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

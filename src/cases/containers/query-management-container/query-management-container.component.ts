@@ -117,6 +117,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
   public caseData: CaseEventData;
+  
   private caseViewTrigger: CaseViewTrigger;
 
   private validateCaseSubscription: Subscription;
@@ -754,5 +755,9 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       this.caseDetails.case_type.id,
       data,
       this.RAISE_A_QUERY_EVENT_TRIGGER_ID) as any;
+  }
+
+  public createEventResponse(data: CaseQueriesCollection): void {
+    this.eventResponseData = data;
   }
 }

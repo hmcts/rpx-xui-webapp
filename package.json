@@ -55,7 +55,7 @@
     "test:setup:playwright-install": "npx playwright install --with-deps",
     "test:xuiIntegrationDebug": "DEBUG=true NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration npx codeceptjs run -p pauseOnFail --config ./test_codecept/codeceptCommon/codecept.conf.ts --features --grep '(?=.*@functional_debug)^(?!.*@ignore)' ",
     "test:xuiIntegration": "yarn patch:static && cross-env EXTERNAL_SERVERS=true WEB_BASE_URL=http://localhost:3000 start-server-and-test \"node test_codecept/backendMock/configCopy.js\" http://localhost:3000/external/configuration-ui/ \"cross-env NODE_CONFIG_ENV=mock TEST_TYPE=ngIntegration PARALLEL=true npx codeceptjs run-workers --suites 8 --config ./test_codecept/codeceptCommon/codecept.conf.ts --features\"",
-    "patch:static": "node ./test_codecept/scripts/patchBuild.js",
+    "patch:static": "node ./test_codecept/scripts/patchBuild.js"
   },
   "private": true,
   "dependencies": {

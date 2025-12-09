@@ -1,7 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../utils/session.utils';
 import { buildCaseListMock } from '../../mocks/caseList.mock';
-import c from 'config';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
@@ -29,7 +28,6 @@ test.describe(`Case List as ${userIdentifier}`, () => {
 		});
 
 		await test.step('Navigate to the search page', async () => {
-			console.log('Cookies before navigation:', await page.context().cookies());
 			await caseListPage.navigateTo();
 		});
 

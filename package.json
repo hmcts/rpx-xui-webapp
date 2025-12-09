@@ -32,6 +32,7 @@
     "start:node:stub": "NODE_CONFIG_ENV=stub && cd api && yarn watch",
     "test:node": "cd api && yarn coverage",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
+    "test": "cd api && yarn coverage",
     "test:api": "mocha -r ts-node/register --config ./test_codecept/integration/tests/mocha.json --reporter mochawesome --reporter-options reportDir=functional-output/tests/api_functional,reportFilename=mochawesome",
     "test:coverage": "yarn test:coverage:ng && yarn test:coverage:node",
     "test:coverage:node": "cd api && yarn coverage",

@@ -47,7 +47,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       firstDateTimeMustBe: null
     };
     const result$ = converter.transformAnswer(of(STATE));
-    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022`;
+    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Must list after: 12 December 2022<br>Must list before: 12 December 2022`;
     const expected = cold('(b|)', { b: hearingDateRange });
     expect(result$).toBeObservable(expected);
   });
@@ -73,7 +73,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       firstDateTimeMustBe: null
     };
     const result$ = converter.transformAnswer(of(STATE));
-    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022`;
+    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Must list after: 12 December 2022`;
     const expected = cold('(b|)', { b: hearingDateRange });
     expect(result$).toBeObservable(expected);
   });
@@ -86,7 +86,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
       firstDateTimeMustBe: null
     };
     const result$ = converter.transformAnswer(of(STATE));
-    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Latest end date: 12 December 2022`;
+    const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Must list before: 12 December 2022`;
     const expected = cold('(b|)', { b: hearingDateRange });
     expect(result$).toBeObservable(expected);
   });

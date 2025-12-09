@@ -36,8 +36,8 @@ class HearingTimingPage {
       'Does the hearing need to take place on a specific date?'        : $('#hearing-specific-dates'),
       'What is the priority of this hearing?'                          : $('#hearing-priority'),
       'The first date of the hearing must be'                          : $('#firstHearingDate-date'),
-      'Earliest start date'                                            : $('#earliestHearingDate-date'),
-      'Latest end date'                                                : $('#latestHearingDate-date')
+      'Must list after'                                                : $('#earliestHearingDate-date'),
+      'Must list before'                                               : $('#latestHearingDate-date')
     };
   }
 
@@ -88,13 +88,13 @@ class HearingTimingPage {
         await this.firstHearingDate_month.fill(firstDateMap[1].trim());
         await this.firstHearingDate_year.fill(firstDateMap[2].trim());
         break;
-      case 'Earliest start date':
+      case 'Must list before':
         const earliestDate = value.split(',');
         await this.earliestHearingDate_day.fill(earliestDate[0].trim());
         await this.earliestHearingDate_month.fill(earliestDate[1].trim());
         await this.earliestHearingDate_year.fill(earliestDate[2].trim());
         break;
-      case 'Latest end date':
+      case 'Must list after':
         const latestEndDate = value.split(',');
         await this.latestHearingDate_day.fill(latestEndDate[0].trim());
         await this.latestHearingDate_month.fill(latestEndDate[1].trim());
@@ -125,10 +125,10 @@ class HearingTimingPage {
       case 'What is the priority of this hearing?':
         retVal = await this.hearingPriorityAmendmentLabel.isVisible();
         break;
-      case 'Earliest start date':
+      case 'Must list after':
         retVal = await this.earliestHearingDateAmendedLabel.isVisible();
         break;
-      case 'Latest end date':
+      case 'Must list before':
         retVal = await this.latestHearingDateAmendedLabel.isVisible();
         break;
       default:

@@ -14,6 +14,7 @@ if (environment.production) {
 }
 
 /* ②  Fetch runtime config, then bootstrap with the nonce providers */
+console.log('EXUI-3740 - 01');
 fetch('/external/configuration-ui/')
   .then(async (res) => (await res.json()) || {})
   .then((config) =>

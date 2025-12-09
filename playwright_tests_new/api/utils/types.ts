@@ -1,5 +1,6 @@
-// Shared, permissive interfaces for API payloads used in Playwright tests.
+// Shared, permissive schemas and interfaces for API payloads used in Playwright tests.
 // Fields are optional to avoid brittleness across environments.
+import { z } from 'zod';
 
 export interface UserInfo {
   uid?: string;
@@ -92,6 +93,130 @@ export interface AddressLookupResponse {
   header?: unknown;
   [key: string]: unknown;
 }
+
+// Zod schemas (passthrough to allow extra fields)
+export const TaskSchema = z
+  .object({
+    id: z.string().nonempty().optional(),
+    task_state: z.string().optional(),
+    state: z.string().optional(),
+    assignee: z.string().nullable().optional(),
+    assigned_to: z.string().nullable().optional()
+  })
+  .passthrough();
+
+export const TaskListSchema = z
+  .object({
+    tasks: z.array(TaskSchema).optional(),
+    total_records: z.number().nonnegative().optional()
+  })
+  .passthrough();
+
+export const RoleAssignmentSchema = z
+  .object({
+    roleCategory: z.string().optional(),
+    roleName: z.string().optional(),
+    roleId: z.string().optional(),
+    actorId: z.string().optional(),
+    actions: z.array(z.unknown()).optional()
+  })
+  .passthrough();
+
+export const RoleAssignmentContainerSchema = z
+  .object({
+    roleAssignmentResponse: z.array(RoleAssignmentSchema).optional()
+  })
+  .passthrough();
+
+export const CaseShareOrganisationSchema = z
+  .object({
+    organisationIdentifier: z.string().optional(),
+    name: z.string().optional()
+  })
+  .passthrough();
+
+export const CaseShareUserSchema = z
+  .object({
+    userIdentifier: z.string().optional(),
+    email: z.string().optional()
+  })
+  .passthrough();
+
+export const CaseShareCaseSchema = z
+  .object({
+    caseId: z.string().optional(),
+    sharedWith: z.array(z.unknown()).optional()
+  })
+  .passthrough();
+
+export const CaseShareResponseSchema = z
+  .object({
+    organisations: z.array(CaseShareOrganisationSchema).optional(),
+    users: z.array(CaseShareUserSchema).optional(),
+    cases: z.array(CaseShareCaseSchema).optional(),
+    sharedCases: z.array(CaseShareCaseSchema).optional(),
+    payload: z.any().optional()
+  })
+  .passthrough();
+
+export const BookmarkPayloadSchema = z
+  .object({
+    id: z.string().optional(),
+    name: z.string().optional(),
+    documentId: z.string().optional(),
+    createdBy: z.string().optional(),
+    pageNumber: z.number().optional(),
+    xCoordinate: z.number().optional(),
+    yCoordinate: z.number().optional(),
+    parent: z.string().nullable().optional(),
+    previous: z.string().nullable().optional()
+  })
+  .passthrough();
+
+export const AnnotationRectangleSchema = z
+  .object({
+    id: z.string().optional(),
+    x: z.number().optional(),
+    y: z.number().optional(),
+    width: z.number().optional(),
+    height: z.number().optional()
+  })
+  .passthrough();
+
+export const AnnotationPayloadSchema = z
+  .object({
+    id: z.string().optional(),
+    color: z.string().optional(),
+    comments: z.array(z.unknown()).optional(),
+    page: z.number().optional(),
+    rectangles: z.array(AnnotationRectangleSchema).optional(),
+    type: z.string().optional(),
+    documentId: z.string().optional(),
+    annotationSetId: z.string().optional()
+  })
+  .passthrough();
+
+export const AddressLookupResponseSchema = z
+  .object({
+    results: z
+      .array(
+        z
+          .object({
+            DPA: z
+              .object({
+                POSTCODE: z.string().optional(),
+                ADDRESS: z.string().optional(),
+                POST_TOWN: z.string().optional()
+              })
+              .passthrough()
+              .optional()
+          })
+          .passthrough()
+      )
+      .optional(),
+    header: z.unknown().optional()
+  })
+  .passthrough();
 
 export interface AnnotationRectangle {
   id?: string;

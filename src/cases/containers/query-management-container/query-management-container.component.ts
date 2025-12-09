@@ -118,7 +118,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
   public caseData: CaseEventData;
   public eventResponseData: CaseQueriesCollection;
-  
+
   private caseViewTrigger: CaseViewTrigger;
 
   private validateCaseSubscription: Subscription;

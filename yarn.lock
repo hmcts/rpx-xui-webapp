@@ -18886,7 +18886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-coverage@npm:~2.2.0":
+"karma-coverage@npm:^2.2.1":
   version: 2.2.1
   resolution: "karma-coverage@npm:2.2.1"
   dependencies:
@@ -24017,7 +24017,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     karma: "npm:~6.4.2"
     karma-chrome-launcher: "npm:3.2.0"
-    karma-coverage: "npm:~2.2.0"
+    karma-coverage: "npm:^2.2.1"
     karma-coverage-istanbul-reporter: "npm:~3.0.0"
     karma-jasmine: "npm:5.1.0"
     karma-jasmine-html-reporter: "npm:^2.0.0"

@@ -6,15 +6,29 @@
 .party-row {
   margin-bottom: 20px;
 
-  // Amendment label styling for party names
-  .govuk-label {
-    display: inline-block;
-    margin-right: 10px;
+  // Override for party-label-block to ensure it's on its own line
+  .party-label-block {
+    display: block !important;
+    margin-bottom: 0.5rem;
+
+    // Amendment label inside the label should be inline with consistent spacing
+    exui-amendment-label {
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
   }
 
-  exui-amendment-label {
+  // Select dropdown should be inline
+  .govuk-select {
     display: inline-block;
-    margin-left: 5px;
+    margin-right: 0;
+  }
+
+  // Amendment label that appears after the select dropdown
+  .govuk-select ~ exui-amendment-label {
+    display: inline-block;
+    margin-left: 10px;
     vertical-align: middle;
   }
 }
@@ -53,4 +67,3 @@ strong {
     margin-left: 10px;
   }
 }
-

@@ -79,7 +79,7 @@
                 <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span> {{ 'Select how each party will attend the hearing' | rpxTranslate }}
               </span>
             <div *ngFor="let partyControl of partiesFormArray.controls; let i=index" class="party-row" [formGroupName]="i">
-              <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel'+i">
+              <label class="govuk-label govuk-!-font-weight-bold party-label-block" [for]="'partyChannel'+i">
                   {{ partyControl.value.partyName }}
                 <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && (partyNameAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'"
                   [displayLabel]="partyNameAmendmentStatusById[partyControl.value.partyID]">

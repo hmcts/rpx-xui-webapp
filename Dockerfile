@@ -21,7 +21,7 @@ COPY --chown=hmcts:hmcts . .
 RUN yarn build
 
 FROM deps AS prod-deps
-RUN NODE_ENV=production yarn workspaces focus --all --production --persist-lockfile false \
+RUN NODE_ENV=production yarn workspaces focus --all --production \
   && yarn cache clean \
   && rm -rf .yarn/install-state.gz .yarn/unplugged
 

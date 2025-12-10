@@ -86,6 +86,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
  */
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     trackTrace('submitting hearing request');
@@ -101,6 +102,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function cancelHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
 
   try {
@@ -117,6 +119,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
@@ -132,6 +135,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function getHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
   const hearingId = req.params.hearingId;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
     const { status, data }: { status: number, data: HearingActualsMainModel } =
@@ -147,6 +151,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
  */
 export async function updateHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
@@ -162,6 +167,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
  */
 export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.params.hearingId;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
     const { status }: { status: number } = await handlePost(markupPath, null, req);
@@ -176,6 +182,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
  */
 export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
   const groupId: string = req.query.groupId as string;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
     const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
@@ -190,6 +197,7 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
  */
 export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req);
@@ -205,6 +213,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
 export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
   const groupId: string = req.query.groupId as string;
   const reqBody = req.body;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
@@ -220,6 +229,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
 export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingGroupId: string = req.query.hearingGroupId as string;
   const reqBody = req.body;
+  req.body.caseDetails.caseRef = '';  // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   try {
     const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);

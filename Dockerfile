@@ -2,7 +2,12 @@ FROM hmctspublic.azurecr.io/base/node:20-alpine AS base
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 USER root
-ENV YARN_CACHE_FOLDER=/tmp/.yarn-cache
+ENV YARN_CACHE_FOLDER=/tmp/.yarn-cache \
+  PUPPETEER_SKIP_DOWNLOAD=1 \
+  CHROMEDRIVER_SKIP_DOWNLOAD=1 \
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+  PLAYWRIGHT_BROWSERS_PATH=0 \
+  SCARF_ANALYTICS=false
 RUN corepack enable \
   && mkdir -p /opt/app/.yarn/cache "$YARN_CACHE_FOLDER" \
   && chown -R hmcts:hmcts /opt/app "$YARN_CACHE_FOLDER"

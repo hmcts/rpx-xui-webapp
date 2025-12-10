@@ -8,6 +8,7 @@
     "node": ">=20.19.0"
   },
   "scripts": {
+    "APItest": "npx playwright test --config=playwright_API/playwright.config.ts",
     "build": "yarn build:prod && yarn build:node",
     "build:dev": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration=development && yarn build:node:dev",
     "build:docker": "docker build -t xui .",

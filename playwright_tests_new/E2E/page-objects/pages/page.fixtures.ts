@@ -9,6 +9,9 @@ import { CaseDetailsPage } from "./exui/caseDetails.po.js";
 import { CaseListPage } from "./exui/caseList.po.js";
 import { CreateCasePage } from "./exui/createCase.po.ts";
 import { Page } from "@playwright/test";
+import { CaseHistoryPage} from './exui/caseHistoryPage.po.ts';
+import { UpdateCasePage } from './exui/updateCasePage.po.ts';
+
 
 export interface PageFixtures {
   determinePage: Page;
@@ -16,6 +19,8 @@ export interface PageFixtures {
   caseListPage: CaseListPage;
   createCasePage: CreateCasePage;
   mediaViewerPage: ExuiMediaViewerPage;
+  //kasi
+  updateCaseOAge: UpdateCasePage;
   idamPage: IdamPage;
   apiClient: ApiClient;
   logger: ReturnType<typeof createLogger>;

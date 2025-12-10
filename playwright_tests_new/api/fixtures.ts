@@ -9,7 +9,7 @@ import {
 } from '@hmcts/playwright-common';
 import { test as base, expect, request } from '@playwright/test';
 
-import { config } from '../../test_codecept/integration/tests/config/config';
+import { config } from '../common/apiTestConfig';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);

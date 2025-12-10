@@ -4,8 +4,7 @@ import path from 'node:path';
 import { IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-common';
 import { request } from '@playwright/test';
 
-import { config } from '../../test_codecept/integration/tests/config/config';
-
+import { config } from '../common/apiTestConfig';
 type UsersConfig = typeof config.users[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 

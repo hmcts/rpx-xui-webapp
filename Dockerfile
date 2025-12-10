@@ -36,4 +36,4 @@ COPY --from=prod-deps --chown=hmcts:hmcts /opt/app/node_modules ./node_modules
 COPY --from=build --chown=hmcts:hmcts /opt/app/dist ./dist
 COPY --chown=hmcts:hmcts config ./config
 EXPOSE 3000
-CMD [ "node", "dist/rpx-exui/api/server.bundle.js" ]
+CMD [ "yarn", "start" ]

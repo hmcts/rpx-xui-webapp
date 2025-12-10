@@ -20,11 +20,8 @@ FROM deps AS build
 COPY --chown=hmcts:hmcts . .
 RUN yarn build
 
-FROM base AS prod-deps
-COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
-COPY --chown=hmcts:hmcts .yarn/releases ./.yarn/releases
-COPY --chown=hmcts:hmcts .yarn/patches ./.yarn/patches
-RUN NODE_ENV=production yarn workspaces focus --all --production \
+FROM deps AS prod-deps
+RUN NODE_ENV=production yarn workspaces focus --all --production --persist-lockfile false \
   && yarn cache clean \
   && rm -rf .yarn/install-state.gz .yarn/unplugged
 

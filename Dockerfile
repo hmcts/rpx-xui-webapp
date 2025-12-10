@@ -24,7 +24,7 @@ FROM base AS prod-deps
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 COPY --chown=hmcts:hmcts .yarn/releases ./.yarn/releases
 COPY --chown=hmcts:hmcts .yarn/patches ./.yarn/patches
-RUN NODE_ENV=production yarn install --mode=skip-build \
+RUN NODE_ENV=production yarn workspaces focus --all --production \
   && yarn cache clean \
   && rm -rf .yarn/install-state.gz .yarn/unplugged
 

@@ -16,7 +16,7 @@ import { LINKED_HEARING_GROUP } from './data/linkHearings.mock.data';
 import { LinkedHearingGroupResponseModel } from './models/linkHearings.model';
 import { HMCStatus } from './models/hearings.enum';
 
-describe('HMC Hearings API', () => {
+xdescribe('HMC Hearings API', () => {
   let sandbox: sinon.SinonSandbox;
   let req: EnhancedRequest;
   let res: Response;

@@ -3854,6 +3854,62 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/ccd-case-ui-toolkit@git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc4":
+  version: 7.3.3-exui-3824-rc4
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit.git#commit=841124fea9a5195cbf4a56dd8e3fbd777d27d9db"
+  dependencies:
+    "@angular-material-components/datetime-picker": "npm:16.0.1"
+    "@angular-material-components/moment-adapter": "npm:16.0.1"
+    "@angular/animations": "npm:~20.3.2"
+    "@angular/cdk": "npm:17.3.5"
+    "@angular/common": "npm:^20.3.2"
+    "@angular/compiler": "npm:20.3.2"
+    "@angular/core": "npm:20.3.2"
+    "@angular/forms": "npm:20.3.2"
+    "@angular/localize": "npm:20.3.2"
+    "@angular/material": "npm:^16.2.0"
+    "@angular/platform-browser": "npm:20.3.2"
+    "@angular/platform-browser-dynamic": "npm:20.3.2"
+    "@angular/router": "npm:20.3.2"
+    "@angular/upgrade": "npm:20.3.2"
+    "@edium/fsm": "npm:^2.1.2"
+    "@hmcts/ccpay-web-component": "npm:6.5.14"
+    "@hmcts/frontend": "npm:0.0.50-alpha"
+    "@hmcts/media-viewer": "npm:4.2.1"
+    "@ngrx/effects": "npm:17.2.0"
+    "@ngrx/store": "npm:^17.2.0"
+    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
+    braces: "npm:^2.3.1"
+    enhanced-resolve: "npm:3.3.0"
+    file-saver: "npm:^2.0.2"
+    govuk-elements-sass: "npm:^3.1.2"
+    govuk-frontend: "npm:^4.9.0"
+    json-server: "npm:^0.15.1"
+    lz-string: "npm:^1.5.0"
+    marked: "npm:^12.0.1"
+    mem: "npm:^6.0.0"
+    minimist: "npm:1.2.3"
+    moment: "npm:^2.30.1"
+    moment-timezone: "npm:^0.5.31"
+    ngx-chips: "npm:^3.0.0"
+    ngx-markdown: "npm:^20"
+    ngx-pagination: "npm:6.0.3"
+    npm-registry-fetch: "npm:^4.0.5"
+    pegjs: "npm:^0.10.0"
+    prism: "npm:^4.1.2"
+    prismjs: "npm:^1.29.0"
+    rpx-xui-translation: "npm:1.2.0"
+    rx-polling-hmcts: "npm:1.1.1"
+    rxjs: "npm:^7.8.1"
+    rxjs-compat: "npm:^6.6.7"
+    underscore: "npm:^1.9.1"
+    yargs: "npm:17.7.2"
+    yargs-parser: "npm:^21.1.1"
+    zone.js: "npm:^0.15.1"
+  checksum: 10/d734df4a4d65f9dd62a0c86db2c0671a24e2c713053773f934f4a49ec9728bed3ae16692f0433beb1497068e1f94108759193c049e6934e6c682b0f01c6ea122
+  languageName: node
+  linkType: hard
+
 "@hmcts/ccpay-web-component@npm:6.5.14":
   version: 6.5.14
   resolution: "@hmcts/ccpay-web-component@npm:6.5.14"
@@ -11831,62 +11887,6 @@ __metadata:
   version: 0.12.0
   resolution: "caseless@npm:0.12.0"
   checksum: 10/ea1efdf430975fdbac3505cdd21007f7ac5aa29b6d4d1c091f965853cd1bf87e4b08ea07b31a6d688b038872b7cdf0589d9262d59c699d199585daad052aeb20
-  languageName: node
-  linkType: hard
-
-"ccd-case-ui-toolkit@git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc4":
-  version: 7.3.3-exui-3824-rc4
-  resolution: "ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit.git#commit=841124fea9a5195cbf4a56dd8e3fbd777d27d9db"
-  dependencies:
-    "@angular-material-components/datetime-picker": "npm:16.0.1"
-    "@angular-material-components/moment-adapter": "npm:16.0.1"
-    "@angular/animations": "npm:~20.3.2"
-    "@angular/cdk": "npm:17.3.5"
-    "@angular/common": "npm:^20.3.2"
-    "@angular/compiler": "npm:20.3.2"
-    "@angular/core": "npm:20.3.2"
-    "@angular/forms": "npm:20.3.2"
-    "@angular/localize": "npm:20.3.2"
-    "@angular/material": "npm:^16.2.0"
-    "@angular/platform-browser": "npm:20.3.2"
-    "@angular/platform-browser-dynamic": "npm:20.3.2"
-    "@angular/router": "npm:20.3.2"
-    "@angular/upgrade": "npm:20.3.2"
-    "@edium/fsm": "npm:^2.1.2"
-    "@hmcts/ccpay-web-component": "npm:6.5.14"
-    "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.1"
-    "@ngrx/effects": "npm:17.2.0"
-    "@ngrx/store": "npm:^17.2.0"
-    "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
-    braces: "npm:^2.3.1"
-    enhanced-resolve: "npm:3.3.0"
-    file-saver: "npm:^2.0.2"
-    govuk-elements-sass: "npm:^3.1.2"
-    govuk-frontend: "npm:^4.9.0"
-    json-server: "npm:^0.15.1"
-    lz-string: "npm:^1.5.0"
-    marked: "npm:^12.0.1"
-    mem: "npm:^6.0.0"
-    minimist: "npm:1.2.3"
-    moment: "npm:^2.30.1"
-    moment-timezone: "npm:^0.5.31"
-    ngx-chips: "npm:^3.0.0"
-    ngx-markdown: "npm:^20"
-    ngx-pagination: "npm:6.0.3"
-    npm-registry-fetch: "npm:^4.0.5"
-    pegjs: "npm:^0.10.0"
-    prism: "npm:^4.1.2"
-    prismjs: "npm:^1.29.0"
-    rpx-xui-translation: "npm:1.2.0"
-    rx-polling-hmcts: "npm:1.1.1"
-    rxjs: "npm:^7.8.1"
-    rxjs-compat: "npm:^6.6.7"
-    underscore: "npm:^1.9.1"
-    yargs: "npm:17.7.2"
-    yargs-parser: "npm:^21.1.1"
-    zone.js: "npm:^0.15.1"
-  checksum: 10/1fc4cc29bfe9d513b0bc517929c0006138aa0de9346c83427d588e6685c36a86e744e7e166ff63dbe6cfe6bfc611d529be1c80738bb93df29d69c1fdcca14b60
   languageName: node
   linkType: hard
 
@@ -25500,6 +25500,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
+    "@hmcts/ccd-case-ui-toolkit": "git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc4"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.1"
@@ -25551,7 +25552,6 @@ __metadata:
     axios-mock-adapter: "npm:^1.22.0"
     base-64: "npm:^1.0.0"
     c8: "npm:^9.1.0"
-    ccd-case-ui-toolkit: "git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc4"
     chai: "npm:^4.3.10"
     chai-as-promised: "npm:7.1.2"
     class-transformer: "npm:^0.5.0"

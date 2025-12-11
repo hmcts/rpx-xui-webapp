@@ -175,7 +175,7 @@ export const ROUTES: Routes = [
     path: 'get-help',
     component: GetHelpComponent,
     data: {
-      title: 'Get Help exui-3740'
+      title: 'Get Help'
     }
   },
   {

@@ -97,7 +97,8 @@
       [queryCreateContext]="queryCreateContext"
       (backClicked)="showResponseForm()"
       (querySubmitted)="showConfirmationPage()"
-      (callbackConfirmationMessage)="callbackConfirmationMessage($event)">
+      (callbackConfirmationMessage)="callbackConfirmationMessage($event)"
+      (createEventResponse)="createEventResponse($event)">
     </ccd-query-check-your-answers>
 
     <!-- Query submission confirmation page -->
@@ -105,7 +106,8 @@
       *ngIf="showConfirmation"
       [callbackConfirmationMessageText]="callbackConfirmationMessageText"
       [callbackConfirmationHeaderText]="callbackConfirmationHeaderText"
-      [queryCreateContext]="queryCreateContext">
+      [queryCreateContext]="queryCreateContext"
+      [eventResponseData]="eventResponseData">
     </ccd-query-confirmation>
 
     <!-- Do not show the cancel link on query submission confirmation page -->

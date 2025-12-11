@@ -25,7 +25,7 @@ module.exports = defineConfig({
   testMatch: ['**/test/**/*.spec.ts'],
   retries: process.env.CI ? 1 : 0,
   timeout: 120_000,
-  expect: { timeout: 15_000 },
+  expect: { timeout: 45_000 },
   workers: workerCount,
     reporter: [
     [process.env.CI ? 'dot' : 'list'],

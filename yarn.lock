@@ -3854,9 +3854,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc4":
-  version: 7.3.3-exui-3824-rc4
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit.git#commit=841124fea9a5195cbf4a56dd8e3fbd777d27d9db"
+"@hmcts/ccd-case-ui-toolkit@git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc5":
+  version: 7.3.3-exui-3824-rc5
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit.git#commit=d5dbc91f80bc80132aa4ccf6dbc3f727039618eb"
   dependencies:
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:16.0.1"
@@ -3906,7 +3906,7 @@ __metadata:
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
     zone.js: "npm:^0.15.1"
-  checksum: 10/d734df4a4d65f9dd62a0c86db2c0671a24e2c713053773f934f4a49ec9728bed3ae16692f0433beb1497068e1f94108759193c049e6934e6c682b0f01c6ea122
+  checksum: 10/67085b486937b262e29c155f29cc13bc11e128164ff0573947d927b708db106dd7abf19b6841c7c2f192379db05e0921db99f1abd68b699b98e93d25faf7c93e
   languageName: node
   linkType: hard
 
@@ -25500,7 +25500,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc4"
+    "@hmcts/ccd-case-ui-toolkit": "git+https://github.com/hmcts/ccd-case-ui-toolkit.git#v7.3.3-exui-3824-rc5"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.1"

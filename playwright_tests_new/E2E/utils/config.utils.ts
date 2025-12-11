@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import * as path from 'node:path';
 import {UserUtils} from "./user.utils.js";

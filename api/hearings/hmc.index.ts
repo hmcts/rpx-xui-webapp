@@ -86,7 +86,6 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
  */
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
-  req.body.caseDetails.caseRef = ''; // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     trackTrace('submitting hearing request');

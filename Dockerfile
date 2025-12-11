@@ -1,23 +1,39 @@
-FROM hmctspublic.azurecr.io/base/node:20-alpine as base
-LABEL maintainer = "HMCTS Expert UI <https://github.com/hmcts>"
+FROM hmctspublic.azurecr.io/base/node:20-alpine AS base
+LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 USER root
-RUN corepack enable
+ENV YARN_CACHE_FOLDER=/tmp/.yarn-cache \
+  PUPPETEER_SKIP_DOWNLOAD=1 \
+  CHROMEDRIVER_SKIP_DOWNLOAD=1 \
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+  PLAYWRIGHT_BROWSERS_PATH=0 \
+  SCARF_ANALYTICS=false
+RUN corepack enable \
+  && mkdir -p /opt/app/.yarn/cache "$YARN_CACHE_FOLDER" \
+  && chown -R hmcts:hmcts /opt/app "$YARN_CACHE_FOLDER"
 USER hmcts
 
-COPY --chown=hmcts:hmcts .yarn ./.yarn
+WORKDIR /opt/app
+
+FROM base AS deps
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml tsconfig.json ./
+COPY --chown=hmcts:hmcts .yarn/releases ./.yarn/releases
+COPY --chown=hmcts:hmcts .yarn/patches ./.yarn/patches
+RUN yarn install --mode=skip-build
 
-RUN yarn
-
-FROM base as build
-
+FROM deps AS build
 COPY --chown=hmcts:hmcts . .
+RUN yarn build
 
-RUN yarn build && rm -r node_modules/ && yarn cache clean
+FROM deps AS prod-deps
+RUN NODE_ENV=production yarn workspaces focus --all --production \
+  && yarn cache clean \
+  && rm -rf .yarn/install-state.gz .yarn/unplugged
 
-FROM base as runtime
-COPY --from=build $WORKDIR ./
-USER hmcts
+FROM base AS runtime
+ENV NODE_ENV=production
+COPY --from=prod-deps --chown=hmcts:hmcts /opt/app/node_modules ./node_modules
+COPY --from=build --chown=hmcts:hmcts /opt/app/dist ./dist
+COPY --chown=hmcts:hmcts config ./config
 EXPOSE 3000
 CMD [ "yarn", "start" ]

@@ -81,7 +81,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
      }
-    afterAlways('fortify-scan') {
+    afterSuccess('fortify-scan') {
   
       stage('API Test') {
             try {
@@ -194,4 +194,3 @@ withNightlyPipeline(type, product, component) {
     ])
   }
 }
-

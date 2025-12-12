@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
     pipelineTriggers([
-    cron('30 17 * * *')
+    cron('30 13 * * *')
     ])
 ])
 
@@ -50,6 +50,7 @@ withNightlyPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
     
+    
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')
     }
@@ -57,6 +58,8 @@ withNightlyPipeline(type, product, component) {
     afterAlways('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
+
+  afterSuccess('build') {
 
   afterSuccess('build') {
         yarnBuilder.yarn('build')
@@ -97,7 +100,6 @@ withNightlyPipeline(type, product, component) {
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
             }
         }
-      }
       
       stage('Playwright Install All Browsers') {
             try {
@@ -192,3 +194,4 @@ withNightlyPipeline(type, product, component) {
     ])
   }
 }
+

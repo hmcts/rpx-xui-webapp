@@ -15,20 +15,22 @@ test.describe("Verify creating case flags works as expected", () => {
         let caseNumber: string;
         let textField0 = faker.lorem.word();
 
-        test.step("Create a case", async () => {
+        await test.step("Create a case", async () => {
             await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
             caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
         });
 
         await test.step("Create a new case flag", async () => {
             await caseDetailsPage.selectCaseAction('Create case flag')
-            await page.waitForTimeout(45000)
+            await caseDetailsPage.exuiSpinnerComponent.wait();
             await caseDetailsPage.submitCaseFlagButton.click();
+            await caseDetailsPage.exuiSpinnerComponent.wait();
         });
-
++
         await test.step("Find the created case flag in the case history", async () => {
-            await caseDetailsPage.selectCaseAction('View case flags')
-            await page.waitForTimeout(20000); // Waiting for case flags to load
+
+            expect(await caseDetailsPage.caseAlertMessage.isVisible()).toBeTruthy();
+            expect(await caseDetailsPage.caseAlertMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: Create case flag`);
         });
     });
 });

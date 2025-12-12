@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
@@ -12,6 +11,8 @@ import * as util from './util';
 import { PersonRole } from './interfaces/person';
 import { postFindPersonSearch } from './personService';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Person Service', () => {

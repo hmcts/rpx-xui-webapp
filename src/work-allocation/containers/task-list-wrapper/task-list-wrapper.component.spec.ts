@@ -20,7 +20,10 @@ import { CaseworkerDataService, WASupportedJurisdictionsService, WorkAllocationT
 import { getMockTasks, MockRouter } from '../../tests/utils.spec';
 import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslationMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

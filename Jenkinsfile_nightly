@@ -50,7 +50,6 @@ withNightlyPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
     
-    
       afterSuccess('checkout') {
         yarnBuilder.yarn('cache clean')
     }
@@ -58,8 +57,6 @@ withNightlyPipeline(type, product, component) {
     afterAlways('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
-
-  afterSuccess('build') {
 
   afterSuccess('build') {
         yarnBuilder.yarn('build')
@@ -83,23 +80,21 @@ withNightlyPipeline(type, product, component) {
      }
     afterSuccess('fortify-scan') {
   
-      stage('API Test') {
-            try {
-              yarnBuilder.yarn('test:api')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'API Functional Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
-            }
+      stage('API Tests') {
+        try {
+          yarnBuilder.yarn('test:api:pw:coverage')
+        } finally {
+          publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'API Functional Test'
+          ])
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
         }
+      }
       
       stage('Playwright Install All Browsers') {
             try {

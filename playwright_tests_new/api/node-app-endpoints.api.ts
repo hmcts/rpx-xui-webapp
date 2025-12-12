@@ -2,18 +2,18 @@ import { promises as fs } from 'node:fs';
 
 import { request } from '@playwright/test';
 
-import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
+import { config as testConfig } from '../common/apiTestConfig';
 import { ensureStorageState } from './auth';
 import { test, expect, buildApiAttachment } from './fixtures';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
 
-const nodeAppDataModels = require('../../test_codecept/dataModels/nodeApp');
+import nodeAppDataModels from '../../test_codecept/dataModels/nodeApp';
 
 test.describe('Node app endpoints', () => {
   test('serves external configuration without authentication', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
     expectStatus(response.status, [200]);
-    const expectedKeys = testConfig.configuratioUi[testConfig.testEnv];
+    const expectedKeys = testConfig.configurationUi[testConfig.testEnv];
     const data = response.data as Record<string, unknown>;
     expect(Object.keys(data)).toEqual(expect.arrayContaining(expectedKeys));
     expect(data['clientId']).toBe('xuiwebapp');

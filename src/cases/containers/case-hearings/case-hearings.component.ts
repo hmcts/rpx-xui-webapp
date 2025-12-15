@@ -68,6 +68,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
       if (caseDetails) {
         this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
+        this.jurisdictionId = this.jurisdiction;
         this.caseType = caseDetails?.case_type?.id;
       }
     });

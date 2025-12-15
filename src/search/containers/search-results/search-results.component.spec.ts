@@ -17,7 +17,10 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 import createSpyObj = jasmine.createSpyObj;
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

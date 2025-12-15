@@ -39,6 +39,8 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
     'https://*.analytics.google.com',
     'https://*.monitor.azure.com',
     'https://*.in.applicationinsights.azure.com',
+    'ws:',
+    'wss:',
     'wss://*.webpubsub.azure.com',
     //below is put in in case the WEBPUBSUB_URL double dot causes issues
     'wss://em-icp-webpubsub.platform.hmcts.net',

@@ -10,6 +10,7 @@ import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import {
+  LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel
 } from './models/linkHearings.model';
 
@@ -175,8 +176,8 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const groupId: string = req.query.groupId as string;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
-    const result = await handleGet(markupPath, req, next);
-    res.status(result.status).send(result.data);
+    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
+    res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, 'getLinkedHearingGroup', req, markupPath, next);
   }

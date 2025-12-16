@@ -10,7 +10,10 @@ import { StaffRefDataAPI } from './models/staff-ref-data.model';
 export class RealStaffRefDataAPI implements StaffRefDataAPI {
   public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
-  async getFilteredUsers(req: any, res: Response, next: NextFunction) {
+  async getFilteredUsers(req, res: Response, next: NextFunction) {
+    const statusFilter = req.query.status;
+    delete req.query.status;
+
     const queryStrings = querystring.stringify(req.query);
     const pageSize = req.headers['page-size'] || 20;
     const pageNumber = req.headers['page-number'] || 1;
@@ -24,8 +27,10 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
           'page-size': pageSize
         });
 
+      const filteredData = data.filter((staffMember) => statusFilter === 'SUSPENDED' ? staffMember.suspended : !staffMember.suspended);
+
       res.status(status).send({
-        items: data,
+        items: statusFilter ? filteredData : data,
         pageSize: parseInt(pageSize, 10),
         pageNumber: parseInt(pageNumber, 10),
         totalItems: parseInt(headers['total-records'], 10)

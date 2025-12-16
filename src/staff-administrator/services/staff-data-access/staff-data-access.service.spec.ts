@@ -26,7 +26,8 @@ describe('StaffDataAccessService', () => {
         userType: '',
         jobTitle: '',
         skill: ['Skill 1'],
-        role: ['Role 1']
+        role: ['Role 1'],
+        status: []
       },
       pageSize: StaffDataFilterService.PAGE_SIZE,
       pageNumber: 1

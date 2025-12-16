@@ -331,7 +331,7 @@ resource "azurerm_logic_app_trigger_recurrence" "welsh_monthly_trigger" {
   frequency = "Month"
   interval  = 1
   # Run on the 1st of every month at 09:00 UTC
-  start_time = formatdate("YYYY-MM-01'T'09:00:00Z", timestamp())
+  start_time = formatdate("YYYY-MM-017'T'09:00:00Z", timestamp())
   schedule {
     at_these_hours   = [9]
     at_these_minutes = [0]

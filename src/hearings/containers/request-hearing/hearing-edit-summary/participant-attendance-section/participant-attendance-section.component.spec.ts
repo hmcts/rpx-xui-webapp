@@ -94,7 +94,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
     expect(component.participantChannels.length).toEqual(1);
     expect(component.participantChannels[0].hearingChannel).toContain('By phone');
     expect(component.participantAttendanceModes).toEqual(
-      [{ partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true }]
+      [{ partyName: 'Jane Rogers', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true }]
     );
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });

@@ -36,6 +36,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public numberOfPhysicalAttendeesChanged: boolean;
   public methodOfAttendanceChanged: boolean;
   public participantChannelsChanged: boolean;
+  public participantNameChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly hearingsService: HearingsService) {}
@@ -110,14 +111,14 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private getPartyName(individualParty: PartyDetailsModel, foundPartyFromService: PartyDetailsModel): string {
+    if (individualParty.individualDetails) {
+      return HearingsUtils.getPartyNameFormatted(individualParty.individualDetails);
+    }
     if (foundPartyFromService) {
       const partyNameFormatted = HearingsUtils.getPartyNameFormatted(foundPartyFromService.individualDetails);
       return partyNameFormatted.length > 0
         ? partyNameFormatted
         : foundPartyFromService.partyID;
-    }
-    if (individualParty.individualDetails) {
-      return HearingsUtils.getPartyNameFormatted(individualParty.individualDetails);
     }
     return '';
   }
@@ -133,11 +134,15 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private getPartyNameChanged(partyId: string): boolean {
+    if (this.isPaperHearing === 'Yes') {
+      return false;
+    }
     const partyInSHV = this.serviceHearingValuesModel.parties.find((party) => party.partyID === partyId);
+    const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyId);
     if (partyInSHV) {
       const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyId);
       if (partyInHMCToCompare) {
-        return HearingsUtils.hasPartyNameChanged(partyInHMCToCompare, partyInSHV);
+        return HearingsUtils.hasPartyNameChanged(partyInHMCToCompare, partyInHMC);
       }
       // Return true as it is a new party available only in SHV
       return true;
@@ -151,6 +156,9 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private getPartyChannelChanged(partyDetails: PartyDetailsModel): boolean {
+    if (this.isPaperHearing === 'Yes') {
+      return false;
+    }
     const partyInHMC = this.hearingRequestMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
     const partyInHMCToCompare = this.hearingRequestToCompareMainModel.partyDetails.find((party) => party.partyID === partyDetails.partyID);
     return !_.isEqual(
@@ -182,10 +190,13 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
     this.participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);
 
+    this.participantNameChanged = this.participantAttendanceModes.some((mode) => mode.partyNameChanged === true);
+
     const changesMadeToParticipantAttendance = this.isPaperHearingChanged ||
       this.numberOfPhysicalAttendeesChanged ||
       this.methodOfAttendanceChanged ||
-      this.participantChannelsChanged;
+      this.participantChannelsChanged ||
+      this.participantNameChanged;
 
     if (this.partyDetailsChangesRequired) {
       if (!this.partyDetailsChangesConfirmed) {

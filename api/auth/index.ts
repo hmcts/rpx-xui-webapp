@@ -48,8 +48,6 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 
   logger.info('Setting session and cookies');
 
-  console.log('setting the cookie with options:', cookieOptions)
-
   res.cookie(cookieUserId, userinfo.uid, cookieOptions);
   res.cookie(cookieToken, accessToken, cookieOptions);
 

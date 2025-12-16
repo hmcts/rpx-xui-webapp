@@ -1,5 +1,5 @@
 import { AUTH, AuthOptions, SessionMetadata, xuiNode } from '@hmcts/rpx-xui-node-lib';
-import { NextFunction, Response } from 'express';
+import { CookieOptions, NextFunction, Response } from 'express';
 import { getConfigValue, showFeature } from '../configuration';
 import {
   COOKIES_TOKEN,
@@ -41,11 +41,17 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const { accessToken } = user.tokenset;
   const cookieToken = getConfigValue(COOKIES_TOKEN);
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
+  const cookieOptions: CookieOptions = {
+    sameSite: 'strict',
+    secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED) ? true : false
+  }
 
   logger.info('Setting session and cookies');
 
-  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
-  res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
+  console.log('setting the cookie with options:', cookieOptions)
+
+  res.cookie(cookieUserId, userinfo.uid, cookieOptions);
+  res.cookie(cookieToken, accessToken, cookieOptions);
 
   if (!req.isRefresh) {
     return res.redirect('/');

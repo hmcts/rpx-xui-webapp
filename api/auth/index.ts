@@ -44,7 +44,7 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const cookieOptions: CookieOptions = {
     sameSite: 'strict',
     secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED) ? true : false
-  }
+  };
 
   logger.info('Setting session and cookies');
 

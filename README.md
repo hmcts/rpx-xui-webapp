@@ -24,10 +24,21 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
+## API docs (Swagger UI)
+
+- Swagger UI is available on lower environments when the `feature.docsEnabled` flag is true and `environment` is not `production`.
+- Locally: ensure `config/local-development.json` is in place (includes `docsEnabled: true`), start the Node service (`yarn start:node`), then browse to `http://localhost:3000/api/docs`.
+- The raw OpenAPI document is served at `http://localhost:3000/api/docs/openapi.json`.
+
 ## Running unit tests 
 
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.
+
+Node API test commands (complementary):
+- `yarn coverage:node` – full Mocha + c8 coverage run for the Node layer (uses `api` scripts and generates coverage reports). Use when you need coverage numbers.
+- `yarn test:node:local` – quick Mocha run for Node with dev config (`NODE_CONFIG_DIR=../config`, `NODE_CONFIG_ENV=development`, `ALLOW_CONFIG_MUTATIONS=1`) and stubs for external calls; good for local iteration.
+- `yarn test:api:pw:coverage` – Playwright API functional tests with `c8` coverage over live API flows; complements the unit coverage above by exercising end-to-end routes.
 
 ## Linting 
 

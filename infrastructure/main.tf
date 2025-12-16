@@ -1,9 +1,12 @@
 locals {
-  app_full_name     = "xui-${var.component}"
-  ase_name          = "core-compute-${var.env}"
-  local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
-  shared_vault_name = "${var.shared_product_name}-${local.local_env}"
+  app_full_name       = "xui-${var.component}"
+  ase_name            = "core-compute-${var.env}"
+  local_env           = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
+  shared_vault_name   = "${var.shared_product_name}-${local.local_env}"
+  managed_api_base_id = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/providers/Microsoft.Web/locations/${var.location}/managedApis"
 }
+
+data "azurerm_client_config" "current" {}
 
 data "azurerm_key_vault" "key_vault" {
   name                = local.shared_vault_name
@@ -219,6 +222,9 @@ resource "azurerm_logic_app_action_custom" "send_email" {
         swaggerOperationId = "SendEmail"
       }
     }
+    runAfter = {
+      "run-kql-query" = ["Succeeded"]
+    }
     type = "ApiConnection"
   })
 
@@ -234,7 +240,7 @@ resource "azurerm_logic_app_action_custom" "azure_monitor_connection" {
   body = jsonencode({
     inputs = {
       api = {
-        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
+        id = "${local.managed_api_base_id}/azuremonitorlogs"
       }
       name = "azuremonitorlogs"
       parameterValues = {
@@ -255,7 +261,7 @@ resource "azurerm_logic_app_action_custom" "acs_email_connection" {
   body = jsonencode({
     inputs = {
       api = {
-        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
+        id = "${local.managed_api_base_id}/azurecommunicationservices"
       }
       name = "azurecommunicationservices"
       parameterValues = {
@@ -465,7 +471,7 @@ resource "azurerm_logic_app_action_custom" "welsh_azure_monitor_connection" {
   body = jsonencode({
     inputs = {
       api = {
-        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
+        id = "${local.managed_api_base_id}/azuremonitorlogs"
       }
       name = "azuremonitorlogs"
       parameterValues = {
@@ -486,7 +492,7 @@ resource "azurerm_logic_app_action_custom" "welsh_acs_email_connection" {
   body = jsonencode({
     inputs = {
       api = {
-        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
+        id = "${local.managed_api_base_id}/azurecommunicationservices"
       }
       name = "azurecommunicationservices"
       parameterValues = {

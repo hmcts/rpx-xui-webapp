@@ -197,7 +197,6 @@ export const getXuiNodeMiddleware = async () => {
 
   if (showFeature(FEATURE_QUERY_IDAM_SERVICE_OVERRIDE)) {
     logger.info('Querying IDAM service override');
-    console.log('Querying IDAM service override');
     options.serviceOverride = await getClientServiceDetails();
   }
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';

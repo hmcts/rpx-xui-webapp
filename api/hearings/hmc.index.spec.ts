@@ -79,8 +79,7 @@ describe('HMC Hearings API', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         `${hmcIndex.hmcHearingsUrl}/hearings/1584618195804035`,
-        req,
-        next
+        req
       );
 
       // Verify that the status mapping was applied
@@ -138,8 +137,7 @@ describe('HMC Hearings API', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -222,8 +220,7 @@ describe('HMC Hearings API', () => {
       expect(handleDeleteStub).to.have.been.calledWith(
         `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
         req.body,
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -291,8 +288,7 @@ describe('HMC Hearings API', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         `${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`,
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -496,8 +492,7 @@ describe('HMC Hearings API', () => {
       expect(handleDeleteStub).to.have.been.calledWith(
         `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`,
         req.body,
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -563,8 +558,7 @@ describe('HMC Hearings API', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         `${hmcIndex.hmcHearingsUrl}/hearings/undefined`,
-        req,
-        next
+        req
       );
     });
 

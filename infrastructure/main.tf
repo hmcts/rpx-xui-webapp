@@ -113,35 +113,6 @@ resource "azurerm_key_vault_secret" "acs_connection_string" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
-# API Connection for Azure Monitor Logs
-resource "azurerm_api_connection" "azure_monitor_logs" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-azuremonitorlogs-${var.env}"
-  resource_group_name = azurerm_resource_group.rg.name
-  managed_api_id      = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/providers/Microsoft.Web/locations/${var.location}/managedApis/azuremonitorlogs"
-  display_name        = "Azure Monitor Logs Connection"
-  
-  parameter_values = {}
-  
-  lifecycle {
-    ignore_changes = [parameter_values]
-  }
-}
-
-# API Connection for Azure Communication Services
-resource "azurerm_api_connection" "acs_email" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-acs-email-${var.env}"
-  resource_group_name = azurerm_resource_group.rg.name
-  managed_api_id      = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/providers/Microsoft.Web/locations/${var.location}/managedApis/acsemail"
-  display_name        = "ACS Email Connection"
-  
-  parameter_values = {
-    api_key = azurerm_communication_service.acs.0.primary_key
-  }
-}
-
-data "azurerm_client_config" "current" {}
 
 resource "azurerm_log_analytics_workspace" "logic_app_workspace" {
   count               = var.welsh_reporting_enabled ? 1 : 0
@@ -163,36 +134,7 @@ resource "azurerm_logic_app_workflow" "kql_report_workflow" {
     type = "SystemAssigned"
   }
 
-  workflow_parameters = {
-    "$connections" = jsonencode({
-      defaultValue = {}
-      type         = "Object"
-      value = {
-        azuremonitorlogs = {
-          connectionId         = azurerm_api_connection.azure_monitor_logs.0.id
-          connectionName       = azurerm_api_connection.azure_monitor_logs.0.name
-          id                   = azurerm_api_connection.azure_monitor_logs.0.managed_api_id
-          connectionProperties = {
-            authentication = {
-              type = "ManagedServiceIdentity"
-            }
-          }
-        }
-        acsemail = {
-          connectionId   = azurerm_api_connection.acs_email.0.id
-          connectionName = azurerm_api_connection.acs_email.0.name
-          id             = azurerm_api_connection.acs_email.0.managed_api_id
-        }
-      }
-    })
-  }
-
   tags = var.common_tags
-  
-  depends_on = [
-    azurerm_api_connection.azure_monitor_logs,
-    azurerm_api_connection.acs_email
-  ]
 }
 
 resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
@@ -272,9 +214,6 @@ resource "azurerm_logic_app_action_custom" "send_email" {
         ]
       }
     }
-    runAfter = {
-      "run-kql-query" = ["Succeeded"]
-    }
     metadata = {
       flowSystemMetadata = {
         swaggerOperationId = "SendEmail"
@@ -284,6 +223,49 @@ resource "azurerm_logic_app_action_custom" "send_email" {
   })
 
   depends_on = [azurerm_logic_app_action_custom.run_kql_query]
+}
+
+# API Connections for Logic App
+resource "azurerm_logic_app_action_custom" "azure_monitor_connection" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "azure-monitor-connection"
+  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
+
+  body = jsonencode({
+    inputs = {
+      api = {
+        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
+      }
+      name = "azuremonitorlogs"
+      parameterValues = {
+        token = {
+          value = "Bearer @{listCallbackUrl()}"
+        }
+      }
+    }
+    type = "ApiConnection"
+  })
+}
+
+resource "azurerm_logic_app_action_custom" "acs_email_connection" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "acs-email-connection"
+  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
+
+  body = jsonencode({
+    inputs = {
+      api = {
+        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
+      }
+      name = "azurecommunicationservices"
+      parameterValues = {
+        connectionString = azurerm_key_vault_secret.acs_connection_string.0.value
+      }
+    }
+    type = "ApiConnection"
+  })
+
+  depends_on = [azurerm_key_vault_secret.acs_connection_string]
 }
 
 # Role Assignment for Logic App to access Log Analytics
@@ -328,36 +310,10 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
     type = "SystemAssigned"
   }
 
-  workflow_parameters = {
-    "$connections" = jsonencode({
-      defaultValue = {}
-      type         = "Object"
-      value = {
-        azuremonitorlogs = {
-          connectionId         = azurerm_api_connection.azure_monitor_logs.0.id
-          connectionName       = azurerm_api_connection.azure_monitor_logs.0.name
-          id                   = azurerm_api_connection.azure_monitor_logs.0.managed_api_id
-          connectionProperties = {
-            authentication = {
-              type = "ManagedServiceIdentity"
-            }
-          }
-        }
-        acsemail = {
-          connectionId   = azurerm_api_connection.acs_email.0.id
-          connectionName = azurerm_api_connection.acs_email.0.name
-          id             = azurerm_api_connection.acs_email.0.managed_api_id
-        }
-      }
-    })
-  }
+  # Empty map – we use managed identity, not API-connections
+  workflow_parameters = {}
 
   tags = var.common_tags
-  
-  depends_on = [
-    azurerm_api_connection.azure_monitor_logs,
-    azurerm_api_connection.acs_email
-  ]
 }
 
 # Monthly recurrence trigger for Welsh reporting
@@ -472,7 +428,7 @@ resource "azurerm_logic_app_action_custom" "welsh_send_email" {
     inputs = {
       host = {
         connection = {
-          name = "@parameters('$connections')['acsemail']['connectionId']"
+          name = "@parameters('$connections')['azurecommunicationservices']['connectionId']"
         }
       }
       method = "post"
@@ -498,6 +454,49 @@ resource "azurerm_logic_app_action_custom" "welsh_send_email" {
   })
 
   depends_on = [azurerm_logic_app_action_custom.welsh_create_html_table]
+}
+
+# API Connections for Welsh Logic App
+resource "azurerm_logic_app_action_custom" "welsh_azure_monitor_connection" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "welsh-azure-monitor-connection"
+  logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
+
+  body = jsonencode({
+    inputs = {
+      api = {
+        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azuremonitorlogs')]"
+      }
+      name = "azuremonitorlogs"
+      parameterValues = {
+        token = {
+          value = "Bearer @{listCallbackUrl()}"
+        }
+      }
+    }
+    type = "ApiConnection"
+  })
+}
+
+resource "azurerm_logic_app_action_custom" "welsh_acs_email_connection" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "welsh-acs-email-connection"
+  logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
+
+  body = jsonencode({
+    inputs = {
+      api = {
+        id = "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('location'), '/managedApis/', 'azurecommunicationservices')]"
+      }
+      name = "azurecommunicationservices"
+      parameterValues = {
+        connectionString = azurerm_key_vault_secret.acs_connection_string.0.value
+      }
+    }
+    type = "ApiConnection"
+  })
+
+  depends_on = [azurerm_key_vault_secret.acs_connection_string]
 }
 
 # Role Assignment for Welsh Logic App to access Log Analytics

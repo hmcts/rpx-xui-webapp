@@ -19,6 +19,7 @@ import { LaunchDarklyDefaultsConstants } from '../../../app/services/ccd-config/
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-viewer-container',
   templateUrl: './case-viewer-container.component.html',
   styleUrls: ['./case-viewer-container.component.scss']

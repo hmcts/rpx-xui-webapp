@@ -25,6 +25,10 @@ export const CITIZEN_ROLE_NAME = 'citizen';
 export const CTSC_ROLE = 'ctsc';
 export const CTSC_ROLE_CATEGORY = 'CTSC';
 export const CTSC_ROLE_NAME = 'ctsc';
+export const OTHER_GOV_DEPARTMENT_ROLE = 'other_gov_department';
+export const SSCS_DWP_RESPONSE_WRITER = 'caseworker-sscs-dwpresponsewriter';
+export const SSCS_HMRC_RESPONSE_WRITER = 'caseworker-sscs-hmrcresponsewriter';
+export const SSCS_IBCA_RESPONSE_WRITER = 'caseworker-sscs-ibcaresponsewriter';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -75,6 +79,9 @@ export function getUserRoleCategory(roles: string[]): string {
   } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)
     || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
     return PROFESSIONAL_ROLE;
+  } else if (hasRoleCategory(roles, SSCS_DWP_RESPONSE_WRITER) || hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER)
+    || hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER)) {
+    return OTHER_GOV_DEPARTMENT_ROLE;
   }
 
   return LEGAL_OPERATIONS_ROLE_NAME;

@@ -6,6 +6,7 @@ import * as hearingActualsActions from '../../store/actions/hearing-actuals.acti
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals',
   templateUrl: './hearing-actuals.component.html',
   styleUrls: ['./hearing-actuals.component.scss']

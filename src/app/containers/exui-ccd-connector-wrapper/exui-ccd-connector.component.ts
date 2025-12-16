@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
  * @Input eventsBindings - bind CCD event to ExUI actions
  */
 @Component({
+  standalone: false,
   selector: 'exui-ccd-connector',
   template: `
     <ng-container>

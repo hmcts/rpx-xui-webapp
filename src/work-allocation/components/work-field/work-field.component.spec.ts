@@ -20,6 +20,7 @@ import { Task } from './../../models/tasks';
 import { WorkFieldComponent } from './work-field.component';
 
 @Component({
+  standalone: false,
   template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>'
 })
 class WrapperComponent {
@@ -28,7 +29,10 @@ class WrapperComponent {
   @Input() public task: Task;
 }
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -574,7 +578,7 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(HMCTS_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(HMCTS_URL);
+      expect(element.getAttribute('href')).toBe(HMCTS_URL);
 
       // Change the value of task.link.
       task.link = GOOGLE_URL;
@@ -582,7 +586,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.link = undefined;
@@ -595,7 +599,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
 
       // Make task.link null.
       task.link = null;
@@ -608,7 +612,7 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(GOOGLE_URL);
-      expect(element.getAttribute('ng-reflect-router-link')).toBe(GOOGLE_URL);
+      expect(element.getAttribute('href')).toBe(GOOGLE_URL);
 
       // Entirely remove the property for task.link.
       expect(task.hasOwnProperty('link')).toBeTruthy();
@@ -764,8 +768,8 @@ describe('WorkAllocation', () => {
         description: null,
         case_id: '1',
         caseName: 'The case name',
-        jurisdiction: 'The jurisdiction',
-        case_type_id: 'The case type ID',
+        jurisdictionId: 'The jurisdiction',
+        case_type: 'The case type ID',
         caseCategory: 'The case category',
         location: 'The location',
         taskName: 'The task name',

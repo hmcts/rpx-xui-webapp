@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import {
   baseWorkAllocationTaskUrl,
@@ -42,6 +41,8 @@ import * as caseWorkerUserDataCacheService from './caseWorkerUserDataCacheServic
 import * as utilModule from './util';
 import * as waSupportedJurisdictionsModule from '../waSupportedJurisdictions';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('workAllocation', () => {

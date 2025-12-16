@@ -86,7 +86,8 @@ describe('StaffDataFilterService', () => {
           userType: '',
           jobTitle: '',
           skill: [],
-          role: []
+          role: [],
+          status: []
         },
         pageSize: 1,
         pageNumber: 1

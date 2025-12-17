@@ -279,9 +279,9 @@ resource "azurerm_api_connection" "acs_email" {
   managed_api_id      = "${local.managed_api_base_id}/azurecommunicationservices"
   display_name        = "Azure Communication Services Connection"
 
-  parameter_values = jsonencode({
+  parameter_values = {
     connectionString = azurerm_key_vault_secret.acs_connection_string.0.value
-  })
+  }
 
   depends_on = [azurerm_key_vault_secret.acs_connection_string]
 }

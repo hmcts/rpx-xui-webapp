@@ -145,16 +145,19 @@ resource "azurerm_logic_app_workflow" "kql_report_workflow" {
           connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.name : ""
           id             = "${local.managed_api_base_id}/azuremonitorlogs"
         }
-        azurecommunicationservices = {
-          connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.acs_email.0.id : ""
-          connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.acs_email.0.name : ""
-          id             = "${local.managed_api_base_id}/azurecommunicationservices"
-        }
       }
       type = "Object"
     })
+    "acsEndpoint" = jsonencode({
+      defaultValue = var.welsh_reporting_enabled ? "https://${azurerm_communication_service.acs.0.name}.communication.azure.com" : ""
+      type         = "String"
+    })
+    "acsAccessKey" = jsonencode({
+      defaultValue = var.welsh_reporting_enabled ? azurerm_communication_service.acs.0.primary_key : ""
+      type         = "String"
+    })
     "senderEmailAddress" = jsonencode({
-      defaultValue = "DoNotReply@${azurerm_communication_service.acs.0.data_location}.azurecomm.net"
+      defaultValue = var.welsh_reporting_enabled ? "DoNotReply@${azurerm_communication_service.acs.0.data_location}.azurecomm.net" : ""
       type         = "String"
     })
   }
@@ -217,20 +220,17 @@ resource "azurerm_logic_app_action_custom" "send_email" {
 
   body = jsonencode({
     inputs = {
-      host = {
-        connection = {
-          name = "@parameters('$connections')['azurecommunicationservices']['connectionId']"
-        }
-      }
-      method = "post"
-      path   = "/emails:send"
-      queries = {
-        "api-version" = "2023-03-31"
+      method = "POST"
+      uri    = "@{parameters('acsEndpoint')}/emails:send?api-version=2023-03-31"
+      headers = {
+        "Content-Type" = "application/json"
+        "x-ms-date"    = "@{utcNow('r')}"
+        "Authorization" = "@{concat('Bearer ', parameters('acsAccessKey'))}"
       }
       body = {
         senderAddress = "@parameters('senderEmailAddress')"
         recipients = {
-          to = "@json(concat('[', body('run-kql-query')?['emailRecipients'], ']'))"
+          to = "@json(concat('[{\"address\":\"', replace(body('run-kql-query')?['emailRecipients'], ',', '\"},{\"address\":\"'), '\"}]'))"
         }
         content = {
           subject = "Monthly KQL Report - ${var.product} ${var.env}"
@@ -238,22 +238,17 @@ resource "azurerm_logic_app_action_custom" "send_email" {
         }
         attachments = [
           {
-            name        = "@body('run-kql-query')?['AttachmentName']"
-            contentType = "image/png"
+            name            = "@body('run-kql-query')?['AttachmentName']"
+            contentType     = "image/png"
             contentInBase64 = "@body('run-kql-query')?['AttachmentContent']"
           }
         ]
       }
     }
-    metadata = {
-      flowSystemMetadata = {
-        swaggerOperationId = "SendEmail"
-      }
-    }
     runAfter = {
       "run-kql-query" = ["Succeeded"]
     }
-    type = "ApiConnection"
+    type = "Http"
   })
 
   depends_on = [azurerm_logic_app_action_custom.run_kql_query]
@@ -270,20 +265,6 @@ resource "azurerm_api_connection" "azure_monitor" {
   lifecycle {
     ignore_changes = [parameter_values]
   }
-}
-
-resource "azurerm_api_connection" "acs_email" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-acs-${var.env}"
-  resource_group_name = azurerm_resource_group.rg.name
-  managed_api_id      = "${local.managed_api_base_id}/azurecommunicationservices"
-  display_name        = "Azure Communication Services Connection"
-
-  parameter_values = {
-    connectionString = azurerm_key_vault_secret.acs_connection_string.0.value
-  }
-
-  depends_on = [azurerm_key_vault_secret.acs_connection_string]
 }
 
 # Role Assignment for Logic App to access Log Analytics
@@ -336,16 +317,19 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
           connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.name : ""
           id             = "${local.managed_api_base_id}/azuremonitorlogs"
         }
-        azurecommunicationservices = {
-          connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.acs_email.0.id : ""
-          connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.acs_email.0.name : ""
-          id             = "${local.managed_api_base_id}/azurecommunicationservices"
-        }
       }
       type = "Object"
     })
+    "acsEndpoint" = jsonencode({
+      defaultValue = var.welsh_reporting_enabled ? "https://${azurerm_communication_service.acs.0.name}.communication.azure.com" : ""
+      type         = "String"
+    })
+    "acsAccessKey" = jsonencode({
+      defaultValue = var.welsh_reporting_enabled ? azurerm_communication_service.acs.0.primary_key : ""
+      type         = "String"
+    })
     "senderEmailAddress" = jsonencode({
-      defaultValue = "DoNotReply@${azurerm_communication_service.acs.0.data_location}.azurecomm.net"
+      defaultValue = var.welsh_reporting_enabled ? "DoNotReply@${azurerm_communication_service.acs.0.data_location}.azurecomm.net" : ""
       type         = "String"
     })
   }
@@ -463,15 +447,11 @@ resource "azurerm_logic_app_action_custom" "welsh_send_email" {
 
   body = jsonencode({
     inputs = {
-      host = {
-        connection = {
-          name = "@parameters('$connections')['azurecommunicationservices']['connectionId']"
-        }
-      }
-      method = "post"
-      path   = "/emails:send"
-      queries = {
-        "api-version" = "2023-03-31"
+      method = "POST"
+      uri    = "@{parameters('acsEndpoint')}/emails:send?api-version=2023-03-31"
+      headers = {
+        "Content-Type"  = "application/json"
+        "Authorization" = "@{concat('Bearer ', parameters('acsAccessKey'))}"
       }
       body = {
         senderAddress = "@parameters('senderEmailAddress')"
@@ -487,12 +467,7 @@ resource "azurerm_logic_app_action_custom" "welsh_send_email" {
     runAfter = {
       "create-html-table" = ["Succeeded"]
     }
-    metadata = {
-      flowSystemMetadata = {
-        swaggerOperationId = "SendEmail"
-      }
-    }
-    type = "ApiConnection"
+    type = "Http"
   })
 
   depends_on = [azurerm_logic_app_action_custom.welsh_create_html_table]

@@ -160,11 +160,6 @@ resource "azurerm_logic_app_workflow" "kql_report_workflow" {
   }
 
   tags = var.common_tags
-
-  depends_on = [
-    azurerm_api_connection.azure_monitor,
-    azurerm_api_connection.acs_email
-  ]
 }
 
 resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
@@ -272,16 +267,9 @@ resource "azurerm_api_connection" "azure_monitor" {
   managed_api_id      = "${local.managed_api_base_id}/azuremonitorlogs"
   display_name        = "Azure Monitor Logs Connection"
 
-  parameter_values = jsonencode({
-    token = {
-      type  = "oauthSetting"
-      oAuthSettings = {
-        identityProvider = "aadcertificate"
-        clientId         = azurerm_logic_app_workflow.kql_report_workflow.0.identity[0].principal_id
-        resourceUri      = "https://api.loganalytics.io"
-      }
-    }
-  })
+  lifecycle {
+    ignore_changes = [parameter_values]
+  }
 }
 
 resource "azurerm_api_connection" "acs_email" {
@@ -363,11 +351,6 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
   }
 
   tags = var.common_tags
-
-  depends_on = [
-    azurerm_api_connection.azure_monitor,
-    azurerm_api_connection.acs_email
-  ]
 }
 
 # Monthly recurrence trigger for Welsh reporting

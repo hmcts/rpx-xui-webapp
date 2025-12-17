@@ -3,6 +3,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { AppConstants } from '../../../app/app.constants';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-name-field',
   templateUrl: './case-name-field.component.html',
   styleUrls: ['case-name-field.component.scss']
@@ -21,11 +22,13 @@ export class CaseNameFieldComponent implements OnChanges {
   public ngOnChanges(): void {
     let href: string;
     if (this.caseId) {
-      const jurisdictionId = this.jurisdiction;
-      const caseTypeId = this.caseType;
-      const caseId = this.caseId;
-      if (caseId && jurisdictionId && caseTypeId) {
+      if (this.caseId && this.jurisdiction && this.caseType) {
+        const jurisdictionId = encodeURIComponent(this.jurisdiction);
+        const caseTypeId = encodeURIComponent(this.caseType);
+        const caseId = encodeURIComponent(this.caseId);
         href = `${AppConstants.CASE_DETAILS_URL}${jurisdictionId}/${caseTypeId}/${caseId}`;
+      } else if (this.caseId) {
+        href = `${AppConstants.CASE_DETAILS_URL}${this.caseId}`;
       }
     }
     this.pHref = href;

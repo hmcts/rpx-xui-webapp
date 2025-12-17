@@ -8,7 +8,10 @@ import { NocAnswer, NocEvent, NocNavigationEvent, NocQuestion } from '../../mode
 import * as fromFeature from '../../store';
 import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as crudService from '../common/crudService';
 import * as config from '../configuration';
@@ -11,6 +10,8 @@ import { StaffUser } from './models/staff-data-user.model';
 import { GroupOption, Service, StaffFilterOption } from './models/staff-filter-option.model';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('RealStaffRefDataAPI', () => {
@@ -31,7 +32,7 @@ describe('RealStaffRefDataAPI', () => {
     { service: 'Criminal', serviceCodes: ['CC1', 'CC2'] }
   ];
 
-  const mockStaffUser: StaffUser = {
+  const mockStaffUsers: StaffUser[] = [{
     email_id: 'test@test.com',
     first_name: 'John',
     last_name: 'Doe',
@@ -62,7 +63,38 @@ describe('RealStaffRefDataAPI', () => {
     }],
     region: 'Midlands',
     region_id: 1
-  };
+  }, {
+    email_id: 'disabled@test.com',
+    first_name: 'Disabled',
+    last_name: 'User',
+    suspended: true,
+    user_type: 'legal',
+    task_supervisor: true,
+    case_allocator: false,
+    staff_admin: false,
+    idam_roles: ['caseworker'],
+    up_idam_status: 'SUSPENDED',
+    roles: [{
+      role_id: '1',
+      role: 'Senior Legal Caseworker',
+      is_primary: true
+    }],
+    skills: [{
+      skill_id: 1,
+      description: 'Family Law'
+    }],
+    services: [{
+      service: 'Family',
+      service_code: 'AA1'
+    }],
+    base_locations: [{
+      location_id: 123,
+      location: 'Birmingham',
+      is_primary: true
+    }],
+    region: 'Midlands',
+    region_id: 1
+  }];
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -87,7 +119,7 @@ describe('RealStaffRefDataAPI', () => {
 
   describe('getFilteredUsers', () => {
     it('should successfully get filtered users with pagination', async () => {
-      const mockUsers: StaffUser[] = [mockStaffUser];
+      const mockUsers: StaffUser[] = mockStaffUsers;
       const mockHeaders = { 'total-records': '50' };
 
       req.query = { service: 'Family', location: 'Birmingham' };
@@ -120,8 +152,42 @@ describe('RealStaffRefDataAPI', () => {
       expect(next).to.not.have.been.called;
     });
 
+    it('filters node side for status if requested', async () => {
+      const mockUsers: StaffUser[] = mockStaffUsers;
+      const mockHeaders = { 'total-records': '50' };
+
+      req.query = { service: 'Family', location: 'Birmingham', status: 'SUSPENDED' };
+      req.headers = { 'page-size': '10', 'page-number': '2' };
+
+      sendGetStub.resolves({
+        status: 200,
+        data: mockUsers,
+        headers: mockHeaders
+      });
+
+      await realStaffRefDataAPI.getFilteredUsers(req, res, next);
+
+      expect(sendGetStub).to.have.been.calledOnce;
+      expect(sendGetStub).to.have.been.calledWith(
+        `${mockBaseUrl}/refdata/case-worker/profile/search?service=Family&location=Birmingham`,
+        req,
+        {
+          'page-number': '2',
+          'page-size': '10'
+        }
+      );
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.send).to.have.been.calledWith({
+        items: [mockUsers[1]],
+        pageSize: 10,
+        pageNumber: 2,
+        totalItems: 50
+      });
+      expect(next).to.not.have.been.called;
+    });
+
     it('should use default pagination values when headers are not provided', async () => {
-      const mockUsers: StaffUser[] = [mockStaffUser];
+      const mockUsers: StaffUser[] = mockStaffUsers;
       const mockHeaders = { 'total-records': '100' };
 
       req.query = {};
@@ -395,7 +461,7 @@ describe('RealStaffRefDataAPI', () => {
 
   describe('getUsersByPartialName', () => {
     it('should successfully search users by partial name', async () => {
-      const mockUsers: StaffUser[] = [mockStaffUser];
+      const mockUsers: StaffUser[] = mockStaffUsers;
       const mockHeaders = { 'total-records': '25' };
 
       req.query = { search: 'John' };
@@ -548,7 +614,7 @@ describe('RealStaffRefDataAPI', () => {
   describe('fetchUsersById', () => {
     it('should successfully fetch users by ID', async () => {
       const userIds = ['user1', 'user2', 'user3'];
-      const mockUsers: StaffUser[] = [mockStaffUser];
+      const mockUsers: StaffUser[] = mockStaffUsers;
 
       req.body = userIds;
 
@@ -598,7 +664,7 @@ describe('RealStaffRefDataAPI', () => {
 
       sendGetStub.resolves({
         status: 200,
-        data: mockStaffUser
+        data: mockStaffUsers[0]
       });
 
       await realStaffRefDataAPI.fetchSingleUserById(req, res, next);
@@ -608,7 +674,7 @@ describe('RealStaffRefDataAPI', () => {
         req
       );
       expect(res.status).to.have.been.calledWith(200);
-      expect(res.send).to.have.been.calledWith(mockStaffUser);
+      expect(res.send).to.have.been.calledWith(mockStaffUsers[0]);
     });
 
     it('should handle missing ID parameter', async () => {
@@ -641,7 +707,7 @@ describe('RealStaffRefDataAPI', () => {
   describe('updateUser', () => {
     it('should successfully update a user', async () => {
       const updatedUser = {
-        ...mockStaffUser,
+        ...mockStaffUsers[0],
         first_name: 'Updated'
       };
 

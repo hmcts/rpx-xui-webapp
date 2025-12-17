@@ -14,6 +14,7 @@ import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/util
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-task',
   templateUrl: './case-task.component.html',
   styleUrls: ['./case-task.component.scss']

@@ -173,7 +173,7 @@ resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
   frequency = var.logic_app_schedule_frequency
   interval  = var.logic_app_schedule_interval
   # 1st of every month at 09:00 UTC
-  start_time = formatdate("YYYY-MM-17'T'13:00:00Z", timestamp())
+  start_time = formatdate("YYYY-MM-18'T'13:00:00Z", timestamp())
 }
 
 resource "azurerm_logic_app_action_custom" "run_kql_query" {
@@ -346,7 +346,7 @@ resource "azurerm_logic_app_trigger_recurrence" "welsh_monthly_trigger" {
   frequency = "Month"
   interval  = 1
   # Run on the 1st of every month at 09:00 UTC
-  start_time = formatdate("YYYY-MM-17'T'13:00:00Z", timestamp())
+  start_time = formatdate("YYYY-MM-18'T'13:00:00Z", timestamp())
   schedule {
     at_these_hours   = [9]
     at_these_minutes = [0]

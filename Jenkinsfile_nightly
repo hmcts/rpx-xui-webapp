@@ -54,7 +54,7 @@ withNightlyPipeline(type, product, component) {
         yarnBuilder.yarn('cache clean')
     }
 
-    afterSuccess('fortify-scan') {
+    afterAlways('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
@@ -78,7 +78,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
      }
-    afterAlways('fortify-scan') {
+    afterSuccess('fortify-scan') {
   
       stage('API Tests') {
         try {

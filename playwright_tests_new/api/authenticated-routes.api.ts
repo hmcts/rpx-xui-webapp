@@ -1,9 +1,9 @@
+import { authenticatedRoutes } from '../common/authenticatedRoutes';
 import { test, expect } from './fixtures';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
-import { endpoints } from '../../test_codecept/integration/tests/config/authenticatedRoutes';
 
 test.describe('Authenticated routes require session', () => {
-  endpoints.forEach(({ endpoint }, index) => {
+  authenticatedRoutes.forEach(({ endpoint }, index) => {
     test(`[${index + 1}] GET ${endpoint} returns guarded status`, async ({ anonymousClient }) => {
       const response = await anonymousClient.get<Record<string, unknown>>(endpoint, {
         throwOnError: false

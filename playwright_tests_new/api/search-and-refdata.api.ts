@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 
 import { request } from '@playwright/test';
 
-import { config } from '../../test_codecept/integration/tests/config/config';
+import { config } from '../common/apiTestConfig';
 import { ensureStorageState } from './auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID } from './data/testIds';

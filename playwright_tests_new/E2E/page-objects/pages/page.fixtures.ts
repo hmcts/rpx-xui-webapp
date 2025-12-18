@@ -5,15 +5,17 @@ import {
   IdamPage,
   type ApiLogEntry
 } from "@hmcts/playwright-common";
-import { CaseDetailsPage } from "./exui/caseDetails.po.js";
-import { CaseListPage } from "./exui/caseList.po.js";
-import { CreateCasePage } from "./exui/createCase.po.ts";
+import { CaseDetailsPage } from "./exui/caseDetails.po";
+import { CaseListPage } from "./exui/caseList.po";
+import { CreateCasePage } from "./exui/createCase.po";
 import { Page } from "@playwright/test";
+import { TaskListPage } from "./exui/taskList.po";
 
 export interface PageFixtures {
   determinePage: Page;
   caseDetailsPage: CaseDetailsPage;
   caseListPage: CaseListPage;
+  taskListPage: TaskListPage;
   createCasePage: CreateCasePage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
@@ -40,6 +42,9 @@ export const pageFixtures = {
   },
   caseListPage: async ({ determinePage }, use) => {
     await use(new CaseListPage(determinePage));
+  },
+  taskListPage: async ({ determinePage }, use) => {
+    await use(new TaskListPage(determinePage));
   },
   createCasePage: async ({ determinePage }, use) => {
     await use(new CreateCasePage(determinePage));

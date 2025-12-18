@@ -102,19 +102,7 @@ data "azurerm_key_vault_secret" "logic_app_email_recipients" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
-resource "azurerm_communication_service" "acs" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-acs-${var.env}"
-  resource_group_name = azurerm_resource_group.rg.name
-  data_location       = "UK"
-}
-
-resource "azurerm_key_vault_secret" "acs_connection_string" {
-  count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = var.logic_app_acs_connection_string_key
-  value        = azurerm_communication_service.acs.0.primary_connection_string
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-}
+// Removed Azure Communication Services (ACS) resources; standardized on Office 365 Outlook connector for email.
 
 
 resource "azurerm_log_analytics_workspace" "logic_app_workspace" {
@@ -145,20 +133,13 @@ resource "azurerm_logic_app_workflow" "kql_report_workflow" {
           connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.name : ""
           id             = "${local.managed_api_base_id}/azuremonitorlogs"
         }
+        office365 = {
+          connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.id : ""
+          connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.name : ""
+          id             = "${local.managed_api_base_id}/office365"
+        }
       }
       type = "Object"
-    })
-    "acsEndpoint" = jsonencode({
-      defaultValue = var.welsh_reporting_enabled ? "https://${azurerm_communication_service.acs.0.name}.communication.azure.com" : ""
-      type         = "String"
-    })
-    "acsAccessKey" = jsonencode({
-      defaultValue = var.welsh_reporting_enabled ? azurerm_communication_service.acs.0.primary_key : ""
-      type         = "String"
-    })
-    "senderEmailAddress" = jsonencode({
-      defaultValue = var.welsh_reporting_enabled ? "DoNotReply@${azurerm_communication_service.acs.0.data_location}.azurecomm.net" : ""
-      type         = "String"
     })
   }
 
@@ -190,16 +171,12 @@ resource "azurerm_logic_app_action_custom" "run_kql_query" {
       }
       method = "post"
       path   = "/queryData"
-      queries = {
-        resourcegroups = "[parameters('resourceGroups')]"
-        resourcename   = "[parameters('workspaceName')]"
-        resourcetype   = "Log Analytics Workspace"
-        subscriptions  = "[parameters('subscriptionId')]"
-        timerange      = "Last 30 days"
+      body = {
+        queries = [{
+          query     = var.logic_app_kql_query
+          workspace = azurerm_log_analytics_workspace.logic_app_workspace.0.id
+        }]
       }
-      body = jsonencode({
-        query = var.logic_app_kql_query
-      })
     }
     metadata = {
       flowSystemMetadata = {
@@ -207,10 +184,39 @@ resource "azurerm_logic_app_action_custom" "run_kql_query" {
       }
     }
     runAfter = {}
-    type = "ApiConnection"
+    type     = "ApiConnection"
   })
 
   depends_on = [azurerm_logic_app_trigger_recurrence.monthly_trigger]
+}
+
+resource "azurerm_logic_app_action_custom" "create_html_table_kql" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = "create-html-table"
+  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
+
+  body = jsonencode({
+    type = "Table"
+    inputs = {
+      from   = "@body('run-kql-query')?['tables']?[0]?['rows']"
+      format = "HTML"
+      columns = [
+        {
+          header = "Column 1"
+          value  = "@item()[0]"
+        },
+        {
+          header = "Column 2"
+          value  = "@item()[1]"
+        }
+      ]
+    }
+    runAfter = {
+      "run-kql-query" = ["Succeeded"]
+    }
+  })
+
+  depends_on = [azurerm_logic_app_action_custom.run_kql_query]
 }
 
 resource "azurerm_logic_app_action_custom" "send_email" {
@@ -219,39 +225,35 @@ resource "azurerm_logic_app_action_custom" "send_email" {
   logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
 
   body = jsonencode({
-    inputs = {
-      method = "POST"
-      uri    = "@{parameters('acsEndpoint')}/emails:send?api-version=2023-03-31"
-      headers = {
-        "Content-Type" = "application/json"
-        "x-ms-date"    = "@{utcNow('r')}"
-        "Authorization" = "@{concat('Bearer ', parameters('acsAccessKey'))}"
+    metadata = {
+      flowSystemMetadata = {
+        swaggerOperationId = "SendEmailV2"
       }
-      body = {
-        senderAddress = "@parameters('senderEmailAddress')"
-        recipients = {
-          to = "@json(concat('[{\"address\":\"', replace(body('run-kql-query')?['emailRecipients'], ',', '\"},{\"address\":\"'), '\"}]'))"
+    }
+    type = "ApiConnection"
+    inputs = {
+      host = {
+        connection = {
+          name = "@parameters('$connections')['office365']['connectionId']"
         }
-        content = {
-          subject = "Monthly KQL Report - ${var.product} ${var.env}"
-          html    = "<p>Please find attached the monthly KQL report for ${var.product} in ${var.env} environment.</p><p>Query executed: ${var.logic_app_kql_query}</p>"
-        }
-        attachments = [
-          {
-            name            = "@body('run-kql-query')?['AttachmentName']"
-            contentType     = "image/png"
-            contentInBase64 = "@body('run-kql-query')?['AttachmentContent']"
-          }
-        ]
+      }
+      method = "post"
+      path   = "/SendEmailV2"
+      parameters = {
+        To      = "@{join(${jsonencode(local.welsh_emails)}, ';')}"
+        Subject = "Monthly KQL Report - ${var.product} ${var.env}"
+        Body    = "@concat('<html><body><h3>Monthly KQL Report</h3>', body('create-html-table'), '</body></html>')"
       }
     }
     runAfter = {
-      "run-kql-query" = ["Succeeded"]
+      "create-html-table" = ["Succeeded"]
     }
-    type = "Http"
   })
 
-  depends_on = [azurerm_logic_app_action_custom.run_kql_query]
+  depends_on = [
+    azurerm_logic_app_action_custom.create_html_table_kql,
+    azurerm_api_connection.office365_outlook
+  ]
 }
 
 # API Connections for Logic App
@@ -317,20 +319,13 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
           connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.name : ""
           id             = "${local.managed_api_base_id}/azuremonitorlogs"
         }
+        office365 = {
+          connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.id : ""
+          connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.name : ""
+          id             = "${local.managed_api_base_id}/office365"
+        }
       }
       type = "Object"
-    })
-    "acsEndpoint" = jsonencode({
-      defaultValue = var.welsh_reporting_enabled ? "https://${azurerm_communication_service.acs.0.name}.communication.azure.com" : ""
-      type         = "String"
-    })
-    "acsAccessKey" = jsonencode({
-      defaultValue = var.welsh_reporting_enabled ? azurerm_communication_service.acs.0.primary_key : ""
-      type         = "String"
-    })
-    "senderEmailAddress" = jsonencode({
-      defaultValue = var.welsh_reporting_enabled ? "DoNotReply@${azurerm_communication_service.acs.0.data_location}.azurecomm.net" : ""
-      type         = "String"
     })
   }
 
@@ -360,7 +355,41 @@ resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({
+    metadata = {
+      flowSystemMetadata = {
+        swaggerOperationId = "QueryData"
+      }
+    }
+    type = "ApiConnection"
     inputs = {
+      body = {
+        queries = [{
+          query     = "let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+let endTime = startofmonth(now());
+let FilteredRequests = requests
+| where timestamp between (startTime .. endTime)
+| where url has \"/api/translation/cy\"
+| extend day = startofday(timestamp);
+let UniqueSessionsPerDay = FilteredRequests
+| where isnotempty(session_Id)
+| summarize by day, session_Id
+| summarize SessionCount = count() by day;
+let HasNoSession = FilteredRequests
+| where isempty(session_Id)
+| summarize HasMissingSessions = count() by day
+| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
+UniqueSessionsPerDay
+| join kind=fullouter HasNoSession on day
+| extend
+    SessionCount = coalesce(SessionCount, 0),
+    NoSessionAddition = coalesce(NoSessionAddition, 0)
+| extend TotalSessions = SessionCount + NoSessionAddition
+| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions
+| order by Date asc
+"
+          workspace = azurerm_log_analytics_workspace.logic_app_workspace.0.id
+        }]
+      }
       host = {
         connection = {
           name = "@parameters('$connections')['azuremonitorlogs']['connectionId']"
@@ -368,42 +397,8 @@ resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
       }
       method = "post"
       path   = "/queryData"
-      body = {
-        queries = [{
-          query     = <<-QUERY
-            let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-            let endTime = startofmonth(now());
-            let FilteredRequests = requests
-            | where timestamp between (startTime .. endTime)
-            | where url has "/api/translation/cy"
-            | extend day = startofday(timestamp);
-            let UniqueSessionsPerDay = FilteredRequests
-            | where isnotempty(session_Id)
-            | summarize by day, session_Id
-            | summarize SessionCount = count() by day;
-            let HasNoSession = FilteredRequests
-            | where isempty(session_Id)
-            | summarize HasMissingSessions = count() by day
-            | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-            UniqueSessionsPerDay
-            | join kind=fullouter HasNoSession on day
-            | extend
-                SessionCount = coalesce(SessionCount, 0),
-                NoSessionAddition = coalesce(NoSessionAddition, 0)
-            | extend TotalSessions = SessionCount + NoSessionAddition
-            | project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions
-            | order by Date asc
-          QUERY
-          workspace = azurerm_log_analytics_workspace.logic_app_workspace.0.id
-        }]
-      }
     }
-    metadata = {
-      flowSystemMetadata = {
-        swaggerOperationId = "QueryData"
-      }
-    }
-    type = "ApiConnection"
+    runAfter = {}
   })
 
   depends_on = [azurerm_logic_app_trigger_recurrence.welsh_monthly_trigger]
@@ -416,9 +411,10 @@ resource "azurerm_logic_app_action_custom" "welsh_create_html_table" {
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({
+    type = "Table"
     inputs = {
-      format = "HTML"
       from   = "@body('run-welsh-kql-query')?['tables']?[0]?['rows']"
+      format = "HTML"
       columns = [
         {
           header = "Date"
@@ -433,7 +429,6 @@ resource "azurerm_logic_app_action_custom" "welsh_create_html_table" {
     runAfter = {
       "run-welsh-kql-query" = ["Succeeded"]
     }
-    type = "Table"
   })
 
   depends_on = [azurerm_logic_app_action_custom.welsh_kql_query]
@@ -446,31 +441,48 @@ resource "azurerm_logic_app_action_custom" "welsh_send_email" {
   logic_app_id = azurerm_logic_app_workflow.welsh_report_workflow.0.id
 
   body = jsonencode({
-    inputs = {
-      method = "POST"
-      uri    = "@{parameters('acsEndpoint')}/emails:send?api-version=2023-03-31"
-      headers = {
-        "Content-Type"  = "application/json"
-        "Authorization" = "@{concat('Bearer ', parameters('acsAccessKey'))}"
+    metadata = {
+      flowSystemMetadata = {
+        swaggerOperationId = "SendEmailV2"
       }
-      body = {
-        senderAddress = "@parameters('senderEmailAddress')"
-        recipients = {
-          to = [for email in local.welsh_emails : { address = email }]
+    }
+    type = "ApiConnection"
+    inputs = {
+      host = {
+        connection = {
+          name = "@parameters('$connections')['office365']['connectionId']"
         }
-        content = {
-          subject = "Monthly Welsh Language Usage Report - ${var.product} ${var.env}"
-          html    = "@concat('<html><head><style>table { border-collapse: collapse; width: 100%; margin: 20px 0; } th, td { border: 1px solid #ddd; padding: 12px; text-align: left; } th { background-color: #0b0c0c; color: white; font-weight: bold; } tr:nth-child(even) { background-color: #f2f2f2; } tr:hover { background-color: #e0e0e0; }</style></head><body><h2>Monthly Welsh Language Usage Report</h2><p>Environment: <strong>${var.product} ${var.env}</strong></p><p>Reporting Period: <strong>Previous Month</strong></p><p>This report shows the daily unique sessions using Welsh language translation services.</p><h3>Daily Welsh Translation Usage:</h3>', body('create-html-table'), '<hr/><p><small><em>Generated on: ', utcNow(), '</em></small></p></body></html>')"
-        }
+      }
+      method = "post"
+      path   = "/SendEmailV2"
+      parameters = {
+        To      = "@{join(${jsonencode(local.welsh_emails)}, ';')}"
+        Subject = "Monthly Welsh Language Usage Report - ${var.product} ${var.env}"
+        Body    = "@concat('<html><head><style>table { border-collapse: collapse; width: 100%; margin: 20px 0; } th, td { border: 1px solid #ddd; padding: 12px; text-align: left; } th { background-color: #0b0c0c; color: white; font-weight: bold; } tr:nth-child(even) { background-color: #f2f2f2; } tr:hover { background-color: #e0e0e0; }</style></head><body><h2>Monthly Welsh Language Usage Report</h2><p>Environment: <strong>${var.product} ${var.env}</strong></p><p>Reporting Period: <strong>Previous Month</strong></p><p>This report shows the daily unique sessions using Welsh language translation services.</p><h3>Daily Welsh Translation Usage:</h3>', body('create-html-table'), '<hr/><p><small><em>Generated on: ', utcNow(), '</em></small></p></body></html>')"
       }
     }
     runAfter = {
       "create-html-table" = ["Succeeded"]
     }
-    type = "Http"
   })
 
-  depends_on = [azurerm_logic_app_action_custom.welsh_create_html_table]
+  depends_on = [
+    azurerm_logic_app_action_custom.welsh_create_html_table,
+    azurerm_api_connection.office365_outlook
+  ]
+}
+
+# Office 365 Outlook API Connection for sending emails (Consumption requires manual auth)
+resource "azurerm_api_connection" "office365_outlook" {
+  count               = var.welsh_reporting_enabled ? 1 : 0
+  name                = "${local.app_full_name}-office365-${var.env}"
+  resource_group_name = azurerm_resource_group.rg.name
+  managed_api_id      = "${local.managed_api_base_id}/office365"
+  display_name        = "Office 365 Outlook Connection"
+
+  lifecycle {
+    ignore_changes = [parameter_values]
+  }
 }
 
 # Role Assignment for Welsh Logic App to access Log Analytics

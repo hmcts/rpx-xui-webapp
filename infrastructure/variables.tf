@@ -70,11 +70,7 @@ variable "logic_app_schedule_frequency" {
 
 
 
-variable "logic_app_acs_connection_string_key" {
-  default     = "acs-email-connection-string"
-  description = "Key vault key for Azure Communication Services connection string"
-  type        = string
-}
+// Removed ACS connection string variable; standardized on Office 365 Outlook connector for email.
 
 variable "logic_app_log_analytics_workspace_name" {
   default     = "hmcts-prod"

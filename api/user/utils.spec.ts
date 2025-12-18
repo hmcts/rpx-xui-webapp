@@ -183,5 +183,75 @@ describe('user.utils', () => {
       mockUserDetails.iss = 'http://test-url.com&';
       expect(userDetailsValid(mockUserDetails)).to.equal(true);
     });
+
+    it('should return citizen role category', () => {
+      const roles = ['citizen'];
+      expect(getUserRoleCategory(roles)).to.equal('citizen');
+    });
+
+    it('should return judge role category for judge role', () => {
+      const roles = ['judge'];
+      expect(getUserRoleCategory(roles)).to.equal('judicial');
+    });
+
+    it('should return judge role category for judiciary role', () => {
+      const roles = ['judiciary'];
+      expect(getUserRoleCategory(roles)).to.equal('judicial');
+    });
+
+    it('should return admin role category', () => {
+      const roles = ['admin'];
+      expect(getUserRoleCategory(roles)).to.equal('admin');
+    });
+
+    it('should return ctsc role category', () => {
+      const roles = ['ctsc'];
+      expect(getUserRoleCategory(roles)).to.equal('ctsc');
+    });
+
+    it('should return professional role for legal-operations', () => {
+      const roles = ['legal-operations'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return professional role for task-supervisor', () => {
+      const roles = ['task-supervisor'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return professional role for pui-case-manager', () => {
+      const roles = ['pui-case-manager'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return professional role for pui-organisation-manager', () => {
+      const roles = ['pui-organisation-manager'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return other_gov_department for SSCS DWP response writer', () => {
+      const roles = ['caseworker-sscs-dwpresponsewriter'];
+      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+    });
+
+    it('should return other_gov_department for SSCS HMRC response writer', () => {
+      const roles = ['caseworker-sscs-hmrcresponsewriter'];
+      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+    });
+
+    it('should return other_gov_department for SSCS IBCA response writer', () => {
+      const roles = ['caseworker-sscs-ibcaresponsewriter'];
+      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+    });
+
+    it('should return legal-operations as default', () => {
+      const roles = ['unknown-role'];
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
+    });
+
+    it('should handle empty array and return default', () => {
+      const roles = [];
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
+    });
   });
 });

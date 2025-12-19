@@ -426,8 +426,14 @@ form.check-your-answers table td .markdown p {
 
 header {
   .govuk-skip-link {
-    &:link, &:visited {
-      color: #fff;
+    .govuk-skip-link-text {
+      display: none;
+    }
+    &:focus {
+      .govuk-skip-link-text  {
+        display: inline;
+      }
+      color: #0b0c0c;
     }
   }
 }

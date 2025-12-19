@@ -3707,12 +3707,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.7/hmcts-ccd-case-ui-toolkit-7.3.7.tgz":
-  version: 7.3.7
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.7/hmcts-ccd-case-ui-toolkit-7.3.7.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.8/hmcts-ccd-case-ui-toolkit-7.3.8.tgz":
+  version: 7.3.8
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.8/hmcts-ccd-case-ui-toolkit-7.3.8.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/4e1a7c538a901ce31074eb10a9fbbe5e18ca96fdbedc9e5864c9dae72c6cdbefc003a28628edf0378854fffb8c6885136f156ab78d712278abb0701919ae0e62
+  checksum: 10/4b0734554160043235b6bdbec9aa4e9813a3ae7f49b26a3ef216fc7c9d1311bf395d20f9db412f338b7c044d911021b155cbc3636034abab577eabf2c572c4bf
   languageName: node
   linkType: hard
 
@@ -18691,14 +18691,14 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:3.x, js-yaml@npm:^3.13.1":
-  version: 3.14.2
-  resolution: "js-yaml@npm:3.14.2"
+  version: 3.14.1
+  resolution: "js-yaml@npm:3.14.1"
   dependencies:
     argparse: "npm:^1.0.7"
     esprima: "npm:^4.0.0"
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 10/172e0b6007b0bf0fc8d2469c94424f7dd765c64a047d2b790831fecef2204a4054eabf4d911eb73ab8c9a3256ab8ba1ee8d655b789bf24bf059c772acc2075a1
+  checksum: 10/9e22d80b4d0105b9899135365f746d47466ed53ef4223c529b3c0f7a39907743fdbd3c4379f94f1106f02755b5e90b2faaf84801a891135544e1ea475d1a1379
   languageName: node
   linkType: hard
 
@@ -24118,7 +24118,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.7/hmcts-ccd-case-ui-toolkit-7.3.7.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.8/hmcts-ccd-case-ui-toolkit-7.3.8.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.1"

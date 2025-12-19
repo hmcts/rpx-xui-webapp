@@ -3,7 +3,9 @@
    dependent on the User. -->
   <div [ngStyle]="{'background-color': backgroundColor}">
 
-    <a [href]="currentUrl?.split('#')[0] + contentHash" class="govuk-skip-link">{{'Skip to main content' | rpxTranslate}}</a>
+    <a [href]="currentUrl?.split('#')[0] + contentHash" class="govuk-skip-link">
+      <span class="govuk-skip-link-text">{{'Skip to main content' | rpxTranslate}}</span>
+    </a>
 
     <exui-hmcts-global-header
     [headerTitle]="title"

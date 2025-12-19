@@ -2170,6 +2170,542 @@ describe('HearingEditSummaryComponent', () => {
     expect(result).toBe(true);
   });
 
+  describe('hasHearingRequestObjectChanged with paperless hearings', () => {
+    it('should return false when paperless hearing with telephone channel is normalized to NA with no other changes', () => {
+      spyOn(HearingsUtils, 'setHearingChannelsForPaperHearing').and.callThrough();
+
+      const baseHearingDetails = {
+        isPaperHearing: true,
+        hearingChannels: [HearingChannelEnum.ONPPR],
+        duration: 60,
+        hearingType: 'Final',
+        hearingLocations: [],
+        facilitiesRequired: [],
+        listingComments: 'Test comments',
+        hearingPriorityType: 'Standard',
+        numberOfPhysicalAttendees: 0,
+        hearingInWelshFlag: false,
+        hearingWindow: {},
+        privateHearingRequiredFlag: false,
+        panelRequirements: null,
+        hearingIsLinkedFlag: false,
+        amendReasonCodes: null,
+        listingAutoChangeReasonCode: null,
+        autolistFlag: false
+      };
+
+      const baseCaseDetails = {
+        hmctsServiceCode: 'BBA3',
+        caseRef: '1234123412341234',
+        requestTimeStamp: null,
+        caseDeepLink: 'https://test.com',
+        hmctsInternalCaseName: 'Test Case',
+        publicCaseName: 'Test vs Test',
+        caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
+        caseCategories: [],
+        caseManagementLocationCode: '231596',
+        caserestrictedFlag: false,
+        externalCaseReference: '',
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+      };
+
+      const baseRequestDetails = {
+        hearingRequestID: 'h100001',
+        status: 'HEARING_REQUESTED',
+        timestamp: '2021-08-10T12:20:00.000Z',
+        versionNumber: 1,
+        hearingGroupRequestId: null,
+        partiesNotifiedDateTime: null
+      };
+
+      component.hearingRequestMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'telephone'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'NA'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      const result = (component as any).hasHearingRequestObjectChanged();
+
+      expect(HearingsUtils.setHearingChannelsForPaperHearing).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+
+    it('should return false when paperless hearing with video channel is normalized to NA with no other changes', () => {
+      spyOn(HearingsUtils, 'setHearingChannelsForPaperHearing').and.callThrough();
+
+      const baseHearingDetails = {
+        isPaperHearing: true,
+        hearingChannels: [HearingChannelEnum.ONPPR],
+        duration: 90,
+        hearingType: 'Preliminary',
+        hearingLocations: [],
+        facilitiesRequired: [],
+        listingComments: 'Test comments',
+        hearingPriorityType: 'Standard',
+        numberOfPhysicalAttendees: 0,
+        hearingInWelshFlag: false,
+        hearingWindow: {},
+        privateHearingRequiredFlag: false,
+        panelRequirements: null,
+        hearingIsLinkedFlag: false,
+        amendReasonCodes: null,
+        listingAutoChangeReasonCode: null,
+        autolistFlag: false
+      };
+
+      const baseCaseDetails = {
+        hmctsServiceCode: 'BBA3',
+        caseRef: '1234123412341234',
+        requestTimeStamp: null,
+        caseDeepLink: 'https://test.com',
+        hmctsInternalCaseName: 'Test Case',
+        publicCaseName: 'Test vs Test',
+        caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
+        caseCategories: [],
+        caseManagementLocationCode: '231596',
+        caserestrictedFlag: false,
+        externalCaseReference: '',
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+      };
+
+      const baseRequestDetails = {
+        hearingRequestID: 'h100002',
+        status: 'HEARING_REQUESTED',
+        timestamp: '2021-08-10T12:20:00.000Z',
+        versionNumber: 1,
+        hearingGroupRequestId: null,
+        partiesNotifiedDateTime: null
+      };
+
+      component.hearingRequestMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P2',
+            partyType: PartyType.IND,
+            partyRole: 'respondent',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'video'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P2',
+            partyType: PartyType.IND,
+            partyRole: 'respondent',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'NA'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      const result = (component as any).hasHearingRequestObjectChanged();
+
+      expect(HearingsUtils.setHearingChannelsForPaperHearing).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+
+    it('should return false when multiple parties with mixed channels (telephone/video) are normalized to NA with no other changes', () => {
+      spyOn(HearingsUtils, 'setHearingChannelsForPaperHearing').and.callThrough();
+
+      const baseHearingDetails = {
+        isPaperHearing: true,
+        hearingChannels: [HearingChannelEnum.ONPPR],
+        duration: 120,
+        hearingType: 'Final',
+        hearingLocations: [],
+        facilitiesRequired: [],
+        listingComments: 'Test comments',
+        hearingPriorityType: 'Standard',
+        numberOfPhysicalAttendees: 0,
+        hearingInWelshFlag: false,
+        hearingWindow: {},
+        privateHearingRequiredFlag: false,
+        panelRequirements: null,
+        hearingIsLinkedFlag: false,
+        amendReasonCodes: null,
+        listingAutoChangeReasonCode: null,
+        autolistFlag: false
+      };
+
+      const baseCaseDetails = {
+        hmctsServiceCode: 'BBA3',
+        caseRef: '1234123412341234',
+        requestTimeStamp: null,
+        caseDeepLink: 'https://test.com',
+        hmctsInternalCaseName: 'Test Case',
+        publicCaseName: 'Test vs Test',
+        caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
+        caseCategories: [],
+        caseManagementLocationCode: '231596',
+        caserestrictedFlag: false,
+        externalCaseReference: '',
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+      };
+
+      const baseRequestDetails = {
+        hearingRequestID: 'h100003',
+        status: 'HEARING_REQUESTED',
+        timestamp: '2021-08-10T12:20:00.000Z',
+        versionNumber: 1,
+        hearingGroupRequestId: null,
+        partiesNotifiedDateTime: null
+      };
+
+      component.hearingRequestMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'telephone'
+            }
+          },
+          {
+            partyID: 'P2',
+            partyType: PartyType.IND,
+            partyRole: 'respondent',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'video'
+            }
+          },
+          {
+            partyID: 'P3',
+            partyType: PartyType.IND,
+            partyRole: 'witness',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Johnson',
+              preferredHearingChannel: 'telephone'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'NA'
+            }
+          },
+          {
+            partyID: 'P2',
+            partyType: PartyType.IND,
+            partyRole: 'respondent',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'NA'
+            }
+          },
+          {
+            partyID: 'P3',
+            partyType: PartyType.IND,
+            partyRole: 'witness',
+            individualDetails: {
+              firstName: 'Bob',
+              lastName: 'Johnson',
+              preferredHearingChannel: 'NA'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      const result = (component as any).hasHearingRequestObjectChanged();
+
+      expect(HearingsUtils.setHearingChannelsForPaperHearing).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+
+    it('should return true when paperless hearing has other changes beyond preferredHearingChannel', () => {
+      spyOn(HearingsUtils, 'setHearingChannelsForPaperHearing').and.callThrough();
+
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          isPaperHearing: true,
+          hearingChannels: [HearingChannelEnum.ONPPR],
+          duration: 60
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'telephone'
+            }
+          }
+        ]
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        ...component.hearingRequestToCompareMainModel,
+        hearingDetails: {
+          ...component.hearingRequestToCompareMainModel.hearingDetails,
+          isPaperHearing: true,
+          hearingChannels: [HearingChannelEnum.ONPPR],
+          duration: 90
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'NA'
+            }
+          }
+        ]
+      };
+
+      const result = (component as any).hasHearingRequestObjectChanged();
+
+      expect(HearingsUtils.setHearingChannelsForPaperHearing).toHaveBeenCalled();
+      expect(result).toBe(true);
+    });
+
+    it('should return true when paperless hearing has different party names', () => {
+      spyOn(HearingsUtils, 'setHearingChannelsForPaperHearing').and.callThrough();
+
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          isPaperHearing: true,
+          hearingChannels: [HearingChannelEnum.ONPPR],
+          duration: 60
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'video'
+            }
+          }
+        ]
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        ...component.hearingRequestToCompareMainModel,
+        hearingDetails: {
+          ...component.hearingRequestToCompareMainModel.hearingDetails,
+          isPaperHearing: true,
+          hearingChannels: [HearingChannelEnum.ONPPR],
+          duration: 60
+        },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'Jane',
+              lastName: 'Doe',
+              preferredHearingChannel: 'NA'
+            }
+          }
+        ]
+      };
+
+      const result = (component as any).hasHearingRequestObjectChanged();
+
+      expect(HearingsUtils.setHearingChannelsForPaperHearing).toHaveBeenCalled();
+      expect(result).toBe(true);
+    });
+
+    it('should return false when paperless hearing with mixed party types has only channel differences', () => {
+      spyOn(HearingsUtils, 'setHearingChannelsForPaperHearing').and.callThrough();
+
+      const baseHearingDetails = {
+        isPaperHearing: true,
+        hearingChannels: [HearingChannelEnum.ONPPR],
+        duration: 60,
+        hearingType: 'Final',
+        hearingLocations: [],
+        facilitiesRequired: [],
+        listingComments: 'Test comments',
+        hearingPriorityType: 'Standard',
+        numberOfPhysicalAttendees: 0,
+        hearingInWelshFlag: false,
+        hearingWindow: {},
+        privateHearingRequiredFlag: false,
+        panelRequirements: null,
+        hearingIsLinkedFlag: false,
+        amendReasonCodes: null,
+        listingAutoChangeReasonCode: null,
+        autolistFlag: false
+      };
+
+      const baseCaseDetails = {
+        hmctsServiceCode: 'BBA3',
+        caseRef: '1234123412341234',
+        requestTimeStamp: null,
+        caseDeepLink: 'https://test.com',
+        hmctsInternalCaseName: 'Test Case',
+        publicCaseName: 'Test vs Test',
+        caseAdditionalSecurityFlag: false,
+        caseInterpreterRequiredFlag: false,
+        caseCategories: [],
+        caseManagementLocationCode: '231596',
+        caserestrictedFlag: false,
+        externalCaseReference: '',
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+      };
+
+      const baseRequestDetails = {
+        hearingRequestID: 'h100006',
+        status: 'HEARING_REQUESTED',
+        timestamp: '2021-08-10T12:20:00.000Z',
+        versionNumber: 1,
+        hearingGroupRequestId: null,
+        partiesNotifiedDateTime: null
+      };
+
+      component.hearingRequestMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'telephone'
+            }
+          },
+          {
+            partyID: 'P2',
+            partyType: PartyType.ORG,
+            partyRole: 'respondent',
+            organisationDetails: {
+              name: 'Test Org',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        requestDetails: { ...baseRequestDetails },
+        hearingDetails: { ...baseHearingDetails },
+        caseDetails: { ...baseCaseDetails },
+        partyDetails: [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'John',
+              lastName: 'Doe',
+              preferredHearingChannel: 'NA'
+            }
+          },
+          {
+            partyID: 'P2',
+            partyType: PartyType.ORG,
+            partyRole: 'respondent',
+            organisationDetails: {
+              name: 'Test Org',
+              organisationType: 'GOV',
+              cftOrganisationID: 'O100000'
+            }
+          }
+        ],
+        hearingResponse: null
+      };
+
+      const result = (component as any).hasHearingRequestObjectChanged();
+
+      expect(HearingsUtils.setHearingChannelsForPaperHearing).toHaveBeenCalled();
+      expect(result).toBe(false);
+    });
+  });
+
   function createSHVEntry() {
     const partiesSHV: PartyDetailsModel[] = [
       {

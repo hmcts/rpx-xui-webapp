@@ -24,13 +24,6 @@
     display: inline-block;
     margin-right: 0;
   }
-
-  // Amendment label that appears after the select dropdown
-  .govuk-select ~ exui-amendment-label {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: middle;
-  }
 }
 
 strong {
@@ -41,29 +34,32 @@ strong {
   width: 80px;
 }
 
+/* Checkbox row layout */
 .checkbox-row {
   display: flex;
-}
-
-// Amendment label styling for checkboxes
-.govuk-checkboxes__item {
-  display: flex;
-  align-items: center;
   gap: 10px;
-  margin-right: 10px; // Add space between checkbox items
-
-  exui-amendment-label {
-    margin-left: 5px;
-    margin-right: 10px; // Add space after amendment label
-  }
+  flex-wrap: wrap;
 }
 
-// Amendment label styling for radio buttons
-.govuk-radios__item {
-  display: flex;
-  align-items: center;
+/* Keep GOV.UK radio layout intact; only control spacing to the amendment label */
+.govuk-radios__label + exui-amendment-label {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+}
 
-  exui-amendment-label {
-    margin-left: 10px;
-  }
+/* Keep GOV.UK checkbox layout intact; only control spacing to the amendment label */
+.govuk-checkboxes__label + exui-amendment-label {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Party dropdown + attendance number: amendment label immediately after the control */
+.party-row .govuk-select + exui-amendment-label,
+.govuk-input + exui-amendment-label {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
 }

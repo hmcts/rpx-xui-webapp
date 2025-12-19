@@ -9,7 +9,10 @@ import * as fromNocStore from '../../store';
 import { NocErrorPipe } from '../noc-field/utils';
 import { NocQAndAComponent } from './noc-q-and-a.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;

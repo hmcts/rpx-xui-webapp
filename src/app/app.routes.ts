@@ -66,7 +66,7 @@ export const ROUTES: Routes = [
   },
   // TODO: remove redundant redirections
   { path: 'case/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:jurisdiction/:caseType/:cid', pathMatch: 'full' },
-  { path: 'case/:cid', redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid', pathMatch: 'full' },
+  { path: 'case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   { path: 'case-details/:jurisdiction/:case-type/:cid', redirectTo: 'cases/case-details/:jurisdiction/:case-type/:cid', pathMatch: 'full' },
   { path: 'v2/case/:cid', redirectTo: 'cases/case-details/:cid', pathMatch: 'full' },
   {

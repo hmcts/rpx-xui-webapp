@@ -14,7 +14,7 @@ const exceptionOptions = {
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('outgoing');
 
-  const url = shorten(request.url, getConfigValue(MAX_LOG_LINE));
+  const url = request.url; //shorten(request.url, getConfigValue(MAX_LOG_LINE));
   logger.info(`${request.method.toUpperCase()} to ${url}`);
   //add timings to requests
   request.metadata = { startTime: new Date() };

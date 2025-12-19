@@ -8,13 +8,14 @@ import {
   ACTION,
   HearingChangeReasonMessages,
   HearingChannelEnum,
-  HearingSummaryEnum, PartyType
+  HearingSummaryEnum
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
   standalone: false,
@@ -112,20 +113,7 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
 
     if (!!this.hearingRequestMainModel.hearingDetails?.isPaperHearing) {
       hearingChannels = [HearingChannelEnum.ONPPR];
-      this.hearingRequestMainModel.partyDetails
-        .forEach((party) => {
-          if (party.partyType === PartyType.IND) {
-            party = {
-              ...party,
-              individualDetails: {
-                ...party.individualDetails,
-                preferredHearingChannel: 'NA'
-              }
-            };
-          }
-          updatedPartyDetails.push(party);
-        }
-        );
+      updatedPartyDetails = HearingsUtils.setHearingChannelsForPaperHearing(this.hearingRequestMainModel.partyDetails);
     } else {
       updatedPartyDetails = [...this.hearingRequestMainModel.partyDetails];
     }

@@ -369,4 +369,20 @@ export class HearingsUtils {
     }
     return false;
   }
+
+  static setHearingChannelsForPaperHearing(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
+    const updatedPartyDetails = [];
+    JSON.parse(JSON.stringify(partyDetails))
+      .forEach((party) => {
+        if (party.partyType === PartyType.IND) {
+          party.individualDetails = {
+            ...party.individualDetails,
+            preferredHearingChannel: 'NA'
+          };
+        }
+        updatedPartyDetails.push(party);
+      }
+      );
+    return updatedPartyDetails;
+  }
 }

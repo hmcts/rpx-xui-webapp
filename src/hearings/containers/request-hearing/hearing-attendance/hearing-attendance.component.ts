@@ -135,24 +135,32 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         const partyInHMC = partyDetails.find((party) => party.partyID === partyDetailsModel.partyID);
         if (partyInHMC) {
           (this.attendanceFormGroup.controls.parties as FormArray).push(this.patchValues({
-            partyID: partyDetailsModel.partyID,
-            partyType: partyDetailsModel.partyType,
-            partyRole: partyDetailsModel.partyRole,
+            partyID: partyInHMC.partyID,
+            partyType: partyInHMC.partyType,
+            partyRole: partyInHMC.partyRole,
             partyName: `${partyDetailsModel.individualDetails.firstName} ${partyDetailsModel.individualDetails.lastName}`,
-            individualDetails: partyDetailsModel.individualDetails && {
-              ...partyDetailsModel.individualDetails,
+            individualDetails: partyInHMC.individualDetails && {
+              ...partyInHMC.individualDetails,
+              firstName: partyDetailsModel.individualDetails.firstName,
+              lastName: partyDetailsModel.individualDetails.lastName,
               preferredHearingChannel: partyInHMC.individualDetails?.preferredHearingChannel
             },
-            organisationDetails: partyDetailsModel.organisationDetails,
-            unavailabilityDOW: partyDetailsModel.unavailabilityDOW,
-            unavailabilityRanges: partyDetailsModel.unavailabilityRanges
+            organisationDetails: partyInHMC.organisationDetails,
+            unavailabilityDOW: partyInHMC.unavailabilityDOW,
+            unavailabilityRanges: partyInHMC.unavailabilityRanges
           } as PartyDetailsModel) as FormGroup);
-          this.setPartyNameStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
-          this.setPartyChannelStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
+          this.setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
         }
       }
     });
     this.partiesFormArray = this.attendanceFormGroup.controls.parties as FormArray;
+  }
+
+  private setPartyAmendmentFlags(partyInHMC: PartyDetailsModel, partyDetailsModel: PartyDetailsModel): void {
+    if (this.isPaperHearing() === RadioOptions.NO){
+      this.setPartyNameStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
+      this.setPartyChannelStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
+    }
   }
 
   private setPartyNameStatus(partyId: string, status: AmendmentLabelStatus): void {
@@ -299,16 +307,18 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   }
 
   private setAmendmentFlags():void{
-    this.methodOfAttendanceChanged = HearingsUtils.doArraysDiffer(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);
-    this.noOfPhysicalAttendeesChanged = HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees, this.serviceHearingValuesModel.numberOfPhysicalAttendees);
     this.paperHearingChanged = HearingsUtils.hasPaperHearingChanged(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);
-    const defaultHearingChannel:string[] = this.serviceHearingValuesModel.hearingChannels;
+    if (this.isPaperHearing() === RadioOptions.NO) {
+      this.methodOfAttendanceChanged = HearingsUtils.doArraysDiffer(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);
+      this.noOfPhysicalAttendeesChanged = HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees, this.serviceHearingValuesModel.numberOfPhysicalAttendees);
+      const defaultHearingChannel: string[] = this.serviceHearingValuesModel.hearingChannels || [];
 
-    this.attendanceFormGroup.controls.hearingLevelChannels.value.forEach((channel: LovRefDataModel) => {
-      const isInDefaults = defaultHearingChannel.includes(channel.key);
-      const isSelected = channel.selected;
-      channel.showAmendedLabel = isInDefaults !== isSelected;
-    });
+      this.attendanceFormGroup.controls.hearingLevelChannels.value.forEach((channel: LovRefDataModel) => {
+        const isInDefaults = defaultHearingChannel.includes(channel.key);
+        const isSelected = channel.selected;
+        channel.showAmendedLabel = isInDefaults !== isSelected;
+      });
+    }
     this.hearingLevelChannels = this.attendanceFormGroup.controls.hearingLevelChannels.value;
   }
 

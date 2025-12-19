@@ -1240,4 +1240,260 @@ describe('HearingsUtils', () => {
       expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(false);
     });
   });
+
+  describe('HearingsUtils.setHearingChannelsForPaperHearing', () => {
+    it('should set preferredHearingChannel to NA for individual parties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson'
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(1);
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].individualDetails.firstName).toBe('John');
+      expect(result[0].individualDetails.lastName).toBe('Doe');
+    });
+
+    it('should not modify organisation parties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.ORG,
+          partyRole: 'respondent',
+          organisationDetails: {
+            name: 'Test Organisation',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000'
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(1);
+      expect(result[0].partyType).toBe(PartyType.ORG);
+      expect(result[0].organisationDetails.name).toBe('Test Organisation');
+      expect(result[0].individualDetails).toBeUndefined();
+    });
+
+    it('should handle mixed party types correctly', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'video'
+          }
+        },
+        {
+          partyID: 'P2',
+          partyType: PartyType.ORG,
+          partyRole: 'respondent',
+          organisationDetails: {
+            name: 'Test Organisation',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000'
+          }
+        },
+        {
+          partyID: 'P3',
+          partyType: PartyType.IND,
+          partyRole: 'witness',
+          individualDetails: {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'telephone'
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(3);
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[1].partyType).toBe(PartyType.ORG);
+      expect(result[1].individualDetails).toBeUndefined();
+      expect(result[2].individualDetails.preferredHearingChannel).toBe('NA');
+    });
+
+    it('should not mutate the original array', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson'
+          }
+        }
+      ];
+
+      const originalChannel = partyDetails[0].individualDetails.preferredHearingChannel;
+      HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(partyDetails[0].individualDetails.preferredHearingChannel).toBe(originalChannel);
+    });
+
+    it('should handle empty party details array', () => {
+      const partyDetails: PartyDetailsModel[] = [];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should preserve other individual details properties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson',
+            interpreterLanguage: 'Spanish',
+            reasonableAdjustments: ['RA001', 'RA002'],
+            vulnerableFlag: true,
+            vulnerabilityDetails: 'Test details'
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].individualDetails.interpreterLanguage).toBe('Spanish');
+      expect(result[0].individualDetails.reasonableAdjustments).toEqual(['RA001', 'RA002']);
+      expect(result[0].individualDetails.vulnerableFlag).toBe(true);
+      expect(result[0].individualDetails.vulnerabilityDetails).toBe('Test details');
+    });
+
+    it('should handle individual parties with undefined preferredHearingChannel', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: undefined
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+    });
+
+    it('should handle individual parties with null preferredHearingChannel', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: null
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+    });
+
+    it('should preserve unavailability ranges and other party properties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'video'
+          },
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2023-12-01T00:00:00.000Z',
+              unavailableToDate: '2023-12-10T00:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY
+            }
+          ],
+          unavailabilityDOW: null
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].unavailabilityRanges).toEqual(partyDetails[0].unavailabilityRanges);
+      expect(result[0].unavailabilityDOW).toBeNull();
+    });
+
+    it('should handle multiple individual parties with different hearing channels', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson'
+          }
+        },
+        {
+          partyID: 'P2',
+          partyType: PartyType.IND,
+          partyRole: 'respondent',
+          individualDetails: {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'video'
+          }
+        },
+        {
+          partyID: 'P3',
+          partyType: PartyType.IND,
+          partyRole: 'witness',
+          individualDetails: {
+            firstName: 'Bob',
+            lastName: 'Johnson',
+            preferredHearingChannel: 'telephone'
+          }
+        }
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(3);
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[1].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[2].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].individualDetails.firstName).toBe('John');
+      expect(result[1].individualDetails.firstName).toBe('Jane');
+      expect(result[2].individualDetails.firstName).toBe('Bob');
+    });
+  });
 });

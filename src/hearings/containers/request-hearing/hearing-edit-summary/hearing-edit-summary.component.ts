@@ -226,6 +226,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (!!this.hearingRequestMainModel?.partyDetails) {
       partyDetailsModels = [...this.hearingRequestMainModel.partyDetails];
       partyDetailsModels.sort((a, b) => this.defaultStringSort(a.partyID, b.partyID));
+      if (this.hearingRequestMainModel.hearingDetails?.isPaperHearing) {
+        partyDetailsModels = HearingsUtils.setHearingChannelsForPaperHearing(partyDetailsModels);
+      }
     }
 
     if (!!this.hearingRequestToCompareMainModel?.partyDetails) {

@@ -13,10 +13,8 @@ test.describe("Verify creating and updating a case works as expected", () => {
     createCasePage,
     caseListPage,
     caseDetailsPage,
-    page,
-    
-
-  }) => {
+    page
+ }) => {
     let caseNumber: string;
     const textField0 = faker.lorem.word();
     // Create Case

@@ -1,0 +1,171 @@
+stateDiagram-v2
+direction LR
+CVEs: Fix Packages/CVEs
+Test: Update tests
+Libraries: Reconcile toolkit, nodelib and common lib
+Hooks: Set up githooks
+Pipelines: Reconcile pipelines
+SetupLint: Update linting
+Steady: Steady State
+
+State SetupLint {
+    direction LR
+    Prettier: Set up prettier script
+    PrettierUpdate: Review prettier rules
+    PrettierRun: Fix prettier issues
+    ESLint: Review ESLint rules and packages
+    ESLintRun: Fix updated ESLint issues
+    SassLint: Add sasslint
+    SassLintRun: Fix sasslint issues
+    Fortify: Fix fortify issues
+    Sonar: Remove Sonar exclusions
+    SonarRun: Fix Sonar issues
+
+    [*] --> Prettier
+    Prettier --> PrettierUpdate
+    PrettierUpdate --> PrettierRun
+    PrettierRun --> [*]
+    [*] --> ESLint
+    ESLint --> ESLintRun
+    ESLintRun --> [*]
+    [*] --> SassLint
+    SassLint --> SassLintRun
+    SassLintRun --> [*]
+    [*] --> Fortify
+    Fortify --> [*]
+    [*] --> Sonar
+    Sonar --> SonarRun
+    SonarRun --> [*]
+}
+
+State Libraries {
+    direction LR
+    TBC: Merge Libraries repos where appropriate to reduce overheads
+}
+
+State Hooks {
+    direction LR
+    Precommit: Set pre-commit hook to lint and smoke test
+    Prepush: Set pre-push hook to unit test and regression test
+}
+
+State Pipelines {
+    direction LR
+    PR: PR pipeline uplift
+    Nightly: Nightly pipeline uplift
+    Master: Master pipeline uplift
+}
+
+State CVEs {
+    direction LR
+    Supressions: Remove all supressions
+    Resolutions: Remove all package.json resolutions
+    Packages: Update all packages (within reason)
+    RemoveDead: Remove unused packages
+    DevDependencies: Ensure dependencies and dev dependencies are correct
+    Deprecations: Remove deprecated packages and replace with supported alternatives
+    Pinall: Pin all package versions
+    Scripts: Remove unused package.json scripts
+
+    [*] --> Deprecations
+    [*] --> RemoveDead
+    [*] --> Resolutions
+    [*] --> DevDependencies
+    [*] --> Scripts
+    DevDependencies --> Packages
+    Resolutions --> Packages
+    RemoveDead --> Packages
+    Deprecations --> Packages
+    Packages --> Supressions
+    Packages --> Pinall
+    Scripts --> [*]
+    Supressions --> [*]
+    Pinall --> [*]
+}
+
+State Test {
+    direction LR
+    Mock: Enhance mocks
+    RemoveTests: Remove unused test files
+    UpdateScripts: Remove unused tests scripts from package.json
+
+    IdUnit: Identify unit tests
+    RemUnit: Remediate unit tests
+    [*] --> IdUnit
+    IdUnit --> RemUnit
+    IdUnit --> RemoveTests
+    RemUnit --> [*]
+    
+    RemSmoke: Remediate smoke tests
+    [*] --> RemSmoke
+    RemSmoke --> [*]
+
+    IdFunc: Identify functional tests
+    RemFunc: Remediate functional tests
+    [*] --> IdFunc
+    IdFunc --> RemFunc
+    IdFunc --> RemoveTests
+    RemFunc --> [*]
+
+    CreateRegression: Create regression suite
+    [*] --> Mock
+    Mock --> CreateRegression
+    CreateRegression --> [*]
+
+    IdInt: Identify integration tests
+    RemInt: Remediate integration tests
+    [*] --> IdInt
+    IdInt --> RemoveTests
+    Mock --> RemInt
+    RemInt --> RemoveTests
+    RemInt --> [*]
+
+    
+    RemoveTests --> UpdateScripts
+    UpdateScripts --> [*]
+}
+
+[*] --> CVEs 
+[*] --> Test
+[*] --> SetupLint
+SetupLint --> Hooks
+SetupLint --> Pipelines
+CVEs --> Libraries
+CVEs --> Steady
+Test --> Hooks
+Test --> Pipelines
+Pipelines --> Steady
+Hooks --> Steady
+Libraries --> Steady
+Steady --> Steady
+
+State Steady {
+    direction LR
+    Horizon: Horizon scanning for package updates
+    Renovate
+    CVE: Resolve CVEs
+    Issue: Live service issues
+
+    State CVE {
+        Ticket: CVE reported
+        Resolve: Where possible update top level package
+        Large: Add ticket to backlog to upgrade package
+        Supress: Add supression or package.json resolution
+        Small: Update version and raise PR
+
+        Ticket
+        Ticket --> Resolve
+        Resolve --> Large : Major update
+        Large --> Supress
+        Resolve --> Small : Minor and patch update
+    }
+
+    State Issue {
+        Bug: Issue reported
+        Fix: Develop fix for issue
+        Regression: Add/update regression test for issue
+
+        Bug --> Fix
+        Fix --> Regression
+    }
+}

@@ -95,12 +95,7 @@ resource "azurerm_resource_group" "rg" {
   tags = var.common_tags
 }
 
-# Logic App for Monthly KQL Reports
-data "azurerm_key_vault_secret" "logic_app_email_recipients" {
-  count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = var.welsh_email_address_key
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-}
+
 
 // Removed Azure Communication Services (ACS) resources; standardized on Office 365 Outlook connector for email.
 

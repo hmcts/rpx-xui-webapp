@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Cookie } from 'playwright-core';
-import { UserUtils } from '../../E2E/utils/user.utils.js';
+import { UserUtils } from '../E2E/utils/user.utils.js';
 
 export interface LoadedSession {
   email: string;
@@ -30,9 +30,11 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
       }
     } catch (e) {
       console.warn(`SessionUtils: failed parsing storage state for ${userIdentifier}:`, e);
+      throw e;
     }
   } else {
     console.warn(`SessionUtils: storage file missing for ${userIdentifier}: ${storageFile}`);
+    throw new Error(`Storage file missing for ${userIdentifier}`);
   }
   return { email, cookies, storageFile };
 }

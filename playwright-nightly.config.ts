@@ -38,6 +38,7 @@ module.exports = defineConfig({
 
   /* Opt out of parallel tests on CI. */
   workers: workerCount,
+  globalSetup: require.resolve('./playwright_tests_new/integration/playwright.global.setup.ts'),
 
   reporter: [
     [process.env.CI ? 'dot' : 'list'],

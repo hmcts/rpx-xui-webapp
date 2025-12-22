@@ -1,25 +1,116 @@
 import { Page } from "@playwright/test";
 import { Base } from "../../base";
+import { TableUtils } from "@hmcts/playwright-common";
 
+const tableUtils = new TableUtils();
+
+export interface CaseFlagItem {
+  flagType: string;
+  comments: string;
+  creationDate: string;   // e.g., "09 Jul 2025"
+  lastModified: string;   
+  status: string;         
+}
 
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator("exui-case-details-home");
   readonly createCaseSuccessMessage = this.page.locator('.alert-message');
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
-
-  //Case flags
   readonly caseActionsDropdown = this.page.locator('#next-step');
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
+
+  //Case flags
+  readonly caseFlagCommentBox = this.page.locator('#flagComments');
+  readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
+
+  readonly commonRadioButtons = this.page.locator('.govuk-radios__item');
   readonly caseAlertMessage = this.page.locator('.hmcts-banner--success .alert-message');
+  readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
+  readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
+
   
   constructor(page: Page) {
     super(page);
   }
+  async getPartyNameTable(partyName: string) {
+    return this.page.getByRole('table', { name: partyName, exact: true })
+    //locator(`table:has(caption:has-text("${partyName}"))`);
+  }
+
+  async checkCaseFlagDetails(caseFlagItem: CaseFlagItem, partyName: string): Promise<Record<string, string> | null> {
+    const table = await tableUtils.mapExuiTable(await this.getPartyNameTable(partyName));
+    console.log('Mapped case flag table:', table);
+
+    // Map CaseFlagItem keys to actual table column headers
+    const columnMap: Record<string, string> = {
+      flagType: 'Party level flags',
+      comments: 'Comments',
+      creationDate: 'Creation date',
+      lastModified: 'Last modified',
+      status: 'Flag status',
+    };
+
+    const normalize = (v: any) => (v === undefined || v === null) ? '' : String(v).trim();
+
+    // Find the first row that matches all provided fields in caseFlagItem
+    const matchingRow = table.find(row => {
+      return Object.entries(columnMap).every(([key, header]) => {
+        const expected = (caseFlagItem as any)[key];
+        // If the expected value is empty/undefined, skip matching that field
+        if (expected === undefined || expected === null || expected === '') return true;
+        const actual = normalize(row[header]);
+        return normalize(expected) === actual;
+      });
+    }) as Record<string, string> | undefined;
+
+    console.log('Case flag matching row:', matchingRow ?? null);
+    return matchingRow ?? null;
+  }
+
   async selectCaseAction(action: string) {
+    await this.caseActionGoButton.waitFor();
     await this.caseActionsDropdown.selectOption(action);
     await this.caseActionGoButton.click();
+    await this.exuiSpinnerComponent.wait();
   } 
+
+
+  async selectRandomRadioOption() {    
+    const optionCount = await this.commonRadioButtons.count();
+    const randomIndex = Math.floor(Math.random() * (optionCount-1));
+    await this.commonRadioButtons.nth(randomIndex).getByRole('radio').check();
+    await this.submitCaseFlagButton.click();
+    await this.exuiSpinnerComponent.wait();
+  }
+
+    async selectFirstRadioOption() {    
+    await this.commonRadioButtons.first().getByRole('radio').check();
+    await this.submitCaseFlagButton.click();
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  async todaysDateFormatted(): Promise<string> {
+  return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });    
+  }
+
+  // Case flag methods
+  async addFlagComment(comment: string) {    
+    await this.caseFlagCommentBox.fill(comment);
+    await this.submitCaseFlagButton.click();
+  }
+
+  async selectFlagTarget(target: string, flagType: string) {    
+    await this.page.getByLabel(`${target} (${target})`).check();
+    await this.submitCaseFlagButton.click();
+    await this.commonRadioButtons.getByLabel(flagType).waitFor({state:'visible'});
+    await this.commonRadioButtons.getByLabel(flagType).check();
+    await this.submitCaseFlagButton.click();
+    await this.selectFirstRadioOption();
+    await this.addFlagComment(`${flagType} ${target}`);
+    await this.submitCaseFlagButton.click();
+    await this.exuiSpinnerComponent.wait();
+  }
 
   async selectCaseDetailsTab(tabName: string) {
     await this.caseDetailsTabs.filter({ hasText: tabName }).click()

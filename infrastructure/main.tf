@@ -115,146 +115,6 @@ resource "azurerm_log_analytics_workspace" "logic_app_workspace" {
   tags                = var.common_tags
 }
 
-resource "azurerm_logic_app_workflow" "kql_report_workflow" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-kql-report-${var.env}"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  workflow_parameters = {
-    "$connections" = jsonencode({
-      defaultValue = {
-        azuremonitorlogs = {
-          connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.id : ""
-          connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.name : ""
-          id             = "${local.managed_api_base_id}/azuremonitorlogs"
-        }
-        office365 = {
-          connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.id : ""
-          connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.name : ""
-          id             = "${local.managed_api_base_id}/office365"
-        }
-      }
-      type = "Object"
-    })
-  }
-
-  tags = var.common_tags
-}
-
-resource "azurerm_logic_app_trigger_recurrence" "monthly_trigger" {
-  count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = "monthly-recurrence"
-  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
-
-  frequency = var.logic_app_schedule_frequency
-  interval  = var.logic_app_schedule_interval
-  # 1st of every month at 09:00 UTC
-  start_time = formatdate("YYYY-MM-18'T'13:00:00Z", timestamp())
-}
-
-resource "azurerm_logic_app_action_custom" "run_kql_query" {
-  count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = "run-kql-query"
-  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
-
-  body = jsonencode({
-    inputs = {
-      host = {
-        connection = {
-          name = "@parameters('$connections')['azuremonitorlogs']['connectionId']"
-        }
-      }
-      method = "post"
-      path   = "/queryData"
-      body = {
-        queries = [{
-          query     = var.logic_app_kql_query
-          workspace = azurerm_log_analytics_workspace.logic_app_workspace.0.id
-        }]
-      }
-    }
-    metadata = {
-      flowSystemMetadata = {
-        swaggerOperationId = "QueryData"
-      }
-    }
-    runAfter = {}
-    type     = "ApiConnection"
-  })
-
-  depends_on = [azurerm_logic_app_trigger_recurrence.monthly_trigger]
-}
-
-resource "azurerm_logic_app_action_custom" "create_html_table_kql" {
-  count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = "create-html-table"
-  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
-
-  body = jsonencode({
-    type = "Table"
-    inputs = {
-      from   = "@body('run-kql-query')?['tables']?[0]?['rows']"
-      format = "HTML"
-      columns = [
-        {
-          header = "Column 1"
-          value  = "@item()[0]"
-        },
-        {
-          header = "Column 2"
-          value  = "@item()[1]"
-        }
-      ]
-    }
-    runAfter = {
-      "run-kql-query" = ["Succeeded"]
-    }
-  })
-
-  depends_on = [azurerm_logic_app_action_custom.run_kql_query]
-}
-
-resource "azurerm_logic_app_action_custom" "send_email" {
-  count        = var.welsh_reporting_enabled ? 1 : 0
-  name         = "send-email"
-  logic_app_id = azurerm_logic_app_workflow.kql_report_workflow.0.id
-
-  body = jsonencode({
-    metadata = {
-      flowSystemMetadata = {
-        swaggerOperationId = "SendEmailV2"
-      }
-    }
-    type = "ApiConnection"
-    inputs = {
-      host = {
-        connection = {
-          name = "@parameters('$connections')['office365']['connectionId']"
-        }
-      }
-      method = "post"
-      path   = "/SendEmailV2"
-      parameters = {
-        To      = "@{join(${jsonencode(local.welsh_emails)}, ';')}"
-        Subject = "Monthly KQL Report - ${var.product} ${var.env}"
-        Body    = "@concat('<html><body><h3>Monthly KQL Report</h3>', body('create-html-table'), '</body></html>')"
-      }
-    }
-    runAfter = {
-      "create-html-table" = ["Succeeded"]
-    }
-  })
-
-  depends_on = [
-    azurerm_logic_app_action_custom.create_html_table_kql,
-    azurerm_api_connection.office365_outlook
-  ]
-}
 
 # API Connections for Logic App
 resource "azurerm_api_connection" "azure_monitor" {
@@ -269,13 +129,7 @@ resource "azurerm_api_connection" "azure_monitor" {
   }
 }
 
-# Role Assignment for Logic App to access Log Analytics
-resource "azurerm_role_assignment" "logic_app_log_analytics_reader" {
-  count                = var.welsh_reporting_enabled ? 1 : 0
-  scope                = azurerm_log_analytics_workspace.logic_app_workspace.0.id
-  role_definition_name = "Log Analytics Reader"
-  principal_id         = azurerm_logic_app_workflow.kql_report_workflow.0.identity[0].principal_id
-}
+
 
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
@@ -318,6 +172,11 @@ resource "azurerm_logic_app_workflow" "welsh_report_workflow" {
           connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.id : ""
           connectionName = var.welsh_reporting_enabled ? azurerm_api_connection.azure_monitor.0.name : ""
           id             = "${local.managed_api_base_id}/azuremonitorlogs"
+          connectionProperties = {
+            authentication = {
+              type = "ManagedServiceIdentity"
+            }
+          }
         }
         office365 = {
           connectionId   = var.welsh_reporting_enabled ? azurerm_api_connection.office365_outlook.0.id : ""

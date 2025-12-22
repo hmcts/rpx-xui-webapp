@@ -54,41 +54,7 @@ variable "welsh_email_address_key" {
   type        = string
 }
 
-# Logic App Configuration for KQL Reports (gated by welsh_reporting_enabled)
 
-variable "logic_app_schedule_interval" {
-  default     = 1
-  description = "Interval for Logic App recurrence (in months)"
-  type        = number
-}
-
-variable "logic_app_schedule_frequency" {
-  default     = "Month"
-  description = "Frequency for Logic App recurrence"
-  type        = string
-}
-
-
-
-// Removed ACS connection string variable; standardized on Office 365 Outlook connector for email.
-
-variable "logic_app_log_analytics_workspace_name" {
-  default     = "hmcts-prod"
-  description = "Log Analytics workspace name for KQL queries"
-  type        = string
-}
-
-variable "logic_app_log_analytics_resource_group" {
-  default     = "oms-automation"
-  description = "Resource group for Log Analytics workspace"
-  type        = string
-}
-
-variable "logic_app_kql_query" {
-  default     = "requests | where timestamp > ago(30d) | summarize count() by bin(timestamp, 1d) | render columnchart"
-  description = "KQL query to execute and email results"
-  type        = string
-}
 
 # Environment-specific Log Analytics workspace mappings
 variable "env_log_analytics_workspace_map" {

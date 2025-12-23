@@ -218,29 +218,30 @@ resource "azurerm_logic_app_action_custom" "welsh_kql_query" {
     inputs = {
       body = {
         queries = [{
-          query     = "let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-let endTime = startofmonth(now());
-let FilteredRequests = requests
-| where timestamp between (startTime .. endTime)
-| where url has \"/api/translation/cy\"
-| extend day = startofday(timestamp);
-let UniqueSessionsPerDay = FilteredRequests
-| where isnotempty(session_Id)
-| summarize by day, session_Id
-| summarize SessionCount = count() by day;
-let HasNoSession = FilteredRequests
-| where isempty(session_Id)
-| summarize HasMissingSessions = count() by day
-| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-UniqueSessionsPerDay
-| join kind=fullouter HasNoSession on day
-| extend
-    SessionCount = coalesce(SessionCount, 0),
-    NoSessionAddition = coalesce(NoSessionAddition, 0)
-| extend TotalSessions = SessionCount + NoSessionAddition
-| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions
-| order by Date asc
-"
+          query     = join("\n", [
+            "let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));",
+            "let endTime = startofmonth(now());",
+            "let FilteredRequests = requests",
+            "| where timestamp between (startTime .. endTime)",
+            "| where url has \"/api/translation/cy\"",
+            "| extend day = startofday(timestamp);",
+            "let UniqueSessionsPerDay = FilteredRequests",
+            "| where isnotempty(session_Id)",
+            "| summarize by day, session_Id",
+            "| summarize SessionCount = count() by day;",
+            "let HasNoSession = FilteredRequests",
+            "| where isempty(session_Id)",
+            "| summarize HasMissingSessions = count() by day",
+            "| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);",
+            "UniqueSessionsPerDay",
+            "| join kind=fullouter HasNoSession on day",
+            "| extend",
+            "    SessionCount = coalesce(SessionCount, 0),",
+            "    NoSessionAddition = coalesce(NoSessionAddition, 0)",
+            "| extend TotalSessions = SessionCount + NoSessionAddition",
+            "| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions",
+            "| order by Date asc"
+          ])
           workspace = azurerm_log_analytics_workspace.logic_app_workspace.0.id
         }]
       }

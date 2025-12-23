@@ -20,17 +20,7 @@ output "appInsightsConnectionString" {
   sensitive = true
 }
 
-output "logicAppWorkflowId" {
-  value = var.welsh_reporting_enabled ? azurerm_logic_app_workflow.kql_report_workflow.0.id : null
-}
 
-output "logicAppWorkflowName" {
-  value = var.welsh_reporting_enabled ? azurerm_logic_app_workflow.kql_report_workflow.0.name : null
-}
-
-output "logicAppTriggerName" {
-  value = var.welsh_reporting_enabled ? azurerm_logic_app_trigger_recurrence.monthly_trigger.0.name : null
-}
 
 output "welshLogicAppWorkflowId" {
   value = var.welsh_reporting_enabled ? azurerm_logic_app_workflow.welsh_report_workflow.0.id : null

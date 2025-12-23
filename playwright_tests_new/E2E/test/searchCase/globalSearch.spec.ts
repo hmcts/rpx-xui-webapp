@@ -2,11 +2,10 @@ import { faker } from "@faker-js/faker";
 import { test } from "../../fixtures";
 
 
-test.describe("IDAM login using credentials from appTestConfig @KS", () => {
+test.describe("IDAM login using credentials from appTestConfig ", () => {
   test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
-    // this should be a DIVORCE  user who can see 16 Digit Search link on TopRight
-    // And who can see the  'Find Case' link  and 'Search' link on the TopMenu
+    // MC User who can see the 'Search Case' link.
     const { email, password } = userUtils.getUserCredentials("SEARCH_EMPLOYMENT_CASE");
     await idamPage.login({
       username: email,
@@ -15,18 +14,16 @@ test.describe("IDAM login using credentials from appTestConfig @KS", () => {
   });
 
 
-  test("Verify Global Search - ET @KS", async ({ page, validatorUtils, globalSearchPage,caseListPage,createCasePage }) => {
-    let caseNumber = " ";
-    let textField0 = faker.lorem.word();
+  test("Verify Global Search - ET ", async ({ page, validatorUtils, globalSearchPage,caseListPage,createCasePage }) => {
+    let caseNumber = "";
 
     await test.step("Create a new case - (ET) ", async () => {
-      //await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
-      //expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
-      //caseId = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
-      let caseNumber = "1744822619841345";
-      //validatorUtils.validateDivorceCaseNumber(caseNumber);
+      // TODO case should be created from API script.
+      caseNumber = "1741185283110600";
+            //validatorUtils.validateDivorceCaseNumber(caseNumber);
     });
+    await globalSearchPage.performGlobalSearchFor(caseNumber)});
 
-    await globalSearchPage.search(caseNumber , page)});
+    await globalSearchPage.searchResultsPageHeading.isVisible();
 
 });

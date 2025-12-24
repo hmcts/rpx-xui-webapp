@@ -15,7 +15,7 @@ const JUDICIAL_REF_URL = getConfigValue(SERVICES_CASE_JUDICIAL_REF_PATH);
 
 // judicial person search
 export async function postFindPersonSearch(req: EnhancedRequest, res: Response) {
-  if (!req.body || !req.body.searchOptions || !req.body.searchOptions.searchTerm) {
+  if (!req?.body?.searchOptions?.searchTerm) {
     res.status(400);
     res.send('searchOptions body missing. searchTerm is missing');
     return;

@@ -198,7 +198,7 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       actorIdType: 'IDAM',
       actorId: allocateRoleData.person.id,
       beginTime: new Date(),
-      endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
+      endTime: allocateRoleData.period?.endDate ? allocateRoleData.period.endDate
         : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
       // TODO: Include notes once we have that information
       notes: [{

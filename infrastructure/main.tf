@@ -119,6 +119,13 @@ resource "azurerm_api_connection" "azure_monitor" {
   managed_api_id      = "${local.managed_api_base_id}/azuremonitorlogs"
   display_name        = "Azure Monitor Logs Connection"
 
+  parameter_values = {
+    "token:clientId" = ""
+    "token:grantType" = "client_credentials"
+    "token:clientSecret" = ""
+    "token:TenantId" = data.azurerm_client_config.current.tenant_id
+  }
+
   lifecycle {
     ignore_changes = [parameter_values]
   }

@@ -80,7 +80,7 @@ export class WorkCaseListComponent implements OnChanges {
       this.dataSource$ = new BehaviorSubject(this.cases);
       this.setSelectedCase(this.selectCaseFromUrlHash(this.router.url));
       for (const item of this.cases) {
-        if (item.actions && item.actions.length) {
+        if (item.actions?.length) {
           this.showManage[item.id] = item.actions.length > 0;
         }
       }
@@ -206,13 +206,13 @@ export class WorkCaseListComponent implements OnChanges {
   private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
     const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
     return cases.map((c: Case) => {
-      if (c.assignee && c.assignee.length && caseworkers && caseworkers.length > 0) {
+      if (c.assignee?.length && caseworkers?.length > 0) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
           c.actorName = `${actorName.firstName} ${actorName.lastName}`;
         }
       }
-      if (c.location_id && c.location_id.length) {
+      if (c.location_id?.length) {
         const location = this.locations.find((l) => l.id === c.location_id);
         if (location) {
           c.location_name = location.locationName;

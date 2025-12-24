@@ -25,12 +25,10 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
     createAmRoleResponse = await specificAccessRequestCreateAmRole(req, res);
     status = createAmRoleResponse.status;
     data = createAmRoleResponse.data;
-    if (!createAmRoleResponse || createAmRoleResponse.status !== 201) {
+    if (createAmRoleResponse?.status !== 201) {
       return res.status(createAmRoleResponse.status).send(createAmRoleResponse);
     }
-    if (createAmRoleResponse && data.roleAssignmentResponse
-      && data.roleAssignmentResponse.requestedRoles
-      && data.roleAssignmentResponse.requestedRoles[0].attributes) {
+    if (createAmRoleResponse && data?.roleAssignmentResponse?.requestedRoles?.[0]?.attributes) {
       const attributes = data.roleAssignmentResponse.requestedRoles[0].attributes;
       const roleAssignmentId = data.roleAssignmentResponse.requestedRoles[0].id;
       const roleCategory = data.roleAssignmentResponse.requestedRoles[0].roleCategory;
@@ -44,18 +42,18 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       const taskName = 'Review Specific Access Request';
       const taskResponse = await postCreateTask(req, next,
         { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
-      if (!taskResponse || taskResponse.status !== 204) {
+      if (taskResponse?.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
         const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
         const deleteBody = { assignmentId };
         const deleteResponse = await sendDelete(`${basePath}/${assignmentId}`, deleteBody, req);
-        if (!deleteResponse || deleteResponse.status !== 204) {
+        if (deleteResponse?.status !== 204) {
           return res.status(deleteResponse.status).send(deleteResponse);
         }
         return res.status(taskResponse.status).send(taskResponse);
       }
-      if (req && req.session && req.session.passport && req.session.passport.user.userinfo) {
+      if (req?.session?.passport?.user?.userinfo) {
         await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
       }
       //do not await. This is a fire and forget call
@@ -139,17 +137,17 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
 export async function orchestrationRequestMoreInformation(req: EnhancedRequest, res, next: NextFunction): Promise<Response> {
   try {
     const creationOfDenyRoleResponse: AxiosResponse = await createSpecificAccessDenyRole(req, res, next);
-    if (!creationOfDenyRoleResponse || creationOfDenyRoleResponse.status !== 201) {
-      return creationOfDenyRoleResponse && creationOfDenyRoleResponse.status
+    if (creationOfDenyRoleResponse?.status !== 201) {
+      return creationOfDenyRoleResponse?.status
         ? res.status(creationOfDenyRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteSpecificAccessRequestedRole(req, res, next);
     const rolesToDelete: RoleAssignment[] = creationOfDenyRoleResponse.data.roleAssignmentResponse.requestedRoles;
-    if (!deletionResponse || deletionResponse.status !== 204) {
+    if (deletionResponse?.status !== 204) {
       return deleteSpecificAccessRoles(req, res, next, deletionResponse, rolesToDelete);
     }
     const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
-    if (!taskResponse || taskResponse.status !== 204) {
+    if (taskResponse?.status !== 204) {
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
 

@@ -37,7 +37,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     let url: string = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (window?.history?.state?.returnUrl) {
       // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
       url = window.history.state.returnUrl.split('#')[0];
     }
@@ -94,7 +94,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     } else if (roles.length) {
       const roleCategories = this.taskWithOwnPermission(roles);
       // if there is only one role with relevant permissions, use that role
-      if (roleCategories && roleCategories.length === 1) {
+      if (roleCategories?.length === 1) {
         return roleCategories[0].toUpperCase();
       // if the user has a role that matches the relevant task role category
       } else if (roleCategories.includes(userRoleCategory)) {

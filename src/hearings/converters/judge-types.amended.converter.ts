@@ -9,8 +9,8 @@ export class JudgeTypesAmendedConverter implements IsAmendedConverter {
     return hearingState$.pipe(map((state) => {
       const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
       const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objA = objAPanelRequirements && objAPanelRequirements.roleType;
-      const objB = objBPanelRequirements && objBPanelRequirements.roleType;
+      const objA = objAPanelRequirements?.roleType;
+      const objB = objBPanelRequirements?.roleType;
       return !_.isEqual(objA, objB);
     }));
   }

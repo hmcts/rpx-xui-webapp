@@ -107,7 +107,7 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   // Assign actions to the tasks on the data from the API.
-  if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
+  if (req.body?.searchRequest?.pagination_parameters) {
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;
@@ -136,7 +136,7 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
   const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
   tasks.forEach((task) => {
-    if (task && task.permissions && task.permissions.values) {
+    if (task?.permissions?.values) {
       task.permissions.values = getLoweredStringList(task.permissions.values);
     }
   });
@@ -159,7 +159,7 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
             ViewType.ACTIVE_TASKS_ASSIGNED_CURRENT : ViewType.ACTIVE_TASKS_ASSIGNED_OTHER;
         }
       }
-      const permissions = task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
+      const permissions = task.permissions?.values && Array.isArray(task.permissions.values)
         ? task.permissions.values : task.permissions;
       let actions: Action[] = getActionsByRefinedPermissions(thisView, permissions);
       // EUI-5549 - to do with cases
@@ -237,7 +237,7 @@ export function getSessionCaseworkerInfo(serviceIds: string[], caseworkersByServ
   const servicesNotInSession: string[] = [];
   serviceIds.forEach((thisService) => {
     const currentCaseworkers = caseworkersByServices.find((caseworkerServiceList) => caseworkerServiceList.service === thisService);
-    if (currentCaseworkers && currentCaseworkers.caseworkers) {
+    if (currentCaseworkers?.caseworkers) {
       caseworkersInSession.push(currentCaseworkers);
     } else {
       servicesNotInSession.push(thisService);
@@ -566,9 +566,9 @@ export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {
   if (domain === PersonRole.ALL) {
-    return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return person?.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
-  return person && person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+  return person?.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
 export async function handlePost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
@@ -602,7 +602,7 @@ export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment
       roleAssignment.roleName === 'specific-access-requested' ||
       roleAssignment.roleName === 'specific-access-denied'
     ) &&
-    (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
+    (roleAssignment.attributes?.substantive !== 'Y')
   );
 }
 
@@ -676,7 +676,7 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
 
 // Only called in test function - why is it here?
 export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter((roleAssignment) => roleAssignment.attributes && roleAssignment.attributes.baseLocation
+  return roleAssignments.filter((roleAssignment) => roleAssignment.attributes?.baseLocation
     && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
     .map((roleAssignment) => roleAssignment.attributes.baseLocation)
     .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
@@ -709,7 +709,7 @@ export function constructRoleAssignmentQuery(
           ...param, values: param.values.length ? [param.values] : []
         };
       })
-      .filter((param: SearchTaskParameter) => param.values && param.values.length)
+      .filter((param: SearchTaskParameter) => param.values?.length)
       .reduce((acc: any, param: SearchTaskParameter) => {
         if (param.key === 'jurisdiction') {
           const attributes = acc.attributes || {};
@@ -734,7 +734,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
     { key: 'roleType', values: 'ORGANISATION', operator: '' }];
   return {
     queryRequests: [newSearchTaskParameters
-      .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values && param.values.length)
+      .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values?.length)
       .map((param: SearchTaskParameter) => {
         if (param.key === 'location_id') {
           param.key = 'baseLocation';
@@ -781,8 +781,7 @@ export function mapRoleType(roleType: string): string {
 
 export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
   return locations.length === 0 ? cases : cases.filter((caseDetail: Case) =>
-    caseDetail.case_data.caseManagementLocation &&
-    caseDetail.case_data.caseManagementLocation.baseLocation &&
+    caseDetail.case_data.caseManagementLocation?.baseLocation &&
     locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation));
 }
 
@@ -797,7 +796,7 @@ export function mapCasesFromData(
   const roleCaseList = [];
   caseDetails.forEach((caseDetail) => {
     const rolesForCaseId = roleAssignmentList.filter(
-      (role) => role.attributes && caseDetail.id.toString() === role.attributes.caseId
+      (role) => caseDetail.id.toString() === role.attributes?.caseId
     );
     rolesForCaseId.forEach((roleAssignment) => {
       const roleCase = mapRoleCaseData(roleAssignment, caseDetail, newRoleAssignmentList);
@@ -825,9 +824,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     jurisdiction: caseDetail.jurisdiction,
     jurisdictionId: caseDetail.jurisdiction,
     role_category: roleAssignment.roleCategory,
-    location_id: caseDetail.case_data &&
-      caseDetail.case_data.caseManagementLocation &&
-      caseDetail.case_data.caseManagementLocation.baseLocation ?
+    location_id: caseDetail.case_data?.caseManagementLocation?.baseLocation ?
       caseDetail.case_data.caseManagementLocation.baseLocation : null,
     startDate: getStartDate(roleAssignment),
     access: getGrantType(roleAssignment),
@@ -840,8 +837,7 @@ export function mapRoleCaseData(roleAssignment: RoleAssignment, caseDetail: Case
     specificAccessReason: roleAssignment.attributes.specificAccessReason,
     requestDate: roleAssignment.attributes.requestDate,
     reviewerRoleCategory: roleAssignment.attributes.reviewerRoleCategory,
-    next_hearing_date: caseDetail.case_data && caseDetail.case_data.nextHearingDetails &&
-      caseDetail.case_data.nextHearingDetails.hearingDateTime ? caseDetail.case_data.nextHearingDetails.hearingDateTime : null
+    next_hearing_date: caseDetail.case_data?.nextHearingDetails?.hearingDateTime ? caseDetail.case_data.nextHearingDetails.hearingDateTime : null
   };
 }
 
@@ -849,7 +845,7 @@ export function getCaseCategory(caseDetail: Case): string {
   if (caseDetail.case_data?.caseManagementCategory?.value?.label) {
     return caseDetail.case_data.caseManagementCategory.value.label;
   }
-  return caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '';
+  return caseDetail.case_data?.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '';
 }
 
 export function checkIsNew(roleAssignment: RoleAssignment, newRoleAssignmentList: RoleAssignment[]): boolean {
@@ -936,9 +932,9 @@ export function getAccessType(roleAssignment: RoleAssignment) {
 
 export function getCaseName(caseDetail: Case): string {
   let caseName: string = '';
-  if (caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal) {
+  if (caseDetail.case_data?.hmctsCaseNameInternal) {
     caseName = caseDetail.case_data.hmctsCaseNameInternal;
-  } else if (caseDetail.case_data && caseDetail.case_data.caseNameHmctsInternal) {
+  } else if (caseDetail.case_data?.caseNameHmctsInternal) {
     caseName = caseDetail.case_data.caseNameHmctsInternal;
   } else {
     caseName = caseDetail.id;
@@ -969,7 +965,7 @@ export function getCaseDataFromRoleAssignments(roleAssignments: RoleAssignment[]
 
 export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssignment[] {
   return roleAssignments
-    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.substantive === 'Y');
+    .filter((roleAssignment: RoleAssignment) => roleAssignment.attributes?.substantive === 'Y');
 }
 
 // Note: array type may need to be changed depending on where pagination called

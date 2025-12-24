@@ -140,7 +140,7 @@ export class BookingDateComponent implements OnInit {
       if (!this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).valid) {
         this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.NO_SELECTION });
       }
-      switch (this.formGroup.errors && this.formGroup.errors.errorType) {
+      switch (this.formGroup.errors?.errorType) {
         case BookingDateFormErrorMessage.PAST_DATE_CHECK:
           this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.PAST_DATE_CHECK_FAILED });
           break;

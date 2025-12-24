@@ -127,7 +127,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     }
     return res.status(200).send(searchResult);
   } catch (error) {
-    if (error && error.status === 404) {
+    if (error?.status === 404) {
       return res.status(200).send(searchResult);
     }
     next(error);
@@ -189,9 +189,9 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.specificAccessReason ?
+    notes: roleAssignment.attributes?.specificAccessReason ?
       getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
-    requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
+    requestedRole: roleAssignment.attributes?.requestedRole ?
       roleAssignment.attributes.requestedRole : null
   }));
 }

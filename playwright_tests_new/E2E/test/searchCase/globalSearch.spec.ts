@@ -1,29 +1,34 @@
-import { faker } from "@faker-js/faker";
-import { test } from "../../fixtures";
-
+import { test,expect } from "../../fixtures";
 
 test.describe("IDAM login using credentials from appTestConfig ", () => {
-  test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
+  test.beforeEach(async ({ idamPage, globalSearchPage,page, userUtils, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
     // MC User who can see the 'Search Case' link.
-    const { email, password } = userUtils.getUserCredentials("SEARCH_EMPLOYMENT_CASE");
+    const { email, password } = userUtils.getUserCredentials("FPL_GS");
     await idamPage.login({
       username: email,
       password: password,
     });
   });
 
-
-  test("Verify Global Search - ET ", async ({ page, validatorUtils, globalSearchPage,caseListPage,createCasePage }) => {
-    let caseNumber = "";
-
-    await test.step("Create a new case - (ET) ", async () => {
-      // TODO case should be created from API script.
-      caseNumber = "1741185283110600";
-            //validatorUtils.validateDivorceCaseNumber(caseNumber);
+  test("Global Search - using a FPL Case @KSM ", async ({ page, validatorUtils, globalSearchPage,caseDetailsPage }) => {
+      let caseNumber = "";
+      await test.step("Initiate Global Search  ", async () => {
+      // TODO New Case should be created using a API script preferably
+      caseNumber = "1766581243916831";
+      await globalSearchPage.performGlobalSearchWithCase(caseNumber);
+      expect(globalSearchPage.changeSearchLink.filter({ hasText: 'Change search'}).isVisible());
+      expect(globalSearchPage.viewLink.filter({ hasText: 'View'}).isVisible());
     });
-    await globalSearchPage.performGlobalSearchFor(caseNumber)});
 
-    await globalSearchPage.searchResultsPageHeading.isVisible();
+    await test.step("Check Search Result screen", async () => {
+      await globalSearchPage.verifySearchResults(caseNumber);
+      expect(globalSearchPage.summaryHeading.isVisible);
+    });
 
+    await test.step("Click 'View' link and verify Case detail page ", async () => {
+      await globalSearchPage.verifyCaseDetails(caseNumber);
+      expect(caseDetailsPage.container).toBeTruthy();
+    });
+});
 });

@@ -31,7 +31,7 @@ test.describe("Verify creating cases works as expected", () => {
             await caseListPage.applyFilters();
         });
 
-        await test.step("Confirm the created case is in the search results", async () => {            
+        await test.step("Confirm the created case is in the search results", async () => {
             const table = await tableUtils.mapExuiTable(
                 caseListPage.exuiCaseListComponent.caseListTable
             );

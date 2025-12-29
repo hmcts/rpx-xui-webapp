@@ -8,7 +8,7 @@ import * as fromActions from '../../app/store';
 
 @Injectable()
 export class BookingGuard {
-  public static defaultUrl: string = '/cases';
+  public static readonly defaultUrl: string = '/cases';
 
   constructor(private readonly router: Router,
               private readonly store: Store<fromActions.State>) {}

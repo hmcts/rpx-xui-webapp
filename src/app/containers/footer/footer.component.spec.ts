@@ -67,7 +67,6 @@ describe('FooterComponent', () => {
   });
 
   it('should initialize with footer data from AppConstants', () => {
-    expect(component.helpData).toBe(AppConstants.FOOTER_DATA);
     expect(component.navigationData).toBe(AppConstants.FOOTER_DATA_NAVIGATION);
   });
 

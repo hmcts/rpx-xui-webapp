@@ -205,24 +205,19 @@ const menuFlags = {
 };
 
 export class AppConstants {
-  public static FOOTER_DATA = null;
-  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
-  public static APP_HEADER_TITLE = appHeaderTitle;
-  public static ENVIRONMENT_NAMES = environmentNames;
-  public static HELP_CONTACT_DETAILS = helpContactDetails;
-  public static DEFAULT_USER_THEME = defaultUserTheme;
-  public static FEATURE_NAMES = featureNames;
-  public static CASE_DETAILS_URL = caseDetailsUrl;
-  public static ACCESS_VIEW_URL = accessViewUrl;
-  public static SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
-  public static SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
-  public static CASE_ALLOCATOR_ROLE = caseAllocatorRole;
-  public static IA_JUDGE_ROLE = iaJudgeRole;
-  public static IA_LEGAL_OPS_ROLE = iaLegalOpsRole;
-  public static DEFAULT_MENU_ITEMS = defaultMenuItems;
-  public static FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
-  public static DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
-  public static MENU_FLAGS = menuFlags;
+  public static readonly FOOTER_DATA = null;
+  public static readonly FOOTER_DATA_NAVIGATION = footerDataNavigation;
+  public static readonly ENVIRONMENT_NAMES = environmentNames;
+  public static readonly HELP_CONTACT_DETAILS = helpContactDetails;
+  public static readonly DEFAULT_USER_THEME = defaultUserTheme;
+  public static readonly FEATURE_NAMES = featureNames;
+  public static readonly CASE_DETAILS_URL = caseDetailsUrl;
+  public static readonly SERVICE_MESSAGES_FEATURE_TOGGLE_KEY = serviceMessagesFeatureToggleKey;
+  public static readonly SERVICE_MESSAGE_COOKIE = serviceMessageCookie;
+  public static readonly DEFAULT_MENU_ITEMS = defaultMenuItems;
+  public static readonly FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
+  public static readonly DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
+  public static readonly MENU_FLAGS = menuFlags;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

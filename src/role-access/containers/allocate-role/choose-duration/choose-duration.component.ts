@@ -23,9 +23,9 @@ import { getTitleText } from '../../../utils';
 })
 
 export class ChooseDurationComponent implements OnInit {
-  public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
-  public static indefiniteDesc = 'Starts from today and lasts while the case is open.';
-  public static anotherPeriodDesc = 'You’ll need to provide both a start and end date for the role.';
+  public static readonly sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
+  public static readonly indefiniteDesc = 'Starts from today and lasts while the case is open.';
+  public static readonly anotherPeriodDesc = 'You’ll need to provide both a start and end date for the role.';
 
   @Input() public navEvent: AllocateRoleNavigation;
   public radioSelected: FormControl;

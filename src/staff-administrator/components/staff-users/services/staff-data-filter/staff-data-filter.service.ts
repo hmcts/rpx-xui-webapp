@@ -10,7 +10,7 @@ import { StaffDataAccessService } from '../../../../services/staff-data-access/s
   providedIn: 'root'
 })
 export class StaffDataFilterService {
-  public static PAGE_SIZE = 15;
+  public static readonly PAGE_SIZE = 15;
   private readonly searchFilters: BehaviorSubject<StaffSearchFilters>;
   public readonly tableData$: Observable<StaffUserListData>;
   private readonly errors: BehaviorSubject<MultipleErrorMessage[]>;

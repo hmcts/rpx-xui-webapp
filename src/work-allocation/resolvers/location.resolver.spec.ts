@@ -37,7 +37,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -65,7 +65,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -94,7 +94,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -123,7 +123,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -153,7 +153,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },
@@ -183,7 +183,7 @@ describe('LocationResolver', () => {
       roles: [
         'caseworker',
         'caseworker-ia',
-        AppConstants.IA_LEGAL_OPS_ROLE,
+        'caseworker-ia-caseofficer',
         'cwd-user'
       ]
     },

@@ -175,19 +175,12 @@ const environmentNames = {
   prod: 'prod'
 };
 
-const appHeaderTitle = { name: 'Manage cases', url: '/' };
-
 // Making the base URL for case details a constant.
 const caseDetailsUrl: string = '/cases/case-details/';
-
-const accessViewUrl: string = '/access-view/';
 
 const serviceMessagesFeatureToggleKey: string = 'mc-service-messages-dates';
 const serviceMessageCookie: string = 'service_messages';
 
-const caseAllocatorRole: string = 'case-allocator-role';
-const iaJudgeRole: string = 'caseworker-ia-iacjudge';
-const iaLegalOpsRole: string = 'caseworker-ia-caseofficer';
 const defaultServiceMessage = [
   {
     'index': 10,

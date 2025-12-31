@@ -230,7 +230,7 @@ describe('AllWorkTaskComponent', () => {
     it('should have default sortedBy values', () => {
       // The sortedBy property is declared in the component with initial values
       const freshComponent = new AllWorkTaskComponent(
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null
       );
       expect(freshComponent.sortedBy).toEqual({
         fieldName: '',

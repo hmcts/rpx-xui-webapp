@@ -1,4 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { Location } from '@angular/common';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -63,6 +64,9 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
   let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   let mockRouter: any;
+  const mockLocation: any = {
+    getState: jasmine.createSpy('getState')
+  };
 
   beforeEach(() => {
     mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
@@ -108,7 +112,8 @@ describe('TaskAssignmentConfirmComponent', () => {
           provide: Router, useValue: mockRouter
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: Location, useValue: mockLocation }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -117,7 +122,6 @@ describe('TaskAssignmentConfirmComponent', () => {
     component = wrapper.appComponentRef;
     component.verb = TaskActionType.Reassign;
     router = TestBed.inject(Router);
-    window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
     fixture.detectChanges();
   });
 
@@ -146,7 +150,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should go back to the "Find the person" page on clicking "Change", displaying the correct verb', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
     component.verb = TaskActionType.Assign;
     fixture.detectChanges();
 
@@ -168,8 +171,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
-
     Object.defineProperty(component, 'returnUrl', {
       get: () => 'all-work/tasks'
     });
@@ -179,8 +180,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
-    window.history.pushState({}, '');
-
     Object.defineProperty(component, 'returnUrl', {
       get: () => ''
     });
@@ -190,8 +189,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should return to the "All work" page on successful task assignment', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks', showAssigneeColumn: false }, '', 'all-work/tasks');
-
     Object.defineProperty(component, 'returnUrl', {
       get: () => 'all-work/tasks'
     });
@@ -218,8 +215,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should return the correct message/state for case', () => {
-    window.history.pushState({ returnUrl: 'case/case-details', showAssigneeColumn: false }, '', 'case/case-details');
-
     Object.defineProperty(component, 'returnUrl', {
       get: () => 'case/case-details'
     });
@@ -240,8 +235,6 @@ describe('TaskAssignmentConfirmComponent', () => {
   });
 
   it('should return to the "My work" page on successful task reassignment', () => {
-    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
-
     Object.defineProperty(component, 'returnUrl', {
       get: () => 'my-work/list'
     });
@@ -269,7 +262,6 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should handle an HTTP 401 error on submission', () => {
     component.taskId = '401';
-    window.history.pushState({ returnUrl: 'my-work/list' }, '', '');
 
     Object.defineProperty(component, 'returnUrl', {
       get: () => 'my-work/list'
@@ -293,7 +285,6 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should handle an unknown error on submission', () => {
     component.taskId = '999';
-    window.history.pushState({ returnUrl: 'my-work/list' }, '', '');
 
     Object.defineProperty(component, 'returnUrl', {
       get: () => 'my-work/list'
@@ -391,7 +382,6 @@ describe('TaskAssignmentConfirmComponent', () => {
       component = wrapper.appComponentRef;
       component.verb = TaskActionType.Reassign;
       router = TestBed.inject(Router);
-      window.history.pushState({ selectedPerson: SELECTED_PERSON }, '', '');
       fixture.detectChanges();
     });
 

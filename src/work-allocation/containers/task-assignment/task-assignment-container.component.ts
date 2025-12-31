@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -48,7 +49,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly stateLocation: StateLocation
   ) {}
 
   public get fields(): FieldConfig[] {
@@ -60,21 +62,22 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
-    // buttons, which clear the `window.history.state` object
+    // buttons, which clear the state object
     let url: string = '';
-
+    const state = this.stateLocation.getState() as { returnUrl?: string } | null;
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (state?.returnUrl) {
       // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
-      url = window.history.state.returnUrl.split('#')[0];
+      url = state.returnUrl.split('#')[0];
     }
 
     return url;
   }
 
   private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.showAssigneeColumn;
+    const state = this.stateLocation.getState() as { showAssigneeColumn?: boolean } | null;
+    if (state) {
+      return !!state.showAssigneeColumn;
     }
     return false;
   }

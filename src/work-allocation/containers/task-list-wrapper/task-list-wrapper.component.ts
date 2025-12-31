@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
@@ -74,7 +75,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected stateLocation: StateLocation
   ) { }
 
   public get tasks(): Task[] {
@@ -129,13 +131,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   /**
    * Flag to indicate whether or not we've arrived here following a bad
    * request with a flag having been set on another route. The flag is
-   * passed through the router and so is held in window.history.state.
+   * passed through the router and so is held in location state
    */
   private get wasBadRequest(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.badRequest;
-    }
-    return false;
+    const state = this.stateLocation.getState() as { badRequest?: boolean } | null;
+    return !!state?.badRequest;
   }
 
   public getTaskServiceConfig(): TaskServiceConfig {

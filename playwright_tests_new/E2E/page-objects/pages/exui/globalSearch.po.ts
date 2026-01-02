@@ -24,11 +24,20 @@ export class GlobalSearchPage extends Base {
   readonly summaryHeading:Locator
   readonly caseFileViewTab:Locator
   readonly caseReference:Locator
+  readonly applicantOrPartyName: Locator
 
-  async performGlobalSearchWithCase(caseId: string ) : Promise<void> {
+  async performGlobalSearchWithCase(caseId: string, wildCard?:boolean | false ) : Promise<void> {
     await this.searchLinkOnMenuBar.click();
     await this.caseIdTextBox.click();
-    await this.caseIdTextBox.fill(caseId);
+    if(wildCard){
+      const first5Digits = caseId.substring(0,5);
+      await this.caseIdTextBox.fill(`*${first5Digits}`);
+      await this.applicantOrPartyName.getByRole('textbox', { name: 'Name' }).click();
+      // TODO Fill partyName
+      await this.applicantOrPartyName.getByRole('textbox', { name: 'Name' }).fill('XXXXX');
+    }else{
+      await this.caseIdTextBox.fill(caseId);
+    }
     await this.serviceLabel.selectOption('PUBLICLAW');
     await this.searchButton.click();
   }
@@ -62,5 +71,6 @@ export class GlobalSearchPage extends Base {
     this.summaryHeading = this.page.getByText('Summary');
     this.caseFileViewTab = this.page.getByRole('tab', { name: 'Case File View' });
     this.caseReference = this.page.getByRole('heading', { name: 'Case reference' });
+    this.applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
   }
 }

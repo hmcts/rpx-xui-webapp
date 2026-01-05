@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,17 +30,19 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
-              private readonly route: ActivatedRoute) {}
+              private readonly route: ActivatedRoute,
+              private readonly location: Location) {}
 
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
-    // buttons, which clear the `window.history.state` object
+    // buttons, which clear the state object
     let url: string = '';
+    const state = this.location.getState() as { returnUrl?: string } | null;
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (state?.returnUrl) {
       // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
-      url = window.history.state.returnUrl.split('#')[0];
+      url = state.returnUrl.split('#')[0];
     }
 
     return url;
@@ -66,7 +69,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     if (valid) {
       const role = values.role;
       const taskId = values.taskId;
-      const state = window.history.state;
+      const state = this.location.getState();
       this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], { queryParams: { role, service: this.service }, state });
     }
   }

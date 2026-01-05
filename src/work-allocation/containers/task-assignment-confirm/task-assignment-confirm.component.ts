@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
@@ -34,7 +35,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
-    private readonly sessionStorageService: SessionStorageService) {
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly location: Location) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
       this.selectedPerson = navigation.extras.state.selectedPerson;
@@ -44,12 +46,13 @@ export class TaskAssignmentConfirmComponent implements OnInit {
 
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
-    // buttons, which clear the `window.history.state` object
+    // buttons, which clear the state object
     let url: string = '';
+    const state = this.location.getState() as { returnUrl?: string } | null;
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
-      url = window.history.state.returnUrl;
+    if (state?.returnUrl) {
+      url = state.returnUrl;
     }
     return url;
   }

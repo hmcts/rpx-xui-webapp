@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -16,7 +17,8 @@ export class NoResultsComponent implements OnInit {
   public noResultsMessageId = NoResultsMessageId;
 
   constructor(private readonly store: Store<fromActions.State>,
-              private readonly router: Router) {
+              private readonly router: Router,
+              private readonly location: Location) {
     // Get current navigation
     const currentNavigation = this.router.getCurrentNavigation();
     if (currentNavigation) {
@@ -38,6 +40,6 @@ export class NoResultsComponent implements OnInit {
   }
 
   public onBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

@@ -108,7 +108,6 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     }));
 
@@ -322,7 +321,6 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -405,7 +403,6 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -478,7 +475,6 @@ describe('WorkAllocation', () => {
       wrapper = fixture.componentInstance;
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -554,7 +550,6 @@ describe('WorkAllocation', () => {
       wrapper = fixture.componentInstance;
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -54,7 +55,10 @@ export class TaskListComponent implements OnChanges {
   public defaultSortElement: HTMLElement;
   public newUrl: string;
 
-  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {}
+  constructor(private readonly router: Router,
+              private readonly sessionStorageService: SessionStorageService,
+              private readonly location: Location
+  ) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
@@ -220,7 +224,7 @@ export class TaskListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       this.newUrl = this.selectedTask ? `${basePath}#manage_${this.selectedTask.id}` : basePath;
-      window.history.pushState('object', document.title, this.newUrl);
+      this.location.go(this.newUrl);
     }
   }
 

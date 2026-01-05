@@ -3,6 +3,7 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole, TypeOfRole } from '../../role-access/models';
 
 @Directive({
+  standalone: false,
   selector: '[exuiShowAllocateLink]'
 })
 export class ShowAllocateLinkDirective implements OnInit {

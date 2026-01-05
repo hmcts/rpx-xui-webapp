@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals-final-confirmation',
   templateUrl: './hearing-actuals-final-confirmation.component.html'
 })

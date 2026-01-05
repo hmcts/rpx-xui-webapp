@@ -6,6 +6,7 @@ import { StaffAdvancedSearchFilters } from '../../../models/staff-search-filters
 import { StaffDataFilterService } from '../services/staff-data-filter/staff-data-filter.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-staff-adv-filter',
   templateUrl: './staff-adv-filter.component.html',
   styleUrls: ['./staff-adv-filter.component.scss']
@@ -30,8 +31,10 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
       userTypes: this.route.snapshot.data.userTypes,
       jobTitles: this.route.snapshot.data.jobTitles,
       skills: this.route.snapshot.data.skills,
-      services: this.route.snapshot.data.services
+      services: this.route.snapshot.data.services,
+      status: this.route.snapshot.data.status
     };
+
     const defaultOption = { key: 'All', label: 'All', selectAll: true };
 
     this.filterConfig = {
@@ -97,6 +100,16 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         defaultOption
       },
       {
+        name: 'user-status',
+        title: 'Status',
+        options: [{ key: 'ACTIVE', label: 'Active' }, { key: 'SUSPENDED', label: 'Suspended' }],
+        minSelected: 0,
+        maxSelected: 0,
+        type: 'select',
+        lineBreakBefore: true,
+        defaultOption
+      },
+      {
         name: 'user-role',
         title: 'Role',
         options: [
@@ -129,6 +142,10 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           {
             name: 'user-skills',
             value: ['All']
+          },
+          {
+            name: 'user-status',
+            value: ['All']
           }
         ]
       }
@@ -144,6 +161,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           const locations = (filterConfig.fields.find((item) => item.name === 'user-location').value).map((l) => l.epimms_id);
           const roles = filterConfig.fields.find((item) => item.name === 'user-role').value;
           const skills = filterConfig.fields.find((item) => item.name === 'user-skills').value;
+          const status = filterConfig.fields.find((item) => item.name === 'user-status').value;
 
           if (services && services.length > 0) {
             advancedSearchFilters.serviceCode = services;
@@ -161,6 +179,10 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
             advancedSearchFilters.skill = skills;
           }
 
+          if (status && status.some((s) => s !== 'All')) {
+            advancedSearchFilters.status = status;
+          }
+
           if (userType && userType !== 'All') {
             advancedSearchFilters.userType = userType;
           }
@@ -169,7 +191,8 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
             advancedSearchFilters.jobTitle = jobTitle;
           }
 
-          if (Object.keys(advancedSearchFilters)?.length > 0) {
+          if (Object.keys(advancedSearchFilters)?.length > 0
+            && !(advancedSearchFilters.status && Object.keys(advancedSearchFilters).length === 1)) {
             this.staffDataFilterService.search({
               advancedSearchFilters,
               pageNumber: 1,

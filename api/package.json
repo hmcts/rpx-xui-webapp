@@ -37,7 +37,7 @@
     "dotenv-extended": "^2.7.1",
     "ejs": "^3.1.10",
     "exception-formatter": "1.0.7",
-    "express": "^4.21.2",
+    "express": "^4.22.0",
     "global-agent": "^3.0.0",
     "helmet": "^7.2.0",
     "http-proxy-middleware": "3.0.3",

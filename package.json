@@ -173,7 +173,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.0",
+    "@angular-devkit/build-angular": "^20.3.13",
     "@angular-eslint/builder": "20.4.0",
     "@angular-eslint/eslint-plugin": "20.4.0",
     "@angular-eslint/eslint-plugin-template": "20.4.0",
@@ -218,7 +218,7 @@
     "c8": "^9.1.0",
     "chai": "^4.3.10",
     "chai-as-promised": "7.1.2",
-    "codeceptjs": "3.5.6",
+    "codeceptjs": "3.7.5",
     "codeceptjs-cucumber-json-reporter": "^1.0.14",
     "codelyzer": "^6.0.0",
     "cross-env": "^10.0.0",
@@ -236,7 +236,6 @@
     "karma-coverage-istanbul-reporter": "~3.0.0",
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "^2.0.0",
-    "karma-parallel": "^0.3.1",
     "karma-sonarqube-unit-reporter": "^0.0.23",
     "karma-spec-reporter": "0.0.36",
     "mocha": "^10.0.0",
@@ -280,6 +279,7 @@
     "form-data@npm:^4.0.0": "npm:4.0.4",
     "form-data@npm:^2.5.0": "npm:2.5.5",
     "form-data@npm:~2.3.2": "npm:2.5.5",
+    "js-yaml@npm:^3.13.1": "npm:3.14.2",
     "flat": "~5.0.1",
     "loader-utils": "~2.0.3",
     "minimist": "^1.2.8",

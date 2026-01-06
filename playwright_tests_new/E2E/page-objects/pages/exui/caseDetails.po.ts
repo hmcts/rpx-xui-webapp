@@ -7,9 +7,9 @@ const tableUtils = new TableUtils();
 export interface CaseFlagItem {
   flagType: string;
   comments: string;
-  creationDate: string;   // e.g., "09 Jul 2025"
-  lastModified: string;   
-  status: string;         
+  creationDate: string;
+  lastModified: string;
+  status: string;
 }
 
 export class CaseDetailsPage extends Base {
@@ -29,20 +29,17 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
-  
+
   constructor(page: Page) {
     super(page);
   }
-  async getPartyNameTable(partyName: string) {
-    return this.page.getByRole('table', { name: partyName, exact: true })
-    //locator(`table:has(caption:has-text("${partyName}"))`);
+  async getTableByName(tableName: string) {
+    return this.page.getByRole('table', { name: tableName, exact: true })
   }
 
-  async checkCaseFlagDetails(caseFlagItem: CaseFlagItem, partyName: string): Promise<Record<string, string> | null> {
-    const table = await tableUtils.mapExuiTable(await this.getPartyNameTable(partyName));
-    console.log('Mapped case flag table:', table);
+  async checkCaseFlagDetails(caseFlagItem: CaseFlagItem, tableName: string): Promise<Record<string, string> | null> {
+    const table = await tableUtils.mapExuiTable(await this.getTableByName(tableName));
 
-    // Map CaseFlagItem keys to actual table column headers
     const columnMap: Record<string, string> = {
       flagType: 'Party level flags',
       comments: 'Comments',
@@ -73,41 +70,52 @@ export class CaseDetailsPage extends Base {
     await this.caseActionsDropdown.selectOption(action);
     await this.caseActionGoButton.click();
     await this.exuiSpinnerComponent.wait();
-  } 
+  }
 
-
-  async selectRandomRadioOption() {    
+  async selectRandomRadioOption() {
     const optionCount = await this.commonRadioButtons.count();
-    const randomIndex = Math.floor(Math.random() * (optionCount-1));
+    const randomIndex = Math.floor(Math.random() * (optionCount - 1));
     await this.commonRadioButtons.nth(randomIndex).getByRole('radio').check();
     await this.submitCaseFlagButton.click();
     await this.exuiSpinnerComponent.wait();
   }
 
-    async selectFirstRadioOption() {    
+  async selectFirstRadioOption() {
     await this.commonRadioButtons.first().getByRole('radio').check();
     await this.submitCaseFlagButton.click();
     await this.exuiSpinnerComponent.wait();
   }
 
   async todaysDateFormatted(): Promise<string> {
-  return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });    
+    return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   // Case flag methods
-  async addFlagComment(comment: string) {    
+  async addFlagComment(comment: string) {
     await this.caseFlagCommentBox.fill(comment);
     await this.submitCaseFlagButton.click();
   }
 
-  async selectFlagTarget(target: string, flagType: string) {    
+  async selectPartyFlagTarget(target: string, flagType: string) {
     await this.page.getByLabel(`${target} (${target})`).check();
     await this.submitCaseFlagButton.click();
-    await this.commonRadioButtons.getByLabel(flagType).waitFor({state:'visible'});
+    await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible' });
     await this.commonRadioButtons.getByLabel(flagType).check();
     await this.submitCaseFlagButton.click();
     await this.selectFirstRadioOption();
     await this.addFlagComment(`${flagType} ${target}`);
+    await this.submitCaseFlagButton.click();
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  async selectCaseFlagTarget(flagType: string) {
+    await this.page.getByLabel(`Case level`).check();
+    await this.submitCaseFlagButton.click();
+    await this.page.getByLabel(flagType).waitFor({ state: 'visible' });
+    await this.page.getByLabel(flagType).check();
+    await this.submitCaseFlagButton.click();
+    await this.caseFlagCommentBox.fill(`${flagType}`);
+    await this.submitCaseFlagButton.click();
     await this.submitCaseFlagButton.click();
     await this.exuiSpinnerComponent.wait();
   }

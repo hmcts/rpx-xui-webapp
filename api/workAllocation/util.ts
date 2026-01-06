@@ -10,7 +10,6 @@ import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
-import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { exists, reflect } from '../lib/util';
 import {
@@ -21,7 +20,7 @@ import {
 } from './constants/actions';
 import { getCaseListPromises } from './index';
 import { Case, CaseList } from './interfaces/case';
-import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
   CachedCaseworker,
@@ -360,7 +359,7 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
 }
 
 export function prepareRoleApiRequest(jurisdictions: string[]): any {
-  let attributes: any = {
+  const attributes: any = {
     jurisdiction: jurisdictions
   };
   const payload = {
@@ -647,7 +646,7 @@ export function constructRoleAssignmentQuery(
   searchTaskParameters: SearchTaskParameter[]
 ): any {
   searchTaskParameters = [...searchTaskParameters,
-  { key: 'roleType', values: 'CASE', operator: '' }
+    { key: 'roleType', values: 'CASE', operator: '' }
   ];
   return {
     queryRequests: [searchTaskParameters
@@ -689,8 +688,8 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
   const userId = currentUser.id ? currentUser.id : currentUser.uid;
   let newSearchTaskParameters = JSON.parse(JSON.stringify(searchTaskParameters)) as SearchTaskParameter[];
   newSearchTaskParameters = [...newSearchTaskParameters,
-  { key: 'role', values: 'case-allocator', operator: '' },
-  { key: 'roleType', values: 'ORGANISATION', operator: '' }];
+    { key: 'role', values: 'case-allocator', operator: '' },
+    { key: 'roleType', values: 'ORGANISATION', operator: '' }];
   return {
     queryRequests: [newSearchTaskParameters
       .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values && param.values.length)

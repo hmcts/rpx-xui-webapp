@@ -39,7 +39,9 @@ describe('log4jui', () => {
         info: sandbox.spy(),
         warn: sandbox.spy()
       };
-      sandbox.stub(log4js, 'getLogger').callsFake((cat: string) => { spyObj.category = cat; return spyObj; });
+      sandbox.stub(log4js, 'getLogger').callsFake((cat: string) => {
+        spyObj.category = cat; return spyObj;
+      });
     });
 
     it('Should return an instance of JUILogger', () => {
@@ -84,5 +86,4 @@ describe('log4jui', () => {
       expect(spyObj.error).to.be.calledWith('warning');
     });
   });
-
 });

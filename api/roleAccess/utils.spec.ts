@@ -20,7 +20,7 @@ describe('roleAssignment.utils', () => {
       const mockDangerousRole = {
         roleCategory: 'ADMIN',
         roleId: '1',
-        roleName: 'test role<script>',
+        roleName: 'test role<script></script>',
         roleJurisdiction: {
           mandatory: false,
           values: ['1', '2']
@@ -30,7 +30,7 @@ describe('roleAssignment.utils', () => {
       expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(false);
       mockSubstantiveRoles.pop();
       expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(true);
-      mockDangerousRole.roleJurisdiction.values.push('<script>');
+      mockDangerousRole.roleJurisdiction.values.push('<script></script>');
       mockDangerousRole.roleName = 'test role';
       mockSubstantiveRoles.push(mockDangerousRole);
       expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(false);

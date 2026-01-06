@@ -217,7 +217,7 @@ export class LocationResolver {
     this.saveBookingLocation(bookingLocations);
     return locations;
   }
-    
+
   private saveBookingLocation(newBookingLocations: string[]) {
     // Since bookings are given without service data we just need record of locations to match against
     const stored: string = this.sessionStorageService.getItem('bookingLocations');

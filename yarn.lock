@@ -3752,9 +3752,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz":
-  version: 4.2.2
-  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz"
+"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2-angular-CVE/hmcts-media-viewer-4.2.2-angular-CVE.tgz":
+  version: 4.2.2-angular-CVE
+  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2-angular-CVE/hmcts-media-viewer-4.2.2-angular-CVE.tgz"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3773,7 +3773,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/67c78fabb85d42e7b6c2133db5c2daaa7d9232ad81e968f63f6411920bf72c5ef84c02315672ae0518d08a1859099a6d01336c057f31f067dfe6b084b50b3d26
+  checksum: 10/a3b5bae4889e8a4d401d375db9dd5ac308a3fed994d718bc669b3a3353ce28d6ed3a483d4b04ee78ab016d6c2560c881131b09d8576c1fed88d80bc6e73906ee
   languageName: node
   linkType: hard
 
@@ -25265,7 +25265,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.10/hmcts-ccd-case-ui-toolkit-7.3.10.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz"
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2-angular-CVE/hmcts-media-viewer-4.2.2-angular-CVE.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"

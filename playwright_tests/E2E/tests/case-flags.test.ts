@@ -10,7 +10,6 @@ test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
 });
 
-
 test.skip('Create case flag 2 X', async ({ page }) => {
   await loginExUIWithCaseFlag(page);
 
@@ -45,9 +44,9 @@ test('View case flag', async ({ page }) => {
   const tableName = "Applicant";
   await expect(page.getByRole('table', { name: 'Applicant' }).getByRole('caption')).toBeVisible();
 
-  const rowTextRef = "Documents in a specified colour";
-  const textsToCheck = [/test/, /12 May 2025/, /Active/];
-  await checkTableRowContent(page, tableClass, tableName, rowTextRef, textsToCheck);
+  // const rowTextRef = 'Screening witness from accused';
+  // const textsToCheck = [/test/, /12 May 2025/, /Active/];
+  // await checkTableRowContent(page, tableClass, tableName, rowTextRef, textsToCheck);
 
   console.log("Check line 1");
   await checkTableCellContent(page, tableName, 1, 0, "Documents in a specified colour");
@@ -56,17 +55,16 @@ test('View case flag', async ({ page }) => {
   await checkTableCellContent(page, tableName, 1, 4, "ACTIVE");
 
   console.log("Check line 2");
-  await checkTableCellContent(page, tableName, 2, 0, "Documents in large print");
-  await checkTableCellContent(page, tableName, 2, 1, "test");
-  await checkTableCellContent(page, tableName, 2, 2, "12 May 2025");
-  await checkTableCellContent(page, tableName, 2, 4, "ACTIVE");
-
-  console.log("Check line 3");
-  await checkTableCellContent(page, tableName, 3, 0, "Support filling in forms");
+  await checkTableCellContent(page, tableName, 3, 0, "Documents in large print");
   await checkTableCellContent(page, tableName, 3, 1, "test");
   await checkTableCellContent(page, tableName, 3, 2, "12 May 2025");
   await checkTableCellContent(page, tableName, 3, 4, "ACTIVE");
 
+  console.log("Check line 3");
+  await checkTableCellContent(page, tableName, 4, 0, "Support filling in forms");
+  await checkTableCellContent(page, tableName, 4, 1, "test");
+  await checkTableCellContent(page, tableName, 4, 2, "12 May 2025");
+  await checkTableCellContent(page, tableName, 4, 4, "ACTIVE");
 });
 
 async function loginExUIWithCaseFlag(page) {

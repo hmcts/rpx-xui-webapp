@@ -57,6 +57,7 @@ router.use('/role-access', roleAccessRouter);
 
 router.use('/locations', locationsRouter);
 // TODO: potentially can be moved to proxy but with onRes callback
+// EXUI-3967 - above ask requires further thought and investigation
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);

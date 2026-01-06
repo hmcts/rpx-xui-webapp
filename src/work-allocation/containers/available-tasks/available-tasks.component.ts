@@ -37,10 +37,6 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     return ListConstants.EmptyMessage.AvailableTasks;
   }
 
-  /**
-   * TODO: When implementing filtering this may need to be changed to get location(s) from filter
-   * Override the default.
-   */
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {

@@ -89,7 +89,6 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public selectSpecificAccessDuration(specificAccessState: SpecificAccessStateData): void {
-    // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
     this.selectedDuration = DurationType.SEVEN_DAYS;
 
     if (specificAccessState.specificAccessFormData && specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption) {

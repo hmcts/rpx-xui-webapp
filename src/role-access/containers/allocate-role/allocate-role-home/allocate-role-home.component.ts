@@ -177,7 +177,6 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     this.navigationHandler(event);
   }
 
-  // TODO: Need extra logic when we know admin roles
   public navigationHandler(navEvent: AllocateRoleNavigationEvent): void {
     switch (navEvent) {
       case AllocateRoleNavigationEvent.BACK: {

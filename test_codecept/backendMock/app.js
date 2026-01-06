@@ -162,7 +162,7 @@ class MockApp {
     app.use('/documentsv2', evidenceManagementRoutes);
     app.use('/workflow', workFlowRouter);
 
-    app.get('/external/configuration-ui/', (req, res) => {
+    app.get('/external/config/ui/', (req, res) => {
       res.json({
         launchDarklyClientId: 'local-test',
         appInsightsKey: '',

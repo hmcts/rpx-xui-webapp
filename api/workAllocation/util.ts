@@ -301,7 +301,6 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 }
 
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  // TODO: Will need to be updated
   const roleAssignment = roleAssignments.find((roleAssign) =>
     roleAssign.actorId === user.id && roleAssign.roleCategory &&
     // added line below to stop irrelevant role setting role category
@@ -360,17 +359,14 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number, allRoles?: boolean): any {
-  let attributes: any = {};
-  if (!allRoles) {
-    attributes = {
-      jurisdiction: jurisdictions
-    };
-  }
-
+export function prepareRoleApiRequest(jurisdictions: string[]): any {
+  let attributes: any = {
+    jurisdiction: jurisdictions
+  };
   const payload = {
     attributes,
     // TODO: This should not be hard-coded list
+    // EXUI-3967 - needs review as to where roles should come from
     roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
       'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
       'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator',
@@ -378,34 +374,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     roleType: ['ORGANISATION'],
     validAt: Date.UTC
   };
-  if (locationId) {
-    // TODO: Not sure whether this is even being used
-    payload.attributes.baseLocation = [locationId];
-  }
   return payload;
-}
-
-export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload[] {
-  // note that this could be moved to index method if required
-  const roleIds = getRoleIdsFromRoles(roles);
-  const payloads: CaseworkerPayload[] = [];
-  jurisdictions.forEach((jurisdiction) => {
-    const attributes: any = {
-      jurisdiction: [jurisdiction]
-    };
-    if (locationId) {
-      // TODO: Again does not seem to be being used
-      attributes.baseLocation = [locationId];
-    }
-    const payload = {
-      attributes,
-      roleName: roleIds,
-      roleType: ['ORGANISATION'],
-      validAt: Date.UTC
-    };
-    payloads.push(payload);
-  });
-  return payloads;
 }
 
 export function getRoleIdsFromRoles(roles: Role[]): string[] {
@@ -674,21 +643,11 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   return null;
 }
 
-// Only called in test function - why is it here?
-export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments.filter((roleAssignment) => roleAssignment.attributes && roleAssignment.attributes.baseLocation
-    && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
-    .map((roleAssignment) => roleAssignment.attributes.baseLocation)
-    .reduce((acc, locationId) => acc.includes(locationId) ? acc : `${acc}${locationId},`, '')
-    .split(',')
-    .filter((location) => location.length);
-}
-
 export function constructRoleAssignmentQuery(
   searchTaskParameters: SearchTaskParameter[]
 ): any {
   searchTaskParameters = [...searchTaskParameters,
-    { key: 'roleType', values: 'CASE', operator: '' }
+  { key: 'roleType', values: 'CASE', operator: '' }
   ];
   return {
     queryRequests: [searchTaskParameters
@@ -730,8 +689,8 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
   const userId = currentUser.id ? currentUser.id : currentUser.uid;
   let newSearchTaskParameters = JSON.parse(JSON.stringify(searchTaskParameters)) as SearchTaskParameter[];
   newSearchTaskParameters = [...newSearchTaskParameters,
-    { key: 'role', values: 'case-allocator', operator: '' },
-    { key: 'roleType', values: 'ORGANISATION', operator: '' }];
+  { key: 'role', values: 'case-allocator', operator: '' },
+  { key: 'roleType', values: 'ORGANISATION', operator: '' }];
   return {
     queryRequests: [newSearchTaskParameters
       .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values && param.values.length)

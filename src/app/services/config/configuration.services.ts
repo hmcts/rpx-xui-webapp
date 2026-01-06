@@ -56,7 +56,7 @@ export class AppConfigService {
     return this.configuration.urls;
   }
 
-  // todo make it global and make it make sense
+  // TODO: make it global and make it make sense
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

@@ -4,7 +4,6 @@ import * as log4js from 'log4js';
 import 'mocha';
 import * as sinon from 'sinon';
 import * as log4jui from './log4jui';
-import { leftPad } from './log4jui';
 import { isJUILogger } from './models';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -33,14 +32,32 @@ describe('log4jui', () => {
   describe('getLogger', () => {
     beforeEach(() => {
       sandbox.restore();
+      sandbox = sinon.createSandbox();
+      spyObj = {
+        addContext: sandbox.spy(),
+        error: sandbox.spy(),
+        info: sandbox.spy(),
+        warn: sandbox.spy()
+      };
+      sandbox.stub(log4js, 'getLogger').callsFake((cat: string) => { spyObj.category = cat; return spyObj; });
     });
 
-    it('Should  return an instance of JUILogger', () => {
+    it('Should return an instance of JUILogger', () => {
       expect(isJUILogger(log4jui.getLogger(''))).to.equal(true);
     });
 
     it('Should return an instance of JUILogger containing a log4jui logger ', () => {
       expect((log4jui.getLogger('test')._logger as any).category).to.equal('test');
+    });
+
+    it('should add padded category context (padStart) with trailing space', () => {
+      const category = 'test'; // 4 chars
+      const expectedPadded = '          test '; // 10 spaces + 'test' + trailing space
+
+      const logger = log4jui.getLogger(category);
+
+      expect(spyObj.addContext).to.have.been.calledWith('catFormatted', expectedPadded);
+      expect((logger._logger as any).category).to.equal(category);
     });
   });
 
@@ -68,17 +85,4 @@ describe('log4jui', () => {
     });
   });
 
-  describe('leftPad', () => {
-    it('should not left pad a string if string length is same as param length', () => {
-      const str = 'test';
-      const result = `    ${str}`;
-      expect(leftPad(str, 4)).not.to.equal(result);
-    });
-
-    it('should left pad a string if param length is greater than string length', () => {
-      const str = 'test';
-      const result = `    ${str}`;
-      expect(leftPad(str, 8)).to.equal(result);
-    });
-  });
 });

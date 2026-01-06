@@ -339,7 +339,6 @@ describe('api utils', () => {
     });
   });
 
-  // todo: unignore and fix following updated list of valid characters
   describe('allContainOnlySafeCharacters', () => {
     it('should allow all valid roles possible for role assignment', () => {
       expect(allContainOnlySafeCharacters(validRoleList)).to.equal(true);

@@ -7,7 +7,7 @@ const { spawn } = require('child_process');
 
 /* ── settings ───────────────────────────────────────────────── */
 const SSR_PORT = Number(process.env.SSR_PORT || 3000);
-const HEALTH_PATH = '/external/configuration-ui/';
+const HEALTH_PATH = '/external/config/ui/';
 const HEALTH_TIMEOUT_MS = Number(process.env.SSR_HEALTH_TIMEOUT_MS || 2500);
 
 /* build the 3 common ways callers may address localhost */
@@ -130,7 +130,7 @@ async function healthOK() {
   return { ok: false, url: HEALTH_URLS[0], status: 0 };
 }
 
-/* ── tiny stub on :3000 that serves /external/configuration-ui/ ── */
+/* ── tiny stub on :3000 that serves /external/config/ui/ ── */
 function startStub3000() {
   const cfg = { launchDarklyClientId: 'local-test', appInsightsKey: '', buildVersion: 'test-run' };
   const handler = (req, res) => {
@@ -175,7 +175,7 @@ function startStub3000() {
     .catch(() => tryListen('IPv4', '127.0.0.1'))
     .catch(() => tryListen('IPv6', '::1'))
     .then(() => {
-      console.log('[mock] stubbed /external/configuration-ui on :%d', SSR_PORT);
+      console.log('[mock] stubbed /external/config/ui on :%d', SSR_PORT);
       return srv;
     });
 }

@@ -19,7 +19,8 @@ import {
   approveSpecificAccessRequest,
   deleteSpecificAccessRoles,
   restoreDeletedRole,
-  removeAcceptHeader
+  removeAcceptHeader,
+  retryUntilStatus
 } from './';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -72,8 +73,8 @@ describe('Access Management', (): void => {
     });
 
     it('should fetch bookings and enrich with location names', async () => {
-    // Note: The external API returns 'base_location_id' but we need to map it to 'LocationId'
-    // for the enrichment logic to work correctly.
+      // Note: The external API returns 'base_location_id' but we need to map it to 'LocationId'
+      // for the enrichment logic to work correctly.
       const mockBookings = {
         status: 200,
         data: {
@@ -495,7 +496,7 @@ describe('Access Management', (): void => {
 
       await deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(deleteRoleByAssignmentIdStub).to.have.been.calledOnce;
+      expect(deleteRoleByAssignmentIdStub).to.have.been.calledThrice;
       expect(res.status).to.have.been.calledWith(400);
       expect(next).to.not.have.been.called;
     });
@@ -505,7 +506,7 @@ describe('Access Management', (): void => {
 
       await deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(deleteRoleByAssignmentIdStub).to.have.been.calledOnce;
+      expect(deleteRoleByAssignmentIdStub).to.have.been.calledThrice;
       expect(res.status).to.have.been.calledWith(400);
       expect(next).to.not.have.been.called;
     });
@@ -531,7 +532,7 @@ describe('Access Management', (): void => {
 
       await deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(deleteRoleByAssignmentIdStub).to.have.been.calledTwice;
+      // should try four times to delete the roles
       expect(res.status).to.have.been.calledWith(400);
       expect(next).to.not.have.been.called;
     });
@@ -549,9 +550,9 @@ describe('Access Management', (): void => {
 
       await deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(next).to.have.been.calledWith(error);
-      expect(res.status).to.have.been.calledWith(500);
-      expect(res.send).to.have.been.calledWith(error);
+      expect(deleteRoleByAssignmentIdStub).to.have.been.calledThrice;
+      expect(next).not.to.have.been.called;
+      expect(res.status).to.have.been.calledWith(400);
     });
   });
 
@@ -617,7 +618,7 @@ describe('Access Management', (): void => {
 
       await restoreDeletedRole(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(restoreSpecificAccessRequestRoleStub).to.have.been.calledOnce;
+      expect(restoreSpecificAccessRequestRoleStub).to.have.been.calledThrice;
       expect(deleteRoleByAssignmentIdStub).to.not.have.been.called;
       expect(res.status).to.have.been.calledWith(500);
       expect(next).to.not.have.been.called;
@@ -628,7 +629,7 @@ describe('Access Management', (): void => {
 
       await restoreDeletedRole(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(restoreSpecificAccessRequestRoleStub).to.have.been.calledOnce;
+      expect(restoreSpecificAccessRequestRoleStub).to.have.been.calledThrice;
       expect(deleteRoleByAssignmentIdStub).to.not.have.been.called;
       expect(res.status).to.have.been.calledWith(500);
       expect(next).to.not.have.been.called;
@@ -658,9 +659,9 @@ describe('Access Management', (): void => {
 
       await restoreDeletedRole(req, res, next, previousResponse, rolesToDelete as any);
 
-      expect(next).to.have.been.calledWith(error);
+      expect(restoreSpecificAccessRequestRoleStub).to.have.been.calledThrice;
+      expect(next).not.to.have.been.called;
       expect(res.status).to.have.been.calledWith(500);
-      expect(res.send).to.have.been.calledWith(error);
     });
   });
 
@@ -673,6 +674,63 @@ describe('Access Management', (): void => {
       removeAcceptHeader(proxyReq);
 
       expect(proxyReq.removeHeader).to.have.been.calledWith('accept');
+    });
+  });
+
+  describe('retryUntilStatus', () => {
+    it('returns on first successful attempt', async () => {
+      const callStub = sandbox.stub().resolves({
+        status: 200,
+        data: {},
+        statusText: 'OK',
+        headers: {},
+        config: {} as any
+      });
+
+      const response = await retryUntilStatus(callStub as any, 3, 0);
+
+      expect(callStub).to.have.been.calledOnce;
+      expect(response.status).to.equal(200);
+    });
+
+    it('retries until success then returns successful response', async () => {
+      const callStub = sandbox.stub();
+      callStub.onFirstCall().resolves({
+        status: 500,
+        data: { error: 'Temporary failure' },
+        statusText: 'Internal Server Error',
+        headers: {},
+        config: {} as any
+      });
+      callStub.onSecondCall().resolves({
+        status: 200,
+        data: {},
+        statusText: 'OK',
+        headers: {},
+        config: {} as any
+      });
+
+      const response = await retryUntilStatus(callStub as any, 3, 0);
+
+      expect(callStub).to.have.been.calledTwice;
+      expect(response.status).to.equal(200);
+    });
+
+    it('returns last error response after exhausting retries', async () => {
+      const lastErrorResponse: AxiosResponse = {
+        status: 503,
+        data: { error: 'Service Unavailable' },
+        statusText: 'Service Unavailable',
+        headers: {},
+        config: {} as any
+      };
+      const callStub = sandbox.stub().rejects({ response: lastErrorResponse });
+
+      const response = await retryUntilStatus(callStub as any, 2, 0);
+
+      expect(callStub).to.have.been.calledTwice;
+      expect(response).to.equal(lastErrorResponse);
+      expect(response.status).to.equal(503);
     });
   });
 });

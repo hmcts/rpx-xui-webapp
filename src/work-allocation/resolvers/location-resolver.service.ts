@@ -10,10 +10,8 @@ import { of } from 'rxjs';
 import { catchError, filter, first, map, mergeMap } from 'rxjs/operators';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
 import { SessionStorageService } from '../../app/services';
-import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
-import { Booking } from '../../booking/models';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
 import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';
@@ -23,7 +21,6 @@ import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErro
 })
 // Note: used before my work and booking screens
 export class LocationResolver {
-  private userRole: string;
   // Note that bookableServices only used for ease of use
   // - i.e. removing non-bookable services from booking ui functionality
   private readonly bookableServices: string[] = [];
@@ -40,8 +37,7 @@ export class LocationResolver {
     private readonly router: Router,
     private readonly http: HttpClient,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly locationService: LocationDataService,
-    private readonly userService: UserService
+    private readonly locationService: LocationDataService
   ) { }
 
   public resolve(): Observable<LocationModel[]> {
@@ -123,21 +119,6 @@ export class LocationResolver {
     return this.locations;
   }
 
-  public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
-    // TODO: Check if user still has valid bookable role assignment for service
-    const bookingLocations: string[] = [];
-    bookings.forEach((booking) => {
-      // if this is an active booking
-      if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
-        bookingLocations.push(booking.locationId);
-      } else {
-        locations = locations.filter((location) => location.id !== booking.locationId);
-      }
-    });
-    this.saveBookingLocation(bookingLocations);
-    return locations;
-  }
-
   private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
     if (!roleAssignment.region && !roleAssignment.baseLocation) {
       // if there are no restrictions, via union logic, all locations selectable
@@ -190,22 +171,6 @@ export class LocationResolver {
     }
   }
 
-  private saveBookingLocation(newBookingLocations: string[]) {
-    // Since bookings are given without service data we just need record of locations to match against
-    const stored: string = this.sessionStorageService.getItem('bookingLocations');
-    let bookingLocations = new Set<string>();
-    if (stored) {
-      bookingLocations = new Set(JSON.parse(stored));
-    }
-    newBookingLocations.forEach((location) => {
-      bookingLocations.add(location);
-    });
-
-    // Note: currently we do not immediately show booking locations - the only way to automatically show booking locations currently
-    // is to navigate via the booking screens. We can add them (if necessary in this)
-    this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(bookingLocations)));
-  }
-
   private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string, feePaid: boolean): void {
     // check to see if the location is a new location
     const newLocation = feePaid ? !this.feePaidLocations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))
@@ -237,4 +202,35 @@ export class LocationResolver {
     const notAfterEnd = !roleAssignment.endTime || moment(new Date()).isSameOrBefore(roleAssignment.endTime);
     return notBeforeBegin && notAfterEnd;
   }
+
+  // EXUI-3967 - Commented out dead code - left as is useful reference for any future bookings-related changes
+  /* public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
+    const bookingLocations: string[] = [];
+    bookings.forEach((booking) => {
+      // if this is an active booking
+      if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
+        bookingLocations.push(booking.locationId);
+      } else {
+        locations = locations.filter((location) => location.id !== booking.locationId);
+      }
+    });
+    this.saveBookingLocation(bookingLocations);
+    return locations;
+  }
+    
+  private saveBookingLocation(newBookingLocations: string[]) {
+    // Since bookings are given without service data we just need record of locations to match against
+    const stored: string = this.sessionStorageService.getItem('bookingLocations');
+    let bookingLocations = new Set<string>();
+    if (stored) {
+      bookingLocations = new Set(JSON.parse(stored));
+    }
+    newBookingLocations.forEach((location) => {
+      bookingLocations.add(location);
+    });
+
+    // Note: currently we do not immediately show booking locations - the only way to automatically show booking locations currently
+    // is to navigate via the booking screens. We can add them (if necessary in this)
+    this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(bookingLocations)));
+  }*/
 }

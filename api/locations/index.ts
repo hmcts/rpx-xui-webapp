@@ -13,7 +13,6 @@ import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
-// TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
 
 /**

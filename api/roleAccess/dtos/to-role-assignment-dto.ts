@@ -60,7 +60,6 @@ export function toSARoleAssignmentBody(
       beginTime: period.startDate,
       endTime: period.endDate
         ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
-      // TODO: Include notes once we have that information
       notes: [
         {
           comment: `{"specificReason":${allocateRoleData.accessReason}}`,
@@ -85,7 +84,6 @@ export function toSARoleAssignmentBody(
       actorId: allocateRoleData.actorId,
       beginTime: period.startDate,
       endTime: period.endDate,
-      // TODO: Include notes once we have that information
       notes: [
         {
           comment: '{"specificReason":"Request approved"}',
@@ -200,7 +198,6 @@ export function toSARequestRoleAssignmentBody(allocateRoleData: AllocateRoleData
       beginTime: new Date(),
       endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
         : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
-      // TODO: Include notes once we have that information
       notes: [{
         comment: `{"specificReason":${allocateRoleData.specificReason}}`,
         time: new Date().toISOString(),

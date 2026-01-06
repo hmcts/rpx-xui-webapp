@@ -34,7 +34,7 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
       const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
       const userResponse = await handleUsersGet(getUsersPath, req);
-      // TODO: Response will be cached eventually via API so caching below should be removed eventually
+      // EXUI-3967 - Caching may be removed in future in favour of API caching
       cachedUsers = getUniqueUsersFromResponse(userResponse);
     } else {
       refreshRoles = false;
@@ -82,7 +82,7 @@ export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], r
       // cachedUsersWithRoles to ensure rerun if user restarts request early
       const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
       const jurisdictions = getStaffSupportedJurisdictionsList();
-      const payload = prepareRoleApiRequest(jurisdictions, null, true);
+      const payload = prepareRoleApiRequest(jurisdictions);
       const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
       const roleAssignments = data.roleAssignmentResponse;
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
@@ -106,7 +106,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       // cachedUsersWithRoles to ensure rerun if user restarts request early
       const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
       const jurisdictions = getStaffSupportedJurisdictionsList();
-      const payload = prepareRoleApiRequest(jurisdictions, null, true);
+      const payload = prepareRoleApiRequest(jurisdictions);
       const roleAssignmentHeaders = {
         ...getRequestHeaders(),
         pageNumber: 0,

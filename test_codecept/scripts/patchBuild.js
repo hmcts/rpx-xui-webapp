@@ -40,10 +40,10 @@ html = html.replace(
 fs.writeFileSync(indexPath, html, 'utf8');
 
 /* 4) fixtures (unchanged) */
-const cfgDir  = path.join(distRoot, 'external', 'configuration-ui');
+const cfgDir  = path.join(distRoot, 'external', 'config/ui');
 fs.mkdirSync(cfgDir, { recursive: true });
 const cfgText = JSON.stringify(cfg, null, 2);
 fs.writeFileSync(path.join(cfgDir, 'index.json'), cfgText, 'utf8');
 fs.writeFileSync(path.join(cfgDir, 'index.html'), cfgText, 'utf8');
 
-console.log('[patchBuild] index.html patched and configuration-ui/index.(json|html) written');
+console.log('[patchBuild] index.html patched and config/ui/index.(json|html) written');

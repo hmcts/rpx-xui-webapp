@@ -27,7 +27,6 @@ import {
   getActionsFromMatrix,
   getAppropriateLocation,
   getAppropriateService,
-  getCaseAllocatorLocations,
   getCaseIdListFromRoles,
   getCaseName,
   getCaseworkerDataForServices,
@@ -49,7 +48,6 @@ import {
   prepareRoleApiRequest,
   prepareSearchCaseUrl,
   prepareSearchTaskUrl,
-  prepareServiceRoleApiRequest,
   searchAndReturnRefinedUsers
 } from './util';
 
@@ -342,11 +340,9 @@ describe('workAllocation.utils', () => {
   describe('prepareRoleApiRequest', () => {
     it('should correctly prepare a payload with jurisdictions and location parameters', () => {
       const jurisdictions: string[] = ['IA', 'Not-IA'];
-      const locationId = 123456;
       const expectedResult = {
         attributes: {
-          jurisdiction: jurisdictions,
-          baseLocation: [locationId]
+          jurisdiction: jurisdictions
         },
         roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
           'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
@@ -354,10 +350,9 @@ describe('workAllocation.utils', () => {
         validAt: Date.UTC,
         roleType: ['ORGANISATION']
       } as any;
-      const payload = prepareRoleApiRequest(jurisdictions, locationId);
+      const payload = prepareRoleApiRequest(jurisdictions);
       expect(payload).to.deep.equal(expectedResult);
-      expectedResult.attributes = { baseLocation: [locationId] };
-      const allRolesPayload = prepareRoleApiRequest(jurisdictions, locationId, true);
+      const allRolesPayload = prepareRoleApiRequest(jurisdictions);
       expect(allRolesPayload).to.deep.equal(expectedResult);
     });
   });
@@ -598,43 +593,6 @@ describe('workAllocation.utils', () => {
       expect(caseworkersByService.caseworkers[1]).to.deep.equal(expectedCaseWorkers[1]);
       expect(caseworkersByService.caseworkers[2]).to.deep.equal(expectedCaseWorkers[2]);
       expect(caseworkersByService.caseworkers[3]).to.deep.equal(expectedCaseWorkers[3]);
-    });
-  });
-
-  describe('prepareServiceRoleApiRequest', () => {
-    it('should correctly prepare a payload with jurisdictions and role parameters', () => {
-      const jurisdictions: string[] = ['IA', 'Not-IA'];
-      const roles: Role[] = [
-        { name: 'lead-judge', label: null, description: null, category: null, substantive: null, patterns: null },
-        { name: 'hearing-judge', label: null, description: null, category: null, substantive: null, patterns: null }
-      ];
-
-      const caseworkerPayload = prepareServiceRoleApiRequest(jurisdictions, roles);
-      expect(caseworkerPayload[0].attributes.jurisdiction).to.deep.equal(['IA']);
-      expect(caseworkerPayload[0].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
-      expect(caseworkerPayload[0].roleType).to.deep.equal(['ORGANISATION']);
-      expect(caseworkerPayload[1].attributes.jurisdiction).to.deep.equal(['Not-IA']);
-      expect(caseworkerPayload[1].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
-      expect(caseworkerPayload[1].roleType).to.deep.equal(['ORGANISATION']);
-    });
-
-    it('should correctly prepare a payload with jurisdictions, role and location parameters', () => {
-      const jurisdictions: string[] = ['IA', 'Not-IA'];
-      const roles: Role[] = [
-        { name: 'lead-judge', label: null, description: null, category: null, substantive: null, patterns: null },
-        { name: 'hearing-judge', label: null, description: null, category: null, substantive: null, patterns: null }
-      ];
-      const locationId = 123987;
-
-      const caseworkerPayload = prepareServiceRoleApiRequest(jurisdictions, roles, locationId);
-      expect(caseworkerPayload[0].attributes.jurisdiction).to.deep.equal(['IA']);
-      expect(caseworkerPayload[0].attributes.baseLocation).to.deep.equal([locationId]);
-      expect(caseworkerPayload[0].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
-      expect(caseworkerPayload[0].roleType).to.deep.equal(['ORGANISATION']);
-      expect(caseworkerPayload[1].attributes.jurisdiction).to.deep.equal(['Not-IA']);
-      expect(caseworkerPayload[1].attributes.baseLocation).to.deep.equal([locationId]);
-      expect(caseworkerPayload[1].roleName).to.deep.equal(['lead-judge', 'hearing-judge']);
-      expect(caseworkerPayload[1].roleType).to.deep.equal(['ORGANISATION']);
     });
   });
 
@@ -1450,58 +1408,6 @@ describe('workAllocation.utils', () => {
       sandbox.stub(http, 'post').resolves(res);
       const data = await getRoleAssignmentsByQuery(caseAllocatorQuery, req);
       expect(data).to.deep.equal(mockRoleAssignments);
-    });
-  });
-
-  describe('getCaseAllocatorLocations', () => {
-    it('should get case allocator locations', () => {
-      const mockRoleAssignments: any[] = [
-        {
-          'id': '508daf11-d968-4d65-bebb-863195b395c2',
-          'actorIdType': 'IDAM',
-          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-          'roleType': 'CASE',
-          'roleName': 'case-manager',
-          'classification': 'PUBLIC',
-          'grantType': 'SPECIFIC',
-          'roleCategory': 'LEGAL_OPERATIONS',
-          'readOnly': false,
-          'beginTime': '2021-10-20T23:00:00Z',
-          'endTime': '2021-10-27T23:00:00Z',
-          'created': '2021-10-21T14:55:04.103639Z',
-          'attributes': {
-            'substantive': 'Y',
-            'caseId': '1634822871207303',
-            'jurisdiction': 'IA',
-            'baseLocation': '229786',
-            'caseType': 'Asylum'
-          }
-        },
-        {
-          'id': '90d23b9f-3458-4aeb-83c3-5fb25ecfa30a',
-          'actorIdType': 'IDAM',
-          'actorId': 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8',
-          'roleType': 'CASE',
-          'roleName': 'case-allocator',
-          'classification': 'PUBLIC',
-          'grantType': 'SPECIFIC',
-          'roleCategory': 'LEGAL_OPERATIONS',
-          'readOnly': false,
-          'beginTime': '2021-10-13T23:00:00Z',
-          'created': '2021-10-14T15:55:58.586597Z',
-          'attributes': {
-            'substantive': 'Y',
-            'caseId': '1547476018728634',
-            'baseLocation': '229786',
-            'jurisdiction': 'IA',
-            'caseType': 'Asylum'
-          }
-        }
-      ];
-
-      const result = getCaseAllocatorLocations(mockRoleAssignments);
-      expect(result.length).to.equal(1);
-      expect(result[0]).to.equal('229786');
     });
   });
 

@@ -25,10 +25,10 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$WorkspaceId,
-    [string]$AcsEndpoint,
-    [string]$SenderAddress,
-    [string]$RecipientAddress
+    [string]$workspaceid,
+    [string]$acsendpoint,
+    [string]$senderaddress,
+    [string]$recipientaddress
 )
 
 # Connect to Azure with Managed Identity
@@ -66,7 +66,7 @@ UniqueSessionsPerDay
 "@
 
 try {
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $WorkspaceId -Query $query
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query
 }
 catch {
     Write-Error "Failed to query Log Analytics workspace."
@@ -111,13 +111,13 @@ $htmlTable
     # Send Email via Azure Communication Services
     try {
         $emailMessage = @{
-            SenderAddress    = $SenderAddress
-            RecipientAddress = $RecipientAddress
+            SenderAddress    = $senderaddress
+            RecipientAddress = $recipientaddress
             Subject          = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
             Content          = $emailBody
         }
 
-        Send-AzEmail -Endpoint $AcsEndpoint @emailMessage -BodyType Html
+        Send-AzEmail -Endpoint $acsendpoint @emailMessage -BodyType Html
         Write-Output "Email sent successfully via Azure Communication Services."
     }
     catch {
@@ -157,10 +157,10 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    workspaceId      = azurerm_log_analytics_workspace.logic_app_workspace.0.id
-    AcsEndpoint      = "https://${azurerm_communication_service.comm_service.0.name}.unitedkingdom.communication.azure.com"
-    SenderAddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
-    RecipientAddress = join(",", local.welsh_emails)
+    workspaceid      = azurerm_log_analytics_workspace.logic_app_workspace.0.id
+    acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.unitedkingdom.communication.azure.com"
+    senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress = join(",", local.welsh_emails)
   }
 }
 

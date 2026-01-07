@@ -19,7 +19,7 @@ test.describe("Verify creating case level flags works as expected", () => {
         caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
     });
 
-    test("Create a new case flag", async ({ caseDetailsPage, tableUtils }) => {
+    test("Create a new case level flag and verify the flag is displayed on the case", async ({ caseDetailsPage, tableUtils }) => {
 
         await test.step("Check there are no flags already present", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Flags');
@@ -48,7 +48,7 @@ test.describe("Verify creating case level flags works as expected", () => {
     });
 });
 
-test.describe("Verify creating party level flags works as expected", () => {
+test.describe("Create a new party level flag and verify the flag is displayed on the case", () => {
     let testValue = faker.person.firstName();
     let caseNumber: string;
     const jurisdiction = 'DIVORCE';

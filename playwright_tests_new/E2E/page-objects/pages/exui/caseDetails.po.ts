@@ -38,10 +38,10 @@ export class CaseDetailsPage extends Base {
     return this.page.getByRole('table', { name: tableName, exact: true })
   }
 
-  async getCaseNumberFromAlert(): Promise<string | null> {
+  async getCaseNumberFromAlert(): Promise<string> {
     const alertText = await this.caseAlertSuccessMessage.innerText();
     const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
-    return caseNumberMatch ? caseNumberMatch[0] : null;
+    return caseNumberMatch ? caseNumberMatch[0] : '';
   }
 
   async checkCaseFlagDetails(caseFlagItem: CaseFlagItem, tableName: string): Promise<Record<string, string> | null> {

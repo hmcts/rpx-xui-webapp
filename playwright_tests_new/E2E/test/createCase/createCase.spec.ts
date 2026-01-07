@@ -11,14 +11,14 @@ test.describe("Verify creating cases works as expected", () => {
         });
     });
 
-    test("Verify creating a case in the divorce jurisdiction works as expected", async ({ validatorUtils, createCasePage, caseListPage, tableUtils }) => {
+    test("Verify creating a case in the divorce jurisdiction works as expected", async ({ validatorUtils, createCasePage, caseDetailsPage, caseListPage, tableUtils }) => {
         let caseNumber: string;
         let textField0 = faker.lorem.word();
 
         await test.step("Create a case and validate the case number", async () => {
             await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
             expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
-            caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
+            caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
             expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
         });
 

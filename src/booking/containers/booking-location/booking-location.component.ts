@@ -55,11 +55,10 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   public onContinueClick(): void {
     this.formError = !this.bookingProcess.location;
-    if (!this.bookingProcess.location) {
-      // TODO: CAM_BOOKING - remove this?
-      this.getLocationSearchFocus();
-    } else {
+    if (this.bookingProcess.location) {
       this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
+    } else {
+      this.getLocationSearchFocus();
     }
   }
 

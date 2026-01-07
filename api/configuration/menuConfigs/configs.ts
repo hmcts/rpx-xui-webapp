@@ -33,9 +33,7 @@ function mergeConfigs(baseConfig, aatConfig) {
   const mergedConfig = { ...baseConfig };
   for (const key in aatConfig) {
     if (aatConfig.hasOwnProperty(key)) {
-      if (!mergedConfig[key]) {
-        mergedConfig[key] = aatConfig[key];
-      } else {
+      if (mergedConfig[key]) {
         aatConfig[key].forEach((aatItem) => {
           const baseItem = mergedConfig[key].find((item) => (item.text === aatItem.text) && item.roles);
           if (baseItem) {
@@ -44,6 +42,8 @@ function mergeConfigs(baseConfig, aatConfig) {
             mergedConfig[key].push(aatItem);
           }
         });
+      } else {
+        mergedConfig[key] = aatConfig[key];
       }
     }
   }

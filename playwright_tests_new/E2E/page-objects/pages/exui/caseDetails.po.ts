@@ -1,8 +1,10 @@
 import { Page } from "@playwright/test";
 import { Base } from "../../base";
+import { ValidatorUtils } from "../../../utils/validator.utils";
 import { TableUtils } from "@hmcts/playwright-common";
 
 const tableUtils = new TableUtils();
+const validatorUtils = new ValidatorUtils();
 
 export interface CaseFlagItem {
   flagType: string;
@@ -14,7 +16,6 @@ export interface CaseFlagItem {
 
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator("exui-case-details-home");
-  readonly createCaseSuccessMessage = this.page.locator('.alert-message');
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
   readonly caseActionsDropdown = this.page.locator('#next-step');
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
@@ -25,7 +26,7 @@ export class CaseDetailsPage extends Base {
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
 
   readonly commonRadioButtons = this.page.locator('.govuk-radios__item');
-  readonly caseAlertMessage = this.page.locator('.hmcts-banner--success .alert-message');
+  readonly caseAlertSuccessMessage = this.page.locator('.hmcts-banner--success .alert-message');
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
@@ -35,6 +36,12 @@ export class CaseDetailsPage extends Base {
   }
   async getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true })
+  }
+
+  async getCaseNumberFromAlert(): Promise<string | null> {
+    const alertText = await this.caseAlertSuccessMessage.innerText();
+    const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
+    return caseNumberMatch ? caseNumberMatch[0] : null;
   }
 
   async checkCaseFlagDetails(caseFlagItem: CaseFlagItem, tableName: string): Promise<Record<string, string> | null> {

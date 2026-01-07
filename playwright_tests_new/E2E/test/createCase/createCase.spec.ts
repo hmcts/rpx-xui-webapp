@@ -11,7 +11,7 @@ test.describe("Verify creating cases works as expected", () => {
         });
     });
 
-    test("Verify creating a case works as expected", async ({ validatorUtils, createCasePage, caseListPage, tableUtils }) => {
+    test("Verify creating a case in the divorce jurisdiction works as expected", async ({ validatorUtils, createCasePage, caseListPage, tableUtils }) => {
         let caseNumber: string;
         let textField0 = faker.lorem.word();
 
@@ -19,7 +19,7 @@ test.describe("Verify creating cases works as expected", () => {
             await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
             expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
             caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
-            validatorUtils.validateDivorceCaseNumber(caseNumber);
+            expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
         });
 
         await test.step("Find the created case in the case list", async () => {

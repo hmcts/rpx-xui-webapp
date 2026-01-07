@@ -5,7 +5,6 @@ import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class WorkAllocationAccessGuard {
-  public static defaultUrl: string = '/cases';
   constructor(private readonly featureToggleService: FeatureToggleService,
               private readonly router: Router) {}
 

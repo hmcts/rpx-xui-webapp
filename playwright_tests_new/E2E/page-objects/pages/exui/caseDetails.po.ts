@@ -44,34 +44,6 @@ export class CaseDetailsPage extends Base {
     return caseNumberMatch ? caseNumberMatch[0] : '';
   }
 
-  async checkCaseFlagDetails(caseFlagItem: CaseFlagItem, tableName: string): Promise<Record<string, string> | null> {
-    const table = await tableUtils.mapExuiTable(await this.getTableByName(tableName));
-
-    const columnMap: Record<string, string> = {
-      flagType: 'Party level flags',
-      comments: 'Comments',
-      creationDate: 'Creation date',
-      lastModified: 'Last modified',
-      status: 'Flag status',
-    };
-
-    const normalize = (v: any) => (v === undefined || v === null) ? '' : String(v).trim();
-
-    // Find the first row that matches all provided fields in caseFlagItem
-    const matchingRow = table.find(row => {
-      return Object.entries(columnMap).every(([key, header]) => {
-        const expected = (caseFlagItem as any)[key];
-        // If the expected value is empty/undefined, skip matching that field
-        if (expected === undefined || expected === null || expected === '') return true;
-        const actual = normalize(row[header]);
-        return normalize(expected) === actual;
-      });
-    }) as Record<string, string> | undefined;
-
-    console.log('Case flag matching row:', matchingRow ?? null);
-    return matchingRow ?? null;
-  }
-
   async selectCaseAction(action: string) {
     await this.caseActionGoButton.waitFor();
     await this.caseActionsDropdown.selectOption(action);

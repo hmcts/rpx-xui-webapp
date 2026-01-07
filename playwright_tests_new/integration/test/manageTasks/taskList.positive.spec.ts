@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/session.utils';
+import { loadSessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { readTaskTable, formatUiDate } from '../../utils/tableUtils';

@@ -1,14 +1,16 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
+import { loadSessionCookies } from '../../../common/sessionCapture';
+let sessionCookies: any[] = [];
 
 test.describe("Verify creating cases works as expected", () => {
-    test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
-        await page.goto(config.urls.manageCaseBaseUrl);
-        const { email, password } = userUtils.getUserCredentials("SOLICITOR");
-        await idamPage.login({
-            username: email,
-            password: password,
-        });
+    test.beforeEach(async ({ page }) => {
+        const { cookies } = loadSessionCookies('SOLICITOR');
+        sessionCookies = cookies;
+        if (sessionCookies.length) {
+            await page.context().addCookies(sessionCookies);
+        }
+        await page.goto('/');
     });
 
     test("Verify creating a case in the divorce jurisdiction works as expected", async ({ validatorUtils, createCasePage, caseDetailsPage, caseListPage, tableUtils }) => {
@@ -31,7 +33,7 @@ test.describe("Verify creating cases works as expected", () => {
             await caseListPage.applyFilters();
         });
 
-        await test.step("Confirm the created case is in the search results", async () => {            
+        await test.step("Confirm the created case is in the search results", async () => {
             const table = await tableUtils.mapExuiTable(
                 caseListPage.exuiCaseListComponent.caseListTable
             );

@@ -3695,12 +3695,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.1-add-field-name":
-  version: 7.3.1-add-field-name
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.1-add-field-name"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.11-add-field-name/hmcts-ccd-case-ui-toolkit-7.3.11-add-field-name.tgz":
+  version: 7.3.11-add-field-name
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.11-add-field-name/hmcts-ccd-case-ui-toolkit-7.3.11-add-field-name.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/e5d90519f8fbeed2c40679948a54e3006006d446b644fdcd610abdb44b2e777676843483e4c6a180652151255dc519ebec9556f47ee8d8f76001856e16932e44
+  checksum: 10/28e6f41987aa4c7f54484278a2065a72f46243030b8aae8dbad9e16c3b03ebb26aa806c5cf4740bd114a1d4099cfe5aa5288b2cbeffddb1f035376d425563463
   languageName: node
   linkType: hard
 
@@ -25291,7 +25291,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.1-add-field-name"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.11-add-field-name/hmcts-ccd-case-ui-toolkit-7.3.11-add-field-name.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz"

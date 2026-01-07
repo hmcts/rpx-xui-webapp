@@ -2,7 +2,7 @@ resource "azurerm_email_communication_service" "email_service" {
   count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-email-${var.env}"
   resource_group_name = azurerm_resource_group.rg.name
-  data_location       = "United Kingdom"
+  data_location       = "UK"
   tags                = var.common_tags
 }
 
@@ -19,7 +19,7 @@ resource "azurerm_communication_service" "comm_service" {
   count               = var.welsh_reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-comm-${var.env}"
   resource_group_name = azurerm_resource_group.rg.name
-  data_location       = "United Kingdom"
+  data_location       = "UK"
   tags                = var.common_tags
 }
 

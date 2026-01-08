@@ -202,35 +202,5 @@ export class LocationResolver {
     const notAfterEnd = !roleAssignment.endTime || moment(new Date()).isSameOrBefore(roleAssignment.endTime);
     return notBeforeBegin && notAfterEnd;
   }
-
-  // EXUI-3967 - Commented out dead code - left as is useful reference for any future bookings-related changes
-  /* public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
-    const bookingLocations: string[] = [];
-    bookings.forEach((booking) => {
-      // if this is an active booking
-      if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
-        bookingLocations.push(booking.locationId);
-      } else {
-        locations = locations.filter((location) => location.id !== booking.locationId);
-      }
-    });
-    this.saveBookingLocation(bookingLocations);
-    return locations;
-  }
-
-  private saveBookingLocation(newBookingLocations: string[]) {
-    // Since bookings are given without service data we just need record of locations to match against
-    const stored: string = this.sessionStorageService.getItem('bookingLocations');
-    let bookingLocations = new Set<string>();
-    if (stored) {
-      bookingLocations = new Set(JSON.parse(stored));
-    }
-    newBookingLocations.forEach((location) => {
-      bookingLocations.add(location);
-    });
-
-    // Note: currently we do not immediately show booking locations - the only way to automatically show booking locations currently
-    // is to navigate via the booking screens. We can add them (if necessary in this)
-    this.sessionStorageService.setItem('bookingLocations', JSON.stringify(Array.from(bookingLocations)));
-  }*/
+  // EXUI-3967 - 08/01/2026 - Removed code that added and saved booking locations
 }

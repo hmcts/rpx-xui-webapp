@@ -130,10 +130,10 @@ EOT
   tags = var.common_tags
 }
 
-resource "azurerm_role_assignment" "automation_log_analytics_reader" {
+resource "azurerm_role_assignment" "automation_appinsights_reader" {
   count                = var.welsh_reporting_enabled ? 1 : 0
-  scope                = azurerm_log_analytics_workspace.logic_app_workspace.0.id
-  role_definition_name = "Log Analytics Reader"
+  scope                = azurerm_application_insights.appinsight.id
+  role_definition_name = "Reader"
   principal_id         = azurerm_automation_account.welsh_reporting.0.identity[0].principal_id
 }
 
@@ -157,11 +157,16 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    workspaceid      = azurerm_log_analytics_workspace.logic_app_workspace.0.id
+    workspaceid      = azurerm_application_insights.appinsight.app_id
     acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.uk.communication.azure.com"
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
     recipientaddress = join(",", local.welsh_emails)
   }
+
+  depends_on = [
+    azurerm_automation_runbook.welsh_report_runbook,
+    azurerm_automation_schedule.welsh_monthly_schedule
+  ]
 }
 
 resource "azurerm_automation_module" "az_communication" {

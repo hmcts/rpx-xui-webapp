@@ -100,8 +100,8 @@ export class CreateCasePage extends Base {
     await this.createCase(jurisdiction, caseType, 'Create Case');
     const today = new Date();
     await this.receiptDayInput.fill(today.getDate().toString());
-    await this.receiptMonthInput.fill((today.getMonth() - 1).toString());
-    await this.receiptYearInput.fill(today.getFullYear().toString());
+    await this.receiptMonthInput.fill(today.getMonth().toString());
+    await this.receiptYearInput.fill((today.getFullYear()-1).toString());
     await this.tribunalOfficeSelect.selectOption('Leeds');
 
     await this.continueButton.click({ force: true });

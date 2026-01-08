@@ -31,10 +31,10 @@ export function modifyRequest(proxyReq, req) {
 }
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
-  const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES) as string[];
+  const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES);
   return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => allowedRoles
     .map((allowedRole: string) => allowedRole.toLowerCase())
-    .indexOf(role.toLowerCase()) >= 0).length > 0;
+    .includes(role.toLowerCase())).length > 0;
 }
 
 export function prepareElasticQuery(queryParams: { page?}, body: any, user: UserInfo): ElasticSearchQuery {
@@ -54,7 +54,7 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
       delete metaCriteria[key];
     }
 
-    if (key.indexOf('case.') > -1) {
+    if (key.includes('case.')) {
       const newKey: string = key.replace('case.', '');
       caseCriteria = {
         ...caseCriteria,
@@ -203,14 +203,14 @@ function prepareSort(params) {
   if (params.hasOwnProperty('column') && params.hasOwnProperty('order') && params.hasOwnProperty('type')) {
     let columnName: string;
 
-    if (params.column.indexOf('[') === -1) {
-      columnName = `data.${params.column}${isKeywordSuffixNeeded(params.column, params.type)}`;
-    } else {
+    if (params.column.includes('[')) {
       const mappedName = fieldNameMapper(
         params.column.replace('[', '').replace(']', '').toLowerCase(),
         caseMetaDataFiledsMapping
       );
       columnName = `${mappedName}${isKeywordSuffixNeeded(mappedName, params.type)}`;
+    } else {
+      columnName = `data.${params.column}${isKeywordSuffixNeeded(params.column, params.type)}`;
     }
     const orderDirection: 'ASC' | 'DESC' = params.order === 0 ? 'ASC' : 'DESC';
     sortQuery.push(
@@ -256,12 +256,12 @@ function canApplyWildCardSearch(
   return wildcardSearchFields
     && wildcardSearchFields.hasOwnProperty(caseType)
     && Array.isArray(wildcardSearchFields[caseType])
-    && wildcardSearchFields[caseType].indexOf(criterion) >= 0;
+    && wildcardSearchFields[caseType].includes(criterion);
 }
 
 function phraseHasSpecialCharacters(phrase: string): boolean {
   const specialCharacters: string[] = [' ', '-', '_'];
-  return specialCharacters.filter((specialCharacter: string): boolean => phrase.indexOf(specialCharacter) >= 0).length > 0;
+  return specialCharacters.filter((specialCharacter: string): boolean => phrase.includes(specialCharacter)).length > 0;
 }
 
 function getUserInfoFromRequest(req: any): UserInfo {

@@ -9,7 +9,7 @@ export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
   if (configured) {
-    return parseInt(configured, 10);
+    return Number.parseInt(configured, 10);
   }
   if (process.env.CI) {
     return 1;

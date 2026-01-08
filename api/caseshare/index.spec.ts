@@ -444,7 +444,7 @@ describe('Case Share Index - Unit Tests', () => {
         stubAPIGetUsersStub.callsFake((req, res) => {
           const searchText = req.query.q.toString();
           const users = testUsers.filter((u) =>
-            u.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1
+            u.email.toLowerCase().includes(searchText.toLowerCase())
           );
           return res.send(users);
         });

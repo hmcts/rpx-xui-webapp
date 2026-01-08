@@ -31,9 +31,9 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
       res.status(status).send({
         items: statusFilter ? filteredData : data,
-        pageSize: parseInt(pageSize, 10),
-        pageNumber: parseInt(pageNumber, 10),
-        totalItems: parseInt(headers['total-records'], 10)
+        pageSize: Number.parseInt(pageSize, 10),
+        pageNumber: Number.parseInt(pageNumber, 10),
+        totalItems: Number.parseInt(headers['total-records'], 10)
       });
     } catch (error) {
       next(error);
@@ -81,7 +81,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
       const { status, data }: { status: number, data } = await sendGet(apiPath, req);
 
       const options: StaffFilterOption[] = [];
-      const serviceRefData = getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[];
+      const serviceRefData = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING);
       data.service_skill.forEach((element) => {
         serviceRefData.forEach((service) => {
           const selectedServiceCodes = service.serviceCodes.filter((s) => s === element.id);
@@ -133,9 +133,9 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
 
       res.status(status).send({
         items: data,
-        pageSize: parseInt(pageSize, 10),
-        pageNumber: parseInt(pageNumber, 10),
-        totalItems: parseInt(headers['total-records'], 10)
+        pageSize: Number.parseInt(pageSize, 10),
+        pageNumber: Number.parseInt(pageNumber, 10),
+        totalItems: Number.parseInt(headers['total-records'], 10)
       });
     } catch (error) {
       next(error);

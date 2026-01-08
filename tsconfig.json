@@ -18,6 +18,7 @@
     "skipLibCheck": true,
     "lib": [
       "ES2020",
+      "ES2021.String",
       "dom"
     ]
   },

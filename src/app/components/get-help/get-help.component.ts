@@ -40,6 +40,6 @@ export class GetHelpComponent implements OnInit {
    * @param userRoles - 'j:["caseworker", "pui-case-manager"]'
    */
   public isCaseManager(userRoles: string): boolean {
-    return userRoles && userRoles.indexOf('pui-case-manager') !== -1;
+    return userRoles && userRoles.includes('pui-case-manager');
   }
 }

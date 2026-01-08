@@ -17,7 +17,8 @@ import {
   ErrorNotifierService,
   AlertService,
   QueryWriteRespondToQueryComponent,
-  SessionStorageService
+  SessionStorageService,
+  CaseQueriesCollection
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -1214,6 +1215,33 @@ describe('QueryManagementContainerComponent', () => {
 
     it('should do nothing if no subscription is provided', () => {
       expect(() => component.unsubscribe(null)).not.toThrow();
+    });
+  });
+  describe('createEventResponse', () => {
+    it('should set eventResponseData with the provided CaseQueriesCollection', () => {
+      const mockResponse = {
+        caseMessages: [{
+          id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+          value: {
+            attachments: [],
+            body: 'testing by olu',
+            createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+            createdOn: new Date('2024-08-27T15:44:50.700Z'),
+            hearingDate: '2023-01-10',
+            id: 'id-007',
+            isHearingRelated: 'Yes',
+            name: 'Piran Sam',
+            parentId: 'ca',
+            subject: 'Review attached document'
+          }
+        }],
+        partyName: '',
+        roleOnCase: ''
+      } as CaseQueriesCollection;
+
+      component.createEventResponse(mockResponse);
+
+      expect(component.eventResponseData).toEqual(mockResponse);
     });
   });
 });

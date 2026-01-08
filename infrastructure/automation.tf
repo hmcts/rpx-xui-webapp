@@ -144,8 +144,8 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Month"
   interval                = 1
-  # Run on the 1st of every month at 09:00 UTC
-  start_time              = formatdate("YYYY-MM-07'T'14:00:00Z", timestamp())
+  # Run 5 minutes from now for testing
+  start_time              = formatdate("YYYY-MM-08'T'15:00:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -158,7 +158,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
 
   parameters = {
     workspaceid      = azurerm_log_analytics_workspace.logic_app_workspace.0.id
-    acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.unitedkingdom.communication.azure.com"
+    acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.uk.communication.azure.com"
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
     recipientaddress = join(",", local.welsh_emails)
   }

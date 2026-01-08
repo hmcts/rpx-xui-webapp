@@ -79,7 +79,6 @@ export class CreateCasePage extends Base {
   }
 
   async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
-
     await this.createCaseButton.click();
     await this.jurisdictionSelect.selectOption(jurisdiction);
     await this.caseTypeSelect.selectOption(caseType);
@@ -99,10 +98,10 @@ export class CreateCasePage extends Base {
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     await this.createCase(jurisdiction, caseType, 'Create Case');
-
-    await this.receiptDayInput.fill('1');
-    await this.receiptMonthInput.fill('1');
-    await this.receiptYearInput.fill('2025');
+    const today = new Date();
+    await this.receiptDayInput.fill(today.getDate().toString());
+    await this.receiptMonthInput.fill((today.getMonth() - 1).toString());
+    await this.receiptYearInput.fill(today.getFullYear().toString());
     await this.tribunalOfficeSelect.selectOption('Leeds');
 
     await this.continueButton.click({ force: true });
@@ -144,7 +143,7 @@ export class CreateCasePage extends Base {
   }
 
   async createCaseFlagDivorceCase(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'XUI Case flags V2.1') {
-    await this.createCase(jurisdiction, caseType,'');
+    await this.createCase(jurisdiction, caseType, '');
 
     await this.party1RoleOnCase.fill(testData);
     await this.party1Name.fill(testData);

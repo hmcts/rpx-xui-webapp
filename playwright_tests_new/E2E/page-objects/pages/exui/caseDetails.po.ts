@@ -41,6 +41,9 @@ export class CaseDetailsPage extends Base {
   async getCaseNumberFromAlert(): Promise<string> {
     const alertText = await this.caseAlertSuccessMessage.innerText();
     const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
+    if (!caseNumberMatch) {
+      throw new Error(`Failed to extract case number from alert: "${alertText}"`);
+    }
     return caseNumberMatch ? caseNumberMatch[0] : '';
   }
 
@@ -48,14 +51,6 @@ export class CaseDetailsPage extends Base {
     await this.caseActionGoButton.waitFor();
     await this.caseActionsDropdown.selectOption(action);
     await this.caseActionGoButton.click();
-    await this.exuiSpinnerComponent.wait();
-  }
-
-  async selectRandomRadioOption() {
-    const optionCount = await this.commonRadioButtons.count();
-    const randomIndex = Math.floor(Math.random() * (optionCount - 1));
-    await this.commonRadioButtons.nth(randomIndex).getByRole('radio').check();
-    await this.submitCaseFlagButton.click();
     await this.exuiSpinnerComponent.wait();
   }
 

@@ -1,13 +1,16 @@
 import { Page } from "@playwright/test";
-import { Base } from "../../base.ts";
+import { Base } from "../../base";
 import {faker} from '@faker-js/faker';
 
 export class CreateCasePage extends Base {
+  
   readonly container = this.page.locator("exui-case-home");
   readonly createCaseButton = this.container.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.getByLabel('Jurisdiction');
   readonly caseTypeSelect = this.page.getByLabel('Case type');
   readonly startButton = this.page.getByRole('button', { name: 'Start' });
+
+  // Locators for the Divorce 
   readonly person1Title = this.page.locator('#Person1_Title');
   readonly firstNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('First Name (Optional)');
   readonly lastNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)');
@@ -21,6 +24,10 @@ export class CreateCasePage extends Base {
   readonly textField3Input = this.page.getByLabel('Text Field 3 (Optional)');
   readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: 'Check your answers' });
   readonly testSubmitButton = this.page.getByRole('button', { name: 'Test submit' });
+
+  // Warning modal
+  readonly refreshModal = this.page.locator('.refresh-modal');
+  readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
 
   constructor(page: Page) {
     super(page);

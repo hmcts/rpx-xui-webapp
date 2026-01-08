@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import { http } from '../lib/http';
@@ -56,6 +55,8 @@ import {
 
 import * as util from './util';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 const LOCATIONAPI_1: LocationApi = {
@@ -930,21 +931,39 @@ describe('workAllocation.utils', () => {
       }
     ];
 
-    const expectedCaseList = ['4', '2', '5'];
-    sinon.stub(util, 'searchCasesById').resolves({
-      cases: mockCaseData
+    let searchCasesByIdStub;
+    beforeEach(() => {
+      searchCasesByIdStub = sinon.stub(util, 'searchCasesById').callsFake((caseType, query) => {
+        const references = query.native_es_query.query.terms.reference || [];
+        const cases = references.map((ref) => ({
+          id: ref.toString(),
+          case_type_id: caseType,
+          jurisdiction: 'jurisdiction'
+        }));
+        return Promise.resolve({ cases });
+      });
     });
+
+    afterEach(() => {
+      searchCasesByIdStub.restore();
+    });
+
+    const expectedCaseList = ['4', '2', '5'];
 
     it('should return empty list if there is nothing given', async () => {
       expect(await getCaseIdListFromRoles(null, req)).to.deep.equal([]);
     });
 
-    xit('should return correct list of case ids', async () => {
-      expect(await getCaseIdListFromRoles(firstRoleAssignment, req)).to.deep.equal(expectedCaseList);
+    it('should return correct list of case ids', async () => {
+      const cases = await getCaseIdListFromRoles(firstRoleAssignment, req);
+      expect(cases.map((caseItem) => caseItem.id)).to.deep.equal(expectedCaseList);
+      expect(searchCasesByIdStub).to.have.been.calledThrice;
     });
 
     it('should avoid duplicating case ids', async () => {
-      expect(await getCaseIdListFromRoles(secondRoleAssignment, req)).to.eql(mockCaseData);
+      const cases = await getCaseIdListFromRoles(secondRoleAssignment, req);
+      expect(cases.map((caseItem) => caseItem.id)).to.deep.equal(['4', '2']);
+      expect(searchCasesByIdStub).to.have.been.calledOnce;
     });
   });
 
@@ -2134,17 +2153,22 @@ describe('workAllocation.utils', () => {
         }); */
       });
 
-      xdescribe('getEndDate', () => {
+      describe('getEndDate', () => {
+        const endTime = new Date('2023-01-24');
+
         it('should return empty string if the request is still pending', () => {
-          const endDate = getEndDate(roleAssignments[0]);
-          expect(endDate).to.equal(undefined);
+          const pendingRole = { ...roleAssignments[2], endTime };
+          const endDate = getEndDate(pendingRole);
+          expect(endDate).to.equal('');
         });
         it('should return date if the request is denied', () => {
-          const endDate = getEndDate(roleAssignments[3]);
+          const deniedRole = { ...roleAssignments[2], roleName: 'specific-access-denied', endTime };
+          const endDate = getEndDate(deniedRole);
           expect(endDate).to.equal('24 Jan 2023');
         });
         it('should return date if the request is accepted', () => {
-          const endDate = getEndDate(roleAssignments[2]);
+          const grantedRole = { ...roleAssignments[3], endTime };
+          const endDate = getEndDate(grantedRole);
           expect(endDate).to.equal('24 Jan 2023');
         });
       });

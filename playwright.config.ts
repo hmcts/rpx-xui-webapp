@@ -5,6 +5,8 @@ const { version: appVersion } = require('./package.json');
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+const odhinOutputFolder =
+  process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
@@ -22,10 +24,13 @@ const resolveWorkerCount = () => {
 const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
+  use: {
+    baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
+  },
   testDir: '.',
   testMatch: [
     'playwright_tests/**/*.test.ts',
-    'playwright_tests_new/**/*.spec.ts',
+    'playwright_tests_new/E2E/**/*.spec.ts',
   ],
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -46,7 +51,7 @@ module.exports = defineConfig({
   reporter: [
     [process.env.CI ? 'dot' : 'list'],
     ['odhin-reports-playwright', {
-      outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
+      outputFolder: odhinOutputFolder,
       indexFilename: 'xui-playwright.html',
       title: 'RPX XUI Playwright',
       testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
@@ -62,7 +67,12 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: [
+        'playwright_tests_new/api/**',
+        'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'
+      ],
       use: {
+        baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
         ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
@@ -72,6 +82,32 @@ module.exports = defineConfig({
           fullPage: true
         },
         video: 'retain-on-failure'
+      }
+    },
+    {
+      name: 'smoke',
+      testMatch: ['playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+      use: {
+        baseURL: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net',
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        headless: headlessMode,
+        trace: 'retain-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
+        video: 'retain-on-failure'
+      }
+    },
+    {
+      name: 'node-api',
+      testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+      use: {
+        headless: true,
+        screenshot: 'off',
+        video: 'off',
+        trace: 'off'
       }
     }
   ]

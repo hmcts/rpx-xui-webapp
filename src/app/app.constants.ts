@@ -175,15 +175,6 @@ const environmentNames = {
   prod: 'prod'
 };
 
-const redirectUrl = {
-  aat: 'https://idam-web-public.aat.platform.hmcts.net',
-  demo: 'https://idam-web-public.demo.platform.hmcts.net',
-  ithc: 'https://idam-web-public-aks.ithc.platform.hmcts.net',
-  prod: 'https://hmcts-access.service.gov.uk',
-  perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
-  localhost: 'https://idam-web-public.aat.platform.hmcts.net'
-};
-
 const appHeaderTitle = { name: 'Manage cases', url: '/' };
 
 // Making the base URL for case details a constant.
@@ -218,7 +209,6 @@ export class AppConstants {
   public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static APP_HEADER_TITLE = appHeaderTitle;
   public static ENVIRONMENT_NAMES = environmentNames;
-  public static REDIRECT_URL = redirectUrl;
   public static HELP_CONTACT_DETAILS = helpContactDetails;
   public static DEFAULT_USER_THEME = defaultUserTheme;
   public static FEATURE_NAMES = featureNames;

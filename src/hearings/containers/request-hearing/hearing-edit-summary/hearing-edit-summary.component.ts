@@ -37,6 +37,7 @@ import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.mo
 import { cloneDeep } from 'lodash';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-edit-summary',
   templateUrl: './hearing-edit-summary.component.html'
 })

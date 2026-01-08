@@ -3,7 +3,7 @@ import {
   CategoryType,
   HMCLocationType,
   LaCaseStatus,
-  ListingStatus,
+  HearingListingStatusEnum,
   PartyType,
   UnavailabilityType
 } from '../models/hearings.enum';
@@ -159,7 +159,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -379,7 +379,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-      listingStatus: ListingStatus.DRAFT,
+      listingStatus: HearingListingStatusEnum.AWAITING_ACTUALS,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -588,7 +588,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -797,7 +797,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -1006,7 +1006,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.PENDING_RELISTING,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -1216,7 +1216,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       errorTimestamp: '2022-03-27T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.EXCEPTION,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -1425,7 +1425,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -1634,7 +1634,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.CLOSED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -1843,7 +1843,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.CLOSED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -2016,7 +2016,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -2153,7 +2153,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -2324,7 +2324,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000Z',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: '123456543',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000Z',
@@ -2494,7 +2494,7 @@ export const HEARING_REQUEST_RESULTS: HearingRequestMainModel[] = [
       receivedDateTime: '2021-11-30T09:00:00.000+0000',
       responseVersion: 0,
       laCaseStatus: LaCaseStatus.LISTED,
-      listingStatus: ListingStatus.FIXED,
+      listingStatus: HearingListingStatusEnum.COMPLETED,
       hearingCancellationReason: 'cancelled',
       hearingDaySchedule: [{
         hearingStartDateTime: '2021-03-12T09:00:00.000+0000',

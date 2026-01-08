@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -19,6 +18,8 @@ import {
 import { getRoleCategoryRequestPayload } from './index';
 import { RoleCategory } from './models/allocate-role.enum';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('exclusions.exclusionService', () => {

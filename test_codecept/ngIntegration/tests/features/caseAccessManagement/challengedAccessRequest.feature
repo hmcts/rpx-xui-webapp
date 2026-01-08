@@ -1,4 +1,4 @@
-@functional_enabled
+@functional_enabledx
 Feature: Case challeged access request
 
 Background: setup
@@ -36,7 +36,7 @@ Scenario: Challenged access required, page validations
         Then I see challenged access request page
 
         Then In challenged access request page, I do not see other reason input
-        Then In challenged access request page, I do not see case reference input
+        Then In challenged access request page, I see case reference input
         
         When In challenged access request page, I select radio option "The cases or parties are linked to the case I am working on"
         Then In challenged access request page, I see case reference input

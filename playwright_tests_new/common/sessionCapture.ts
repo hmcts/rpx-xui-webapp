@@ -34,11 +34,11 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
       }
     } catch (e) {
       console.warn(`SessionUtils: failed parsing storage state for ${userIdentifier}:`, e);
-      throw e;
+      throw new Error(`Storage file missing for ${userIdentifier} for ${storageFile}`);
     }
   } else {
     console.warn(`SessionUtils: storage file missing for ${userIdentifier}: ${storageFile}`);
-    throw new Error(`Storage file missing for ${userIdentifier}`);
+    throw new Error(`Failed parsing storage file ${userIdentifier}`);
   }
   return { email, cookies, storageFile };
 }

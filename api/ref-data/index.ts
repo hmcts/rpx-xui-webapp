@@ -19,7 +19,19 @@ export async function getServices(req, res, next: NextFunction) {
     const { status, data }: { status: number; data: RefDataHMCTSService[] } =
       await http.get(`${apiPath}`, { headers: setHeaders(req) });
     const enabledServicesData = data.filter((service) => enabledServiceCodes.includes(service.service_code));
-
+    enabledServicesData.push({
+      jurisdiction: 'HRS',
+      service_id: 111,
+      org_unit: 'HMCTS',
+      business_area: 'HRS',
+      sub_business_area: 'HRS',
+      service_description: 'HRS',
+      service_code: 'HRS1',
+      service_short_description: 'HRS',
+      ccd_service_name: 'HRS',
+      last_update: '2025-10-01T16:28:37.259752',
+      ccd_case_types: ['HRS']
+    } as RefDataHMCTSService);
     res.status(status).send(enabledServicesData);
   } catch (error) {
     next(error);

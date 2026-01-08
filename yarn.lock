@@ -609,7 +609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cli@npm:^20.3.9":
+"@angular/cli@npm:^20.3.13":
   version: 20.3.13
   resolution: "@angular/cli@npm:20.3.13"
   dependencies:
@@ -3723,9 +3723,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz":
-  version: 4.2.2
-  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz"
+"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz":
+  version: 4.2.4
+  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3744,7 +3744,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/67c78fabb85d42e7b6c2133db5c2daaa7d9232ad81e968f63f6411920bf72c5ef84c02315672ae0518d08a1859099a6d01336c057f31f067dfe6b084b50b3d26
+  checksum: 10/ee31aa33c065be02d19185944c54e8332bb5ebfa46a97a3d60ff8e574333f16be057852d75f52959674189cc418e1addf4711fe3161a853b5eebe630fcc9ab96
   languageName: node
   linkType: hard
 
@@ -25275,7 +25275,7 @@ __metadata:
     "@angular-material-components/moment-adapter": "npm:^16.0.1"
     "@angular/animations": "npm:^20.3.14"
     "@angular/cdk": "npm:^16.2.0"
-    "@angular/cli": "npm:^20.3.9"
+    "@angular/cli": "npm:^20.3.13"
     "@angular/common": "npm:^20.3.14"
     "@angular/compiler": "npm:^20.3.14"
     "@angular/compiler-cli": "npm:^20.3.14"
@@ -25294,7 +25294,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.11-add-field-name/hmcts-ccd-case-ui-toolkit-7.3.11-add-field-name.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.2/hmcts-media-viewer-4.2.2.tgz"
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
@@ -26961,6 +26961,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tar@npm:7.5.2":
+  version: 7.5.2
+  resolution: "tar@npm:7.5.2"
+  dependencies:
+    "@isaacs/fs-minipass": "npm:^4.0.0"
+    chownr: "npm:^3.0.0"
+    minipass: "npm:^7.1.2"
+    minizlib: "npm:^3.1.0"
+    yallist: "npm:^5.0.0"
+  checksum: 10/dbad9c9a07863cd1bdf8801d563b3280aa7dd0f4a6cead779ff7516d148dc80b4c04639ba732d47f91f04002f57e8c3c6573a717d649daecaac74ce71daa7ad3
+  languageName: node
+  linkType: hard
+
 "tar@npm:^6.1.11, tar@npm:^6.1.13":
   version: 6.2.1
   resolution: "tar@npm:6.2.1"
@@ -26972,19 +26985,6 @@ __metadata:
     mkdirp: "npm:^1.0.3"
     yallist: "npm:^4.0.0"
   checksum: 10/bfbfbb2861888077fc1130b84029cdc2721efb93d1d1fb80f22a7ac3a98ec6f8972f29e564103bbebf5e97be67ebc356d37fa48dbc4960600a1eb7230fbd1ea0
-  languageName: node
-  linkType: hard
-
-"tar@npm:^7.4.3":
-  version: 7.5.1
-  resolution: "tar@npm:7.5.1"
-  dependencies:
-    "@isaacs/fs-minipass": "npm:^4.0.0"
-    chownr: "npm:^3.0.0"
-    minipass: "npm:^7.1.2"
-    minizlib: "npm:^3.1.0"
-    yallist: "npm:^5.0.0"
-  checksum: 10/4848cd2fa2fcaf0734cf54e14bc685056eb43a74d7cc7f954c3ac88fea88c85d95b1d7896619f91aab6f2234c5eec731c18aaa201a78fcf86985bdc824ed7a00
   languageName: node
   linkType: hard
 

@@ -260,6 +260,7 @@ exports.config = {
     if (!parallel) await teardown();       // no report here any more
   },
   teardownAll: async () => {               // ← fires after *all* workers
+    console.log('tearing down all')
     if (parallel) {
       await teardown();
     }
@@ -269,22 +270,33 @@ exports.config = {
 };
 
 function exitWithStatus() {
+  console.log('Evaluating test results for exit status...');
+  
   // Check for failed tests by reading the generated report
   let status = 'PASS';
   try {
     const files = fs.readdirSync(functional_output_dir);
+    console.log('Report files found:', files)
     const reportFile = files.find(f => f.startsWith('cucumber_output') && f.endsWith('.json'));
+    console.log('Using report file:', reportFile);
     const reportPath = reportFile ? path.join(functional_output_dir, reportFile) : '';
+    console.log('Full report path:', reportPath);
     if (fs.existsSync(reportPath)) {
+      console.log('Reading report file for test results...');
       const reportData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+      console.log('Report data loaded:', reportData);
       let failed = 0;
       for (const feature of reportData) {
+        console.log('Processing feature:', feature.name);
         for (const scenario of feature.elements) {
+          console.log('Processing scenario:', scenario.name);
           if (scenario.steps.some((step: any) => step.result.status === 'failed')) {
+            console.log('Scenario failed:', scenario.name);
             failed++;
           }
         }
       }
+      console.log(`Total failed scenarios: ${failed}`);
       status = failed > 0 ? 'FAIL' : 'PASS';
     }
   } catch (err) {
@@ -309,7 +321,6 @@ async function teardown() {
     await applicationServer.stop();
   }
   statsReporter.run();
-  await generateCucumberReport();
 
   // process.exit(1);
 }

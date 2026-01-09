@@ -107,7 +107,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
       if (caseType !== undefined) {
         const state = caseType.states.find((x) => x.id === stateId);
         if (state !== undefined) {
-          return state.name !== '' ? state.name : stateId;
+          return state.name === '' ? stateId : state.name;
         }
       }
     }

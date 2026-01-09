@@ -91,7 +91,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   }
 
   public onSelectionChanged(selection: { location: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
-    this.selectedLocation.id = !selection.location ? '' : selection.location;
+    this.selectedLocation.id = selection.location ? selection.location : '';
     this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;

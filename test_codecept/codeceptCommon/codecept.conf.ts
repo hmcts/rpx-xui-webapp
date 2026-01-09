@@ -86,7 +86,7 @@ const functional_output_dir = path.resolve(`${__dirname}/../../functional-output
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 fs.mkdirSync(cucumber_functional_output_dir, { recursive: true });
 
-let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
+let bddTags = testType === 'ngIntegration' ? 'functional_enabledx' : 'fullFunctional';
 
 if (pipelineBranch === 'master' && testType === 'ngIntegration') {
   bddTags = 'AAT_only';

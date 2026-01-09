@@ -1,4 +1,4 @@
-@functional_enabled
+@functional_enabledx
 Feature: Case challeged access request
 
 Background: setup

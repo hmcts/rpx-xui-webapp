@@ -15,6 +15,8 @@ export interface CaseFlagItem {
 }
 
 export class CaseDetailsPage extends Base {
+
+
   readonly container = this.page.locator("exui-case-details-home");
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
   readonly caseActionsDropdown = this.page.locator('#next-step');
@@ -98,3 +100,6 @@ export class CaseDetailsPage extends Base {
     await this.caseDetailsTabs.filter({ hasText: tabName }).click()
   }
 }
+
+
+

@@ -3,6 +3,11 @@ import {config } from "../../../utils/config.utils";
 import { Base } from "../../base";
 
 export class CaseListPage extends Base {
+  async openCaseByReference(cleanedCaseNumber: string) {
+  const caseLink = this.page.locator(`a:has-text("${cleanedCaseNumber}")`);
+  await caseLink.first().waitFor({ state: 'visible' });
+  await caseLink.first().click();
+}
   readonly container = this.page.locator("exui-case-home");
   readonly jurisdictionSelect = this.page.locator("#wb-jurisdiction")
   readonly caseTypeSelect = this.page.locator("#wb-case-type")

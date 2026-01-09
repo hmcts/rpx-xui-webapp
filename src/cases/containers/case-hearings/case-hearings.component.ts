@@ -72,7 +72,8 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.caseType = caseDetails?.case_type?.id;
       }
     });
-    this.caseId = this.activatedRoute.snapshot.params.cid;
+    this.caseId = JSON.parse(this.sessionSvc.getItem('caseInfo')).caseId;
+    console.log('123123', this.caseId);
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));

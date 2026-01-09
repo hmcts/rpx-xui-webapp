@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../utils/session.utils';
+import { loadSessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { readTaskTable, formatUiDate } from '../../utils/tableUtils';
@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
         await page.context().addCookies(sessionCookies);
         const userId = extractUserIdFromCookies(sessionCookies);
         taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
-    }   
+    }
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
@@ -68,7 +68,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
         });
-        await test.step('Verify table shows no results for empty mock', async () => {      
+        await test.step('Verify table shows no results for empty mock', async () => {
             expect(await taskListPage.taskListTable.textContent()).toContain('You have no assigned tasks.');
         });
     });

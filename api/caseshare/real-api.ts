@@ -84,7 +84,7 @@ function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
   const promises = [];
   // @ts-ignore
   shareCases.flatMap((sharedCase) => {
-    if (sharedCase && sharedCase.pendingShares && sharedCase.pendingShares.length > 0) {
+    if (sharedCase?.pendingShares?.length > 0) {
       sharedCase.pendingShares.flatMap((pendingShare) => {
         const caseAssigneeMappingModel: CaseAssigneeMappingModel = {
           assignee_id: pendingShare.idamId,

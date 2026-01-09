@@ -262,8 +262,6 @@ exports.config = {
   teardownAll: async () => {               // ← fires after *all* workers
     if (parallel) {
       await teardown();
-
-      exitWithStatus();
     }
     await generateCucumberReport();        // JSON is now on disk
     exitWithStatus();                      // evaluate pass / fail

@@ -102,7 +102,7 @@
     "@hmcts/ccd-case-ui-toolkit": "7.3.14-exui-3994-3",
     "@hmcts/ccpay-web-component": "6.5.14",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "4.2.4-exui-3994-f",
+    "@hmcts/media-viewer": "4.2.4-exui-3994-g",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "3.2.2-exui-3994-2",

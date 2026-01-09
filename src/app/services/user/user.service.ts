@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserDetails } from '../../../app/models/user-details.model';
 
-// TODO: Write unit tests
 @Injectable({
   providedIn: 'root'
 })

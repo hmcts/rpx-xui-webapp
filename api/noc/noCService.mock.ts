@@ -3,6 +3,8 @@ import { fakerEN_GB as faker } from '@faker-js/faker';
 import { httpMock } from './httpMock';
 import { NoCQuestion } from './models/noCQuestion.interface';
 
+// Not actively used - kept for potential future use in tests/mocks but could be removed if not needed
+
 // random generator
 export const generator = (schema, min = 1, max) => {
   max = max || min;

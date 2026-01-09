@@ -93,8 +93,6 @@ describe('MyAccessComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
 
-    // TODO: CAM_BOOKING 0 not neeed
-    // component.isPaginationEnabled$ = of(false);
     router = TestBed.inject(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));

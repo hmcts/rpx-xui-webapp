@@ -30,6 +30,8 @@ import * as fromCaseCreate from '../../store/reducers';
   encapsulation: ViewEncapsulation.None
 })
 export class CaseFilterComponent implements OnInit {
+  public static readonly START_BUTTON_TEXT = 'Start';
+
   public startButtonText: string;
   public caseCreatFilterBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -37,7 +39,7 @@ export class CaseFilterComponent implements OnInit {
 
   public ngOnInit(): void {
     this.fromCasesFeature = fromCasesFeature;
-    this.startButtonText = 'Start'; // TODO add this to some config file.
+    this.startButtonText = CaseFilterComponent.START_BUTTON_TEXT;
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
      */

@@ -35,8 +35,7 @@ export class WorkCaseListComponent implements OnChanges {
    */
   @Input() public emptyMessage: string = ListConstants.EmptyMessage.DefaultCases;
 
-  // TODO: Need to re-read the LLD, but I believe it says pass in the caseServiceConfig into this CaseListComponent.
-  // Therefore we will not need this.
+  // TODO: EXUI-3967 - Need to remove this as part of tech debt ticket as should be within caseServiceConfig.fields
   @Input() public fields: FieldConfig[];
 
   @Output() public sortEvent = new EventEmitter<string>();
@@ -170,7 +169,7 @@ export class WorkCaseListComponent implements OnChanges {
    *
    * 'ascending'/'descending' needed to set sorting instead of 'asc'/'desc' which does not sort correctly
    *
-   * TODO: Think about moving 'none' to case sort model.
+   * TODO: Think about moving 'none' to task sort model. EXUI-3967 - Further investigation needed
    *
    * @param fieldName - 'caseName'
    * @return 'none' / 'asc' / 'desc'

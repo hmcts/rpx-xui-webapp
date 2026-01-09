@@ -38,8 +38,6 @@ describe('DateValidators', () => {
     });
   });
 
-  // TODO: after es6 upgrade this test started to fail , It has same implementation with previous test,
-  // needs investigation, to check es6 on pipeline it is deactivated temporarily
   it('should not allow the start date to be after the end date', () => {
     const formGroup = new FormBuilder().group({
       startDate_day: '',

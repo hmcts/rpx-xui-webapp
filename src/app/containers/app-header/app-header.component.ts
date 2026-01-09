@@ -201,7 +201,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
   }
 
   private setupActiveNavLink(items: NavigationItem[]): void {
-    if (this.router.url.indexOf('booking') > 0 && AppUtils.isBookableAndJudicialRole(this.userDetails)) {
+    if (this.router.url.includes('booking') && AppUtils.isBookableAndJudicialRole(this.userDetails)) {
       this.navItems = [];
     } else {
       this.navItems = AppUtils.setActiveLink(items, this.router.url);

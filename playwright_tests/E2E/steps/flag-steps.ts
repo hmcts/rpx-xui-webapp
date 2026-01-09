@@ -16,7 +16,7 @@ export async function getActiveFlagsForCase(page) {
     await page.waitForTimeout(5000);
   }
   const match = textContent.match(/\d+/);
-  const numberOfFlags = match ? parseInt(match[0], 10) : 0;
+  const numberOfFlags = match ? Number.parseInt(match[0], 10) : 0;
   return numberOfFlags;
 }
 

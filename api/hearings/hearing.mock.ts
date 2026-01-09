@@ -66,7 +66,7 @@ export const init = () => {
   mock.onGet(getHearingsUrl).reply((config) => {
     const url = config.url;
     const caseIds = url.match(/[0-9]{16}/g);
-    const mod = parseInt(caseIds[0], 10) % 2;
+    const mod = Number.parseInt(caseIds[0], 10) % 2;
     if (mod === 1) {
       return [
         200,

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { first, mergeMap, switchMap } from 'rxjs/operators';
 import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
@@ -25,20 +25,25 @@ export class TasksContainerComponent implements OnInit {
   public warningIncluded: boolean;
   public showSpinner$ : Observable<boolean>;
   public showSpinner: boolean = true;
+  public caseNotifierSubscription: Subscription;
 
   constructor(private readonly waCaseService: WorkAllocationCaseService,
               private readonly route: ActivatedRoute,
               private readonly caseworkerService: CaseworkerDataService,
               private readonly rolesService: AllocateRoleService,
               private readonly featureToggleService: FeatureToggleService,
-              private readonly loadingService: LoadingService) { }
+              private readonly loadingService: LoadingService,
+              private readonly caseNotifier: CaseNotifier) { }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    // note: internal logic used to be stored in resolver - resolver removed for smoother navigation purposes
-    // i.e. navigating before loading
-    const caseId = this.route.snapshot.paramMap.get('cid');
+    let caseId: string;
+    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseNotifDetails) => {
+      if (caseNotifDetails) {
+        caseId = caseNotifDetails.case_id;
+      }
+    });
     const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
     tasksSearch$
       .pipe(

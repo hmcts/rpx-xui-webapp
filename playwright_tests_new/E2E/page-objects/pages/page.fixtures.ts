@@ -12,6 +12,8 @@ import { Page } from "@playwright/test";
 import { TaskListPage } from "./exui/taskList.po";
 import { SearchCasePage } from './exui/searchCase.po.ts';
 import { GlobalSearchPage } from './exui/globalSearch.po.ts';
+import { FindCasePage } from './exui/findCase.po.ts';
+
 
 export interface PageFixtures {
   determinePage: Page;
@@ -21,6 +23,7 @@ export interface PageFixtures {
   createCasePage: CreateCasePage;
   searchCasePage: SearchCasePage;
   globalSearchPage: GlobalSearchPage;
+  findCasePage: FindCasePage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
   apiClient: ApiClient;
@@ -58,6 +61,9 @@ export const pageFixtures = {
   },
   globalSearchPage: async ({ determinePage }, use) => {
     await use(new GlobalSearchPage(determinePage));
+  },
+  findCasePage: async ({ determinePage }, use) => {
+    await use(new FindCasePage(determinePage));
   },
   mediaViewerPage: async ({ determinePage }, use) => {
     await use(new ExuiMediaViewerPage(determinePage));

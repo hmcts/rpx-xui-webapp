@@ -87,6 +87,7 @@ export class GlobalSearchPage extends Base {
     this.previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
     this.nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
     this.searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
+    //TODO - Assert presence of table object etc.
     this.searchResultsTable = this.page.locator('//*[@id="content"]/div/table');
   }
 }

@@ -31,6 +31,10 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
 - API call logs are attached automatically per test as `node-api-calls.json`.
 - Coverage output from `test:api:pw:coverage` is written to `./reports/tests/coverage/api-playwright` (raw V8 data).
 
+## Coverage vs unit tests
+- Playwright coverage here reflects test/helper code executed in `playwright_tests_new/api`.
+- Server-side Node coverage and isolated unit tests stay in Mocha + c8 (`yarn coverage:node`).
+
 ## What we assert (vs the old Mocha smoke checks)
 - Unauthenticated sweep (`authenticated-routes.api.ts`) asserts 401 **and** body `{ message: 'Unauthorized' }` for every protected route.
 - Node shell (`node-app-endpoints.api.ts`) verifies `auth/isAuthenticated` true/false behaviour, `/api/user/details` payload shape (user info, role assignments, timeout metadata) and feature flag responses, not just status codes.

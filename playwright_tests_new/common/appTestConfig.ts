@@ -17,19 +17,33 @@ export interface AppTestConfig {
 
 const prToTestInDemo: any[] = [];
 
-const matchingPreviewToDemo = prToTestInDemo.filter((conf) => process.env.TEST_URL && process.env.TEST_URL.includes(conf.previewUrl));
-if (matchingPreviewToDemo.length === 1) {
-  process.env.TEST_ENV = 'demo';
-  process.env.TEST_URL = matchingPreviewToDemo[0].demoUrl;
+export function resolvePreviewConfig(
+  previewConfigs: Array<{ previewUrl: string; demoUrl: string }>,
+  testUrl?: string
+): { demoUrl: string } | undefined {
+  if (!testUrl) {
+    return undefined;
+  }
+  const matchingPreviewToDemo = previewConfigs.filter((conf) => testUrl.includes(conf.previewUrl));
+  if (matchingPreviewToDemo.length === 1) {
+    return { demoUrl: matchingPreviewToDemo[0].demoUrl };
+  }
+  return undefined;
 }
 
-function getTestENVFromEnvironment(): string {
-  return process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo')) ? process.env.TEST_ENV : 'aat';
+const previewConfig = resolvePreviewConfig(prToTestInDemo, process.env.TEST_URL);
+if (previewConfig) {
+  process.env.TEST_ENV = 'demo';
+  process.env.TEST_URL = previewConfig.demoUrl;
+}
+
+export function resolveTestEnv(value?: string): string {
+  return value !== undefined && (value.includes('aat') || value.includes('demo')) ? value : 'aat';
 }
 
 const data: AppTestConfig = {
-  getTestEnvFromEnviornment: getTestENVFromEnvironment,
-  testEnv: getTestENVFromEnvironment(),
+  getTestEnvFromEnviornment: resolveTestEnv,
+  testEnv: resolveTestEnv(process.env.TEST_ENV),
   users: {
     aat: [
       { idamId: '2d8727c0-44f7-4c2b-99b3-e3d53f90cded', email: 'xui_auto_test_user_solicitor@mailinator.com', release: 'general', userIdentifier: 'PROD_LIKE', key: 'Monday01' },
@@ -77,6 +91,11 @@ const data: AppTestConfig = {
       { idamId: '11111111-1111-1111-1111-111111111111', email: 'henry_fr_harper@yahoo.com', release: 'flagsTest', userIdentifier: 'USER_WITH_FLAGS', key: 'Nagoya0102' }
     ]
   }
+};
+
+export const __test__ = {
+  resolvePreviewConfig,
+  resolveTestEnv
 };
 
 export default data;

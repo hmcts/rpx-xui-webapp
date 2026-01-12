@@ -19,35 +19,87 @@ const storageRoot = path.resolve(
 const storagePromises = new Map<string, Promise<string>>();
 
 const logger = createLogger({ serviceName: 'node-api-auth', format: 'pretty' });
+type LoggerInstance = ReturnType<typeof createLogger>;
+
+type StorageState = { cookies?: Array<{ name?: string; value?: string }> };
+
+type StorageDeps = {
+  storagePromises: Map<string, Promise<string>>;
+  createStorageState: (role: ApiUserRole) => Promise<string>;
+  tryReadState: (storagePath: string) => Promise<StorageState | undefined>;
+  unlink: (path: string) => Promise<void>;
+};
+
+type CreateStorageDeps = {
+  storageRoot?: string;
+  mkdir?: typeof fs.mkdir;
+  getCredentials?: typeof getCredentials;
+  isTokenBootstrapEnabled?: typeof isTokenBootstrapEnabled;
+  tryTokenBootstrap?: typeof tryTokenBootstrap;
+  createStorageStateViaForm?: typeof createStorageStateViaForm;
+};
+
+type TokenBootstrapDeps = {
+  env?: NodeJS.ProcessEnv;
+  idamUtils?: { generateIdamToken: (opts: Record<string, unknown>) => Promise<string> };
+  serviceAuthUtils?: { retrieveToken: (opts: Record<string, unknown>) => Promise<string> };
+  requestFactory?: typeof request.newContext;
+  logger?: LoggerInstance;
+  readState?: typeof tryReadState;
+};
+
+type FormLoginDeps = {
+  requestFactory?: typeof request.newContext;
+  extractCsrf?: typeof extractCsrf;
+};
+
+const defaultStorageDeps: StorageDeps = {
+  storagePromises,
+  createStorageState,
+  tryReadState,
+  unlink: fs.unlink
+};
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
+  return ensureStorageStateWith(role);
+}
+
+async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = defaultStorageDeps): Promise<string> {
   const cacheKey = getCacheKey(role);
-  if (!storagePromises.has(cacheKey)) {
-    storagePromises.set(cacheKey, createStorageState(role));
+  if (!deps.storagePromises.has(cacheKey)) {
+    deps.storagePromises.set(cacheKey, deps.createStorageState(role));
   }
-  const storagePath = await storagePromises.get(cacheKey)!;
-  const state = await tryReadState(storagePath);
+  const storagePath = await deps.storagePromises.get(cacheKey)!;
+  const state = await deps.tryReadState(storagePath);
   if (!state) {
     try {
-      await fs.unlink(storagePath);
+      await deps.unlink(storagePath);
     } catch {
       // ignore unlink errors
     }
-    storagePromises.set(cacheKey, createStorageState(role));
-    return storagePromises.get(cacheKey)!;
+    deps.storagePromises.set(cacheKey, deps.createStorageState(role));
+    return deps.storagePromises.get(cacheKey)!;
   }
   return storagePath;
 }
 
 export async function getStoredCookie(role: ApiUserRole, cookieName: string): Promise<string | undefined> {
-  let storagePath = await ensureStorageState(role);
-  let state = await tryReadState(storagePath);
+  return getStoredCookieWith(role, cookieName);
+}
+
+async function getStoredCookieWith(
+  role: ApiUserRole,
+  cookieName: string,
+  deps: StorageDeps = defaultStorageDeps
+): Promise<string | undefined> {
+  let storagePath = await ensureStorageStateWith(role, deps);
+  let state = await deps.tryReadState(storagePath);
 
   if (!state) {
     // corrupted or empty state – rebuild
-    storagePromises.delete(getCacheKey(role));
-    storagePath = await ensureStorageState(role);
-    state = await tryReadState(storagePath);
+    deps.storagePromises.delete(getCacheKey(role));
+    storagePath = await ensureStorageStateWith(role, deps);
+    state = await deps.tryReadState(storagePath);
   }
 
   if (!state) {
@@ -61,40 +113,55 @@ export async function getStoredCookie(role: ApiUserRole, cookieName: string): Pr
 }
 
 async function createStorageState(role: ApiUserRole): Promise<string> {
-  const storagePath = path.join(storageRoot, config.testEnv, `${role}.json`);
-  await fs.mkdir(path.dirname(storagePath), { recursive: true });
+  return createStorageStateWith(role);
+}
 
-  const credentials = getCredentials(role);
-  if (isTokenBootstrapEnabled()) {
-    const tokenLoginSucceeded = await tryTokenBootstrap(role, credentials, storagePath);
+async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps = {}): Promise<string> {
+  const root = deps.storageRoot ?? storageRoot;
+  const mkdir = deps.mkdir ?? fs.mkdir;
+  const credentials = (deps.getCredentials ?? getCredentials)(role);
+  const shouldTokenBootstrap = (deps.isTokenBootstrapEnabled ?? isTokenBootstrapEnabled)();
+  const tryBootstrap = deps.tryTokenBootstrap ?? tryTokenBootstrap;
+  const loginViaForm = deps.createStorageStateViaForm ?? createStorageStateViaForm;
+
+  const storagePath = path.join(root, config.testEnv, `${role}.json`);
+  await mkdir(path.dirname(storagePath), { recursive: true });
+
+  if (shouldTokenBootstrap) {
+    const tokenLoginSucceeded = await tryBootstrap(role, credentials, storagePath);
     if (tokenLoginSucceeded) {
       return storagePath;
     }
   }
 
-  await createStorageStateViaForm(credentials, storagePath, role);
+  await loginViaForm(credentials, storagePath, role);
   return storagePath;
 }
 
 async function tryTokenBootstrap(
   role: ApiUserRole,
   credentials: { username: string; password: string },
-  storagePath: string
+  storagePath: string,
+  deps: TokenBootstrapDeps = {}
 ): Promise<boolean> {
-  const clientId = process.env.IDAM_CLIENT_ID ?? process.env.SERVICES_IDAM_CLIENT_ID ?? 'xuiwebapp';
-  const clientSecret = process.env.IDAM_SECRET;
-  const scope = process.env.IDAM_OAUTH2_SCOPE ?? 'openid profile roles manage-user search-user';
-  const microservice = process.env.S2S_MICROSERVICE_NAME ?? process.env.MICROSERVICE ?? 'xui_webapp';
-  const idamWebUrl = process.env.IDAM_WEB_URL;
-  const idamTestingSupportUrl = process.env.IDAM_TESTING_SUPPORT_URL;
-  const s2sUrl = process.env.S2S_URL;
+  const env = deps.env ?? process.env;
+  const clientId = env.IDAM_CLIENT_ID ?? env.SERVICES_IDAM_CLIENT_ID ?? 'xuiwebapp';
+  const clientSecret = env.IDAM_SECRET;
+  const scope = env.IDAM_OAUTH2_SCOPE ?? 'openid profile roles manage-user search-user';
+  const microservice = env.S2S_MICROSERVICE_NAME ?? env.MICROSERVICE ?? 'xui_webapp';
+  const idamWebUrl = env.IDAM_WEB_URL;
+  const idamTestingSupportUrl = env.IDAM_TESTING_SUPPORT_URL;
+  const s2sUrl = env.S2S_URL;
 
   if (!clientSecret || !idamWebUrl || !idamTestingSupportUrl || !s2sUrl) {
     return false;
   }
 
-  const idamUtils = new IdamUtils({ logger });
-  const serviceAuthUtils = new ServiceAuthUtils({ logger });
+  const activeLogger = deps.logger ?? logger;
+  const idamUtils = deps.idamUtils ?? new IdamUtils({ logger: activeLogger });
+  const serviceAuthUtils = deps.serviceAuthUtils ?? new ServiceAuthUtils({ logger: activeLogger });
+  const requestFactory = deps.requestFactory ?? ((options) => request.newContext(options));
+  const readState = deps.readState ?? tryReadState;
 
   let context;
   try {
@@ -105,11 +172,11 @@ async function tryTokenBootstrap(
       scope,
       username: credentials.username,
       password: credentials.password,
-      redirectUri: process.env.IDAM_RETURN_URL ?? `${baseUrl}/oauth2/callback`
+      redirectUri: env.IDAM_RETURN_URL ?? `${baseUrl}/oauth2/callback`
     });
     const serviceToken = await serviceAuthUtils.retrieveToken({ microservice });
 
-    context = await request.newContext({
+    context = await requestFactory({
       baseURL: baseUrl,
       ignoreHTTPSErrors: true,
       extraHTTPHeaders: {
@@ -121,24 +188,21 @@ async function tryTokenBootstrap(
     // Touch auth endpoints so the gateway can create a session + xsrf cookies.
     await context.get('auth/login', { failOnStatusCode: false });
     const authCheck = await context.get('auth/isAuthenticated', { failOnStatusCode: false });
-    const isAuth =
-      authCheck.status() === 200
-        ? await authCheck.json().catch(() => false)
-        : false;
+    const isAuth = authCheck.status() === 200 ? await authCheck.json().catch(() => false) : false;
 
     await context.storageState({ path: storagePath });
-    const state = await tryReadState(storagePath);
+    const state = await readState(storagePath);
     const hasCookies = Array.isArray(state?.cookies) && state.cookies.length > 0;
 
     if (isAuth && hasCookies) {
       return true;
     }
-    logger.warn(
+    activeLogger.warn(
       `Token bootstrap for role "${role}" returned isAuthenticated=${String(isAuth)}; falling back to form login`
     );
     return false;
   } catch (error) {
-    logger.warn(`Token bootstrap failed for role "${role}": ${(error as Error).message}`);
+    activeLogger.warn(`Token bootstrap failed for role "${role}": ${(error as Error).message}`);
     return false;
   } finally {
     await context?.dispose();
@@ -148,9 +212,12 @@ async function tryTokenBootstrap(
 async function createStorageStateViaForm(
   credentials: { username: string; password: string },
   storagePath: string,
-  role: ApiUserRole
+  role: ApiUserRole,
+  deps: FormLoginDeps = {}
 ): Promise<void> {
-  const context = await request.newContext({
+  const requestFactory = deps.requestFactory ?? ((options) => request.newContext(options));
+  const extract = deps.extractCsrf ?? extractCsrf;
+  const context = await requestFactory({
     baseURL: baseUrl,
     ignoreHTTPSErrors: true,
     maxRedirects: 10
@@ -163,7 +230,7 @@ async function createStorageStateViaForm(
     }
 
     const loginUrl = loginPage.url();
-    const csrfToken = extractCsrf(await loginPage.text());
+    const csrfToken = extract(await loginPage.text());
     const formPayload: Record<string, string> = {
       username: credentials.username,
       password: credentials.password,
@@ -240,3 +307,17 @@ function isTokenBootstrapEnabled(): boolean {
   const hasS2S = !!process.env.S2S_URL;
   return hasIdamEnv && hasS2S;
 }
+
+export const __test__ = {
+  extractCsrf,
+  stripTrailingSlash,
+  getCacheKey,
+  isTokenBootstrapEnabled,
+  tryReadState,
+  ensureStorageStateWith,
+  getStoredCookieWith,
+  createStorageStateWith,
+  tryTokenBootstrap,
+  createStorageStateViaForm,
+  getCredentials
+};

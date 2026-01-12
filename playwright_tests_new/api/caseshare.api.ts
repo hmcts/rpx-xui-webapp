@@ -54,6 +54,28 @@ test.describe('Case share endpoints', () => {
   }
 });
 
+test.describe('Case share helper coverage', () => {
+  test('resolveEntries handles array payloads', () => {
+    const data = [{ caseId: 'case-1' }];
+    expect(resolveEntries(data, 'cases')).toEqual(data);
+  });
+
+  test('resolveEntries handles direct property payloads', () => {
+    const data = { cases: [{ caseId: 'case-2' }] };
+    expect(resolveEntries(data, 'cases')).toEqual(data.cases);
+  });
+
+  test('resolveEntries handles nested payloads', () => {
+    const data = { payload: { cases: [{ caseId: 'case-3' }] } };
+    expect(resolveEntries(data, 'cases')).toEqual(data.payload.cases);
+  });
+
+  test('resolveEntries handles missing payloads', () => {
+    expect(resolveEntries({ foo: 'bar' }, 'cases')).toEqual([]);
+    expect(resolveEntries(undefined as any, 'cases')).toEqual([]);
+  });
+});
+
 function resolveEntries(data: any, property: string): any[] {
   if (Array.isArray(data)) {
     return data;

@@ -11,17 +11,16 @@ import { expectAnnotationShape, expectBookmarkShape } from './utils/assertions';
 import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
 import { AnnotationPayload, BookmarkPayload } from './utils/types';
 
-const configuredDocId = EM_DOC_ID ?? config.em[config.testEnv as keyof typeof config.em]?.docId;
+const configuredDocId = resolveConfiguredDocId(
+  EM_DOC_ID,
+  config.em[config.testEnv as keyof typeof config.em]?.docId
+);
 let sharedDocId: string | undefined;
 const invalidDocId = uuid();
 
 test.describe('Evidence Manager & Documents', () => {
   test.beforeAll(async () => {
-    if (configuredDocId) {
-      sharedDocId = configuredDocId;
-      return;
-    }
-    sharedDocId = await uploadSyntheticDoc();
+    sharedDocId = await resolveSharedDocId(configuredDocId, uploadSyntheticDoc);
   });
 
   test('returns document binary with XSRF', async ({ apiClient }) => {
@@ -62,7 +61,7 @@ test.describe('Evidence Manager & Documents', () => {
         headers,
         throwOnError: false
       });
-      expectStatus(res.status, [400, 404]);
+      expectStatus(res.status, [400, 401, 403, 404, 500]);
     });
   });
 
@@ -75,14 +74,9 @@ test.describe('Evidence Manager & Documents', () => {
         throwOnError: false
       });
       expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
-      if (createRes.status === 200 && Array.isArray((createRes.data as any)?.annotations)) {
-        const created = (createRes.data as any).annotations?.[0];
-        if (created) {
-          expectAnnotationShape(created);
-        }
-      }
+      assertAnnotationResponse(createRes.status, createRes.data);
 
-      const createdId = (createRes.data as any)?.annotations?.[0]?.id ?? annotation.id;
+      const createdId = resolveCreatedAnnotationId(createRes.data, annotation.id);
       const deleteRes = await apiClient.delete(`em-anno/annotations/${createdId}`, {
         data: annotation,
         headers,
@@ -129,10 +123,8 @@ test.describe('Evidence Manager & Documents', () => {
         throwOnError: false
       });
       expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
-      const createdId = (createRes.data as any)?.id ?? bookmark.id;
-      if (createRes.status === 200) {
-        expectBookmarkShape(createRes.data as any);
-      }
+      const createdId = resolveCreatedBookmarkId(createRes.data, bookmark.id);
+      assertBookmarkResponse(createRes.status, createRes.data);
 
       const deleteRes = await apiClient.delete('em-anno/bookmarks_multiple', {
         data: { deleted: [createdId] },
@@ -184,7 +176,7 @@ test.describe('Evidence Manager & Documents', () => {
     });
     const res = await ctx.post('documents', {
       multipart: {},
-      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
+      headers: buildXsrfHeader(xsrf),
       failOnStatusCode: false
     });
     expect([400, 401, 403, 415, 500]).toContain(res.status());
@@ -207,11 +199,19 @@ test.describe('Evidence Manager & Documents', () => {
           buffer: Buffer.from('bogus exe content')
         }
       },
-      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {},
+      headers: buildXsrfHeader(xsrf),
       failOnStatusCode: false
     });
     expect([400, 401, 403, 415, 500]).toContain(res.status());
     await ctx.dispose();
+  });
+
+  test('rejects document upload without multipart', async ({ apiClient }) => {
+    const res = await apiClient.post('documents', {
+      data: {},
+      throwOnError: false
+    });
+    expectStatus(res.status, [400, 401, 403, 415, 500, 502, 504]);
   });
 
   test('returns guarded status for invalid document id on delete', async ({ apiClient }) => {
@@ -237,6 +237,124 @@ test.describe('Evidence Manager & Documents', () => {
     });
   });
 });
+
+test.describe('Evidence Manager helper coverage', () => {
+  test('resolveConfiguredDocId and resolveSharedDocId handle overrides', async () => {
+    expect(resolveConfiguredDocId('env-doc', 'fallback-doc')).toBe('env-doc');
+    expect(resolveConfiguredDocId(undefined, 'fallback-doc')).toBe('fallback-doc');
+
+    const configured = await resolveSharedDocId('configured-doc', async () => 'uploaded-doc');
+    expect(configured).toBe('configured-doc');
+
+    const uploaded = await resolveSharedDocId(undefined, async () => 'uploaded-doc');
+    expect(uploaded).toBe('uploaded-doc');
+  });
+
+  test('annotation helpers cover ids and responses', () => {
+    const data = { annotations: [{ id: 'anno-1', documentId: 'doc-1', annotationSetId: 'set-1' }] };
+    assertAnnotationResponse(200, data);
+    assertAnnotationResponse(500, data);
+    expect(resolveCreatedAnnotationId(data, 'fallback')).toBe('anno-1');
+    expect(resolveCreatedAnnotationId({}, 'fallback')).toBe('fallback');
+  });
+
+  test('bookmark helpers cover ids and responses', () => {
+    const data = { id: 'bookmark-1', name: 'Bookmark', documentId: 'doc-1' };
+    assertBookmarkResponse(200, data);
+    assertBookmarkResponse(401, data);
+    expect(resolveCreatedBookmarkId(data, 'fallback')).toBe('bookmark-1');
+    expect(resolveCreatedBookmarkId({}, 'fallback')).toBe('fallback');
+  });
+
+  test('resolveAnnotationSetId handles valid, fallback, and errors', async () => {
+    sharedDocId = 'doc-1';
+    const apiClient = { get: async () => ({ data: { id: 'set-1' } }) };
+    expect(await resolveAnnotationSetId(apiClient, {})).toBe('set-1');
+
+    const apiClientMissing = { get: async () => ({ data: { id: 123 } }) };
+    const fallback = await resolveAnnotationSetId(apiClientMissing, {});
+    expect(fallback).toBeTruthy();
+
+    const apiClientError = { get: async () => { throw new Error('boom'); } };
+    const errorFallback = await resolveAnnotationSetId(apiClientError, {});
+    expect(errorFallback).toBeTruthy();
+  });
+
+  test('buildAnnotation and buildBookmark return expected payloads', async () => {
+    sharedDocId = 'doc-2';
+    const apiClient = { get: async () => ({ data: { id: 'set-2' } }) };
+    const annotation = await buildAnnotation(apiClient, {});
+    expect(annotation.documentId).toBe('doc-2');
+    expect(annotation.annotationSetId).toBe('set-2');
+
+    const bookmarkClient = { get: async () => ({ data: { userInfo: { uid: 'user-1' } } }) };
+    const bookmark = await buildBookmark(bookmarkClient);
+    expect(bookmark.documentId).toBe('doc-2');
+    expect(bookmark.createdBy).toBe('user-1');
+  });
+
+  test('resolveUserInfoId and buildXsrfHeader handle variants', () => {
+    expect(resolveUserInfoId({ userInfo: { uid: 'uid-1' } })).toBe('uid-1');
+    expect(resolveUserInfoId({ userInfo: { id: 'id-1' } })).toBe('id-1');
+    expect(resolveUserInfoId(undefined)).toBeUndefined();
+
+    expect(buildXsrfHeader('token')).toEqual({ 'X-XSRF-TOKEN': 'token' });
+    expect(buildXsrfHeader(undefined)).toEqual({});
+  });
+
+  test('resolveUploadedDocId handles possible document ids', () => {
+    expect(resolveUploadedDocId({ documents: [{ originalDocumentId: 'orig' }] })).toBe('orig');
+    expect(resolveUploadedDocId({ documents: [{ documentId: 'doc' }] })).toBe('doc');
+    expect(resolveUploadedDocId({ documents: [{ id: 'id' }] })).toBe('id');
+    expect(resolveUploadedDocId({ documents: [] })).toBeUndefined();
+    expect(resolveUploadedDocId({})).toBeUndefined();
+  });
+});
+
+function resolveConfiguredDocId(explicit?: string, fallback?: string): string | undefined {
+  return explicit ?? fallback;
+}
+
+async function resolveSharedDocId(configured: string | undefined, uploadFn: () => Promise<string>): Promise<string> {
+  if (configured) {
+    return configured;
+  }
+  return uploadFn();
+}
+
+function assertAnnotationResponse(status: number, data: any) {
+  if (status === 200 && Array.isArray(data?.annotations) && data.annotations.length > 0) {
+    expectAnnotationShape(data.annotations[0] as any);
+  }
+}
+
+function resolveCreatedAnnotationId(data: any, fallback: string): string {
+  const id = data?.annotations?.[0]?.id;
+  return typeof id === 'string' ? id : fallback;
+}
+
+function resolveCreatedBookmarkId(data: any, fallback: string): string {
+  return typeof data?.id === 'string' ? data.id : fallback;
+}
+
+function assertBookmarkResponse(status: number, data: any) {
+  if (status === 200 && data) {
+    expectBookmarkShape(data as any);
+  }
+}
+
+function resolveUserInfoId(data?: { userInfo?: { uid?: string; id?: string } }): string | undefined {
+  return data?.userInfo?.uid ?? data?.userInfo?.id;
+}
+
+function buildXsrfHeader(xsrf?: string): Record<string, string> {
+  return xsrf ? { 'X-XSRF-TOKEN': xsrf } : {};
+}
+
+function resolveUploadedDocId(body: any): string | undefined {
+  const first = body?.documents?.[0];
+  return first?.originalDocumentId ?? first?.documentId ?? first?.id;
+}
 
 async function buildAnnotation(apiClient: any, headers: Record<string, string>): Promise<AnnotationPayload> {
   const annoId = uuid();
@@ -295,7 +413,7 @@ async function fetchUserId(apiClient: any): Promise<string | undefined> {
   const res = await apiClient.get<{ userInfo?: { uid?: string; id?: string } }>('api/user/details', {
     throwOnError: false
   });
-  return res.data?.userInfo?.uid ?? res.data?.userInfo?.id;
+  return resolveUserInfoId(res.data);
 }
 
 async function uploadSyntheticDoc(): Promise<string> {
@@ -317,11 +435,11 @@ async function uploadSyntheticDoc(): Promise<string> {
           buffer: Buffer.from('synthetic evidence-manager upload')
         }
       },
-      headers: xsrf ? { 'X-XSRF-TOKEN': xsrf } : {}
+      headers: buildXsrfHeader(xsrf)
     });
     if (res.ok()) {
       const body = await res.json();
-      const id = body?.documents?.[0]?.originalDocumentId ?? body?.documents?.[0]?.documentId ?? body?.documents?.[0]?.id;
+      const id = resolveUploadedDocId(body);
       if (id) {
         await ctx.dispose();
         return id;

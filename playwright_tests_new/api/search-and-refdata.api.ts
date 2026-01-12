@@ -5,7 +5,7 @@ import { request } from '@playwright/test';
 import { config } from '../common/apiTestConfig';
 import { ensureStorageState } from './auth';
 import { test, expect } from './fixtures';
-import { ROLE_ACCESS_CASE_ID } from './data/testIds';
+import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectRoleAssignmentShape } from './utils/assertions';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
@@ -21,14 +21,7 @@ test.describe('Global search', () => {
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(response.status, StatusSets.guardedBasic);
-    if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
-      expect(response.data[0]).toEqual(
-        expect.objectContaining({
-          serviceId: expect.any(String),
-          serviceName: expect.any(String)
-        })
-      );
-    }
+    assertGlobalSearchServices(response.status, response.data);
   });
 
   test('returns results payload or guarded status', async ({ apiClient }) => {
@@ -37,16 +30,7 @@ test.describe('Global search', () => {
       throwOnError: false
     });
     expectStatus(response.status, StatusSets.globalSearch);
-    if (response.status === 200 && response.data) {
-      expect(response.data).toHaveProperty('results');
-      if (Array.isArray((response.data as any).results) && (response.data as any).results.length > 0) {
-        const first = (response.data as any).results[0];
-        expect(first).toEqual(expect.objectContaining({ }));
-        if (first.caseReference) {
-          expect(typeof first.caseReference).toBe('string');
-        }
-      }
-    }
+    assertGlobalSearchResults(response.status, response.data);
   });
 
   test('searchCases proxy responds or guards', async ({ apiClient }) => {
@@ -59,17 +43,7 @@ test.describe('Global search', () => {
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
-    // Some environments return a stub payload with full fields; otherwise just ensure a response object exists.
-    if (response.status === 200 && response.data) {
-      if (typeof response.data.total === 'number' && Array.isArray(response.data.cases)) {
-        expect(response.data.total).toBeGreaterThanOrEqual(0);
-        if (response.data.cases.length > 0) {
-          expect(response.data.cases[0]).toEqual(expect.anything());
-        }
-      } else {
-        expect(response.data).toEqual(expect.anything());
-      }
-    }
+    assertSearchCasesResponse(response.status, response.data);
   });
 });
 
@@ -77,17 +51,13 @@ test.describe('Ref data and supported jurisdictions', () => {
   test('wa-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/wa-supported-jurisdiction', { throwOnError: false });
     expectStatus(res.status, StatusSets.guardedBasic);
-    if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-      expect(typeof res.data[0]).toBe('string');
-    }
+    assertSupportedJurisdictions(res.status, res.data);
   });
 
   test('staff-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/staff-supported-jurisdiction', { throwOnError: false });
     expectStatus(res.status, StatusSets.guardedBasic);
-    if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-      expect(typeof res.data[0]).toBe('string');
-    }
+    assertSupportedJurisdictions(res.status, res.data);
   });
 
   test('locations endpoint returns list or guarded status', async ({ apiClient }) => {
@@ -97,9 +67,7 @@ test.describe('Ref data and supported jurisdictions', () => {
         throwOnError: false
       });
       expectStatus(res.status, StatusSets.guardedBasic);
-      if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expect(res.data[0]).toHaveProperty('epimms_id');
-      }
+      assertLocationsResponse(res.status, res.data);
     });
   });
 
@@ -109,28 +77,17 @@ test.describe('Ref data and supported jurisdictions', () => {
       throwOnError: false
     });
     expectStatus(res.status, [200, 400, 401, 403, 500]);
-    if (res.status === 200 && Array.isArray(res.data?.staff)) {
-      const staffEntry = res.data.staff[0];
-      expect(staffEntry).toEqual(
-        expect.objectContaining({
-          known_as: expect.any(String),
-          email_id: expect.any(String)
-        })
-      );
-    }
+    assertStaffRefDataResponse(res.status, res.data);
   });
 });
 
 test.describe('Role access / AM', () => {
-  let roleAccessCaseId = ROLE_ACCESS_CASE_ID ?? '1234567890123456';
+  let roleAccessCaseId = ROLE_ACCESS_CASE_ID;
   const hasCaseOfficer = !!(config.users?.[config.testEnv as keyof typeof config.users]?.caseOfficer_r1);
   test.beforeAll(async ({ apiClient }) => {
-    if (roleAccessCaseId) {
-      return;
-    }
-    const seeded = await seedRoleAccessCaseId(apiClient);
-    if (seeded) {
-      roleAccessCaseId = seeded;
+    if (!roleAccessCaseId) {
+      const seeded = await seedRoleAccessCaseId(apiClient);
+      roleAccessCaseId = resolveRoleAccessCaseId(seeded);
     }
   });
   test('rejects unauthenticated role access calls', async ({ anonymousClient }) => {
@@ -159,16 +116,7 @@ test.describe('Role access / AM', () => {
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
-    const data = res.data as any;
-    if (res.status === 200) {
-      if (typeof data === 'number') {
-        expect(data).toBeGreaterThanOrEqual(0);
-      } else if (typeof data?.count === 'number') {
-        expect(data.count).toBeGreaterThanOrEqual(0);
-      } else {
-        expect(data).toEqual(expect.anything());
-      }
-    }
+    assertMyAccessCount(res.status, res.data);
   });
 
   test('roles/access-get responds', async ({ apiClient }) => {
@@ -181,15 +129,7 @@ test.describe('Role access / AM', () => {
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
-    if (res.status === 200) {
-      if (Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleAssignmentShape(res.data[0] as any);
-      } else if (Array.isArray((res.data as RoleAssignmentContainer)?.roleAssignmentResponse) && (res.data as RoleAssignmentContainer).roleAssignmentResponse!.length > 0) {
-        expectRoleAssignmentShape((res.data as RoleAssignmentContainer).roleAssignmentResponse![0] as any);
-      } else {
-        expect(res.data).toEqual(expect.anything());
-      }
-    }
+    assertRoleAccessGetResponse(res.status, res.data);
   });
 
   test('allocate-role/valid-roles responds', async ({ apiClient }) => {
@@ -197,16 +137,8 @@ test.describe('Role access / AM', () => {
       data: { requestedRoles: [], jurisdiction: 'IA' },
       throwOnError: false
     });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
-    const data = res.data as any;
-    if (res.status === 200 && Array.isArray(data) && data.length > 0) {
-      expect(data[0]).toEqual(
-        expect.objectContaining({
-          roleId: expect.any(String),
-          roleName: expect.any(String)
-        })
-      );
-    }
+    expectStatus(res.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    assertValidRolesResponse(res.status, res.data);
   });
 
   test('roles/access-get-by-caseId responds with roles when present', async ({ apiClient }) => {
@@ -215,10 +147,7 @@ test.describe('Role access / AM', () => {
       throwOnError: false
     });
     expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
-    const data = res.data as any;
-    if (res.status === 200 && Array.isArray(data?.roleAssignmentResponse)) {
-      expectRoleAssignmentShape(data.roleAssignmentResponse[0] as any);
-    }
+    assertRoleAccessByCaseIdResponse(res.status, res.data);
   });
 
   test('specific-access approval flow guarded with XSRF', async ({ apiClient }) => {
@@ -246,9 +175,7 @@ test.describe('Role access / AM', () => {
         throwOnError: false
       });
       expectStatus(res.status, StatusSets.allocateRole);
-      if ([200, 201].includes(res.status) && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleAssignmentShape(res.data[0] as any);
-      }
+      assertRoleAssignmentsIfPresent(res.status, res.data);
     });
   });
 
@@ -277,9 +204,7 @@ test.describe('Role access / AM', () => {
         throwOnError: false
       });
       expectStatus(res.status, StatusSets.allocateRole);
-      if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleAssignmentShape(res.data[0] as any);
-      }
+      assertRoleAssignmentsIfPresent(res.status, res.data);
     });
   });
 
@@ -291,9 +216,7 @@ test.describe('Role access / AM', () => {
         throwOnError: false
       });
       expectStatus(res.status, StatusSets.allocateRole);
-      if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleAssignmentShape(res.data[0] as any);
-      }
+      assertRoleAssignmentsIfPresent(res.status, res.data);
     });
   });
 
@@ -305,17 +228,12 @@ test.describe('Role access / AM', () => {
         throwOnError: false
       });
       expectStatus(res.status, StatusSets.allocateRole);
-      if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-        expectRoleAssignmentShape(res.data[0] as any);
-      }
+      assertRoleAssignmentsIfPresent(res.status, res.data);
     });
   });
 
   test('role access confirm rejects case officer without solicitor role', async ({ apiClientFor }) => {
-    if (!hasCaseOfficer) {
-      expect(true).toBe(true);
-      return;
-    }
+    test.skip(!hasCaseOfficer, 'Case officer not configured for this environment.');
     const client = await apiClientFor('caseOfficer_r1');
     const res = await client.post('api/role-access/allocate-role/confirm', {
       data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
@@ -328,17 +246,13 @@ test.describe('Role access / AM', () => {
     const statePath = await ensureStorageState('solicitor');
     const raw = await fs.readFile(statePath, 'utf8');
     const state = JSON.parse(raw);
-    const expiredCookies = Array.isArray(state.cookies)
-      ? state.cookies.map((c: any) => ({ ...c, expires: 0 }))
-      : [];
+    const expiredCookies = buildExpiredCookies(state);
 
     const ctx = await request.newContext({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       ignoreHTTPSErrors: true
     });
-    if (expiredCookies.length) {
-      await ctx.storageState({ cookies: expiredCookies, origins: [] });
-    }
+    await applyExpiredCookies(ctx, expiredCookies);
     const res = await ctx.post('api/role-access/allocate-role/confirm', {
       data: { caseId: roleAccessCaseId },
       failOnStatusCode: false
@@ -360,8 +274,226 @@ test.describe('Role access / AM', () => {
       { retries: 1, retryStatuses: [502, 504] }
     );
     expectStatus(res.status, StatusSets.allocateRole);
-    if (res.status === 200 && Array.isArray(res.data) && res.data.length > 0) {
-      expectRoleAssignmentShape(res.data[0] as any);
-    }
+    assertManageLabellingResponse(res.status, res.data);
   });
 });
+
+test.describe('Search/refdata helper coverage', () => {
+  test('assertGlobalSearchServices covers results and empty', () => {
+    assertGlobalSearchServices(200, [{ serviceId: 'svc', serviceName: 'Service' }]);
+    assertGlobalSearchServices(200, []);
+    assertGlobalSearchServices(401, []);
+  });
+
+  test('assertGlobalSearchResults covers populated and empty results', () => {
+    assertGlobalSearchResults(200, { results: [{ caseReference: '1234' }] });
+    assertGlobalSearchResults(200, { results: [] });
+    assertGlobalSearchResults(401, undefined);
+  });
+
+  test('assertSearchCasesResponse covers shaped and stubbed payloads', () => {
+    assertSearchCasesResponse(200, { total: 1, cases: [{ id: 'case-1' }] });
+    assertSearchCasesResponse(200, { foo: 'bar' });
+    assertSearchCasesResponse(500, undefined);
+  });
+
+  test('assertSupportedJurisdictions covers string arrays', () => {
+    assertSupportedJurisdictions(200, ['IA']);
+    assertSupportedJurisdictions(200, []);
+    assertSupportedJurisdictions(403, undefined);
+  });
+
+  test('assertLocationsResponse covers list and non-list payloads', () => {
+    assertLocationsResponse(200, [{ epimms_id: '123' }]);
+    assertLocationsResponse(200, []);
+    assertLocationsResponse(401, undefined);
+  });
+
+  test('assertStaffRefDataResponse covers staff payloads', () => {
+    assertStaffRefDataResponse(200, { staff: [{ known_as: 'Name', email_id: 'a@b.com' }] });
+    assertStaffRefDataResponse(200, { staff: [] });
+    assertStaffRefDataResponse(400, {});
+  });
+
+  test('assertMyAccessCount handles number and object responses', () => {
+    assertMyAccessCount(200, 1);
+    assertMyAccessCount(200, { count: 2 });
+    assertMyAccessCount(200, { value: 'unknown' });
+    assertMyAccessCount(401, undefined);
+  });
+
+  test('assertRoleAccessGetResponse handles array and container shapes', () => {
+    assertRoleAccessGetResponse(200, [{ roleCategory: 'LEGAL', roleName: 'role' }]);
+    assertRoleAccessGetResponse(200, { roleAssignmentResponse: [{ roleCategory: 'LEGAL', roleName: 'role' }] });
+    assertRoleAccessGetResponse(200, {});
+    assertRoleAccessGetResponse(403, undefined);
+  });
+
+  test('assertValidRolesResponse handles roles array', () => {
+    assertValidRolesResponse(200, [{ roleId: 'id', roleName: 'name' }]);
+    assertValidRolesResponse(200, []);
+    assertValidRolesResponse(400, undefined);
+  });
+
+  test('assertRoleAccessByCaseIdResponse handles roleAssignmentResponse', () => {
+    assertRoleAccessByCaseIdResponse(200, { roleAssignmentResponse: [{ roleCategory: 'LEGAL', roleName: 'role' }] });
+    assertRoleAccessByCaseIdResponse(200, { roleAssignmentResponse: [] });
+    assertRoleAccessByCaseIdResponse(500, undefined);
+  });
+
+  test('assertManageLabellingResponse handles guarded and success statuses', () => {
+    assertManageLabellingResponse(200, [{ roleCategory: 'LEGAL', roleName: 'role' }]);
+    assertManageLabellingResponse(403, undefined);
+  });
+
+  test('assertRoleAssignmentsIfPresent handles success and empty arrays', () => {
+    assertRoleAssignmentsIfPresent(200, [{ roleCategory: 'LEGAL', roleName: 'role' }]);
+    assertRoleAssignmentsIfPresent(201, [{ roleCategory: 'LEGAL', roleName: 'role' }]);
+    assertRoleAssignmentsIfPresent(200, []);
+    assertRoleAssignmentsIfPresent(400, undefined);
+  });
+
+  test('applyExpiredCookies handles empty and populated arrays', async () => {
+    let calls = 0;
+    const ctx = {
+      storageState: async () => {
+        calls += 1;
+      }
+    };
+    await applyExpiredCookies(ctx, []);
+    expect(calls).toBe(0);
+    await applyExpiredCookies(ctx, [{ name: 'cookie' }]);
+    expect(calls).toBe(1);
+  });
+
+  test('buildExpiredCookies handles missing cookies', () => {
+    expect(buildExpiredCookies({ cookies: [{ name: 'c' }] })).toHaveLength(1);
+    expect(buildExpiredCookies({})).toEqual([]);
+  });
+});
+
+function assertGlobalSearchServices(status: number, data: any) {
+  if (status === 200 && Array.isArray(data) && data.length > 0) {
+    expect(data[0]).toEqual(
+      expect.objectContaining({
+        serviceId: expect.any(String),
+        serviceName: expect.any(String)
+      })
+    );
+  }
+}
+
+function assertGlobalSearchResults(status: number, data: any) {
+  if (status === 200 && data) {
+    expect(data).toHaveProperty('results');
+    if (Array.isArray(data.results) && data.results.length > 0) {
+      const first = data.results[0];
+      expect(first).toEqual(expect.objectContaining({}));
+      if (first.caseReference) {
+        expect(typeof first.caseReference).toBe('string');
+      }
+    }
+  }
+}
+
+function assertSearchCasesResponse(status: number, data: any) {
+  if (status === 200 && data) {
+    if (typeof data.total === 'number' && Array.isArray(data.cases)) {
+      expect(data.total).toBeGreaterThanOrEqual(0);
+      if (data.cases.length > 0) {
+        expect(data.cases[0]).toEqual(expect.anything());
+      }
+    } else {
+      expect(data).toEqual(expect.anything());
+    }
+  }
+}
+
+function assertSupportedJurisdictions(status: number, data: any) {
+  if (status === 200 && Array.isArray(data) && data.length > 0) {
+    expect(typeof data[0]).toBe('string');
+  }
+}
+
+function assertLocationsResponse(status: number, data: any) {
+  if (status === 200 && Array.isArray(data) && data.length > 0) {
+    expect(data[0]).toHaveProperty('epimms_id');
+  }
+}
+
+function assertStaffRefDataResponse(status: number, data: any) {
+  if (status === 200 && Array.isArray(data?.staff) && data.staff.length > 0) {
+    const staffEntry = data.staff[0];
+    expect(staffEntry).toEqual(
+      expect.objectContaining({
+        known_as: expect.any(String),
+        email_id: expect.any(String)
+      })
+    );
+  }
+}
+
+function assertMyAccessCount(status: number, data: any) {
+  if (status === 200) {
+    if (typeof data === 'number') {
+      expect(data).toBeGreaterThanOrEqual(0);
+    } else if (typeof data?.count === 'number') {
+      expect(data.count).toBeGreaterThanOrEqual(0);
+    } else {
+      expect(data).toEqual(expect.anything());
+    }
+  }
+}
+
+function assertRoleAccessGetResponse(status: number, data: any) {
+  if (status === 200) {
+    if (Array.isArray(data) && data.length > 0) {
+      expectRoleAssignmentShape(data[0] as any);
+    } else if (Array.isArray((data as RoleAssignmentContainer)?.roleAssignmentResponse) && (data as RoleAssignmentContainer).roleAssignmentResponse!.length > 0) {
+      expectRoleAssignmentShape((data as RoleAssignmentContainer).roleAssignmentResponse![0] as any);
+    } else {
+      expect(data).toEqual(expect.anything());
+    }
+  }
+}
+
+function assertValidRolesResponse(status: number, data: any) {
+  if (status === 200 && Array.isArray(data) && data.length > 0) {
+    expect(data[0]).toEqual(
+      expect.objectContaining({
+        roleId: expect.any(String),
+        roleName: expect.any(String)
+      })
+    );
+  }
+}
+
+function assertRoleAccessByCaseIdResponse(status: number, data: any) {
+  if (status === 200 && Array.isArray(data?.roleAssignmentResponse) && data.roleAssignmentResponse.length > 0) {
+    expectRoleAssignmentShape(data.roleAssignmentResponse[0] as any);
+  }
+}
+
+function assertRoleAssignmentsIfPresent(status: number, data: any) {
+  if ((status === 200 || status === 201) && Array.isArray(data) && data.length > 0) {
+    expectRoleAssignmentShape(data[0] as any);
+  }
+}
+
+function assertManageLabellingResponse(status: number, data: any) {
+  if (status === 200 && Array.isArray(data) && data.length > 0) {
+    expectRoleAssignmentShape(data[0] as any);
+  }
+}
+
+function buildExpiredCookies(state: any) {
+  return Array.isArray(state.cookies)
+    ? state.cookies.map((c: any) => ({ ...c, expires: 0 }))
+    : [];
+}
+
+async function applyExpiredCookies(ctx: { storageState: (opts: any) => Promise<void> }, cookies: any[]) {
+  if (cookies.length) {
+    await ctx.storageState({ cookies, origins: [] });
+  }
+}

@@ -13,6 +13,22 @@ export interface LoadedSession {
   storageFile: string;
 }
 
+type PersistDeps = {
+  cookieUtils?: CookieUtils;
+  fs?: typeof fs;
+};
+
+type SessionCaptureDeps = {
+  chromiumLauncher?: typeof chromium;
+  userUtils?: UserUtils;
+  idamPageFactory?: (page: any) => { login: (creds: { username: string; password: string }) => Promise<void> };
+  isSessionFresh?: typeof isSessionFresh;
+  persistSession?: typeof persistSession;
+  fs?: typeof fs;
+  config?: typeof config;
+  env?: NodeJS.ProcessEnv;
+};
+
 /**
  * Load persisted session cookies for a given userIdentifier.
  * Returns empty cookies array if file missing or invalid.
@@ -58,11 +74,18 @@ export function isSessionFresh(sessionPath: string, maxAgeMs = 5 * 60 * 1000): b
 }
 
 // local helper to persist session: write session file, add cookies to context and save storageState
-async function persistSession(localSessionPath: string, localCookies: any[], ctx: any, uid: string) {
-    const cookieUtils = new CookieUtils();
+async function persistSession(
+    localSessionPath: string,
+    localCookies: any[],
+    ctx: any,
+    uid: string,
+    deps: PersistDeps = {}
+) {
+    const cookieUtils = deps.cookieUtils ?? new CookieUtils();
+    const fsApi = deps.fs ?? fs;
     try {
         cookieUtils.writeManageCasesSession(localSessionPath, localCookies);
-        const augmented = JSON.parse(fs.readFileSync(localSessionPath, 'utf8')).cookies;
+        const augmented = JSON.parse(fsApi.readFileSync(localSessionPath, 'utf8')).cookies;
         await ctx.addCookies(augmented);
         await ctx.storageState({ path: localSessionPath });
         console.log(`GlobalSetup: Stored storage state for ${uid} at ${localSessionPath}`);
@@ -73,29 +96,41 @@ async function persistSession(localSessionPath: string, localCookies: any[], ctx
 }
 
 export async function sessionCapture(identifiers: string[]) {
-    const userUtils = new UserUtils();
+    return sessionCaptureWith(identifiers);
+}
+
+async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDeps = {}) {
+    const userUtils = deps.userUtils ?? new UserUtils();
+    const fsApi = deps.fs ?? fs;
+    const env = deps.env ?? process.env;
+    const activeConfig = deps.config ?? config;
+    const isFresh = deps.isSessionFresh ?? isSessionFresh;
+    const persist = deps.persistSession ?? persistSession;
+    const chromiumLauncher = deps.chromiumLauncher ?? chromium;
+    const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
 
     const sessionsDir = path.join(process.cwd(), '.sessions');
-    if (!fs.existsSync(sessionsDir)) {
-        fs.mkdirSync(sessionsDir, { recursive: true });
+    if (!fsApi.existsSync(sessionsDir)) {
+        fsApi.mkdirSync(sessionsDir, { recursive: true });
     }
 
     for (const id of identifiers) {
         const { email, password } = userUtils.getUserCredentials(id);
         const sessionPath = path.join(sessionsDir, `${email}.storage.json`);
 
-        if (isSessionFresh(sessionPath)) {
+        if (isFresh(sessionPath)) {
             console.log(`GlobalSetup: session for ${id} (${email}) is fresh, skipping capture`);
             continue;
         }
 
-        const browser = await chromium.launch();
+        const browser = await chromiumLauncher.launch();
         const context = await browser.newContext();
         const page = await context.newPage();
-        const idamPage = new IdamPage(page);
-        console.log(`GlobalSetup: Logging in as ${id} (${email}) to ${process.env.TEST_URL || config.urls.exuiDefaultUrl}`);
+        const idamPage = idamFactory(page);
+        const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
+        console.log(`GlobalSetup: Logging in as ${id} (${email}) to ${targetUrl}`);
         try {
-            await page.goto(process.env.TEST_URL || config.urls.exuiDefaultUrl);
+            await page.goto(targetUrl);
             await page.waitForSelector('#username', { timeout: 60000 });
             await idamPage.login({ username: email, password });
             // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
@@ -111,7 +146,12 @@ export async function sessionCapture(identifiers: string[]) {
         }
 
         const cookies = await context.cookies();
-        await persistSession(sessionPath, cookies, context, id);
+        await persist(sessionPath, cookies, context, id);
         await browser.close();
     }
 }
+
+export const __test__ = {
+    sessionCaptureWith,
+    persistSession
+};

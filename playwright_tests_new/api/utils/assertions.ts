@@ -13,8 +13,8 @@ export function expectTaskList(payload: unknown) {
   expect(parsed).toBeTruthy();
   expect(typeof parsed).toBe('object');
   expect(Array.isArray(parsed.tasks)).toBe(true);
-  if ((parsed.tasks?.length ?? 0) > 0) {
-    expect(parsed.tasks![0]).toEqual(
+  if (parsed.tasks.length > 0) {
+    expect(parsed.tasks[0]).toEqual(
       expect.objectContaining({
         id: expect.any(String),
         task_state: expect.any(String)
@@ -116,8 +116,8 @@ export function expectAddressLookupShape(response: unknown) {
   expect(parsed).toHaveProperty('results');
   expect(parsed).toHaveProperty('header');
   expect(Array.isArray(parsed.results)).toBe(true);
-  if ((parsed.results?.length ?? 0) > 0) {
-    const dpa = parsed.results![0]?.DPA;
+  if (parsed.results.length > 0) {
+    const dpa = parsed.results[0].DPA;
     expect(dpa).toBeTruthy();
     expect(dpa).toEqual(
       expect.objectContaining({

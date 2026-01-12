@@ -56,6 +56,7 @@ api/.nyc_output
 /config/local*.*
 .env
 .tool-versions
+/.agent
 
 # System Files
 .DS_Store
@@ -87,6 +88,7 @@ yalc.lock
 ignore/
 
 /functional_output/
+.agent/
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -103,4 +105,3 @@ ignore/
 
 #playwright
 test-results/
-

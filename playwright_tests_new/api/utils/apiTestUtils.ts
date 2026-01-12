@@ -28,9 +28,7 @@ export function expectStatus(actual: number, allowed: ReadonlyArray<number>, mes
 }
 
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
-  await ensureStorageState(role);
-  const xsrf = await getStoredCookie(role, 'XSRF-TOKEN');
-  return xsrf ? { 'X-XSRF-TOKEN': xsrf } : {};
+  return buildXsrfHeadersWith(role);
 }
 
 export async function withXsrf<T>(role: ApiUserRole, fn: (headers: Record<string, string>) => Promise<T>): Promise<T> {
@@ -65,3 +63,20 @@ export async function withRetry<T extends { status: number }>(
   }
   throw lastError ?? new Error('withRetry failed unexpectedly');
 }
+
+type BuildXsrfDeps = {
+  ensureStorageState?: typeof ensureStorageState;
+  getStoredCookie?: typeof getStoredCookie;
+};
+
+async function buildXsrfHeadersWith(role: ApiUserRole, deps: BuildXsrfDeps = {}): Promise<Record<string, string>> {
+  const ensure = deps.ensureStorageState ?? ensureStorageState;
+  const getCookie = deps.getStoredCookie ?? getStoredCookie;
+  await ensure(role);
+  const xsrf = await getCookie(role, 'XSRF-TOKEN');
+  return xsrf ? { 'X-XSRF-TOKEN': xsrf } : {};
+}
+
+export const __test__ = {
+  buildXsrfHeadersWith
+};

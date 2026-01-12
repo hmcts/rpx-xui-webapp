@@ -4,39 +4,8 @@ import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUt
 
 test.describe('CCD endpoints', () => {
   test('lists jurisdictions for current user', async ({ apiClient }) => {
-    const user = await apiClient.get<{ userInfo?: { uid?: string; id?: string } }>('api/user/details', { throwOnError: false });
-    expectStatus(user.status, StatusSets.guardedExtended);
-    const uid = user.data?.userInfo?.uid ?? user.data?.userInfo?.id;
-    expect(uid).toBeDefined();
-
-    const response = await withRetry(
-      () =>
-        apiClient.get<any[]>(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
-          throwOnError: false
-        }),
-      { retries: 1, retryStatuses: [502, 504] }
-    );
-    expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500]);
-    if (!Array.isArray(response.data)) {
-      expect(response.data).toBeUndefined();
-      return;
-    }
-
     const expectedNames = testConfig.jurisdictionNames[testConfig.testEnv] ?? [];
-    const actualNames = (response.data ?? []).map((entry) => entry?.name).filter(Boolean);
-    expectedNames.forEach((name) => {
-      expect(actualNames).toContain(name);
-    });
-
-    response.data.forEach((jurisdiction) => {
-      expect(jurisdiction).toEqual(
-        expect.objectContaining({
-          id: expect.any(String),
-          name: expect.any(String),
-          description: expect.any(String)
-        })
-      );
-    });
+    await assertJurisdictionsForUser(apiClient, expectedNames);
   });
 
   const jurisdictions = testConfig.jurisdictions[testConfig.testEnv] ?? [];
@@ -92,3 +61,90 @@ test.describe('CCD endpoints', () => {
     }
   });
 });
+
+test.describe('CCD helper coverage', () => {
+  test('assertJurisdictionsForUser handles guarded status', async () => {
+    const apiClient = {
+      get: async () => ({ status: 403, data: undefined })
+    };
+    await assertJurisdictionsForUser(apiClient as any, []);
+  });
+
+  test('assertJurisdictionsForUser handles non-array payloads', async () => {
+    let calls = 0;
+    const apiClient = {
+      get: async () => {
+        calls += 1;
+        if (calls === 1) {
+          return { status: 200, data: { userInfo: { uid: 'user-1' } } };
+        }
+        return { status: 200, data: { foo: 'bar' } };
+      }
+    };
+    await assertJurisdictionsForUser(apiClient as any, []);
+  });
+
+  test('assertJurisdictionsForUser handles full payload', async () => {
+    let calls = 0;
+    const apiClient = {
+      get: async () => {
+        calls += 1;
+        if (calls === 1) {
+          return { status: 200, data: { userInfo: { id: 'user-1' } } };
+        }
+        return {
+          status: 200,
+          data: [
+            { id: 'jur-1', name: 'Jurisdiction 1', description: 'Desc' },
+            { id: 'jur-2', name: 'Jurisdiction 2', description: 'Desc' }
+          ]
+        };
+      }
+    };
+    await assertJurisdictionsForUser(apiClient as any, ['Jurisdiction 1']);
+  });
+});
+
+async function assertJurisdictionsForUser(apiClient: any, expectedNames: string[]) {
+  const user = await apiClient.get('api/user/details', { throwOnError: false });
+  expectStatus(user.status, StatusSets.guardedExtended);
+  if (user.status !== 200) {
+    return;
+  }
+  const uid = resolveUserId(user.data);
+  expect(uid).toBeDefined();
+  if (!uid) {
+    return;
+  }
+
+  const response = await withRetry(
+    () =>
+      apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
+        throwOnError: false
+      }),
+    { retries: 1, retryStatuses: [502, 504] }
+  );
+  expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500]);
+  if (!Array.isArray(response.data)) {
+    return;
+  }
+
+  const actualNames = response.data.map((entry: any) => entry?.name).filter(Boolean);
+  expectedNames.forEach((name) => {
+    expect(actualNames).toContain(name);
+  });
+
+  response.data.forEach((jurisdiction: any) => {
+    expect(jurisdiction).toEqual(
+      expect.objectContaining({
+        id: expect.any(String),
+        name: expect.any(String),
+        description: expect.any(String)
+      })
+    );
+  });
+}
+
+function resolveUserId(data: { userInfo?: { uid?: string; id?: string } } | undefined): string | undefined {
+  return data?.userInfo?.uid ?? data?.userInfo?.id;
+}

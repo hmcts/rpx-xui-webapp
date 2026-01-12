@@ -26,7 +26,8 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
   content = <<EOT
 param(
     [string]$workspaceid,
-    [string]$acsendpoint,
+    [string]$resourcegroupname,
+    [string]$acsresourcename,
     [string]$senderaddress,
     [string]$recipientaddress
 )
@@ -108,20 +109,46 @@ $htmlTable
     Write-Output "HTML Body Preview:"
     Write-Output $emailBody
 
-    # Send Email via Azure Communication Services
+    # Get ACS access key
     try {
-        $emailMessage = @{
-            SenderAddress    = $senderaddress
-            RecipientAddress = $recipientaddress
-            Subject          = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
-            Content          = $emailBody
-        }
-
-        Send-AzEmail -Endpoint $acsendpoint @emailMessage -BodyType Html
-        Write-Output "Email sent successfully via Azure Communication Services."
+        $keys = Get-AzCommunicationServiceKey -ResourceGroupName $resourcegroupname -CommunicationServiceName $acsresourcename
+        $accessKey = $keys.PrimaryKey
+        Write-Output "Successfully retrieved ACS access key."
     }
     catch {
-        Write-Error "Failed to send email via Azure Communication Services."
+        Write-Error "Failed to retrieve ACS access keys."
+        throw $_
+    }
+
+    # Send Email via Azure Communication Services REST API
+    try {
+        $endpoint = "https://$acsresourcename.communication.azure.com"
+        $apiVersion = "2023-03-31"
+        $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
+        
+        $emailPayload = @{
+            senderAddress = $senderaddress
+            recipients = @{
+                to = @(
+                    @{ address = $recipientaddress }
+                )
+            }
+            content = @{
+                subject = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
+                html = $emailBody
+            }
+        } | ConvertTo-Json -Depth 10
+
+        $headers = @{
+            "Content-Type" = "application/json"
+            "Authorization" = "Bearer $accessKey"
+        }
+
+        $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $emailPayload
+        Write-Output "Email sent successfully. Message ID: $($response.id)"
+    }
+    catch {
+        Write-Error "Failed to send email via Azure Communication Services: $_"
         throw $_
     }
 }
@@ -152,7 +179,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-12'T'16:28:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-12'T'16:47:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -165,14 +192,16 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
 
   parameters = {
     workspaceid      = azurerm_log_analytics_workspace.app_insights_workspace.workspace_id
-    acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.uk.communication.azure.com"
+    resourcegroupname = azurerm_resource_group.rg.name
+    acsresourcename  = azurerm_communication_service.comm_service.0.name
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
     recipientaddress = join(",", local.welsh_emails)
   }
 
   depends_on = [
     azurerm_automation_runbook.welsh_report_runbook,
-    azurerm_automation_schedule.welsh_monthly_schedule
+    azurerm_automation_schedule.welsh_monthly_schedule,
+    azurerm_automation_module.az_communication
   ]
 }
 

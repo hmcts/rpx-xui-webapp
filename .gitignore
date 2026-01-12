@@ -57,6 +57,7 @@ api/.nyc_output
 .env
 .tool-versions
 /.agent
+execplan-api-pw-coverage.md
 
 # System Files
 .DS_Store

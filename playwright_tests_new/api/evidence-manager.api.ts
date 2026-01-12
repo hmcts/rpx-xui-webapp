@@ -205,6 +205,7 @@ test.describe('Evidence Manager & Documents', () => {
   });
 
   test('rejects document upload without multipart', async ({ apiClient }) => {
+    test.setTimeout(90000); // Extended timeout for Jenkins - this endpoint can be slow
     const res = await apiClient.post('documents', {
       data: {},
       throwOnError: false

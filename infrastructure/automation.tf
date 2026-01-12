@@ -137,6 +137,13 @@ resource "azurerm_role_assignment" "automation_appinsights_reader" {
   principal_id         = azurerm_automation_account.welsh_reporting.0.identity[0].principal_id
 }
 
+resource "azurerm_role_assignment" "automation_log_analytics_reader" {
+  count                = var.welsh_reporting_enabled ? 1 : 0
+  scope                = azurerm_log_analytics_workspace.app_insights_workspace.id
+  role_definition_name = "Log Analytics Reader"
+  principal_id         = azurerm_automation_account.welsh_reporting.0.identity[0].principal_id
+}
+
 resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   count                   = var.welsh_reporting_enabled ? 1 : 0
   name                    = "monthly-welsh-schedule"
@@ -145,7 +152,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-12'T'14:35:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-12'T'14:55:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

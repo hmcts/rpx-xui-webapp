@@ -42,8 +42,7 @@ module.exports = defineConfig({
       testOutput: 'only-on-failure'
     }]
   ],
-  globalSetup: require.resolve('./playwright_tests_new/integration/playwright.global.setup.ts'),
-  globalTeardown: require.resolve('./playwright_tests_new/integration/playwright.global.teardown.ts'),
+  globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
   use: {
     baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
     trace: 'on-first-retry',

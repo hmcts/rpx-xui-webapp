@@ -25,7 +25,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$workspaceid,
+    [string]$appinsightsid,
     [string]$acsendpoint,
     [string]$senderaddress,
     [string]$recipientaddress
@@ -66,10 +66,10 @@ UniqueSessionsPerDay
 "@
 
 try {
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $appinsightsid -Query $query
 }
 catch {
-    Write-Error "Failed to query Log Analytics workspace."
+    Write-Error "Failed to query Application Insights."
     throw $_
 }
 
@@ -152,7 +152,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-12'T'14:55:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-12'T'15:10:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -164,7 +164,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    workspaceid      = azurerm_log_analytics_workspace.app_insights_workspace.workspace_id
+    appinsightsid    = azurerm_application_insights.appinsight.app_id
     acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.uk.communication.azure.com"
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
     recipientaddress = join(",", local.welsh_emails)

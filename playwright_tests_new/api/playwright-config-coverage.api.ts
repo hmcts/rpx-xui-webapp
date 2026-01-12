@@ -8,6 +8,10 @@ async function loadConfig() {
   const configPath = path.resolve(process.cwd(), 'playwright.config.ts');
   const configUrl = pathToFileURL(configPath).href;
   const loaded = await import(configUrl);
+  return resolveConfigModule(loaded);
+}
+
+function resolveConfigModule(loaded: any) {
   return loaded?.__test__ ? loaded : loaded?.default ?? loaded;
 }
 
@@ -32,6 +36,17 @@ test.describe('Playwright config coverage', () => {
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultCount).toBeGreaterThanOrEqual(1);
+  });
+
+  test('resolveConfigModule prefers __test__ and default exports', () => {
+    const withTest = resolveConfigModule({ __test__: { name: 'test' }, default: { name: 'default' } });
+    expect(withTest.__test__).toBeDefined();
+
+    const withDefault = resolveConfigModule({ default: { name: 'default' } });
+    expect(withDefault.name).toBe('default');
+
+    const plain = resolveConfigModule({ name: 'plain' });
+    expect(plain.name).toBe('plain');
   });
 
   test('config uses CI overrides and env reporters', async () => {

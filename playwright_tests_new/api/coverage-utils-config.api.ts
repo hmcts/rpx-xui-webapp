@@ -57,6 +57,12 @@ test.describe('Config and E2E utility coverage', () => {
     expect(appTestConfigTest.resolvePreviewConfig([], 'https://preview.example/path')).toBeUndefined();
     expect(appTestConfigTest.resolvePreviewConfig([{ previewUrl: 'preview.example', demoUrl: 'https://demo.example' }], undefined)).toBeUndefined();
 
+    const env = {} as NodeJS.ProcessEnv;
+    expect(appTestConfigTest.applyPreviewConfig({ demoUrl: 'https://demo.example' }, env)).toBe(true);
+    expect(env.TEST_ENV).toBe('demo');
+    expect(env.TEST_URL).toBe('https://demo.example');
+    expect(appTestConfigTest.applyPreviewConfig(undefined, env)).toBe(false);
+
     expect(appTestConfigTest.resolveTestEnv(undefined)).toBe('aat');
     expect(appTestConfigTest.resolveTestEnv('demo')).toBe('demo');
     expect(appTestConfigTest.resolveTestEnv('aat')).toBe('aat');
@@ -85,6 +91,16 @@ test.describe('Config and E2E utility coverage', () => {
     });
     expect(process.env.CONFIG_TEST_VAR_RESTORE).toBe('existing');
     delete process.env.CONFIG_TEST_VAR_RESTORE;
+  });
+
+  test('isSessionFresh returns false when stat fails', () => {
+    const fsStub = {
+      existsSync: () => true,
+      statSync: () => {
+        throw new Error('boom');
+      }
+    } as any;
+    expect(isSessionFresh('session.json', 1000, { fs: fsStub, now: () => 1000 })).toBe(false);
   });
 
   test('UserUtils returns credentials for known users and errors on unknown', () => {
@@ -236,17 +252,10 @@ test.describe('Config and E2E utility coverage', () => {
       getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
     } as any;
 
-    const chromiumLauncher = {
-      launch: async () => {
-        throw new Error('should not launch');
-      }
-    } as any;
-
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
       userUtils,
-      isSessionFresh: () => true,
-      chromiumLauncher
+      isSessionFresh: () => true
     });
     expect(mkdirCalls).toBe(1);
 
@@ -286,6 +295,29 @@ test.describe('Config and E2E utility coverage', () => {
       config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any
     });
     expect(persistCalls).toBe(1);
+  });
+
+  test('sessionCaptureWith surfaces launch failures', async () => {
+    const fsStub = {
+      existsSync: () => true,
+      mkdirSync: () => {}
+    } as any;
+    const userUtils = {
+      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
+    } as any;
+    const chromiumLauncher = {
+      launch: async () => {
+        throw new Error('launch failed');
+      }
+    } as any;
+    await expect(
+      sessionCaptureTest.sessionCaptureWith(['USER'], {
+        fs: fsStub,
+        userUtils,
+        isSessionFresh: () => false,
+        chromiumLauncher
+      })
+    ).rejects.toThrow('launch failed');
   });
 
   test('sessionCaptureWith surfaces login failures', async () => {

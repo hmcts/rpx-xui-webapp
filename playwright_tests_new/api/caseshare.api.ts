@@ -32,6 +32,8 @@ const CASESHARE_ENDPOINTS = [
   }
 ] as const;
 
+type CaseShareSchema = ((payload: CaseShareResponseVariant, property: string) => void) | unknown;
+
 test.describe('Case share endpoints', () => {
   for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path}`, async ({ apiClient }) => {
@@ -39,22 +41,28 @@ test.describe('Case share endpoints', () => {
         const response = await apiClient.get(path, { headers: { ...headers, experimental: 'true' }, throwOnError: false });
         expect([200, 500, 502, 504]).toContain(response.status);
         expect(response.data).toBeTruthy();
-
-        const entries = resolveEntries(response.data, property);
-        expect(Array.isArray(entries)).toBe(true);
-        if (entries.length > 0) {
-          if (typeof schema === 'function') {
-            schema(response.data as CaseShareResponseVariant, property);
-          } else {
-            expect(entries[0]).toEqual(schema);
-          }
-        }
+        assertCaseShareEntries(response.data, property, schema);
       });
     });
   }
 });
 
 test.describe('Case share helper coverage', () => {
+  test('assertCaseShareEntries covers function and object schemas', () => {
+    const casesPayload = { cases: [{ caseId: 'case-1', sharedWith: [] }] };
+    assertCaseShareEntries(casesPayload, 'cases', expectCaseShareShape);
+
+    const orgPayload = { organisations: [{ organisationIdentifier: 'org-1', name: 'Org' }] };
+    assertCaseShareEntries(
+      orgPayload,
+      'organisations',
+      expect.objectContaining({
+        organisationIdentifier: expect.any(String),
+        name: expect.any(String)
+      })
+    );
+  });
+
   test('resolveEntries handles array payloads', () => {
     const data = [{ caseId: 'case-1' }];
     expect(resolveEntries(data, 'cases')).toEqual(data);
@@ -75,6 +83,18 @@ test.describe('Case share helper coverage', () => {
     expect(resolveEntries(undefined as any, 'cases')).toEqual([]);
   });
 });
+
+function assertCaseShareEntries(data: any, property: string, schema: CaseShareSchema) {
+  const entries = resolveEntries(data, property);
+  expect(Array.isArray(entries)).toBe(true);
+  if (entries.length > 0) {
+    if (typeof schema === 'function') {
+      schema(data as CaseShareResponseVariant, property);
+    } else {
+      expect(entries[0]).toEqual(schema);
+    }
+  }
+}
 
 function resolveEntries(data: any, property: string): any[] {
   if (Array.isArray(data)) {

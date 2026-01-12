@@ -183,6 +183,18 @@ test.describe('Coverage helpers', () => {
     };
     const unassigned = await seedTaskId(apiClientSecond, undefined);
     expect(unassigned).toEqual({ id: 'unassigned-task', type: 'unassigned' });
+
+    const apiClientError = {
+      post: async () => ({ status: 500, data: { tasks: [{ id: 'task-3' }] } })
+    };
+    const errorResult = await seedTaskId(apiClientError, undefined);
+    expect(errorResult).toBeUndefined();
+
+    const apiClientNoId = {
+      post: async () => ({ status: 200, data: { tasks: [{}] } })
+    };
+    const noId = await seedTaskId(apiClientNoId, undefined);
+    expect(noId).toBeUndefined();
   });
 
   test('seedRoleAccessCaseId covers success and failure paths', async () => {
@@ -263,6 +275,31 @@ test.describe('Coverage helpers', () => {
     );
     expect(recovered).toBe(fakeContext);
 
+    let unlinkCalls = 0;
+    let unlinkFactoryCalls = 0;
+    const unlinkFactory = async () => {
+      unlinkFactoryCalls += 1;
+      if (unlinkFactoryCalls === 1) {
+        throw new Error('Unexpected end of JSON input');
+      }
+      return fakeContext;
+    };
+    const recoveredAfterUnlink = await fixturesTest.buildRequestContext(
+      'solicitor',
+      'state-1',
+      {},
+      {
+        requestFactory: unlinkFactory,
+        ensureStorageState: async () => 'state-2',
+        unlink: async () => {
+          unlinkCalls += 1;
+          throw new Error('unlink failed');
+        }
+      }
+    );
+    expect(recoveredAfterUnlink).toBe(fakeContext);
+    expect(unlinkCalls).toBe(1);
+
     const failingFactory = async () => {
       throw new Error('boom');
     };
@@ -282,9 +319,11 @@ test.describe('Coverage helpers', () => {
 
     const direct = extractCaseShareEntries({ cases: [{ caseId: 'case-1' }] }, 'cases');
     const nested = extractCaseShareEntries({ payload: { cases: [{ caseId: 'case-2' }] } }, 'cases');
+    const missing = extractCaseShareEntries({ foo: 'bar' } as any, 'cases');
     const empty = extractCaseShareEntries(null as any, 'cases');
     expect(direct).toHaveLength(1);
     expect(nested).toHaveLength(1);
+    expect(missing).toEqual([]);
     expect(empty).toEqual([]);
   });
 
@@ -297,7 +336,12 @@ test.describe('Coverage helpers', () => {
     expect(oauth.userInfo.id).toBeDefined();
     expect(oauth.userInfo.active).toBe(true);
 
+    const originalRandom = Math.random;
+    Math.random = () => 0;
     const location = nodeAppDataModels.getUserDetailsLocationInfo();
     expect(location.jurisdiction).toBe('IA');
+    Math.random = () => 1;
+    nodeAppDataModels.getUserDetailsLocationInfo();
+    Math.random = originalRandom;
   });
 });

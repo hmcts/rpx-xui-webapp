@@ -22,9 +22,7 @@ test.describe('CORS and OPTIONS', () => {
         expectStatus(res.status(), expected);
         assertCorsHeaders(expected, res.status(), res.headers(), origin);
       } catch (error) {
-        const message = (error as Error)?.message ?? '';
-        if (/ENOTFOUND|ECONNREFUSED/.test(message)) {
-          expect(message).toContain('manage-case');
+        if (shouldIgnoreCorsError(error)) {
           return;
         }
         throw error;
@@ -44,9 +42,7 @@ test.describe('CORS and OPTIONS', () => {
         expectStatus(res.status(), expected);
         assertCorsHeaders(expected, res.status(), res.headers(), origin);
       } catch (error) {
-        const message = (error as Error)?.message ?? '';
-        if (/ENOTFOUND|ECONNREFUSED/.test(message)) {
-          expect(message).toContain('manage-case');
+        if (shouldIgnoreCorsError(error)) {
           return;
         }
         throw error;
@@ -63,6 +59,12 @@ test.describe('CORS helper coverage', () => {
     assertCorsHeaders(StatusSets.corsAllowed, 204, {}, 'https://example.test');
     assertCorsHeaders(StatusSets.corsDisallowed, 200, { 'Access-Control-Allow-Origin': 'https://other.test' }, 'https://example.test');
     assertCorsHeaders(StatusSets.corsDisallowed, 502, {}, 'https://example.test');
+  });
+
+  test('shouldIgnoreCorsError handles network failures', () => {
+    expect(shouldIgnoreCorsError(new Error('ENOTFOUND manage-case'))).toBe(true);
+    expect(shouldIgnoreCorsError(new Error('ECONNREFUSED manage-case'))).toBe(true);
+    expect(shouldIgnoreCorsError(new Error('ETIMEDOUT manage-case'))).toBe(false);
   });
 });
 
@@ -82,4 +84,13 @@ function assertCorsHeaders(
     const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
     expect(allowed === origin).toBe(false);
   }
+}
+
+function shouldIgnoreCorsError(error: unknown): boolean {
+  const message = (error as Error)?.message ?? '';
+  if (/ENOTFOUND|ECONNREFUSED/.test(message)) {
+    expect(message).toContain('manage-case');
+    return true;
+  }
+  return false;
 }

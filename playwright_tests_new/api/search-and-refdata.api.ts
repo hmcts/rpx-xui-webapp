@@ -312,6 +312,7 @@ test.describe('Search/refdata helper coverage', () => {
   test('assertStaffRefDataResponse covers staff payloads', () => {
     assertStaffRefDataResponse(200, { staff: [{ known_as: 'Name', email_id: 'a@b.com' }] });
     assertStaffRefDataResponse(200, { staff: [] });
+    assertStaffRefDataResponse(200, { staff: { name: 'Not array' } });
     assertStaffRefDataResponse(400, {});
   });
 
@@ -325,6 +326,8 @@ test.describe('Search/refdata helper coverage', () => {
   test('assertRoleAccessGetResponse handles array and container shapes', () => {
     assertRoleAccessGetResponse(200, [{ roleCategory: 'LEGAL', roleName: 'role' }]);
     assertRoleAccessGetResponse(200, { roleAssignmentResponse: [{ roleCategory: 'LEGAL', roleName: 'role' }] });
+    assertRoleAccessGetResponse(200, []);
+    assertRoleAccessGetResponse(200, { roleAssignmentResponse: [] });
     assertRoleAccessGetResponse(200, {});
     assertRoleAccessGetResponse(403, undefined);
   });
@@ -338,6 +341,7 @@ test.describe('Search/refdata helper coverage', () => {
   test('assertRoleAccessByCaseIdResponse handles roleAssignmentResponse', () => {
     assertRoleAccessByCaseIdResponse(200, { roleAssignmentResponse: [{ roleCategory: 'LEGAL', roleName: 'role' }] });
     assertRoleAccessByCaseIdResponse(200, { roleAssignmentResponse: [] });
+    assertRoleAccessByCaseIdResponse(200, { roleAssignmentResponse: {} });
     assertRoleAccessByCaseIdResponse(500, undefined);
   });
 

@@ -31,9 +31,7 @@ test.describe('Evidence Manager & Documents', () => {
         responseType: 'arraybuffer'
       });
       expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
-      if (res.status === 200) {
-        expect((res.data as ArrayBuffer)?.byteLength ?? 0).toBeGreaterThan(0);
-      }
+      assertBinaryResponse(res.status, res.data as ArrayBuffer);
     });
   });
 
@@ -309,6 +307,61 @@ test.describe('Evidence Manager helper coverage', () => {
     expect(resolveUploadedDocId({ documents: [] })).toBeUndefined();
     expect(resolveUploadedDocId({})).toBeUndefined();
   });
+
+  test('assertBinaryResponse handles binary payloads', () => {
+    assertBinaryResponse(200, new ArrayBuffer(4));
+    assertBinaryResponse(204, new ArrayBuffer(0));
+  });
+
+  test('uploadSyntheticDoc returns uploaded id when ok', async () => {
+    let disposed = false;
+    const uploaded = await uploadSyntheticDoc({
+      ensureStorageState: async () => 'state.json',
+      getStoredCookie: async () => 'token',
+      requestFactory: async () => ({
+        post: async () => ({
+          ok: () => true,
+          json: async () => ({ documents: [{ documentId: 'doc-1' }] })
+        }),
+        dispose: async () => {
+          disposed = true;
+        }
+      }),
+      uuidFn: () => 'fallback-id'
+    });
+    expect(uploaded).toBe('doc-1');
+    expect(disposed).toBe(true);
+  });
+
+  test('uploadSyntheticDoc falls back when response is not ok', async () => {
+    let disposed = false;
+    const uploaded = await uploadSyntheticDoc({
+      ensureStorageState: async () => 'state.json',
+      getStoredCookie: async () => undefined,
+      requestFactory: async () => ({
+        post: async () => ({
+          ok: () => false,
+          json: async () => ({})
+        }),
+        dispose: async () => {
+          disposed = true;
+        }
+      }),
+      uuidFn: () => 'fallback-id'
+    });
+    expect(uploaded).toBe('fallback-id');
+    expect(disposed).toBe(true);
+  });
+
+  test('uploadSyntheticDoc falls back on errors', async () => {
+    const uploaded = await uploadSyntheticDoc({
+      ensureStorageState: async () => {
+        throw new Error('boom');
+      },
+      uuidFn: () => 'fallback-id'
+    });
+    expect(uploaded).toBe('fallback-id');
+  });
 });
 
 function resolveConfiguredDocId(explicit?: string, fallback?: string): string | undefined {
@@ -320,6 +373,12 @@ async function resolveSharedDocId(configured: string | undefined, uploadFn: () =
     return configured;
   }
   return uploadFn();
+}
+
+function assertBinaryResponse(status: number, data?: ArrayBuffer) {
+  if (status === 200) {
+    expect((data?.byteLength ?? 0)).toBeGreaterThan(0);
+  }
 }
 
 function assertAnnotationResponse(status: number, data: any) {
@@ -416,12 +475,25 @@ async function fetchUserId(apiClient: any): Promise<string | undefined> {
   return resolveUserInfoId(res.data);
 }
 
-async function uploadSyntheticDoc(): Promise<string> {
+type UploadDeps = {
+  ensureStorageState?: typeof ensureStorageState;
+  getStoredCookie?: typeof getStoredCookie;
+  requestFactory?: typeof playwrightRequest.newContext;
+  resolveUploadedDocId?: typeof resolveUploadedDocId;
+  uuidFn?: typeof uuid;
+};
+
+async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string> {
   // Try to upload a tiny text blob to DM via the proxy using the stored session.
+  const ensure = deps.ensureStorageState ?? ensureStorageState;
+  const getCookie = deps.getStoredCookie ?? getStoredCookie;
+  const requestFactory = deps.requestFactory ?? ((options) => playwrightRequest.newContext(options));
+  const resolveId = deps.resolveUploadedDocId ?? resolveUploadedDocId;
+  const uuidFn = deps.uuidFn ?? uuid;
   try {
-    const storageState = await ensureStorageState('solicitor');
-    const xsrf = await getStoredCookie('solicitor', 'XSRF-TOKEN');
-    const ctx = await request.newContext({
+    const storageState = await ensure('solicitor');
+    const xsrf = await getCookie('solicitor', 'XSRF-TOKEN');
+    const ctx = await requestFactory({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       storageState,
       ignoreHTTPSErrors: true
@@ -439,7 +511,7 @@ async function uploadSyntheticDoc(): Promise<string> {
     });
     if (res.ok()) {
       const body = await res.json();
-      const id = resolveUploadedDocId(body);
+      const id = resolveId(body);
       if (id) {
         await ctx.dispose();
         return id;
@@ -449,5 +521,5 @@ async function uploadSyntheticDoc(): Promise<string> {
   } catch (error) {
     // best-effort; fall through
   }
-  return uuid();
+  return uuidFn();
 }

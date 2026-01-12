@@ -12,7 +12,7 @@ test.describe('Postcode lookup', () => {
       });
 
       expectStatus(response.status, StatusSets.guardedBasic.filter((s) => s !== 403));
-      if (response.status !== 200) {
+      if (!shouldAssertAddress(response.status)) {
         return;
       }
 
@@ -20,3 +20,14 @@ test.describe('Postcode lookup', () => {
     });
   });
 });
+
+test.describe('Postcode lookup helper coverage', () => {
+  test('shouldAssertAddress handles guarded status', () => {
+    expect(shouldAssertAddress(200)).toBe(true);
+    expect(shouldAssertAddress(500)).toBe(false);
+  });
+});
+
+function shouldAssertAddress(status: number): boolean {
+  return status === 200;
+}

@@ -176,15 +176,16 @@ test.describe('Auth helper coverage', () => {
   test('createStorageStateWith honors token bootstrap and falls back to form login', async () => {
     const storageRoot = path.join(process.cwd(), 'test-results', 'auth-storage');
     let formCalls = 0;
+    const onForm = () => {
+      formCalls += 1;
+    };
     const tokenSuccess = await authTest.createStorageStateWith('solicitor', {
       storageRoot,
       mkdir: async () => {},
       getCredentials: () => ({ username: 'user', password: 'pass' }),
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => true,
-      createStorageStateViaForm: async () => {
-        formCalls += 1;
-      }
+      createStorageStateViaForm: onForm
     });
     expect(tokenSuccess).toContain(path.join(config.testEnv, 'solicitor.json'));
     expect(formCalls).toBe(0);
@@ -195,9 +196,7 @@ test.describe('Auth helper coverage', () => {
       getCredentials: () => ({ username: 'user', password: 'pass' }),
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => false,
-      createStorageStateViaForm: async () => {
-        formCalls += 1;
-      }
+      createStorageStateViaForm: onForm
     });
     expect(tokenFallback).toContain(path.join(config.testEnv, 'solicitor.json'));
     expect(formCalls).toBe(1);
@@ -324,6 +323,32 @@ test.describe('Auth helper coverage', () => {
     );
     expect(failure).toBe(false);
     expect(warnCalls.length).toBeGreaterThan(0);
+  });
+
+  test('tryTokenBootstrap logs and returns false on request failures', async () => {
+    const warnCalls: string[] = [];
+    const logger = { warn: (message: string) => warnCalls.push(message) } as any;
+    const result = await authTest.tryTokenBootstrap(
+      'solicitor',
+      { username: 'user', password: 'pass' },
+      'state.json',
+      {
+        env: {
+          IDAM_SECRET: 'secret',
+          IDAM_WEB_URL: 'https://idam',
+          IDAM_TESTING_SUPPORT_URL: 'https://support',
+          S2S_URL: 'https://s2s'
+        } as NodeJS.ProcessEnv,
+        idamUtils: { generateIdamToken: async () => 'token' },
+        serviceAuthUtils: { retrieveToken: async () => 'service-token' },
+        requestFactory: async () => {
+          throw new Error('boom');
+        },
+        logger
+      }
+    );
+    expect(result).toBe(false);
+    expect(warnCalls.some((message) => message.includes('Token bootstrap failed'))).toBe(true);
   });
 
   test('getCredentials returns configured users and errors on unknown roles', () => {

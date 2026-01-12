@@ -60,12 +60,18 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
 }
 
 
- //Return true if sessionPath exists and its mtime is within maxAgeMs.
-export function isSessionFresh(sessionPath: string, maxAgeMs = 5 * 60 * 1000): boolean {
+//Return true if sessionPath exists and its mtime is within maxAgeMs.
+export function isSessionFresh(
+    sessionPath: string,
+    maxAgeMs = 5 * 60 * 1000,
+    deps: { fs?: typeof fs; now?: () => number } = {}
+): boolean {
+    const fsApi = deps.fs ?? fs;
+    const now = deps.now ?? Date.now;
     try {
-        if (!fs.existsSync(sessionPath)) return false;        
-        const stat = fs.statSync(sessionPath);
-        const ageMs = Date.now() - stat.mtimeMs;
+        if (!fsApi.existsSync(sessionPath)) return false;        
+        const stat = fsApi.statSync(sessionPath);
+        const ageMs = now() - stat.mtimeMs;
         return ageMs < maxAgeMs;
     } catch (err) {
         console.warn(`GlobalSetup: failed to stat session file ${sessionPath}`, err);

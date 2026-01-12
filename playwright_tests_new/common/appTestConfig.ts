@@ -31,11 +31,20 @@ export function resolvePreviewConfig(
   return undefined;
 }
 
-const previewConfig = resolvePreviewConfig(prToTestInDemo, process.env.TEST_URL);
-if (previewConfig) {
-  process.env.TEST_ENV = 'demo';
-  process.env.TEST_URL = previewConfig.demoUrl;
+export function applyPreviewConfig(
+  previewConfig: { demoUrl: string } | undefined,
+  env: NodeJS.ProcessEnv = process.env
+): boolean {
+  if (!previewConfig) {
+    return false;
+  }
+  env.TEST_ENV = 'demo';
+  env.TEST_URL = previewConfig.demoUrl;
+  return true;
 }
+
+const previewConfig = resolvePreviewConfig(prToTestInDemo, process.env.TEST_URL);
+applyPreviewConfig(previewConfig);
 
 export function resolveTestEnv(value?: string): string {
   return value !== undefined && (value.includes('aat') || value.includes('demo')) ? value : 'aat';
@@ -95,7 +104,8 @@ const data: AppTestConfig = {
 
 export const __test__ = {
   resolvePreviewConfig,
-  resolveTestEnv
+  resolveTestEnv,
+  applyPreviewConfig
 };
 
 export default data;

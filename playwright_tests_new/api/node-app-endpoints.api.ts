@@ -56,7 +56,7 @@ test.describe('Node app endpoints', () => {
     const response = await apiClient.get<any>('api/user/details', { throwOnError: false });
 
     expectStatus(response.status, StatusSets.guardedExtended);
-    if (response.status !== 200) {
+    if (!shouldProcessUserDetails(response.status)) {
       return;
     }
     const userInfo = resolveUserInfo(response.data);
@@ -173,6 +173,11 @@ test.describe('Node app helper coverage', () => {
     assertSecurityHeaders(undefined, undefined);
   });
 
+  test('shouldProcessUserDetails returns false for non-200 status', () => {
+    expect(shouldProcessUserDetails(200)).toBe(true);
+    expect(shouldProcessUserDetails(500)).toBe(false);
+  });
+
   test('resolveUserInfo and formatAttachmentBody handle variants', () => {
     expect(resolveUserInfo({ userInfo: { id: 'user-1' } })).toEqual({ id: 'user-1' });
     expect(resolveUserInfo(undefined)).toEqual({});
@@ -268,6 +273,10 @@ function assertSecurityHeaders(cacheControl?: string, xcto?: string) {
 
 function resolveUserInfo(payload: Record<string, any> | undefined) {
   return payload?.userInfo ?? {};
+}
+
+function shouldProcessUserDetails(status: number): boolean {
+  return status === 200;
 }
 
 function formatAttachmentBody(attachment: { body: unknown }) {

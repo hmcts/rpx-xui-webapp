@@ -3,9 +3,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
-import { IdamPage } from '@hmcts/playwright-common';
+import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
+import { StorageStateCorruptedError, SessionCaptureError } from '../api/errors';
+
+const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
 export interface LoadedSession {
   email: string;
@@ -44,17 +47,44 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
       const state = JSON.parse(fs.readFileSync(storageFile, 'utf8'));
       if (Array.isArray(state.cookies)) {
         cookies = state.cookies as Cookie[];
-        console.log(`SessionUtils: loaded ${cookies.length} cookies for ${userIdentifier} (${email}).`);
+        logger.info('Loaded session cookies', { 
+          userIdentifier, 
+          email, 
+          cookieCount: cookies.length,
+          operation: 'load-session'
+        });
       } else {
-        console.warn(`SessionUtils: cookies missing/invalid in ${storageFile}`);
+        logger.warn('Cookies missing or invalid in storage file', { 
+          storageFile, 
+          userIdentifier,
+          operation: 'load-session'
+        });
       }
     } catch (e) {
-      console.warn(`SessionUtils: failed parsing storage state for ${userIdentifier}:`, e);
-      throw new Error(`Storage file missing for ${userIdentifier} for ${storageFile}`);
+      logger.error('Failed parsing storage state', { 
+        userIdentifier, 
+        storageFile, 
+        error: (e as Error).message,
+        operation: 'load-session'
+      });
+      throw new StorageStateCorruptedError(
+        `Storage file missing or invalid for ${userIdentifier}`,
+        storageFile,
+        { userIdentifier },
+        e as Error
+      );
     }
   } else {
-    console.warn(`SessionUtils: storage file missing for ${userIdentifier}: ${storageFile}`);
-    throw new Error(`Failed parsing storage file ${userIdentifier}`);
+    logger.warn('Storage file does not exist', { 
+      userIdentifier, 
+      storageFile,
+      operation: 'load-session'
+    });
+    throw new StorageStateCorruptedError(
+      `Failed parsing storage file for ${userIdentifier}`,
+      storageFile,
+      { userIdentifier }
+    );
   }
   return { email, cookies, storageFile };
 }
@@ -74,7 +104,11 @@ export function isSessionFresh(
         const ageMs = now() - stat.mtimeMs;
         return ageMs < maxAgeMs;
     } catch (err) {
-        console.warn(`GlobalSetup: failed to stat session file ${sessionPath}`, err);
+        logger.warn('Failed to stat session file', { 
+          sessionPath, 
+          error: (err as Error).message,
+          operation: 'check-session-freshness'
+        });
         return false;
     }
 }
@@ -94,9 +128,19 @@ async function persistSession(
         const augmented = JSON.parse(fsApi.readFileSync(localSessionPath, 'utf8')).cookies;
         await ctx.addCookies(augmented);
         await ctx.storageState({ path: localSessionPath });
-        console.log(`GlobalSetup: Stored storage state for ${uid} at ${localSessionPath}`);
+        logger.info('Stored storage state', { 
+          userIdentifier: uid, 
+          sessionPath: localSessionPath,
+          cookieCount: augmented.length,
+          operation: 'persist-session'
+        });
     } catch (err) {
-        console.warn(`GlobalSetup: failed to persist storageState for ${uid}`, err);
+        logger.error('Failed to persist storage state', { 
+          userIdentifier: uid, 
+          sessionPath: localSessionPath,
+          error: (err as Error).message,
+          operation: 'persist-session'
+        });
         throw err;
     }
 }
@@ -125,7 +169,12 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
         const sessionPath = path.join(sessionsDir, `${email}.storage.json`);
 
         if (isFresh(sessionPath)) {
-            console.log(`GlobalSetup: session for ${id} (${email}) is fresh, skipping capture`);
+            logger.info('Session is fresh, skipping capture', { 
+              userIdentifier: id, 
+              email, 
+              sessionPath,
+              operation: 'session-capture'
+            });
             continue;
         }
 
@@ -134,7 +183,12 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
         const page = await context.newPage();
         const idamPage = idamFactory(page);
         const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
-        console.log(`GlobalSetup: Logging in as ${id} (${email}) to ${targetUrl}`);
+        logger.info('Logging in to EXUI', { 
+          userIdentifier: id, 
+          email, 
+          targetUrl,
+          operation: 'session-capture'
+        });
         try {
             await page.goto(targetUrl);
             await page.waitForSelector('#username', { timeout: 60000 });
@@ -142,13 +196,32 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
             // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
             try {
                 await page.waitForSelector('exui-header', { timeout: 60000 });
-                console.log(`GlobalSetup: EXUI header detected for ${id}`);
+                logger.info('EXUI header detected', { 
+                  userIdentifier: id,
+                  operation: 'session-capture'
+                });
             } catch (headerErr) {
-                console.warn(`GlobalSetup: EXUI header not detected for ${id} within timeout`, headerErr);
+                logger.warn('EXUI header not detected within timeout', { 
+                  userIdentifier: id, 
+                  timeout: 60000,
+                  error: (headerErr as Error).message,
+                  operation: 'session-capture'
+                });
             }
         } catch (e) {
-            console.warn(`GlobalSetup: login failed for ${id}`, e);
-            throw e;
+            logger.error('Login failed', { 
+              userIdentifier: id, 
+              email, 
+              targetUrl,
+              error: (e as Error).message,
+              operation: 'session-capture'
+            });
+            throw new SessionCaptureError(
+              `Login failed for ${id}`,
+              id,
+              { email, targetUrl },
+              e as Error
+            );
         }
 
         const cookies = await context.cookies();

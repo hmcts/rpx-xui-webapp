@@ -10,7 +10,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { promises as fsp } from 'node:fs';
 
@@ -160,7 +160,9 @@ test.describe('Session and cookie utilities coverage', () => {
         ctx,
         'user',
         {
-          cookieUtils: { writeManageCasesSession: () => { throw new Error('boom'); } } as any,
+          cookieUtils: { writeManageCasesSession: () => {
+            throw new Error('boom');
+          } } as any,
           fs
         }
       )
@@ -273,7 +275,9 @@ test.describe('Session and cookie utilities coverage', () => {
     const chromiumOk = {
       launch: async () => browser
     } as any;
-    const idamPageFactory = () => ({ login: async () => { throw new Error('login failed'); } });
+    const idamPageFactory = () => ({ login: async () => {
+      throw new Error('login failed');
+    } });
     await expect(
       sessionCaptureTest.sessionCaptureWith(['USER'], {
         fs: fsStub,
@@ -285,6 +289,6 @@ test.describe('Session and cookie utilities coverage', () => {
         env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
         config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any
       })
-    ).rejects.toThrow('login failed');
+    ).rejects.toThrow(/login failed/i);
   });
 });

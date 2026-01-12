@@ -1,10 +1,11 @@
 import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import * as path from 'node:path';
 
 import { IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-common';
 import { request } from '@playwright/test';
 
 import { config } from '../common/apiTestConfig';
+import { AuthenticationError, ConfigurationError } from './errors';
 type UsersConfig = typeof config.users[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 
@@ -226,7 +227,11 @@ async function createStorageStateViaForm(
   try {
     const loginPage = await context.get('auth/login');
     if (loginPage.status() >= 400) {
-      throw new Error(`GET /auth/login responded with ${loginPage.status()}`);
+      throw new AuthenticationError(
+        `GET /auth/login responded with ${loginPage.status()}`,
+        role,
+        { endpoint: 'auth/login', status: loginPage.status() }
+      );
     }
 
     const loginUrl = loginPage.url();
@@ -242,14 +247,26 @@ async function createStorageStateViaForm(
 
     const loginResponse = await context.post(loginUrl, { form: formPayload });
     if (loginResponse.status() >= 400) {
-      throw new Error(`POST ${loginUrl} responded with ${loginResponse.status()}`);
+      throw new AuthenticationError(
+        `POST ${loginUrl} responded with ${loginResponse.status()}`,
+        role,
+        { endpoint: loginUrl, status: loginResponse.status(), method: 'POST' }
+      );
     }
 
     // Ensure XSRF/session cookies are refreshed on the application domain
     await context.get('/');
     await context.storageState({ path: storagePath });
   } catch (error) {
-    throw new Error(`Failed to login as ${role}: ${(error as Error).message}`);
+    if (error instanceof AuthenticationError) {
+      throw error;
+    }
+    throw new AuthenticationError(
+      `Failed to login as ${role}`,
+      role,
+      { storagePath },
+      error as Error
+    );
   } finally {
     await context.dispose();
   }
@@ -259,7 +276,11 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
   const envUsers = config.users[config.testEnv as keyof typeof config.users];
   const userConfig = envUsers?.[role];
   if (!userConfig) {
-    throw new Error(`No credentials configured for role "${role}" in environment "${config.testEnv}"`);
+    throw new ConfigurationError(
+      `No credentials configured for role "${role}" in environment "${config.testEnv}"`,
+      `users.${config.testEnv}.${role}`,
+      { role, testEnv: config.testEnv }
+    );
   }
 
   return {

@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
 import {
@@ -101,7 +101,37 @@ async function createNodeApiClient(
     name: `node-api-${role}`,
     logger,
     captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1',
-    onResponse: (entry) => entries.push(entry),
+    onResponse: (entry) => {
+      entries.push(entry);
+
+      // Monitor API response times and log slow requests
+      const duration = entry.durationMs;
+      const slowThreshold = Number.parseInt(process.env.API_SLOW_THRESHOLD_MS || '5000', 10);
+
+      if (duration > slowThreshold) {
+        logger.warn('Slow API response detected', {
+          endpoint: entry.url,
+          method: entry.method,
+          duration,
+          status: entry.status,
+          threshold: slowThreshold,
+          role,
+          operation: 'api-monitoring'
+        });
+      }
+
+      // Log all API calls in debug mode
+      if (process.env.PLAYWRIGHT_DEBUG_API === '1') {
+        logger.debug('API call completed', {
+          endpoint: entry.url,
+          method: entry.method,
+          status: entry.status,
+          duration,
+          role,
+          operation: 'api-call'
+        });
+      }
+    },
     requestFactory: async () => context
   });
 }

@@ -76,6 +76,7 @@ resource "azurerm_application_insights" "appinsight" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = var.application_type
+  workspace_id        = azurerm_log_analytics_workspace.app_insights_workspace.id
 
   tags = var.common_tags
 
@@ -100,8 +101,7 @@ resource "azurerm_resource_group" "rg" {
 // Removed Azure Communication Services (ACS) resources; standardized on Office 365 Outlook connector for email.
 
 
-resource "azurerm_log_analytics_workspace" "logic_app_workspace" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
+resource "azurerm_log_analytics_workspace" "app_insights_workspace" {
   name                = "${local.app_full_name}-law-${var.env}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location

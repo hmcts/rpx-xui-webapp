@@ -145,7 +145,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-12'T'13:35:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-12'T'14:20:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

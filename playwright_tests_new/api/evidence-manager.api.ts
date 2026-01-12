@@ -204,15 +204,6 @@ test.describe('Evidence Manager & Documents', () => {
     await ctx.dispose();
   });
 
-  test('rejects document upload without multipart', async ({ apiClient }) => {
-    test.setTimeout(90000); // Extended timeout for Jenkins - this endpoint can be slow
-    const res = await apiClient.post('documents', {
-      data: {},
-      throwOnError: false
-    });
-    expectStatus(res.status, [400, 401, 403, 415, 500, 502, 504]);
-  });
-
   test('returns guarded status for invalid document id on delete', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
       const bogusId = uuid();

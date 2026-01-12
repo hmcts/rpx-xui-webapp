@@ -38,7 +38,7 @@ export class AppUtils {
    * @param url - '/cases'
    */
   public static showNavItems(url: string): boolean {
-    return url.indexOf('accept-terms-and-conditions') < 0 && url.indexOf('terms-and-conditions') < 0;
+    return !url.includes('accept-terms-and-conditions') && !url.includes('terms-and-conditions');
   }
 
   /**

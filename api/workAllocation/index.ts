@@ -468,7 +468,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     logger.info('results filtered by location id', caseData.length, locationIds);
 
     if (caseData) {
-      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);

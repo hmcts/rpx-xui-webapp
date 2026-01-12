@@ -20,7 +20,7 @@ export class PageFlow implements AbstractPageFlow {
   public getCurrentPage(): string {
     const urlPaths: string[] = this.router.url.split('/');
     let lastPath = urlPaths[urlPaths.length - 1];
-    if (lastPath.indexOf('#') > -1) {
+    if (lastPath.includes('#')) {
       lastPath = lastPath.substring(0, lastPath.indexOf('#'));
     }
     return lastPath;

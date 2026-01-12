@@ -33,10 +33,6 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   public partyDetailsChangesRequired: boolean;
   public partyDetailsChangesConfirmed: boolean;
   public isPaperHearingChanged: boolean;
-  public numberOfPhysicalAttendeesChanged: boolean;
-  public methodOfAttendanceChanged: boolean;
-  public participantChannelsChanged: boolean;
-  public participantNameChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
   constructor(private readonly hearingsService: HearingsService) {}
@@ -178,25 +174,31 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       || !!this.hearingRequestMainModel.hearingDetails.isPaperHearing)
     );
 
-    this.numberOfPhysicalAttendeesChanged = !_.isEqual(
+    const numberOfPhysicalAttendeesChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails?.numberOfPhysicalAttendees || 0,
       this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees || 0
     );
 
-    this.methodOfAttendanceChanged = !_.isEqual(
+    const numberOfAttendeesChanged = !_.isEqual(
+      this.hearingRequestToCompareMainModel?.partyDetails.length || 0,
+      this.hearingRequestMainModel?.partyDetails.length || 0,
+    );
+
+    const methodOfAttendanceChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel.hearingDetails?.hearingChannels,
       this.hearingRequestMainModel.hearingDetails?.hearingChannels || []
     );
 
-    this.participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);
+    const participantChannelsChanged = this.participantAttendanceModes.some((mode) => mode.partyChannelChanged === true);
 
-    this.participantNameChanged = this.participantAttendanceModes.some((mode) => mode.partyNameChanged === true);
+    const participantNameChanged = this.participantAttendanceModes.some((mode) => mode.partyNameChanged === true);
 
     const changesMadeToParticipantAttendance = this.isPaperHearingChanged ||
-      this.numberOfPhysicalAttendeesChanged ||
-      this.methodOfAttendanceChanged ||
-      this.participantChannelsChanged ||
-      this.participantNameChanged;
+      numberOfPhysicalAttendeesChanged ||
+      numberOfAttendeesChanged ||
+      methodOfAttendanceChanged ||
+      participantChannelsChanged ||
+      participantNameChanged;
 
     if (this.partyDetailsChangesRequired) {
       if (!this.partyDetailsChangesConfirmed) {

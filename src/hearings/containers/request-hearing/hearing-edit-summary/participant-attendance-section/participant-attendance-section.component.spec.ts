@@ -308,6 +308,100 @@ describe('ParticipantAttendanceSectionComponent', () => {
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
     });
+
+    it('should set pageTitleDisplayLabel to amended if number of attendees manually amended by user', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          participantAttendanceChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
+        }
+      };
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        partyDetails: [
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails,
+          {
+            partyID: 'P999',
+            partyType: 'IND' as any,
+            partyRole: 'appellant',
+            individualDetails: {
+              firstName: 'New',
+              lastName: 'Party',
+              preferredHearingChannel: 'byVideo'
+            }
+          } as any
+        ]
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should set pageTitleDisplayLabel to amended when number of attendees decreased', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          participantAttendanceChangesRequired: false,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
+        }
+      };
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        partyDetails: []
+      };
+      component.hearingRequestToCompareMainModel = {
+        ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
+        partyDetails: []
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should set pageTitleDisplayLabel to none when number of attendees unchanged and no other changes', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: initialState.hearings.hearingValues.serviceHearingValuesModel.caseFlags,
+        parties: initialState.hearings.hearingValues.serviceHearingValuesModel.parties,
+        hearingWindow: initialState.hearings.hearingValues.serviceHearingValuesModel.hearingWindow,
+        afterPageVisit: {
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          participantAttendanceChangesRequired: true,
+          participantAttendanceChangesConfirmed: true,
+          hearingWindowChangesRequired: false,
+          hearingFacilitiesChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
+        }
+      };
+      component.hearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        hearingDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
+          hearingChannels: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels,
+          numberOfPhysicalAttendees: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees
+        },
+        partyDetails: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails
+      };
+      component.ngOnInit();
+      expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.NONE);
+    });
   });
   describe('ParticipantAttendanceSectionComponent - getPartyChannelChanged', () => {
     let testComponent: ParticipantAttendanceSectionComponent;

@@ -25,7 +25,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$appinsightsid,
+    [string]$workspaceid,
     [string]$acsendpoint,
     [string]$senderaddress,
     [string]$recipientaddress
@@ -43,16 +43,16 @@ catch {
 $query = @"
 let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
 let endTime = startofmonth(now());
-let FilteredRequests = requests
-| where timestamp between (startTime .. endTime)
-| where url has "/api/translation/cy"
-| extend day = startofday(timestamp);
+let FilteredRequests = AppRequests
+| where TimeGenerated between (startTime .. endTime)
+| where Url has "/api/translation/cy"
+| extend day = startofday(TimeGenerated);
 let UniqueSessionsPerDay = FilteredRequests
-| where isnotempty(session_Id)
-| summarize by day, session_Id
+| where isnotempty(SessionId)
+| summarize by day, SessionId
 | summarize SessionCount = count() by day;
 let HasNoSession = FilteredRequests
-| where isempty(session_Id)
+| where isempty(SessionId)
 | summarize HasMissingSessions = count() by day
 | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
 UniqueSessionsPerDay
@@ -66,10 +66,10 @@ UniqueSessionsPerDay
 "@
 
 try {
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $appinsightsid -Query $query
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query
 }
 catch {
-    Write-Error "Failed to query Application Insights."
+    Write-Error "Failed to query Log Analytics workspace."
     throw $_
 }
 
@@ -152,7 +152,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-12'T'15:10:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-12'T'15:20:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -164,7 +164,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    appinsightsid    = azurerm_application_insights.appinsight.app_id
+    workspaceid      = azurerm_log_analytics_workspace.app_insights_workspace.workspace_id
     acsendpoint      = "https://${azurerm_communication_service.comm_service.0.name}.uk.communication.azure.com"
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
     recipientaddress = join(",", local.welsh_emails)

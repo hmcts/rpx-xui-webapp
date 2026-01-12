@@ -62,6 +62,13 @@ execplan-api-pw-coverage.md
 # System Files
 .DS_Store
 Thumbs.db
+
+# Test credentials and auth state (HMCTS Security Policy)
+**/storage-states/**/*.json
+**/*-session*.json
+**/*-credentials*.json
+.env.test.local
+playwright/.auth/
 .sessions
 package-lock.json
 local-only-tools

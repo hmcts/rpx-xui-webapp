@@ -1,8 +1,28 @@
+/**
+ * @hmcts-audit-metadata
+ * {
+ *   "agent_name": "HMCTS-AI-Assistant",
+ *   "version": "v1.0",
+ *   "audit_reference": "EXUI-4031",
+ *   "reviewer": "pending",
+ *   "last_audit": "2026-01-12"
+ * }
+ */
+
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 type EnvMap = Record<string, string | undefined>;
+
+interface ConfigModule {
+  __test__?: {
+    buildConfig: (env: EnvMap) => any;
+    resolveWorkerCount: (env: EnvMap) => number;
+  };
+  default?: ConfigModule;
+  [key: string]: any;
+}
 
 async function loadConfig() {
   const configPath = path.resolve(process.cwd(), 'playwright.config.ts');
@@ -11,11 +31,11 @@ async function loadConfig() {
   return resolveConfigModule(loaded);
 }
 
-function resolveConfigModule(loaded: any) {
+function resolveConfigModule(loaded: ConfigModule): ConfigModule {
   return loaded?.__test__ ? loaded : loaded?.default ?? loaded;
 }
 
-let configModule: any;
+let configModule: ConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);

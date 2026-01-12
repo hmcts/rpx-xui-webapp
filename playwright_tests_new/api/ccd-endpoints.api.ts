@@ -1,3 +1,4 @@
+import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { test, expect } from './fixtures';
 import { config as testConfig } from '../common/apiTestConfig';
 import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
@@ -13,29 +14,48 @@ test.describe('CCD endpoints', () => {
     const uniqueCaseTypes = Array.from(new Set(jurisdiction.caseTypeIds ?? []));
     for (const caseTypeId of uniqueCaseTypes) {
       test(`work-basket inputs available for ${caseTypeId}`, async ({ apiClient }) => {
-        const response = await apiClient.get<any>(`data/internal/case-types/${caseTypeId}/work-basket-inputs`, {
+        interface WorkbasketInput {
+          label?: string;
+          field?: {
+            id?: string;
+            field_type?: {
+              id?: string;
+              type?: string;
+            };
+          };
+          [key: string]: unknown;
+        }
+
+        interface WorkbasketData {
+          workbasketInputs?: WorkbasketInput[];
+          [key: string]: unknown;
+        }
+
+        const response = await apiClient.get<WorkbasketData>(`data/internal/case-types/${caseTypeId}/work-basket-inputs`, {
           headers: { experimental: 'true' }
         });
         expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
-        const data = response.data as any;
+        const data = response.data;
         expect(data).toBeTruthy();
         expect(typeof data).toBe('object');
         expect(Array.isArray(data.workbasketInputs)).toBe(true);
 
-        data.workbasketInputs.forEach((input: any) => {
-          expect(input).toEqual(
-            expect.objectContaining({
-              label: expect.any(String),
-              field: expect.objectContaining({
-                id: expect.any(String),
-                field_type: expect.objectContaining({
+        if (data.workbasketInputs) {
+          data.workbasketInputs.forEach((input) => {
+            expect(input).toEqual(
+              expect.objectContaining({
+                label: expect.any(String),
+                field: expect.objectContaining({
                   id: expect.any(String),
-                  type: expect.any(String)
+                  field_type: expect.objectContaining({
+                    id: expect.any(String),
+                    type: expect.any(String)
+                  })
                 })
               })
-            })
-          );
-        });
+            );
+          });
+        }
       });
     }
   }
@@ -112,7 +132,7 @@ test.describe('CCD helper coverage', () => {
   });
 });
 
-async function assertJurisdictionsForUser(apiClient: any, expectedNames: string[]) {
+async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]) {
   const user = await apiClient.get('api/user/details', { throwOnError: false });
   expectStatus(user.status, StatusSets.guardedExtended);
   if (user.status !== 200) {
@@ -135,12 +155,25 @@ async function assertJurisdictionsForUser(apiClient: any, expectedNames: string[
     return;
   }
 
-  const actualNames = response.data.map((entry: any) => entry?.name).filter(Boolean);
+interface JurisdictionResponse {
+  name?: string;
+  [key: string]: unknown;
+}
+
+  const actualNames = response.data.map((entry: JurisdictionResponse) => entry?.name).filter(Boolean);
   expectedNames.forEach((name) => {
     expect(actualNames).toContain(name);
   });
 
-  response.data.forEach((jurisdiction: any) => {
+interface Jurisdiction {
+  name?: string;
+  description?: string;
+  id?: string;
+  caseTypes?: unknown[];
+  [key: string]: unknown;
+}
+
+  response.data.forEach((jurisdiction: Jurisdiction) => {
     expect(jurisdiction).toEqual(
       expect.objectContaining({
         id: expect.any(String),

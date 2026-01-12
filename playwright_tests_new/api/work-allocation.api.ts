@@ -1,3 +1,4 @@
+import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { test, expect } from './fixtures';
 import { ensureStorageState } from './auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
@@ -340,8 +341,8 @@ test.describe('Work allocation helper coverage', () => {
   });
 
   test('helper selectors cover ids, locations, and seeded tasks', () => {
-    expect(resolveUserId({ userInfo: { id: 'id-1' } } as any)).toBe('id-1');
-    expect(resolveUserId({ userInfo: { uid: 'uid-1' } } as any)).toBe('uid-1');
+    expect(resolveUserId({ userInfo: { id: 'id-1' } } as UserDetailsResponse)).toBe('id-1');
+    expect(resolveUserId({ userInfo: { uid: 'uid-1' } } as UserDetailsResponse)).toBe('uid-1');
     expect(resolveUserId(undefined)).toBeUndefined();
 
     expect(resolveLocationId(200, [{ id: 'loc-1' }])).toBe('loc-1');
@@ -547,23 +548,31 @@ test.describe('Work allocation helper coverage', () => {
   });
 });
 
+type ArrayResponse<T> = T[] | { task_names?: T[] } | { taskNames?: T[] } | { typesOfWork?: T[] };
+
 function toArray<T>(payload: unknown): T[] {
   if (Array.isArray(payload)) {
     return payload as T[];
   }
-  if (payload && Array.isArray((payload as any).task_names)) {
-    return (payload as any).task_names as T[];
+  const obj = payload as Partial<{ task_names: T[]; taskNames: T[]; typesOfWork: T[] }>;
+  if (obj && Array.isArray(obj.task_names)) {
+    return obj.task_names;
   }
-  if (payload && Array.isArray((payload as any).taskNames)) {
-    return (payload as any).taskNames as T[];
+  if (obj && Array.isArray(obj.taskNames)) {
+    return obj.taskNames;
   }
-  if (payload && Array.isArray((payload as any).typesOfWork)) {
-    return (payload as any).typesOfWork as T[];
+  if (obj && Array.isArray(obj.typesOfWork)) {
+    return obj.typesOfWork;
   }
   return [];
 }
 
-function assertLocationsListResponse(status: number, data: any) {
+interface LocationItem {
+  id: string;
+  locationName: string;
+}
+
+function assertLocationsListResponse(status: number, data: unknown) {
   if (status !== 200) {
     return;
   }
@@ -578,7 +587,7 @@ function assertLocationsListResponse(status: number, data: any) {
   }
 }
 
-function assertTaskNamesResponse(status: number, data: any) {
+function assertTaskNamesResponse(status: number, data: unknown) {
   if (status !== 200) {
     return;
   }
@@ -589,7 +598,12 @@ function assertTaskNamesResponse(status: number, data: any) {
   }
 }
 
-function assertTypesOfWorkResponse(status: number, data: any) {
+interface TypeOfWorkItem {
+  id: string;
+  [key: string]: unknown;
+}
+
+function assertTypesOfWorkResponse(status: number, data: unknown) {
   if (status !== 200) {
     return;
   }
@@ -604,20 +618,20 @@ function assertTypesOfWorkResponse(status: number, data: any) {
   }
 }
 
-function assertTaskSearchResponse(status: number, data: any) {
+function assertTaskSearchResponse(status: number, data: unknown) {
   if (status === 200) {
     expectTaskList(data);
   }
 }
 
-function assertAvailableTasksResponse(status: number, data: any) {
+function assertAvailableTasksResponse(status: number, data: unknown) {
   if (status !== 200) {
     return;
   }
   expectTaskList(data);
 }
 
-function assertAllWorkResponse(status: number, data: any) {
+function assertAllWorkResponse(status: number, data: unknown) {
   if (status !== 200) {
     expect(status).toBeGreaterThanOrEqual(400);
     return;
@@ -625,26 +639,38 @@ function assertAllWorkResponse(status: number, data: any) {
   expectTaskList(data);
 }
 
-function assertMyWorkDashboardResponse(status: number, data: any) {
+function assertMyWorkDashboardResponse(status: number, data: unknown) {
   if (status === 200 && data) {
     const cases = extractMyWorkCases(data);
     expect(Array.isArray(cases)).toBe(true);
   }
 }
 
-function assertMyWorkTotalsResponse(status: number, data: any) {
+interface MyWorkTotalsResponse {
+  total_records?: number;
+  cases?: unknown[];
+}
+
+function assertMyWorkTotalsResponse(status: number, data: unknown) {
   if (status !== 200 || !data) {
     return;
   }
-  if (typeof data.total_records === 'number') {
-    expect(data.total_records).toBeGreaterThanOrEqual(0);
+  const typed = data as Partial<MyWorkTotalsResponse>;
+  if (typeof typed.total_records === 'number') {
+    expect(typed.total_records).toBeGreaterThanOrEqual(0);
   }
-  if (Array.isArray(data.cases)) {
-    expect(data.cases.length).toBeGreaterThanOrEqual(0);
+  if (Array.isArray(typed.cases)) {
+    expect(typed.cases.length).toBeGreaterThanOrEqual(0);
   }
 }
 
-function assertCaseworkerListResponse(status: number, data: any) {
+interface Caseworker {
+  firstName: string;
+  lastName: string;
+  idamId: string;
+}
+
+function assertCaseworkerListResponse(status: number, data: unknown) {
   if (status === 200 && Array.isArray(data) && data.length > 0) {
     expect(data[0]).toEqual(
       expect.objectContaining({
@@ -657,7 +683,7 @@ function assertCaseworkerListResponse(status: number, data: any) {
 }
 
 async function fetchFirstTask(
-  apiClient: any,
+  apiClient: PlaywrightApiClient,
   locationId?: string,
   states: string[] = ['assigned', 'unassigned'],
   view: 'AllWork' | 'MyTasks' = 'AllWork'
@@ -684,11 +710,23 @@ async function fetchFirstTask(
   return data.tasks![0];
 }
 
-async function fetchTaskById(apiClient: any, id: string): Promise<any> {
+interface TaskDetails {
+  data?: unknown;
+  status: number;
+}
+
+async function fetchTaskById(apiClient: PlaywrightApiClient, id: string): Promise<TaskDetails> {
   return apiClient.get(`workallocation/task/${id}`, { throwOnError: false });
 }
 
-function assertStateTransition(action: string, before?: any, after?: any) {
+interface TaskState {
+  assignee?: string;
+  assigned_to?: string;
+  task_state?: string;
+  state?: string;
+}
+
+function assertStateTransition(action: string, before?: TaskState, after?: TaskState) {
   if (!after) return;
   const prevAssignee = before?.assignee ?? before?.assigned_to;
   const assignee = after.assignee ?? after.assigned_to;

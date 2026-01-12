@@ -25417,7 +25417,7 @@ __metadata:
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
+    rpx-xui-translation: "npm:1.2.1-exui-3994-2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
@@ -25449,9 +25449,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz":
-  version: 1.2.1
-  resolution: "rpx-xui-translation@https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
+"rpx-xui-translation@npm:1.2.1-exui-3994-2":
+  version: 1.2.1-exui-3994-2
+  resolution: "rpx-xui-translation@npm:1.2.1-exui-3994-2"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -25459,7 +25459,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/ddcd17ed70fe39046c0ce0fb1794892b3ad8fb468942136f8d7cd9b16eaea3ca28940ec0a591be71304911414b2721aaa012ee9bc123b8780a4accb3e2b8f1f8
+  checksum: 10/98a3cde18bd909dcbdae6061230fd0d7f7248e54e6be495b1013b46442799408677bb7ef32486cc12631954d158acfbd25aaef370cdf850e0cfbc92c9c4d2b10
   languageName: node
   linkType: hard
 

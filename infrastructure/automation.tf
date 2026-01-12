@@ -41,6 +41,9 @@ catch {
     throw $_
 }
 
+# Import required module
+Import-Module Az.Communication -ErrorAction SilentlyContinue
+
 $query = @"
 let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
 let endTime = startofmonth(now());
@@ -109,14 +112,14 @@ $htmlTable
     Write-Output "HTML Body Preview:"
     Write-Output $emailBody
 
-    # Get ACS access key
+    # Get ACS access token using Managed Identity
     try {
-        $keys = Get-AzCommunicationServiceKey -ResourceGroupName $resourcegroupname -CommunicationServiceName $acsresourcename
-        $accessKey = $keys.PrimaryKey
-        Write-Output "Successfully retrieved ACS access key."
+        $acsResourceId = "/subscriptions/$((Get-AzContext).Subscription.Id)/resourceGroups/$resourcegroupname/providers/Microsoft.Communication/communicationServices/$acsresourcename"
+        $token = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
+        Write-Output "Successfully retrieved access token."
     }
     catch {
-        Write-Error "Failed to retrieve ACS access keys."
+        Write-Error "Failed to retrieve access token: $_"
         throw $_
     }
 
@@ -141,14 +144,19 @@ $htmlTable
 
         $headers = @{
             "Content-Type" = "application/json"
-            "Authorization" = "Bearer $accessKey"
+            "Authorization" = "Bearer $token"
         }
 
+        Write-Output "Sending email to: $recipientaddress"
+        Write-Output "From: $senderaddress"
+        
         $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $emailPayload
         Write-Output "Email sent successfully. Message ID: $($response.id)"
     }
     catch {
         Write-Error "Failed to send email via Azure Communication Services: $_"
+        Write-Error "Status Code: $($_.Exception.Response.StatusCode.value__)"
+        Write-Error "Response: $($_.Exception.Response)"
         throw $_
     }
 }
@@ -179,7 +187,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-12'T'16:47:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-12'T'17:00:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

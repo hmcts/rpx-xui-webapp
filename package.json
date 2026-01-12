@@ -106,7 +106,7 @@
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "3.2.2-exui-3994-2",
-    "@hmcts/rpx-xui-node-lib": "2.30.10-exui-3994",
+    "@hmcts/rpx-xui-node-lib": "2.30.7-csp-final-change-3",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",

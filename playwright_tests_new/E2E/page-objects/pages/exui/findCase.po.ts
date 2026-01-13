@@ -3,62 +3,64 @@ import { Base } from "../../base";
 import {expect } from "../../../fixtures";
 
 export class FindCasePage extends Base {
-  readonly CHANGE_SEARCH = 'Change search';
-  readonly VIEW = 'View';
   // Locators
-  readonly findCaseLink : Locator;
+  readonly findCaseLinkOnMenu : Locator;
   readonly showFilterButton : Locator;
   readonly hideFilterButton : Locator;
-  readonly applyFilterButton : Locator;
   readonly resetFilterButton : Locator;
   readonly backToTopButton : Locator;
   readonly caseTypeDropDown : Locator;
   readonly jurisdictionSelect : Locator;
+  readonly searchResults_caseLink : Locator;
+  readonly caseReference : Locator;
+  readonly yourCasesHeading : Locator;
 
-  // Find Case methods
-  async startFindCaseJourney() : Promise<void> {
-    await this.hideFilterButton.click();
-    await this.showFilterButton.click();
-    // 'Show' button will toggle to 'Hide' - have this as a separate test
-    //  must see the WB Filter panel now .
-    await this.applyFilterButton.isVisible();
+  async startFindCaseJourney(caseNumber:string) : Promise<void> {
+    await this.findCaseLinkOnMenu.click();
+    await this.showHideButtons();
+    await this.checkButtonVisibility();
+    await this.caseReference.fill(caseNumber);
+    await this.applyFilters();
+  }
+
+  async displayCaseDetailsFor(caseNumber : string) : Promise<void> {
+    const caseReferenceLink = this.page.locator(`#search-result a.govuk-link[href*="${caseNumber}"]`);
+    await caseReferenceLink.click();
+  }
+
+  async verifyCaseNumber(caseNumber:string) : Promise<void> {
+     let  caseNo = caseNumber.toString();
+     let  formattedCaseNumber =  caseNo.replace(/(\d{4})(?=\d)/g, '$1-');
+     await(this.searchResults_caseLink.isVisible());
+   }
+
+  private async applyFilters(): Promise<void> {
+    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private async checkButtonVisibility() {
+    await this.exuiCaseListComponent.filters.applyFilterBtn.isVisible();
     await this.resetFilterButton.isVisible();
     await this.backToTopButton.isVisible();
-    await this.jurisdictionSelect.selectOption('Public Law');
-    await this.caseTypeDropDown.selectOption('Public Law Applications');
-    await this.applyFilterButton.click();
+  }
+
+  private async showHideButtons() {
+    await this.hideFilterButton.click();
+    await this.showFilterButton.click();
   }
 
   constructor(page: Page) {
     super(page);
-    this.findCaseLink  = this.page.getByRole('button',{ name: 'Find Case'});
+    this.findCaseLinkOnMenu = this.page.getByRole('link', { name: ' Find case ' });
     this.showFilterButton = this.page.getByRole('button',{ name: ' Show Filter '});
     this.hideFilterButton = this.page.getByRole('button',{ name: ' Hide Filter '});
-    this.applyFilterButton = this.page.getByRole('button',{ name: ' Apply filter '});
     this.resetFilterButton = this.page.getByRole('button',{ name: ' Reset filter '});
     this.backToTopButton = this.page.getByRole('button',{ name: 'Back to top'});
-    this.jurisdictionSelect = this.page.locator('#wb-jurisdiction');
-    this.caseTypeDropDown = this.page.locator('#wb-case-type')//.selectOption('Public Law Applications');
-
-    // delete ones below
-    // this.searchButton = this.page.getByRole('button',{ name: 'Search'});
-    // this.courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
-    // this.servicesOption = this.page.getByRole('combobox', { name: 'servicesList' });
-    // this.serviceLabel = this.page.getByLabel('Services');
-    // // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
-    // this.viewLink = this.page.getByRole('link', {name: ' View ', exact:true});
-    // this.caseInformation = this.page.getByRole('heading', {name: 'Case information'});
-    // this.courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
-    // this.summaryTab = this.page.getByRole('tab', { name: 'Summary' });
-    // this.changeSearchLink = this.page.getByRole('paragraph');
-    // this.summaryHeading = this.page.getByText('Summary');
-    // this.caseFileViewTab = this.page.getByRole('tab', { name: 'Case File View' });
-    // this.caseReference = this.page.getByRole('heading', { name: 'Case reference' });
-    // this.applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
-    // this.previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
-    // this.nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
-    // this.searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
-    // //TODO - Assert presence of table object etc.
-    // this.searchResultsTable = this.page.locator('//*[@id="content"]/div/table');
+    this.yourCasesHeading = this.page.getByRole('heading', { name: 'Your cases' });
+    this.searchResults_caseLink = this.page.getByRole('link', { name: 'go to case with Case' });
+    this.jurisdictionSelect = this.page.getByRole('option', { name: 'jurisdiction' });
+    this.caseTypeDropDown = this.page.getByRole('option', { name: 'case-type' })
+    this.caseReference = this.page.getByRole('textbox', { name: 'Case reference', exact: true });
   }
 }

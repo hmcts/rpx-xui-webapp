@@ -21,12 +21,12 @@ test.describe("IDAM login using credentials for Global Search", () => {
     });
 
     await test.step("Click View link to see Search Results page", async () => {
-      await globalSearchPage.verifySearchResults(caseNumber);
+      await globalSearchPage.verifySearchResults();
       expect(globalSearchPage.summaryHeading.isVisible);
     });
 
     await test.step("Verify Case details ", async () => {
-      await globalSearchPage.verifyCaseDetails(caseNumber);
+      await globalSearchPage.verifyCaseDetails();
       expect(caseDetailsPage.container).toBeTruthy();
     });
 });

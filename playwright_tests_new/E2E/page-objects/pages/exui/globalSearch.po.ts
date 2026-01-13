@@ -8,7 +8,7 @@ export class GlobalSearchPage extends Base {
   // Locators
   readonly searchButton : Locator;
   readonly servicesOption : Locator;
-  readonly searchLinkOnMenuBar : Locator
+  readonly searchLinkOnMenuBar : Locator;
   readonly caseIdTextBox = this.page.getByRole('textbox', { name: '16-digit case reference', exact: true });
   readonly serviceLabel: Locator;
   readonly viewLink : Locator;
@@ -16,15 +16,15 @@ export class GlobalSearchPage extends Base {
   readonly caseInformation : Locator;
   readonly courtName : Locator;
   readonly summaryTab : Locator;
-  readonly changeSearchLink:Locator
-  readonly summaryHeading:Locator
-  readonly caseFileViewTab:Locator
-  readonly caseReference:Locator
-  readonly applicantOrPartyName: Locator
-  readonly previousSearchLink : Locator
-  readonly nextSearchLink : Locator
-  readonly searchResultsHeader : Locator
-  readonly searchResultsTable : Locator
+  readonly changeSearchLink:Locator;
+  readonly summaryHeading:Locator;
+  readonly caseFileViewTab:Locator;
+  readonly caseReference:Locator;
+  readonly applicantOrPartyName: Locator;
+  readonly previousSearchLink : Locator;
+  readonly nextSearchLink : Locator;
+  readonly searchResultsHeader : Locator;
+  readonly searchResultsTable : Locator;
 
 
   async performGlobalSearchWithCase(caseId: string ) : Promise<void> {
@@ -47,7 +47,7 @@ export class GlobalSearchPage extends Base {
   }
 
 
-  async verifySearchResults(caseId: string) {
+  async verifySearchResults() {
      expect(this.changeSearchLink.filter({ hasText: this.CHANGE_SEARCH}).isVisible());
      expect(this.viewLink.filter({ hasText: this.VIEW}).isVisible());
   }
@@ -60,7 +60,7 @@ export class GlobalSearchPage extends Base {
     expect(this.searchResultsTable.isVisible());
 
   }
-  async verifyCaseDetails(caseId: string) {
+  async verifyCaseDetails() {
     await this.viewLink.click();
     expect(this.caseFileViewTab.isVisible());
     expect(this.summaryTab.isVisible());

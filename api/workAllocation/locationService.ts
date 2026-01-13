@@ -33,11 +33,11 @@ export async function commonGetFullLocation(req, allLocations: boolean) {
       map((venue) => ({ id: venue.epimms_id, locationName: venue.site_name })) : response.data.court_venues;
     courtVenues = [...courtVenues, ...filteredCourtVenues];
   }
-  courtVenues = !allLocations ? courtVenues.filter((value, index, self) =>
+  courtVenues = allLocations ? courtVenues : courtVenues.filter((value, index, self) =>
     index === self.findIndex((location) => (
       location.epimms_id === value.epimms_id && location.site_name === value.site_name
     ))
-  ) : courtVenues;
+  );
   return courtVenues;
 }
 
@@ -80,12 +80,12 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
     const path: string = prepareGetLocationsUrl(basePath, serviceCode);
     const response = await handleLocationGet(path, req);
     response.data.court_venues.forEach((courtVenue) => {
-      if (!regions.includes(courtVenue.region_id)) {
-        regions.push(courtVenue.region_id);
-        regionLocations.push({ regionId: courtVenue.region_id, locations: [courtVenue.epimms_id] });
-      } else {
+      if (regions.includes(courtVenue.region_id)) {
         regionLocations.find((locationList) =>
           locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
+      } else {
+        regions.push(courtVenue.region_id);
+        regionLocations.push({ regionId: courtVenue.region_id, locations: [courtVenue.epimms_id] });
       }
     });
   }

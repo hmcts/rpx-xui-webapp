@@ -24,7 +24,7 @@ describe('Task management api, cancel a task', () => {
         uponReceiving: 'taskId to cancel a task',
         withRequest: {
           method: 'POST',
-          path: `/task/${taskId}/cancel`,
+          path: `/task/${taskId}/cancel?cancellation_process=EXUI_USER_CANCELLATION`,
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',

@@ -9,8 +9,8 @@ import {
   WaitUtils,
   ServiceAuthUtils
 } from "@hmcts/playwright-common";
-import os from "os";
-import path from "path";
+import * as os from "os";
+import * as path from "path";
 import { chromium, Page } from "playwright/test";
 import { config, Config } from "./config.utils.js";
 import { CookieUtils } from "./cookie.utils.js";

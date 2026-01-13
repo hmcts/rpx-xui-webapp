@@ -24,10 +24,13 @@ const resolveWorkerCount = () => {
 const workerCount = resolveWorkerCount();
 
 module.exports = defineConfig({
+  use: {
+    baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
+  },
   testDir: '.',
   testMatch: [
     'playwright_tests/**/*.test.ts',
-    'playwright_tests_new/**/*.spec.ts',
+    'playwright_tests_new/E2E/**/*.spec.ts',
   ],
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -44,6 +47,8 @@ module.exports = defineConfig({
 
   /* Opt out of parallel tests on CI. */
   workers: workerCount,
+
+  globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
 
   reporter: [
     [process.env.CI ? 'dot' : 'list'],
@@ -69,6 +74,7 @@ module.exports = defineConfig({
         'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'
       ],
       use: {
+        baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
         ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,

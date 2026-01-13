@@ -64,8 +64,7 @@ describe('Task management api, cancel a task', () => {
           },
           params: {
             taskId: taskId,
-            action: 'cancel',
-            cancellation_process: 'EXUI_USER_CANCELLATION'
+            action: 'cancel'
           }
 
         });

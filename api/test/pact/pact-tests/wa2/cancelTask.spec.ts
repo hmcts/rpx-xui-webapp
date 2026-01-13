@@ -25,7 +25,10 @@ describe('Task management api, cancel a task', () => {
         uponReceiving: 'taskId to cancel a task',
         withRequest: {
           method: 'POST',
-          path: `/task/${taskId}/cancel?cancellation_process=${cancelProcess}`,
+          path: `/task/${taskId}/cancel`,
+          query: {
+            cancellation_process: cancelProcess
+          },
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -68,7 +71,7 @@ describe('Task management api, cancel a task', () => {
             action: 'cancel'
           },
           query: {
-            cancelProcess
+            cancellation_process: cancelProcess
           }
 
         });

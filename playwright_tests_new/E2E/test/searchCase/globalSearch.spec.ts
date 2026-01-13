@@ -20,7 +20,7 @@ test.describe("IDAM login using credentials for Global Search", () => {
       expect(globalSearchPage.viewLink.filter({ hasText: 'View'}).isVisible());
     });
 
-    await test.step("Click View link to see Search Results page", async () => {
+    await test.step("Check results page for links to be present ", async () => {
       await globalSearchPage.verifySearchResults();
       expect(globalSearchPage.summaryHeading.isVisible);
     });

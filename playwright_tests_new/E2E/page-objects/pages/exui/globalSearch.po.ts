@@ -24,7 +24,7 @@ export class GlobalSearchPage extends Base {
   readonly previousSearchLink : Locator;
   readonly nextSearchLink : Locator;
   readonly searchResultsHeader : Locator;
-  readonly searchResultsTable : Locator;
+  readonly searchResultsContainer : Locator;
 
 
   async performGlobalSearchWithCase(caseId: string ) : Promise<void> {
@@ -39,7 +39,7 @@ export class GlobalSearchPage extends Base {
     await this.searchLinkOnMenuBar.click();
     await this.caseIdTextBox.click();
     const first5Digits = caseId.substring(0,5);
-    // search for term first5Digits*
+    // search with first 5 digits of valid case id Ex : 15665*
     await this.caseIdTextBox.fill(`${first5Digits}*`);
     await this.applicantOrPartyName.fill('Will*');
     await this.serviceLabel.selectOption('PUBLICLAW');
@@ -57,14 +57,16 @@ export class GlobalSearchPage extends Base {
     expect(this.nextSearchLink.isVisible());
     expect(this.searchResultsHeader.isVisible());
     expect(this.changeSearchLink.filter({ hasText: this.CHANGE_SEARCH}).isVisible());
-    expect(this.searchResultsTable.isVisible());
-
+    // SearchResults table
+    const container = this.searchResultsContainer;
+    const searchResultsTable = container.locator('.govuk-table');
+    expect(searchResultsTable).toBeTruthy();
   }
+
   async verifyCaseDetails() {
     await this.viewLink.click();
     expect(this.caseFileViewTab.isVisible());
     expect(this.summaryTab.isVisible());
-    //TODO expect(this.courtName).toHaveText('High Court Family Division');
   }
 
   constructor(page: Page) {
@@ -87,7 +89,6 @@ export class GlobalSearchPage extends Base {
     this.previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
     this.nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
     this.searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
-    //TODO - Assert presence of table object etc.
-    this.searchResultsTable = this.page.locator('//*[@id="content"]/div/table');
+    this.searchResultsContainer = this.page.locator('.govuk-width-container.ng-star-inserted');
   }
 }

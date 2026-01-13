@@ -11,13 +11,12 @@ test.describe("IDAM login to trigger For 16 digit Case Search", () => {
   });
 
 
-  test("Test for 16 digit Case search  @KS", async ({caseDetailsPage,searchCasePage }) => {
-    let pageUrl="";
+  test("Search by 16-digit case reference", async ({page,caseDetailsPage,searchCasePage }) => {
     let caseNumber="";
 
     await test.step("16 Digit Search ", async () => {
       // TODO case should be created from API script.
-      caseNumber = "1766581243916831";
+      caseNumber = "1767862749263830";
       await searchCasePage.searchWith16DigitCaseId(caseNumber)});
       await searchCasePage.searchResultsPageHeading.isVisible();
       await searchCasePage.caseResultsForHeading.isVisible();
@@ -25,6 +24,5 @@ test.describe("IDAM login to trigger For 16 digit Case Search", () => {
       await searchCasePage.appealReference.isVisible()
       await expect(searchCasePage.searchResultsPageHeading).toContainText('Current progress of the case');
       expect(caseDetailsPage.container).toBeTruthy();
-     //expect(page.url()).toStrictEqual('/case-details/IA/Asylum/${caseNumber}/#Overview');
   });
 });

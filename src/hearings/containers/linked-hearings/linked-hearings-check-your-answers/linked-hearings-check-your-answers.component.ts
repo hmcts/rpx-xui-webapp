@@ -24,6 +24,7 @@ import * as fromHearingStore from '../../../store';
 })
 export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestroy {
   private static readonly MANAGE_JOURNEY_FINAL_PAGE = 'check-your-answers';
+  private static readonly GENERAL_SERVER_ERROR = { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' };
   public isManageLink: boolean;
   public mode: Mode = Mode.LINK_HEARINGS;
   public caseId: string;
@@ -38,7 +39,7 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
   public cancelButtonText: string;
   public sub: Subscription;
   public serverErrors: { id: string, message: string }[] = [
-    { id: 'serverError', message: 'There was a system error and your request could not be processed. Please try again.' }
+    LinkedHearingsCheckYourAnswersComponent.GENERAL_SERVER_ERROR
   ];
 
   public error$: Observable<HttpError>;
@@ -84,6 +85,9 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
       error: () => {
         this.showSpinner = false;
       }
+    });
+    this.error$.subscribe((error) => {
+      this.serverErrors = error?.status ? [{ id: error.status.toString(), message: error.message }] : [LinkedHearingsCheckYourAnswersComponent.GENERAL_SERVER_ERROR];
     });
   }
 

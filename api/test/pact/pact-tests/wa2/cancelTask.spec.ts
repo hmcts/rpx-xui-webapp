@@ -69,7 +69,7 @@ describe('Task management api, cancel a task', () => {
           },
           query: {
             cancelProcess
-          },
+          }
 
         });
         let resStatus = null;

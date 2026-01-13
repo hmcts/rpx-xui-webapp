@@ -256,6 +256,18 @@ async function createStorageStateViaForm(
 
     // Ensure XSRF/session cookies are refreshed on the application domain
     await context.get('/');
+    const authCheck = await context.get('auth/isAuthenticated', { failOnStatusCode: false });
+    let isAuth = false;
+    if (authCheck.status() === 200 && typeof authCheck.json === 'function') {
+      isAuth = await authCheck.json().catch(() => false);
+    }
+    if (!isAuth) {
+      throw new AuthenticationError(
+        `Login failed for role "${role}" (auth/isAuthenticated returned ${authCheck.status()})`,
+        role,
+        { endpoint: 'auth/isAuthenticated', status: authCheck.status() }
+      );
+    }
     await context.storageState({ path: storagePath });
   } catch (error) {
     if (error instanceof AuthenticationError) {

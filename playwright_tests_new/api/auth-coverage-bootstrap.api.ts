@@ -66,7 +66,13 @@ test.describe('Auth helper coverage - token bootstrap', () => {
   });
 
   test('createStorageStateViaForm handles csrf and login errors', async () => {
-    const createContext = (loginStatus: number, postStatus: number, html: string) => {
+    const createContext = (
+      loginStatus: number,
+      postStatus: number,
+      html: string,
+      isAuthenticated = true,
+      authStatus = 200
+    ) => {
       const loginPage = {
         status: () => loginStatus,
         url: () => 'https://example.test/login',
@@ -76,6 +82,9 @@ test.describe('Auth helper coverage - token bootstrap', () => {
         get: async (url: string) => {
           if (url === 'auth/login') {
             return loginPage;
+          }
+          if (url === 'auth/isAuthenticated') {
+            return { status: () => authStatus, json: async () => isAuthenticated };
           }
           return { status: () => 200 };
         },

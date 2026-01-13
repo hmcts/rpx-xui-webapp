@@ -6,7 +6,7 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
-import { StorageStateCorruptedError, SessionCaptureError } from '../api/errors';
+import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 

@@ -37,11 +37,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js']
   },
-  externals: [
-    nodeExternals({
-      additionalModuleDirs: [path.resolve(__dirname, '../node_modules')]
-    })
-  ],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {

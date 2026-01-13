@@ -4,8 +4,8 @@ import * as path from 'node:path';
 import { IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-common';
 import { request } from '@playwright/test';
 
-import { config } from '../common/apiTestConfig';
-import { AuthenticationError, ConfigurationError } from './errors';
+import { config } from '../../common/apiTestConfig';
+import { AuthenticationError, ConfigurationError } from '../errors';
 type UsersConfig = typeof config.users[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 

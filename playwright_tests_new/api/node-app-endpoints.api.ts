@@ -3,7 +3,7 @@ import { promises as fs } from 'node:fs';
 import { request } from '@playwright/test';
 
 import { config as testConfig } from '../common/apiTestConfig';
-import { ensureStorageState } from './auth';
+import { ensureStorageState } from './utils/auth';
 import { test, expect, buildApiAttachment } from './fixtures';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
 

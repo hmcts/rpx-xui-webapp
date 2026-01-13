@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 
-import { ensureStorageState, getStoredCookie, type ApiUserRole } from '../auth';
+import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
 
 // Central map of commonly reused status code sets to reduce magic arrays in tests.
 export const StatusSets = {

@@ -17,7 +17,7 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
   `yarn test:api:pw:coverage`
 
 ## Authentication model
-- Default behaviour: the `auth.ts` helper will first attempt token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken` when the required env vars exist. If token bootstrap fails or the env vars are absent, it falls back to the `/auth/login` form flow and caches storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`.
+- Default behaviour: the `utils/auth.ts` helper will first attempt token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken` when the required env vars exist. If token bootstrap fails or the env vars are absent, it falls back to the `/auth/login` form flow and caches storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`.
 - Required for token bootstrap: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `S2S_URL`, `S2S_MICROSERVICE_NAME` (or `MICROSERVICE`), optional `IDAM_OAUTH2_SCOPE`, `IDAM_RETURN_URL`. Opt out with `API_AUTH_MODE=form`.
 - XSRF handling: set `API_AUTO_XSRF=true` to auto-inject the `X-XSRF-TOKEN` header from stored cookies. By default the header is not injected so negative/CSRF tests can opt-in explicitly (via `withXsrf` or manual headers).
 - Correlation IDs: every API client sets `X-Correlation-Id` per request (UUID) for traceability.
@@ -33,7 +33,13 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
 
 ## Coverage vs unit tests
 - Playwright coverage here reflects test/helper code executed in `playwright_tests_new/api`.
+- `test:api:pw:coverage` wraps the Playwright run in `c8` to collect V8 coverage for the Playwright test code, not the Node API service.
 - Server-side Node coverage and isolated unit tests stay in Mocha + c8 (`yarn coverage:node`).
+
+## Testing layers
+- Mocha Node API tests (under `api/`) exercise server-side logic in-process with stubs/mocks for fast feedback and isolated behavior checks.
+- Playwright node-api tests exercise HTTP endpoints and auth/session wiring against a running instance, validating contracts and integration behavior.
+- Together they cover both internal correctness and external API behavior, reducing regression and contract drift risk.
 
 ## What we assert (vs the old Mocha smoke checks)
 - Unauthenticated sweep (`authenticated-routes.api.ts`) asserts 401 **and** body `{ message: 'Unauthorized' }` for every protected route.

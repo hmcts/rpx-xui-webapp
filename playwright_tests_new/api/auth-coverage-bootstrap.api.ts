@@ -14,7 +14,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { __test__ as authTest } from './auth';
+import { __test__ as authTest } from './utils/auth';
 
 /** Strict environment interface for auth configuration - no loose records */
 interface AuthEnvironmentConfig {

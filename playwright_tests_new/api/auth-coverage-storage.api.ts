@@ -18,7 +18,7 @@ import path from 'node:path';
 import { test, expect } from '@playwright/test';
 
 import { config } from '../common/apiTestConfig';
-import { __test__ as authTest } from './auth';
+import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
 

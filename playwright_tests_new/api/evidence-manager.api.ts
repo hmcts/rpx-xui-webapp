@@ -4,7 +4,7 @@ import { request as playwrightRequest } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 
 import { config } from '../common/apiTestConfig';
-import { ensureStorageState, getStoredCookie } from './auth';
+import { ensureStorageState, getStoredCookie } from './utils/auth';
 import { test, expect } from './fixtures';
 import { EM_DOC_ID } from './data/testIds';
 import { expectAnnotationShape, expectBookmarkShape } from './utils/assertions';

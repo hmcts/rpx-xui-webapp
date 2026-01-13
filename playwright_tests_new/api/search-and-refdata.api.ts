@@ -3,7 +3,7 @@ import { promises as fs } from 'node:fs';
 import { request } from '@playwright/test';
 
 import { config } from '../common/apiTestConfig';
-import { ensureStorageState } from './auth';
+import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectRoleAssignmentShape } from './utils/assertions';

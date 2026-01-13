@@ -16,8 +16,13 @@ import { test, expect } from './fixtures';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
+import { z } from 'zod';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
+const locationSchema = z.object({
+  id: z.string(),
+  locationName: z.string()
+});
 
 test.describe('Work Allocation API Contracts', () => {
   let cachedLocationId: string | undefined;
@@ -51,11 +56,7 @@ test.describe('Work Allocation API Contracts', () => {
 
       // And: Each location has required fields
       if (response.data.length > 0) {
-        const firstLocation = response.data[0];
-        expect(firstLocation).toHaveProperty('id');
-        expect(firstLocation).toHaveProperty('locationName');
-        expect(typeof firstLocation.id).toBe('string');
-        expect(typeof firstLocation.locationName).toBe('string');
+        locationSchema.parse(response.data[0]);
       }
     }
   });

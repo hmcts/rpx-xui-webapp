@@ -1,6 +1,6 @@
 import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { test, expect } from './fixtures';
-import { ensureStorageState } from './auth';
+import { ensureStorageState } from './utils/auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { expectTaskList } from './utils/assertions';

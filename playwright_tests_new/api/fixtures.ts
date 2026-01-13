@@ -10,7 +10,7 @@ import {
 import { test as base, expect, request } from '@playwright/test';
 
 import { config } from '../common/apiTestConfig';
-import { ensureStorageState, getStoredCookie, type ApiUserRole } from './auth';
+import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;

@@ -12,7 +12,7 @@
  * }
  */
 
-import type { ApiUserRole } from './auth';
+import type { ApiUserRole } from './utils/auth';
 
 /**
  * Base class for all EXUI API test errors

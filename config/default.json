@@ -204,24 +204,9 @@
   },
   "sessionTimeouts": [
     {
-      "idleModalDisplayTime": 3,
-      "pattern": "-dwpresponsewriter",
-      "totalIdleTime": 30
-    },
-    {
-      "idleModalDisplayTime": 3,
-      "pattern": "-homeoffice",
-      "totalIdleTime": 240
-    },
-    {
-      "idleModalDisplayTime": 10,
-      "pattern": "-solicitor",
-      "totalIdleTime": 50
-    },
-    {
-      "idleModalDisplayTime": 10,
+      "idleModalDisplayTime": 2,
       "pattern": ".",
-      "totalIdleTime": 480
+      "totalIdleTime": 5
     }
   ],
   "pact": {

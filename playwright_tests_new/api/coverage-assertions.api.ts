@@ -20,7 +20,7 @@ import {
   expectAddressLookupShape
 } from './utils/assertions';
 import { extractCaseShareEntries, isTaskList } from './utils/types';
-import nodeAppDataModels from '../../test_codecept/dataModels/nodeApp';
+import nodeAppDataModels from './data/nodeAppDataModels';
 
 test.describe('Assertion shape validators', () => {
   test('expectTaskList covers empty and populated tasks', () => {

@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures';
 import { withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
+import { resolveEntries } from './utils/caseShareUtils';
 import { CaseShareResponseVariant } from './utils/types';
 
 const CASESHARE_ENDPOINTS = [
@@ -94,18 +95,4 @@ function assertCaseShareEntries(data: any, property: string, schema: CaseShareSc
       expect(entries[0]).toEqual(schema);
     }
   }
-}
-
-function resolveEntries(data: any, property: string): any[] {
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (data && Array.isArray(data[property])) {
-    return data[property];
-  }
-  const nested = data?.payload;
-  if (nested && Array.isArray(nested[property])) {
-    return nested[property];
-  }
-  return [];
 }

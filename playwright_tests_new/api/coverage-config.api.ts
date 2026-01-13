@@ -14,31 +14,7 @@ import { test, expect } from '@playwright/test';
 import appTestConfig, { __test__ as appTestConfigTest } from '../common/appTestConfig';
 import { __test__ as apiTestConfigTest } from '../common/apiTestConfig';
 import config, { __test__ as configUtilsTest } from '../E2E/utils/config.utils.js';
-
-type EnvMap = Record<string, string | undefined>;
-
-async function withEnv(vars: EnvMap, fn: () => Promise<void> | void) {
-  const previous = new Map<string, string | undefined>();
-  for (const [key, value] of Object.entries(vars)) {
-    previous.set(key, process.env[key]);
-    if (value === undefined) {
-      delete process.env[key];
-    } else {
-      process.env[key] = value;
-    }
-  }
-  try {
-    await fn();
-  } finally {
-    for (const [key, value] of previous.entries()) {
-      if (value === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = value;
-      }
-    }
-  }
-}
+import { withEnv } from './utils/testEnv';
 
 test.describe.configure({ mode: 'serial' });
 

@@ -7,7 +7,7 @@ import { ensureStorageState } from './utils/auth';
 import { test, expect, buildApiAttachment } from './fixtures';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
 
-import nodeAppDataModels from '../../test_codecept/dataModels/nodeApp';
+import nodeAppDataModels from './data/nodeAppDataModels';
 
 test.describe('Node app endpoints', () => {
   test('serves external configuration without authentication', async ({ anonymousClient }) => {

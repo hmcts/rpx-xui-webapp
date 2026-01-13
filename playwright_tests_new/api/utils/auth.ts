@@ -5,7 +5,7 @@ import { IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-com
 import { request } from '@playwright/test';
 
 import { config } from '../../common/apiTestConfig';
-import { AuthenticationError, ConfigurationError } from '../errors';
+import { AuthenticationError, ConfigurationError } from './errors';
 type UsersConfig = typeof config.users[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 

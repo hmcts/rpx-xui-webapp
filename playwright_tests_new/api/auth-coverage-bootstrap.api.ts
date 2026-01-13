@@ -15,38 +15,16 @@
 import { test, expect } from '@playwright/test';
 
 import { __test__ as authTest } from './utils/auth';
+import { withEnv } from './utils/testEnv';
 
-/** Strict environment interface for auth configuration - no loose records */
-interface AuthEnvironmentConfig {
-  API_AUTH_MODE?: string;
-  IDAM_SECRET?: string;
-  IDAM_WEB_URL?: string;
-  IDAM_TESTING_SUPPORT_URL?: string;
-  S2S_URL?: string;
-}
+type AuthEnvironmentKey =
+  | 'API_AUTH_MODE'
+  | 'IDAM_SECRET'
+  | 'IDAM_WEB_URL'
+  | 'IDAM_TESTING_SUPPORT_URL'
+  | 'S2S_URL';
 
-async function withEnv(vars: AuthEnvironmentConfig, fn: () => Promise<void> | void) {
-  const previous = new Map<string, string | undefined>();
-  for (const [key, value] of Object.entries(vars)) {
-    previous.set(key, process.env[key]);
-    if (value === undefined) {
-      delete process.env[key];
-    } else {
-      process.env[key] = value;
-    }
-  }
-  try {
-    await fn();
-  } finally {
-    for (const [key, value] of previous.entries()) {
-      if (value === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = value;
-      }
-    }
-  }
-}
+type AuthEnvironmentConfig = Partial<Record<AuthEnvironmentKey, string>>;
 
 test.describe.configure({ mode: 'serial' });
 

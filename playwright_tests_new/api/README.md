@@ -8,7 +8,7 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
   - `TEST_URL` (e.g. `https://manage-case.aat.platform.hmcts.net/`)
   - `TEST_ENV` (`aat`/`demo`)
   - IDAM/S2S endpoints used by `@hmcts/playwright-common`: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `S2S_URL`, optional `S2S_SECRET`.
-- User credentials are read from `test_codecept/integration/tests/config/config.ts` for the selected `TEST_ENV`.
+- User credentials are read from `playwright_tests_new/common/apiTestConfig.ts` for the selected `TEST_ENV`.
 
 ## Running
 - Smoke the API suite:  

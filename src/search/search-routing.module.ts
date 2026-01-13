@@ -13,6 +13,7 @@ const routes: Routes = [
     component: SearchFormComponent,
     canActivate: [RoleGuard],
     data: {
+      // EXUI-3967 - Needs to be looked at
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
       needsRole: ['pui-case-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,

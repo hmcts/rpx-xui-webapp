@@ -94,6 +94,7 @@ export async function createApp() {
   }
 
   // TODO: remove tunnel and configurations
+  // EXUI-3967 - the above ask requires further investigation and testing on production environments
   tunnel.init();
   /**
  * Add Reform Standard health checks.

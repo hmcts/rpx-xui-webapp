@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { ALL_LOCATIONS } from './constants/locations';
-import { getLocationById, mapLocations, getLocations, getFullLocations, getLocationsByRegion } from './locationController';
+import { mapLocations, getLocations, getFullLocations, getLocationsByRegion } from './locationController';
 import * as locationService from './locationService';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -30,26 +30,6 @@ describe('workAllocation', () => {
     sandbox.restore();
   });
 
-  describe('getLocationById', () => {
-    const LOCATION_ID = 42;
-
-    it('should handle an exception being thrown', async () => {
-      sandbox.stub(http, GET).resolves(res);
-      const req = mockReq({
-        params: {
-          locationId: LOCATION_ID
-        }
-      });
-      const response = mockRes();
-
-      response.send.throws();
-
-      await getLocationById(req, response, next);
-
-      expect(next).to.have.been.calledWith();
-    });
-  });
-
   describe('mapLocations', () => {
     it('should make a get request and respond appropriately locations', async () => {
       sandbox.stub(http, GET).resolves(res);
@@ -58,18 +38,6 @@ describe('workAllocation', () => {
 
       expect(locations[0].id).to.equal('1');
       expect(locations[0].locationName).to.equal('full name');
-    });
-
-    it('should handle an exception being thrown', async () => {
-      sandbox.stub(http, GET).resolves(res);
-      const req = mockReq();
-      const response = mockRes();
-
-      response.send.throws();
-
-      await getLocationById(req, response, next);
-
-      expect(next).to.have.been.calledWith();
     });
   });
 

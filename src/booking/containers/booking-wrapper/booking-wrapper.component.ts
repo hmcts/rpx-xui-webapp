@@ -97,9 +97,6 @@ export class BookingWrapperComponent implements OnInit {
         this.bookingProcess = {} as BookingProcess;
         this.bookingNavigationCurrentState = BookingState.HOME;
         break;
-      case BookingNavigationEvent.CONFIRMBOOKINGSUBMIT:
-        // TODO: Submit booking
-        break;
       default:
         throw new Error('Invalid Booking state');
     }

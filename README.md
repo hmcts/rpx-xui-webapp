@@ -1,4 +1,4 @@
-# Manage Cases 
+# Manage Cases   
  
 To run the application locally please make sure you follow the prerequisite task of
 Setting up Secrets locally as documented below.
@@ -24,10 +24,21 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
+## API docs (Swagger UI)
+
+- Swagger UI is available on lower environments when the `feature.docsEnabled` flag is true and `environment` is not `production`.
+- Locally: ensure `config/local-development.json` is in place (includes `docsEnabled: true`), start the Node service (`yarn start:node`), then browse to `http://localhost:3000/api/docs`.
+- The raw OpenAPI document is served at `http://localhost:3000/api/docs/openapi.json`.
+
 ## Running unit tests 
 
 Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
 `yarn test` is run on the build pipelines.
+
+Node API test commands (complementary):
+- `yarn coverage:node` – full Mocha + c8 coverage run for the Node layer (uses `api` scripts and generates coverage reports). Use when you need coverage numbers.
+- `yarn test:node:local` – quick Mocha run for Node with dev config (`NODE_CONFIG_DIR=../config`, `NODE_CONFIG_ENV=development`, `ALLOW_CONFIG_MUTATIONS=1`) and stubs for external calls; good for local iteration.
+- `yarn test:api:pw:coverage` – Playwright API functional tests with `c8` coverage over live API flows; complements the unit coverage above by exercising end-to-end routes.
 
 ## Linting 
 
@@ -177,7 +188,23 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running pure playwright end-to-end tests
 
 Run `HEAD=true TEST_URL=https://manage-case.aat.platform.hmcts.net yarn test:playwrightE2E` to execute the pure playwright end-to-end tests on aat via [Playwright](https://playwright.dev/).
-Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing
+Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing.
+
+The `playwright_tests_new` folder contains the beginnings of the updated framework structure and test form. Tests are now structured by functionality with step containers for each stage of the test. A page object pattern has been introduced in place of using selectors in the tests themselves. Follow this pattern for any new tests, or ones you wish to migrate. 
+
+### Playwright reporting
+
+Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright.html`.  
+Key behaviour:
+- Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
+- Run info shows project, release, environment, branch and worker count. Override defaults via `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `GIT_BRANCH` or `FUNCTIONAL_TESTS_WORKERS`.
+- Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
+- Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
+
+### Parallelism
+
+Locally the Playwright worker count scales with available CPU cores (approx. half of the logical cores, capped at 8).  
+Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour. On CI the default remains a single worker unless the variable is provided.
 
 ## Running Consumer Driven Contract tests (pact)
 

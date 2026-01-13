@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import * as fromHearingStore from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearings-error-page',
   templateUrl: './error-page.component.html',
   styleUrls: ['./error-page.component.scss']
@@ -11,6 +12,8 @@ import * as fromHearingStore from '../../store';
 export class ErrorPageComponent implements OnInit, OnDestroy {
   public caseId: string;
   public sub: Subscription;
+  public jurisdiction: string;
+  public caseType: string;
 
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
@@ -18,6 +21,8 @@ export class ErrorPageComponent implements OnInit, OnDestroy {
     this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(
       (state) => {
         this.caseId = state.hearingList?.hearingListMainModel?.caseRef;
+        this.jurisdiction = state.hearingValues?.caseInfo?.jurisdictionId;
+        this.caseType = state.hearingValues?.caseInfo?.caseType;
       }
     );
     // Reset errors

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { of, throwError } from 'rxjs';
@@ -24,6 +24,7 @@ import { MockRouter, getMockLocations, getMockTasks } from '../../tests/utils.sp
 import { TaskListComponent } from '../task-list/task-list.component';
 import { AvailableTasksComponent } from './available-tasks.component';
 @Component({
+  standalone: false,
   template: `
     <exui-available-tasks></exui-available-tasks>`
 })
@@ -40,7 +41,10 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate'
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -266,7 +270,7 @@ describe('AvailableTasksComponent', () => {
     it('should call claimTask on the taskService with the taskId, so that the User can claim the task.', () => {
       const firstTask = getMockTasks()[1];
       component.claimTaskAndGo(firstTask);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.id}/tasks`], {
+      expect(mockRouter.navigate).toHaveBeenCalledWith([`/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.id}/tasks`], {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS

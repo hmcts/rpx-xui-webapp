@@ -13,6 +13,7 @@ import { RoleExclusionsService } from '../../services';
 import { DeleteExclusionComponent } from './delete-exclusion.component';
 
 @Component({
+  standalone: false,
   template: `
     <exui-delete-exclusion></exui-delete-exclusion>`
 })
@@ -40,9 +41,9 @@ describe('DeleteExclusionComponent', () => {
   const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', ['getCurrentUserRoleExclusions', 'deleteExclusion']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
-  const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
+  const goToCaseUrl = `cases/case-details/${jurisdiction}/${caseType}/${exampleCaseId}/roles-and-access`;
   const exclusion = { caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
   beforeEach(waitForAsync(() => {
@@ -170,9 +171,9 @@ describe('DeleteExclusionComponent with no name', () => {
   const mockAllocateRoleService = jasmine.createSpyObj('allocateService', ['getCaseRolesUserDetails']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
-  const goToCaseUrl = `cases/case-details/${exampleCaseId}/roles-and-access`;
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
+  const goToCaseUrl = `cases/case-details/${jurisdiction}/${caseType}/${exampleCaseId}/roles-and-access`;
   const exclusion = { id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
 
   beforeEach(waitForAsync(() => {

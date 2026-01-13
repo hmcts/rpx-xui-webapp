@@ -120,16 +120,77 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
     }
   }
 
-  const nativeEsQuery: object = {
-    from,
-    query: {
-      bool: {
-        must: matchList
+  // =========================
+  // Merge client native ES parts into rebuilt query
+  // =========================
+  const aggs = body?.aggs;
+  const post_filter = body?.post_filter;
+  const collapse = body?.collapse;
+  const indices_boost = body?.indices_boost;
+
+  const boolQuery: any = { must: [] };
+  if (matchList.length) {
+    boolQuery.must.push(...matchList);
+  }
+
+  // Merge client's query (preserve bool internals if present)
+  if (body?.query) {
+    const q = body.query;
+    if (q.bool && typeof q.bool === 'object') {
+      const { must, filter, should, must_not } = q.bool;
+      if (Array.isArray(must)) {
+        (boolQuery.must ||= []).push(...must);
       }
-    },
+      if (Array.isArray(filter)) {
+        (boolQuery.filter ||= []).push(...filter);
+      }
+      if (Array.isArray(should) && should.length) {
+        (boolQuery.should ||= []).push(...should);
+      }
+      if (Array.isArray(must_not) && must_not.length) {
+        (boolQuery.must_not ||= []).push(...must_not);
+      }
+    } else {
+      (boolQuery.must ||= []).push(q);
+    }
+  }
+
+  const isEmptyArr = (v: any) => !Array.isArray(v) || v.length === 0;
+  if (isEmptyArr(boolQuery.must)) {
+    delete boolQuery.must;
+  }
+  if (isEmptyArr(boolQuery.filter)) {
+    delete boolQuery.filter;
+  }
+  if (isEmptyArr(boolQuery.should)) {
+    delete boolQuery.should;
+  }
+  if (isEmptyArr(boolQuery.must_not)) {
+    delete boolQuery.must_not;
+  }
+
+  const nativeEsQuery: any = {
+    from,
     size,
-    sort
+    sort,
+    query: (boolQuery.filter || boolQuery.must || boolQuery.should || boolQuery.must_not) // This is a guard to avoid returning an empty bool query when nothing was added
+      ? { bool: boolQuery }
+      : { match_all: {} }
   };
+
+  // Attach other native parts if present
+  if (aggs) {
+    nativeEsQuery.aggs = aggs;
+  }
+  if (post_filter) {
+    nativeEsQuery.post_filter = post_filter;
+  }
+  if (collapse) {
+    nativeEsQuery.collapse = collapse;
+  }
+  if (indices_boost) {
+    nativeEsQuery.indices_boost = indices_boost;
+  }
 
   return {
     native_es_query: nativeEsQuery,

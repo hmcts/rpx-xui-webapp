@@ -1,10 +1,12 @@
 import * as bodyParser from 'body-parser';
+import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
-import * as helmet from 'helmet';
-import * as compression from 'compression';
+import { existsSync, readFileSync } from 'fs';
+import helmet from 'helmet';
+import * as path from 'path';
+import { csp, SECURITY_POLICY } from '@hmcts/rpx-xui-node-lib';
 import amRoutes from './accessManagement/routes';
-import { getContentSecurityPolicy } from '@hmcts/rpx-xui-node-lib';
 import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
@@ -24,23 +26,46 @@ import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
+import { MC_CSP } from './interfaces/csp-config';
 import { getNewUsersByServiceName } from './workAllocation';
+
+function loadIndexHtml(): string {
+  // production build output
+  let p = path.join(__dirname, '..', 'index.html');
+  if (!existsSync(p)) {
+    // running from sources - use the template inside src/
+    p = path.join(__dirname, '..', 'src', 'index.html');
+  }
+  return readFileSync(p, 'utf8');
+}
+const indexHtmlRaw = loadIndexHtml();
+
+function injectNonce(html: string, nonce: string): string {
+  return html.replace(/{{cspNonce}}/g, nonce);
+}
 
 export async function createApp() {
   const app = express();
 
   const logger: JUILogger = log4jui.getLogger('Application');
-
   if (showFeature(FEATURE_HELMET_ENABLED)) {
-    app.use(helmet(getConfigValue(HELMET)));
+    const helmetConfig = getConfigValue(HELMET);
+    if (helmetConfig && typeof helmetConfig === 'object') {
+      app.use(helmet(helmetConfig)); // use the configured rules
+    } else {
+      app.use(helmet()); // fall back to Helmet defaults
+    }
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));
     app.use(helmet.referrerPolicy({ policy: ['origin'] }));
     app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
-    app.use(helmet.xssFilter());
-    app.use(getContentSecurityPolicy(helmet));
+    const cspMiddleware = csp({
+      defaultCsp: SECURITY_POLICY,
+      ...MC_CSP
+    }) as unknown as express.RequestHandler;
+    app.use(cspMiddleware);
     app.use((req, res, next) => {
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
       res.header('Access-Control-Allow-Credentials', 'true');
@@ -61,7 +86,8 @@ export async function createApp() {
     app.disable('X-Powered-By');
   }
 
-  app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+  const cookieParserMiddleware = cookieParser(getConfigValue(SESSION_SECRET)) as unknown as express.RequestHandler;
+  app.use(cookieParserMiddleware);
 
   if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
     app.use(compression());
@@ -75,7 +101,7 @@ export async function createApp() {
   health.addReformHealthCheck(app);
 
   const xuiNodeMiddleware = await getXuiNodeMiddleware();
-  app.use(xuiNodeMiddleware);
+  app.use(xuiNodeMiddleware as unknown as express.RequestHandler);
 
   // applyProxy needs to be used before bodyParser
   initProxy(app);
@@ -87,7 +113,30 @@ export async function createApp() {
   app.use('/api', routes);
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
+  const csrfMiddleware = csrf({
+    cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' },
+    ignoreMethods: ['GET']
+  }) as unknown as express.RequestHandler;
+  app.use(csrfMiddleware);
+  // Serve /index.html through the same nonce injector
+  // This is to ensure that <MC URL>/index.html works with CSP
+  app.get('/index.html', (req, res) => {
+    const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+    res
+      .type('html')
+      .set('Cache-Control', 'no-store, max-age=0')
+      .send(html);
+  });
+  const staticRoot = path.join(__dirname, '..');
+  // runs for every incoming request in the order middleware are declared
+  app.use(
+    express.static(staticRoot, { index: false })
+  );
+  // Catch-all handler for every URL that the static middleware didn’t serve
+  app.use('/*', (req, res) => {
+    const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
+  });
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
@@ -97,4 +146,3 @@ export async function createApp() {
 
   return app;
 }
-

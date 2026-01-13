@@ -17,6 +17,7 @@ import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-home',
   templateUrl: 'case-home.component.html',
   styleUrls: ['case-home.component.scss']
@@ -101,6 +102,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases',
             'case-details',
+            navigation.relativeTo.snapshot.params.jurisdiction ?? navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
+            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid],
@@ -120,6 +123,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
         params = {
           path: ['cases',
             'case-details',
+            navigation.relativeTo.snapshot.params.jurisdiction,
+            navigation.relativeTo.snapshot.params.caseType,
             navigation.relativeTo.snapshot.params.cid
           ],
           errorHandler: (error) => this.handleCaseViewError(error)

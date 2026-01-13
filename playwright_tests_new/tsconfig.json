@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": false,
+    "noEmit": true,
+    "allowJs": true,
+    "noImplicitAny": false,
+  },
+  "include":["../**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
+  "extends": "../tsconfig.json"
+}

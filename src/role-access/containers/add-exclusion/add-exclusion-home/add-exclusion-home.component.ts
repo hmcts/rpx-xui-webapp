@@ -19,6 +19,7 @@ import { ChoosePersonRoleComponent } from '../choose-person-role/choose-person-r
 import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclusion.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-add-exclusion-home',
   templateUrl: './add-exclusion-home.component.html',
   styleUrls: ['./add-exclusion-home.component.scss']
@@ -46,6 +47,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   public exclusionOption: ExcludeOption;
   public caseId: string;
   public jurisdiction: string;
+  public caseType: string;
 
   public navEvent: ExclusionNavigation;
 
@@ -60,11 +62,13 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<fromFeature.State>,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
-    this.caseId = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseId ?
+    this.caseId = this.route.snapshot.queryParams?.caseId ?
       this.route.snapshot.queryParams.caseId : '';
-    this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
+    this.jurisdiction = this.route.snapshot.queryParams?.jurisdiction ?
       this.route.snapshot.queryParams.jurisdiction : '';
-    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction));
+    this.caseType = this.route.snapshot.queryParams?.caseType ?
+      this.route.snapshot.queryParams.caseType : '';
+    this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction, this.caseType));
   }
 
   public ngOnInit(): void {
@@ -150,7 +154,7 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case ExclusionNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`cases/case-details/${this.caseId}/roles-and-access`);
+        this.router.navigateByUrl(`cases/case-details/${this.jurisdiction}/${this.caseType}/${this.caseId}/roles-and-access`);
         break;
       default:
         this.showSpinner = false;

@@ -151,20 +151,20 @@ export class AppUtils {
     return isFeatureEnabled ? workAllocationUrl : null;
   }
 
-  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[]): boolean {
     // isWA enabled for this jurisdiction
-    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every((userRole) => !excludedRoles.includes(userRole));
+    return (waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER));
     // check that userRoles do not have pui-case-manager
   }
 
   public static getUserRole(userRoles: string[]): UserRole {
-    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.includes(userRole))) {
       return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
       return UserRole.Admin;
-    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
       return UserRole.Ctsc;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
       return UserRole.LegalOps;
     }
     return null;

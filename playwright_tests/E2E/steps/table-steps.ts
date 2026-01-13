@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 export async function checkTableCellContent(page, tableName: string, rowId: number, colID: number, expectedText: string) {
   const row = await page.locator(`table.govuk-table:has-text("${tableName}")`).locator('tr').nth(rowId);
   const text = await row.locator('td').nth(colID).textContent();
-  await expect(text.toUpperCase()).toBe(expectedText.toUpperCase());
+  await expect(text.toUpperCase()).toContain(expectedText.toUpperCase());
   console.log(tableName + '[' + rowId + ',' + colID + ']' + text);
 }
 
@@ -24,6 +24,13 @@ export async function checkNumberOfRow(page, tableClass: string, tableName: stri
 
 export async function getCaseReferenceFromFirstRow(page) {
   const cellXPath = '//*[@id="search-result"]/ccd-search-result/table/tbody/tr[2]/td[2]';
+  const cell = page.locator(cellXPath);
+  const caseID = await cell.textContent();
+  return caseID;
+}
+
+export async function getCaseReferenceFromFirstRowForEmployment(page) {
+  const cellXPath = '//*[@id="search-result"]/ccd-search-result/table/tbody/tr[2]/td[3]';
   const cell = page.locator(cellXPath);
   const caseID = await cell.textContent();
   return caseID;

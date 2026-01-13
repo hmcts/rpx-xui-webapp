@@ -73,7 +73,7 @@ describe('CancelHearingComponent', () => {
       declarations: [CancelHearingComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
-        { path: 'cases/case-details/1111222233334444/hearings', redirectTo: '' }
+        { path: 'cases/case-details/IA/Asylum/1111222233334444/hearings', redirectTo: '' }
       ])],
       providers: [
         LoadingService,
@@ -231,5 +231,11 @@ describe('CancelHearingComponent', () => {
     fixture.detectChanges();
     const errorMessage = fixture.debugElement.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessage).toBeFalsy();
+  });
+
+  it('should set jurisdiction and caseType from hearingValues', () => {
+    component.ngOnInit();
+    expect(component.jurisdiction).toEqual(initialState.hearings.hearingValues.caseInfo.jurisdictionId);
+    expect(component.caseType).toEqual(initialState.hearings.hearingValues.caseInfo.caseType);
   });
 });

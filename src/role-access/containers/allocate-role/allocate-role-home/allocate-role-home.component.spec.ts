@@ -103,7 +103,9 @@ describe('AllocateRoleHomeComponent', () => {
               queryParams: {
                 caseId: '111111',
                 userType: 'Judicial',
-                roleCategory: 'JUDICIAL'
+                roleCategory: 'JUDICIAL',
+                jurisdiction: 'IA',
+                caseType: 'Appeal'
               },
               routeConfig: {
                 path: 'allocate'
@@ -129,8 +131,9 @@ describe('AllocateRoleHomeComponent', () => {
       initialUrl: undefined,
       previousNavigation: undefined,
       trigger: undefined,
-      extras: { state: { backUrl: null } }
-    });
+      extras: { state: { backUrl: null } },
+      abort: () => {}
+    } as any);
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
   });
@@ -455,7 +458,7 @@ describe('AllocateRoleHomeComponent', () => {
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
       fixture.detectChanges();
       component.navigationHandler(AllocateRoleNavigationEvent.CANCEL);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/IA/Appeal/111111/roles-and-access');
     });
 
     afterEach(() => {

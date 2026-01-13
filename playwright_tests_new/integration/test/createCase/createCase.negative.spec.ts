@@ -1,6 +1,5 @@
-import { PageEvent } from '@angular/material/paginator';
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../utils/session.utils';
+import { loadSessionCookies } from '../../../common/sessionCapture';
 
 const userIdentifier = 'SOLICITOR';
 const jurisdiction = 'DIVORCE';

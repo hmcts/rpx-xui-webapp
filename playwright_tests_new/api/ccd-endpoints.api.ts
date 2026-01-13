@@ -1,7 +1,8 @@
-import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { test, expect } from './fixtures';
 import { config as testConfig } from '../common/apiTestConfig';
-import { withXsrf, expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
+import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
+import { assertJurisdictionsForUser } from './utils/ccdUtils';
+import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
 test.describe('CCD endpoints', () => {
   test('lists jurisdictions for current user', async ({ apiClient }) => {
@@ -13,7 +14,8 @@ test.describe('CCD endpoints', () => {
   for (const jurisdiction of jurisdictions) {
     const uniqueCaseTypes = Array.from(new Set(jurisdiction.caseTypeIds ?? []));
     for (const caseTypeId of uniqueCaseTypes) {
-      test(`work-basket inputs available for ${caseTypeId}`, async ({ apiClient }) => {
+      const caseTypeIdText = stringifyCaseTypeId(caseTypeId);
+      test(`work-basket inputs available for ${caseTypeIdText}`, async ({ apiClient }) => {
         interface WorkbasketInput {
           label?: string;
           field?: {
@@ -31,9 +33,12 @@ test.describe('CCD endpoints', () => {
           [key: string]: unknown;
         }
 
-        const response = await apiClient.get<WorkbasketData>(`data/internal/case-types/${caseTypeId}/work-basket-inputs`, {
-          headers: { experimental: 'true' }
-        });
+        const response = await apiClient.get<WorkbasketData>(
+          `data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`,
+          {
+            headers: { experimental: 'true' }
+          }
+        );
         expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
         const data = response.data;
         expect(data).toBeTruthy();
@@ -83,6 +88,14 @@ test.describe('CCD endpoints', () => {
 });
 
 test.describe('CCD helper coverage', () => {
+  test('stringifyCaseTypeId handles basic variants', () => {
+    expect(stringifyCaseTypeId('XUI-1')).toBe('XUI-1');
+    expect(stringifyCaseTypeId(123)).toBe('123');
+    expect(stringifyCaseTypeId({ id: 'AAT' })).toBe('AAT');
+    expect(stringifyCaseTypeId({ foo: 'bar' })).toContain('foo');
+    expect(stringifyCaseTypeId(undefined)).toBe('');
+  });
+
   test('assertJurisdictionsForUser handles guarded status', async () => {
     const apiClient = {
       get: async () => ({ status: 403, data: undefined })
@@ -131,59 +144,3 @@ test.describe('CCD helper coverage', () => {
     await assertJurisdictionsForUser(apiClient as any, ['Jurisdiction 1']);
   });
 });
-
-async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]) {
-  const user = await apiClient.get('api/user/details', { throwOnError: false });
-  expectStatus(user.status, StatusSets.guardedExtended);
-  if (user.status !== 200) {
-    return;
-  }
-  const uid = resolveUserId(user.data);
-  if (!uid) {
-    return;
-  }
-
-  const response = await withRetry(
-    () =>
-      apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
-        throwOnError: false
-      }),
-    { retries: 1, retryStatuses: [502, 504] }
-  );
-  expectStatus(response.status, [...StatusSets.guardedExtended, 504, 500]);
-  if (!Array.isArray(response.data)) {
-    return;
-  }
-
-interface JurisdictionResponse {
-  name?: string;
-  [key: string]: unknown;
-}
-
-  const actualNames = response.data.map((entry: JurisdictionResponse) => entry?.name).filter(Boolean);
-  expectedNames.forEach((name) => {
-    expect(actualNames).toContain(name);
-  });
-
-interface Jurisdiction {
-  name?: string;
-  description?: string;
-  id?: string;
-  caseTypes?: unknown[];
-  [key: string]: unknown;
-}
-
-  response.data.forEach((jurisdiction: Jurisdiction) => {
-    expect(jurisdiction).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        name: expect.any(String),
-        description: expect.any(String)
-      })
-    );
-  });
-}
-
-function resolveUserId(data: { userInfo?: { uid?: string; id?: string } } | undefined): string | undefined {
-  return data?.userInfo?.uid ?? data?.userInfo?.id;
-}

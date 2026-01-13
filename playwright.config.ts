@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const { cpus } = require('os');
+const { cpus } = require('node:os');
 const { version: appVersion } = require('./package.json');
 
 type EnvMap = NodeJS.ProcessEnv;
@@ -17,13 +17,20 @@ const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
 const resolveWorkerCount = (env: EnvMap = process.env) => {
+  // CI should always run with 8 workers for predictable parallelism.
+  // (Playwright CLI flags can still override this, but our config default is fixed.)
+  if (env.CI) {
+    return 8;
+  }
+
   const configured = env.FUNCTIONAL_TESTS_WORKERS;
   if (configured) {
-    return parseInt(configured, 10);
+    const parsed = Number.parseInt(configured, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
   }
-  if (env.CI) {
-    return 1;
-  }
+
   const logical = cpus()?.length ?? 1;
   const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
   const suggested = Math.min(8, Math.max(2, approxPhysical));
@@ -57,7 +64,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     },
     reportSlowTests: null,
 
-    /* Opt out of parallel tests on CI. */
+    /* Control the number of parallel test workers. */
     workers: workerCount,
 
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),

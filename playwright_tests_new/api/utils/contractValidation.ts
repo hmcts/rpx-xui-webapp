@@ -1,15 +1,6 @@
 /**
  * API Contract Validation Utilities
  * Validates response structures against expected schemas to ensure backward compatibility
- * 
- * @hmcts-audit-metadata
- * {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "v1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "last_audit": "2026-01-12"
- * }
  */
 
 import { expect } from '@playwright/test';
@@ -53,82 +44,153 @@ export interface ContractTestOptions {
   context?: Record<string, unknown>;
 }
 
+type ValidationIssue = { path: string; message: string };
+
+function formatValue(value: unknown): string {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (value === null) {
+    return 'null';
+  }
+  if (value === undefined) {
+    return 'undefined';
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return '[unserializable]';
+  }
+}
+
+function formatEnumValues(values: unknown[]): string {
+  return values.map((value) => formatValue(value)).join(', ');
+}
+
+function resolveActualType(value: unknown): Schema['type'] | 'undefined' {
+  if (value === null) {
+    return 'null';
+  }
+  if (value === undefined) {
+    return 'undefined';
+  }
+  if (Array.isArray(value)) {
+    return 'array';
+  }
+  const t = typeof value;
+  if (t === 'string' || t === 'number' || t === 'boolean') {
+    return t;
+  }
+  return t === 'object' ? 'object' : 'undefined';
+}
+
+function validateObject(
+  obj: Record<string, unknown>,
+  schemaNode: Schema,
+  currentPath: string,
+  errors: ValidationIssue[],
+  warnings: ValidationIssue[]
+): void {
+  if (schemaNode.required) {
+    for (const requiredField of schemaNode.required) {
+      if (!(requiredField in obj)) {
+        errors.push({ path: `${currentPath}.${requiredField}`, message: 'Required field is missing' });
+      }
+    }
+  }
+
+  if (schemaNode.properties) {
+    for (const [key, propSchema] of Object.entries(schemaNode.properties)) {
+      if (key in obj) {
+        validateValue(obj[key], propSchema, `${currentPath}.${key}`, errors, warnings);
+      }
+    }
+  }
+}
+
+function validateArray(
+  arr: unknown[],
+  schemaNode: Schema,
+  currentPath: string,
+  errors: ValidationIssue[],
+  warnings: ValidationIssue[]
+): void {
+  if (schemaNode.minItems !== undefined && arr.length < schemaNode.minItems) {
+    errors.push({ path: currentPath, message: `Array has ${arr.length} items but minimum is ${schemaNode.minItems}` });
+  }
+  if (schemaNode.maxItems !== undefined && arr.length > schemaNode.maxItems) {
+    errors.push({ path: currentPath, message: `Array has ${arr.length} items but maximum is ${schemaNode.maxItems}` });
+  }
+
+  const itemSchema = schemaNode.items;
+  if (itemSchema) {
+    arr.forEach((item, index) => {
+      validateValue(item, itemSchema, `${currentPath}[${index}]`, errors, warnings);
+    });
+  }
+}
+
+function validateEnum(
+  value: unknown,
+  schemaNode: Schema,
+  currentPath: string,
+  errors: ValidationIssue[]
+): void {
+  const allowed = schemaNode.enum;
+  if (allowed && !allowed.includes(value)) {
+    errors.push({ path: currentPath, message: `Value must be one of: ${formatEnumValues(allowed)}` });
+  }
+}
+
+function validateValue(
+  value: unknown,
+  schemaNode: Schema,
+  currentPath: string,
+  errors: ValidationIssue[],
+  warnings: ValidationIssue[]
+): void {
+  if (value === null || value === undefined) {
+    if (!schemaNode.nullable) {
+      const actual = value === null ? 'null' : 'undefined';
+      errors.push({ path: currentPath, message: `Expected ${schemaNode.type} but got ${actual}` });
+    }
+    return;
+  }
+
+  if (schemaNode.deprecated) {
+    warnings.push({ path: currentPath, message: 'Field is deprecated and may be removed in future versions' });
+  }
+
+  const actualType = resolveActualType(value);
+  if (actualType !== schemaNode.type) {
+    errors.push({ path: currentPath, message: `Expected type ${schemaNode.type} but got ${actualType}` });
+    return;
+  }
+
+  if (schemaNode.type === 'object') {
+    validateObject(value as Record<string, unknown>, schemaNode, currentPath, errors, warnings);
+  } else if (schemaNode.type === 'array') {
+    validateArray(value as unknown[], schemaNode, currentPath, errors, warnings);
+  }
+
+  validateEnum(value, schemaNode, currentPath, errors);
+}
+
+function formatContractErrors(errors: ValidationIssue[]): string {
+  return errors.map((error) => `${error.path}: ${error.message}`).join('\n');
+}
+
 /**
  * Validate response data against JSON schema
  */
 export function validateSchema(data: unknown, schema: Schema, path = 'root'): ValidationResult {
-  const errors: Array<{ path: string; message: string }> = [];
-  const warnings: Array<{ path: string; message: string }> = [];
+  const errors: ValidationIssue[] = [];
+  const warnings: ValidationIssue[] = [];
 
-  function validate(value: unknown, schemaNode: Schema, currentPath: string): void {
-    // Handle nullable types
-    if (value === null || value === undefined) {
-      if (!schemaNode.nullable) {
-        errors.push({ path: currentPath, message: `Expected ${schemaNode.type} but got ${value}` });
-      }
-      return;
-    }
-
-    // Check deprecated fields
-    if (schemaNode.deprecated) {
-      warnings.push({ path: currentPath, message: 'Field is deprecated and may be removed in future versions' });
-    }
-
-    // Type validation
-    const actualType = Array.isArray(value) ? 'array' : typeof value;
-    if (actualType !== schemaNode.type) {
-      errors.push({ path: currentPath, message: `Expected type ${schemaNode.type} but got ${actualType}` });
-      return;
-    }
-
-    // Object validation
-    if (schemaNode.type === 'object' && typeof value === 'object') {
-      const obj = value as Record<string, unknown>;
-
-      // Check required fields
-      if (schemaNode.required) {
-        for (const requiredField of schemaNode.required) {
-          if (!(requiredField in obj)) {
-            errors.push({ path: `${currentPath}.${requiredField}`, message: 'Required field is missing' });
-          }
-        }
-      }
-
-      // Validate properties
-      if (schemaNode.properties) {
-        for (const [key, propSchema] of Object.entries(schemaNode.properties)) {
-          if (key in obj) {
-            validate(obj[key], propSchema, `${currentPath}.${key}`);
-          }
-        }
-      }
-    }
-
-    // Array validation
-    if (schemaNode.type === 'array' && Array.isArray(value)) {
-      // Check array size constraints
-      if (schemaNode.minItems !== undefined && value.length < schemaNode.minItems) {
-        errors.push({ path: currentPath, message: `Array has ${value.length} items but minimum is ${schemaNode.minItems}` });
-      }
-      if (schemaNode.maxItems !== undefined && value.length > schemaNode.maxItems) {
-        errors.push({ path: currentPath, message: `Array has ${value.length} items but maximum is ${schemaNode.maxItems}` });
-      }
-
-      // Validate array items
-      if (schemaNode.items) {
-        value.forEach((item, index) => {
-          validate(item, schemaNode.items!, `${currentPath}[${index}]`);
-        });
-      }
-    }
-
-    // Enum validation
-    if (schemaNode.enum && !schemaNode.enum.includes(value)) {
-      errors.push({ path: currentPath, message: `Value must be one of: ${schemaNode.enum.join(', ')}` });
-    }
-  }
-
-  validate(data, schema, path);
+  validateValue(data, schema, path, errors, warnings);
 
   return {
     valid: errors.length === 0,
@@ -182,7 +244,8 @@ export function assertContract(
 export function expectContract(data: unknown, schema: Schema, options: ContractTestOptions = {}): void {
   const result = validateSchema(data, schema);
 
-  expect(result.valid, `Contract validation failed:\n${result.errors.map((e) => `${e.path}: ${e.message}`).join('\n')}`).toBe(true);
+  const errorMessage = formatContractErrors(result.errors);
+  expect(result.valid, `Contract validation failed:\n${errorMessage}`).toBe(true);
 
   // Log warnings even if validation passes
   if (options.logDeprecations !== false && result.warnings.length > 0) {

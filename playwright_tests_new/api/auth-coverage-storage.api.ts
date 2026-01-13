@@ -1,14 +1,6 @@
 /**
  * @file auth-coverage-storage.api.ts
  * @description Coverage tests for auth storage state management (file operations, caching)
- * @hmcts-audit-metadata {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "security_review": "required",
- *   "last_audit": "2026-01-12"
- * }
  * @security-note Tests storage mechanisms with temporary test files only
  */
 
@@ -98,12 +90,12 @@ test.describe('Auth helper coverage - storage operations', () => {
   test('createStorageStateWith honors token bootstrap and falls back to form login', async () => {
     const storageRoot = path.join(process.cwd(), 'test-results', 'auth-storage');
     let formCalls = 0;
-    const onForm = () => {
+    const onForm = async () => {
       formCalls += 1;
     };
     const tokenSuccess = await authTest.createStorageStateWith('solicitor', {
       storageRoot,
-      mkdir: async () => {},
+      mkdir: async () => undefined,
       getCredentials: () => ({ username: 'test-user', password: 'mock-pass' }),
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => true,
@@ -114,7 +106,7 @@ test.describe('Auth helper coverage - storage operations', () => {
 
     const tokenFallback = await authTest.createStorageStateWith('solicitor', {
       storageRoot,
-      mkdir: async () => {},
+      mkdir: async () => undefined,
       getCredentials: () => ({ username: 'test-user', password: 'mock-pass' }),
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => false,

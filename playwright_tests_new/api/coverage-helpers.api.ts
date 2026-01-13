@@ -1,13 +1,3 @@
-/**
- * @hmcts-audit-metadata
- * {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "v1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "last_audit": "2026-01-12"
- * }
- */
 
 import { test, expect } from '@playwright/test';
 
@@ -108,7 +98,7 @@ test.describe('Helper utilities and retry logic', () => {
     const apiClientFallback = {
       post: async () => ({ status: 200, data: { tasks: [] } })
     };
-    const missing = await seedTaskId(apiClientFallback, undefined);
+    const missing = await seedTaskId(apiClientFallback);
     expect(missing).toBeUndefined();
 
     let fallbackCalls = 0;
@@ -120,26 +110,25 @@ test.describe('Helper utilities and retry logic', () => {
           : { status: 200, data: { tasks: [{ id: 'unassigned-task' }] } };
       }
     };
-    const unassigned = await seedTaskId(apiClientSecond, undefined);
+    const unassigned = await seedTaskId(apiClientSecond);
     expect(unassigned).toEqual({ id: 'unassigned-task', type: 'unassigned' });
 
     const apiClientError = {
       post: async () => ({ status: 500, data: { tasks: [{ id: 'task-3' }] } })
     };
-    const errorResult = await seedTaskId(apiClientError, undefined);
+    const errorResult = await seedTaskId(apiClientError);
     expect(errorResult).toBeUndefined();
 
     const apiClientNoId = {
       post: async () => ({ status: 200, data: { tasks: [{}] } })
     };
-    const noId = await seedTaskId(apiClientNoId, undefined);
+    const noId = await seedTaskId(apiClientNoId);
     expect(noId).toBeUndefined();
   });
 
   test('seedRoleAccessCaseId covers success and failure paths', async () => {
     const headers = { 'X-XSRF-TOKEN': 'token' };
-    const withXsrfFn = async (_role: string, fn: (h: Record<string, string>) => Promise<string | undefined>) =>
-      fn(headers);
+    const withXsrfFn = async <T>(_role: string, fn: (h: Record<string, string>) => Promise<T>) => fn(headers);
 
     const apiClient = {
       get: async () => ({
@@ -194,7 +183,7 @@ test.describe('Helper utilities and retry logic', () => {
     expect(anonymous['X-XSRF-TOKEN']).toBeUndefined();
 
     let calls = 0;
-    const fakeContext = {};
+    const fakeContext: any = {};
     const requestFactory = async () => {
       calls += 1;
       if (calls === 1) {
@@ -249,6 +238,6 @@ test.describe('Helper utilities and retry logic', () => {
 
   test('resolveRoleAccessCaseId returns env or default', () => {
     expect(resolveRoleAccessCaseId('case-1')).toBe('case-1');
-    expect(resolveRoleAccessCaseId(undefined)).toBe('1234567890123456');
+    expect(resolveRoleAccessCaseId()).toBe('1234567890123456');
   });
 });

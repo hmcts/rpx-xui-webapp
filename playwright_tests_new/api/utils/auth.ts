@@ -22,6 +22,24 @@ const storagePromises = new Map<string, Promise<string>>();
 const logger = createLogger({ serviceName: 'node-api-auth', format: 'pretty' });
 type LoggerInstance = ReturnType<typeof createLogger>;
 
+function formatUnknownError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === 'string') {
+    return error;
+  }
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return 'Unknown error';
+  }
+}
+
+function toError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(formatUnknownError(error));
+}
+
 type StorageState = { cookies?: Array<{ name?: string; value?: string }> };
 
 type StorageDeps = {
@@ -70,7 +88,11 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
   if (!deps.storagePromises.has(cacheKey)) {
     deps.storagePromises.set(cacheKey, deps.createStorageState(role));
   }
-  const storagePath = await deps.storagePromises.get(cacheKey)!;
+  const storagePromise = deps.storagePromises.get(cacheKey);
+  if (storagePromise === undefined) {
+    throw new Error(`Storage promise not found for role "${role}" after initialisation`);
+  }
+  const storagePath = await storagePromise;
   const state = await deps.tryReadState(storagePath);
   if (!state) {
     try {
@@ -79,7 +101,11 @@ async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = def
       // ignore unlink errors
     }
     deps.storagePromises.set(cacheKey, deps.createStorageState(role));
-    return deps.storagePromises.get(cacheKey)!;
+    const rebuilt = deps.storagePromises.get(cacheKey);
+    if (rebuilt === undefined) {
+      throw new Error(`Storage promise not found for role "${role}" after rebuild`);
+    }
+    return rebuilt;
   }
   return storagePath;
 }
@@ -128,14 +154,14 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const storagePath = path.join(root, config.testEnv, `${role}.json`);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
-  if (shouldTokenBootstrap) {
-    const tokenLoginSucceeded = await tryBootstrap(role, credentials, storagePath);
-    if (tokenLoginSucceeded) {
-      return storagePath;
-    }
+  const tokenLoginSucceeded = shouldTokenBootstrap
+    ? await tryBootstrap(role, credentials, storagePath)
+    : false;
+
+  if (!tokenLoginSucceeded) {
+    await loginViaForm(credentials, storagePath, role);
   }
 
-  await loginViaForm(credentials, storagePath, role);
   return storagePath;
 }
 
@@ -203,7 +229,7 @@ async function tryTokenBootstrap(
     );
     return false;
   } catch (error) {
-    activeLogger.warn(`Token bootstrap failed for role "${role}": ${(error as Error).message}`);
+    activeLogger.warn(`Token bootstrap failed for role "${role}": ${formatUnknownError(error)}`);
     return false;
   } finally {
     await context?.dispose();
@@ -273,12 +299,7 @@ async function createStorageStateViaForm(
     if (error instanceof AuthenticationError) {
       throw error;
     }
-    throw new AuthenticationError(
-      `Failed to login as ${role}`,
-      role,
-      { storagePath },
-      error as Error
-    );
+    throw new AuthenticationError(`Failed to login as ${role}`, role, { storagePath }, toError(error));
   } finally {
     await context.dispose();
   }
@@ -302,7 +323,7 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
 }
 
 function extractCsrf(html: string): string | undefined {
-  const match = html.match(/name="_csrf"\s+value="([^"]+)"/i);
+  const match = /name="_csrf"\s+value="([^"]+)"/i.exec(html);
   return match?.[1];
 }
 

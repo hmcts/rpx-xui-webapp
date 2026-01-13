@@ -1,6 +1,6 @@
 import { chromium } from '@playwright/test';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
@@ -200,11 +200,11 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
                   userIdentifier: id,
                   operation: 'session-capture'
                 });
-            } catch (headerErr) {
+            } catch (error_) {
                 logger.warn('EXUI header not detected within timeout', { 
                   userIdentifier: id, 
                   timeout: 60000,
-                  error: (headerErr as Error).message,
+                  error: (error_ as Error).message,
                   operation: 'session-capture'
                 });
             }

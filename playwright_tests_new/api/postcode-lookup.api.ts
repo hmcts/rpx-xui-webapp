@@ -2,6 +2,7 @@ import { test, expect } from './fixtures';
 import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
 import type { AddressLookupResponse } from './utils/types';
 import { expectAddressLookupShape } from './utils/assertions';
+import { shouldAssertAddress } from './utils/postcodeLookupUtils';
 
 test.describe('Postcode lookup', () => {
   test('returns address data for postcode E1', async ({ apiClient }) => {
@@ -27,7 +28,3 @@ test.describe('Postcode lookup helper coverage', () => {
     expect(shouldAssertAddress(500)).toBe(false);
   });
 });
-
-function shouldAssertAddress(status: number): boolean {
-  return status === 200;
-}

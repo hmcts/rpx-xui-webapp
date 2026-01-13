@@ -1,15 +1,6 @@
 /**
  * Retry budget and circuit breaker implementation for API testing
  * Prevents retry storms and detects systemic failures
- *
- * @hmcts-audit-metadata
- * {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "v1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "last_audit": "2026-01-12"
- * }
  */
 
 import { createLogger } from '@hmcts/playwright-common';

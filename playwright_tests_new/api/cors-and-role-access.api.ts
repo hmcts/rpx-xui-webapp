@@ -1,6 +1,8 @@
 import { test, expect, request } from '@playwright/test';
+
 import { config } from '../common/apiTestConfig';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
+import { assertCorsHeaders, shouldIgnoreCorsError } from './utils/corsUtils';
 
 const baseURL = config.baseUrl.replace(/\/+$/, '');
 
@@ -67,30 +69,3 @@ test.describe('CORS helper coverage', () => {
     expect(shouldIgnoreCorsError(new Error('ETIMEDOUT manage-case'))).toBe(false);
   });
 });
-
-function assertCorsHeaders(
-  expected: ReadonlyArray<number>,
-  status: number,
-  headers: Record<string, string>,
-  origin: string
-) {
-  if (expected === StatusSets.corsAllowed && status < 500) {
-    const allowOrigin = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-    if (allowOrigin) {
-      expect(allowOrigin).toBe(origin);
-    }
-  }
-  if (expected === StatusSets.corsDisallowed && status < 500) {
-    const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-    expect(allowed === origin).toBe(false);
-  }
-}
-
-function shouldIgnoreCorsError(error: unknown): boolean {
-  const message = (error as Error)?.message ?? '';
-  if (/ENOTFOUND|ECONNREFUSED/.test(message)) {
-    expect(message).toContain('manage-case');
-    return true;
-  }
-  return false;
-}

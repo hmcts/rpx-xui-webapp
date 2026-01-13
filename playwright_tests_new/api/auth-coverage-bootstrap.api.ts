@@ -1,14 +1,6 @@
 /**
  * @file auth-coverage-bootstrap.api.ts
  * @description Coverage tests for auth token bootstrap flows (IDAM/S2S integration)
- * @hmcts-audit-metadata {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "security_review": "required",
- *   "last_audit": "2026-01-12"
- * }
  * @security-note All auth flows use MOCKED credentials only. No real secrets.
  */
 
@@ -16,6 +8,51 @@ import { test, expect } from '@playwright/test';
 
 import { __test__ as authTest } from './utils/auth';
 import { withEnv } from './utils/testEnv';
+
+type FakeResponse = {
+  status: () => number;
+  url?: () => string;
+  text?: () => Promise<string>;
+  json?: () => Promise<unknown>;
+};
+
+type FakeRequestContext = {
+  get: (url: string) => Promise<FakeResponse>;
+  post: (url: string, opts?: unknown) => Promise<FakeResponse>;
+  storageState: (opts?: unknown) => Promise<void>;
+  dispose: () => Promise<void>;
+};
+
+const statusFn = (code: number) => () => code;
+
+function createFormLoginContext(
+  loginStatus: number,
+  postStatus: number,
+  html: string,
+  isAuthenticated = true,
+  authStatus = 200
+): FakeRequestContext {
+  const loginPage: FakeResponse = {
+    status: statusFn(loginStatus),
+    url: () => 'https://example.test/login',
+    text: async () => html
+  };
+
+  return {
+    get: async (url: string) => {
+      if (url === 'auth/login') {
+        return loginPage;
+      }
+      if (url === 'auth/isAuthenticated') {
+        return { status: statusFn(authStatus), json: async () => isAuthenticated };
+      }
+      return { status: statusFn(200) };
+    },
+    post: async () => ({ status: statusFn(postStatus) }),
+    storageState: async () => {},
+    dispose: async () => {}
+  };
+}
 
 type AuthEnvironmentKey =
   | 'API_AUTH_MODE'
@@ -44,14 +81,17 @@ test.describe('Auth helper coverage - token bootstrap', () => {
     });
 
     await withEnv(
-      { API_AUTH_MODE: 'token', ...Object.fromEntries(Object.keys(mockAuthEnv).filter(k => k !== 'API_AUTH_MODE').map(k => [k, undefined])) },
+      {
+        API_AUTH_MODE: 'token',
+        ...Object.fromEntries(Object.keys(mockAuthEnv).filter((k) => k !== 'API_AUTH_MODE').map((k) => [k, undefined]))
+      },
       () => {
         expect(authTest.isTokenBootstrapEnabled()).toBe(true);
       }
     );
 
     await withEnv(
-      Object.fromEntries(Object.keys(mockAuthEnv).map(k => [k, undefined])),
+      Object.fromEntries(Object.keys(mockAuthEnv).map((k) => [k, undefined])),
       () => {
         expect(authTest.isTokenBootstrapEnabled()).toBe(false);
       }
@@ -66,40 +106,12 @@ test.describe('Auth helper coverage - token bootstrap', () => {
   });
 
   test('createStorageStateViaForm handles csrf and login errors', async () => {
-    const createContext = (
-      loginStatus: number,
-      postStatus: number,
-      html: string,
-      isAuthenticated = true,
-      authStatus = 200
-    ) => {
-      const loginPage = {
-        status: () => loginStatus,
-        url: () => 'https://example.test/login',
-        text: async () => html
-      };
-      return {
-        get: async (url: string) => {
-          if (url === 'auth/login') {
-            return loginPage;
-          }
-          if (url === 'auth/isAuthenticated') {
-            return { status: () => authStatus, json: async () => isAuthenticated };
-          }
-          return { status: () => 200 };
-        },
-        post: async () => ({ status: () => postStatus }),
-        storageState: async () => {},
-        dispose: async () => {}
-      };
-    };
-
     await expect(
       authTest.createStorageStateViaForm(
         { username: 'test-user', password: 'mock-pass' },
         'state.json',
         'solicitor',
-        { requestFactory: async () => createContext(400, 200, '') as any }
+        { requestFactory: async () => createFormLoginContext(400, 200, '') as any }
       )
     ).rejects.toThrow('GET /auth/login');
 
@@ -108,7 +120,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
         { username: 'test-user', password: 'mock-pass' },
         'state.json',
         'solicitor',
-        { requestFactory: async () => createContext(200, 401, '') as any }
+        { requestFactory: async () => createFormLoginContext(200, 401, '') as any }
       )
     ).rejects.toThrow('POST https://example.test/login');
 
@@ -116,14 +128,14 @@ test.describe('Auth helper coverage - token bootstrap', () => {
       { username: 'test-user', password: 'mock-pass' },
       'state.json',
       'solicitor',
-      { requestFactory: async () => createContext(200, 200, '<input name="_csrf" value="token">') as any }
+      { requestFactory: async () => createFormLoginContext(200, 200, '<input name="_csrf" value="token">') as any }
     );
 
     await authTest.createStorageStateViaForm(
       { username: 'test-user', password: 'mock-pass' },
       'state.json',
       'solicitor',
-      { requestFactory: async () => createContext(200, 200, '<html></html>') as any }
+      { requestFactory: async () => createFormLoginContext(200, 200, '<html></html>') as any }
     );
   });
 
@@ -198,7 +210,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
   test('tryTokenBootstrap logs and returns false on request failures', async () => {
     const warnCalls: string[] = [];
     const logger = { warn: (message: string) => warnCalls.push(message) } as any;
-    
+
     // SECURITY: Mock environment - no real secrets
     const mockEnv = {
       IDAM_SECRET: 'MOCK_TEST_SECRET',

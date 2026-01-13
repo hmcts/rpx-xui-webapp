@@ -4,10 +4,12 @@ import { promises as fs } from 'node:fs';
 import {
   ApiClient as PlaywrightApiClient,
   type ApiLogEntry,
-  buildApiAttachment,
   createLogger
 } from '@hmcts/playwright-common';
-import { test as base, expect, request } from '@playwright/test';
+import { test as base, request } from '@playwright/test';
+
+export { expect } from '@playwright/test';
+export { buildApiAttachment } from '@hmcts/playwright-common';
 
 import { config } from '../common/apiTestConfig';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/auth';
@@ -81,8 +83,6 @@ export const test = base.extend<ApiFixtures>({
   }
 });
 
-export { expect, buildApiAttachment };
-
 async function createNodeApiClient(
   role: ApiUserRole | 'anonymous',
   logger: LoggerInstance,
@@ -91,7 +91,7 @@ async function createNodeApiClient(
   const storageState =
     role === 'anonymous'
       ? undefined
-      : await ensureStorageState(role as ApiUserRole);
+      : await ensureStorageState(role);
 
   const defaultHeaders = await buildDefaultHeaders(role);
   const context = await buildRequestContext(role, storageState, defaultHeaders);
@@ -160,7 +160,7 @@ async function buildDefaultHeaders(
   };
   const shouldInject = (deps.shouldAutoInjectXsrf ?? shouldAutoInjectXsrf)();
   if (role !== 'anonymous' && shouldInject) {
-    const xsrf = await (deps.getStoredCookie ?? getStoredCookie)(role as ApiUserRole, 'XSRF-TOKEN');
+    const xsrf = await (deps.getStoredCookie ?? getStoredCookie)(role, 'XSRF-TOKEN');
     if (xsrf) {
       headers['X-XSRF-TOKEN'] = xsrf;
     }
@@ -204,7 +204,7 @@ async function buildRequestContext(
       } catch {
         // ignore
       }
-      const rebuiltPath = await ensureState(role as ApiUserRole);
+      const rebuiltPath = await ensureState(role);
       context = await buildContext(rebuiltPath);
     } else {
       throw error;

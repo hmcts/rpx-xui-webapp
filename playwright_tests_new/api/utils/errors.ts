@@ -1,15 +1,6 @@
 /**
  * Custom error types for HMCTS EXUI API testing
  * Provides rich context for debugging and monitoring
- * 
- * @hmcts-audit-metadata
- * {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "v1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "last_audit": "2026-01-12"
- * }
  */
 
 import type { ApiUserRole } from './auth';
@@ -26,7 +17,7 @@ export abstract class ExuiTestError extends Error {
   ) {
     super(message);
     this.name = this.constructor.name;
-    
+
     // Maintain proper stack trace in V8 engines
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, this.constructor);

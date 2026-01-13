@@ -1,8 +1,7 @@
 import { test, expect } from './fixtures';
 import { withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
-import { resolveEntries } from './utils/caseShareUtils';
-import { CaseShareResponseVariant } from './utils/types';
+import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
 
 const CASESHARE_ENDPOINTS = [
   {
@@ -32,8 +31,6 @@ const CASESHARE_ENDPOINTS = [
     schema: expectCaseShareShape
   }
 ] as const;
-
-type CaseShareSchema = ((payload: CaseShareResponseVariant, property: string) => void) | unknown;
 
 test.describe('Case share endpoints', () => {
   for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
@@ -84,15 +81,3 @@ test.describe('Case share helper coverage', () => {
     expect(resolveEntries(undefined as any, 'cases')).toEqual([]);
   });
 });
-
-function assertCaseShareEntries(data: any, property: string, schema: CaseShareSchema) {
-  const entries = resolveEntries(data, property);
-  expect(Array.isArray(entries)).toBe(true);
-  if (entries.length > 0) {
-    if (typeof schema === 'function') {
-      schema(data as CaseShareResponseVariant, property);
-    } else {
-      expect(entries[0]).toEqual(schema);
-    }
-  }
-}

@@ -113,3 +113,8 @@ ignore/
 
 #playwright
 test-results/
+
+# Accidental duplicates (do not commit)
+/.c8rc.json
+/playwright_tests_new/api/auth.ts
+/playwright_tests_new/api/auth-coverage.api.ts

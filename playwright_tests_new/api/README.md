@@ -16,6 +16,10 @@ This folder contains the Playwright API suite that replaces the legacy Mocha `ya
 - Capture raw V8 coverage + Playwright attachments:  
   `yarn test:api:pw:coverage`
 
+## Parallelism (workers)
+- In CI, Playwright is configured to run with **8 workers** for predictable parallelism.
+- Locally, worker count is auto-sized by default; you can override it by passing Playwright's `--workers` flag.
+
 ## Authentication model
 - Default behaviour: the `utils/auth.ts` helper will first attempt token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken` when the required env vars exist. If token bootstrap fails or the env vars are absent, it falls back to the `/auth/login` form flow and caches storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`.
 - Required for token bootstrap: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `S2S_URL`, `S2S_MICROSERVICE_NAME` (or `MICROSERVICE`), optional `IDAM_OAUTH2_SCOPE`, `IDAM_RETURN_URL`. Opt out with `API_AUTH_MODE=form`.

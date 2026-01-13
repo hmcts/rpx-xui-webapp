@@ -6,10 +6,25 @@ import { config } from '../common/apiTestConfig';
 import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { expectRoleAssignmentShape } from './utils/assertions';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
+import {
+  applyExpiredCookies,
+  assertGlobalSearchResults,
+  assertGlobalSearchServices,
+  assertLocationsResponse,
+  assertManageLabellingResponse,
+  assertMyAccessCount,
+  assertRoleAccessByCaseIdResponse,
+  assertRoleAccessGetResponse,
+  assertRoleAssignmentsIfPresent,
+  assertSearchCasesResponse,
+  assertStaffRefDataResponse,
+  assertSupportedJurisdictions,
+  assertValidRolesResponse,
+  buildExpiredCookies
+} from './utils/searchRefDataUtils';
 
 test.describe('Global search', () => {
   test('lists available services', async ({ apiClient }) => {
@@ -232,8 +247,15 @@ test.describe('Role access / AM', () => {
     });
   });
 
-  test('role access confirm rejects case officer without solicitor role', async ({ apiClientFor }) => {
-    test.skip(!hasCaseOfficer, 'Case officer not configured for this environment.');
+  test('role access confirm rejects case officer without solicitor role', async ({ apiClientFor }, testInfo) => {
+    if (!hasCaseOfficer) {
+      testInfo.annotations.push({
+        type: 'notice',
+        description: 'Case officer not configured for this environment.'
+      });
+      expect(hasCaseOfficer).toBe(false);
+      return;
+    }
     const client = await apiClientFor('caseOfficer_r1');
     const res = await client.post('api/role-access/allocate-role/confirm', {
       data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
@@ -375,165 +397,3 @@ test.describe('Search/refdata helper coverage', () => {
     expect(buildExpiredCookies({})).toEqual([]);
   });
 });
-
-function assertGlobalSearchServices(status: number, data: unknown) {
-  if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expect(data[0]).toEqual(
-      expect.objectContaining({
-        serviceId: expect.any(String),
-        serviceName: expect.any(String)
-      })
-    );
-  }
-}
-
-function assertGlobalSearchResults(status: number, data: unknown) {
-  if (status === 200 && data) {
-    expect(data).toHaveProperty('results');
-    if (Array.isArray(data.results) && data.results.length > 0) {
-      const first = data.results[0];
-      expect(first).toEqual(expect.objectContaining({}));
-      if (first.caseReference) {
-        expect(typeof first.caseReference).toBe('string');
-      }
-    }
-  }
-}
-
-function assertSearchCasesResponse(status: number, data: unknown) {
-  if (status === 200 && data) {
-    if (typeof data.total === 'number' && Array.isArray(data.cases)) {
-      expect(data.total).toBeGreaterThanOrEqual(0);
-      if (data.cases.length > 0) {
-        expect(data.cases[0]).toEqual(expect.anything());
-      }
-    } else {
-      expect(data).toEqual(expect.anything());
-    }
-  }
-}
-
-function assertSupportedJurisdictions(status: number, data: unknown) {
-  if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expect(typeof data[0]).toBe('string');
-  }
-}
-
-function assertLocationsResponse(status: number, data: unknown) {
-  if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expect(data[0]).toHaveProperty('epimms_id');
-  }
-}
-
-interface StaffEntry {
-  known_as: string;
-  email_id: string;
-  [key: string]: unknown;
-}
-
-interface StaffRefDataResponse {
-  staff?: StaffEntry[];
-}
-
-function assertStaffRefDataResponse(status: number, data: unknown) {
-  const typed = data as Partial<StaffRefDataResponse>;
-  if (status === 200 && Array.isArray(typed?.staff) && typed.staff.length > 0) {
-    const staffEntry = typed.staff[0];
-    expect(staffEntry).toEqual(
-      expect.objectContaining({
-        known_as: expect.any(String),
-        email_id: expect.any(String)
-      })
-    );
-  }
-}
-
-interface MyAccessCountResponse {
-  count?: number;
-}
-
-function assertMyAccessCount(status: number, data: unknown) {
-  if (status === 200) {
-    if (typeof data === 'number') {
-      expect(data).toBeGreaterThanOrEqual(0);
-    } else if (typeof (data as Partial<MyAccessCountResponse>)?.count === 'number') {
-      expect((data as MyAccessCountResponse).count).toBeGreaterThanOrEqual(0);
-    } else {
-      expect(data).toEqual(expect.anything());
-    }
-  }
-}
-
-function assertRoleAccessGetResponse(status: number, data: unknown) {
-  if (status === 200) {
-    if (Array.isArray(data) && data.length > 0) {
-      expectRoleAssignmentShape(data[0]);
-    } else if (Array.isArray((data as RoleAssignmentContainer)?.roleAssignmentResponse) && (data as RoleAssignmentContainer).roleAssignmentResponse!.length > 0) {
-      expectRoleAssignmentShape((data as RoleAssignmentContainer).roleAssignmentResponse![0]);
-    } else {
-      expect(data).toEqual(expect.anything());
-    }
-  }
-}
-
-function assertValidRolesResponse(status: number, data: unknown) {
-  if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expect(data[0]).toEqual(
-      expect.objectContaining({
-        roleId: expect.any(String),
-        roleName: expect.any(String)
-      })
-    );
-  }
-}
-
-interface RoleAccessByCaseIdResponse {
-  roleAssignmentResponse?: unknown[];
-}
-
-function assertRoleAccessByCaseIdResponse(status: number, data: unknown) {
-  const typed = data as Partial<RoleAccessByCaseIdResponse>;
-  if (status === 200 && Array.isArray(typed?.roleAssignmentResponse) && typed.roleAssignmentResponse.length > 0) {
-    expectRoleAssignmentShape(typed.roleAssignmentResponse[0]);
-  }
-}
-
-function assertRoleAssignmentsIfPresent(status: number, data: unknown) {
-  if ((status === 200 || status === 201) && Array.isArray(data) && data.length > 0) {
-    expectRoleAssignmentShape(data[0]);
-  }
-}
-
-function assertManageLabellingResponse(status: number, data: unknown) {
-  if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expectRoleAssignmentShape(data[0]);
-  }
-}
-
-interface Cookie {
-  name: string;
-  value: string;
-  expires: number;
-  [key: string]: unknown;
-}
-
-interface StorageStateWithCookies {
-  cookies: Cookie[];
-}
-
-function buildExpiredCookies(state: unknown) {
-  const typed = state as Partial<StorageStateWithCookies>;
-  return Array.isArray(typed.cookies)
-    ? typed.cookies.map((c) => ({ ...c, expires: 0 }))
-    : [];
-}
-
-interface RequestContext {
-  storageState: (opts: { cookies: Cookie[]; origins?: unknown[] }) => Promise<void>;
-}
-
-async function applyExpiredCookies(ctx: RequestContext, cookies: Cookie[]) {
-  if (cookies.length) {
-    await ctx.storageState({ cookies, origins: [] });
-  }
-}

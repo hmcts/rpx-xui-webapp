@@ -1,41 +1,9 @@
-/**
- * @hmcts-audit-metadata
- * {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "v1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "last_audit": "2026-01-12"
- * }
- */
 
 import { test, expect } from '@playwright/test';
-import path from 'node:path';
-import { pathToFileURL } from 'node:url';
 
-type EnvMap = Record<string, string | undefined>;
+import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
 
-interface ConfigModule {
-  __test__?: {
-    buildConfig: (env: EnvMap) => any;
-    resolveWorkerCount: (env: EnvMap) => number;
-  };
-  default?: ConfigModule;
-  [key: string]: any;
-}
-
-async function loadConfig() {
-  const configPath = path.resolve(process.cwd(), 'playwright.config.ts');
-  const configUrl = pathToFileURL(configPath).href;
-  const loaded = await import(configUrl);
-  return resolveConfigModule(loaded);
-}
-
-function resolveConfigModule(loaded: ConfigModule): ConfigModule {
-  return loaded?.__test__ ? loaded : loaded?.default ?? loaded;
-}
-
-let configModule: ConfigModule;
+let configModule: TestableConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
@@ -52,14 +20,20 @@ test.describe('Playwright config coverage', () => {
     expect(configured).toBe(4);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(1);
+    expect(ciCount).toBe(8);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
     expect(defaultCount).toBeGreaterThanOrEqual(1);
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
-    const withTest = resolveConfigModule({ __test__: { name: 'test' }, default: { name: 'default' } });
+    const withTest = resolveConfigModule({
+      __test__: {
+        buildConfig: () => ({}),
+        resolveWorkerCount: () => 1
+      },
+      default: { name: 'default' }
+    });
     expect(withTest.__test__).toBeDefined();
 
     const withDefault = resolveConfigModule({ default: { name: 'default' } });
@@ -79,6 +53,7 @@ test.describe('Playwright config coverage', () => {
       TEST_TYPE: undefined,
       HEAD: 'true'
     });
+    expect(config.workers).toBe(8);
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
     expect(config.reporter[1][1].outputFolder).toBe('custom-report');
@@ -86,6 +61,10 @@ test.describe('Playwright config coverage', () => {
     expect(config.reporter[1][1].release).toBe('Custom Release');
     expect(config.reporter[1][1].testEnvironment).toContain('ci');
     expect(config.projects[0].use.headless).toBe(false);
+
+    const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
+    expect(nodeApiProject).toBeDefined();
+    expect(nodeApiProject?.workers).toBe(8);
   });
 
   test('config defaults to local reporter values', async () => {

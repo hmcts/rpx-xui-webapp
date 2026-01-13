@@ -1,15 +1,6 @@
 /**
  * API Contract Tests
  * Validates response structures against expected schemas to ensure backward compatibility
- *
- * @hmcts-audit-metadata
- * {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "v1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "last_audit": "2026-01-12"
- * }
  */
 
 import { test, expect } from './fixtures';
@@ -25,19 +16,6 @@ const locationSchema = z.object({
 });
 
 test.describe('Work Allocation API Contracts', () => {
-  let cachedLocationId: string | undefined;
-
-  test.beforeAll(async ({ apiClient }) => {
-    // Fetch a location ID for tests that need it
-    const response = await apiClient.get(`workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`, {
-      throwOnError: false
-    });
-
-    if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
-      cachedLocationId = response.data[0]?.id;
-    }
-  });
-
   test('GET /workallocation/location contract: returns array of location objects with required fields', async ({ apiClient }) => {
     // Given: A solicitor user requesting locations for configured service codes
     const endpoint = `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`;

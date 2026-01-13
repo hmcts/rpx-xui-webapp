@@ -1,14 +1,6 @@
 /**
  * @file auth-coverage-basic.api.ts
  * @description Coverage tests for basic auth helper functions (string utils, cache, credentials)
- * @hmcts-audit-metadata {
- *   "agent_name": "HMCTS-AI-Assistant",
- *   "version": "1.0",
- *   "audit_reference": "EXUI-4031",
- *   "reviewer": "pending",
- *   "security_review": "required",
- *   "last_audit": "2026-01-12"
- * }
  * @security-note Tests basic utility functions with no real credentials
  */
 

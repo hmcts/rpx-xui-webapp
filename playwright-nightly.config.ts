@@ -38,6 +38,7 @@ module.exports = defineConfig({
 
   /* Opt out of parallel tests on CI. */
   workers: workerCount,
+  globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
 
   reporter: [
     [process.env.CI ? 'dot' : 'list'],
@@ -58,19 +59,27 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         headless: headlessMode,
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'],
+      use: {
+        ...devices['Desktop Firefox'],
         headless: headlessMode,
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     },
@@ -79,7 +88,10 @@ module.exports = defineConfig({
       use: {
         headless: headlessMode,
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     }

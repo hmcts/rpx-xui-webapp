@@ -15,6 +15,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-facilities',
   templateUrl: './hearing-facilities.component.html'
 })

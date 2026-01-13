@@ -61,12 +61,11 @@ export async function createApp() {
     app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
-    app.use(
-      csp({
-        defaultCsp: SECURITY_POLICY,
-        ...MC_CSP
-      })
-    );
+    const cspMiddleware = csp({
+      defaultCsp: SECURITY_POLICY,
+      ...MC_CSP
+    }) as unknown as express.RequestHandler;
+    app.use(cspMiddleware);
     app.use((req, res, next) => {
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
       res.header('Access-Control-Allow-Credentials', 'true');
@@ -87,7 +86,8 @@ export async function createApp() {
     app.disable('X-Powered-By');
   }
 
-  app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+  const cookieParserMiddleware = cookieParser(getConfigValue(SESSION_SECRET)) as unknown as express.RequestHandler;
+  app.use(cookieParserMiddleware);
 
   if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
     app.use(compression());
@@ -101,7 +101,7 @@ export async function createApp() {
   health.addReformHealthCheck(app);
 
   const xuiNodeMiddleware = await getXuiNodeMiddleware();
-  app.use(xuiNodeMiddleware);
+  app.use(xuiNodeMiddleware as unknown as express.RequestHandler);
 
   // applyProxy needs to be used before bodyParser
   initProxy(app);
@@ -113,7 +113,11 @@ export async function createApp() {
   app.use('/api', routes);
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
+  const csrfMiddleware = csrf({
+    cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' },
+    ignoreMethods: ['GET']
+  }) as unknown as express.RequestHandler;
+  app.use(csrfMiddleware);
   // Serve /index.html through the same nonce injector
   // This is to ensure that <MC URL>/index.html works with CSP
   app.get('/index.html', (req, res) => {
@@ -142,4 +146,3 @@ export async function createApp() {
 
   return app;
 }
-

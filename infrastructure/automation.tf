@@ -128,13 +128,14 @@ $htmlTable
         $endpoint = "https://$acsresourcename.communication.azure.com"
         $apiVersion = "2023-03-31"
         $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
-        
+        $recipientAddrList = $recipientaddress -split "," | ForEach-Object {
+            @{ address = $_.Trim() }
+        }
+
         $emailPayload = @{
             senderAddress = $senderaddress
             recipients = @{
-                to = @(
-                    @{ address = $recipientaddress }
-                )
+                to = $recipientAddrList
             }
             content = @{
                 subject = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"

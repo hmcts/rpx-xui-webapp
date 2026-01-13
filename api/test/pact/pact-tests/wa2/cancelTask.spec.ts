@@ -12,6 +12,7 @@ describe('Task management api, cancel a task', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
   let next;
   const taskId = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
+  const cancelProcess = 'EXUI_USER_CANCELLATION';
 
   describe('post /task/taskId/cancel', () => {
     beforeEach(() => {
@@ -24,7 +25,7 @@ describe('Task management api, cancel a task', () => {
         uponReceiving: 'taskId to cancel a task',
         withRequest: {
           method: 'POST',
-          path: `/task/${taskId}/cancel?cancellation_process=EXUI_USER_CANCELLATION`,
+          path: `/task/${taskId}/cancel?cancellation_process=${cancelProcess}`,
           headers: {
             'Authorization': 'Bearer someAuthorizationToken',
             'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
@@ -65,7 +66,10 @@ describe('Task management api, cancel a task', () => {
           params: {
             taskId: taskId,
             action: 'cancel'
-          }
+          },
+          query: {
+            cancelProcess
+          },
 
         });
         let resStatus = null;

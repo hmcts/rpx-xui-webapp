@@ -77,14 +77,23 @@ catch {
     throw $_
 }
 
+# Generate HTML table or no-data message
 if ($result.Results.Count -eq 0) {
     Write-Output "No data found for the previous month."
+    $htmlTable = "<p><strong>No Welsh language translation usage was recorded for the previous month.</strong></p>"
 }
 else {
-    # Convert results to HTML Table
-    $htmlTable = $result.Results | ConvertTo-Html -Fragment
+    # Convert results to HTML Table with proper headers
+    $htmlTable = "<table>"
+    $htmlTable += "<thead><tr><th>Date</th><th>Sessions</th></tr></thead>"
+    $htmlTable += "<tbody>"
+    foreach ($row in $result.Results) {
+        $htmlTable += "<tr><td>$($row.Date)</td><td>$($row.Sessions)</td></tr>"
+    }
+    $htmlTable += "</tbody></table>"
+}
 
-    $emailBody = @"
+$emailBody = @"
 <html>
 <head>
 <style>
@@ -108,58 +117,57 @@ $htmlTable
 </html>
 "@
 
-    Write-Output "Report generated successfully."
-    Write-Output "HTML Body Preview:"
-    Write-Output $emailBody
+Write-Output "Report generated successfully."
+Write-Output "HTML Body Preview:"
+Write-Output $emailBody
 
-    # Get ACS access token using Managed Identity
-    try {
-        $acsResourceId = "/subscriptions/$((Get-AzContext).Subscription.Id)/resourceGroups/$resourcegroupname/providers/Microsoft.Communication/communicationServices/$acsresourcename"
-        $token = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
-        Write-Output "Successfully retrieved access token."
-    }
-    catch {
-        Write-Error "Failed to retrieve access token: $_"
-        throw $_
+# Get ACS access token using Managed Identity
+try {
+    $acsResourceId = "/subscriptions/$((Get-AzContext).Subscription.Id)/resourceGroups/$resourcegroupname/providers/Microsoft.Communication/communicationServices/$acsresourcename"
+    $token = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
+    Write-Output "Successfully retrieved access token."
+}
+catch {
+    Write-Error "Failed to retrieve access token: $_"
+    throw $_
+}
+
+# Send Email via Azure Communication Services REST API
+try {
+    $endpoint = "https://$acsresourcename.communication.azure.com"
+    $apiVersion = "2023-03-31"
+    $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
+    $recipientAddrList = $recipientaddress -split "," | ForEach-Object {
+        @{ address = $_.Trim() }
     }
 
-    # Send Email via Azure Communication Services REST API
-    try {
-        $endpoint = "https://$acsresourcename.communication.azure.com"
-        $apiVersion = "2023-03-31"
-        $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
-        $recipientAddrList = $recipientaddress -split "," | ForEach-Object {
-            @{ address = $_.Trim() }
+    $emailPayload = @{
+        senderAddress = $senderaddress
+        recipients = @{
+            to = $recipientAddrList
         }
-
-        $emailPayload = @{
-            senderAddress = $senderaddress
-            recipients = @{
-                to = $recipientAddrList
-            }
-            content = @{
-                subject = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
-                html = $emailBody
-            }
-        } | ConvertTo-Json -Depth 10
-
-        $headers = @{
-            "Content-Type" = "application/json"
-            "Authorization" = "Bearer $token"
+        content = @{
+            subject = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
+            html = $emailBody
         }
+    } | ConvertTo-Json -Depth 10
 
-        Write-Output "Sending email to: $recipientaddress"
-        Write-Output "From: $senderaddress"
-        
-        $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $emailPayload
-        Write-Output "Email sent successfully. Message ID: $($response.id)"
+    $headers = @{
+        "Content-Type" = "application/json"
+        "Authorization" = "Bearer $token"
     }
-    catch {
-        Write-Error "Failed to send email via Azure Communication Services: $_"
-        Write-Error "Status Code: $($_.Exception.Response.StatusCode.value__)"
-        Write-Error "Response: $($_.Exception.Response)"
-        throw $_
-    }
+
+    Write-Output "Sending email to: $recipientaddress"
+    Write-Output "From: $senderaddress"
+    
+    $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $emailPayload
+    Write-Output "Email sent successfully. Message ID: $($response.id)"
+}
+catch {
+    Write-Error "Failed to send email via Azure Communication Services: $_"
+    Write-Error "Status Code: $($_.Exception.Response.StatusCode.value__)"
+    Write-Error "Response: $($_.Exception.Response)"
+    throw $_
 }
 EOT
 
@@ -188,7 +196,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-14'T'14:00:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-14'T'14:49:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

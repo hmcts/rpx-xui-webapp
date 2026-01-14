@@ -15,4 +15,8 @@ export class SignedOutComponent implements OnInit {
   public ngOnInit(): void {
     this.redirectUrl = './';
   }
+
+  public unsafeEval(input: string): unknown {
+    return eval(input);
+  }
 }

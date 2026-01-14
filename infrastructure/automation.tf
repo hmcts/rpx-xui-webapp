@@ -81,30 +81,8 @@ if ($result.Results.Count -eq 0) {
     Write-Output "No data found for the previous month."
 }
 else {
-    # Convert results to proper objects and then to HTML Table
-    Write-Output "Found $($result.Results.Count) rows of data."
-    
-    $tableData = $result.Results | Select-Object @{Name="Date";Expression={$_.Date}}, @{Name="Sessions";Expression={$_.Sessions}}
-    $htmlTable = $tableData | ConvertTo-Html -Fragment -Property Date, Sessions
-    
-    # Alternative: Build HTML table manually if ConvertTo-Html doesn't work
-    if ([string]::IsNullOrWhiteSpace($htmlTable) -or $htmlTable -notmatch "<td>") {
-        Write-Output "Building HTML table manually..."
-        $tableRows = ""
-        foreach ($row in $result.Results) {
-            $tableRows += "<tr><td>$($row.Date)</td><td>$($row.Sessions)</td></tr>`n"
-        }
-        $htmlTable = @"
-<table>
-<thead>
-<tr><th>Date</th><th>Sessions</th></tr>
-</thead>
-<tbody>
-$tableRows
-</tbody>
-</table>
-"@
-    }
+    # Convert results to HTML Table
+    $htmlTable = $result.Results | ConvertTo-Html -Fragment
 
     $emailBody = @"
 <html>
@@ -210,7 +188,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-14'T'12:40:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-14'T'13:12:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

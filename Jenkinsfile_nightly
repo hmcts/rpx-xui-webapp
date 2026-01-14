@@ -55,6 +55,13 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fortify-scan') {
+        steps.sh(script: '''
+          if [ -d "test_codecept/java/Fortify Scan" ]; then
+            mkdir -p "Fortify Scan"
+            cp -R "test_codecept/java/Fortify Scan/." "Fortify Scan/"
+          fi
+        ''')
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'Fortify Scan/**/*'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 

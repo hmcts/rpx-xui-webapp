@@ -40,7 +40,6 @@ export class RolesAndAccessContainerComponent implements OnInit {
 
   public ngOnInit(): void {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseNotifDetails) => {
-      console.log(caseNotifDetails);
       if (caseNotifDetails) {
         this.caseDetails = caseNotifDetails;
       }

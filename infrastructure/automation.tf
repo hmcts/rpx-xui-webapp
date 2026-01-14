@@ -45,28 +45,28 @@ catch {
 Import-Module Az.Communication -ErrorAction SilentlyContinue
 
 $query = @"
-        let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-        let endTime = startofmonth(now());
-        let FilteredRequests = requests
-        | where timestamp between (startTime .. endTime)
-        | where url has "/api/translation/cy"
-        | extend day = startofday(timestamp);
-        let UniqueSessionsPerDay = FilteredRequests
-        | where isnotempty(session_Id)
-        | summarize by day, session_Id
-        | summarize SessionCount = count() by day;
-        let HasNoSession = FilteredRequests
-        | where isempty(session_Id)
-        | summarize HasMissingSessions = count() by day
-        | extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-        UniqueSessionsPerDay
-        | join kind=fullouter HasNoSession on day
-        | extend
-            SessionCount = coalesce(SessionCount, 0),
-            NoSessionAddition = coalesce(NoSessionAddition, 0)
-        | extend TotalSessions = SessionCount + NoSessionAddition
-        | project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions
-        | order by Date asc
+let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+let endTime = startofmonth(now());
+let FilteredRequests = AppRequests
+| where TimeGenerated between (startTime .. endTime)
+| where Url has "/api/translation/cy"
+| extend day = startofday(TimeGenerated);
+let UniqueSessionsPerDay = FilteredRequests
+| where isnotempty(SessionId)
+| summarize by day, SessionId
+| summarize SessionCount = count() by day;
+let HasNoSession = FilteredRequests
+| where isempty(SessionId)
+| summarize HasMissingSessions = count() by day
+| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
+UniqueSessionsPerDay
+| join kind=fullouter HasNoSession on day
+| extend
+    SessionCount = coalesce(SessionCount, 0),
+    NoSessionAddition = coalesce(NoSessionAddition, 0)
+| extend TotalSessions = SessionCount + NoSessionAddition
+| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions
+| order by Date asc
 "@
 
 try {
@@ -212,7 +212,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-14'T'17:05:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-14'T'16:45:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

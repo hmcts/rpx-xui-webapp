@@ -77,20 +77,36 @@ catch {
     throw $_
 }
 
+# Debug output
+Write-Output "Query executed successfully."
+Write-Output "Results count: $($result.Results.Count)"
+if ($result.Results.Count -gt 0) {
+    Write-Output "First row properties: $($result.Results[0] | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name)"
+    Write-Output "First row data: $($result.Results[0] | ConvertTo-Json)"
+}
+
 # Generate HTML table or no-data message
-if ($result.Results.Count -eq 0) {
+if (-not $result.Results -or $result.Results.Count -eq 0) {
     Write-Output "No data found for the previous month."
     $htmlTable = "<p><strong>No Welsh language translation usage was recorded for the previous month.</strong></p>"
 }
 else {
+    Write-Output "Generating HTML table with $($result.Results.Count) rows."
     # Convert results to HTML Table with proper headers
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
+    
+    $rowCount = 0
     foreach ($row in $result.Results) {
-        $htmlTable += "<tr><td>$($row.Date)</td><td>$($row.Sessions)</td></tr>"
+        $dateValue = if ($row.Date) { $row.Date } elseif ($row.day) { $row.day } else { "N/A" }
+        $sessionValue = if ($row.Sessions) { $row.Sessions } elseif ($row.TotalSessions) { $row.TotalSessions } else { "0" }
+        $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
+        $rowCount++
     }
+    
     $htmlTable += "</tbody></table>"
+    Write-Output "Generated table with $rowCount data rows."
 }
 
 $emailBody = @"
@@ -196,7 +212,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-14'T'14:49:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-14'T'15:07:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

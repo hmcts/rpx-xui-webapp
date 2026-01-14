@@ -79,28 +79,54 @@ catch {
 
 # Debug output
 Write-Output "Query executed successfully."
+Write-Output "Result object type: $($result.GetType().FullName)"
+Write-Output "Results property type: $($result.Results.GetType().FullName)"
 Write-Output "Results count: $($result.Results.Count)"
-if ($result.Results.Count -gt 0) {
-    Write-Output "First row properties: $($result.Results[0] | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name)"
-    Write-Output "First row data: $($result.Results[0] | ConvertTo-Json)"
+
+# Convert to array and check again
+$dataRows = @($result.Results)
+Write-Output "Converted to array. Count: $($dataRows.Count)"
+
+if ($dataRows.Count -gt 0) {
+    Write-Output "First row type: $($dataRows[0].GetType().FullName)"
+    Write-Output "First row as string: $($dataRows[0].ToString())"
+    $firstRowProps = $dataRows[0].PSObject.Properties | Select-Object -ExpandProperty Name
+    Write-Output "First row properties: $($firstRowProps -join ', ')"
+    Write-Output "First row data: $($dataRows[0] | ConvertTo-Json -Depth 3)"
 }
 
 # Generate HTML table or no-data message
-if (-not $result.Results -or $result.Results.Count -eq 0) {
+if (-not $dataRows -or $dataRows.Count -eq 0) {
     Write-Output "No data found for the previous month."
     $htmlTable = "<p><strong>No Welsh language translation usage was recorded for the previous month.</strong></p>"
 }
 else {
-    Write-Output "Generating HTML table with $($result.Results.Count) rows."
+    Write-Output "Generating HTML table with $($dataRows.Count) rows."
     # Convert results to HTML Table with proper headers
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
     
     $rowCount = 0
-    foreach ($row in $result.Results) {
-        $dateValue = if ($row.Date) { $row.Date } elseif ($row.day) { $row.day } else { "N/A" }
-        $sessionValue = if ($row.Sessions) { $row.Sessions } elseif ($row.TotalSessions) { $row.TotalSessions } else { "0" }
+    for ($i = 0; $i -lt $dataRows.Count; $i++) {
+        $row = $dataRows[$i]
+        Write-Output "Processing row $($i + 1): $($row | ConvertTo-Json -Compress)"
+        
+        # Get all properties
+        $props = $row.PSObject.Properties
+        $dateValue = "N/A"
+        $sessionValue = "0"
+        
+        foreach ($prop in $props) {
+            Write-Output "  Property: $($prop.Name) = $($prop.Value)"
+            if ($prop.Name -eq "Date" -or $prop.Name -eq "day") {
+                $dateValue = $prop.Value
+            }
+            if ($prop.Name -eq "Sessions" -or $prop.Name -eq "TotalSessions") {
+                $sessionValue = $prop.Value
+            }
+        }
+        
         $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
         $rowCount++
     }
@@ -212,7 +238,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-14'T'16:45:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-14'T'17:20:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

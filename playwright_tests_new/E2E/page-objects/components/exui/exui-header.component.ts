@@ -4,10 +4,12 @@ import { expect, Page } from "@playwright/test";
 export class ExuiHeaderComponent {
   readonly header = this.page.locator("exui-header");
   readonly results = this.page.locator("ccd-search-result");
-  readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation__item');
+  readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
+  readonly selectedPageItem = this.header.locator('.hmcts-header a.hmcts-header__link')
+  readonly languageToggle = this.header.locator('button.language');
   private waitUtils = new WaitUtils();
 
-  constructor(private page: Page) {}
+  constructor(private page: Page) { }
 
   public async selectHeaderMenuItem(menuItemText: string): Promise<void> {
     const menuItem = this.headerMenuItems.filter({ hasText: menuItemText });
@@ -21,4 +23,15 @@ export class ExuiHeaderComponent {
     });
     await expect(this.header).toBeVisible();
   }
+
+  public async switchLanguage(language: string): Promise<void> {
+    if (language === await this.languageToggle.innerText()) {
+      await this.languageToggle.click();
+      await this.page.waitForLoadState('domcontentloaded');
+       }
+    else {
+      console.log(`Language is already set to ${language}`);
+    }
+  }
+
 }

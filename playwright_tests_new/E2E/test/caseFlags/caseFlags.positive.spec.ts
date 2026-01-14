@@ -39,7 +39,7 @@ test.describe("Case level case flags", () => {
             expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
         });
 
-        await test.step("Verify the case level flag is shown in the history tab", async () => {
+        await test.step("Verify the case level flag is shown in the flags tab", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Flags');
             const expectedFlag = {
                 "Case flags": 'Welsh forms and communications',
@@ -92,7 +92,7 @@ test.describe("Party level case flags", () => {
             expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
         });
 
-        await test.step("Verify the party level case flag is shown in the history tab", async () => {
+        await test.step("Verify the party level case flag is shown in the flags tab", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Flags');
             const expectedFlag = {
                 "Party level flags": 'I want to speak Welsh at a hearing',

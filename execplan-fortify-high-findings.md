@@ -12,6 +12,7 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 
 - [x] (2026-01-14 15:27Z) Create Secure-by-Design plan in `rpx-xui-webapp/securebydesign-fortify-high-findings.md`.
 - [x] (2026-01-14 15:29Z) Copy Fortify report outputs into workspace root in `rpx-xui-webapp/Jenkinsfile_nightly` and archive them reliably.
+- [x] (2026-01-14 19:38Z) Configure CNP PR Fortify scans to use the `rpx-aat` Key Vault in `rpx-xui-webapp/Jenkinsfile_CNP`.
 - [ ] (2026-01-14 15:27Z) Obtain the Fortify HIGH findings report and map each finding to source files and line numbers in this repo.
 - [ ] (2026-01-14 15:27Z) Implement code fixes for each HIGH finding and add or update tests where behavior changes.
 - [ ] (2026-01-14 15:27Z) Re-run the Fortify scan in CI and confirm the build passes the HIGH severity gate and the report artifact is present.
@@ -34,6 +35,9 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
   Date/Author: 2026-01-14 / Codex.
 - Decision: Pin local Fortify runs to Java Corretto 17.0.15.6.1 via `.tool-versions`.
   Rationale: Aligns with the requested toolchain and avoids `asdf` runtime errors for `yarn fortifyScan`.
+  Date/Author: 2026-01-14 / Codex.
+- Decision: Set `enableFortifyScan('rpx-aat')` in `rpx-xui-webapp/Jenkinsfile_CNP`.
+  Rationale: CNP PR Fortify scans default to `xui-aat` vault and fail to resolve; `rpx-aat` matches nightly and resolves secrets.
   Date/Author: 2026-01-14 / Codex.
 
 ## Outcomes & Retrospective
@@ -101,3 +105,4 @@ The Fortify client is provided by `com.github.hmcts:fortify-client:1.4.10:all` (
 2026-01-14: Clarified the Fortify scan working directory and noted the Java toolchain requirement.
 2026-01-14: Added `.tool-versions` to pin Java Corretto 17.0.15.6.1 for local Fortify runs.
 2026-01-14: Noted that local Fortify uploads may require adding the HMCTS CA chain to the Java truststore.
+2026-01-14: Configured CNP Fortify scans to use the `rpx-aat` Key Vault for PR builds.

@@ -20,3 +20,12 @@ dummy.pdf
 dist/
 *.iml
 *.log
+.DS_Store
+.sessions/
+functional-output/
+playwright_tests_new/
+test-results/
+.yarn/cache/
+.yarn/global/
+.yarn/install-state.gz
+.yarn/unplugged/

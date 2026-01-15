@@ -97,91 +97,73 @@ catch {
     Write-Warning "Check query failed: $_"
 }
 
-# Main Welsh translation query
+# Main Welsh translation query - using last 31 days for testing
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
-let FilteredRequests = requests
+requests
 | where timestamp > ago(31d)
 | where url has "/api/translation/cy"
-| extend day = bin(timestamp, 1d);
-let UniqueSessionsPerDay = FilteredRequests
-| where isnotempty(session_Id)
-| summarize by day, session_Id
-| summarize SessionCount = count() by day;
-let HasNoSession = FilteredRequests
-| where isempty(session_Id)
-| summarize HasMissingSessions = count() by day
-| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-UniqueSessionsPerDay
-| join kind=fullouter HasNoSession on day
-| extend SessionCount = coalesce(SessionCount, 0), NoSessionAddition = coalesce(NoSessionAddition, 0)
-| extend TotalSessions = SessionCount + NoSessionAddition
-| project day, TotalSessions
-| order by day asc
-
-
+| extend day = startofday(timestamp)
+| where isnotnull(day)
+| summarize UniqueCount = dcountif(session_Id, isnotempty(session_Id)), 
+            NoSessionCount = countif(isempty(session_Id))
+            by day
+| extend Sessions = UniqueCount + iff(NoSessionCount > 0, 1, 0)
+| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions
+| order by Date asc
 "@
 
 try {
     $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query
+    Write-Output "Query executed successfully."
 }
 catch {
-    Write-Error "Failed to query Log Analytics workspace."
+    Write-Error "Failed to query Log Analytics workspace: $($_.Exception.Message)"
+    if ($_.Exception.Response) {
+        Write-Error "Response: $($_.Exception.Response)"
+    }
     throw $_
 }
 
-# Debug output
-Write-Output "Query executed successfully."
-Write-Output "Result object type: $($result.GetType().FullName)"
-Write-Output "Results property type: $($result.Results.GetType().FullName)"
-Write-Output "Results count: $($result.Results.Count)"
-
-# Convert to array and check again
-$dataRows = @($result.Results)
-Write-Output "Converted to array. Count: $($dataRows.Count)"
+# Safely convert to array
+$dataRows = @()
+if ($null -ne $result -and $null -ne $result.Results) {
+    try {
+        $dataRows = @($result.Results)
+        Write-Output "Results retrieved. Count: $($dataRows.Count)"
+    }
+    catch {
+        Write-Warning "Error converting results to array: $_"
+        $dataRows = @()
+    }
+}
+else {
+    Write-Output "Result or Results property is null."
+}
 
 if ($dataRows.Count -gt 0) {
-    Write-Output "First row type: $($dataRows[0].GetType().FullName)"
-    Write-Output "First row as string: $($dataRows[0].ToString())"
-    $firstRowProps = $dataRows[0].PSObject.Properties | Select-Object -ExpandProperty Name
-    Write-Output "First row properties: $($firstRowProps -join ', ')"
-    Write-Output "First row data: $($dataRows[0] | ConvertTo-Json -Depth 3)"
+    Write-Output "Sample first row: Date=$($dataRows[0].Date), Sessions=$($dataRows[0].Sessions)"
 }
 
 # Generate HTML table or no-data message
 if (-not $dataRows -or $dataRows.Count -eq 0) {
-    Write-Output "No data found for the previous month."
-    $htmlTable = "<p><strong>No Welsh language translation usage was recorded for the previous month.</strong></p>"
+    Write-Output "No Welsh translation data found for last 31 days."
+    $htmlTable = "<p><strong>No Welsh language translation usage was recorded in the reporting period.</strong></p>"
 }
 else {
     Write-Output "Generating HTML table with $($dataRows.Count) rows."
-    # Convert results to HTML Table with proper headers
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
     
     $rowCount = 0
-    for ($i = 0; $i -lt $dataRows.Count; $i++) {
-        $row = $dataRows[$i]
-        Write-Output "Processing row $($i + 1): $($row | ConvertTo-Json -Compress)"
-        
-        # Get all properties
-        $props = $row.PSObject.Properties
-        $dateValue = "N/A"
-        $sessionValue = "0"
-        
-        foreach ($prop in $props) {
-            Write-Output "  Property: $($prop.Name) = $($prop.Value)"
-            if ($prop.Name -eq "Date" -or $prop.Name -eq "day") {
-                $dateValue = $prop.Value
-            }
-            if ($prop.Name -eq "Sessions" -or $prop.Name -eq "TotalSessions") {
-                $sessionValue = $prop.Value
-            }
+    foreach ($row in $dataRows) {
+        if ($null -ne $row) {
+            $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+            $sessionValue = if ($null -ne $row.Sessions) { $row.Sessions } else { "0" }
+            $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
+            $rowCount++
         }
-        
-        $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
-        $rowCount++
     }
     
     $htmlTable += "</tbody></table>"
@@ -291,7 +273,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-15'T'13:53:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-15'T'14:23:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

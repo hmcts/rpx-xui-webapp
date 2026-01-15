@@ -55,6 +55,7 @@ withPipeline(type, product, component) {
 
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    setVaultName(vault)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableAksStagingDeployment()
     disableLegacyDeployment()

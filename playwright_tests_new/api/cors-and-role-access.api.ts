@@ -1,6 +1,8 @@
 import { test, expect, request } from '@playwright/test';
+
 import { config } from '../common/apiTestConfig';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
+import { assertCorsHeaders, shouldIgnoreCorsError } from './utils/corsUtils';
 
 const baseURL = config.baseUrl.replace(/\/+$/, '');
 
@@ -20,21 +22,9 @@ test.describe('CORS and OPTIONS', () => {
           failOnStatusCode: false
         });
         expectStatus(res.status(), expected);
-        const headers = res.headers();
-        if (expected === StatusSets.corsAllowed && res.status() < 500) {
-          const allowOrigin = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-          if (allowOrigin) {
-            expect(allowOrigin).toBe(origin);
-          }
-        }
-        if (expected === StatusSets.corsDisallowed && res.status() < 500) {
-          const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-          expect(allowed === origin).toBe(false);
-        }
+        assertCorsHeaders(expected, res.status(), res.headers(), origin);
       } catch (error) {
-        const message = (error as Error)?.message ?? '';
-        if (/ENOTFOUND|ECONNREFUSED/.test(message)) {
-          expect(message).toContain('manage-case');
+        if (shouldIgnoreCorsError(error)) {
           return;
         }
         throw error;
@@ -52,21 +42,9 @@ test.describe('CORS and OPTIONS', () => {
           failOnStatusCode: false
         });
         expectStatus(res.status(), expected);
-        const headers = res.headers();
-        if (expected === StatusSets.corsAllowed && res.status() < 500) {
-          const allowOrigin = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-          if (allowOrigin) {
-            expect(allowOrigin).toBe(origin);
-          }
-        }
-        if (expected === StatusSets.corsDisallowed && res.status() < 500) {
-          const allowed = headers['access-control-allow-origin'] || headers['Access-Control-Allow-Origin'];
-          expect(allowed === origin).toBe(false);
-        }
+        assertCorsHeaders(expected, res.status(), res.headers(), origin);
       } catch (error) {
-        const message = (error as Error)?.message ?? '';
-        if (/ENOTFOUND|ECONNREFUSED/.test(message)) {
-          expect(message).toContain('manage-case');
+        if (shouldIgnoreCorsError(error)) {
           return;
         }
         throw error;
@@ -74,5 +52,20 @@ test.describe('CORS and OPTIONS', () => {
         await ctx.dispose();
       }
     });
+  });
+});
+
+test.describe('CORS helper coverage', () => {
+  test('assertCorsHeaders handles allowed and disallowed origins', () => {
+    assertCorsHeaders(StatusSets.corsAllowed, 200, { 'access-control-allow-origin': 'https://example.test' }, 'https://example.test');
+    assertCorsHeaders(StatusSets.corsAllowed, 204, {}, 'https://example.test');
+    assertCorsHeaders(StatusSets.corsDisallowed, 200, { 'Access-Control-Allow-Origin': 'https://other.test' }, 'https://example.test');
+    assertCorsHeaders(StatusSets.corsDisallowed, 502, {}, 'https://example.test');
+  });
+
+  test('shouldIgnoreCorsError handles network failures', () => {
+    expect(shouldIgnoreCorsError(new Error('ENOTFOUND manage-case'))).toBe(true);
+    expect(shouldIgnoreCorsError(new Error('ECONNREFUSED manage-case'))).toBe(true);
+    expect(shouldIgnoreCorsError(new Error('ETIMEDOUT manage-case'))).toBe(false);
   });
 });

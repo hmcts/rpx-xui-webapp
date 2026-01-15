@@ -69,30 +69,56 @@ catch {
     throw $_
 }
 
+# Check for Welsh translation data first
+Write-Output "`nChecking for Welsh translation usage data..."
+$checkQuery = @"
+AppRequests
+| where TimeGenerated > ago(90d)
+| where Url has "/api/translation/cy"
+| summarize Count = count() by bin(TimeGenerated, 1d)
+| order by TimeGenerated desc
+| limit 5
+"@
+
+try {
+    $checkResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $checkQuery
+    $checkRows = @($checkResult.Results)
+    Write-Output "Welsh translation requests in last 90 days: $($checkRows.Count) days with activity"
+    if ($checkRows.Count -gt 0) {
+        Write-Output "Recent Welsh translation activity:"
+        $checkRows | ForEach-Object {
+            Write-Output "  Date: $($_.TimeGenerated), Count: $($_.Count)"
+        }
+    } else {
+        Write-Output "WARNING: No Welsh translation requests found in the last 90 days."
+    }
+}
+catch {
+    Write-Warning "Check query failed: $_"
+}
+
 # Main Welsh translation query
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
 let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
 let endTime = startofmonth(now());
-let FilteredRequests = AppRequests
+AppRequests
 | where TimeGenerated between (startTime .. endTime)
 | where Url has "/api/translation/cy"
-| extend day = startofday(TimeGenerated);
-let UniqueSessionsPerDay = FilteredRequests
+| extend day = startofday(TimeGenerated)
 | where isnotempty(SessionId)
-| summarize by day, SessionId
-| summarize SessionCount = count() by day;
-let HasNoSession = FilteredRequests
-| where isempty(SessionId)
-| summarize HasMissingSessions = count() by day
-| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
-UniqueSessionsPerDay
-| join kind=fullouter HasNoSession on day
-| extend
-    SessionCount = coalesce(SessionCount, 0),
-    NoSessionAddition = coalesce(NoSessionAddition, 0)
-| extend TotalSessions = SessionCount + NoSessionAddition
-| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions = TotalSessions
+| summarize UniqueSessionsPerDay = dcount(SessionId) by day
+| union (
+    AppRequests
+    | where TimeGenerated between (startTime .. endTime)
+    | where Url has "/api/translation/cy"
+    | extend day = startofday(TimeGenerated)
+    | where isempty(SessionId)
+    | summarize by day
+    | extend UniqueSessionsPerDay = 1
+)
+| summarize Sessions = sum(UniqueSessionsPerDay) by day
+| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions
 | order by Date asc
 "@
 
@@ -265,7 +291,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-15'T'10:50:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-15'T'12:20:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

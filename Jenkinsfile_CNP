@@ -65,6 +65,21 @@ withPipeline(type, product, component) {
         AppPipelineDsl.PactRoles.CONSUMER
     ])   
 
+    afterAlways('fortify-scan') {
+        steps.sh(script: '''
+          if [ -d "test_codecept/java/Fortify Scan" ]; then
+            mkdir -p "Fortify Scan"
+            cp -R "test_codecept/java/Fortify Scan/." "Fortify Scan/"
+          fi
+          if [ -f "test_codecept/java/config/fortify-client.properties" ]; then
+            mkdir -p "config"
+            cp "test_codecept/java/config/fortify-client.properties" "config/fortify-client.properties"
+          fi
+        ''')
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'Fortify Scan/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
+
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')  
     }

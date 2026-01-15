@@ -13,6 +13,7 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 - [x] (2026-01-14 15:27Z) Create Secure-by-Design plan in `rpx-xui-webapp/securebydesign-fortify-high-findings.md`.
 - [x] (2026-01-14 15:29Z) Copy Fortify report outputs into workspace root in `rpx-xui-webapp/Jenkinsfile_nightly` and archive them reliably.
 - [x] (2026-01-14 19:38Z) Configure CNP PR Fortify scans to use the `rpx-aat` Key Vault in `rpx-xui-webapp/Jenkinsfile_CNP`.
+- [x] (2026-01-15 09:04Z) Archive Fortify reports in `rpx-xui-webapp/Jenkinsfile_CNP` and copy `test_codecept/java/config/fortify-client.properties` into workspace `config/` for Fortify releaseId lookup.
 - [ ] (2026-01-14 15:27Z) Obtain the Fortify HIGH findings report and map each finding to source files and line numbers in this repo.
 - [ ] (2026-01-14 15:27Z) Implement code fixes for each HIGH finding and add or update tests where behavior changes.
 - [ ] (2026-01-14 15:27Z) Re-run the Fortify scan in CI and confirm the build passes the HIGH severity gate and the report artifact is present.
@@ -21,6 +22,8 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 
 - Observation: Jenkins attempts to archive `Fortify Scan/FortifyScanReport.html` from the workspace root, but the Fortify client writes the report under `test_codecept/java/Fortify Scan`.
   Evidence: Build log line: `Fortify Scan/FortifyScanReport.html` does not match, but `test_codecept/java/Fortify Scan/FortifyScanReport.html` does.
+- Observation: CNP PR builds do not archive Fortify reports and Fortify post-processing expects `config/fortify-client.properties` at the workspace root.
+  Evidence: PR log line: `Fortify: unable to determine releaseId (expected config/fortify-client.properties); skipping vulnerability details`.
 - Observation: Running `yarn fortifyScan` from the workspace root fails because the script is defined in `rpx-xui-webapp/package.json`.
   Evidence: `Usage Error: Couldn't find a script named "fortifyScan".`
 - Observation: The local environment requires a Java tool version to be set before the Gradle Fortify task can run.
@@ -39,6 +42,9 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 - Decision: Set `enableFortifyScan('rpx-aat')` in `rpx-xui-webapp/Jenkinsfile_CNP`.
   Rationale: CNP PR Fortify scans default to `xui-aat` vault and fail to resolve; `rpx-aat` matches nightly and resolves secrets.
   Date/Author: 2026-01-14 / Codex.
+- Decision: Add an `afterAlways('fortify-scan')` hook in `rpx-xui-webapp/Jenkinsfile_CNP` to copy Fortify reports and stage `test_codecept/java/config/fortify-client.properties` at `config/fortify-client.properties`.
+  Rationale: Ensures PR builds archive Fortify reports and the Fortify post-step can resolve the releaseId.
+  Date/Author: 2026-01-15 / Codex.
 
 ## Outcomes & Retrospective
 
@@ -46,7 +52,7 @@ Pending. This section will be updated after Fortify findings are remediated and 
 
 ## Context and Orientation
 
-Fortify is a static analysis tool that scans source code and fails the build when findings meet or exceed a configured severity threshold. In this repo, the Fortify scan is executed via the `fortifyScan` Gradle task defined in `rpx-xui-webapp/test_codecept/java/build.gradle` and invoked by the `yarn fortifyScan` script in `rpx-xui-webapp/package.json`. The Fortify client configuration lives in `rpx-xui-webapp/test_codecept/java/config/fortify-client.properties`, which sets `fortify.client.unacceptableSeverity=HIGH` and excludes large directories from scanning. The nightly Jenkins pipeline is defined in `rpx-xui-webapp/Jenkinsfile_nightly`, which enables Fortify via `enableFortifyScan('rpx-aat')` and archives artifacts after the `fortify-scan` stage.
+Fortify is a static analysis tool that scans source code and fails the build when findings meet or exceed a configured severity threshold. In this repo, the Fortify scan is executed via the `fortifyScan` Gradle task defined in `rpx-xui-webapp/test_codecept/java/build.gradle` and invoked by the `yarn fortifyScan` script in `rpx-xui-webapp/package.json`. The Fortify client configuration lives in `rpx-xui-webapp/test_codecept/java/config/fortify-client.properties`, which sets `fortify.client.unacceptableSeverity=HIGH` and excludes large directories from scanning. The nightly Jenkins pipeline is defined in `rpx-xui-webapp/Jenkinsfile_nightly`, which enables Fortify via `enableFortifyScan('rpx-aat')` and archives artifacts after the `fortify-scan` stage. The PR pipeline is defined in `rpx-xui-webapp/Jenkinsfile_CNP` and also archives Fortify reports while staging `config/fortify-client.properties` for Fortify metadata lookups.
 
 When the Fortify client runs, it writes its report under `test_codecept/java/Fortify Scan/`. The Jenkins job currently attempts to archive `Fortify Scan/FortifyScanReport.html` at the repository root, which leads to artifact warnings even when the report exists in the subdirectory.
 
@@ -56,7 +62,7 @@ This work follows `.agent/SECURE.md`. No secrets should be introduced, Fortify c
 
 ## Plan of Work
 
-First, update `rpx-xui-webapp/Jenkinsfile_nightly` to copy the Fortify report output directory from `test_codecept/java/Fortify Scan` into `Fortify Scan` at the workspace root after the Fortify scan finishes, then archive both the root-level and nested report directories. This keeps the scan scope unchanged while satisfying Jenkins artifact collection patterns.
+First, update `rpx-xui-webapp/Jenkinsfile_nightly` to copy the Fortify report output directory from `test_codecept/java/Fortify Scan` into `Fortify Scan` at the workspace root after the Fortify scan finishes, then archive both the root-level and nested report directories. Update `rpx-xui-webapp/Jenkinsfile_CNP` to apply the same report copying for PR builds and copy `test_codecept/java/config/fortify-client.properties` into `config/fortify-client.properties` for Fortify metadata lookup. This keeps the scan scope unchanged while satisfying Jenkins artifact collection patterns and the Fortify post-step.
 
 Next, obtain the Fortify HIGH findings report (either `test_codecept/java/Fortify Scan/FortifyScanReport.html` from a successful run or the issue list exported from Fortify). For each HIGH finding, record the file path, line number, category, and recommended fix. Update this ExecPlan with concrete remediation steps and any required tests once the findings are known.
 
@@ -68,7 +74,7 @@ Finally, re-run the Fortify scan in CI (or in an approved environment) and confi
 
 From the repo root:
 
-1) Update `rpx-xui-webapp/Jenkinsfile_nightly` to copy Fortify reports into the workspace root and archive them.
+1) Update `rpx-xui-webapp/Jenkinsfile_nightly` and `rpx-xui-webapp/Jenkinsfile_CNP` to copy Fortify reports into the workspace root and archive them. In `rpx-xui-webapp/Jenkinsfile_CNP`, also copy `test_codecept/java/config/fortify-client.properties` into `config/fortify-client.properties`.
 
 2) When you have access to Fortify outputs, open the report at `rpx-xui-webapp/test_codecept/java/Fortify Scan/FortifyScanReport.html` in a browser and filter to HIGH severity. Capture the file paths and line numbers for each finding and update this plan with those specifics.
 
@@ -82,7 +88,7 @@ From the repo root:
 
 ## Validation and Acceptance
 
-The nightly pipeline passes the Fortify stage without HIGH findings, and Jenkins archives `Fortify Scan/FortifyScanReport.html` from the workspace root. Locally, a Fortify scan (when run with valid credentials) produces the report in `test_codecept/java/Fortify Scan/` and the repository has no remaining HIGH findings in the Fortify report.
+The nightly pipeline passes the Fortify stage without HIGH findings, and Jenkins archives `Fortify Scan/FortifyScanReport.html` from the workspace root. PR builds archive the Fortify report artifacts and no longer emit the `Fortify: unable to determine releaseId (expected config/fortify-client.properties)` warning. Locally, a Fortify scan (when run with valid credentials) produces the report in `test_codecept/java/Fortify Scan/` and the repository has no remaining HIGH findings in the Fortify report.
 
 ## Idempotence and Recovery
 
@@ -106,3 +112,4 @@ The Fortify client is provided by `com.github.hmcts:fortify-client:1.4.10:all` (
 2026-01-14: Added `.tool-versions` to pin Java Corretto 17.0.15.6.1 for local Fortify runs.
 2026-01-14: Noted that local Fortify uploads may require adding the HMCTS CA chain to the Java truststore.
 2026-01-14: Configured CNP Fortify scans to use the `rpx-aat` Key Vault for PR builds.
+2026-01-15: Added CNP Fortify report archiving and staged `config/fortify-client.properties` for Fortify metadata lookups.

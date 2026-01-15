@@ -17,6 +17,7 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 - [x] (2026-01-15 09:52Z) Stage Fortify config and report outputs within the `fortifyScan` Gradle task in `rpx-xui-webapp/test_codecept/java/build.gradle`.
 - [x] (2026-01-15 10:38Z) Add Fortify API export script and hook it into Fortify scan post-steps to write `Fortify Scan/FortifyVulnerabilities.json`.
 - [x] (2026-01-15 11:22Z) Extend Fortify export script to support OAuth client credentials and merge API results into existing `FortifyVulnerabilities.json`.
+- [x] (2026-01-15 12:58Z) Replace hardcoded password literals in Playwright API coverage tests with generated mock credentials.
 - [ ] (2026-01-14 15:27Z) Obtain the Fortify HIGH findings report and map each finding to source files and line numbers in this repo.
 - [ ] (2026-01-14 15:27Z) Implement code fixes for each HIGH finding and add or update tests where behavior changes.
 - [ ] (2026-01-14 15:27Z) Re-run the Fortify scan in CI and confirm the build passes the HIGH severity gate and the report artifact is present.
@@ -142,3 +143,4 @@ The Fortify client is provided by `com.github.hmcts:fortify-client:1.4.10:all` (
 2026-01-15: Added Gradle tasks to stage Fortify config and report outputs during `fortifyScan`.
 2026-01-15: Added Fortify API export script to capture vulnerability details as JSON.
 2026-01-15: Updated Fortify export script to use OAuth client credentials and merge results into existing JSON.
+2026-01-15: Replaced hardcoded password literals in Playwright API coverage tests with generated mock credentials.

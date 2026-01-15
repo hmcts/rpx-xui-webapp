@@ -47,6 +47,15 @@ export class CaseDetailsPage extends Base {
     return caseNumberMatch ? caseNumberMatch[0] : '';
   }
 
+  async getCaseNumberFromUrl(): Promise<string> {
+    const url = this.page.url();
+    const caseNumberMatch = url.slice(url.lastIndexOf('/') + 1);
+    if (!caseNumberMatch) {
+      throw new Error(`Failed to extract case number from URL: "${url}"`);
+    }
+    return caseNumberMatch ? caseNumberMatch : '';
+  }
+
   async selectCaseAction(action: string) {
     await this.caseActionGoButton.waitFor();
     await this.caseActionsDropdown.selectOption(action);

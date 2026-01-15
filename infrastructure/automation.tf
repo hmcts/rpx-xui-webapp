@@ -100,26 +100,27 @@ catch {
 # Main Welsh translation query
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
-let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-let endTime = startofmonth(now());
-AppRequests
-| where TimeGenerated between (startTime .. endTime)
-| where Url has "/api/translation/cy"
-| extend day = startofday(TimeGenerated)
-| where isnotempty(SessionId)
-| summarize UniqueSessionsPerDay = dcount(SessionId) by day
-| union (
-    AppRequests
-    | where TimeGenerated between (startTime .. endTime)
-    | where Url has "/api/translation/cy"
-    | extend day = startofday(TimeGenerated)
-    | where isempty(SessionId)
-    | summarize by day
-    | extend UniqueSessionsPerDay = 1
-)
-| summarize Sessions = sum(UniqueSessionsPerDay) by day
-| project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions
-| order by Date asc
+let FilteredRequests = requests
+| where timestamp > ago(31d)
+| where url has "/api/translation/cy"
+| extend day = bin(timestamp, 1d);
+let UniqueSessionsPerDay = FilteredRequests
+| where isnotempty(session_Id)
+| summarize by day, session_Id
+| summarize SessionCount = count() by day;
+let HasNoSession = FilteredRequests
+| where isempty(session_Id)
+| summarize HasMissingSessions = count() by day
+| extend NoSessionAddition = iff(HasMissingSessions > 0, 1, 0);
+UniqueSessionsPerDay
+| join kind=fullouter HasNoSession on day
+| extend SessionCount = coalesce(SessionCount, 0), NoSessionAddition = coalesce(NoSessionAddition, 0)
+| extend TotalSessions = SessionCount + NoSessionAddition
+| project day, TotalSessions
+| order by day asc
+| render columnchart
+
+
 "@
 
 try {
@@ -291,7 +292,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-15'T'12:20:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-15'T'13:25:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

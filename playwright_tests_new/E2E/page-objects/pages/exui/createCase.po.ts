@@ -3,7 +3,7 @@ import { Base } from "../../base";
 import { faker } from '@faker-js/faker';
 
 export class CreateCasePage extends Base {
-
+ 
   readonly container = this.page.locator("exui-case-home");
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
@@ -27,9 +27,11 @@ export class CreateCasePage extends Base {
 
   // Locators for the Divorce - XUI Case PoC
   readonly person1Title = this.page.locator('#Person1_Title');
-  readonly firstNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('First Name (Optional)');
-  readonly lastNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)');
+  readonly person1FirstName = this.page.locator('#Person1_FirstName');
+  readonly person1LastName = this.page.locator('#Person1_LastName');
   readonly genderSelect = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Gender (Optional)');
+  readonly person2FirstName = this.page.locator('#Person2_FirstName');
+  readonly person2LastName= this.page.locator("#Person2_LastName");
   readonly jobTitleInput = this.page.getByRole('group', { name: 'Job (Optional)' }).getByLabel('Title (Optional)');
   readonly jobDescriptionInput = this.page.getByRole('textbox', { name: 'Description (Optional)' });
   readonly textField0Input = this.page.getByLabel('Text Field 0');
@@ -88,13 +90,17 @@ export class CreateCasePage extends Base {
     }
     await this.startButton.click();
   }
-
+  async startUpdateCase(firstName: string, lastName: string) {
+    await this.person2FirstName.fill(firstName);
+    await this.person2LastName.fill(lastName);
+    await this.continueButton.click()
+    await this.submitButton.click()
+  }
   async addressLookup(postCode: string, addressOption: string) {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();
     await this.addressSelect.selectOption(addressOption);
   }
-
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     await this.createCase(jurisdiction, caseType, 'Create Case');
@@ -165,10 +171,10 @@ export class CreateCasePage extends Base {
     await this.person1Title.click();
     await this.person1Title.fill(faker.person.prefix());
     await this.person1Title.press('Tab');
-    await this.firstNameInput.fill(faker.person.firstName());
-    await this.firstNameInput.press('Tab');
-    await this.lastNameInput.fill(faker.person.lastName());
-    await this.lastNameInput.press('Tab');
+    await this.person1FirstName.fill(faker.person.firstName());
+    await this.person2FirstName.press('Tab');
+    await this.person1LastName.fill(faker.person.lastName());
+    await this.person2LastName.press('Tab');
     await this.genderSelect.selectOption(gender);
     await this.jobTitleInput.click();
     await this.jobTitleInput.fill(faker.person.jobTitle());

@@ -23,8 +23,36 @@ dependencies {
 }
 // end::dependencies[]
 
+task stageFortifyConfig {
+    doLast {
+        def configFile = file('config/fortify-client.properties')
+        if (configFile.exists()) {
+            def workspaceRoot = projectDir.parentFile.parentFile
+            copy {
+                from configFile
+                into new File(workspaceRoot, 'config')
+            }
+        }
+    }
+}
+
+task copyFortifyReports {
+    doLast {
+        def reportDir = file('Fortify Scan')
+        if (reportDir.exists()) {
+            def workspaceRoot = projectDir.parentFile.parentFile
+            copy {
+                from reportDir
+                into new File(workspaceRoot, 'Fortify Scan')
+            }
+        }
+    }
+}
+
 task fortifyScan(type: JavaExec)  {
     main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
     classpath += sourceSets.test.runtimeClasspath
     jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+    dependsOn stageFortifyConfig
+    finalizedBy copyFortifyReports
 }

@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
 import { Base } from "../../base";
-import { faker } from '@faker-js/faker';
+import { faker, th } from '@faker-js/faker';
 
 export class CreateCasePage extends Base {
 
@@ -25,19 +25,60 @@ export class CreateCasePage extends Base {
   readonly party2GroupId = this.page.locator('#LegalRepParty2Flags_groupId');
   readonly party2Visibility = this.page.locator('#LegalRepParty2Flags_visibility');
 
+
+  // Locators for the Divorce - xuiTestCaseType
+  readonly textFieldInput = this.page.locator('#TextField');
+  readonly emailFieldInput = this.page.locator('#EmailField');
+  readonly phoneNumberFieldInput = this.page.locator('#PhoneUKField');
+  readonly dateFieldDayInput = this.page.locator('#DateField-day');
+  readonly dateFieldMonthInput = this.page.locator('#DateField-month');
+  readonly dateFieldYearInput = this.page.locator('#DateField-year');
+  readonly dateTimeFieldDayInput = this.page.locator('#DateTimeField-day');
+  readonly dateTimeFieldMonthInput = this.page.locator('#DateTimeField-month');
+  readonly dateTimeFieldYearInput = this.page.locator('#DateTimeField-year');
+  readonly dateTimeFieldHourInput = this.page.locator('#DateTimeField-hour');
+  readonly dateTimeFieldMinuteInput = this.page.locator('#DateTimeField-minute');
+  readonly dateTimeFieldSecondInput = this.page.locator('#DateTimeField-second');
+  readonly currenyFieldInput = this.page.locator('#AmountInGBPField');
+
+  readonly yesNoRadioButtons = this.page.locator('#YesOrNoField');
+  readonly applicantPostcode = this.page.locator('#AppicantPostcodeField');
+  readonly complexType1JudgeIsRightRadios = this.page.locator('#ComplexType_1_judgeLevelRadio');
+  readonly complexType1LevelOfJudgeRadioButtons = this.page.locator('#ComplexType_1_proposal');
+  readonly complexType1LevelOfJudgeDetailsInput = this.page.locator('#ComplexType_1_proposalReason');
+  readonly complexType1LevelOfJudgeKeyInput = this.page.locator('#ComplexType_1_TextField');
+  readonly complexType2AddressLine1Input = this.page.locator('#ComplexType_2_address__detailAddressLine1');
+  readonly complexType2EmailInput = this.page.locator('#ComplexType_2_email');
+  readonly complexType3ComplianceButton = this.page.locator('#ComplexType_3_responses button');
+  readonly complexType3ComplianceInput = this.page.locator('#ComplexType_3_responses input');
+  readonly complexType3DateOfBirthDay = this.page.locator('#dateOfBirth-day');
+  readonly complexType3DateOfBirthMonth = this.page.locator('#dateOfBirth-month');
+  readonly complexType3DateOfBirthYear = this.page.locator('#dateOfBirth-year');
+  readonly complexType3FileUploadInput = this.page.locator('#ComplexType_3_document');
+  readonly complexType3DateOfHearingDay = this.page.locator('#dateTimeUploaded-day');
+  readonly complexType3DateOfHearingMonth = this.page.locator('#dateTimeUploaded-month');
+  readonly complexType3DateOfHearingYear = this.page.locator('#dateTimeUploaded-year');
+  readonly complexType3DateOfHearingHour = this.page.locator('#dateTimeUploaded-hour');
+  readonly complexType3DateOfHearingMinute = this.page.locator('#dateTimeUploaded-minute');
+  readonly complexType3DateOfHearingSecond = this.page.locator('#dateTimeUploaded-second');
+  readonly complexType4AmountInput = this.page.locator('#ComplexType_4_amount');
+  readonly complexType4FirstTickBox = this.page.locator('#ComplexType_4_selectedCategories-item_1');
+  readonly complexType4SelectList = this.page.locator('#ComplexType_4_FixedListField');
+
   // Locators for the Divorce - XUI Case PoC
   readonly person1Title = this.page.locator('#Person1_Title');
-  readonly firstNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('First Name (Optional)');
-  readonly lastNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)');
-  readonly genderSelect = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Gender (Optional)');
-  readonly jobTitleInput = this.page.getByRole('group', { name: 'Job (Optional)' }).getByLabel('Title (Optional)');
-  readonly jobDescriptionInput = this.page.getByRole('textbox', { name: 'Description (Optional)' });
-  readonly textField0Input = this.page.getByLabel('Text Field 0');
-  readonly textField1Input = this.page.getByLabel('Text Field 1 (Optional)');
-  readonly textField2Input = this.page.getByLabel('Text Field 2 (Optional)');
-  readonly textField3Input = this.page.getByLabel('Text Field 3 (Optional)');
-  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: 'Check your answers' });
-  readonly testSubmitButton = this.page.getByRole('button', { name: 'Test submit' });
+  readonly firstNameInput = this.page.locator('#Person1_FirstName');
+  readonly lastNameInput = this.page.locator('#Person1_LastName');
+  readonly genderSelect = this.page.locator('#Person1_PersonGender');
+  readonly jobTitleInput = this.page.locator('#Person1_PersonJob_Title');
+  readonly jobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
+  readonly fileUploadInput = this.page.locator('#DocumentUrl');
+  readonly textField0Input = this.page.locator('#TextField0');
+  readonly textField1Input = this.page.locator('#TextField1');
+  readonly textField2Input = this.page.locator('#TextField2');
+  readonly textField3Input = this.page.locator('#TextField3');
+  readonly checkYourAnswersHeading = this.page.locator('.check-your-answers h2');
+  readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 
   // Employment case locators
   readonly receiptDayInput = this.page.locator('#receiptDate-day');
@@ -95,6 +136,23 @@ export class CreateCasePage extends Base {
     await this.addressSelect.selectOption(addressOption);
   }
 
+  async uploadFile(fileName: string, mimeType: string, fileContent: string) {
+    const [fileChooser] = await Promise.all([
+      this.page.waitForEvent('filechooser'),
+      this.page.click('input[type="file"]')
+    ]);
+    await fileChooser.setFiles({
+      name: fileName,
+      mimeType: mimeType,
+      buffer: Buffer.from(fileContent),
+    });
+    await this.page.waitForResponse(r => r.url().includes('/documentsv2') && r.request().method() === 'POST', { timeout: 10000 })
+      .catch(() => null);
+    await this.page
+      .locator(".error-message")
+      .getByLabel('Uploading...')
+      .waitFor({ state: "hidden" });
+  }
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     await this.createCase(jurisdiction, caseType, 'Create Case');
@@ -142,7 +200,101 @@ export class CreateCasePage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
-  async createCaseFlagDivorceCase(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'XUI Case flags V2.1') {
+  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string) {
+    switch (caseType) {
+      case 'xuiCaseFlagsV1':
+        return this.createDivorceCaseFlag(jurisdiction, caseType, testInput);
+      case 'XUI Case PoC':
+        return this.createDivorceCasePoC(jurisdiction, caseType, testInput);
+      case 'xuiTestCaseType':
+        return this.createDivorceCaseTest(jurisdiction, caseType, testInput);
+      default:
+        throw new Error(`createDivorceCase does not support case type: ${caseType}`);
+    }
+  }
+  async createDivorceCaseTest(jurisdiction: string = 'DIVORCE', caseType: string = 'xuiTestCaseType', testData: string) {
+
+    const today = new Date();
+    await this.createCase(jurisdiction, caseType, '');
+
+    await this.textFieldInput.fill(testData);
+    await this.continueButton.click();
+
+    await this.emailFieldInput.fill(faker.internet.email({ provider: 'example.com' }));
+    await this.phoneNumberFieldInput.fill('07123456789');
+
+    await this.dateFieldDayInput.fill(today.getDate().toString());
+    await this.dateFieldMonthInput.fill((today.getMonth() + 1).toString());
+    await this.dateFieldYearInput.fill((today.getFullYear() - 20).toString());
+
+    await this.dateTimeFieldDayInput.fill(today.getDate().toString());
+    await this.dateTimeFieldMonthInput.fill((today.getMonth() + 1).toString());
+    await this.dateTimeFieldYearInput.fill(today.getFullYear().toString());
+    await this.dateTimeFieldHourInput.fill('10');
+    await this.dateTimeFieldMinuteInput.fill('30');
+    await this.dateTimeFieldSecondInput.fill('15');
+
+    await this.currenyFieldInput.fill('1000');
+    await this.continueButton.click();
+
+    await this.yesNoRadioButtons.getByLabel('Yes').check();
+
+    await this.applicantPostcode.fill('SW1A 1AA');
+
+    await this.complexType1JudgeIsRightRadios.getByLabel('No').check();
+
+    await this.complexType1LevelOfJudgeRadioButtons.getByLabel('Item 1').check();
+    await this.complexType1LevelOfJudgeDetailsInput.fill('Details about why this level of judge is needed.');
+    await this.complexType1LevelOfJudgeKeyInput.fill('Key information');
+
+
+    await this.manualEntryLink.click();
+    await this.complexType2AddressLine1Input.fill('10 Test Street');
+
+    await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
+
+    await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%fake\n%%EOF');
+    // const [fileChooser] = await Promise.all([
+    //   this.page.waitForEvent('filechooser'),
+    //   this.complexType3FileUploadInput.click()
+    // ]);
+    // await fileChooser.setFiles({
+    //   name: 'sample.pdf',
+    //   mimeType: 'application/pdf',
+    //   buffer: Buffer.from('%PDF-1.4\n%fake\n%%EOF'),
+    // });
+    // await this.page.waitForResponse(r => r.url().includes('/documentv2') && r.request().method() === 'POST', { timeout: 10000 })
+    //   .catch(() => null);
+    // await this.page
+    //   .locator(".error-message")
+    //   .getByLabel('Uploading...')
+    //   .waitFor({ state: "hidden" });
+
+    await this.complexType3ComplianceButton.click();
+    await this.complexType3ComplianceInput.fill('Compliant response');
+    await this.complexType3DateOfBirthDay.fill('15');
+    await this.complexType3DateOfBirthMonth.fill('06');
+    await this.complexType3DateOfBirthYear.fill('1990');
+
+
+
+    await this.complexType3DateOfHearingDay.fill(today.getDate().toString());
+    await this.complexType3DateOfHearingMonth.fill((today.getMonth() + 1).toString());
+    await this.complexType3DateOfHearingYear.fill(today.getFullYear().toString());
+    await this.complexType3DateOfHearingHour.fill('14');
+    await this.complexType3DateOfHearingMinute.fill('45');
+    await this.complexType3DateOfHearingSecond.fill('30');
+
+    await this.complexType4AmountInput.fill('500');
+    await this.complexType4FirstTickBox.check();
+    await this.complexType4SelectList.selectOption('Item 1');
+
+    await this.continueButton.click();
+    await this.submitButton.click();
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  async createDivorceCaseFlag(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'xuiCaseFlagsV1') {
     await this.createCase(jurisdiction, caseType, '');
 
     await this.party1RoleOnCase.fill(testData);
@@ -157,7 +309,7 @@ export class CreateCasePage extends Base {
     await this.exuiSpinnerComponent.wait()
   }
 
-  async createDivorceCase(jurisdiction: string, caseType: string, textField0: string) {
+  async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     await this.createCase(jurisdiction, caseType, undefined);
 

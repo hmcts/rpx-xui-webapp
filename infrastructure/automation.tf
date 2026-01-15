@@ -97,11 +97,13 @@ catch {
     Write-Warning "Check query failed: $_"
 }
 
-# Main Welsh translation query - using last 31 days for testing
+# Main Welsh translation query
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
+let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+let endTime = startofmonth(now());
 requests
-| where timestamp > ago(31d)
+| where timestamp >= startTime and timestamp < endTime
 | where url has "/api/translation/cy"
 | extend day = startofday(timestamp)
 | where isnotnull(day)
@@ -153,23 +155,28 @@ if (-not $dataRows -or $dataRows.Count -eq 0) {
 else {
     Write-Output "Generating HTML table with $($dataRows.Count) rows."
     $htmlTable = "<table>"
-    $htmlTable += "<thead><tr><th>Date</th><th>Sessions</th></tr></thead>"
+    $htmlTable += "<thead><tr><th>Date</th><th>Unique Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
     
     $rowCount = 0
+    $totalSessions = 0
     foreach ($row in $dataRows) {
         if ($null -ne $row) {
             $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
             $sessionValue = if ($null -ne $row.Sessions) { $row.Sessions } else { "0" }
             $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
             $rowCount++
+            $totalSessions += [int]$sessionValue
         }
     }
     
-    $htmlTable += "</tbody></table>"
-    Write-Output "Generated table with $rowCount data rows."
+    $htmlTable += "</tbody>"
+    $htmlTable += "<tfoot><tr><th>Total</th><th>$totalSessions</th></tr></tfoot>"
+    $htmlTable += "</table>"
+    Write-Output "Generated table with $rowCount data rows. Total sessions: $totalSessions"
 }
 
+$reportMonth = [DateTime]::UtcNow.AddMonths(-1).ToString("MMMM yyyy")
 $emailBody = @"
 <html>
 <head>
@@ -177,6 +184,7 @@ $emailBody = @"
 table { border-collapse: collapse; width: 100%; margin: 20px 0; }
 th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
 th { background-color: #0b0c0c; color: white; font-weight: bold; }
+tfoot th { background-color: #005ea5; }
 tr:nth-child(even) { background-color: #f2f2f2; }
 tr:hover { background-color: #e0e0e0; }
 </style>
@@ -184,12 +192,12 @@ tr:hover { background-color: #e0e0e0; }
 <body>
 <h2>Monthly Welsh Language Usage Report</h2>
 <p>Environment: <strong>$($env:MODULE_PROJECT) $($env:MODULE_ENV)</strong></p>
-<p>Reporting Period: <strong>Previous Month</strong></p>
-<p>This report shows the daily unique sessions using Welsh language translation services.</p>
+<p>Reporting Period: <strong>$reportMonth</strong></p>
+<p>This report shows the daily unique sessions using Welsh language translation services (URL: /api/translation/cy).</p>
 <h3>Daily Welsh Translation Usage:</h3>
 $htmlTable
 <hr/>
-<p><small><em>Generated on: $(Get-Date)</em></small></p>
+<p><small><em>Generated on: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC</em></small></p>
 </body>
 </html>
 "@
@@ -273,7 +281,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-15'T'14:23:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-15'T'14:50:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

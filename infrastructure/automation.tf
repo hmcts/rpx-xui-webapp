@@ -127,12 +127,22 @@ catch {
     throw $_
 }
 
-# Safely convert to array
+# Safely convert to array and force enumeration
 $dataRows = @()
 if ($null -ne $result -and $null -ne $result.Results) {
     try {
-        $dataRows = @($result.Results)
+        # Force enumeration by piping to ForEach-Object
+        $dataRows = @($result.Results | ForEach-Object { $_ })
         Write-Output "Results retrieved. Count: $($dataRows.Count)"
+        Write-Output "Results type: $($result.Results.GetType().FullName)"
+        
+        if ($dataRows.Count -gt 0) {
+            Write-Output "First row type: $($dataRows[0].GetType().FullName)"
+            Write-Output "First row properties:"
+            $dataRows[0].PSObject.Properties | ForEach-Object {
+                Write-Output "  $($_.Name) = $($_.Value) (type: $($_.Value.GetType().Name))"
+            }
+        }
     }
     catch {
         Write-Warning "Error converting results to array: $_"
@@ -281,7 +291,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-15'T'14:50:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'16:32:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

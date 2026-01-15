@@ -15,6 +15,7 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 - [x] (2026-01-14 19:38Z) Configure CNP PR Fortify scans to use the `rpx-aat` Key Vault in `rpx-xui-webapp/Jenkinsfile_CNP`.
 - [x] (2026-01-15 09:04Z) Archive Fortify reports in `rpx-xui-webapp/Jenkinsfile_CNP` and copy `test_codecept/java/config/fortify-client.properties` into workspace `config/` for Fortify releaseId lookup.
 - [x] (2026-01-15 09:52Z) Stage Fortify config and report outputs within the `fortifyScan` Gradle task in `rpx-xui-webapp/test_codecept/java/build.gradle`.
+- [x] (2026-01-15 10:38Z) Add Fortify API export script and hook it into Fortify scan post-steps to write `Fortify Scan/FortifyVulnerabilities.json`.
 - [ ] (2026-01-14 15:27Z) Obtain the Fortify HIGH findings report and map each finding to source files and line numbers in this repo.
 - [ ] (2026-01-14 15:27Z) Implement code fixes for each HIGH finding and add or update tests where behavior changes.
 - [ ] (2026-01-14 15:27Z) Re-run the Fortify scan in CI and confirm the build passes the HIGH severity gate and the report artifact is present.
@@ -27,6 +28,8 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
   Evidence: PR log line: `Fortify: unable to determine releaseId (expected config/fortify-client.properties); skipping vulnerability details`.
 - Observation: Jenkins tries to archive Fortify reports before the post-stage copy hook runs.
   Evidence: Log sequence shows `archiveArtifacts` complaining about missing `Fortify Scan/FortifyScanReport.html` before the Fortify report copy step executes.
+- Observation: The Fortify HTML report template only includes summary counts and a portal link, not per-issue details.
+  Evidence: Built-in `ReportTemplate.html` contains only counts and a portal link with no findings table.
 - Observation: Running `yarn fortifyScan` from the workspace root fails because the script is defined in `rpx-xui-webapp/package.json`.
   Evidence: `Usage Error: Couldn't find a script named "fortifyScan".`
 - Observation: The local environment requires a Java tool version to be set before the Gradle Fortify task can run.
@@ -51,6 +54,9 @@ After this change, the Fortify static analysis scan for rpx-xui-webapp completes
 - Decision: Add Gradle tasks `stageFortifyConfig` and `copyFortifyReports`, and wire them to `fortifyScan` with `dependsOn`/`finalizedBy`.
   Rationale: Ensures Fortify config/report artifacts exist in the workspace root before Jenkins artifact archiving runs, even when the scan fails for HIGH findings.
   Date/Author: 2026-01-15 / Codex.
+- Decision: Add `rpx-xui-webapp/scripts/fortify-export-vulnerabilities.sh` to call the Fortify API after scans and write `Fortify Scan/FortifyVulnerabilities.json`.
+  Rationale: The default Fortify HTML report is summary-only, so we need a separate artifact with per-issue details.
+  Date/Author: 2026-01-15 / Codex.
 
 ## Outcomes & Retrospective
 
@@ -62,6 +68,8 @@ Fortify is a static analysis tool that scans source code and fails the build whe
 
 The Fortify Gradle build file now includes `stageFortifyConfig` and `copyFortifyReports` tasks that run before and after `fortifyScan`. These tasks copy `test_codecept/java/config/fortify-client.properties` and `test_codecept/java/Fortify Scan` into the workspace root so Jenkins can archive them consistently.
 
+The script `rpx-xui-webapp/scripts/fortify-export-vulnerabilities.sh` calls the Fortify API after a scan, using `FORTIFY_USER_NAME`, `FORTIFY_PASSWORD`, and the releaseId from `test_codecept/java/config/fortify-client.properties`, and writes `Fortify Scan/FortifyVulnerabilities.json` for artifact collection.
+
 When the Fortify client runs, it writes its report under `test_codecept/java/Fortify Scan/`. The Jenkins job currently attempts to archive `Fortify Scan/FortifyScanReport.html` at the repository root, which leads to artifact warnings even when the report exists in the subdirectory.
 
 ## Secure-by-Design Considerations
@@ -70,7 +78,7 @@ This work follows `.agent/SECURE.md`. No secrets should be introduced, Fortify c
 
 ## Plan of Work
 
-First, update `rpx-xui-webapp/Jenkinsfile_nightly` to copy the Fortify report output directory from `test_codecept/java/Fortify Scan` into `Fortify Scan` at the workspace root after the Fortify scan finishes, then archive both the root-level and nested report directories. Update `rpx-xui-webapp/Jenkinsfile_CNP` to apply the same report copying for PR builds and copy `test_codecept/java/config/fortify-client.properties` into `config/fortify-client.properties` for Fortify metadata lookup. Update `rpx-xui-webapp/test_codecept/java/build.gradle` so `fortifyScan` stages the config before running and copies report outputs to the workspace root on completion. This keeps the scan scope unchanged while satisfying Jenkins artifact collection patterns and the Fortify post-step.
+First, update `rpx-xui-webapp/Jenkinsfile_nightly` to copy the Fortify report output directory from `test_codecept/java/Fortify Scan` into `Fortify Scan` at the workspace root after the Fortify scan finishes, then archive both the root-level and nested report directories. Update `rpx-xui-webapp/Jenkinsfile_CNP` to apply the same report copying for PR builds and copy `test_codecept/java/config/fortify-client.properties` into `config/fortify-client.properties` for Fortify metadata lookup. Update `rpx-xui-webapp/test_codecept/java/build.gradle` so `fortifyScan` stages the config before running and copies report outputs to the workspace root on completion. Add `rpx-xui-webapp/scripts/fortify-export-vulnerabilities.sh` and run it in the Fortify post-step to produce `Fortify Scan/FortifyVulnerabilities.json`. This keeps the scan scope unchanged while satisfying Jenkins artifact collection patterns and the Fortify post-step.
 
 Next, obtain the Fortify HIGH findings report (either `test_codecept/java/Fortify Scan/FortifyScanReport.html` from a successful run or the issue list exported from Fortify). For each HIGH finding, record the file path, line number, category, and recommended fix. Update this ExecPlan with concrete remediation steps and any required tests once the findings are known.
 
@@ -86,11 +94,13 @@ From the repo root:
 
 2) Update `rpx-xui-webapp/test_codecept/java/build.gradle` to add `stageFortifyConfig` and `copyFortifyReports` tasks, and wire them to `fortifyScan` with `dependsOn` and `finalizedBy`.
 
-3) When you have access to Fortify outputs, open the report at `rpx-xui-webapp/test_codecept/java/Fortify Scan/FortifyScanReport.html` in a browser and filter to HIGH severity. Capture the file paths and line numbers for each finding and update this plan with those specifics.
+3) Add `rpx-xui-webapp/scripts/fortify-export-vulnerabilities.sh` and call it in the Fortify post-step to write `Fortify Scan/FortifyVulnerabilities.json`.
 
-4) Implement code fixes in the reported files and update or add tests. If a fix touches API input handling, ensure validation and error responses remain explicit and secure.
+4) When you have access to Fortify outputs, open the report at `rpx-xui-webapp/test_codecept/java/Fortify Scan/FortifyScanReport.html` in a browser and filter to HIGH severity. Capture the file paths and line numbers for each finding and update this plan with those specifics.
 
-5) Run the Fortify scan in an approved environment from `rpx-xui-webapp` (the script lives in `rpx-xui-webapp/package.json`, so running it from the workspace root will fail). The repo includes `.tool-versions` to pin Java Corretto 17.0.15.6.1 for `asdf`:
+5) Implement code fixes in the reported files and update or add tests. If a fix touches API input handling, ensure validation and error responses remain explicit and secure.
+
+6) Run the Fortify scan in an approved environment from `rpx-xui-webapp` (the script lives in `rpx-xui-webapp/package.json`, so running it from the workspace root will fail). The repo includes `.tool-versions` to pin Java Corretto 17.0.15.6.1 for `asdf`:
 
     yarn fortifyScan
 
@@ -98,7 +108,7 @@ From the repo root:
 
 ## Validation and Acceptance
 
-The nightly pipeline passes the Fortify stage without HIGH findings, and Jenkins archives `Fortify Scan/FortifyScanReport.html` from the workspace root. PR builds archive the Fortify report artifacts and no longer emit the `Fortify: unable to determine releaseId (expected config/fortify-client.properties)` warning or the `Fortify Scan/FortifyScanReport.html doesn’t match anything` archive warning. Locally, a Fortify scan (when run with valid credentials) produces the report in `test_codecept/java/Fortify Scan/` and the repository has no remaining HIGH findings in the Fortify report.
+The nightly pipeline passes the Fortify stage without HIGH findings, and Jenkins archives `Fortify Scan/FortifyScanReport.html` plus `Fortify Scan/FortifyVulnerabilities.json` from the workspace root. PR builds archive the Fortify report artifacts and no longer emit the `Fortify: unable to determine releaseId (expected config/fortify-client.properties)` warning or the `Fortify Scan/FortifyScanReport.html doesn’t match anything` archive warning. Locally, a Fortify scan (when run with valid credentials) produces the report in `test_codecept/java/Fortify Scan/` and the repository has no remaining HIGH findings in the Fortify report.
 
 ## Idempotence and Recovery
 
@@ -124,3 +134,4 @@ The Fortify client is provided by `com.github.hmcts:fortify-client:1.4.10:all` (
 2026-01-14: Configured CNP Fortify scans to use the `rpx-aat` Key Vault for PR builds.
 2026-01-15: Added CNP Fortify report archiving and staged `config/fortify-client.properties` for Fortify metadata lookups.
 2026-01-15: Added Gradle tasks to stage Fortify config and report outputs during `fortifyScan`.
+2026-01-15: Added Fortify API export script to capture vulnerability details as JSON.

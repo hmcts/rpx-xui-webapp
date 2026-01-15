@@ -75,6 +75,9 @@ withPipeline(type, product, component) {
             mkdir -p "config"
             cp "test_codecept/java/config/fortify-client.properties" "config/fortify-client.properties"
           fi
+          if [ -x "scripts/fortify-export-vulnerabilities.sh" ]; then
+            ./scripts/fortify-export-vulnerabilities.sh || true
+          fi
         ''')
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'Fortify Scan/**/*'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'

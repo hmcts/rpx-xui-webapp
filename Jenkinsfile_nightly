@@ -60,6 +60,9 @@ withNightlyPipeline(type, product, component) {
             mkdir -p "Fortify Scan"
             cp -R "test_codecept/java/Fortify Scan/." "Fortify Scan/"
           fi
+          if [ -x "scripts/fortify-export-vulnerabilities.sh" ]; then
+            ./scripts/fortify-export-vulnerabilities.sh || true
+          fi
         ''')
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'Fortify Scan/**/*'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'

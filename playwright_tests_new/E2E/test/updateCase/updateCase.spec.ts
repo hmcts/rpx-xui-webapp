@@ -42,18 +42,17 @@ test.describe("Verify creating and updating a case works as expected", () => {
       expect.soft(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: Update case`);
     });
 
-    await test.step("Verify the'Some more data' tab has updated names correctly", async () => {
+    await test.step("Verify the 'Some more data' tab has updated names correctly", async () => {
       await caseDetailsPage.selectCaseDetailsTab('Some more data');
       const labels = ['First Name', 'Last Name'];
 
       for (const label of labels) {
         const row = caseDetailsPage.page.locator('.complex-panel-table tr',{has: caseDetailsPage.page.locator(`th span:text-is("${label}")`) }
         );
-
         const cell = row.locator('td').first();
         await expect(cell, `${label} should be visible`).toBeVisible();
         await expect(cell, `${label} should not be empty`).not.toHaveText('');
-        const value = await cell.textContent();
+        
       }
     });
     await test.step('Verify that event details are shown on the History tab', async () => {

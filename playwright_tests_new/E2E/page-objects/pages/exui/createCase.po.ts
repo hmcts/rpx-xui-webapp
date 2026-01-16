@@ -90,12 +90,7 @@ export class CreateCasePage extends Base {
     }
     await this.startButton.click();
   }
-  async startUpdateCase(firstName: string, lastName: string) {
-    await this.person2FirstName.fill(firstName);
-    await this.person2LastName.fill(lastName);
-    await this.continueButton.click()
-    await this.submitButton.click()
-  }
+  
   async addressLookup(postCode: string, addressOption: string) {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();

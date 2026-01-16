@@ -2,8 +2,6 @@ import { Page } from "@playwright/test";
 import { Base } from "../../base";
 import { ValidatorUtils } from "../../../utils/validator.utils";
 import { TableUtils } from "@hmcts/playwright-common";
-import { Locator } from "puppeteer";
-import { CreateCasePage } from "./createCase.po";
 import { expect } from '@playwright/test';
 
 
@@ -95,12 +93,7 @@ export class CaseDetailsPage extends Base {
       const row = this.page.locator('tr', {
         has: this.page.locator(`th:has-text("${label}")`)
       });
-
-      const cell = row.locator('td').first();
-      await expect(cell, `${label} value should be visible`).toBeVisible();
-      await expect(cell, `${label} value should not be empty`).not.toHaveText('');
-
-    };
+    }
 
   }
   async getCaseNumberFromAlert(): Promise<string> {

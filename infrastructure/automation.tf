@@ -26,6 +26,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
   content = <<EOT
 param(
     [string]$appinsightsid,
+    [string]$loganalyticsworkspaceid,
     [string]$resourcegroupname,
     [string]$acsresourcename,
     [string]$senderaddress,
@@ -44,7 +45,40 @@ catch {
 # Import required module
 Import-Module Az.Communication -ErrorAction SilentlyContinue
 
-# Main Welsh translation query - using last 30 days for testing
+# Main Welsh translation query - check both workspaces
+Write-Output "`nDiagnostic: Checking which workspace has data..."
+
+# Try Log Analytics workspace first
+$testQuery = "AppRequests | where TimeGenerated > ago(30d) | count"
+try {
+    Write-Output "Testing Log Analytics workspace: $loganalyticsworkspaceid"
+    $testResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $loganalyticsworkspaceid -Query $testQuery -ErrorAction Stop
+    $lawCount = if ($testResult.Results) { $testResult.Results[0].Count } else { 0 }
+    Write-Output "Log Analytics workspace AppRequests count: $lawCount"
+}
+catch {
+    Write-Warning "Log Analytics workspace query failed: $_"
+    $lawCount = 0
+}
+
+# Try Application Insights
+try {
+    Write-Output "Testing Application Insights: $appinsightsid"
+    $testResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $appinsightsid -Query $testQuery -ErrorAction Stop  
+    $aiCount = if ($testResult.Results) { $testResult.Results[0].Count } else { 0 }
+    Write-Output "Application Insights AppRequests count: $aiCount"
+}
+catch {
+    Write-Warning "Application Insights query failed: $_"
+    $aiCount = 0
+}
+
+# Use whichever has data
+$workspaceToUse = if ($aiCount -gt 0) { $appinsightsid } else { $loganalyticsworkspaceid }
+$dataSource = if ($aiCount -gt 0) { "Application Insights" } else { "Log Analytics Workspace" }
+Write-Output "Using $dataSource for main query"
+
+# Main Welsh translation query
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
 let startTime = ago(30d);
@@ -63,8 +97,8 @@ AppRequests
 "@
 
 try {
-    Write-Output "Executing query against Application Insights: $appinsightsid"
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $appinsightsid -Query $query -ErrorAction Stop -Timespan (New-TimeSpan -Days 60)
+    Write-Output "Executing query against: $workspaceToUse"
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceToUse -Query $query -ErrorAction Stop -Timespan (New-TimeSpan -Days 60)
     Write-Output "=== QUERY EXECUTED SUCCESSFULLY ==="
     Write-Output "Result is null: $($null -eq $result)"
     if ($null -ne $result) {
@@ -311,7 +345,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'14:55:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'15:20:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -323,11 +357,12 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    appinsightsid    = azurerm_application_insights.appinsight.app_id
-    resourcegroupname = azurerm_resource_group.rg.name
-    acsresourcename  = azurerm_communication_service.comm_service.0.name
-    senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
-    recipientaddress = join(",", local.welsh_emails)
+    appinsightsid         = azurerm_application_insights.appinsight.app_id
+    loganalyticsworkspaceid = azurerm_application_insights.appinsight.workspace_id
+    resourcegroupname     = azurerm_resource_group.rg.name
+    acsresourcename       = azurerm_communication_service.comm_service.0.name
+    senderaddress         = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress      = join(",", local.welsh_emails)
   }
 
   depends_on = [

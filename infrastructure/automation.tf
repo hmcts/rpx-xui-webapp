@@ -49,13 +49,13 @@ Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
 let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
 let endTime = startofmonth(now());
-requests
-| where timestamp >= startTime and timestamp < endTime
-| where url has "/api/translation/cy"
-| extend day = startofday(timestamp)
+AppRequests
+| where TimeGenerated >= startTime and TimeGenerated < endTime
+| where Url has "/api/translation/cy"
+| extend day = startofday(TimeGenerated)
 | where isnotnull(day)
-| summarize UniqueCount = dcountif(session_Id, isnotempty(session_Id)), 
-            NoSessionCount = countif(isempty(session_Id))
+| summarize UniqueCount = dcountif(SessionId, isnotempty(SessionId)), 
+            NoSessionCount = countif(isempty(SessionId))
             by day
 | extend Sessions = UniqueCount + iff(NoSessionCount > 0, 1, 0)
 | project Date = format_datetime(day, 'yyyy-MM-dd'), Sessions
@@ -260,7 +260,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'12:25:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'12:43:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

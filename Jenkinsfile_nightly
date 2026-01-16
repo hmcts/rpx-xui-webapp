@@ -54,7 +54,7 @@ withNightlyPipeline(type, product, component) {
         yarnBuilder.yarn('cache clean')
     }
 
-    afterSuccess('fortify-scan') {
+    afterAlways('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
@@ -78,7 +78,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'ng lint Report'
         ])
      }
-    afterAlways('fortify-scan') {
+    afterSuccess('fortify-scan') {
   
       stage('API Tests') {
         try {
@@ -104,21 +104,37 @@ withNightlyPipeline(type, product, component) {
             }  
         }
 
-      stage('UI Integration Tests') {
-        try {
-          yarnBuilder.yarn('test:xuiIntegration')
-        } finally {
-          publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : 'functional-output/tests/codecept-ngIntegration',
-            reportFiles          : 'cucumber_report.html',
-            reportName           : 'XUI Manage Cases Full functional Tests'
-          ])
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+        stage('Codecept Integration Tests') {
+            try {
+                yarnBuilder.yarn('test:xuiIntegration')
+            } finally {
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'functional-output/tests/codecept-ngIntegration/',
+                    reportFiles          : 'cucumber_report.html',
+                    reportName           : 'Codecept Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
         }
-      }
+
+        stage('Playwright Integration Tests') {
+                try {
+                    yarnBuilder.yarn('test:playwright:integration')
+                } finally {
+                    publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'Playwright Integration Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                }
+        }
 
       stage('Cross Browser Test') {
             try {

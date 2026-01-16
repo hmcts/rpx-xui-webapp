@@ -256,13 +256,24 @@ export function isTaskList(payload: unknown): payload is TaskListResponse {
   return !!payload && typeof payload === 'object' && Array.isArray((payload as any).tasks);
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
 export function extractCaseShareEntries(payload: CaseShareResponseVariant, property: string): unknown[] {
-  if (!payload || typeof payload !== 'object') return [];
-  const direct = (payload as any)[property];
-  if (Array.isArray(direct)) return direct;
-  const nested = (payload as any).payload;
-  if (nested && typeof nested === 'object' && Array.isArray((nested as any)[property])) {
-    return (nested as any)[property];
+  if (!isRecord(payload)) {
+    return [];
+  }
+  const direct = payload[property];
+  if (Array.isArray(direct)) {
+    return direct;
+  }
+  const nested = payload.payload;
+  if (isRecord(nested)) {
+    const nestedProperty = nested[property];
+    if (Array.isArray(nestedProperty)) {
+      return nestedProperty;
+    }
   }
   return [];
 }

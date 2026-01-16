@@ -16,7 +16,7 @@
     </p>
   </div>
 
-  <div *ngIf="noBanner" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div *ngIf="bannerPresent" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
       <span (click)="closeBanner()" class="close">X</span>
       <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">

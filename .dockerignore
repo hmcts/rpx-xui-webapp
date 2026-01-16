@@ -19,6 +19,9 @@ README.md
 .husky/
 e2e/
 playwright_tests/
+playwright_tests_new/
+functional-output/
+mochawesome-report/
 test_codecept/
 test/
 dummy.pdf

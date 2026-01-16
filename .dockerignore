@@ -11,10 +11,13 @@ README.md
 .husky/
 e2e/
 playwright_tests/
+playwright_tests_new/
 test_codecept/
 test/
 reports/
 coverage/
+functional-output/
+mochawesome-report/
 debug.log
 dummy.pdf
 dist/

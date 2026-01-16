@@ -216,6 +216,7 @@
     "axe-html-reporter": "^2.2.3",
     "axios-mock-adapter": "^2.1.0",
     "base-64": "^1.0.0",
+    "baseline-browser-mapping": "^2.9.15",
     "c8": "^9.1.0",
     "chai": "^4.3.10",
     "chai-as-promised": "7.1.2",

@@ -8,8 +8,8 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "npm-run-all -p build:prod build:node",
-    "build:dev": "npm-run-all -p build:ng:dev build:node:dev",
+    "build": "yarn build:prod && yarn build:node",
+    "build:dev": "yarn build:ng:dev && yarn build:node:dev",
     "build:docker": "docker build -t xui .",
     "build:ng": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration production build",
     "build:ng:dev": "node --max_old_space_size=8192 node_modules/@angular/cli/bin/ng build --configuration=development",

@@ -63,15 +63,30 @@ requests
 "@
 
 try {
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query
+    Write-Output "Executing query against workspace: $workspaceid"
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query -ErrorAction Stop
     Write-Output "=== QUERY EXECUTED SUCCESSFULLY ==="
     Write-Output "Result is null: $($null -eq $result)"
-    Write-Output "Result.Results is null: $($null -eq $result.Results)"
+    if ($null -ne $result) {
+        Write-Output "Result.Results is null: $($null -eq $result.Results)"
+        Write-Output "Result.Error: $($result.Error)"
+    }
 }
 catch {
-    Write-Error "Failed to query Log Analytics workspace: $($_.Exception.Message)"
+    Write-Error "=== QUERY FAILED ==="
+    Write-Error "Error Message: $($_.Exception.Message)"
+    Write-Error "Error Details: $($_)"
     if ($_.Exception.Response) {
-        Write-Error "Response: $($_.Exception.Response)"
+        Write-Error "Response Status: $($_.Exception.Response.StatusCode)"
+        try {
+            $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+            $reader.BaseStream.Position = 0
+            $responseBody = $reader.ReadToEnd()
+            Write-Error "Response Body: $responseBody"
+        }
+        catch {
+            Write-Error "Could not read response body"
+        }
     }
     throw $_
 }
@@ -245,7 +260,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'12:07:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'12:25:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

@@ -25,7 +25,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$workspaceid,
+    [string]$workspaceguid,
     [string]$resourcegroupname,
     [string]$acsresourcename,
     [string]$senderaddress,
@@ -61,13 +61,17 @@ AppRequests
 | order by Date asc
 "@
 
+Write-Output "Workspace GUID provided: $workspaceguid"
+
 try {
     Write-Output "Querying Application Insights workspace for Welsh translation usage..."
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query -ErrorAction Stop
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceguid -Query $query -ErrorAction Stop
     Write-Output "Query executed successfully."
 }
 catch {
     Write-Error "Failed to execute query: $($_.Exception.Message)"
+    Write-Output "Workspace GUID: $workspaceguid"
+    Write-Output "Note: Ensure the Automation Account Managed Identity has 'Log Analytics Reader' role on the workspace."
     throw $_
 }
 
@@ -207,7 +211,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'15:28:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'15:50:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -220,6 +224,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
 
   parameters = {
     workspaceid       = azurerm_application_insights.appinsight.workspace_id
+    appinsightsappid  = azurerm_application_insights.appinsight.app_id
     resourcegroupname = azurerm_resource_group.rg.name
     acsresourcename   = azurerm_communication_service.comm_service.0.name
     senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
@@ -229,8 +234,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   depends_on = [
     azurerm_automation_runbook.welsh_report_runbook,
     azurerm_automation_schedule.welsh_monthly_schedule,
-    azurerm_automation_module.az_communication
-  ]
+    azurerm_aguid     = azurerm_log_analytics_workspace.app_insights_workspace.workspace
 }
 
 resource "azurerm_automation_module" "az_communication" {

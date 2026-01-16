@@ -34,6 +34,11 @@ export class CaseDetailsPage extends Base {
   constructor(page: Page) {
     super(page);
   }
+
+  async getTableElementByClassName(tableName: string) {
+    return this.page.locator(`table.${tableName}`);
+  }
+
   async getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true })
   }

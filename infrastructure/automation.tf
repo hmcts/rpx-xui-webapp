@@ -64,7 +64,9 @@ requests
 
 try {
     $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query
-    Write-Output "Query executed successfully."
+    Write-Output "=== QUERY EXECUTED SUCCESSFULLY ==="
+    Write-Output "Result is null: $($null -eq $result)"
+    Write-Output "Result.Results is null: $($null -eq $result.Results)"
 }
 catch {
     Write-Error "Failed to query Log Analytics workspace: $($_.Exception.Message)"
@@ -75,33 +77,38 @@ catch {
 }
 
 # Safely convert to array and force enumeration
+Write-Output "=== STARTING DATA CONVERSION ==="
 $dataRows = @()
 if ($null -ne $result -and $null -ne $result.Results) {
+    Write-Output "Result and Results are NOT null - proceeding with conversion"
     try {
-        # Force enumeration by piping to ForEach-Object
-        $dataRows = @($result.Results | ForEach-Object { $_ })
-        Write-Output "Results retrieved. Count: $($dataRows.Count)"
-        Write-Output "Results type: $($result.Results.GetType().FullName)"
+        # Force enumeration by converting to array
+        $tempArray = [System.Collections.ArrayList]::new()
+        foreach ($item in $result.Results) {
+            [void]$tempArray.Add($item)
+        }
+        $dataRows = $tempArray.ToArray()
+        
+        Write-Output "=== CONVERSION COMPLETE ==="
+        Write-Output "Data rows count: $($dataRows.Count)"
+        Write-Output "Data rows length: $($dataRows.Length)"
         
         if ($dataRows.Count -gt 0) {
-            Write-Output "First row type: $($dataRows[0].GetType().FullName)"
-            Write-Output "First row properties:"
-            $dataRows[0].PSObject.Properties | ForEach-Object {
-                Write-Output "  $($_.Name) = $($_.Value) (type: $($_.Value.GetType().Name))"
-            }
+            Write-Output "=== FIRST ROW DATA ==="
+            $firstRow = $dataRows[0]
+            Write-Output "Row object: $($firstRow | Out-String)"
+            Write-Output "Date property: $($firstRow.Date)"
+            Write-Output "Sessions property: $($firstRow.Sessions)"
         }
     }
     catch {
-        Write-Warning "Error converting results to array: $_"
+        Write-Error "Error converting results to array: $($_)"
+        Write-Error $_.ScriptStackTrace
         $dataRows = @()
     }
 }
 else {
-    Write-Output "Result or Results property is null."
-}
-
-if ($dataRows.Count -gt 0) {
-    Write-Output "Sample first row: Date=$($dataRows[0].Date), Sessions=$($dataRows[0].Sessions)"
+    Write-Output "Result or Results property is NULL - no data available"
 }
 
 # Generate HTML table or no-data message
@@ -238,7 +245,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'10:38:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'11:52:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

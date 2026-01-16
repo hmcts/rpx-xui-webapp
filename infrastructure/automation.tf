@@ -25,7 +25,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$workspaceid,
+    [string]$appinsightsid,
     [string]$resourcegroupname,
     [string]$acsresourcename,
     [string]$senderaddress,
@@ -63,8 +63,8 @@ AppRequests
 "@
 
 try {
-    Write-Output "Executing query against workspace: $workspaceid"
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query -ErrorAction Stop -Timespan (New-TimeSpan -Days 60)
+    Write-Output "Executing query against Application Insights: $appinsightsid"
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $appinsightsid -Query $query -ErrorAction Stop -Timespan (New-TimeSpan -Days 60)
     Write-Output "=== QUERY EXECUTED SUCCESSFULLY ==="
     Write-Output "Result is null: $($null -eq $result)"
     if ($null -ne $result) {
@@ -311,7 +311,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'14:07:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'14:20:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -323,7 +323,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    workspaceid      = azurerm_log_analytics_workspace.app_insights_workspace.workspace_id
+    appinsightsid    = azurerm_application_insights.appinsight.app_id
     resourcegroupname = azurerm_resource_group.rg.name
     acsresourcename  = azurerm_communication_service.comm_service.0.name
     senderaddress    = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"

@@ -146,7 +146,7 @@ export class CreateCasePage extends Base {
       mimeType: mimeType,
       buffer: Buffer.from(fileContent),
     });
-    await this.page.waitForResponse(r => r.url().includes('/documentsv2') && r.request().method() === 'POST', { timeout: 10000 })
+    await this.page.waitForResponse(r => r.url().includes('/documentv2') && r.request().method() === 'POST', { timeout: 10000 })
       .catch(() => null);
     await this.page
       .locator(".error-message")
@@ -222,73 +222,44 @@ export class CreateCasePage extends Base {
 
     await this.emailFieldInput.fill(faker.internet.email({ provider: 'example.com' }));
     await this.phoneNumberFieldInput.fill('07123456789');
-
     await this.dateFieldDayInput.fill(today.getDate().toString());
     await this.dateFieldMonthInput.fill((today.getMonth() + 1).toString());
     await this.dateFieldYearInput.fill((today.getFullYear() - 20).toString());
-
     await this.dateTimeFieldDayInput.fill(today.getDate().toString());
     await this.dateTimeFieldMonthInput.fill((today.getMonth() + 1).toString());
     await this.dateTimeFieldYearInput.fill(today.getFullYear().toString());
     await this.dateTimeFieldHourInput.fill('10');
     await this.dateTimeFieldMinuteInput.fill('30');
     await this.dateTimeFieldSecondInput.fill('15');
-
     await this.currenyFieldInput.fill('1000');
     await this.continueButton.click();
 
     await this.yesNoRadioButtons.getByLabel('Yes').check();
-
     await this.applicantPostcode.fill('SW1A 1AA');
-
     await this.complexType1JudgeIsRightRadios.getByLabel('No').check();
-
     await this.complexType1LevelOfJudgeRadioButtons.getByLabel('Item 1').check();
     await this.complexType1LevelOfJudgeDetailsInput.fill('Details about why this level of judge is needed.');
     await this.complexType1LevelOfJudgeKeyInput.fill('Key information');
-
-
     await this.manualEntryLink.click();
     await this.complexType2AddressLine1Input.fill('10 Test Street');
-
     await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
 
-    await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%fake\n%%EOF');
-    // const [fileChooser] = await Promise.all([
-    //   this.page.waitForEvent('filechooser'),
-    //   this.complexType3FileUploadInput.click()
-    // ]);
-    // await fileChooser.setFiles({
-    //   name: 'sample.pdf',
-    //   mimeType: 'application/pdf',
-    //   buffer: Buffer.from('%PDF-1.4\n%fake\n%%EOF'),
-    // });
-    // await this.page.waitForResponse(r => r.url().includes('/documentv2') && r.request().method() === 'POST', { timeout: 10000 })
-    //   .catch(() => null);
-    // await this.page
-    //   .locator(".error-message")
-    //   .getByLabel('Uploading...')
-    //   .waitFor({ state: "hidden" });
+    await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF');
 
     await this.complexType3ComplianceButton.click();
     await this.complexType3ComplianceInput.fill('Compliant response');
     await this.complexType3DateOfBirthDay.fill('15');
     await this.complexType3DateOfBirthMonth.fill('06');
     await this.complexType3DateOfBirthYear.fill('1990');
-
-
-
     await this.complexType3DateOfHearingDay.fill(today.getDate().toString());
     await this.complexType3DateOfHearingMonth.fill((today.getMonth() + 1).toString());
     await this.complexType3DateOfHearingYear.fill(today.getFullYear().toString());
     await this.complexType3DateOfHearingHour.fill('14');
     await this.complexType3DateOfHearingMinute.fill('45');
     await this.complexType3DateOfHearingSecond.fill('30');
-
     await this.complexType4AmountInput.fill('500');
     await this.complexType4FirstTickBox.check();
     await this.complexType4SelectList.selectOption('Item 1');
-
     await this.continueButton.click();
     await this.submitButton.click();
     await this.exuiSpinnerComponent.wait();

@@ -18,7 +18,9 @@ FROM dependencies AS build
 COPY --chown=hmcts:hmcts . .
 
 # Build the application (dependencies already installed)
-RUN yarn build
+RUN yarn build \
+  && yarn workspaces focus --production \
+  && yarn cache clean
 
 FROM hmctspublic.azurecr.io/base/node:20-alpine AS runtime
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
@@ -27,10 +29,10 @@ USER root
 RUN corepack enable
 USER hmcts
 
-# Copy only production dependencies
-COPY --chown=hmcts:hmcts .yarn ./.yarn
-COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
-RUN yarn workspaces focus --production && yarn cache clean
+# Copy production dependencies from build stage (skip reinstall)
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/.yarn ./.yarn
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/package.json $WORKDIR/yarn.lock $WORKDIR/.yarnrc.yml ./
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/node_modules ./node_modules
 
 # Copy built artifacts from build stage
 COPY --from=build --chown=hmcts:hmcts $WORKDIR/dist ./dist

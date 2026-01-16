@@ -36,6 +36,9 @@ RUN yarn workspaces focus --production && yarn cache clean
 COPY --from=build --chown=hmcts:hmcts $WORKDIR/dist ./dist
 COPY --from=build --chown=hmcts:hmcts $WORKDIR/api ./api
 
+# Copy runtime configuration (node-config expects this directory)
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/config ./config
+
 USER hmcts
 EXPOSE 3000
 CMD [ "yarn", "start" ]

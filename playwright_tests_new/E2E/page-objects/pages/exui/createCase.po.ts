@@ -137,6 +137,16 @@ export class CreateCasePage extends Base {
     await this.addressSelect.selectOption(addressOption);
   }
 
+
+  async uploadEmploymentFile(fileName: string, mimeType: string, fileContent: string) {
+    await this.page.locator('#documentCollection button').click();
+    await this.uploadFile(fileName, mimeType, fileContent);
+    await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc')
+    await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
+    await this.submitButton.click();
+  
+  }
+
   async uploadFile(fileName: string, mimeType: string, fileContent: string) {
     const maxRetries = 3;
     const baseDelayMs = 3000; // initial backoff

@@ -105,14 +105,39 @@ $dataRows = @()
 
 # Try Results first
 if ($null -ne $result -and $null -ne $result.Results) {
-    Write-Output "Trying to use Result.Results property"
+    Write-Output "Result.Results exists"
+    Write-Output "Result.Results type: $($result.Results.GetType().FullName)"
+    Write-Output "Result.Results.Count: $($result.Results.Count)"
+    
+    # Try to peek at the results
     try {
-        $dataRows = @($result.Results | ForEach-Object { $_ })
-        Write-Output "Got $($dataRows.Count) rows from Results"
+        $resultsList = [System.Linq.Enumerable]::ToList($result.Results)
+        Write-Output "Converted to List, count: $($resultsList.Count)"
+        if ($resultsList.Count -gt 0) {
+            Write-Output "First item in list: $($resultsList[0] | ConvertTo-Json -Compress)"
+        }
+        $dataRows = $resultsList.ToArray()
     }
     catch {
-        Write-Warning "Failed to enumerate Results: $_"
+        Write-Output "LINQ ToList failed: $_"
+        # Fallback to manual enumeration
+        try {
+            $tempList = New-Object System.Collections.ArrayList
+            $counter = 0
+            foreach ($item in $result.Results) {
+                Write-Output "Processing item $counter"
+                [void]$tempList.Add($item)
+                $counter++
+            }
+            Write-Output "Foreach enumerated $counter items"
+            $dataRows = $tempList.ToArray()
+        }
+        catch {
+            Write-Warning "Manual enumeration also failed: $_"
+        }
     }
+    
+    Write-Output "Got $($dataRows.Count) rows from Results"
 }
 
 # If Results failed or was empty, try Tables
@@ -286,7 +311,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'13:40:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'14:07:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

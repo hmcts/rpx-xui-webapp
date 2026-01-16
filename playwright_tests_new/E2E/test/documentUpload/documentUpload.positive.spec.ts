@@ -32,7 +32,7 @@ test.describe("Document upload ", () => {
         await test.step("Upload a document to the case", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Tab 1');
             await caseDetailsPage.selectCaseAction('Update case');
-            await createCasePage.uploadFile(testFileName, 'application/msword', 'Fake Word document content');
+            await createCasePage.uploadFile(testFileName, 'application/msword', 'Test Word document content');
             await createCasePage.continueButton.click();
             await createCasePage.continueButton.click();
             await createCasePage.continueButton.click();

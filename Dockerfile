@@ -10,7 +10,7 @@ COPY --chown=hmcts:hmcts .yarn ./.yarn
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 
 # Install dependencies once
-RUN yarn install --immutable
+RUN yarn install --frozen-lockfile
 
 FROM dependencies AS build
 

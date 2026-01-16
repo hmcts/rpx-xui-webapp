@@ -44,11 +44,11 @@ catch {
 # Import required module
 Import-Module Az.Communication -ErrorAction SilentlyContinue
 
-# Main Welsh translation query
+# Main Welsh translation query - using last 30 days for testing
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
-let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
-let endTime = startofmonth(now());
+let startTime = ago(30d);
+let endTime = now();
 AppRequests
 | where TimeGenerated >= startTime and TimeGenerated < endTime
 | where Url has "/api/translation/cy"
@@ -311,7 +311,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'14:42:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'14:55:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

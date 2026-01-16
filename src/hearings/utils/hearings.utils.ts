@@ -385,4 +385,29 @@ export class HearingsUtils {
       );
     return updatedPartyDetails;
   }
+
+  public static toCompareServiceHearingValueField(value: any): boolean {
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    if (typeof value === 'string' && value.trim() === '') {
+      return false;
+    }
+
+    if (Array.isArray(value) && value.length === 0) {
+      return false;
+    }
+
+    // Check for Date objects and other special object types before the generic object check
+    if (value instanceof Date) {
+      return true;
+    }
+
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return false;
+    }
+
+    return true;
+  }
 }

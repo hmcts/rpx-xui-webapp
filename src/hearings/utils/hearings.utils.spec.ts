@@ -1496,4 +1496,82 @@ describe('HearingsUtils', () => {
       expect(result[2].individualDetails.firstName).toBe('Bob');
     });
   });
+
+  describe('toCompareServiceHearingValueField', () => {
+    it('should return false for null value', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(null)).toBe(false);
+    });
+
+    it('should return false for undefined value', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(undefined)).toBe(false);
+    });
+
+    it('should return false for empty string', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('')).toBe(false);
+    });
+
+    it('should return false for string with only whitespace', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('   ')).toBe(false);
+    });
+
+    it('should return false for empty array', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField([])).toBe(false);
+    });
+
+    it('should return false for empty object', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField({})).toBe(false);
+    });
+
+    it('should return true for non-empty string', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('test')).toBe(true);
+    });
+
+    it('should return true for string with spaces and characters', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('  test  ')).toBe(true);
+    });
+
+    it('should return true for array with elements', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(['item1', 'item2'])).toBe(true);
+    });
+
+    it('should return true for object with properties', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField({ key: 'value' })).toBe(true);
+    });
+
+    it('should return true for number zero', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(0)).toBe(true);
+    });
+
+    it('should return true for positive number', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(42)).toBe(true);
+    });
+
+    it('should return true for negative number', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(-10)).toBe(true);
+    });
+
+    it('should return true for boolean false', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(false)).toBe(true);
+    });
+
+    it('should return true for boolean true', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(true)).toBe(true);
+    });
+
+    it('should return true for array with single element', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField([1])).toBe(true);
+    });
+
+    it('should return true for nested object', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField({ nested: { key: 'value' } })).toBe(true);
+    });
+
+    it('should return true for Date object', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(new Date())).toBe(true);
+    });
+
+    it('should return false for string with tabs and newlines only', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('\t\n\r')).toBe(false);
+    });
+  });
 });

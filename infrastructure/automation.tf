@@ -25,8 +25,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$appinsightsid,
-    [string]$loganalyticsworkspaceid,
+    [string]$workspaceid,
     [string]$resourcegroupname,
     [string]$acsresourcename,
     [string]$senderaddress,
@@ -45,44 +44,10 @@ catch {
 # Import required module
 Import-Module Az.Communication -ErrorAction SilentlyContinue
 
-# Main Welsh translation query - check both workspaces
-Write-Output "`nDiagnostic: Checking which workspace has data..."
-
-# Try Log Analytics workspace first
-$testQuery = "AppRequests | where TimeGenerated > ago(30d) | count"
-try {
-    Write-Output "Testing Log Analytics workspace: $loganalyticsworkspaceid"
-    $testResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $loganalyticsworkspaceid -Query $testQuery -ErrorAction Stop
-    $lawCount = if ($testResult.Results) { $testResult.Results[0].Count } else { 0 }
-    Write-Output "Log Analytics workspace AppRequests count: $lawCount"
-}
-catch {
-    Write-Warning "Log Analytics workspace query failed: $_"
-    $lawCount = 0
-}
-
-# Try Application Insights
-try {
-    Write-Output "Testing Application Insights: $appinsightsid"
-    $testResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $appinsightsid -Query $testQuery -ErrorAction Stop  
-    $aiCount = if ($testResult.Results) { $testResult.Results[0].Count } else { 0 }
-    Write-Output "Application Insights AppRequests count: $aiCount"
-}
-catch {
-    Write-Warning "Application Insights query failed: $_"
-    $aiCount = 0
-}
-
-# Use whichever has data
-$workspaceToUse = if ($aiCount -gt 0) { $appinsightsid } else { $loganalyticsworkspaceid }
-$dataSource = if ($aiCount -gt 0) { "Application Insights" } else { "Log Analytics Workspace" }
-Write-Output "Using $dataSource for main query"
-
 # Main Welsh translation query
-Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
-let startTime = ago(30d);
-let endTime = now();
+let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+let endTime = startofmonth(now());
 AppRequests
 | where TimeGenerated >= startTime and TimeGenerated < endTime
 | where Url has "/api/translation/cy"
@@ -97,139 +62,38 @@ AppRequests
 "@
 
 try {
-    Write-Output "Executing query against: $workspaceToUse"
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceToUse -Query $query -ErrorAction Stop -Timespan (New-TimeSpan -Days 60)
-    Write-Output "=== QUERY EXECUTED SUCCESSFULLY ==="
-    Write-Output "Result is null: $($null -eq $result)"
-    if ($null -ne $result) {
-        Write-Output "Result.Results is null: $($null -eq $result.Results)"
-        Write-Output "Result has Tables: $($null -ne $result.Tables)"
-        if ($null -ne $result.Tables) {
-            Write-Output "Tables count: $($result.Tables.Count)"
-            if ($result.Tables.Count -gt 0) {
-                Write-Output "First table has Rows: $($null -ne $result.Tables[0].Rows)"
-                Write-Output "First table Rows count: $($result.Tables[0].Rows.Count)"
-            }
-        }
-        Write-Output "Result.Error: $($result.Error)"
-    }
+    Write-Output "Querying Application Insights workspace for Welsh translation usage..."
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query -ErrorAction Stop
+    Write-Output "Query executed successfully."
 }
 catch {
-    Write-Error "=== QUERY FAILED ==="
-    Write-Error "Error Message: $($_.Exception.Message)"
-    Write-Error "Error Details: $($_)"
-    if ($_.Exception.Response) {
-        Write-Error "Response Status: $($_.Exception.Response.StatusCode)"
-        try {
-            $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
-            $reader.BaseStream.Position = 0
-            $responseBody = $reader.ReadToEnd()
-            Write-Error "Response Body: $responseBody"
-        }
-        catch {
-            Write-Error "Could not read response body"
-        }
-    }
+    Write-Error "Failed to execute query: $($_.Exception.Message)"
     throw $_
 }
 
-# Safely convert to array and force enumeration
-Write-Output "=== STARTING DATA CONVERSION ==="
+# Convert results to array
 $dataRows = @()
-
-# Try Results first
 if ($null -ne $result -and $null -ne $result.Results) {
-    Write-Output "Result.Results exists"
-    Write-Output "Result.Results type: $($result.Results.GetType().FullName)"
-    Write-Output "Result.Results.Count: $($result.Results.Count)"
-    
-    # Try to peek at the results
-    try {
-        $resultsList = [System.Linq.Enumerable]::ToList($result.Results)
-        Write-Output "Converted to List, count: $($resultsList.Count)"
-        if ($resultsList.Count -gt 0) {
-            Write-Output "First item in list: $($resultsList[0] | ConvertTo-Json -Compress)"
-        }
-        $dataRows = $resultsList.ToArray()
-    }
-    catch {
-        Write-Output "LINQ ToList failed: $_"
-        # Fallback to manual enumeration
-        try {
-            $tempList = New-Object System.Collections.ArrayList
-            $counter = 0
-            foreach ($item in $result.Results) {
-                Write-Output "Processing item $counter"
-                [void]$tempList.Add($item)
-                $counter++
-            }
-            Write-Output "Foreach enumerated $counter items"
-            $dataRows = $tempList.ToArray()
-        }
-        catch {
-            Write-Warning "Manual enumeration also failed: $_"
-        }
-    }
-    
-    Write-Output "Got $($dataRows.Count) rows from Results"
+    $dataRows = @($result.Results | ForEach-Object { $_ })
 }
 
-# If Results failed or was empty, try Tables
-if ($dataRows.Count -eq 0 -and $null -ne $result -and $null -ne $result.Tables -and $result.Tables.Count -gt 0) {
-    Write-Output "Trying to use Result.Tables[0].Rows property"
-    try {
-        $table = $result.Tables[0]
-        Write-Output "Table has $($table.Rows.Count) rows and $($table.Columns.Count) columns"
-        Write-Output "Column names: $($table.Columns.Name -join ', ')"
-        
-        # Convert rows to objects with column names
-        $tempList = New-Object System.Collections.ArrayList
-        foreach ($row in $table.Rows) {
-            $obj = New-Object PSObject
-            for ($i = 0; $i -lt $table.Columns.Count; $i++) {
-                $obj | Add-Member -MemberType NoteProperty -Name $table.Columns[$i].Name -Value $row[$i]
-            }
-            [void]$tempList.Add($obj)
-        }
-        $dataRows = $tempList.ToArray()
-        Write-Output "Converted $($dataRows.Count) rows from Tables"
-    }
-    catch {
-        Write-Error "Failed to enumerate Tables: $_"
-        Write-Error $_.ScriptStackTrace
-    }
-}
-
-Write-Output "=== CONVERSION COMPLETE ==="
-Write-Output "Final data rows count: $($dataRows.Count)"
-
-if ($dataRows.Count -gt 0) {
-    Write-Output "=== FIRST ROW DATA ==="
-    $firstRow = $dataRows[0]
-    Write-Output "Row: $($firstRow | ConvertTo-Json -Compress)"
-    Write-Output "Date: $($firstRow.Date)"
-    Write-Output "Sessions: $($firstRow.Sessions)"
-}
+Write-Output "Found $($dataRows.Count) days with Welsh translation usage."
 
 # Generate HTML table or no-data message
 if (-not $dataRows -or $dataRows.Count -eq 0) {
-    Write-Output "No Welsh translation data found for last 31 days."
     $htmlTable = "<p><strong>No Welsh language translation usage was recorded in the reporting period.</strong></p>"
 }
 else {
-    Write-Output "Generating HTML table with $($dataRows.Count) rows."
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Unique Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
     
-    $rowCount = 0
     $totalSessions = 0
     foreach ($row in $dataRows) {
         if ($null -ne $row) {
             $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
             $sessionValue = if ($null -ne $row.Sessions) { $row.Sessions } else { "0" }
             $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
-            $rowCount++
             $totalSessions += [int]$sessionValue
         }
     }
@@ -237,7 +101,7 @@ else {
     $htmlTable += "</tbody>"
     $htmlTable += "<tfoot><tr><th>Total</th><th>$totalSessions</th></tr></tfoot>"
     $htmlTable += "</table>"
-    Write-Output "Generated table with $rowCount data rows. Total sessions: $totalSessions"
+    Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
 }
 
 $reportMonth = [DateTime]::UtcNow.AddMonths(-1).ToString("MMMM yyyy")
@@ -266,9 +130,7 @@ $htmlTable
 </html>
 "@
 
-Write-Output "Report generated successfully."
-Write-Output "HTML Body Preview:"
-Write-Output $emailBody
+Write-Output "Email report generated successfully."
 
 # Get ACS access token using Managed Identity
 try {
@@ -345,7 +207,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'15:20:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'15:28:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -357,12 +219,11 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    appinsightsid         = azurerm_application_insights.appinsight.app_id
-    loganalyticsworkspaceid = azurerm_application_insights.appinsight.workspace_id
-    resourcegroupname     = azurerm_resource_group.rg.name
-    acsresourcename       = azurerm_communication_service.comm_service.0.name
-    senderaddress         = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
-    recipientaddress      = join(",", local.welsh_emails)
+    workspaceid       = azurerm_application_insights.appinsight.workspace_id
+    resourcegroupname = azurerm_resource_group.rg.name
+    acsresourcename   = azurerm_communication_service.comm_service.0.name
+    senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress  = join(",", local.welsh_emails)
   }
 
   depends_on = [

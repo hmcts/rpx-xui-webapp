@@ -29,16 +29,23 @@ import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 import { getNewUsersByServiceName } from './workAllocation';
 
-function loadIndexHtml(): string {
+function resolveStaticRoot(): string {
+  const buildRoot = path.join(__dirname, '..');
+  const browserRoot = path.join(buildRoot, 'browser');
+  return existsSync(browserRoot) ? browserRoot : buildRoot;
+}
+
+function loadIndexHtml(staticRoot: string): string {
   // production build output
-  let p = path.join(__dirname, '..', 'index.html');
+  let p = path.join(staticRoot, 'index.html');
   if (!existsSync(p)) {
     // running from sources - use the template inside src/
     p = path.join(__dirname, '..', 'src', 'index.html');
   }
   return readFileSync(p, 'utf8');
 }
-const indexHtmlRaw = loadIndexHtml();
+const staticRoot = resolveStaticRoot();
+const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function injectNonce(html: string, nonce: string): string {
   return html.replace(/{{cspNonce}}/g, nonce);
@@ -127,7 +134,6 @@ export async function createApp() {
       .set('Cache-Control', 'no-store, max-age=0')
       .send(html);
   });
-  const staticRoot = path.join(__dirname, '..');
   // runs for every incoming request in the order middleware are declared
   app.use(
     express.static(staticRoot, { index: false })

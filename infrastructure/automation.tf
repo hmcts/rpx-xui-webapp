@@ -64,11 +64,19 @@ AppRequests
 
 try {
     Write-Output "Executing query against workspace: $workspaceid"
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query -ErrorAction Stop
+    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $query -ErrorAction Stop -Timespan (New-TimeSpan -Days 60)
     Write-Output "=== QUERY EXECUTED SUCCESSFULLY ==="
     Write-Output "Result is null: $($null -eq $result)"
     if ($null -ne $result) {
         Write-Output "Result.Results is null: $($null -eq $result.Results)"
+        Write-Output "Result has Tables: $($null -ne $result.Tables)"
+        if ($null -ne $result.Tables) {
+            Write-Output "Tables count: $($result.Tables.Count)"
+            if ($result.Tables.Count -gt 0) {
+                Write-Output "First table has Rows: $($null -ne $result.Tables[0].Rows)"
+                Write-Output "First table Rows count: $($result.Tables[0].Rows.Count)"
+            }
+        }
         Write-Output "Result.Error: $($result.Error)"
     }
 }
@@ -94,36 +102,54 @@ catch {
 # Safely convert to array and force enumeration
 Write-Output "=== STARTING DATA CONVERSION ==="
 $dataRows = @()
+
+# Try Results first
 if ($null -ne $result -and $null -ne $result.Results) {
-    Write-Output "Result and Results are NOT null - proceeding with conversion"
+    Write-Output "Trying to use Result.Results property"
     try {
-        # Force enumeration by converting to array
-        $tempArray = [System.Collections.ArrayList]::new()
-        foreach ($item in $result.Results) {
-            [void]$tempArray.Add($item)
-        }
-        $dataRows = $tempArray.ToArray()
-        
-        Write-Output "=== CONVERSION COMPLETE ==="
-        Write-Output "Data rows count: $($dataRows.Count)"
-        Write-Output "Data rows length: $($dataRows.Length)"
-        
-        if ($dataRows.Count -gt 0) {
-            Write-Output "=== FIRST ROW DATA ==="
-            $firstRow = $dataRows[0]
-            Write-Output "Row object: $($firstRow | Out-String)"
-            Write-Output "Date property: $($firstRow.Date)"
-            Write-Output "Sessions property: $($firstRow.Sessions)"
-        }
+        $dataRows = @($result.Results | ForEach-Object { $_ })
+        Write-Output "Got $($dataRows.Count) rows from Results"
     }
     catch {
-        Write-Error "Error converting results to array: $($_)"
-        Write-Error $_.ScriptStackTrace
-        $dataRows = @()
+        Write-Warning "Failed to enumerate Results: $_"
     }
 }
-else {
-    Write-Output "Result or Results property is NULL - no data available"
+
+# If Results failed or was empty, try Tables
+if ($dataRows.Count -eq 0 -and $null -ne $result -and $null -ne $result.Tables -and $result.Tables.Count -gt 0) {
+    Write-Output "Trying to use Result.Tables[0].Rows property"
+    try {
+        $table = $result.Tables[0]
+        Write-Output "Table has $($table.Rows.Count) rows and $($table.Columns.Count) columns"
+        Write-Output "Column names: $($table.Columns.Name -join ', ')"
+        
+        # Convert rows to objects with column names
+        $tempList = New-Object System.Collections.ArrayList
+        foreach ($row in $table.Rows) {
+            $obj = New-Object PSObject
+            for ($i = 0; $i -lt $table.Columns.Count; $i++) {
+                $obj | Add-Member -MemberType NoteProperty -Name $table.Columns[$i].Name -Value $row[$i]
+            }
+            [void]$tempList.Add($obj)
+        }
+        $dataRows = $tempList.ToArray()
+        Write-Output "Converted $($dataRows.Count) rows from Tables"
+    }
+    catch {
+        Write-Error "Failed to enumerate Tables: $_"
+        Write-Error $_.ScriptStackTrace
+    }
+}
+
+Write-Output "=== CONVERSION COMPLETE ==="
+Write-Output "Final data rows count: $($dataRows.Count)"
+
+if ($dataRows.Count -gt 0) {
+    Write-Output "=== FIRST ROW DATA ==="
+    $firstRow = $dataRows[0]
+    Write-Output "Row: $($firstRow | ConvertTo-Json -Compress)"
+    Write-Output "Date: $($firstRow.Date)"
+    Write-Output "Sessions: $($firstRow.Sessions)"
 }
 
 # Generate HTML table or no-data message
@@ -260,7 +286,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'12:43:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'13:15:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

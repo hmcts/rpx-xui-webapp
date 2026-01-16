@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const { cpus } = require('os');
+const { cpus } = require('node:os');
 const { version: appVersion } = require('./package.json');
 
 const headlessMode = process.env.HEAD !== 'true';
@@ -8,11 +8,14 @@ export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-  if (configured) {
-    return parseInt(configured, 10);
-  }
   if (process.env.CI) {
-    return 1;
+    return 8;
+  }
+  if (configured) {
+    const parsed = Number.parseInt(configured, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
   }
   const logical = cpus()?.length ?? 1;
   const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
@@ -36,8 +39,9 @@ module.exports = defineConfig({
   },
   reportSlowTests: null,
 
-  /* Opt out of parallel tests on CI. */
+  /* Control the number of parallel test workers. */
   workers: workerCount,
+  globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
 
   reporter: [
     [process.env.CI ? 'dot' : 'list'],
@@ -58,19 +62,27 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         headless: headlessMode,
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'],
+      use: {
+        ...devices['Desktop Firefox'],
         headless: headlessMode,
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     },
@@ -79,7 +91,10 @@ module.exports = defineConfig({
       use: {
         headless: headlessMode,
         trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true
+        },
         video: 'retain-on-failure'
       }
     }

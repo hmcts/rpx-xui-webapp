@@ -35,13 +35,55 @@ export class CaseDetailsPage extends Base {
     super(page);
   }
 
-  async getTableElementByClassName(tableName: string) {
-    return this.page.locator(`table.${tableName}`);
-  }
-
   async getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true })
   }
+
+  async getTableContentsByTabName(className: string) {
+    return this.trRowsToObjectInPage(`table.${className}`);
+  }
+
+  async trRowsToObjectInPage(selector: string): Promise<Record<string, string>> {
+    return this.page.evaluate((sel) => {
+      if (!sel) return {};
+      const root = document.querySelector(sel);
+      if (!root) return {};
+
+      function findFirstText(node: Node | null): string {
+        if (!node) return '';
+        for (const child of Array.from(node.childNodes)) {
+          if (child.nodeType === Node.TEXT_NODE) {
+            const t = (child.textContent || '').trim();
+            if (t) return t;
+          } else if (child.nodeType === Node.ELEMENT_NODE) {
+            const t = findFirstText(child);
+            if (t) return t;
+          }
+        }
+        return '';
+      }
+
+      const table = (root instanceof HTMLTableElement) ? root : (root.querySelector('table') ?? root);
+      const rows = Array.from(table.querySelectorAll('tr'));
+      const out: Record<string, string> = {};
+
+      for (const row of rows) {
+        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
+        if (cells.length < 2) continue;
+
+        const rawKey = findFirstText(cells[0]).trim();
+        if (!rawKey) continue;
+
+        const valueParts = cells.slice(1).map(c => findFirstText(c).trim()).filter(Boolean);
+        const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
+
+        out[rawKey] = value;
+      }
+
+      return out;
+    }, selector);
+  }
+
 
   async getCaseNumberFromAlert(): Promise<string> {
     const alertText = await this.caseAlertSuccessMessage.innerText();

@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
 import { loadSessionCookies } from '../../../common/sessionCapture';
-import { TableUtils } from "@hmcts/playwright-common";
 
 test.describe("Document upload ", () => {
     let testValue = faker.person.firstName();
@@ -21,12 +20,12 @@ test.describe("Document upload ", () => {
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
     });
 
-    test("Check the documentV2 upload works as expected", async ({ tableUtils, createCasePage, caseDetailsPage }) => {
+    test("Check the documentV2 upload works as expected", async ({ createCasePage, caseDetailsPage }) => {
 
         await test.step("Verify case details tab does not contain an uploaded file", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Tab 1');
-            const tableData = await tableUtils.mapExuiTable(await caseDetailsPage.getTableElementByClassName('tab1'));
-            expect.soft(tableData[0]).toMatchObject({ "Text Field": testValue });
+            const tableData = await caseDetailsPage.getTableContentsByTabName('tab1');   
+            expect.soft(tableData).toMatchObject({ "Text Field": testValue });
         });
 
         await test.step("Upload a document to the case", async () => {
@@ -43,8 +42,8 @@ test.describe("Document upload ", () => {
         await test.step("Verify the document upload was successful", async () => {
             expect.soft(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: Update case`);
             await caseDetailsPage.selectCaseDetailsTab('Tab 1');
-            const tableData = await tableUtils.mapExuiTable(await caseDetailsPage.getTableElementByClassName('tab1'));
-            expect.soft(tableData[0]).toMatchObject({ "Text Field": testValue, "Document 1": testFileName });
+            const tableData = await caseDetailsPage.getTableContentsByTabName('tab1');
+            expect.soft(tableData).toMatchObject({ "Text Field": testValue, "Document 1": testFileName });
         });
     });
 });

@@ -151,7 +151,7 @@ export class CreateCasePage extends Base {
 
       // wait for the upload response (same predicate you already use)
       const res = await this.page.waitForResponse(
-        r => r.url().includes('/documentsv2') && r.request().method() === 'POST',
+        r => r.url().includes('/document') && r.request().method() === 'POST',
         { timeout: 5000 }
       ).catch(() => null);
 

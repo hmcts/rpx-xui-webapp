@@ -399,7 +399,6 @@ export class HearingsUtils {
       return false;
     }
 
-    // Check for Date objects and other special object types before the generic object check
     if (value instanceof Date) {
       return true;
     }

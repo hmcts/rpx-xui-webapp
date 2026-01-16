@@ -76,7 +76,7 @@ describe('HearingTimingSectionComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'standard';
     component.ngOnInit();
     expect(component.hearingLength).toEqual('1 Hour');
-    expect(component.specificDate).toEqual('Choose a date range<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022');
+    expect(component.specificDate).toEqual('Choose a date range<br>Must list after: 12 December 2022<br>Must list before: 12 December 2022');
     expect(component.hearingPriority).toEqual('Standard');
   });
 

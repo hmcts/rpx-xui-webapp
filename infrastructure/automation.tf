@@ -211,7 +211,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'15:50:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'16:00:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -223,8 +223,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    workspaceid       = azurerm_application_insights.appinsight.workspace_id
-    appinsightsappid  = azurerm_application_insights.appinsight.app_id
+    workspaceguid     = azurerm_log_analytics_workspace.app_insights_workspace.workspace_id
     resourcegroupname = azurerm_resource_group.rg.name
     acsresourcename   = azurerm_communication_service.comm_service.0.name
     senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
@@ -234,7 +233,8 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   depends_on = [
     azurerm_automation_runbook.welsh_report_runbook,
     azurerm_automation_schedule.welsh_monthly_schedule,
-    azurerm_aguid     = azurerm_log_analytics_workspace.app_insights_workspace.workspace
+    azurerm_automation_module.az_communication
+  ]
 }
 
 resource "azurerm_automation_module" "az_communication" {

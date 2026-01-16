@@ -310,7 +310,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
     this.paperHearingChanged = HearingsUtils.hasPaperHearingChanged(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);
     if (this.isPaperHearing() === RadioOptions.NO) {
       this.methodOfAttendanceChanged = HearingsUtils.doArraysDiffer(this.hearingRequestMainModel.hearingDetails.hearingChannels, this.serviceHearingValuesModel.hearingChannels);
-      this.noOfPhysicalAttendeesChanged = HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees, this.serviceHearingValuesModel.numberOfPhysicalAttendees);
+      this.noOfPhysicalAttendeesChanged = HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.numberOfPhysicalAttendees) ?
+        HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees, this.serviceHearingValuesModel.numberOfPhysicalAttendees): false;
       const defaultHearingChannel: string[] = this.serviceHearingValuesModel.hearingChannels || [];
 
       this.attendanceFormGroup.controls.hearingLevelChannels.value.forEach((channel: LovRefDataModel) => {

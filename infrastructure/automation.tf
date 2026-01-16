@@ -44,59 +44,6 @@ catch {
 # Import required module
 Import-Module Az.Communication -ErrorAction SilentlyContinue
 
-# Test connectivity with a simple query first
-Write-Output "Testing App Insights connectivity..."
-$testQuery = @"
-AppRequests
-| where TimeGenerated > ago(7d)
-| summarize Count = count() by bin(TimeGenerated, 1d)
-| order by TimeGenerated desc
-| limit 5
-"@
-
-try {
-    $testResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $testQuery
-    Write-Output "Test query successful. Found $($testResult.Results.Count) rows."
-    if ($testResult.Results.Count -gt 0) {
-        Write-Output "Sample data from last 7 days:"
-        $testResult.Results | ForEach-Object {
-            Write-Output "  Date: $($_.TimeGenerated), Count: $($_.Count)"
-        }
-    }
-}
-catch {
-    Write-Error "Test query failed: $_"
-    throw $_
-}
-
-# Check for Welsh translation data first
-Write-Output "`nChecking for Welsh translation usage data..."
-$checkQuery = @"
-AppRequests
-| where TimeGenerated > ago(90d)
-| where Url has "/api/translation/cy"
-| summarize Count = count() by bin(TimeGenerated, 1d)
-| order by TimeGenerated desc
-| limit 5
-"@
-
-try {
-    $checkResult = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceid -Query $checkQuery
-    $checkRows = @($checkResult.Results)
-    Write-Output "Welsh translation requests in last 90 days: $($checkRows.Count) days with activity"
-    if ($checkRows.Count -gt 0) {
-        Write-Output "Recent Welsh translation activity:"
-        $checkRows | ForEach-Object {
-            Write-Output "  Date: $($_.TimeGenerated), Count: $($_.Count)"
-        }
-    } else {
-        Write-Output "WARNING: No Welsh translation requests found in the last 90 days."
-    }
-}
-catch {
-    Write-Warning "Check query failed: $_"
-}
-
 # Main Welsh translation query
 Write-Output "`nRunning Welsh translation usage query..."
 $query = @"
@@ -291,7 +238,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'17:15:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-16'T'10:35:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 

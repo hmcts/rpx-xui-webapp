@@ -1,10 +1,10 @@
 import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
-
+import * as log4jui from '../lib/log4jui';
 import { getConfigValue } from '../configuration';
 import { CASEWORKER_PAGE_SIZE, IDAM_SECRET, MICROSERVICE, ROLE_ASSIGNMENT_PAGE_SIZE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
 import { http } from '../lib/http';
-import { EnhancedRequest } from '../lib/models';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
@@ -14,6 +14,8 @@ import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
 import { CachedCaseworker, LocationApi } from './interfaces/common';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
 import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest, prepareRoleApiUrl } from './util';
+
+const logger: JUILogger = log4jui.getLogger('case-worker-user-data-cache');
 
 // Configuration
 const TTL_IN_SECONDS = 600; // 10 minutes
@@ -105,7 +107,7 @@ async function fetchAllUserPages(
   // Default to 5000 if CASEWORKER_PAGE_SIZE is missing or not a valid number
   const configPageSize = getConfigValue(CASEWORKER_PAGE_SIZE);
   const pageSize = !isNaN(parseInt(configPageSize)) ? parseInt(configPageSize) : 5000;
-
+  logger.info(`Using page size: ${pageSize}`);
   while (hasMoreData) {
     const getUsersPath = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
 
@@ -143,7 +145,7 @@ async function fetchAllRoleAssignmentPages(
   // Default to 20000 if ROLE_ASSIGNMENT_PAGE_SIZE is missing or not a valid number
   const configPageSize = getConfigValue(ROLE_ASSIGNMENT_PAGE_SIZE);
   const pageSize = !isNaN(parseInt(configPageSize)) ? parseInt(configPageSize) : 20000;
-
+  logger.info(`Using role assignment page size: ${pageSize}`);
   while (hasMoreData) {
     const roleApiPath = prepareRoleApiUrl(baseRoleAssignmentUrl);
     const jurisdictions = getStaffSupportedJurisdictionsList();

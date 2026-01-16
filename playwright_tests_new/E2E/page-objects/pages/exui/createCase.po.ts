@@ -73,6 +73,7 @@ export class CreateCasePage extends Base {
   readonly jobTitleInput = this.page.locator('#Person1_PersonJob_Title');
   readonly jobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
+  readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField1Input = this.page.locator('#TextField1');
   readonly textField2Input = this.page.locator('#TextField2');
@@ -137,22 +138,49 @@ export class CreateCasePage extends Base {
   }
 
   async uploadFile(fileName: string, mimeType: string, fileContent: string) {
-    const [fileChooser] = await Promise.all([
-      this.page.waitForEvent('filechooser'),
-      this.page.click('input[type="file"]')
-    ]);
-    await fileChooser.setFiles({
-      name: fileName,
-      mimeType: mimeType,
-      buffer: Buffer.from(fileContent),
-    });
-    await this.page.waitForResponse(r => r.url().includes('/documentv2') && r.request().method() === 'POST', { timeout: 10000 })
-      .catch(() => null);
-    await this.page
-      .locator(".error-message")
-      .getByLabel('Uploading...')
-      .waitFor({ state: "hidden" });
+    const maxRetries = 3;
+    const baseDelayMs = 3000; // initial backoff
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      // set the file directly on the input element (no filechooser needed)
+      await this.page.setInputFiles('input[type="file"]', {
+        name: fileName,
+        mimeType,
+        buffer: Buffer.from(fileContent),
+      });
+
+      // wait for the upload response (same predicate you already use)
+      const res = await this.page.waitForResponse(
+        r => r.url().includes('/documentsv2') && r.request().method() === 'POST',
+        { timeout: 5000 }
+      ).catch(() => null);
+
+      if (!res) {
+        // no response within timeout — treat as failure or retry depending on policy
+        if (attempt < maxRetries) {
+          await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+          continue;
+        } else {
+          throw new Error('Upload timed out after retries');
+        }
+      }
+
+      if (res.status() === 429) {
+        if (attempt < maxRetries) {
+          // exponential backoff before retrying
+          await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+          continue;
+        } else {
+          throw new Error('Upload failed: server returned 429 after retries');
+        }
+      }
+
+      // any non-429 response: consider it done (success or other failure)
+      break;
+    }
+    await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
   }
+
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     await this.createCase(jurisdiction, caseType, 'Create Case');
@@ -243,9 +271,7 @@ export class CreateCasePage extends Base {
     await this.manualEntryLink.click();
     await this.complexType2AddressLine1Input.fill('10 Test Street');
     await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
-
     await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF');
-
     await this.complexType3ComplianceButton.click();
     await this.complexType3ComplianceInput.fill('Compliant response');
     await this.complexType3DateOfBirthDay.fill('15');

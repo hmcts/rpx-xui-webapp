@@ -52,7 +52,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline(type, product, component) {
-
     env.DUAL_ACR_PUBLISH_ENABLED = "false"
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)

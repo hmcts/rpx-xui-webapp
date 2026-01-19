@@ -24,7 +24,7 @@ test.describe("Verify creating cases works as expected", () => {
             expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
             caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
             expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
-            expect(page.url()).toContain(`/${jurisdiction}/${caseType}/`);
+            expect(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
         });
 
         await test.step("Find the created case in the case list", async () => {

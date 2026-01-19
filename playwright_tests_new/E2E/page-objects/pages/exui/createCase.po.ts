@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { Page, Locator } from "@playwright/test";
 import { Base } from "../../base";
 import { faker, th } from '@faker-js/faker';
 
@@ -115,9 +115,37 @@ export class CreateCasePage extends Base {
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
   readonly errorMessage = this.page.locator('.error-message');
+  readonly errorSummary = this.page.locator('.error-summary');
 
   constructor(page: Page) {
     super(page);
+  }
+
+  async checkForErrorMessage(message?: string, timeout = 2000): Promise<boolean> {
+    const check = async (sel: Locator) => {
+      try {
+        await sel.waitFor({ state: 'visible', timeout });
+        if (message) {
+          const txt = await sel.textContent();
+          return !!txt && txt.includes(message);
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    const [a, b] = await Promise.all([
+      check(this.errorMessage),
+      check(this.errorSummary),
+    ]);
+
+    if (a || b) {
+      console.log('Error shown:', a ? await this.errorMessage.textContent() : '', b ? await this.errorSummary.textContent() : '');
+      return true;
+    }
+
+    return false;
   }
 
   async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
@@ -144,7 +172,7 @@ export class CreateCasePage extends Base {
     await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc')
     await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
     await this.submitButton.click();
-  
+
   }
 
   async uploadFile(fileName: string, mimeType: string, fileContent: string) {
@@ -159,7 +187,6 @@ export class CreateCasePage extends Base {
         buffer: Buffer.from(fileContent),
       });
 
-      // wait for the upload response (same predicate you already use)
       const res = await this.page.waitForResponse(
         r => r.url().includes('/document') && r.request().method() === 'POST',
         { timeout: 5000 }
@@ -318,7 +345,7 @@ export class CreateCasePage extends Base {
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
-    await this.createCase(jurisdiction, caseType, undefined);
+    await this.createCase(jurisdiction, caseType, '');
 
     await this.page.getByLabel(gender, { exact: true }).check();
     await this.person1Title.click();

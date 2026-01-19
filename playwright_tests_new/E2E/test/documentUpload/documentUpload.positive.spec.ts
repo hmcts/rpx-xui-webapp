@@ -62,28 +62,25 @@ test.describe("Document upload V1", () => {
         }
         await page.goto('/');
         await createCasePage.createCaseEmployment(jurisdiction, caseType, testValue);
+        expect(await createCasePage.checkForErrorMessage(), "Error message seen after creating employment case").toBe(false);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
     });
 
-    test("Check the documentV1 upload works as expected", async ({ createCasePage, caseDetailsPage,tableUtils, page }) => {
+    test("Check the documentV1 upload works as expected", async ({ createCasePage, caseDetailsPage, tableUtils, page }) => {
 
         await test.step("Verify case details tab does not contain an uploaded file", async () => {
             await caseDetailsPage.selectCaseAction('Upload Document');
-
         });
 
         await test.step("Upload a document to the case", async () => {
-            
             await createCasePage.uploadEmploymentFile('test.pdf', 'application/pdf', 'Test PDF document content');
-        
         });
 
         await test.step("Verify a document to the case", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Documents');
-            const table = await tableUtils.mapExuiTable(page.locator('table.complex-panel-table').first());
-            console.log("table",table);
-            expect.soft(table[0]).toMatchObject({ "Number": '1', 'Document': 'test.pdf' , 'Document category': 'Misc', 'Document type': 'Other' });
-       
+            await caseDetailsPage.caseActionGoButton.waitFor({ state: 'visible' });
+            const table = await caseDetailsPage.trTableToObjectsInPage(caseDetailsPage.caseDocumentsTable);
+            expect.soft(table[0]).toMatchObject({ "Number": '1', 'Document': 'test.pdf', 'Document Category': 'Misc', 'Type of Document': 'Other' });
         });
     });
 });

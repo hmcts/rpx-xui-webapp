@@ -1,6 +1,12 @@
 FROM hmctspublic.azurecr.io/base/node:20-alpine AS dependencies
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
+ENV PUPPETEER_SKIP_DOWNLOAD=1 \
+  CHROMEDRIVER_SKIP_DOWNLOAD=1 \
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+  PLAYWRIGHT_BROWSERS_PATH=0 \
+  SCARF_ANALYTICS=false
+
 USER root
 RUN corepack enable
 USER hmcts

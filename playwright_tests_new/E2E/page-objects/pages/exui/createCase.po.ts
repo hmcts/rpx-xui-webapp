@@ -25,7 +25,6 @@ export class CreateCasePage extends Base {
   readonly party2GroupId = this.page.locator('#LegalRepParty2Flags_groupId');
   readonly party2Visibility = this.page.locator('#LegalRepParty2Flags_visibility');
 
-
   // Locators for the Divorce - xuiTestCaseType
   readonly textFieldInput = this.page.locator('#TextField');
   readonly emailFieldInput = this.page.locator('#EmailField');
@@ -40,7 +39,6 @@ export class CreateCasePage extends Base {
   readonly dateTimeFieldMinuteInput = this.page.locator('#DateTimeField-minute');
   readonly dateTimeFieldSecondInput = this.page.locator('#DateTimeField-second');
   readonly currenyFieldInput = this.page.locator('#AmountInGBPField');
-
   readonly yesNoRadioButtons = this.page.locator('#YesOrNoField');
   readonly applicantPostcode = this.page.locator('#AppicantPostcodeField');
   readonly complexType1JudgeIsRightRadios = this.page.locator('#ComplexType_1_judgeLevelRadio');
@@ -100,7 +98,6 @@ export class CreateCasePage extends Base {
   readonly respondentAddressLine1Input = this.page.locator('#respondentCollection_0_respondent_address__detailAddressLine1');
   readonly sameAsClaimantWorkAddressYes = this.page.locator('#claimantWorkAddressQuestion_Yes');
   readonly claimantRepresentedNo = this.page.locator('#claimantRepresentedQuestion_No');
-
   readonly hearingPreferenceVideo = this.page.locator('#claimantHearingPreference_hearing_preferences-Video');
 
   // Address lookup locators
@@ -109,7 +106,6 @@ export class CreateCasePage extends Base {
   readonly postCodeSearchInput = this.page.locator('.postcodeLookup input');
   readonly postCodeSearchButton = this.page.locator('.postcodeLookup').getByRole('button');
   readonly addressSelect = this.page.locator('.postcodeLookup select');
-
 
   // Warning modal
   readonly refreshModal = this.page.locator('.refresh-modal');
@@ -165,14 +161,12 @@ export class CreateCasePage extends Base {
     await this.addressSelect.selectOption(addressOption);
   }
 
-
   async uploadEmploymentFile(fileName: string, mimeType: string, fileContent: string) {
     await this.page.locator('#documentCollection button').click();
     await this.uploadFile(fileName, mimeType, fileContent);
     await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc')
     await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
     await this.submitButton.click();
-
   }
 
   async uploadFile(fileName: string, mimeType: string, fileContent: string) {
@@ -229,11 +223,9 @@ export class CreateCasePage extends Base {
 
     await this.continueButton.click({ force: true });
     await this.continueButton.click({ force: true });
-
     await this.claimantIndividualRadio.check();
     await this.claimantIndividualFirstNameInput.fill('Test ');
     await this.claimantIndividualLastNameInput.fill('Person');
-
     await this.manualEntryLink.click();
     await this.claimantAddressLine1Input.fill('1 Test Street');
 
@@ -249,8 +241,8 @@ export class CreateCasePage extends Base {
     await this.respondentAddressLine1Input.fill('1 Respondent Street');
 
     await this.continueButton.click();
-
     await this.sameAsClaimantWorkAddressYes.click();
+    
     await this.continueButton.click();
 
     await this.continueButton.click();
@@ -277,8 +269,8 @@ export class CreateCasePage extends Base {
         throw new Error(`createDivorceCase does not support case type: ${caseType}`);
     }
   }
-  async createDivorceCaseTest(jurisdiction: string = 'DIVORCE', caseType: string = 'xuiTestCaseType', testData: string) {
 
+  async createDivorceCaseTest(jurisdiction: string = 'DIVORCE', caseType: string = 'xuiTestCaseType', testData: string) {
     const today = new Date();
     await this.createCase(jurisdiction, caseType, '');
 
@@ -330,13 +322,10 @@ export class CreateCasePage extends Base {
 
   async createDivorceCaseFlag(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'xuiCaseFlagsV1') {
     await this.createCase(jurisdiction, caseType, '');
-
     await this.party1RoleOnCase.fill(testData);
     await this.party1Name.fill(testData);
-
     await this.party2RoleOnCase.fill(`${testData}2`);
     await this.party2Name.fill(`${testData}2`);
-
     await this.continueButton.click();
     await this.exuiSpinnerComponent.wait()
     await this.testSubmitButton.click();

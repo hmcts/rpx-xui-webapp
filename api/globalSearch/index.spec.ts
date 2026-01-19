@@ -181,13 +181,13 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async() => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(7);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(7);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(7);
   });
 
   it('should return global search services2', async() => {

@@ -56,9 +56,9 @@ const data: AppTestConfig = {
       { idamId: 'e6cfb5e9-10c4-456c-ad51-160f077bda79', email: 'xui_hearing_manager_cr84_on@justice.gov.uk', release: 'hearing_CR84', userIdentifier: 'HEARING_MANAGER_CR84_ON', key: 'Monday01' },
       { idamId: '45295735-175a-45f0-94de-cdb805fccff3', email: 'xui_hearing_manager_cr84_off@justice.gov.uk', release: 'hearing_CR84', userIdentifier: 'HEARING_MANAGER_CR84_OFF', key: 'Monday01' },
       { idamId: '11111111-1111-1111-1111-111111111111', email: 'henry_fr_harper@yahoo.com', release: 'flagsTest', userIdentifier: 'USER_WITH_FLAGS', key: 'Nagoya0102' },
-      { idamId: '900a7ad4-3295-4e00-bf7b-20a7e4ea52a6', email: 'fpl-ctsc-admin@justice.gov.uk', release: 'fpl_global_search', userIdentifier: 'FPL_GS', key: 'Password12' },
+      { idamId: '900a7ad4-3295-4e00-bf7b-20a7e4ea52a6', email: 'fpl-ctsc-admin@justice.gov.uk', release: 'fpl_global_search', userIdentifier: 'FPL_GLOBAL_SEARCH', key: 'Password12' },
       { idamId: '22222222-2222-2222-2222-222222222222', email: 'cafcass@example.com', release: 'fpl_findcase', userIdentifier: 'FPL_CAFCASS', key: 'Password12' },
-      { idamId: '33333333-3333-3333-3333-333333333333', email: 'probatecaseworker@gmail.com', release: 'probate', userIdentifier: 'probate_cw', key: 'Monday01' }
+      { idamId: '33333333-3333-3333-3333-333333333333', email: 'probatecaseworker@gmail.com', release: 'probate', userIdentifier: 'PROBATE_CW', key: 'Monday01' }
     ],
     demo: [
       { idamId: '12b6a360-7f19-4985-b065-94320a891eaa', email: 'peterxuisuperuser@mailnesia.com', release: 'general', userIdentifier: 'PROD_LIKE', key: 'Monday01' },

@@ -5,12 +5,11 @@ import { Base } from "../../base";
 
 export class SearchCasePage extends Base {
   // Locators
-  readonly caseIdTextBox = this.page.getByRole('textbox', { name: '-digit case reference:' });
-  readonly searchCaseFindButton = this.page.getByRole('button', { name: 'Find' });
-  readonly searchResultsPageHeading = this.page.getByRole('heading', { name: 'Current progress of the case' });
-  readonly caseResultsForHeading = this.page.getByRole('heading', { name: 'Case record for HU/53862/' });
-  readonly caseHearingCentre = this.page.getByText('Hatton Cross Tribunal Hearing');
-  readonly appealReference = this.page.getByRole('caption',{name: 'Appeal reference'});
+  //readonly caseIdTextBox = this.page.getByRole('textbox', { name: '-digit case reference:' });
+  readonly caseIdTextBox = this.page.locator('#exuiCaseReferenceSearch');
+  readonly searchCaseFindButton = this.page.locator('button.govuk-button--secondary');
+  readonly searchResultsPageHeading = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31 h2').first().textContent();
+  readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31 p').nth(1);
 
   public async searchWith16DigitCaseId(caseId: string) : Promise<void> {
     await this.caseIdTextBox.click();

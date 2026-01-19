@@ -4,16 +4,16 @@ import {expect } from "../../../fixtures";
 
 export class FindCasePage extends Base {
   // Locators
-  readonly findCaseLinkOnMenu : Locator;
-  readonly showFilterButton : Locator;
-  readonly hideFilterButton : Locator;
-  readonly resetFilterButton : Locator;
-  readonly backToTopButton : Locator;
-  readonly caseTypeDropDown : Locator;
-  readonly jurisdictionSelect : Locator;
-  readonly searchResults_caseLink : Locator;
-  readonly caseReference : Locator;
-  readonly yourCasesHeading : Locator;
+  readonly findCaseLinkOnMenu : Locator =   this.page.getByRole('link', { name: ' Find case ' });
+  readonly showFilterButton : Locator = this.page.getByRole('button',{ name: ' Show Filter '});
+  readonly hideFilterButton : Locator = this.page.getByRole('button',{ name: ' Hide Filter '});
+  readonly resetFilterButton : Locator = this.page.getByRole('button',{ name: ' Reset filter '});
+  readonly backToTopButton : Locator = this.page.getByRole('button',{ name: 'Back to top'});
+  readonly caseTypeDropDown : Locator = this.page.getByRole('option', { name: 'case-type' });
+  readonly jurisdictionSelect : Locator = this.page.getByRole('option', { name: 'jurisdiction' });
+  readonly searchResults_caseLink : Locator = this.page.getByRole('link', { name: 'go to case with Case' });
+  readonly caseReference : Locator = this.page.getByRole('textbox', { name: 'Case reference', exact: true });
+  readonly yourCasesHeading : Locator = this.page.getByRole('heading', { name: 'Your cases' });
 
   async startFindCaseJourney(caseNumber:string) : Promise<void> {
     await this.findCaseLinkOnMenu.click();
@@ -52,15 +52,5 @@ export class FindCasePage extends Base {
 
   constructor(page: Page) {
     super(page);
-    this.findCaseLinkOnMenu = this.page.getByRole('link', { name: ' Find case ' });
-    this.showFilterButton = this.page.getByRole('button',{ name: ' Show Filter '});
-    this.hideFilterButton = this.page.getByRole('button',{ name: ' Hide Filter '});
-    this.resetFilterButton = this.page.getByRole('button',{ name: ' Reset filter '});
-    this.backToTopButton = this.page.getByRole('button',{ name: 'Back to top'});
-    this.yourCasesHeading = this.page.getByRole('heading', { name: 'Your cases' });
-    this.searchResults_caseLink = this.page.getByRole('link', { name: 'go to case with Case' });
-    this.jurisdictionSelect = this.page.getByRole('option', { name: 'jurisdiction' });
-    this.caseTypeDropDown = this.page.getByRole('option', { name: 'case-type' })
-    this.caseReference = this.page.getByRole('textbox', { name: 'Case reference', exact: true });
   }
 }

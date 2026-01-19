@@ -6,25 +6,26 @@ export class GlobalSearchPage extends Base {
   readonly CHANGE_SEARCH = 'Change search';
   readonly VIEW = 'View';
   // Locators
-  readonly searchButton : Locator;
-  readonly servicesOption : Locator;
-  readonly searchLinkOnMenuBar : Locator;
+  readonly searchButton = this.page.getByRole('button',{ name: 'Search'});
+  readonly servicesOption = this.page.getByRole('combobox', { name: 'servicesList' });
+  readonly searchLinkOnMenuBar = this.page.getByRole('link', { name: 'Search' });
   readonly caseIdTextBox = this.page.getByRole('textbox', { name: '16-digit case reference', exact: true });
-  readonly serviceLabel: Locator;
-  readonly viewLink : Locator;
-  readonly courtLocation : Locator;
-  readonly caseInformation : Locator;
-  readonly courtName : Locator;
-  readonly summaryTab : Locator;
-  readonly changeSearchLink:Locator;
-  readonly summaryHeading:Locator;
-  readonly caseFileViewTab:Locator;
-  readonly caseReference:Locator;
-  readonly applicantOrPartyName: Locator;
-  readonly previousSearchLink : Locator;
-  readonly nextSearchLink : Locator;
-  readonly searchResultsHeader : Locator;
-  readonly searchResultsContainer : Locator;
+  readonly serviceLabel = this.page.getByLabel('Services');
+  // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
+  readonly viewLink =  this.page.getByRole('link', {name: ' View ', exact:true});
+  readonly courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
+  readonly caseInformation =  this.page.getByRole('heading', {name: 'Case information'});
+  readonly courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
+  readonly summaryTab =  this.page.getByRole('tab', { name: 'Summary' });
+  readonly changeSearchLink = this.page.getByRole('paragraph');
+  readonly summaryHeading:Locator  = this.page.getByText('Summary');
+  readonly caseFileViewTab:Locator = this.page.getByRole('tab', { name: 'Case File View' });
+  readonly caseReference:Locator = this.page.getByRole('heading', { name: 'Case reference' });
+  readonly applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
+  readonly previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
+  readonly nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
+  readonly searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
+  readonly searchResultsContainer = this.page.locator('.govuk-width-container.ng-star-inserted');
 
 
   async performGlobalSearchWithCase(caseId: string ) : Promise<void> {
@@ -71,24 +72,24 @@ export class GlobalSearchPage extends Base {
 
   constructor(page: Page) {
     super(page);
-    this.searchButton = this.page.getByRole('button',{ name: 'Search'});
-    this.courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
-    this.servicesOption = this.page.getByRole('combobox', { name: 'servicesList' });
-    this.serviceLabel = this.page.getByLabel('Services');
-    this.searchLinkOnMenuBar = this.page.getByRole('link', { name: 'Search' });
-    // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
-    this.viewLink = this.page.getByRole('link', {name: ' View ', exact:true});
-    this.caseInformation = this.page.getByRole('heading', {name: 'Case information'});
-    this.courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
-    this.summaryTab = this.page.getByRole('tab', { name: 'Summary' });
-    this.changeSearchLink = this.page.getByRole('paragraph');
-    this.summaryHeading = this.page.getByText('Summary');
-    this.caseFileViewTab = this.page.getByRole('tab', { name: 'Case File View' });
-    this.caseReference = this.page.getByRole('heading', { name: 'Case reference' });
-    this.applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
-    this.previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
-    this.nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
-    this.searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
-    this.searchResultsContainer = this.page.locator('.govuk-width-container.ng-star-inserted');
+    // this.searchButton = this.page.getByRole('button',{ name: 'Search'});
+    // this.courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
+    // this.servicesOption = this.page.getByRole('combobox', { name: 'servicesList' });
+    // this.serviceLabel = this.page.getByLabel('Services');
+    // this.searchLinkOnMenuBar = this.page.getByRole('link', { name: 'Search' });
+    // // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
+    // this.viewLink = this.page.getByRole('link', {name: ' View ', exact:true});
+    // this.caseInformation = this.page.getByRole('heading', {name: 'Case information'});
+    // this.courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
+    // this.summaryTab = this.page.getByRole('tab', { name: 'Summary' });
+    // this.changeSearchLink = this.page.getByRole('paragraph');
+    // this.summaryHeading = this.page.getByText('Summary');
+    // this.caseFileViewTab = this.page.getByRole('tab', { name: 'Case File View' });
+    // this.caseReference = this.page.getByRole('heading', { name: 'Case reference' });
+    // this.applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
+    // this.previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
+    // this.nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
+    // this.searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
+    // this.searchResultsContainer = this.page.locator('.govuk-width-container.ng-star-inserted');
   }
 }

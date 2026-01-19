@@ -1,23 +1,27 @@
 import { test,expect } from "../../fixtures";
+import { ValidatorUtils } from "../../../E2E/utils/validator.utils.ts"
+import { loadSessionCookies } from '../../../common/sessionCapture.ts';
+
 
 // TODO New Case should be created using a API script.
 const caseNumber = "1763727112061356";
+const validatorUtils = new ValidatorUtils();
 
-test.describe("IDAM login for Find Search page", () => {
-  test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
-    await page.goto(config.urls.manageCaseBaseUrl);
-    const { email, password } = userUtils.getUserCredentials("probate_cw");
-    await idamPage.login({
-      username: email,
-      password: password,
-    });
+
+test.describe("IDAM login for Find Search page @KSM", () => {
+  let sessionCookies: any[] = [];
+  test.beforeEach(async ({ page }) => {
+    const { cookies } = loadSessionCookies('PROBATE_CW');
+    sessionCookies = cookies;
+    if (sessionCookies.length) {
+      await page.context().addCookies(sessionCookies);
+    }
+    await page.goto('/');
   });
 
-  test("Find Case using Probate / Grant of Representation caseType", async ({ tableUtils, caseListPage, findCasePage,createCasePage,caseDetailsPage }) => {
-
+  test("Find Case using Probate / Grant of Representation caseType @KSM", async ({ tableUtils, caseListPage, findCasePage,createCasePage,caseDetailsPage }) => {
     await test.step("Start Find Case journey", async () => {
       await findCasePage.startFindCaseJourney(caseNumber);
-
     });
 
     await test.step("Verify that case searched for appears under 'Your cases' ", async () => {
@@ -26,7 +30,8 @@ test.describe("IDAM login for Find Search page", () => {
     });
 
     await test.step("Confirm that the  case is in the search results", async () => {
-      const formattedCaseRef = caseNumber.replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, "$1-$2-$3-$4");
+      const formattedCaseRef = validatorUtils.formatCaseNumber(caseNumber)
+
       const table = await tableUtils.mapExuiTable(
         caseListPage.exuiCaseListComponent.caseListTable
       );

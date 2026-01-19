@@ -1,16 +1,19 @@
 import { test,expect } from "../../fixtures";
+import { loadSessionCookies } from '../../../common/sessionCapture.ts';
 
 // TODO New Case should be created using a API script.
 const caseNumber = "1766581243916831";
 
-test.describe("IDAM login using credentials for Global Search", () => {
-  test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
+test.describe("IDAM login using credentials for Global Search @KSM", () => {
+  let sessionCookies: any[] = [];
+  test.beforeEach(async ({ page, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
-    const { email, password } = userUtils.getUserCredentials("FPL_GS");
-    await idamPage.login({
-      username: email,
-      password: password,
-    });
+    const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
+    sessionCookies = cookies;
+    if (sessionCookies.length) {
+      await page.context().addCookies(sessionCookies);
+    }
+    await page.goto('/');
   });
 
   test("Global Search - using caseId and FPL Jurisdiction", async ({ page, globalSearchPage,caseDetailsPage }) => {

@@ -1,5 +1,13 @@
+export function resolveBaseUrl(value?: string): string {
+  return value ? value : 'https://manage-case.aat.platform.hmcts.net/';
+}
+
+export function resolveTestEnv(value?: string): string {
+  return value !== undefined && (value.includes('aat') || value.includes('demo')) ? value : 'aat';
+}
+
 export const config = {
-  baseUrl: process.env.TEST_URL ? process.env.TEST_URL : 'https://manage-case.aat.platform.hmcts.net/',
+  baseUrl: resolveBaseUrl(process.env.TEST_URL),
   jurisdictions: {
     aat: [
       { id: 'DIVORCE', caseTypeIds: ['xuiTestCaseType'] },
@@ -20,7 +28,7 @@ export const config = {
     aat: { docId: '249cfa9e-622c-4877-a588-e9daa3fe10d8' },
     demo: { docId: '005ed16f-be03-4620-a8ee-9bc90635f6f2' }
   },
-  testEnv: process.env.TEST_ENV !== undefined && (process.env.TEST_ENV.includes('aat') || process.env.TEST_ENV.includes('demo')) ? process.env.TEST_ENV : 'aat',
+  testEnv: resolveTestEnv(process.env.TEST_ENV),
   users: {
     aat: {
       solicitor: { e: 'xui_auto_test_user_solicitor@mailinator.com', sec: 'Monday01' },
@@ -62,4 +70,9 @@ export const config = {
       iaCaseIds: ['1547458486131483']
     }
   }
+};
+
+export const __test__ = {
+  resolveBaseUrl,
+  resolveTestEnv
 };

@@ -22727,6 +22727,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "prettier@npm:3.8.0"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 10/a643c62f095c2987a34cea4fceddce8dea12cc3ee024494aff690cfac22ef20be835e212b39b718c833014fd22890ae156be67b75a26e2bc9b7acde9a34d31fa
+  languageName: node
+  linkType: hard
+
 "pretty-format@npm:30.0.5":
   version: 30.0.5
   resolution: "pretty-format@npm:30.0.5"
@@ -24093,6 +24102,7 @@ __metadata:
     pegjs: "npm:^0.10.0"
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
+    prettier: "npm:^3.8.0"
     puppeteer: "npm:^24.0.0"
     rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
     rx-polling-hmcts: "npm:1.1.1"

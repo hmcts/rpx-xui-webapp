@@ -31,10 +31,22 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   // Table locators
+  readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
 
   constructor(page: Page) {
     super(page);
+  }
+
+  // Internal helper: obtain rows either from a selector string or a Locator
+  private async _runOnRows<T>(selector: string | Locator, fn: (rows: Element[]) => T): Promise<T> {
+    if (!selector) return (null as unknown) as T;
+    if (typeof selector !== 'string') {
+      // Locator: evaluate on the located rows
+      return (selector as Locator).locator('tr').evaluateAll(fn as any) as unknown as T;
+    }
+    // Selector string: use page.$$eval to run fn in page context
+    return this.page.$$eval(`${selector} tr`, fn as any) as unknown as T;
   }
 
   async getTableByName(tableName: string) {
@@ -48,56 +60,7 @@ export class CaseDetailsPage extends Base {
   async trRowsToObjectInPage(selector: string | Locator): Promise<Record<string, string>> {
     if (!selector) return {};
 
-    // If a Locator is provided, evaluate on the located rows directly
-    if (typeof selector !== 'string') {
-      return (selector as Locator).locator('tr').evaluateAll((rows: Element[]) => {
-        function findFirstText(node: Node | null): string {
-          if (!node) return '';
-          for (const child of Array.from(node.childNodes)) {
-            if (child.nodeType === Node.TEXT_NODE) {
-              const t = (child.textContent || '').trim();
-              if (t) return t;
-            } else if (child.nodeType === Node.ELEMENT_NODE) {
-              const t = findFirstText(child);
-              if (t) return t;
-            }
-          }
-          return '';
-        }
-
-        const out: Record<string, string> = {};
-        const dataRows = Array.from(rows).slice(1).filter(row => {
-          const el = row as Element;
-          if (el.hasAttribute && el.hasAttribute('hidden')) return false;
-          if ('hidden' in row && (row as any).hidden) return false;
-          const style = window.getComputedStyle(el);
-          if (!style) return false;
-          if (style.display === 'none' || style.visibility === 'hidden') return false;
-          if (el.getClientRects().length === 0) return false;
-          return true;
-        });
-
-        for (const row of dataRows) {
-          const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-          if (cells.length < 2) continue;
-
-          const rawKey = findFirstText(cells[0]).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-          if (!rawKey) continue;
-
-          const valueParts = cells.slice(1).map(c => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
-          const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
-
-          out[rawKey] = value;
-        }
-        return out;
-      });
-    }
-
-    return this.page.evaluate((sel) => {
-      if (!sel) return {};
-      const root = document.querySelector(sel);
-      if (!root) return {};
-
+    const fn = (rows: Element[]) => {
       function findFirstText(node: Node | null): string {
         if (!node) return '';
         for (const child of Array.from(node.childNodes)) {
@@ -112,25 +75,34 @@ export class CaseDetailsPage extends Base {
         return '';
       }
 
-      const table = (root instanceof HTMLTableElement) ? root : (root.querySelector('table') ?? root);
-      const rows = Array.from(table.querySelectorAll('tr'));
       const out: Record<string, string> = {};
+        const dataRows = Array.from(rows).filter(row => {
+        const el = row as Element;
+        if (el.hasAttribute && el.hasAttribute('hidden')) return false;
+        if ('hidden' in row && (row as any).hidden) return false;
+        const style = window.getComputedStyle(el);
+        if (!style) return false;
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        if (el.getClientRects().length === 0) return false;
+        return true;
+      });
 
-      for (const row of rows) {
+      for (const row of dataRows) {
         const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
         if (cells.length < 2) continue;
 
-        const rawKey = findFirstText(cells[0]).trim();
+        const rawKey = findFirstText(cells[0]).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
         if (!rawKey) continue;
 
-        const valueParts = cells.slice(1).map(c => findFirstText(c).trim()).filter(Boolean);
+        const valueParts = cells.slice(1).map(c => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
         const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
 
         out[rawKey] = value;
       }
-
       return out;
-    }, selector as string);
+    };
+
+    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>>;
   }
 
   /**
@@ -141,48 +113,14 @@ export class CaseDetailsPage extends Base {
   async trTableToObjectsInPage(selector: string | Locator): Promise<Record<string, string>[]> {
     if (!selector) return [];
 
-    if (typeof selector !== 'string') {
-      return (selector as Locator).locator('tr').evaluateAll((rows: Element[]) => {
-        const arr: Record<string, string>[] = [];
-        if (!rows || rows.length === 0) return arr;
-
-        // header is first tr
-        const headerRow = rows[0];
-        const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-        const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
-
-        // data rows are after header; filter hidden rows
-        const dataRows = Array.from(rows).slice(1).filter(row => {
-          if ((row as HTMLTableRowElement).hidden) return false;
-          const style = window.getComputedStyle(row as Element);
-          if (!style) return false;
-          if (style.display === 'none' || style.visibility === 'hidden') return false;
-          if ((row as Element).getClientRects().length === 0) return false;
-          return true;
-        });
-
-        for (const row of dataRows) {
-          const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-          if (cells.length === 0) continue;
-          const obj: Record<string, string> = {};
-          for (let i = 0; i < cells.length; i++) {
-            const key = headers[i] || `column_${i+1}`;
-            const value = sanitize(cells[i].innerText || '').replace(/\s+/g, ' ');
-            obj[key] = value;
-          }
-          arr.push(obj);
-        }
-        return arr;
-      });
-    }
-
-    return this.page.$$eval(`${selector} tr`, (rows) => {
+    const fn = (rows: Element[]) => {
       const arr: Record<string, string>[] = [];
       if (!rows || rows.length === 0) return arr;
 
       // header is first tr
       const headerRow = rows[0];
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => ((h as HTMLElement).innerText || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim());
+      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows).slice(1).filter(row => {
@@ -200,13 +138,54 @@ export class CaseDetailsPage extends Base {
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i+1}`;
-          const value = (cells[i].innerText || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim().replace(/\s+/g, ' ');
+          const value = sanitize(cells[i].innerText || '').replace(/\s+/g, ' ');
           obj[key] = value;
         }
         arr.push(obj);
       }
       return arr;
-    });
+    };
+
+    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>[]>;
+  }
+
+  async trTableToColumnMapInPage(selector: string | Locator): Promise<Record<string, string[]>> {
+    if (!selector) return {};
+
+    const fn = (rows: Element[]) => {
+      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+      const result: Record<string, string[]> = {};
+      if (!rows || rows.length === 0) return result;
+      const headerRow = rows[0];
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
+      for (let i = 0; i < headers.length; i++) {
+        const key = headers[i] || `column_${i+1}`;
+        result[key] = [];
+      }
+
+      const dataRows = Array.from(rows).slice(1).filter(row => {
+        if ((row as HTMLTableRowElement).hidden) return false;
+        const style = window.getComputedStyle(row as Element);
+        if (!style) return false;
+        if (style.display === 'none' || style.visibility === 'hidden') return false;
+        if ((row as Element).getClientRects().length === 0) return false;
+        return true;
+      });
+
+      for (const row of dataRows) {
+        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
+        for (let i = 0; i < headers.length; i++) {
+          const key = headers[i] || `column_${i+1}`;
+          const cell = cells[i];
+          const value = cell ? sanitize(cell.innerText || '').replace(/\s+/g, ' ') : '';
+          result[key].push(value);
+        }
+      }
+
+      return result;
+    };
+
+    return this._runOnRows(selector, fn as any) as Promise<Record<string, string[]>>;
   }
 
   async getCaseNumberFromAlert(): Promise<string> {

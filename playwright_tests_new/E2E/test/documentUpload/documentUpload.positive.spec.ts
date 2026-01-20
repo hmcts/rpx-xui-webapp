@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
 import { loadSessionCookies } from '../../../common/sessionCapture';
+import c from "config";
 
 test.describe("Document upload V2", () => {
     let testValue = faker.person.firstName();
@@ -24,7 +25,7 @@ test.describe("Document upload V2", () => {
 
         await test.step("Verify case details tab does not contain an uploaded file", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Tab 1');
-            const tableData = await caseDetailsPage.getTableContentsByTabName('tab1');
+            const tableData = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseTab1Table);
             expect.soft(tableData).toMatchObject({ "Text Field": testValue });
         });
 
@@ -42,7 +43,7 @@ test.describe("Document upload V2", () => {
         await test.step("Verify the document upload was successful", async () => {
             expect.soft(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: Update case`);
             await caseDetailsPage.selectCaseDetailsTab('Tab 1');
-            const tableData = await caseDetailsPage.getTableContentsByTabName('tab1');
+            const tableData = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.caseTab1Table);
             expect.soft(tableData).toMatchObject({ "Text Field": testValue, "Document 1": testFileName });
         });
     });

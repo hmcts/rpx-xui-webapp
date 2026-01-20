@@ -25,7 +25,7 @@ resource "azurerm_automation_runbook" "welsh_report_runbook" {
 
   content = <<EOT
 param(
-    [string]$workspaceguid,
+    [string]$appinsightsappid,
     [string]$resourcegroupname,
     [string]$acsresourcename,
     [string]$senderaddress,
@@ -64,14 +64,38 @@ AppRequests
 Write-Output "Workspace GUID provided: $workspaceguid"
 
 try {
-    Write-Output "Querying Application Insights workspace for Welsh translation usage..."
-    $result = Invoke-AzOperationalInsightsQuery -WorkspaceId $workspaceguid -Query $query -ErrorAction Stop
-    Write-Output "Query executed successfully."
+    Write-Output "Querying Application Insights for Welsh translation usage..."
+    # Query Application Insights directly using REST API
+    $token = (Get-AzAccessToken -ResourceUrl "https://api.applicationinsights.io").Token
+    $headers = @{
+        "Authorization" = "Bearer $token"
+        "Content-Type" = "application/json"
+    }
+    
+    $apiUrl = "https://api.applicationinsights.io/v1/apps/$appinsightsappid/query"
+    $body = @{ query = $query } | ConvertTo-Json
+    
+    Write-Output "App ID: $appinsightsappid"
+    $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
+    
+    # Convert response to same format as Log Analytics for compatibility
+    $result = @{
+        Results = $response.tables[0].rows | ForEach-Object {
+            $row = $_
+            $obj = New-Object PSObject
+            for ($i = 0; $i -lt $response.tables[0].columns.Count; $i++) {
+                $obj | Add-Member -MemberType NoteProperty -Name $response.tables[0].columns[$i].name -Value $row[$i]
+            }
+            $obj
+        }
+    }
+    
+    Write-Output "Query executed successfully. Found $($result.Results.Count) rows."
 }
 catch {
     Write-Error "Failed to execute query: $($_.Exception.Message)"
-    Write-Output "Workspace GUID: $workspaceguid"
-    Write-Output "Note: Ensure the Automation Account Managed Identity has 'Log Analytics Reader' role on the workspace."
+    Write-Output "App Insights App ID: $appinsightsappid"
+    Write-Output "Note: Ensure the Automation Account Managed Identity has 'Reader' role on Application Insights."
     throw $_
 }
 
@@ -211,7 +235,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   frequency               = "Month"
   interval                = 1
   # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-16'T'16:25:00Z", timestamp())
+  start_time              = formatdate("YYYY-MM-20'T'16:35:00Z", timestamp())
   timezone                = "Etc/UTC"
 }
 
@@ -223,7 +247,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-    workspaceguid     = azurerm_log_analytics_workspace.app_insights_workspace.workspace_id
+    appinsightsappid  = azurerm_application_insights.appinsight.app_id
     resourcegroupname = azurerm_resource_group.rg.name
     acsresourcename   = azurerm_communication_service.comm_service.0.name
     senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"

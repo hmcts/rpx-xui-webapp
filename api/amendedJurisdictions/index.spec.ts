@@ -183,6 +183,78 @@ describe('Amended Jurisdiction', () => {
     expect(response).to.eql(expected);
   });
 
+  it('should filter jurisdictions for access=create endpoint', () => {
+    const data = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application'
+          }
+        ]
+      },
+      {
+        id: 'RANDOM',
+        description: 'This jurisdiction should be filtered out'
+      }
+    ];
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=create';
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    
+    const expected = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application'
+          }
+        ]
+      }
+    ];
+    expect(response).to.eql(expected);
+    expect(req.session.createJurisdictions).to.eql(expected);
+  });
+
+  it('should filter jurisdictions with no access parameter', () => {
+    const data = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application'
+          }
+        ]
+      },
+      {
+        id: 'RANDOM',
+        description: 'This jurisdiction should be filtered out'
+      }
+    ];
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?';
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    
+    const expected = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application'
+          }
+        ]
+      }
+    ];
+    expect(response).to.eql(expected);
+    expect(req.session.jurisdictions).to.eql(expected);
+  });
+
   it('should not filter jurisdictions for non-jurisdictions endpoint', () => {
     const expected = [
       {

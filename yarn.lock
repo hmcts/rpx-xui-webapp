@@ -3724,12 +3724,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.13-add-suffix-rc1/hmcts-ccd-case-ui-toolkit-7.3.13-add-suffix-rc1.tgz":
-  version: 7.3.13-add-suffix-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.13-add-suffix-rc1/hmcts-ccd-case-ui-toolkit-7.3.13-add-suffix-rc1.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.17-add-suffix-rc1/hmcts-ccd-case-ui-toolkit-7.3.17-add-suffix-rc1.tgz":
+  version: 7.3.17-add-suffix-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.17-add-suffix-rc1/hmcts-ccd-case-ui-toolkit-7.3.17-add-suffix-rc1.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/550eccb8009a22b3d8dcd6d745df961c46b4d3fb79b2cdd9f6cbab66c465508df2d5d94e7103e75f124bfa496451e2a3ef7e3983e1da09696cf713454f113b65
+  checksum: 10/1c2f85f7558ce86ccb6b3ee67f12051ac158f68d9c4b58edfde16f67122b1a7bc57d98812d63e9907c37a1fb9668971fc47fde76f8affb7dcf90207b857839a0
   languageName: node
   linkType: hard
 
@@ -3752,9 +3752,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz":
-  version: 4.2.4
-  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz"
+"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz":
+  version: 4.2.5
+  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3773,7 +3773,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/ee31aa33c065be02d19185944c54e8332bb5ebfa46a97a3d60ff8e574333f16be057852d75f52959674189cc418e1addf4711fe3161a853b5eebe630fcc9ab96
+  checksum: 10/97ddd670f3443ef550a78bd3c54cd448cc0ee7e3cb5b9d7197cca1a4d33e3379dc00ac3f6148d39f29d7d7bcb7ec2b8abd4cd879f8aaeee79f48327fccf015a1
   languageName: node
   linkType: hard
 
@@ -25306,10 +25306,10 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.13-add-suffix-rc1/hmcts-ccd-case-ui-toolkit-7.3.13-add-suffix-rc1.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.17-add-suffix-rc1/hmcts-ccd-case-ui-toolkit-7.3.17-add-suffix-rc1.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.14"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.4/hmcts-media-viewer-4.2.4.tgz"
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"

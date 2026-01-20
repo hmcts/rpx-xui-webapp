@@ -60,22 +60,24 @@ export const config: Config = {
   urls: {
     exuiDefaultUrl: "https://manage-case.aat.platform.hmcts.net",
     manageCaseBaseUrl:
-      process.env.MANAGE_CASES_BASE_URL ||
-      "https://manage-case.aat.platform.hmcts.net/cases",
+      resolveUrl(process.env.MANAGE_CASES_BASE_URL, "https://manage-case.aat.platform.hmcts.net/cases"),
     citizenUrl:
-      process.env.CITIZEN_FRONTEND_BASE_URL ||
-      "https://privatelaw.aat.platform.hmcts.net/",
+      resolveUrl(process.env.CITIZEN_FRONTEND_BASE_URL, "https://privatelaw.aat.platform.hmcts.net/"),
     idamWebUrl:
-      process.env.IDAM_WEB_URL ||
-      "https://idam-web-public.aat.platform.hmcts.net",
+      resolveUrl(process.env.IDAM_WEB_URL, "https://idam-web-public.aat.platform.hmcts.net"),
     idamTestingSupportUrl:
-      process.env.IDAM_TESTING_SUPPORT_URL ||
-      "https://idam-testing-support-api.aat.platform.hmcts.net",
+      resolveUrl(process.env.IDAM_TESTING_SUPPORT_URL, "https://idam-testing-support-api.aat.platform.hmcts.net"),
     serviceAuthUrl:
-      process.env.S2S_URL ||
-      "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/testing-support/lease",
+      resolveUrl(
+        process.env.S2S_URL,
+        "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/testing-support/lease"
+      ),
   },
 };
+
+function resolveUrl(value: string | undefined, fallback: string): string {
+  return value || fallback;
+}
 
 function getEnvVar(name: string): string {
   const value = process.env[name];
@@ -84,4 +86,9 @@ function getEnvVar(name: string): string {
   }
   return value;
 }
+
+export const __test__ = {
+  getEnvVar,
+  resolveUrl
+};
 export default config;

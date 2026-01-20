@@ -53,10 +53,6 @@ export class CaseDetailsPage extends Base {
     return this.page.getByRole('table', { name: tableName, exact: true })
   }
 
-  async getTableContentsByTabName(className: string) {
-    return this.trRowsToObjectInPage(`table.${className}`);
-  }
-
   async trRowsToObjectInPage(selector: string | Locator): Promise<Record<string, string>> {
     if (!selector) return {};
 
@@ -147,45 +143,6 @@ export class CaseDetailsPage extends Base {
     };
 
     return this._runOnRows(selector, fn as any) as Promise<Record<string, string>[]>;
-  }
-
-  async trTableToColumnMapInPage(selector: string | Locator): Promise<Record<string, string[]>> {
-    if (!selector) return {};
-
-    const fn = (rows: Element[]) => {
-      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const result: Record<string, string[]> = {};
-      if (!rows || rows.length === 0) return result;
-      const headerRow = rows[0];
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
-      for (let i = 0; i < headers.length; i++) {
-        const key = headers[i] || `column_${i+1}`;
-        result[key] = [];
-      }
-
-      const dataRows = Array.from(rows).slice(1).filter(row => {
-        if ((row as HTMLTableRowElement).hidden) return false;
-        const style = window.getComputedStyle(row as Element);
-        if (!style) return false;
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if ((row as Element).getClientRects().length === 0) return false;
-        return true;
-      });
-
-      for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-        for (let i = 0; i < headers.length; i++) {
-          const key = headers[i] || `column_${i+1}`;
-          const cell = cells[i];
-          const value = cell ? sanitize(cell.innerText || '').replace(/\s+/g, ' ') : '';
-          result[key].push(value);
-        }
-      }
-
-      return result;
-    };
-
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string[]>>;
   }
 
   async getCaseNumberFromAlert(): Promise<string> {

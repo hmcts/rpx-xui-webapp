@@ -74,14 +74,14 @@ test.describe("Document upload V1", () => {
         });
 
         await test.step("Upload a document to the case", async () => {
-            await createCasePage.uploadEmploymentFile('test.pdf', 'application/pdf', 'Test PDF document content');
+            await createCasePage.uploadEmploymentFile(`${testValue}.pdf`, 'application/pdf', 'Test PDF document content');
         });
 
         await test.step("Verify a document to the case", async () => {
             await caseDetailsPage.selectCaseDetailsTab('Documents');
             await caseDetailsPage.caseActionGoButton.waitFor({ state: 'visible' });
             const table = await caseDetailsPage.trTableToObjectsInPage(caseDetailsPage.caseDocumentsTable);
-            expect.soft(table[0]).toMatchObject({ "Number": '1', 'Document': 'test.pdf', 'Document Category': 'Misc', 'Type of Document': 'Other' });
+            expect.soft(table[0]).toMatchObject({ "Number": '1', 'Document': `${testValue}.pdf`, 'Document Category': 'Misc', 'Type of Document': 'Other' });
         });
     });
 });

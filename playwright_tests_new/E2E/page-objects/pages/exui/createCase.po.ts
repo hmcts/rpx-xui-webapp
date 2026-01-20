@@ -15,9 +15,9 @@ export class CreateCasePage extends Base {
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
-  readonly startButton = this.page.getByRole('button', { name: 'Start' });
-  readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
-  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly startButton = this.page.locator(`button[type="submit"]`);
+  readonly submitButton = this.page.locator(`button[type="submit"]`);
+  readonly continueButton = this.page.locator(`button[type="submit"]`);
 
   // Locators for the Divorce - XUI Case flags V2
   readonly legalRepParty1Block = this.page.locator('#LegalRepParty1Flags_LegalRepParty1Flags');

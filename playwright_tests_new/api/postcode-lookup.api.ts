@@ -2,6 +2,7 @@ import { test, expect } from './fixtures';
 import { withXsrf, expectStatus, StatusSets } from './utils/apiTestUtils';
 import type { AddressLookupResponse } from './utils/types';
 import { expectAddressLookupShape } from './utils/assertions';
+import { shouldAssertAddress } from './utils/postcodeLookupUtils';
 
 test.describe('Postcode lookup', () => {
   test('returns address data for postcode E1', async ({ apiClient }) => {
@@ -12,11 +13,18 @@ test.describe('Postcode lookup', () => {
       });
 
       expectStatus(response.status, StatusSets.guardedBasic.filter((s) => s !== 403));
-      if (response.status !== 200) {
+      if (!shouldAssertAddress(response.status)) {
         return;
       }
 
       expectAddressLookupShape(response.data);
     });
+  });
+});
+
+test.describe('Postcode lookup helper coverage', () => {
+  test('shouldAssertAddress handles guarded status', () => {
+    expect(shouldAssertAddress(200)).toBe(true);
+    expect(shouldAssertAddress(500)).toBe(false);
   });
 });

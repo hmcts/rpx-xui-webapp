@@ -1,6 +1,12 @@
 import { Page, Locator } from "@playwright/test";
+import { createLogger } from '@hmcts/playwright-common';
 import { Base } from "../../base";
 import { faker, th } from '@faker-js/faker';
+
+const logger = createLogger({ 
+  serviceName: 'create-case',
+  format: 'pretty' 
+});
 
 export class CreateCasePage extends Base {
 
@@ -137,7 +143,7 @@ export class CreateCasePage extends Base {
     ]);
 
     if (a || b) {
-      console.log('Error shown:', a ? await this.errorMessage.textContent() : '', b ? await this.errorSummary.textContent() : '');
+      logger.error('Error shown:', a ? await this.errorMessage.textContent() : '', b ? await this.errorSummary.textContent() : '');
       return true;
     }
 
@@ -196,17 +202,16 @@ export class CreateCasePage extends Base {
         }
       }
 
-      if (res.status() === 429) {
+      if (res.status() !== 200) {
         if (attempt < maxRetries) {
           // exponential backoff before retrying
           await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
           continue;
         } else {
-          throw new Error('Upload failed: server returned 429 after retries');
+          throw new Error(`Upload failed: server returned status ${res.status()} after ${maxRetries} retries`);
         }
       }
 
-      // any non-429 response: consider it done (success or other failure)
       break;
     }
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });

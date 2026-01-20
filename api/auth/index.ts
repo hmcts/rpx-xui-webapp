@@ -41,12 +41,11 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const { accessToken } = user.tokenset;
   const cookieToken = getConfigValue(COOKIES_TOKEN);
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
-  const secureCookieEnabled = showFeature(FEATURE_SECURE_COOKIE_ENABLED);
 
   logger.info('Setting session and cookies');
 
-  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict', secure: secureCookieEnabled });
-  res.cookie(cookieToken, accessToken, { sameSite: 'strict', secure: secureCookieEnabled });
+  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
+  res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
 
   if (!req.isRefresh) {
     return res.redirect('/');

@@ -13,7 +13,6 @@ import { SessionStorageService } from '../../app/services';
 import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';
-import { Booking } from '../../booking/models';
 import { Location, LocationsByRegion, LocationsByService } from '../models/dtos';
 import { LocationDataService } from '../services';
 import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';
@@ -123,21 +122,6 @@ export class LocationResolver {
     return this.locations;
   }
 
-  public addBookingLocations(locations: Location[], bookings: Booking[]): Location[] {
-    // TODO: Check if user still has valid bookable role assignment for service
-    const bookingLocations: string[] = [];
-    bookings.forEach((booking) => {
-      // if this is an active booking
-      if (moment(new Date()).isSameOrAfter(booking.beginTime) && moment(new Date()).isSameOrBefore(booking.endTime)) {
-        bookingLocations.push(booking.locationId);
-      } else {
-        locations = locations.filter((location) => location.id !== booking.locationId);
-      }
-    });
-    this.saveBookingLocation(bookingLocations);
-    return locations;
-  }
-
   private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
     if (!roleAssignment.region && !roleAssignment.baseLocation) {
       // if there are no restrictions, via union logic, all locations selectable
@@ -224,7 +208,7 @@ export class LocationResolver {
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
-    locations = locations.filter((location) => !!location.id);
+    locations = locations?.filter((location) => !!location.id);
     if (!locations || locations.length === 0) {
       return of(null);
     }

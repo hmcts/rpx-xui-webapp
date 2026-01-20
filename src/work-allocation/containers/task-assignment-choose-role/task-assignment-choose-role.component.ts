@@ -47,7 +47,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
 
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
-    this.roles = getOptions(this.taskRoles, this.sessionStorageService);
+    this.roles = this.taskRoles ? getOptions(this.taskRoles, this.sessionStorageService) : [];
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.service = this.route.snapshot.queryParamMap.get('service');
     this.verb = this.route.snapshot.data.verb;

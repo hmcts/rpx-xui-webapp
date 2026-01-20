@@ -4,7 +4,7 @@ import { select } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { HMCTSServiceDetails, UserInfo, UserRole } from '../../../app/models';
+import { UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder, TaskContext } from '../../enums';
@@ -145,33 +145,6 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedTaskType = selection.taskType;
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
     this.loadBasedOnFilter();
-  }
-
-  private setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSServiceDetails[]): HMCTSServiceDetails[] {
-    const supportedJurisdictions = [];
-    detailedWAServices.forEach((jurisdiction) => {
-      // get the serviceIds from the detailed service
-      supportedJurisdictions.push(jurisdiction.serviceId);
-    });
-    this.supportedJurisdictions = supportedJurisdictions;
-    if (!roleServiceIds.includes(null) && roleServiceIds.length > 0) {
-      const roleJurisdictions = [];
-      // get set of serviceIds from jurisdictions within user roles
-      const initialRoleJurisdictions = [...new Set(roleServiceIds)];
-      initialRoleJurisdictions.forEach((serviceId) => {
-        if (supportedJurisdictions.includes(serviceId)) {
-          // if there is a service name for the serviceId, use it
-          const matchingServices = detailedWAServices.filter((x) => x.serviceId === serviceId);
-          const serviceName = matchingServices?.length > 0 ? matchingServices[0].serviceName : serviceId;
-          roleJurisdictions.push({ serviceId, serviceName });
-        } else {
-          roleJurisdictions.push({ serviceId, serviceName: serviceId });
-        }
-      });
-      return roleJurisdictions;
-    }
-    // use provided WA supported services
-    return detailedWAServices;
   }
 
   private loadBasedOnFilter(): void {

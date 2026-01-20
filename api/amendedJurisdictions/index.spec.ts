@@ -202,7 +202,7 @@ describe('Amended Jurisdiction', () => {
     ];
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=create';
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
-    
+
     const expected = [
       {
         id: 'CIVIL',
@@ -238,7 +238,7 @@ describe('Amended Jurisdiction', () => {
     ];
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?';
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
-    
+
     const expected = [
       {
         id: 'CIVIL',

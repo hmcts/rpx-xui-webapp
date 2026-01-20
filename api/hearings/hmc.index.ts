@@ -118,7 +118,6 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
  */
 export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
-  req.body.caseDetails.caseRef = ''; // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
@@ -166,7 +165,6 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
  */
 export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.params.hearingId;
-  req.body.caseDetails.caseRef = ''; // THIS LINE HERE , MAKES THE CASEREF TO BE NULL
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
     const { status }: { status: number } = await handlePost(markupPath, null, req);

@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../utils/session.utils';
+import { loadSessionCookies } from '../../../common/sessionCapture';
 import { buildCaseListMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';

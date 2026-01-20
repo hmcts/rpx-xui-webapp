@@ -1328,7 +1328,7 @@ describe('workAllocation', () => {
       { id: 'applications', label: 'Applications' }
     ];
     const apiResponse = { work_types: typesOfWork };
-    const mapped = typesOfWork.map(workType => ({ key: workType.id, label: workType.label }));
+    const mapped = typesOfWork.map((workType) => ({ key: workType.id, label: workType.label }));
 
     it('should return all types when no searchTerm', async () => {
       const httpRes = mockRes({ data: apiResponse });

@@ -159,7 +159,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
   private setPartyAmendmentFlags(partyInHMC: PartyDetailsModel, partyDetailsModel: PartyDetailsModel): void {
     if (this.isPaperHearing() === RadioOptions.NO){
       this.setPartyNameStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyNameChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
-      this.setPartyChannelStatus(partyDetailsModel.partyID, HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
+      this.setPartyChannelStatus(partyDetailsModel.partyID, HearingsUtils.toCompareServiceHearingValueField(partyDetailsModel.individualDetails.preferredHearingChannel) &&
+      HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyDetailsModel) ? AmendmentLabelStatus.AMENDED : AmendmentLabelStatus.NONE);
     }
   }
 
@@ -314,11 +315,13 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees, this.serviceHearingValuesModel.numberOfPhysicalAttendees): false;
       const defaultHearingChannel: string[] = this.serviceHearingValuesModel.hearingChannels || [];
 
-      this.attendanceFormGroup.controls.hearingLevelChannels.value.forEach((channel: LovRefDataModel) => {
-        const isInDefaults = defaultHearingChannel.includes(channel.key);
-        const isSelected = channel.selected;
-        channel.showAmendedLabel = isInDefaults !== isSelected;
-      });
+      if (defaultHearingChannel.length > 0) {
+        this.attendanceFormGroup.controls.hearingLevelChannels.value.forEach((channel: LovRefDataModel) => {
+          const isInDefaults = defaultHearingChannel.includes(channel.key);
+          const isSelected = channel.selected;
+          channel.showAmendedLabel = isInDefaults !== isSelected;
+        });
+      }
     }
     this.hearingLevelChannels = this.attendanceFormGroup.controls.hearingLevelChannels.value;
   }

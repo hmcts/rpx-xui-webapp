@@ -26,7 +26,8 @@ import {
   getMyCases,
   getCases,
   getTaskNames,
-  getNewUsersByServiceName
+  getNewUsersByServiceName,
+  searchTypesOfWork
 } from '.';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
@@ -105,12 +106,16 @@ describe('workAllocation', () => {
       const next = sandbox.spy();
 
       const mockUserData: CachedCaseworker[] = [
-        { idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+        {
+          idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
           services: ['service1'],
-          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }] },
-        { idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }]
+        },
+        {
+          idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
           services: ['service1'],
-          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }] }
+          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }]
+        }
       ];
 
       FullUserDetailCache.setUserDetails(mockUserData);
@@ -143,12 +148,16 @@ describe('workAllocation', () => {
     const next = sandbox.spy();
 
     const mockUserData: CachedCaseworker[] = [
-      { idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+      {
+        idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
         services: ['service1'],
-        locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }] },
-      { idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+        locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }]
+      },
+      {
+        idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
         services: ['service1'],
-        locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }] }
+        locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }]
+      }
     ];
 
     FullUserDetailCache.setUserDetails(mockUserData);
@@ -1307,6 +1316,89 @@ describe('workAllocation', () => {
         const calledUrl = spy.getCall(0).args[0];
         expect(calledUrl).to.include('completion_process=EXUI_USER_COMPLETION');
       });
+    });
+  });
+
+  describe('searchTypesOfWork', () => {
+    const typesOfWork = [
+      { id: 'hearing_work', label: 'Hearing work' },
+      { id: 'upper_tribunal', label: 'Upper Tribunal' },
+      { id: 'routine_work', label: 'Routine work' },
+      { id: 'decision_making_work', label: 'Decision-making work' },
+      { id: 'applications', label: 'Applications' }
+    ];
+    const apiResponse = { work_types: typesOfWork };
+    const mapped = typesOfWork.map(workType => ({ key: workType.id, label: workType.label }));
+
+    it('should return all types when no searchTerm', async () => {
+      const httpRes = mockRes({ data: apiResponse });
+      sandbox.stub(http, 'get').resolves(httpRes);
+
+      const req = mockReq({ body: { searchTerm: null } });
+      const response = mockRes();
+
+      await searchTypesOfWork(req, response, next);
+
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith(sinon.match(mapped));
+    });
+
+    it('should filter by label case-insensitively', async () => {
+      const httpRes = mockRes({ data: apiResponse });
+      sandbox.stub(http, 'get').resolves(httpRes);
+
+      const req = mockReq({ body: { searchTerm: 'hearing' } });
+      const response = mockRes();
+
+      await searchTypesOfWork(req, response, next);
+
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith([
+        { key: 'hearing_work', label: 'Hearing work' }
+      ]);
+    });
+
+    it('should filter by key (id) case-insensitively', async () => {
+      const httpRes = mockRes({ data: apiResponse });
+      sandbox.stub(http, 'get').resolves(httpRes);
+
+      const req = mockReq({ body: { searchTerm: 'ROUTINE_WORK' } });
+      const response = mockRes();
+
+      await searchTypesOfWork(req, response, next);
+
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith([
+        { key: 'routine_work', label: 'Routine work' }
+      ]);
+    });
+
+    it('should return empty array when no matches', async () => {
+      const httpRes = mockRes({ data: apiResponse });
+      sandbox.stub(http, 'get').resolves(httpRes);
+
+      const req = mockReq({ body: { searchTerm: 'nonexistent' } });
+      const response = mockRes();
+
+      await searchTypesOfWork(req, response, next);
+
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.send).to.have.been.calledWith([]);
+    });
+
+    it('should handle an exception being thrown', async () => {
+      const httpRes = mockRes({ data: apiResponse });
+      sandbox.stub(http, 'get').resolves(httpRes);
+
+      const req = mockReq({ body: { searchTerm: 'anything' } });
+      const response = mockRes();
+
+      response.send.throws();
+
+      await searchTypesOfWork(req, response, next);
+
+      // Consistent with similar tests in this file
+      expect(next).to.have.been.calledWith();
     });
   });
 });

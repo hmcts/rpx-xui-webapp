@@ -20,7 +20,8 @@ import {
   searchTask,
   showAllocateRoleLink,
   getTaskNames,
-  getUsersByServiceName
+  getUsersByServiceName,
+  searchTypesOfWork
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';
@@ -46,6 +47,7 @@ router.use('/region-location', getLocationsByRegion);
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 
 router.use('/task/types-of-work', getTypesOfWork);
+router.use('/task/search-types-of-work', searchTypesOfWork);
 router.use('/task/:taskId/roles', getTaskRoles);
 router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);

@@ -275,35 +275,54 @@ function exitWithStatus() {
   // Check for failed tests by reading the generated report
   let status = 'PASS';
   try {
-    const files = fs.readdirSync(functional_output_dir);
-    console.log('Report files found:', files)
-    const reportFile = files.find(f => f.startsWith('cucumber_output') && f.endsWith('.json'));
-    console.log('Using report file:', reportFile);
-    const reportPath = reportFile ? path.join(functional_output_dir, reportFile) : '';
-    console.log('Full report path:', reportPath);
-    if (fs.existsSync(reportPath)) {
-      console.log('Reading report file for test results...');
-      const reportData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
-      console.log('Report data loaded:', reportData);
-      let failed = 0;
-      for (const feature of reportData) {
-        console.log('Processing feature:', feature.name);
-        for (const scenario of feature.elements) {
-          console.log('Processing scenario:', scenario.name);
-          if (scenario.steps.some((step: any) => step.result.status === 'failed')) {
-            console.log('Scenario failed:', scenario.name);
-            failed++;
+    const cucumberReports = fs.readdirSync(CUKE_OUT)
+      .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+      .map(f => path.join(CUKE_OUT, f));
+
+    if (cucumberReports.length === 0) {
+      console.warn('No cucumber JSON files found - failing the run');
+      process.exit(1);
+    }
+    let nonEmpty = 0;
+    let failedScenarios = 0;
+    let failedSteps = 0;
+
+    for (const cucumberFile of cucumberReports) {
+      let fileData;
+      try {
+        fileData = JSON.parse(fs.readFileSync(cucumberFile, 'utf-8'));
+      } catch (fileError) {
+        console.warn(`Skipping bad JSON: ${path.basename(cucumberFile)} (${fileError.message})`);
+        continue;
+      }
+
+      if (!Array.isArray(fileData) || fileData.length === 0) {
+        console.log(`Empty report: ${path.basename(cucumberFile)} - skipping`);
+        continue;
+      }
+
+      nonEmpty++;
+
+      for (const feature of fileData) {
+        const elements = feature.elements || [];
+        for (const scenario of elements) {
+          const steps = scenario.steps || [];
+          const scenarioFailed = steps.some(step => step.result?.status === 'failed');
+          if (scenarioFailed) {
+            failedScenarios++;
+            failedSteps += steps.filter(step => step.result?.status === 'failed').length;
           }
         }
       }
-      console.log(`Total failed scenarios: ${failed}`);
-      status = failed > 0 ? 'FAIL' : 'PASS';
     }
+
+    const status = nonEmpty === 0 ? 'FAIL' : (failedScenarios > 0 ? 'FAIL' : 'PASS');
+    console.log(`Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`);
+    process.exit(status === 'PASS' ? 0 : 1);
   } catch (err) {
     console.error('Error checking test results:', err);
     status = 'FAIL';
   }
-  process.exit(status === 'PASS' ? 0 : 1);
 }
 
 async function setup() {

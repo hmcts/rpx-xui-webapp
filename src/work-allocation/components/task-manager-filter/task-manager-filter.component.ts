@@ -8,6 +8,7 @@ import { filter, map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { HMCTSServiceDetails, UserRole } from '../../../app/models';
 import * as fromAppStore from '../../../app/store';
+import { WorkType } from '../../models/tasks';
 import { getRoleCategory } from '../../utils';
 
 @Component({
@@ -48,6 +49,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           value: ['All']
         },
         {
+          name: 'workTypes',
+          value: []
+        },
+        {
           name: 'taskName',
           value: [{ task_type_id: '', task_type_name: '' }]
         },
@@ -60,8 +65,8 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   };
 
   constructor(private readonly filterService: FilterService,
-              private featureToggleService: FeatureToggleService,
-              private readonly appStore: Store<fromAppStore.State>) {}
+    private featureToggleService: FeatureToggleService,
+    private readonly appStore: Store<fromAppStore.State>) { }
 
   private static initServiceFilter(jurisdictions: HMCTSServiceDetails[]): FilterFieldConfig {
     return {
@@ -189,6 +194,21 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
     };
   }
 
+  private static initWorkTypeFilter(): FilterFieldConfig {
+    return {
+      name: 'workTypes',
+      options: [],
+      title: 'Types of Work',
+      minSelected: null,
+      maxSelected: null,
+      lineBreakBefore: true,
+      findWorkTypeField: 'services',
+      displayMinSelectedError: true,
+      type: 'find-work-type',
+      enableAddButton: true
+    };
+  }
+
   private static initTaskTypeFilter(): FilterFieldConfig {
     return {
       name: 'taskType',
@@ -269,6 +289,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initPersonFilter(),
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(this.waSupportedJurisdictions),
+      TaskManagerFilterComponent.initWorkTypeFilter(),
       TaskManagerFilterComponent.initTaskTypeFilter(),
       TaskManagerFilterComponent.initTaskNameFilter()
     ];
@@ -289,10 +310,14 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
         filter((f: FilterSetting) => !f.reset),
       ).subscribe((f: FilterSetting) => {
-        const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+        const fields = f.fields.reduce((acc, field: { name: string, value: string[] | WorkType[] }) => {
           if (field.name === 'location') {
             const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';
             return { ...acc, [field.name]: value };
+          } else if (field.name === 'workTypes') {
+            if (field.value?.length > 0) {
+              return { ...acc, [field.name]: field.value.map((workType) => workType.key) };
+            }
           }
           return { ...acc, [field.name]: field.value[0] };
         }, {});

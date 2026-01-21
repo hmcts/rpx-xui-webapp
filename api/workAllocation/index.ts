@@ -95,7 +95,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 }
 
 /**
- * getTask
+ * getTypesOfWork
  */
 export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
@@ -104,6 +104,30 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     let typesOfWork = [];
     if (response && response.work_types) {
       typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
+    }
+    res.status(200);
+    res.send(typesOfWork);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * searchTypesOfWork
+ */
+export async function searchTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=true`;
+    const response = await getTypesOfWorkByUserId(path, req);
+    let typesOfWork = [];
+    if (response && response.work_types) {
+      typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
+    }
+    const searchTerm = req.body.searchTerm ? req.body.searchTerm.toUpperCase() : '';
+    if (searchTerm) {
+      typesOfWork = typesOfWork.filter((work) => {
+        return work.label.toUpperCase().includes(searchTerm) || work.key.toUpperCase().includes(searchTerm);
+      });
     }
     res.status(200);
     res.send(typesOfWork);

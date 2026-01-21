@@ -57,7 +57,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
     /* Retry on CI only */
-    retries: 1, // Set the number of retries for all projects
+    retries: env.CI ? 2 : 0, // Set the number of retries for all projects
 
     timeout: 3 * 60 * 1000,
     expect: {

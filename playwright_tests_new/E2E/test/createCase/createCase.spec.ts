@@ -26,7 +26,7 @@ test.describe("Verify creating cases works as expected", () => {
 
         await test.step("Create a case and validate the case details", async () => {
             await createCasePage.createDivorceCase(jurisdiction, caseType, textField0);
-            expect.soft(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
+            expect.soft(caseDetailsPage.caseAlertSuccessMessage).toBeVisible();
             caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
             expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
             expect(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);

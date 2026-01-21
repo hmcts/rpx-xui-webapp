@@ -49,14 +49,15 @@ const buildConfig = (env: EnvMap = process.env) => {
     testDir: '.',
     testMatch: [
       'playwright_tests/**/*.test.ts',
-      'playwright_tests_new/E2E/**/*.spec.ts'
+      'playwright_tests_new/E2E/**/*.spec.ts',
+      'playwright_tests_new/integration/**/*.spec.ts'
     ],
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
     /* Retry on CI only */
-    retries: 3, // Set the number of retries for all projects
+    retries: 1, // Set the number of retries for all projects
 
     timeout: 3 * 60 * 1000,
     expect: {
@@ -66,8 +67,6 @@ const buildConfig = (env: EnvMap = process.env) => {
 
     /* Control the number of parallel test workers. */
     workers: workerCount,
-
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
 
     reporter: [
       [env.CI ? 'dot' : 'list'],

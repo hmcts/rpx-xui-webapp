@@ -1,7 +1,7 @@
 import { Page, Locator } from "@playwright/test";
 import { createLogger } from '@hmcts/playwright-common';
 import { Base } from "../../base";
-import { faker, th } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 const logger = createLogger({ 
   serviceName: 'create-case',
@@ -123,6 +123,52 @@ export class CreateCasePage extends Base {
     super(page);
   }
 
+  private async waitForSelectReady(selector: string) {
+    await this.page.waitForFunction(
+      (sel) => {
+        const el = document.querySelector(sel) as HTMLSelectElement | null;
+        return !!el && el.options.length > 1 && !el.disabled;
+      },
+      selector
+    );
+  }
+
+  private async selectOptionSmart(selectLocator: Locator, option: string) {
+    await selectLocator.waitFor({ state: 'visible' });
+    const options = await selectLocator.evaluate((el) =>
+      Array.from((el as HTMLSelectElement).options).map((o) => ({
+        value: o.value,
+        label: o.label
+      }))
+    );
+
+    const normalized = option.toLowerCase();
+    const match =
+      options.find((o) => o.value === option) ||
+      options.find((o) => o.label === option) ||
+      options.find((o) => o.value.toLowerCase() === normalized) ||
+      options.find((o) => o.label.toLowerCase() === normalized);
+
+    if (!match) {
+      const available = options.map((o) => `${o.label} (${o.value})`).join(', ');
+      throw new Error(`Option not found for "${option}". Available: ${available}`);
+    }
+
+    await selectLocator.selectOption({ value: match.value });
+  }
+
+  /**
+   * Click the continue button multiple times
+   * @param count - Number of times to click
+   * @param options - Click options (force, timeout)
+   */
+  async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
+    for (let i = 0; i < count; i++) {
+      await this.continueButton.click(options);
+      logger.info('Clicked continue button', { iteration: i + 1, total: count });
+    }
+  }
+
   async checkForErrorMessage(message?: string, timeout = 2000): Promise<boolean> {
     const check = async (sel: Locator) => {
       try {
@@ -143,7 +189,10 @@ export class CreateCasePage extends Base {
     ]);
 
     if (a || b) {
-      logger.error('Error shown:', a ? await this.errorMessage.textContent() : '', b ? await this.errorSummary.textContent() : '');
+      logger.error('Error message displayed on page', {
+        errorMessage: a ? await this.errorMessage.textContent() : null,
+        errorSummary: b ? await this.errorSummary.textContent() : null
+      });
       return true;
     }
 
@@ -151,12 +200,25 @@ export class CreateCasePage extends Base {
   }
 
   async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
-    await this.createCaseButton.click();
-    await this.jurisdictionSelect.selectOption(jurisdiction);
-    await this.caseTypeSelect.selectOption(caseType);
+    if (!this.page.url().includes('/cases/case-filter')) {
+      try {
+        await this.createCaseButton.waitFor({ state: 'visible', timeout: 5000 });
+        await this.createCaseButton.click();
+      } catch (error) {
+        await this.page.goto('/cases/case-filter');
+      }
+    }
+    await this.jurisdictionSelect.waitFor({ state: 'visible' });
+    await this.waitForSelectReady('#cc-jurisdiction');
+    await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
+
+    await this.caseTypeSelect.waitFor({ state: 'visible' });
+    await this.waitForSelectReady('#cc-case-type');
+    await this.selectOptionSmart(this.caseTypeSelect, caseType);
     if (eventType) {
       await this.eventTypeSelect.click();
-      await this.eventTypeSelect.selectOption({ label: eventType });
+      await this.waitForSelectReady('#cc-event');
+      await this.selectOptionSmart(this.eventTypeSelect, eventType);
     }
     await this.startButton.click();
   }

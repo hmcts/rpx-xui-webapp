@@ -1,12 +1,14 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture';
 
 const userIdentifier = 'SOLICITOR';
 const jurisdiction = 'DIVORCE';
 const caseType = 'xuiTestJurisdiction';
 let sessionCookies: any[] = [];
 
-test.beforeAll(() => {
+test.beforeAll(async () => {
+    // Lazy capture: only log in SOLICITOR when this test suite runs
+    await ensureSession(userIdentifier);
     const { cookies } = loadSessionCookies(userIdentifier);
     sessionCookies = cookies;
 });

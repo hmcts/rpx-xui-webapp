@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture';
 
 test.describe("Case level case flags", () => {
     let testValue = faker.person.firstName();
@@ -8,6 +8,12 @@ test.describe("Case level case flags", () => {
     const jurisdiction = 'EMPLOYMENT';
     const caseType = 'ET_EnglandWales';
     let sessionCookies: any[] = [];
+
+    test.beforeAll(async () => {
+        // Lazy capture: only log in SEARCH_EMPLOYMENT_CASE when this test suite runs
+        await ensureSession('SEARCH_EMPLOYMENT_CASE');
+    });
+
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
         const { cookies } = loadSessionCookies('SEARCH_EMPLOYMENT_CASE');
         sessionCookies = cookies;
@@ -60,6 +66,11 @@ test.describe("Party level case flags", () => {
     const jurisdiction = 'DIVORCE';
     const caseType = 'xuiCaseFlagsV1';
     let sessionCookies: any[] = [];
+
+    test.beforeAll(async () => {
+        // Lazy capture: only log in USER_WITH_FLAGS when this test suite runs
+        await ensureSession('USER_WITH_FLAGS');
+    });
 
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
         const { cookies } = loadSessionCookies('USER_WITH_FLAGS');

@@ -1,10 +1,11 @@
 import { Locator, Page } from "@playwright/test";
 import { Base } from "../../base";
 import { ValidatorUtils } from "../../../utils/validator.utils";
-import { TableUtils } from "@hmcts/playwright-common";
+import { ExuiTableUtils } from "../../../utils/table.utils";
+import { TIMEOUTS } from "../../../test/documentUpload/constants";
 
-const tableUtils = new TableUtils();
 const validatorUtils = new ValidatorUtils();
+const exuiTableUtils = new ExuiTableUtils();
 
 export interface CaseFlagItem {
   flagType: string;
@@ -29,123 +30,93 @@ export class CaseDetailsPage extends Base {
   readonly caseAlertSuccessMessage = this.page.locator('.hmcts-banner--success .alert-message');
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
-
-  // Table locators
-  readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
 
   constructor(page: Page) {
     super(page);
   }
 
-  // Internal helper: obtain rows either from a selector string or a Locator
-  private async _runOnRows<T>(selector: string | Locator, fn: (rows: Element[]) => T): Promise<T> {
-    if (!selector) return (null as unknown) as T;
-    if (typeof selector !== 'string') {
-      // Locator: evaluate on the located rows
-      return (selector as Locator).locator('tr').evaluateAll(fn as any) as unknown as T;
-    }
-    // Selector string: use page.$$eval to run fn in page context
-    return this.page.$$eval(`${selector} tr`, fn as any) as unknown as T;
-  }
-
   async getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true })
   }
 
-  async trRowsToObjectInPage(selector: string | Locator): Promise<Record<string, string>> {
-    if (!selector) return {};
-
-    const fn = (rows: Element[]) => {
-      function findFirstText(node: Node | null): string {
-        if (!node) return '';
-        for (const child of Array.from(node.childNodes)) {
-          if (child.nodeType === Node.TEXT_NODE) {
-            const t = (child.textContent || '').trim();
-            if (t) return t;
-          } else if (child.nodeType === Node.ELEMENT_NODE) {
-            const t = findFirstText(child);
-            if (t) return t;
-          }
-        }
-        return '';
-      }
-
-      const out: Record<string, string> = {};
-        const dataRows = Array.from(rows).filter(row => {
-        const el = row as Element;
-        if (el.hasAttribute && el.hasAttribute('hidden')) return false;
-        if ('hidden' in row && (row as any).hidden) return false;
-        const style = window.getComputedStyle(el);
-        if (!style) return false;
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if (el.getClientRects().length === 0) return false;
-        return true;
-      });
-
-      for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-        if (cells.length < 2) continue;
-
-        const rawKey = findFirstText(cells[0]).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-        if (!rawKey) continue;
-
-        const valueParts = cells.slice(1).map(c => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
-        const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
-
-        out[rawKey] = value;
-      }
-      return out;
-    };
-
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>>;
+  /**
+   * Parse CCD key-value table (case details tabs)
+   * @param selector - CSS selector string or Playwright Locator
+   * @returns Object with key-value pairs from the table
+   */
+  async parseKeyValueTable(selector: string | Locator): Promise<Record<string, string>> {
+    return exuiTableUtils.parseKeyValueTable(selector, this.page);
   }
 
   /**
-   * Read a table and return an array of row objects where keys are header texts
-   * taken from the first TR, and values are the corresponding cell text.
-   * Reads the header row and skips reading any hidden rows.
+   * Parse data table with headers (collections, documents, flags)
+   * @param selector - CSS selector string or Playwright Locator
+   * @returns Array of row objects
    */
-  async trTableToObjectsInPage(selector: string | Locator): Promise<Record<string, string>[]> {
-    if (!selector) return [];
+  async parseDataTable(selector: string | Locator): Promise<Array<Record<string, string>>> {
+    return exuiTableUtils.parseDataTable(selector, this.page);
+  }
 
-    const fn = (rows: Element[]) => {
-      const arr: Record<string, string>[] = [];
-      if (!rows || rows.length === 0) return arr;
+  /**
+   * Get case details tab data as key-value pairs
+   * @param tabClass - CSS class name for the tab table (e.g., 'tab1')
+   */
+  async getCaseDetailsTabData(tabClass: string): Promise<Record<string, string>> {
+    const tableLocator = this.page.locator('.case-viewer-container').locator(`table.${tabClass}`);
+    try {
+      await tableLocator.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+      return this.parseKeyValueTable(tableLocator);
+    } catch (error) {
+      const fallbackTable = this.page
+        .locator('[role="tabpanel"]')
+        .filter({ has: this.page.locator('table') })
+        .first()
+        .locator('table')
+        .first();
+      await fallbackTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+      return this.parseKeyValueTable(fallbackTable);
+    }
+  }
 
-      // header is first tr
-      const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
+  /**
+   * Get documents list from documents table
+   */
+  async getDocumentsList(): Promise<Array<Record<string, string>>> {
+    const tables = await this.page.locator('table').elementHandles();
+    let targetIndex = -1;
 
-      // data rows are after header; filter hidden rows
-      const dataRows = Array.from(rows).slice(1).filter(row => {
-        if ((row as HTMLTableRowElement).hidden) return false;
-        const style = window.getComputedStyle(row as Element);
-        if (!style) return false;
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if ((row as Element).getClientRects().length === 0) return false;
-        return true;
-      });
-
-      for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-        if (cells.length === 0) continue;
-        const obj: Record<string, string> = {};
-        for (let i = 0; i < cells.length; i++) {
-          const key = headers[i] || `column_${i+1}`;
-          const value = sanitize(cells[i].innerText || '').replace(/\s+/g, ' ');
-          obj[key] = value;
+    for (let i = 0; i < tables.length; i++) {
+      const hasHeaders = await tables[i].evaluate((table) => {
+        const thead = table.querySelector(':scope > thead');
+        if (!thead) {
+          return false;
         }
-        arr.push(obj);
+        const headerCells = Array.from(thead.querySelectorAll('th, td'))
+          .map(el => (el.textContent || '').trim());
+        return headerCells.includes('Number')
+          && headerCells.includes('Document Category')
+          && headerCells.includes('Type of Document');
+      });
+      if (hasHeaders) {
+        targetIndex = i;
+        break;
       }
-      return arr;
-    };
+    }
 
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>[]>;
+    if (targetIndex >= 0) {
+      const documentsTable = this.page.locator('table').nth(targetIndex);
+      await documentsTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+      return this.parseDataTable(documentsTable);
+    }
+
+    const fallbackTable = this.caseDocumentsTable.first();
+    await fallbackTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+    return this.parseDataTable(fallbackTable);
   }
 
   async getCaseNumberFromAlert(): Promise<string> {
+    await this.caseAlertSuccessMessage.waitFor({ state: 'visible', timeout: TIMEOUTS.ALERT_VISIBLE });
     const alertText = await this.caseAlertSuccessMessage.innerText();
     const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
     if (!caseNumberMatch) {
@@ -157,17 +128,27 @@ export class CaseDetailsPage extends Base {
   async getCaseNumberFromUrl(): Promise<string> {
     const url = this.page.url();
     const caseNumberMatch = url.slice(url.lastIndexOf('/') + 1);
-    if (!caseNumberMatch) {
-      throw new Error(`Failed to extract case number from URL: "${url}"`);
+    // Validate format: EXUI case numbers are typically 16 digits
+    if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
+      throw new Error(`Failed to extract valid case number from URL: "${url}" (extracted: "${caseNumberMatch}")`);
     }
-    return caseNumberMatch ? caseNumberMatch : '';
+    return caseNumberMatch;
   }
 
   async selectCaseAction(action: string) {
-    await this.caseActionGoButton.waitFor();
-    await this.caseActionsDropdown.selectOption(action);
+    await this.caseActionGoButton.waitFor({ state: 'visible' });
+    await this.caseActionsDropdown.waitFor({ state: 'visible' });
+    try {
+      await this.caseActionsDropdown.selectOption({ label: action });
+    } catch (error) {
+      await this.caseActionsDropdown.selectOption(action);
+    }
     await this.caseActionGoButton.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  async selectCaseDetailsEvent(action: string) {
+    await this.selectCaseAction(action);
   }
 
   async selectFirstRadioOption() {
@@ -211,6 +192,11 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectCaseDetailsTab(tabName: string) {
-    await this.caseDetailsTabs.filter({ hasText: tabName }).click()
+    const tab = this.caseDetailsTabs.filter({ hasText: tabName });
+    await tab.click();
+    // Wait for tab content to load
+    await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.TAB_LOAD }).catch(() => {
+      // Swallow timeout - some tabs don't trigger network activity
+    });
   }
 }

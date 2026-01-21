@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import * as lockfile from 'proper-lockfile';
 import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
@@ -30,17 +31,47 @@ type SessionCaptureDeps = {
   fs?: typeof fs;
   config?: typeof config;
   env?: NodeJS.ProcessEnv;
+  lockfile?: typeof lockfile;
 };
 
 /**
+ * Ensure session is captured for a given userIdentifier before tests run.
+ * Call this in test.beforeAll() to lazily capture only needed sessions.
+ */
+export async function ensureSession(userIdentifier: string): Promise<void> {
+  const userUtils = new UserUtils();
+  const creds = userUtils.getUserCredentials(userIdentifier);
+  const email = creds.email;
+  const sessionPath = path.join(process.cwd(), '.sessions', `${email}.storage.json`);
+  
+  if (!isSessionFresh(sessionPath)) {
+    logger.info('Session missing or stale, capturing lazily', { 
+      userIdentifier, 
+      email,
+      operation: 'lazy-capture',
+      metric: 'session-miss'
+    });
+    await sessionCapture([userIdentifier]);
+  } else {
+    logger.info('Session is fresh, skipping capture', { 
+      userIdentifier, 
+      email,
+      operation: 'lazy-capture',
+      metric: 'session-hit'
+    });
+  }
+}
+
+/**
  * Load persisted session cookies for a given userIdentifier.
- * Returns empty cookies array if file missing or invalid.
+ * Throws if session doesn't exist. Use ensureSession() first.
  */
 export function loadSessionCookies(userIdentifier: string): LoadedSession {
   const userUtils = new UserUtils();
   const creds = userUtils.getUserCredentials(userIdentifier);
   const email = creds.email;
   const storageFile = path.join(process.cwd(), '.sessions', `${email}.storage.json`);
+  
   let cookies: Cookie[] = [];
   if (fs.existsSync(storageFile)) {
     try {
@@ -61,14 +92,24 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
         });
       }
     } catch (e) {
-      logger.error('Failed parsing storage state', { 
+      logger.error('Failed parsing storage state - cleaning up and throwing', { 
         userIdentifier, 
         storageFile, 
         error: (e as Error).message,
         operation: 'load-session'
       });
+      // Auto-clean corrupted session file
+      try {
+        fs.unlinkSync(storageFile);
+        logger.info('Deleted corrupted session file', { storageFile });
+      } catch (cleanupError) {
+        logger.warn('Failed to delete corrupted session file', { 
+          storageFile, 
+          error: (cleanupError as Error).message 
+        });
+      }
       throw new StorageStateCorruptedError(
-        `Storage file missing or invalid for ${userIdentifier}`,
+        `Storage file corrupted for ${userIdentifier} - file has been deleted. Re-run test to capture fresh session.`,
         storageFile,
         { userIdentifier },
         e as Error
@@ -93,7 +134,7 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
 //Return true if sessionPath exists and its mtime is within maxAgeMs.
 export function isSessionFresh(
     sessionPath: string,
-    maxAgeMs = 5 * 60 * 1000,
+    maxAgeMs = 15 * 60 * 1000,
     deps: { fs?: typeof fs; now?: () => number } = {}
 ): boolean {
     const fsApi = deps.fs ?? fs;
@@ -158,6 +199,7 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
     const persist = deps.persistSession ?? persistSession;
     const chromiumLauncher = deps.chromiumLauncher ?? chromium;
     const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
+    const lockfileApi = deps.lockfile ?? lockfile;
 
     const sessionsDir = path.join(process.cwd(), '.sessions');
     if (!fsApi.existsSync(sessionsDir)) {
@@ -167,66 +209,122 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
     for (const id of identifiers) {
         const { email, password } = userUtils.getUserCredentials(id);
         const sessionPath = path.join(sessionsDir, `${email}.storage.json`);
+        const lockFilePath = path.join(sessionsDir, `${email}.lock`);
 
-        if (isFresh(sessionPath)) {
-            logger.info('Session is fresh, skipping capture', { 
-              userIdentifier: id, 
-              email, 
-              sessionPath,
-              operation: 'session-capture'
-            });
-            continue;
+        // Ensure lock file directory exists
+        if (!fsApi.existsSync(sessionsDir)) {
+            fsApi.mkdirSync(sessionsDir, { recursive: true });
         }
 
-        const browser = await chromiumLauncher.launch();
-        const context = await browser.newContext();
-        const page = await context.newPage();
-        const idamPage = idamFactory(page);
-        const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
-        logger.info('Logging in to EXUI', { 
-          userIdentifier: id, 
-          email, 
-          targetUrl,
-          operation: 'session-capture'
-        });
+        // Create lock file if it doesn't exist
+        if (!fsApi.existsSync(lockFilePath)) {
+            fsApi.writeFileSync(lockFilePath, '', 'utf8');
+        }
+
+        // Acquire filesystem lock (blocks across all workers)
+        let release: (() => Promise<void>) | null = null;
         try {
-            await page.goto(targetUrl);
-            await page.waitForSelector('#username', { timeout: 60000 });
-            await idamPage.login({ username: email, password });
-            // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
-            try {
-                await page.waitForSelector('exui-header', { timeout: 60000 });
-                logger.info('EXUI header detected', { 
-                  userIdentifier: id,
-                  operation: 'session-capture'
-                });
-            } catch (error_) {
-                logger.warn('EXUI header not detected within timeout', { 
+            logger.info('Attempting to acquire lock for user', { 
+              userIdentifier: id,
+              lockFilePath,
+              operation: 'session-capture'
+            });
+            
+            release = await lockfileApi.lock(lockFilePath, {
+                retries: {
+                    retries: 30,
+                    minTimeout: 1000,
+                    maxTimeout: 5000
+                },
+                stale: 60000 // Consider lock stale after 60s
+            });
+
+            logger.info('Lock acquired', { 
+              userIdentifier: id,
+              operation: 'session-capture'
+            });
+
+            // Recheck freshness after acquiring lock (another worker may have logged in)
+            if (isFresh(sessionPath)) {
+                logger.info('Session became fresh while waiting for lock', { 
                   userIdentifier: id, 
-                  timeout: 60000,
-                  error: (error_ as Error).message,
+                  email, 
+                  sessionPath,
                   operation: 'session-capture'
                 });
+                continue;
             }
-        } catch (e) {
-            logger.error('Login failed', { 
+
+            // Perform login
+            const browser = await chromiumLauncher.launch();
+            const context = await browser.newContext();
+            const page = await context.newPage();
+            const idamPage = idamFactory(page);
+            const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
+            logger.info('Logging in to EXUI', { 
               userIdentifier: id, 
               email, 
               targetUrl,
-              error: (e as Error).message,
               operation: 'session-capture'
             });
-            throw new SessionCaptureError(
-              `Login failed for ${id}`,
-              id,
-              { email, targetUrl },
-              e as Error
-            );
-        }
+            try {
+                await page.goto(targetUrl);
+                await page.waitForSelector('#username', { timeout: 60000 });
+                await idamPage.login({ username: email, password });
+                // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
+                try {
+                    await page.waitForSelector('exui-header', { timeout: 60000 });
+                    logger.info('EXUI header detected', { 
+                      userIdentifier: id,
+                      operation: 'session-capture'
+                    });
+                } catch (error_) {
+                    logger.warn('EXUI header not detected within timeout', { 
+                      userIdentifier: id, 
+                      timeout: 60000,
+                      error: (error_ as Error).message,
+                      operation: 'session-capture'
+                    });
+                }
+            } catch (e) {
+                logger.error('Login failed', { 
+                  userIdentifier: id, 
+                  email, 
+                  targetUrl,
+                  error: (e as Error).message,
+                  operation: 'session-capture'
+                });
+                throw new SessionCaptureError(
+                  `Login failed for ${id}`,
+                  id,
+                  { email, targetUrl },
+                  e as Error
+                );
+            }
 
-        const cookies = await context.cookies();
-        await persist(sessionPath, cookies, context, id);
-        await browser.close();
+            const cookies = await context.cookies();
+            await persist(sessionPath, cookies, context, id);
+            await browser.close();
+
+        } finally {
+            // Always release lock
+            if (release) {
+                try {
+                    await release();
+                    logger.info('Lock released', { 
+                      userIdentifier: id,
+                      operation: 'session-capture'
+                    });
+                } catch (e) {
+                    logger.warn('Failed to release lock', { 
+                      userIdentifier: id, 
+                      lockFilePath,
+                      error: (e as Error).message,
+                      operation: 'session-capture'
+                    });
+                }
+            }
+        }
     }
 }
 

@@ -16,8 +16,8 @@ export class CreateCasePage extends Base {
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
   readonly startButton = this.page.locator(`button[type="submit"]`);
-  readonly submitButton = this.page.locator(`button[type="submit"]`);
-  readonly continueButton = this.page.locator(`button[type="submit"]`);
+  readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
+  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
 
   // Locators for the Divorce - XUI Case flags V2
   readonly legalRepParty1Block = this.page.locator('#LegalRepParty1Flags_LegalRepParty1Flags');
@@ -118,6 +118,7 @@ export class CreateCasePage extends Base {
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
   readonly errorMessage = this.page.locator('.error-message');
   readonly errorSummary = this.page.locator('.error-summary');
+  readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
 
   constructor(page: Page) {
     super(page);
@@ -157,6 +158,20 @@ export class CreateCasePage extends Base {
     await selectLocator.selectOption({ value: match.value });
   }
 
+  private async assertNoEventCreationError(context: string) {
+    const isVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+    if (!isVisible) {
+      return;
+    }
+    throw new Error(`Case event failed ${context}: The event could not be created.`);
+  }
+
+  private async clickContinueAndWait(context: string, options: { force?: boolean } = {}) {
+    await this.continueButton.click(options);
+    await this.exuiSpinnerComponent.wait();
+    await this.assertNoEventCreationError(context);
+  }
+
   /**
    * Click the continue button multiple times
    * @param count - Number of times to click
@@ -164,7 +179,13 @@ export class CreateCasePage extends Base {
    */
   async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
     for (let i = 0; i < count; i++) {
-      await this.continueButton.click(options);
+      try {
+        await this.continueButton.waitFor({ state: 'visible', timeout: 5000 });
+      } catch (error) {
+        logger.info('Continue button not visible; stopping early', { iteration: i + 1, total: count });
+        break;
+      }
+      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, options);
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }
   }
@@ -281,47 +302,63 @@ export class CreateCasePage extends Base {
 
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
-    await this.createCase(jurisdiction, caseType, 'Create Case');
-    const today = new Date();
-    await this.receiptDayInput.fill(today.getDate().toString());
-    await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
-    await this.receiptYearInput.fill((today.getFullYear() - 1).toString());
-    await this.tribunalOfficeSelect.selectOption('Leeds');
+    const maxAttempts = 2;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await this.createCase(jurisdiction, caseType, 'Create Case');
+        await this.assertNoEventCreationError('after starting employment case');
+        const today = new Date();
+        await this.receiptDayInput.fill(today.getDate().toString());
+        await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
+        await this.receiptYearInput.fill((today.getFullYear() - 1).toString());
+        await this.tribunalOfficeSelect.selectOption('Leeds');
 
-    await this.continueButton.click({ force: true });
-    await this.continueButton.click({ force: true });
-    await this.claimantIndividualRadio.check();
-    await this.claimantIndividualFirstNameInput.fill('Test ');
-    await this.claimantIndividualLastNameInput.fill('Person');
-    await this.manualEntryLink.click();
-    await this.claimantAddressLine1Input.fill('1 Test Street');
+        await this.clickContinueAndWait('after receipt details', { force: true });
+        await this.clickContinueAndWait('after claimant type', { force: true });
+        await this.claimantIndividualRadio.check();
+        await this.claimantIndividualFirstNameInput.fill('Test ');
+        await this.claimantIndividualLastNameInput.fill('Person');
+        await this.manualEntryLink.click();
+        await this.claimantAddressLine1Input.fill('1 Test Street');
 
-    await this.continueButton.click();
+        await this.clickContinueAndWait('after claimant address');
 
-    await this.addRespondentButton.click();
-    await this.respondentOneNameInput.fill('Respondent One');
-    await this.respondentOrganisation.click()
-    await this.respondentAcasCertifcateSelectYes.click();
-    await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
-    await this.respondentCompanyNameInput.fill('Respondent Company');
-    await this.manualEntryLink.click();
-    await this.respondentAddressLine1Input.fill('1 Respondent Street');
+        await this.addRespondentButton.click();
+        await this.respondentOneNameInput.fill('Respondent One');
+        await this.respondentOrganisation.click()
+        await this.respondentAcasCertifcateSelectYes.click();
+        await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
+        await this.respondentCompanyNameInput.fill('Respondent Company');
+        await this.manualEntryLink.click();
+        await this.respondentAddressLine1Input.fill('1 Respondent Street');
 
-    await this.continueButton.click();
-    await this.sameAsClaimantWorkAddressYes.click();
-    
-    await this.continueButton.click();
+        await this.clickContinueAndWait('after respondent details');
+        await this.sameAsClaimantWorkAddressYes.click();
 
-    await this.continueButton.click();
+        await this.clickContinueAndWait('after work address confirmation');
 
-    await this.claimantRepresentedNo.click();
+        await this.clickContinueAndWait('after claim details');
 
-    await this.continueButton.click();
+        await this.claimantRepresentedNo.click();
 
-    await this.hearingPreferenceVideo.click();
+        await this.clickContinueAndWait('after claimant representation');
 
-    await this.submitButton.click();
-    await this.exuiSpinnerComponent.wait();
+        await this.hearingPreferenceVideo.click();
+
+        await this.submitButton.click();
+        await this.exuiSpinnerComponent.wait();
+        await this.assertNoEventCreationError('after submitting employment case');
+        return;
+      } catch (error) {
+        const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+        if (eventErrorVisible && attempt < maxAttempts) {
+          logger.warn('Employment case creation failed; retrying', { attempt, maxAttempts });
+          await this.page.goto('/cases/case-filter');
+          continue;
+        }
+        throw error;
+      }
+    }
   }
 
   async createDivorceCase(jurisdiction: string, caseType: string, testInput: string) {

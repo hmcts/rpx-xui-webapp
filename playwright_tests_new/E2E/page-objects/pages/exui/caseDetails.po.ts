@@ -1,11 +1,11 @@
 import { Locator, Page } from "@playwright/test";
 import { Base } from "../../base";
 import { ValidatorUtils } from "../../../utils/validator.utils";
-import { ExuiTableUtils } from "../../../utils/table.utils";
+import { TableUtils } from "@hmcts/playwright-common";
 import { TIMEOUTS } from "../../../test/documentUpload/constants";
 
 const validatorUtils = new ValidatorUtils();
-const exuiTableUtils = new ExuiTableUtils();
+const tableUtils = new TableUtils();
 
 export interface CaseFlagItem {
   flagType: string;
@@ -46,7 +46,7 @@ export class CaseDetailsPage extends Base {
    * @returns Object with key-value pairs from the table
    */
   async parseKeyValueTable(selector: string | Locator): Promise<Record<string, string>> {
-    return exuiTableUtils.parseKeyValueTable(selector, this.page);
+    return tableUtils.parseKeyValueTable(selector, this.page);
   }
 
   /**
@@ -55,7 +55,7 @@ export class CaseDetailsPage extends Base {
    * @returns Array of row objects
    */
   async parseDataTable(selector: string | Locator): Promise<Array<Record<string, string>>> {
-    return exuiTableUtils.parseDataTable(selector, this.page);
+    return tableUtils.parseDataTable(selector, this.page);
   }
 
   /**

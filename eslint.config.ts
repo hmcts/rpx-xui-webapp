@@ -2,7 +2,7 @@ import { defineConfig } from 'eslint/config';
 
 import tsEslint from 'typescript-eslint';
 import eslintComments from 'eslint-plugin-eslint-comments';
-import js from '@eslint/js';
+import * as js from '@eslint/js';
 
 export default defineConfig(
   js.configs.recommended,

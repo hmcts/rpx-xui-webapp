@@ -65,17 +65,20 @@ withPipeline(type, product, component) {
     ])   
 
     afterSuccess('build') {
-        yarnBuilder.yarn('build:dev')
-        stage('Playwright Install') {
-        try {
-            yarnBuilder.yarn('test:setup:playwright-install')
-        } catch (Error) {
-            error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-        }  
-    }    
+        yarnBuilder.yarn('build:dev')  
     }
 
-    afterSuccess('test') {
+    afterAlways('checkout'){
+        stage('Playwright Install Chromium') {
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
+    }
+
+    afterAlways('test') {
 
         publishHTML ( [
             allowMissing         : true,
@@ -120,10 +123,11 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'cucumber_report.html',
-            reportName           : 'DEMO Smoke Test'
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'DEMO Playwright Smoke'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
 
     afterSuccess('smoketest:preview') {
@@ -131,43 +135,59 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'cucumber_report.html',
-            reportName           : 'PREVIEW Smoke Test'
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'PREVIEW Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-        stage('API Test') {
-            try {
-              yarnBuilder.yarn('test:api')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'PREVIEW API Functional Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+
+          stage('API Tests') {
+              withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+                  try {
+                      yarnBuilder.yarn('test:api:pw:coverage')
+                  } finally {
+                      publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'PREVIEW API Functional Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                }
             }
         }
-        stage('Integration Test') {
+
+        stage('Codecept Integration Tests') {
             try {
-              yarnBuilder.yarn('test:xuiIntegration')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+                yarnBuilder.yarn('test:xuiIntegration')
             } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/codecept-ngIntegration/",
-              reportFiles          : 'cucumber_report.html',
-              reportName           : 'PREVIEW Integration Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'functional-output/tests/codecept-ngIntegration/',
+                    reportFiles          : 'cucumber_report.html',
+                    reportName           : 'PREVIEW Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
+
+        stage('Playwright Integration Tests') {
+                try {
+                    yarnBuilder.yarn('test:playwright:integration')
+                } finally {
+                    publishHTML([
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                        reportFiles          : 'xui-playwright.html',
+                        reportName           : 'PREVIEW Playwright Integration Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
             }
         }
     }
@@ -184,53 +204,69 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
 
-    afterSuccess('smoketest:aat') {
+    afterAlways('smoketest:aat') {
+      
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "functional-output/tests/codecept-smoke/",
-            reportFiles          : 'cucumber_report.html',
-            reportName           : 'AAT Smoke Test'
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'AAT Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-smoke/*'
-        stage('API Test') {
-            try {
-              yarnBuilder.yarn('test:api')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/api_functional/",
-              reportFiles          : 'mochawesome.html',
-              reportName           : 'AAT API Functional Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/*'
-            }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+
+        stage('API Tests') {
+            
+                try {
+                    yarnBuilder.yarn('test:api:pw:coverage')
+                } finally {
+                    publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'AAT API Functional Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                }
+         
         }
-        stage('Integration Test') {
-            try {
-              yarnBuilder.yarn('test:xuiIntegration')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/codecept-ngIntegration/",
-              reportFiles          : 'cucumber_report.html',
-              reportName           : 'AAT Integration Test'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-            }
+
+    stage('Codecept Integration Tests') {
+        try {
+            yarnBuilder.yarn('test:xuiIntegration')
+        } finally {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : 'functional-output/tests/codecept-ngIntegration/',
+                reportFiles          : 'cucumber_report.html',
+                reportName           : 'AAT Integration Test'
+            ])
+            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
         }
     }
 
-    afterSuccess('functionalTest:aat') {
+    stage('Playwright Integration Tests') {       
+            try {
+                yarnBuilder.yarn('test:playwright:integration')
+            } finally {
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                    reportFiles          : 'xui-playwright.html',
+                    reportName           : 'AAT Playwright Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+            }       
+    }
+
+    afterAlways('functionalTest:aat') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -239,5 +275,6 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'AAT Playwright E2E'
         ])
+    }
     }
 }

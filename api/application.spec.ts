@@ -1,292 +1,293 @@
-// import * as chai from 'chai';
-// import { expect } from 'chai';
-// import 'mocha';
-// import * as sinon from 'sinon';
-// import * as sinonChai from 'sinon-chai';
-// import { mockReq, mockRes } from 'sinon-express-mock';
+import * as chai from 'chai';
+import { expect } from 'chai';
+import 'mocha';
+import * as sinon from 'sinon';
+import { mockReq, mockRes } from 'sinon-express-mock';
 
-// import { app } from './application';
+import { createApp } from './application';
 
-// chai.use(sinonChai);
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
+chai.use(sinonChai);
 
-// describe('Application', () => {
-//   let sandbox: sinon.SinonSandbox;
-//   let mockLogger: any;
+describe('Application', () => {
+  let sandbox: sinon.SinonSandbox;
+  let mockLogger: any;
 
-//   beforeEach(() => {
-//     sandbox = sinon.createSandbox();
-//     mockLogger = {
-//       info: sandbox.stub(),
-//       error: sandbox.stub(),
-//       warn: sandbox.stub(),
-//       debug: sandbox.stub()
-//     };
-//     setupDefaultStubs();
-//   });
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    mockLogger = {
+      info: sandbox.stub(),
+      error: sandbox.stub(),
+      warn: sandbox.stub(),
+      debug: sandbox.stub()
+    };
+    setupDefaultStubs();
+  });
 
-//   afterEach(() => {
-//     sandbox.restore();
-//   });
+  afterEach(() => {
+    sandbox.restore();
+  });
 
-//   function setupDefaultStubs(options: {
-//     helmetEnabled?: boolean;
-//     compressionEnabled?: boolean;
-//     idamCheckRejects?: boolean;
-//     workAllocationRejects?: boolean;
-//     xuiMiddlewareRejects?: boolean;
-//   } = {}) {
-//     const showFeatureStub = sandbox.stub(require('./configuration'), 'showFeature');
-//     showFeatureStub.withArgs('helmetEnabled').returns(options.helmetEnabled || false);
-//     showFeatureStub.withArgs('compressionEnabled').returns(options.compressionEnabled || false);
-//     showFeatureStub.returns(false); // default for other features
+  function setupDefaultStubs(options: {
+    helmetEnabled?: boolean;
+    compressionEnabled?: boolean;
+    idamCheckRejects?: boolean;
+    workAllocationRejects?: boolean;
+    xuiMiddlewareRejects?: boolean;
+  } = {}) {
+    const showFeatureStub = sandbox.stub(require('./configuration'), 'showFeature');
+    showFeatureStub.withArgs('helmetEnabled').returns(options.helmetEnabled || false);
+    showFeatureStub.withArgs('compressionEnabled').returns(options.compressionEnabled || false);
+    showFeatureStub.returns(false); // default for other features
 
-//     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
-//     getConfigStub.withArgs('sessionSecret').returns('test-session-secret-12345');
-//     getConfigStub.withArgs('protocol').returns('https');
-//     getConfigStub.withArgs('HELMET').returns({
-//       contentSecurityPolicy: {
-//         directives: {
-//           defaultSrc: ['\'self\''],
-//           scriptSrc: ['\'self\'', '\'unsafe-inline\'']
-//         }
-//       },
-//       hsts: {
-//         maxAge: 31536000,
-//         includeSubDomains: true,
-//         preload: true
-//       }
-//     });
-//     getConfigStub.returns('default-config-value'); // default fallback
+    const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
+    getConfigStub.withArgs('sessionSecret').returns('test-session-secret-12345');
+    getConfigStub.withArgs('protocol').returns('https');
+    getConfigStub.withArgs('HELMET').returns({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ['\'self\''],
+          scriptSrc: ['\'self\'', '\'unsafe-inline\'']
+        }
+      },
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+      }
+    });
+    getConfigStub.returns('default-config-value'); // default fallback
 
-//     sandbox.stub(require('./lib/log4jui'), 'getLogger').returns(mockLogger);
-//     sandbox.stub(require('./lib/tunnel'), 'init').returns(undefined);
-//     sandbox.stub(require('./health'), 'addReformHealthCheck').returns(undefined);
+    sandbox.stub(require('./lib/log4jui'), 'getLogger').returns(mockLogger);
+    sandbox.stub(require('./lib/tunnel'), 'init').returns(undefined);
+    sandbox.stub(require('./health'), 'addReformHealthCheck').returns(undefined);
 
-//     // Handle XUI middleware based on options
-//     if (options.xuiMiddlewareRejects) {
-//       sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').rejects(new Error('XUI middleware initialization failed'));
-//     } else {
-//       sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').resolves((req: any, res: any, next: any) => next());
-//     }
+    // Handle XUI middleware based on options
+    if (options.xuiMiddlewareRejects) {
+      sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').rejects(new Error('XUI middleware initialization failed'));
+    } else {
+      sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').resolves((req: any, res: any, next: any) => next());
+    }
 
-//     sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
+    sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
 
-//     // Handle IDAM check based on options
-//     if (options.idamCheckRejects) {
-//       sandbox.stub(require('./idamCheck'), 'idamCheck').rejects(new Error('IDAM service unavailable'));
-//     } else {
-//       sandbox.stub(require('./idamCheck'), 'idamCheck').resolves({ status: 'UP' });
-//     }
+    // Handle IDAM check based on options
+    if (options.idamCheckRejects) {
+      sandbox.stub(require('./idamCheck'), 'idamCheck').rejects(new Error('IDAM service unavailable'));
+    } else {
+      sandbox.stub(require('./idamCheck'), 'idamCheck').resolves({ status: 'UP' });
+    }
 
-//     // Handle work allocation based on options
-//     if (options.workAllocationRejects) {
-//       sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').rejects(new Error('Work allocation service error'));
-//     } else {
-//       sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves([
-//         { id: 'user1', name: 'Test User 1', roles: ['case-manager'] },
-//         { id: 'user2', name: 'Test User 2', roles: ['judicial'] }
-//       ]);
-//     }
+    // Handle work allocation based on options
+    if (options.workAllocationRejects) {
+      sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').rejects(new Error('Work allocation service error'));
+    } else {
+      sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves([
+        { id: 'user1', name: 'Test User 1', roles: ['case-manager'] },
+        { id: 'user2', name: 'Test User 2', roles: ['judicial'] }
+      ]);
+    }
 
-//     const mockRouter = (req: any, res: any, next: any) => next();
-//     sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
-//     sandbox.stub(require('./routes'), 'default').value(mockRouter);
-//     sandbox.stub(require('./openRoutes'), 'default').value(mockRouter);
-//     sandbox.stub(require('./workAllocation/routes'), 'default').value(mockRouter);
+    const mockRouter = (req: any, res: any, next: any) => next();
+    sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
+    sandbox.stub(require('./routes'), 'default').value(mockRouter);
+    sandbox.stub(require('./openRoutes'), 'default').value(mockRouter);
+    sandbox.stub(require('./workAllocation/routes'), 'default').value(mockRouter);
 
-//     // Mock CSP if helmet is enabled
-//     if (options.helmetEnabled) {
-//       sandbox.stub(require('@hmcts/rpx-xui-node-lib'), 'getContentSecurityPolicy')
-//         .returns((req: any, res: any, next: any) => {
-//           res.setHeader('Content-Security-Policy', 'default-src \'self\'');
-//           next();
-//         });
-//     }
+    // Mock CSP if helmet is enabled
+    if (options.helmetEnabled) {
+      sandbox.stub(require('@hmcts/rpx-xui-node-lib'), 'getContentSecurityPolicy')
+        .returns((req: any, res: any, next: any) => {
+          res.setHeader('Content-Security-Policy', 'default-src \'self\'');
+          next();
+        });
+    }
 
-//     return { showFeatureStub, getConfigStub };
-//   }
+    return { showFeatureStub, getConfigStub };
+  }
 
-//   describe('createApp function', () => {
-//     describe('basic functionality', () => {
-//       it('should create and return an Express app with correct methods', async () => {
-//         // The application is created by requiring the file, not by calling createApp
+  describe('createApp function', () => {
+    describe('basic functionality', () => {
+      it('should create and return an Express app with correct methods', async () => {
+        const app = await createApp();
 
-//         const application = app;
-//         expect(typeof application.use).to.equal('function');
-//         expect(typeof application.get).to.equal('function');
-//         expect(typeof application.listen).to.equal('function');
-//         expect(typeof application.post).to.equal('function');
-//         expect(typeof application.put).to.equal('function');
-//         expect(typeof app.delete).to.equal('function');
-//       });
+        expect(app).to.exist;
+        expect(typeof app.use).to.equal('function');
+        expect(typeof app.get).to.equal('function');
+        expect(typeof app.listen).to.equal('function');
+        expect(typeof app.post).to.equal('function');
+        expect(typeof app.put).to.equal('function');
+        expect(typeof app.delete).to.equal('function');
+      });
 
-//       it('should handle errors during app creation when IDAM check fails', async () => {
-//         sandbox.restore();
-//         setupDefaultStubs({ idamCheckRejects: true });
+      it('should handle errors during app creation when IDAM check fails', async () => {
+        sandbox.restore();
+        setupDefaultStubs({ idamCheckRejects: true });
 
-//         const application = app;
+        const app = await createApp();
 
-//         expect(application).to.exist; // App should still be created
-//         const idamCheck = require('./idamCheck').idamCheck;
-//         expect(idamCheck).to.have.been.calledOnce;
-//       });
+        expect(app).to.exist; // App should still be created
+        const idamCheck = require('./idamCheck').idamCheck;
+        expect(idamCheck).to.have.been.calledOnce;
+      });
 
-//       it('should handle errors when work allocation service fails', async () => {
-//         sandbox.restore();
-//         setupDefaultStubs({ workAllocationRejects: true });
+      it('should handle errors when work allocation service fails', async () => {
+        sandbox.restore();
+        setupDefaultStubs({ workAllocationRejects: true });
 
-//         const application = app;
+        const app = await createApp();
 
-//         expect(application).to.exist;
-//         const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
-//         expect(getNewUsers).to.have.been.called;
-//       });
+        expect(app).to.exist;
+        const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
+        expect(getNewUsers).to.have.been.called;
+      });
 
-//       it('should propagate errors when XUI middleware initialization fails', async () => {
-//         sandbox.restore();
+      it('should propagate errors when XUI middleware initialization fails', async () => {
+        sandbox.restore();
 
-//         // Create a specific error to verify it propagates correctly
-//         const middlewareError = new Error('Failed to initialize authentication middleware');
+        // Create a specific error to verify it propagates correctly
+        const middlewareError = new Error('Failed to initialize authentication middleware');
 
-//         // Set up stubs with the specific error
-//         sandbox.stub(require('./configuration'), 'showFeature').returns(false);
-//         sandbox.stub(require('./configuration'), 'getConfigValue').returns('test-value');
-//         sandbox.stub(require('./lib/log4jui'), 'getLogger').returns(mockLogger);
-//         sandbox.stub(require('./lib/tunnel'), 'init').returns(undefined);
-//         sandbox.stub(require('./health'), 'addReformHealthCheck').returns(undefined);
-//         sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').rejects(middlewareError);
-//         sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
-//         sandbox.stub(require('./idamCheck'), 'idamCheck').resolves();
-//         sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves();
+        // Set up stubs with the specific error
+        sandbox.stub(require('./configuration'), 'showFeature').returns(false);
+        sandbox.stub(require('./configuration'), 'getConfigValue').returns('test-value');
+        sandbox.stub(require('./lib/log4jui'), 'getLogger').returns(mockLogger);
+        sandbox.stub(require('./lib/tunnel'), 'init').returns(undefined);
+        sandbox.stub(require('./health'), 'addReformHealthCheck').returns(undefined);
+        sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').rejects(middlewareError);
+        sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
+        sandbox.stub(require('./idamCheck'), 'idamCheck').resolves();
+        sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves();
 
-//         const mockRouter = (req: any, res: any, next: any) => next();
-//         sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
-//         sandbox.stub(require('./routes'), 'default').value(mockRouter);
-//         sandbox.stub(require('./openRoutes'), 'default').value(mockRouter);
-//         sandbox.stub(require('./workAllocation/routes'), 'default').value(mockRouter);
+        const mockRouter = (req: any, res: any, next: any) => next();
+        sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
+        sandbox.stub(require('./routes'), 'default').value(mockRouter);
+        sandbox.stub(require('./openRoutes'), 'default').value(mockRouter);
+        sandbox.stub(require('./workAllocation/routes'), 'default').value(mockRouter);
 
-//         try {
-//           app;
-//           expect.fail('Should have thrown an error');
-//         } catch (error) {
-//           // Verify the exact error propagates without modification
-//           expect(error).to.equal(middlewareError);
-//           expect(error.message).to.equal('Failed to initialize authentication middleware');
-//         }
-//       });
+        try {
+          await createApp();
+          expect.fail('Should have thrown an error');
+        } catch (error) {
+          // Verify the exact error propagates without modification
+          expect(error).to.equal(middlewareError);
+          expect(error.message).to.equal('Failed to initialize authentication middleware');
+        }
+      });
 
-//       it('should handle concurrent promise rejections gracefully', async () => {
-//         sandbox.restore();
-//         setupDefaultStubs({ idamCheckRejects: true, workAllocationRejects: true });
+      it('should handle concurrent promise rejections gracefully', async () => {
+        sandbox.restore();
+        setupDefaultStubs({ idamCheckRejects: true, workAllocationRejects: true });
 
-//         const application = app;
+        const app = await createApp();
 
-//         expect(application).to.exist;
-//         // Both promises should have been called despite failures
-//         const idamCheck = require('./idamCheck').idamCheck;
-//         const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
-//         expect(idamCheck).to.have.been.called;
-//         expect(getNewUsers).to.have.been.called;
-//       });
-//     });
+        expect(app).to.exist;
+        // Both promises should have been called despite failures
+        const idamCheck = require('./idamCheck').idamCheck;
+        const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
+        expect(idamCheck).to.have.been.called;
+        expect(getNewUsers).to.have.been.called;
+      });
+    });
 
-//     describe('initialization and configuration', () => {
-//       it('should initialize logger with Application name', async () => {
-//         app;
+    describe('initialization and configuration', () => {
+      it('should initialize logger with Application name', async () => {
+        await createApp();
 
-//         const getLoggerStub = require('./lib/log4jui').getLogger;
-//         expect(getLoggerStub).to.have.been.calledWith('Application');
-//       });
+        const getLoggerStub = require('./lib/log4jui').getLogger;
+        expect(getLoggerStub).to.have.been.calledWith('Application');
+      });
 
-//       it('should initialize tunnel', async () => {
-//         app;
+      it('should initialize tunnel', async () => {
+        await createApp();
 
-//         const tunnelInit = require('./lib/tunnel').init;
-//         expect(tunnelInit).to.have.been.called;
-//       });
+        const tunnelInit = require('./lib/tunnel').init;
+        expect(tunnelInit).to.have.been.called;
+      });
 
-//       it('should add health checks', async () => {
-//         const application = app;
+      it('should add health checks', async () => {
+        const app = await createApp();
 
-//         const addHealthCheck = require('./health').addReformHealthCheck;
-//         expect(addHealthCheck).to.have.been.calledWith(application);
-//       });
+        const addHealthCheck = require('./health').addReformHealthCheck;
+        expect(addHealthCheck).to.have.been.calledWith(app);
+      });
 
-//       it('should get XUI node middleware', async () => {
-//         app;
+      it('should get XUI node middleware', async () => {
+        await createApp();
 
-//         const xuiMiddleware = require('./auth').getXuiNodeMiddleware;
-//         expect(xuiMiddleware).to.have.been.called;
-//       });
+        const xuiMiddleware = require('./auth').getXuiNodeMiddleware;
+        expect(xuiMiddleware).to.have.been.called;
+      });
 
-//       it('should initialize proxy configuration', async () => {
-//         const application = app;
+      it('should initialize proxy configuration', async () => {
+        const app = await createApp();
 
-//         const initProxy = require('./proxy.config').initProxy;
-//         expect(initProxy).to.have.been.calledWith(application);
-//       });
+        const initProxy = require('./proxy.config').initProxy;
+        expect(initProxy).to.have.been.calledWith(app);
+      });
 
-//       it('should initialize IDAM check promise', async () => {
-//         app;
+      it('should initialize IDAM check promise', async () => {
+        await createApp();
 
-//         const idamCheck = require('./idamCheck').idamCheck;
-//         expect(idamCheck).to.have.been.called;
-//       });
+        const idamCheck = require('./idamCheck').idamCheck;
+        expect(idamCheck).to.have.been.called;
+      });
 
-//       it('should initialize caseworkers loading promise', async () => {
-//         app;
+      it('should initialize caseworkers loading promise', async () => {
+        await createApp();
 
-//         const getNewUsersByServiceName = require('./workAllocation').getNewUsersByServiceName;
-//         expect(getNewUsersByServiceName).to.have.been.called;
-//       });
+        const getNewUsersByServiceName = require('./workAllocation').getNewUsersByServiceName;
+        expect(getNewUsersByServiceName).to.have.been.called;
+      });
 
-//       it('should configure session secret for cookie parser', async () => {
-//         const application = app;
+      it('should configure session secret for cookie parser', async () => {
+        const app = await createApp();
 
-//         expect(application).to.exist;
-//         const getConfigValue = require('./configuration').getConfigValue;
-//         expect(getConfigValue).to.have.been.calledWith('sessionSecret');
-//         expect(getConfigValue).to.have.been.calledWith('protocol');
-//       });
-//     });
+        expect(app).to.exist;
+        const getConfigValue = require('./configuration').getConfigValue;
+        expect(getConfigValue).to.have.been.calledWith('sessionSecret');
+        expect(getConfigValue).to.have.been.calledWith('protocol');
+      });
+    });
 
-//     describe('middleware configuration', () => {
-//       it('should mount access management routes at /am path', async () => {
-//         const application = app;
+    describe('middleware configuration', () => {
+      it('should mount access management routes at /am path', async () => {
+        const app = await createApp();
 
-//         // Verify that the route is mounted at the correct path
-//         const middlewareStack = application._router.stack;
-//         const amRoute = middlewareStack.find((layer: any) =>
-//           layer.regexp && layer.regexp.test('/am')
-//         );
+        // Verify that the route is mounted at the correct path
+        const middlewareStack = app._router.stack;
+        const amRoute = middlewareStack.find((layer: any) =>
+          layer.regexp && layer.regexp.test('/am')
+        );
 
-//         expect(amRoute).to.exist;
-//         expect(amRoute.handle).to.be.a('function');
+        expect(amRoute).to.exist;
+        expect(amRoute.handle).to.be.a('function');
 
-//         // Test that the route handler is invoked
-//         const req = mockReq({ url: '/am/test', method: 'GET' });
-//         const res = mockRes();
-//         const next = sinon.stub();
+        // Test that the route handler is invoked
+        const req = mockReq({ url: '/am/test', method: 'GET' });
+        const res = mockRes();
+        const next = sinon.stub();
 
-//         amRoute.handle(req, res, next);
-//         expect(next).to.have.been.called;
-//       });
+        amRoute.handle(req, res, next);
+        expect(next).to.have.been.called;
+      });
 
-//       it('should mount API routes at /api path', async () => {
-//         const application = app;
+      it('should mount API routes at /api path', async () => {
+        const app = await createApp();
 
-//         const middlewareStack = application._router.stack;
-//         const apiRoute = middlewareStack.find((layer: any) =>
-//           layer.regexp && layer.regexp.test('/api')
-//         );
+        const middlewareStack = app._router.stack;
+        const apiRoute = middlewareStack.find((layer: any) =>
+          layer.regexp && layer.regexp.test('/api')
+        );
 
-//         expect(apiRoute).to.exist;
-//         expect(apiRoute.handle).to.be.a('function');
+        expect(apiRoute).to.exist;
+        expect(apiRoute.handle).to.be.a('function');
 
-//         // Test that the route handler is invoked
-//         const req = mockReq({ url: '/api/cases', method: 'GET' });
-//         const res = mockRes();
-//         const next = sinon.stub();
+        // Test that the route handler is invoked
+        const req = mockReq({ url: '/api/cases', method: 'GET' });
+        const res = mockRes();
+        const next = sinon.stub();
 
 //         apiRoute.handle(req, res, next);
 //         expect(next).to.have.been.called;

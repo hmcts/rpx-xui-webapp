@@ -196,6 +196,14 @@
     "compressionEnabled": {
       "__name": "FEATURE_COMPRESSION_ENABLED",
       "__format": "json"
+    },
+    "docsEnabled": {
+      "__name": "FEATURE_DOCS_ENABLED",
+      "__format": "json"
+    },
+    "queryIdamServiceOverride": {
+      "__name": "FEATURE_QUERY_IDAM_SERVICE_OVERRIDE",
+      "__format": "json"
     }
   },
   "helmet": {

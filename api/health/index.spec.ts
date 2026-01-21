@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as HealthCheck from '@hmcts/nodejs-healthcheck';
@@ -30,6 +29,8 @@ import {
   SERVICE_S2S_PATH
 } from '../configuration/references';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Health Check', (): void => {

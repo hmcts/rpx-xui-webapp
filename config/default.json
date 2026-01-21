@@ -172,6 +172,7 @@
     "workAllocationEnabled": false,
     "jrdELinksV2Enabled": true,
     "lauSpecificChallengedEnabled": false,
+    "docsEnabled": false,
     "roleEnabled": false,
     "caseworkerRefEnabled": false,
     "substantiveRoleEnabled": true,

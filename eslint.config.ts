@@ -74,7 +74,7 @@ export default defineConfig(
       // }],
 
       // "new-parens": ["error", "always"],
-      // "no-case-declarations": "off",
+      'no-case-declarations': 'warn',
       // "no-else-return": "error",
       // "no-empty": "error",
       // "no-extra-boolean-cast": "off",
@@ -114,10 +114,11 @@ export default defineConfig(
     },
   },
   {
-    files: ['**/*.spec.ts', '**/*.spec.js'],
+    files: ['**/**.spec.ts', '**/**.spec.js'],
 
     rules: {
-      'no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      'no-prototype-builtins': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
     },

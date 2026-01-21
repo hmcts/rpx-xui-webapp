@@ -106,7 +106,7 @@
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2/hmcts-rpx-xui-common-lib-3.2.2.tgz",
-    "@hmcts/rpx-xui-node-lib": "2.30.10-trust-proxy-rc1",
+    "@hmcts/rpx-xui-node-lib": "2.30.10",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",

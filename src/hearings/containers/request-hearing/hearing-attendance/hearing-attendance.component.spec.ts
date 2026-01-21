@@ -1088,6 +1088,44 @@ describe('HearingAttendanceComponent', () => {
   });
 
   describe('setAmendmentFlags - defaultHearingChannel.length > 0 check', () => {
+    // Helper function to create a FormArray with mock channels
+    function createMockChannelFormArray(channels: Array<{ key: string; selected: boolean; showAmendedLabel: boolean }>) {
+      const fb = TestBed.inject(FormBuilder);
+      return new FormArray(channels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null
+        })
+      ));
+    }
+
+    // Helper function to setup component with hearing channels
+    function setupComponentWithChannels(
+      srvChannels: string[] | null | undefined,
+      hmcChannels: string[],
+      mockChannels: Array<{ key: string; selected: boolean; showAmendedLabel: boolean }>
+    ) {
+      spyOn(HearingsUtils, 'hasPaperHearingChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'doArraysDiffer').and.returnValue(false);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+      component.serviceHearingValuesModel.hearingChannels = srvChannels;
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = hmcChannels;
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+      component.hearingCondition = { mode: 'view-edit' };
+
+      const formArray = createMockChannelFormArray(mockChannels);
+      component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
+      component.ngOnInit();
+    }
+
     it('should not set showAmendedLabel when defaultHearingChannel is empty', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },

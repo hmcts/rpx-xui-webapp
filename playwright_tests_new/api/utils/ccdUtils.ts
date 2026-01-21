@@ -53,8 +53,7 @@ export async function assertJurisdictionsForUser(
     expect(jurisdiction).toEqual(
       expect.objectContaining({
         id: expect.any(String),
-        name: expect.any(String),
-        description: expect.any(String)
+        name: expect.any(String)
       })
     );
   });

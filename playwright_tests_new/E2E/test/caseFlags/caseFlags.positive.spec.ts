@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureSessionCookies } from '../../../common/sessionCapture';
 
 test.describe("Case level case flags", () => {
     let testValue = faker.person.firstName();
@@ -11,12 +11,11 @@ test.describe("Case level case flags", () => {
 
     test.beforeAll(async () => {
         // Lazy capture: only log in SEARCH_EMPLOYMENT_CASE when this test suite runs
-        await ensureSession('SEARCH_EMPLOYMENT_CASE');
+        const { cookies } = await ensureSessionCookies('SEARCH_EMPLOYMENT_CASE');
+        sessionCookies = cookies;
     });
 
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-        const { cookies } = loadSessionCookies('SEARCH_EMPLOYMENT_CASE');
-        sessionCookies = cookies;
         if (sessionCookies.length) {
             await page.context().addCookies(sessionCookies);
         }
@@ -69,12 +68,11 @@ test.describe("Party level case flags", () => {
 
     test.beforeAll(async () => {
         // Lazy capture: only log in USER_WITH_FLAGS when this test suite runs
-        await ensureSession('USER_WITH_FLAGS');
+        const { cookies } = await ensureSessionCookies('USER_WITH_FLAGS');
+        sessionCookies = cookies;
     });
 
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-        const { cookies } = loadSessionCookies('USER_WITH_FLAGS');
-        sessionCookies = cookies;
         if (sessionCookies.length) {
             await page.context().addCookies(sessionCookies);
         }

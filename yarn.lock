@@ -3770,9 +3770,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/playwright-common@npm:^1.1.0":
+"@hmcts/playwright-common@file:/tmp/playwright-common.tgz::locator=rpx-exui%40workspace%3A.":
   version: 1.1.0
-  resolution: "@hmcts/playwright-common@npm:1.1.0"
+  resolution: "@hmcts/playwright-common@file:/tmp/playwright-common.tgz#/tmp/playwright-common.tgz::hash=a4cac4&locator=rpx-exui%40workspace%3A."
   dependencies:
     "@axe-core/playwright": "npm:^4.10.0"
     "@eslint/js": "npm:^9.11.1"
@@ -3795,7 +3795,7 @@ __metadata:
   bin:
     delete-nightly-dev-branch: dist/scripts/delete-nightly-dev-branch.js
     get-secrets: dist/scripts/get-secrets.js
-  checksum: 10/84e9367b7a08045cb5bc925397d677d68cea813f6552526ad250ce48e756602fe058c28fbe48e46d3d0724442d07107570153663cd6fb71d011657ca451c9615
+  checksum: 10/eead83b38efc77a896b7e95563f098083267469a4ab6c9944ab9d425e3d5c7b5ba7a20b5acad6be1b1c3125e384d45dfb2b1861988357f05c4a5372b1500d1e1
   languageName: node
   linkType: hard
 
@@ -25323,7 +25323,7 @@ __metadata:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
-    "@hmcts/playwright-common": "npm:^1.1.0"
+    "@hmcts/playwright-common": /tmp/playwright-common.tgz
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2/hmcts-rpx-xui-common-lib-3.2.2.tgz"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"

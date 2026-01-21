@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { TEST_DATA } from './constants';
 import { createLogger } from '@hmcts/playwright-common';
 
@@ -13,7 +13,8 @@ test.describe("Document upload V2", () => {
     
     test.beforeAll(async () => {
         // Lazy capture: only log in SOLICITOR when this test runs
-        await ensureSession('SOLICITOR');
+        const { cookies } = await ensureSessionCookies('SOLICITOR');
+        sessionCookies = cookies;
         // Set deterministic seed once per suite
         faker.seed(12345);
     });
@@ -23,8 +24,6 @@ test.describe("Document upload V2", () => {
         testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
         logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
         
-        const { cookies } = loadSessionCookies('SOLICITOR');
-        sessionCookies = cookies;
         if (sessionCookies.length) {
             await page.context().addCookies(sessionCookies);
         }
@@ -70,7 +69,8 @@ test.describe("Document upload V1", () => {
     
     test.beforeAll(async () => {
         // Lazy capture: only log in SEARCH_EMPLOYMENT_CASE when this test runs
-        await ensureSession('SEARCH_EMPLOYMENT_CASE');
+        const { cookies } = await ensureSessionCookies('SEARCH_EMPLOYMENT_CASE');
+        sessionCookies = cookies;
         // Set deterministic seed once per suite
         faker.seed(67890);
     });
@@ -81,8 +81,6 @@ test.describe("Document upload V1", () => {
         testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
         logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
         
-        const { cookies } = loadSessionCookies('SEARCH_EMPLOYMENT_CASE');
-        sessionCookies = cookies;
         if (sessionCookies.length) {
             await page.context().addCookies(sessionCookies);
         }

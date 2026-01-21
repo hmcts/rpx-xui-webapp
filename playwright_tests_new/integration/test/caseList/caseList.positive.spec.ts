@@ -1,20 +1,14 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseListMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
 
-test.beforeAll(() => {
-	const { cookies } = loadSessionCookies(userIdentifier);
+test.beforeEach(async ({ page }) => {
+	const { cookies } = await applySessionCookies(page, userIdentifier);
 	sessionCookies = cookies;
-});
-
-test.beforeEach(async ({ page, config }) => {
-	if (sessionCookies.length) {
-		await page.context().addCookies(sessionCookies);
-	}
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {

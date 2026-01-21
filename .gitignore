@@ -118,3 +118,5 @@ test-results/
 /.c8rc.json
 /playwright_tests_new/api/auth.ts
 /playwright_tests_new/api/auth-coverage.api.ts
+
+.zip

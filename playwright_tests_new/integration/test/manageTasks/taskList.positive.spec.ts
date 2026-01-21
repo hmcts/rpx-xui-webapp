@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
@@ -8,17 +8,11 @@ const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
 let taskListMockResponse;
 
-test.beforeAll(() => {
-    const { cookies } = loadSessionCookies(userIdentifier);
-    sessionCookies = cookies;
-});
-
 test.beforeEach(async ({ page }) => {
-    if (sessionCookies.length) {
-        await page.context().addCookies(sessionCookies);
-        const userId = extractUserIdFromCookies(sessionCookies);
-        taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
-    }
+    const { cookies } = await applySessionCookies(page, userIdentifier);
+    sessionCookies = cookies;
+    const userId = extractUserIdFromCookies(sessionCookies);
+    taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {

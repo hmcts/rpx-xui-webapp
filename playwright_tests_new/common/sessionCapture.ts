@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/test';
+import { chromium, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
@@ -128,6 +128,37 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
     );
   }
   return { email, cookies, storageFile };
+}
+
+/**
+ * Ensure a session is captured and return the loaded cookies.
+ * Retries once if the session file is missing or corrupted.
+ */
+export async function ensureSessionCookies(userIdentifier: string): Promise<LoadedSession> {
+  await ensureSession(userIdentifier);
+  try {
+    return loadSessionCookies(userIdentifier);
+  } catch (error) {
+    if (error instanceof StorageStateCorruptedError) {
+      await ensureSession(userIdentifier);
+      return loadSessionCookies(userIdentifier);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Ensure a session exists and add its cookies to the provided page context.
+ */
+export async function applySessionCookies(
+  page: Page,
+  userIdentifier: string
+): Promise<LoadedSession> {
+  const session = await ensureSessionCookies(userIdentifier);
+  if (session.cookies.length) {
+    await page.context().addCookies(session.cookies);
+  }
+  return session;
 }
 
 

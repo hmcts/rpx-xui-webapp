@@ -690,10 +690,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private numberOfPhysicalAttendeesChangeExists(): boolean {
-    const numberOfPhysicalAttendeesSHV = this.serviceHearingValuesModel?.numberOfPhysicalAttendees;
-    const numberOfPhysicalAttendeesHMC = this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees;
-
-    return !_.isEqual(numberOfPhysicalAttendeesSHV, numberOfPhysicalAttendeesHMC);
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.numberOfPhysicalAttendees)){
+      HearingsUtils.hasHearingNumberChanged(this.serviceHearingValuesModel?.numberOfPhysicalAttendees, this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees);
+    }
+    return false;
   }
 
   private pageVisitHearingWindowChangeExists(): boolean {

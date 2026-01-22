@@ -37,11 +37,13 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
             states: []
           };
 
-          // Keep events array with minimal fields - needed for Start button to be enabled
+          // Keep events array with required fields for CCD UI toolkit filtering
           if (caseType.events) {
             mappedCaseType.events = caseType.events.map((event) => ({
               id: event.id,
-              name: event.name
+              name: event.name,
+              pre_states: event.pre_states || [], // Required by retainEventsWithNoPreStates filter
+              acls: event.acls || [] // Required by retainEventsWithCreateRights filter
             }));
           } else {
             mappedCaseType.events = [];

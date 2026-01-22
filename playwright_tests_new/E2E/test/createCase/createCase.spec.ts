@@ -1,22 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { ensureSessionCookies } from '../../../common/sessionCapture';
-let sessionCookies: any[] = [];
+import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
 
 test.describe("Verify creating cases works as expected", () => {
-    test.beforeAll(async () => {
-        // Lazy capture: only log in SOLICITOR when this test suite runs
-        const { cookies } = await ensureSessionCookies('SOLICITOR');
-        sessionCookies = cookies;
-    });
-
     test.beforeEach(async ({ page }) => {
-        if (sessionCookies.length) {
-            await page.context().addCookies(sessionCookies);
-        }
-        await page.goto('/');
+        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
     });
 
     test("Verify creating a case in the divorce jurisdiction works as expected", async ({ page,validatorUtils, createCasePage, caseDetailsPage, caseListPage, tableUtils }) => {

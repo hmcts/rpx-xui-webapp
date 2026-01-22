@@ -1,25 +1,14 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 
 test.describe("Case level case flags", () => {
     let testValue = faker.person.firstName();
     let caseNumber: string;
     const jurisdiction = 'EMPLOYMENT';
     const caseType = 'ET_EnglandWales';
-    let sessionCookies: any[] = [];
-
-    test.beforeAll(async () => {
-        // Lazy capture: only log in SEARCH_EMPLOYMENT_CASE when this test suite runs
-        const { cookies } = await ensureSessionCookies('SEARCH_EMPLOYMENT_CASE');
-        sessionCookies = cookies;
-    });
-
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-        if (sessionCookies.length) {
-            await page.context().addCookies(sessionCookies);
-        }
-        await page.goto('/');
+        await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
         await createCasePage.createCaseEmployment(jurisdiction, caseType, testValue);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
     });
@@ -64,19 +53,8 @@ test.describe("Party level case flags", () => {
     let caseNumber: string;
     const jurisdiction = 'DIVORCE';
     const caseType = 'xuiCaseFlagsV1';
-    let sessionCookies: any[] = [];
-
-    test.beforeAll(async () => {
-        // Lazy capture: only log in USER_WITH_FLAGS when this test suite runs
-        const { cookies } = await ensureSessionCookies('USER_WITH_FLAGS');
-        sessionCookies = cookies;
-    });
-
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-        if (sessionCookies.length) {
-            await page.context().addCookies(sessionCookies);
-        }
-        await page.goto('/');
+        await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
         await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
     });

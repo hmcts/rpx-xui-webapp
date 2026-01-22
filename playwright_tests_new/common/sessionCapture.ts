@@ -32,6 +32,7 @@ type SessionCaptureDeps = {
   config?: typeof config;
   env?: NodeJS.ProcessEnv;
   lockfile?: typeof lockfile;
+  force?: boolean;
 };
 
 /**
@@ -51,7 +52,7 @@ export async function ensureSession(userIdentifier: string): Promise<void> {
       operation: 'lazy-capture',
       metric: 'session-miss'
     });
-    await sessionCapture([userIdentifier]);
+    await sessionCapture([userIdentifier], { force: true });
   } else {
     logger.info('Session is fresh, skipping capture', { 
       userIdentifier, 
@@ -161,6 +162,81 @@ export async function applySessionCookies(
   return session;
 }
 
+async function isIdamLoginPage(page: Page): Promise<boolean> {
+  const currentUrl = page.url();
+  if (currentUrl.includes('idam-web-public') || currentUrl.includes('/login')) {
+    return true;
+  }
+  const idamPage = new IdamPage(page);
+  const [usernameVisible, passwordVisible] = await Promise.all([
+    idamPage.usernameInput.isVisible().catch(() => false),
+    idamPage.passwordInput.isVisible().catch(() => false),
+  ]);
+  return usernameVisible && passwordVisible;
+}
+
+/**
+ * Ensure the page is authenticated for the given user and on the target URL.
+ * If the session is invalid, refresh the stored session and retry once.
+ */
+export async function ensureAuthenticatedPage(
+  page: Page,
+  userIdentifier: string,
+  options: { targetUrl?: string; waitForSelector?: string; timeoutMs?: number } = {}
+): Promise<LoadedSession> {
+  const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
+  const timeoutMs = options.timeoutMs ?? 60000;
+  let session = await ensureSessionCookies(userIdentifier);
+  if (session.cookies.length) {
+    await page.context().addCookies(session.cookies);
+  }
+
+  await page.goto(targetUrl);
+
+  if (await isIdamLoginPage(page)) {
+    logger.warn('Session appears invalid; refreshing', {
+      userIdentifier,
+      email: session.email,
+      targetUrl,
+      operation: 'session-refresh'
+    });
+    try {
+      if (fs.existsSync(session.storageFile)) {
+        fs.unlinkSync(session.storageFile);
+      }
+    } catch (error) {
+      logger.warn('Failed to delete stale session file', {
+        userIdentifier,
+        storageFile: session.storageFile,
+        error: (error as Error).message,
+        operation: 'session-refresh'
+      });
+    }
+
+    await sessionCapture([userIdentifier]);
+    session = loadSessionCookies(userIdentifier);
+    await page.context().clearCookies();
+    if (session.cookies.length) {
+      await page.context().addCookies(session.cookies);
+    }
+    await page.goto(targetUrl);
+
+    if (await isIdamLoginPage(page)) {
+      throw new SessionCaptureError(
+        `Login failed for ${userIdentifier}`,
+        userIdentifier,
+        { email: session.email, targetUrl }
+      );
+    }
+  }
+
+  if (options.waitForSelector) {
+    await page.waitForSelector(options.waitForSelector, { timeout: timeoutMs });
+  }
+
+  return session;
+}
+
 
 //Return true if sessionPath exists and its mtime is within maxAgeMs.
 export function isSessionFresh(
@@ -217,8 +293,11 @@ async function persistSession(
     }
 }
 
-export async function sessionCapture(identifiers: string[]) {
-    return sessionCaptureWith(identifiers);
+export async function sessionCapture(
+  identifiers: string[],
+  options: { force?: boolean } = {}
+) {
+    return sessionCaptureWith(identifiers, { force: options.force });
 }
 
 async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDeps = {}) {
@@ -231,6 +310,7 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
     const chromiumLauncher = deps.chromiumLauncher ?? chromium;
     const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
     const lockfileApi = deps.lockfile ?? lockfile;
+    const force = deps.force ?? false;
 
     const sessionsDir = path.join(process.cwd(), '.sessions');
     if (!fsApi.existsSync(sessionsDir)) {
@@ -276,7 +356,7 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
             });
 
             // Recheck freshness after acquiring lock (another worker may have logged in)
-            if (isFresh(sessionPath)) {
+            if (!force && isFresh(sessionPath)) {
                 logger.info('Session became fresh while waiting for lock', { 
                   userIdentifier: id, 
                   email, 
@@ -300,7 +380,7 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
             });
             try {
                 await page.goto(targetUrl);
-                await page.waitForSelector('#username', { timeout: 60000 });
+                await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 60000 });
                 await idamPage.login({ username: email, password });
                 // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
                 try {

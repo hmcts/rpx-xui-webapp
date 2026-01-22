@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { TEST_DATA } from './constants';
 import { createLogger } from '@hmcts/playwright-common';
 
@@ -9,12 +9,7 @@ const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pre
 test.describe("Document upload V2", () => {
     let testValue: string;
     let caseNumber: string;
-    let sessionCookies: any[] = [];
-    
     test.beforeAll(async () => {
-        // Lazy capture: only log in SOLICITOR when this test runs
-        const { cookies } = await ensureSessionCookies('SOLICITOR');
-        sessionCookies = cookies;
         // Set deterministic seed once per suite
         faker.seed(12345);
     });
@@ -24,10 +19,7 @@ test.describe("Document upload V2", () => {
         testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
         logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
         
-        if (sessionCookies.length) {
-            await page.context().addCookies(sessionCookies);
-        }
-        await page.goto('/');
+        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
         await createCasePage.createDivorceCase(TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
         logger.info('Created divorce case', { caseNumber, testValue });
@@ -65,12 +57,7 @@ test.describe("Document upload V1", () => {
     let testValue: string;
     let testFileName: string;
     let caseNumber: string;
-    let sessionCookies: any[] = [];
-    
     test.beforeAll(async () => {
-        // Lazy capture: only log in SEARCH_EMPLOYMENT_CASE when this test runs
-        const { cookies } = await ensureSessionCookies('SEARCH_EMPLOYMENT_CASE');
-        sessionCookies = cookies;
         // Set deterministic seed once per suite
         faker.seed(67890);
     });
@@ -81,10 +68,7 @@ test.describe("Document upload V1", () => {
         testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
         logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
         
-        if (sessionCookies.length) {
-            await page.context().addCookies(sessionCookies);
-        }
-        await page.goto('/');
+        await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
         await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, testValue);
         expect(await createCasePage.checkForErrorMessage(), "Error message seen after creating employment case").toBe(false);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();

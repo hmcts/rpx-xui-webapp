@@ -11,6 +11,7 @@ const logger = createLogger({
 export class CreateCasePage extends Base {
 
   readonly container = this.page.locator("exui-case-home");
+  readonly caseDetailsContainer = this.page.locator("exui-case-details-home");
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
@@ -169,6 +170,11 @@ export class CreateCasePage extends Base {
   // CCD wizard steps change the path segment; ignore hash updates to avoid false positives.
   private normalizePath(url: string): string {
     return new URL(url, this.page.url()).pathname;
+  }
+
+  private async waitForCaseDetails(context: string) {
+    await this.assertNoEventCreationError(context);
+    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: 60000 });
   }
 
   private async clickContinueAndWait(context: string, options: { force?: boolean } = {}) {
@@ -420,7 +426,7 @@ export class CreateCasePage extends Base {
 
         await this.submitButton.click();
         await this.exuiSpinnerComponent.wait();
-        await this.assertNoEventCreationError('after submitting employment case');
+        await this.waitForCaseDetails('after submitting employment case');
         return;
       } catch (error) {
         const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
@@ -495,6 +501,7 @@ export class CreateCasePage extends Base {
     await this.continueButton.click();
     await this.submitButton.click();
     await this.exuiSpinnerComponent.wait();
+    await this.waitForCaseDetails('after submitting divorce test case');
   }
 
   async createDivorceCaseFlag(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'xuiCaseFlagsV1') {
@@ -507,6 +514,7 @@ export class CreateCasePage extends Base {
     await this.exuiSpinnerComponent.wait()
     await this.testSubmitButton.click();
     await this.exuiSpinnerComponent.wait()
+    await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
@@ -538,5 +546,6 @@ export class CreateCasePage extends Base {
     await this.continueButton.click();
     await this.testSubmitButton.click();
     await this.exuiSpinnerComponent.wait()
+    await this.waitForCaseDetails('after submitting divorce PoC case');
   };
 }

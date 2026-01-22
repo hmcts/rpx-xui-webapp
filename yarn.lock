@@ -3837,9 +3837,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-3":
-  version: 2.30.7-csp-final-change-3
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-3"
+"@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-3994-1":
+  version: 2.30.7-exui-3994-1
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-3994-1"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.11.0"
@@ -3861,7 +3861,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/7fe5003efdf7d3f23f5faf671df4ef35bdc4646efdafde168f180a65fcac163863e39b2abdb8b83a20314524b4b086c22ec75721e7c5cd7a518b5def2bac4e68
+  checksum: 10/125e1338f73511c7fdb3ca5bbb3446d7776e3c7b6538ab636b0e10edea6eca6c7be2bbdbc00250751d5d469da4fa139e1e1f0f79cdc1e95e81438b088e50aca5
   languageName: node
   linkType: hard
 
@@ -19647,7 +19647,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.0"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-3994-1"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@types/config": "npm:^3.0.0"
@@ -25299,7 +25299,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2/hmcts-rpx-xui-common-lib-3.2.2.tgz"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-3994-1"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

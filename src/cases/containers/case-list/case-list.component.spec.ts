@@ -463,16 +463,16 @@ describe('CaseListComponent', () => {
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'some id',
         name: 'some name',
-        description: 'some desc',
+        description: '',
         caseTypes: [{
           id: 'some id',
           events: null,
           name: 'some name',
-          description: 'some desc',
+          description: '',
           states: [{
             id: 'some state id',
             name: 'some name',
-            description: 'some desc'
+            description: ''
           }]
         }]
       }]);

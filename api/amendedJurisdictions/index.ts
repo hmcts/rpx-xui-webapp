@@ -25,11 +25,15 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
         result.name = jurisdiction.name;
       }
 
+      // Include empty description to satisfy CCD toolkit types
+      result.description = '';
+
       if (jurisdiction.caseTypes !== undefined) {
         result.caseTypes = jurisdiction.caseTypes.map((caseType) => {
           const mappedCaseType: any = {
             id: caseType.id,
-            name: caseType.name
+            name: caseType.name,
+            description: '' // Include empty description to satisfy CCD toolkit types
           };
 
           if (caseType.events) {
@@ -42,7 +46,8 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
           if (caseType.states) {
             mappedCaseType.states = caseType.states.map((state) => ({
               id: state.id,
-              name: state.name
+              name: state.name,
+              description: '' // Include empty description to satisfy CCD toolkit types
             }));
           }
 

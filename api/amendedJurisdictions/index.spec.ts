@@ -120,10 +120,12 @@ describe('Amended Jurisdiction', () => {
       {
         id: 'CIVIL',
         name: 'Civil',
+        description: '',
         caseTypes: [
           {
             id: 'GENERALAPPLICATION',
             name: 'Civil General Application',
+            description: '',
             events: [
               {
                 id: 'submitApplication',
@@ -137,21 +139,25 @@ describe('Amended Jurisdiction', () => {
             states: [
               {
                 id: 'PENDING_APPLICATION_ISSUED',
-                name: 'General Application Issue Pending'
+                name: 'General Application Issue Pending',
+                description: ''
               },
               {
                 id: 'AWAITING_RESPONDENT_RESPONSE',
-                name: 'Awaiting Respondent Response'
+                name: 'Awaiting Respondent Response',
+                description: ''
               },
               {
                 id: 'APPLICATION_SUBMITTED_AWAITING_JUDICIAL_DECISION',
-                name: 'Application Submitted - Awaiting Judicial Decision'
+                name: 'Application Submitted - Awaiting Judicial Decision',
+                description: ''
               }
             ]
           },
           {
             id: 'CIVIL',
             name: 'Civil',
+            description: '',
             events: [
               {
                 id: 'submitClaim',
@@ -165,15 +171,18 @@ describe('Amended Jurisdiction', () => {
             states: [
               {
                 id: 'PENDING_CASE_ISSUED',
-                name: 'Claim Issue Pending'
+                name: 'Claim Issue Pending',
+                description: ''
               },
               {
                 id: 'CASE_ISSUED',
-                name: 'Awaiting Claim Notification'
+                name: 'Awaiting Claim Notification',
+                description: ''
               },
               {
                 id: 'AWAITING_CASE_DETAILS_NOTIFICATION',
-                name: 'Awaiting Claim Details Notification'
+                name: 'Awaiting Claim Details Notification',
+                description: ''
               }
             ]
           }
@@ -207,10 +216,12 @@ describe('Amended Jurisdiction', () => {
       {
         id: 'CIVIL',
         name: 'Civil',
+        description: '',
         caseTypes: [
           {
             id: 'GENERALAPPLICATION',
-            name: 'Civil General Application'
+            name: 'Civil General Application',
+            description: ''
           }
         ]
       }
@@ -243,10 +254,12 @@ describe('Amended Jurisdiction', () => {
       {
         id: 'CIVIL',
         name: 'Civil',
+        description: '',
         caseTypes: [
           {
             id: 'GENERALAPPLICATION',
-            name: 'Civil General Application'
+            name: 'Civil General Application',
+            description: ''
           }
         ]
       }
@@ -352,8 +365,8 @@ describe('Amended Jurisdiction', () => {
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
 
     expect(req.session[sessionKey]).to.deep.equal([
-      { id: 'PROBATE' },
-      { id: 'DIVORCE' }
+      { id: 'PROBATE', description: '' },
+      { id: 'DIVORCE', description: '' }
     ]);
     expect(response).to.equal(req.session[sessionKey]);
   });

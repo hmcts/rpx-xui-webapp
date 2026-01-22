@@ -119,4 +119,4 @@ test-results/
 /playwright_tests_new/api/auth.ts
 /playwright_tests_new/api/auth-coverage.api.ts
 
-.zip
+*.zip

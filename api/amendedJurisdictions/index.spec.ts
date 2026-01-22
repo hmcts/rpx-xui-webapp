@@ -125,7 +125,7 @@ describe('Amended Jurisdiction', () => {
           {
             id: 'GENERALAPPLICATION',
             name: 'Civil General Application',
-            description: '',
+            description: 'General application for civil cases',
             events: [
               { id: 'submitApplication', name: 'Submit Application' },
               { id: 'issueApplication', name: 'Issue Application' }
@@ -151,7 +151,7 @@ describe('Amended Jurisdiction', () => {
           {
             id: 'CIVIL',
             name: 'Civil',
-            description: '',
+            description: 'Standard civil case',
             events: [
               { id: 'submitClaim', name: 'Submit Claim' },
               { id: 'issueClaim', name: 'Issue Claim' }

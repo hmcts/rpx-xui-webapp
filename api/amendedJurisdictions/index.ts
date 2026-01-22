@@ -25,15 +25,15 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
         result.name = jurisdiction.name;
       }
 
-      // Include empty description to satisfy CCD toolkit types
-      result.description = '';
+      // Keep original description or empty string if not present
+      result.description = jurisdiction.description || '';
 
       if (jurisdiction.caseTypes !== undefined) {
         result.caseTypes = jurisdiction.caseTypes.map((caseType) => {
           const mappedCaseType: any = {
             id: caseType.id,
             name: caseType.name,
-            description: '', // Empty - not displayed in UI
+            description: caseType.description || '', // Keep original description for CCD UI toolkit validation
             states: []
           };
 

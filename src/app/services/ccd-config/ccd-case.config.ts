@@ -21,6 +21,7 @@ export class AppConfig extends AbstractAppConfig {
   public initialisationComplete = false;
   protected config: CaseEditorConfig;
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
+
   constructor(
     private readonly appConfigService: AppConfigService,
     private readonly featureToggleService: FeatureToggleService,
@@ -81,23 +82,27 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.login_url;
   }
 
-  public getApiUrl() {
+  public getApiUrl(): string {
     return this.config.api_url;
   }
 
-  public getCaseDataUrl() {
+  public getCaseDataUrl(): string {
     return this.config.case_data_url;
   }
 
-  public getDocumentManagementUrl() {
+  public getDocumentManagementUrl(): string {
     return this.config.document_management_url;
   }
 
-  public getDocumentManagementUrlV2() {
+  public getDocumentManagementUrlV2(): string {
     return this.config.document_management_url_v2;
   }
 
-  public getRemoteDocumentManagementUrl() {
+  public getDocumentSecureMode(): boolean {
+    return this.config.document_management_secure_enabled;
+  }
+
+  public getRemoteDocumentManagementUrl(): string {
     return this.config.remote_document_management_url;
   }
 
@@ -109,27 +114,27 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.mc_cdam_exclusion_list;
   }
 
-  public getPostcodeLookupUrl() {
+  public getPostcodeLookupUrl(): string {
     return this.config.postcode_lookup_url;
   }
 
-  public getOAuth2ClientId() {
+  public getOAuth2ClientId(): string {
     return this.config.oauth2_client_id;
   }
 
-  public getPaymentsUrl() {
+  public getPaymentsUrl(): string {
     return this.config.payments_url;
   }
 
-  public getHrsUrl() {
+  public getHrsUrl(): string {
     return this.config.hrs_url;
   }
 
-  public getRemoteHrsUrl() {
+  public getRemoteHrsUrl(): string {
     return this.config.remote_hrs_url;
   }
 
-  public getCaseHistoryUrl(caseId: string, eventId: string) {
+  public getCaseHistoryUrl(caseId: string, eventId: string): string {
     return `${this.getCaseDataUrl()}/internal/cases/${caseId}/events/${eventId}`;
   }
 
@@ -137,19 +142,19 @@ export class AppConfig extends AbstractAppConfig {
     return `${this.getCaseDataUrl()}/internal/case-types/${ctid}/drafts`;
   }
 
-  public getViewOrDeleteDraftsUrl(did: string) {
+  public getViewOrDeleteDraftsUrl(did: string): string {
     return `${this.getCaseDataUrl()}/drafts/${did}`;
   }
 
-  public getActivityUrl() {
+  public getActivityUrl(): string {
     return `${this.environmentService.get('ccdGatewayUrl')}/activity`;
   }
 
-  public getActivityNexPollRequestMs() {
+  public getActivityNexPollRequestMs(): number {
     return this.config.activity_next_poll_request_ms;
   }
 
-  public getActivityRetry() {
+  public getActivityRetry(): number {
     return this.config.activity_retry;
   }
 
@@ -161,19 +166,19 @@ export class AppConfig extends AbstractAppConfig {
     return this.config.timeouts_case_retrieval_artificial_delay;
   }
 
-  public getActivityBatchCollectionDelayMs() {
+  public getActivityBatchCollectionDelayMs(): number {
     return this.config.activity_batch_collection_delay_ms;
   }
 
-  public getActivityMaxRequestPerBatch() {
+  public getActivityMaxRequestPerBatch(): number {
     return this.config.activity_max_request_per_batch;
   }
 
-  public getPrintServiceUrl() {
+  public getPrintServiceUrl(): string {
     return this.config.print_service_url;
   }
 
-  public getRemotePrintServiceUrl() {
+  public getRemotePrintServiceUrl(): string {
     return this.config.remote_print_service_url;
   }
 

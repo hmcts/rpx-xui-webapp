@@ -5,6 +5,7 @@ nodejs:
      NODE_TLS_REJECT_UNAUTHORIZED: 0
      SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
      SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
+     SERVICES_CCD_ACTIVITY_API: https://xui-case-activity-api-pr-1.preview.platform.hmcts.net/
      REDISCLOUD_URL: redis://${SERVICE_NAME}-redis-master:6379
      HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
      HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
@@ -28,6 +29,8 @@ nodejs:
      FEATURE_JRD_E_LINKS_V2_ENABLED: true
      FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
      SERVICES_IDAM_SERVICE_OVERRIDE: false
+     FEATURE_OIDC_ENABLED: true
+     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
   keyVaults:
     rpx:
       secrets:

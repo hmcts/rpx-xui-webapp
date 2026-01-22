@@ -3618,24 +3618,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.17/hmcts-ccd-case-ui-toolkit-7.3.17.tgz":
-  version: 7.3.17
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.17/hmcts-ccd-case-ui-toolkit-7.3.17.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.19/hmcts-ccd-case-ui-toolkit-7.3.19.tgz":
+  version: 7.3.19
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.19/hmcts-ccd-case-ui-toolkit-7.3.19.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/532ab85b9a3a40285c11ece9a288fe03ea4e72bb9a08bb757778d8da321eb2c7e90ad9ff85b28e7d2fd8e7347ec1fbef9d7b02dd05235d8c3d7d82af7c1fb164
+  checksum: 10/b3dfb0d2bf3a6ead735df104c2f266d6ea1356a08bdd33ffd4170c5f3584a8a7d03c8a16b6ab1d76ec64aae22d2ec8f5fce7e693ba8d57852f817680b1a9e551
   languageName: node
   linkType: hard
 
-"@hmcts/ccpay-web-component@npm:6.5.14":
-  version: 6.5.14
-  resolution: "@hmcts/ccpay-web-component@npm:6.5.14"
+"@hmcts/ccpay-web-component@npm:6.5.15":
+  version: 6.5.15
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.15"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ~20.3.1
-  checksum: 10/db9415edf6cd2a26b5e15a2cbbe72c729038c15b9c13313837f92da0bcbbd764d8d7bb6e2a7b54e820879bffe48a705ae84fffbc019e16279311f3b611235731
+  checksum: 10/5827b38bd13bc6da76d73fd810b91fbee331f232530536112bf16c176a4f7865b942bbfdf6a5b942b398812591ccd6a5dd243aa23f33b9194eb7fbd9517c0c12
   languageName: node
   linkType: hard
 
@@ -25099,8 +25099,8 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.17/hmcts-ccd-case-ui-toolkit-7.3.17.tgz"
-    "@hmcts/ccpay-web-component": "npm:6.5.14"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.19/hmcts-ccd-case-ui-toolkit-7.3.19.tgz"
+    "@hmcts/ccpay-web-component": "npm:6.5.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"

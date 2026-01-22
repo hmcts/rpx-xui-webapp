@@ -1,10 +1,9 @@
-import { Page } from "@playwright/test";
-import { Base } from "../../base";
+import { Page } from '@playwright/test';
+import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
 
 export class CreateCasePage extends Base {
-
-  readonly container = this.page.locator("exui-case-home");
+  readonly container = this.page.locator('exui-case-home');
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
@@ -27,9 +26,15 @@ export class CreateCasePage extends Base {
 
   // Locators for the Divorce - XUI Case PoC
   readonly person1Title = this.page.locator('#Person1_Title');
-  readonly firstNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('First Name (Optional)');
-  readonly lastNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)');
-  readonly genderSelect = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Gender (Optional)');
+  readonly firstNameInput = this.page
+    .getByRole('group', { name: 'Person 1 - retained (Optional)' })
+    .getByLabel('First Name (Optional)');
+  readonly lastNameInput = this.page
+    .getByRole('group', { name: 'Person 1 - retained (Optional)' })
+    .getByLabel('Last Name (Optional)');
+  readonly genderSelect = this.page
+    .getByRole('group', { name: 'Person 1 - retained (Optional)' })
+    .getByLabel('Gender (Optional)');
   readonly jobTitleInput = this.page.getByRole('group', { name: 'Job (Optional)' }).getByLabel('Title (Optional)');
   readonly jobDescriptionInput = this.page.getByRole('textbox', { name: 'Description (Optional)' });
   readonly textField0Input = this.page.getByLabel('Text Field 0');
@@ -68,7 +73,6 @@ export class CreateCasePage extends Base {
   readonly postCodeSearchButton = this.page.locator('.postcodeLookup').getByRole('button');
   readonly addressSelect = this.page.locator('.postcodeLookup select');
 
-
   // Warning modal
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
@@ -95,7 +99,6 @@ export class CreateCasePage extends Base {
     await this.addressSelect.selectOption(addressOption);
   }
 
-
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     await this.createCase(jurisdiction, caseType, 'Create Case');
     const today = new Date();
@@ -118,7 +121,7 @@ export class CreateCasePage extends Base {
 
     await this.addRespondentButton.click();
     await this.respondentOneNameInput.fill('Respondent One');
-    await this.respondentOrganisation.click()
+    await this.respondentOrganisation.click();
     await this.respondentAcasCertifcateSelectYes.click();
     await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
     await this.respondentCompanyNameInput.fill('Respondent Company');
@@ -152,9 +155,9 @@ export class CreateCasePage extends Base {
     await this.party2Name.fill(`${testData}2`);
 
     await this.continueButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
     await this.testSubmitButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
   }
 
   async createDivorceCase(jurisdiction: string, caseType: string, textField0: string) {
@@ -185,6 +188,6 @@ export class CreateCasePage extends Base {
     await this.textField2Input.fill(faker.lorem.word());
     await this.continueButton.click();
     await this.testSubmitButton.click();
-    await this.exuiSpinnerComponent.wait()
-  };
+    await this.exuiSpinnerComponent.wait();
+  }
 }

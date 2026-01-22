@@ -4,9 +4,7 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const {
-  NODE_ENV = 'production'
-} = process.env;
+const { NODE_ENV = 'production' } = process.env;
 
 module.exports = {
   optimization: {
@@ -14,10 +12,10 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          sourceMap: true
-        }
-      })
-    ]
+          sourceMap: true,
+        },
+      }),
+    ],
   },
   entry: ['./server.ts'],
   mode: NODE_ENV,
@@ -25,28 +23,24 @@ module.exports = {
   devtool: 'source-map',
   node: {
     __dirname: false,
-    __filename: false
+    __filename: false,
   },
-  plugins: [
-    new webpack.DefinePlugin({ "global.GENTLY": false })
-  ],
+  plugins: [new webpack.DefinePlugin({ 'global.GENTLY': false })],
   output: {
     path: path.resolve(__dirname, '../dist/rpx-exui/api'),
-    filename: 'server.bundle.js'
+    filename: 'server.bundle.js',
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
   },
   externals: [nodeExternals()],
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: [
-          'ts-loader'
-        ],
-        exclude: /node_modules/
-      }
-    ]
-  }
+        use: ['ts-loader'],
+        exclude: /node_modules/,
+      },
+    ],
+  },
 };

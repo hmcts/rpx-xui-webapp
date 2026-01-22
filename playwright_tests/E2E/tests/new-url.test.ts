@@ -1,17 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from "../steps/login-steps";
+import { signIn, signOut } from '../steps/login-steps';
 import { waitForSpecificResponse } from '../helpers/responseListenerHelper';
 import { createCase } from '../steps/create-xui-case-poc-steps';
 import { waitForSpinner } from '../steps/spinner-steps';
-import { dealWithShortenedCaseRefLabel, getCaseReferenceFromFirstRow, getCaseReferenceFromFirstRowForEmployment } from '../steps/table-steps';
+import {
+  dealWithShortenedCaseRefLabel,
+  getCaseReferenceFromFirstRow,
+  getCaseReferenceFromFirstRowForEmployment,
+} from '../steps/table-steps';
 
 test('creating a case updates the url with jurisdiction and caseType', async ({ page }) => {
-  const response = waitForSpecificResponse(
-    page,
-    'data/internal/cases/',
-    'GET'
-  );
-  await signIn(page, "SOLICITOR");
+  const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
+  await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
 
   await page.getByRole('link', { name: 'Create case' }).click();
@@ -33,11 +33,7 @@ test('creating a case updates the url with jurisdiction and caseType', async ({ 
 });
 
 test('navigating to a case which displays the new url containing jurisdiction and caseType', async ({ page }) => {
-  const response = waitForSpecificResponse(
-    page,
-    'data/internal/cases/',
-    'GET'
-  );
+  const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();
   await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });

@@ -26,8 +26,12 @@ const KEEP_SSR_ALIVE = process.env.KEEP_SSR_ALIVE === 'true';
 let ssr = null;
 
 /* ── fs helpers ─────────────────────────────────────────────── */
-function readInt(fp) { return Number(fs.readFileSync(fp, 'utf8').trim() || '0'); }
-function writeInt(fp, n) { fs.writeFileSync(fp, String(n)); }
+function readInt(fp) {
+  return Number(fs.readFileSync(fp, 'utf8').trim() || '0');
+}
+function writeInt(fp, n) {
+  fs.writeFileSync(fp, String(n));
+}
 
 /* ── lock helpers ───────────────────────────────────────────── */
 function acquireLock() {
@@ -39,7 +43,11 @@ function acquireLock() {
   } catch (e) {
     if (e.code !== 'EEXIST') throw e;
     for (let i = 0; i < 5; i++) {
-      try { const n = readInt(COUNTER_FILE); writeInt(COUNTER_FILE, n + 1); break; } catch { }
+      try {
+        const n = readInt(COUNTER_FILE);
+        writeInt(COUNTER_FILE, n + 1);
+        break;
+      } catch {}
     }
     return false;
   }
@@ -51,16 +59,21 @@ function releaseLock() {
     const n = Math.max(0, readInt(COUNTER_FILE) - 1);
     writeInt(COUNTER_FILE, n);
     if (n === 0) {
-      const dirs = [
-        path.resolve(__dirname, '../../.sessions'),
-        path.resolve(__dirname, '../../api/.sessions')
-      ];
+      const dirs = [path.resolve(__dirname, '../../.sessions'), path.resolve(__dirname, '../../api/.sessions')];
       for (const dir of dirs) {
-        try { fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true }); console.log('[mock] cleaned', dir); }
-        catch (e) { console.warn('[mock] could not clean', dir, e.message); }
+        try {
+          fs.rmSync(dir, { recursive: true, force: true });
+          fs.mkdirSync(dir, { recursive: true });
+          console.log('[mock] cleaned', dir);
+        } catch (e) {
+          console.warn('[mock] could not clean', dir, e.message);
+        }
       }
       if (!KEEP_SSR_ALIVE) {
-        try { const ownerPid = readInt(OWNER_PIDFILE); if (ownerPid) process.kill(ownerPid, 'SIGTERM'); } catch { }
+        try {
+          const ownerPid = readInt(OWNER_PIDFILE);
+          if (ownerPid) process.kill(ownerPid, 'SIGTERM');
+        } catch {}
       } else {
         console.log('[mock] SSR kept alive for shared run (KEEP_SSR_ALIVE=true)');
       }
@@ -73,17 +86,28 @@ function releaseLock() {
 
 /* ── unified cleanup ────────────────────────────────────────── */
 function cleanup(trigger = 0) {
-  try { releaseLock(); } finally { if (typeof trigger === 'string') process.exit(0); }
+  try {
+    releaseLock();
+  } finally {
+    if (typeof trigger === 'string') process.exit(0);
+  }
 }
 process.on('exit', cleanup);
-['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach(sig => process.once(sig, () => cleanup(sig)));
-process.once('uncaughtException', err => { console.error(err); cleanup(1); });
-process.once('unhandledRejection', err => { console.error(err); cleanup(1); });
+['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach((sig) => process.once(sig, () => cleanup(sig)));
+process.once('uncaughtException', (err) => {
+  console.error(err);
+  cleanup(1);
+});
+process.once('unhandledRejection', (err) => {
+  console.error(err);
+  cleanup(1);
+});
 
 /* ── port & http probes ─────────────────────────────────────── */
 function probeOnce(port, host) {
   return new Promise((res) => {
-    const s = net.createServer()
+    const s = net
+      .createServer()
       .once('error', () => res(false))
       .once('listening', () => s.close(() => res(true)))
       .listen(port, host);
@@ -93,13 +117,13 @@ function probeOnce(port, host) {
 async function isPortFree(port) {
   // try OS-default bind (no host) first, then v4, then v6
   const results = await Promise.allSettled([
-    probeOnce(port),               // no host: all interfaces per OS policy
-    probeOnce(port, '127.0.0.1'),  // IPv4 loopback
-    probeOnce(port, '::1'),        // IPv6 loopback
+    probeOnce(port), // no host: all interfaces per OS policy
+    probeOnce(port, '127.0.0.1'), // IPv4 loopback
+    probeOnce(port, '::1'), // IPv6 loopback
   ]);
 
-  const anyOK = results.some(r => r.status === 'fulfilled' && r.value === true);
-  return anyOK;  // free if we can bind on at least one
+  const anyOK = results.some((r) => r.status === 'fulfilled' && r.value === true);
+  return anyOK; // free if we can bind on at least one
 }
 
 function httpGetJson(url, timeoutMs) {
@@ -117,7 +141,10 @@ function httpGetJson(url, timeoutMs) {
         }
       });
     });
-    req.on('timeout', () => { req.destroy(); resolve({ ok: false, status: 0, json: null }); });
+    req.on('timeout', () => {
+      req.destroy();
+      resolve({ ok: false, status: 0, json: null });
+    });
     req.on('error', () => resolve({ ok: false, status: 0, json: null }));
   });
 }
@@ -138,37 +165,39 @@ function startStub3000() {
       res.setHeader('content-type', 'application/json');
       res.end(JSON.stringify(cfg));
     } else {
-      res.statusCode = 404; res.end('');
+      res.statusCode = 404;
+      res.end('');
     }
   };
 
   const srv = http.createServer(handler);
 
   // helper that logs each bind attempt and result
-  const tryListen = (label, host) => new Promise((resolve, reject) => {
-    console.log(`[mock] stub: attempting bind on :${SSR_PORT} ${label}`);
-    const onError = (err) => {
-      console.error(`[mock] stub: failed to bind ${label} :${SSR_PORT} — ${err.code || err.message}`);
-      srv.removeListener('listening', onListening);
-      reject(err);
-    };
-    const onListening = async () => {
-      srv.removeListener('error', onError);
-      console.log(`[mock] stub: SUCCESS on ${label} :${SSR_PORT}`);
-      // self-probe to prove the handler is alive
-      try {
-        const probe = await httpGetJson(`http://127.0.0.1:${SSR_PORT}${HEALTH_PATH}`, 1000);
-        console.log(`[mock] stub: self probe => ${probe.status} (ok=${probe.ok})`);
-      } catch (e) {
-        console.warn('[mock] stub: self probe failed', e?.message || e);
-      }
-      resolve();
-    };
-    srv.once('error', onError);
-    srv.once('listening', onListening);
-    // undefined host ⇒ OS default (all interfaces per policy)
-    srv.listen(SSR_PORT, host);
-  });
+  const tryListen = (label, host) =>
+    new Promise((resolve, reject) => {
+      console.log(`[mock] stub: attempting bind on :${SSR_PORT} ${label}`);
+      const onError = (err) => {
+        console.error(`[mock] stub: failed to bind ${label} :${SSR_PORT} — ${err.code || err.message}`);
+        srv.removeListener('listening', onListening);
+        reject(err);
+      };
+      const onListening = async () => {
+        srv.removeListener('error', onError);
+        console.log(`[mock] stub: SUCCESS on ${label} :${SSR_PORT}`);
+        // self-probe to prove the handler is alive
+        try {
+          const probe = await httpGetJson(`http://127.0.0.1:${SSR_PORT}${HEALTH_PATH}`, 1000);
+          console.log(`[mock] stub: self probe => ${probe.status} (ok=${probe.ok})`);
+        } catch (e) {
+          console.warn('[mock] stub: self probe failed', e?.message || e);
+        }
+        resolve();
+      };
+      srv.once('error', onError);
+      srv.once('listening', onListening);
+      // undefined host ⇒ OS default (all interfaces per policy)
+      srv.listen(SSR_PORT, host);
+    });
 
   // Try default bind first, then IPv4, then IPv6 (each logs outcome)
   return tryListen('(all interfaces)', undefined)
@@ -189,9 +218,7 @@ function startStub3000() {
   }
 
   /* 1a - ensure session folders */
-  ['../../.sessions', '../../api/.sessions'].forEach(rel =>
-    fs.mkdirSync(path.resolve(__dirname, rel), { recursive: true })
-  );
+  ['../../.sessions', '../../api/.sessions'].forEach((rel) => fs.mkdirSync(path.resolve(__dirname, rel), { recursive: true }));
 
   /* 2 - start Mock API */
   const mock = require('./app');
@@ -211,19 +238,24 @@ function startStub3000() {
         ...process.env,
         NODE_CONFIG_ENV: 'mock',
         TEST_CSP_OFF: 'true',
-        SSR_ALREADY_RUNNING: 'true'
+        SSR_ALREADY_RUNNING: 'true',
       };
 
-      ssr = spawn(process.platform === 'win32' ? 'yarn.cmd' : 'yarn',
-        ['node', 'dist/rpx-exui/api/server.bundle.js'],
-        { cwd: path.resolve(__dirname, '../../'), stdio: 'inherit', env });
+      ssr = spawn(process.platform === 'win32' ? 'yarn.cmd' : 'yarn', ['node', 'dist/rpx-exui/api/server.bundle.js'], {
+        cwd: path.resolve(__dirname, '../../'),
+        stdio: 'inherit',
+        env,
+      });
 
       // Wait up to ~25s for health, then stub
       const t0 = Date.now();
       while (Date.now() - t0 < 25000) {
         const h = await healthOK();
-        if (h.ok) { console.log('[mock] SSR healthy at %s', h.url); return; }
-        await new Promise(r => setTimeout(r, 200));
+        if (h.ok) {
+          console.log('[mock] SSR healthy at %s', h.url);
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 200));
       }
       console.warn('[mock] SSR did not become healthy – starting stub on :%d', SSR_PORT);
       await startStub3000();
@@ -251,8 +283,10 @@ function startStub3000() {
     return;
   } catch (e) {
     // If another process owns :SSR_PORT, bind will fail; be explicit so CI doesn't "hang"
-    console.error(`[mock] stub: could not bind :${SSR_PORT} (still occupied). ` +
-      `Either free the port or set SSR_PORT/WEB_BASE_URL to a free port (e.g. 3100).`);
+    console.error(
+      `[mock] stub: could not bind :${SSR_PORT} (still occupied). ` +
+        `Either free the port or set SSR_PORT/WEB_BASE_URL to a free port (e.g. 3100).`
+    );
     process.exit(2);
   }
 })();

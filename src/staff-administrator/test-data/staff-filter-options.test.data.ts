@@ -2,52 +2,52 @@ export const staffFilterOptionsTestData = {
   userTypes: [
     {
       key: 'userType',
-      label: 'User Types'
+      label: 'User Types',
     },
     {
       key: 'ctsc',
-      label: 'CTSC'
-    }
+      label: 'CTSC',
+    },
   ],
   jobTitles: [
     {
       key: 'senior-legal-caseworker',
-      label: 'Senior Legal Caseworker'
+      label: 'Senior Legal Caseworker',
     },
     {
       key: 'legal-caseworker',
-      label: 'Legal Caseworker'
+      label: 'Legal Caseworker',
     },
     {
       key: 'hearing-centre-team-leader',
-      label: 'Hearing Centre Team Leader'
+      label: 'Hearing Centre Team Leader',
     },
     {
       key: 'hearing-centre-administrator',
-      label: 'Hearing Centre Administrator'
+      label: 'Hearing Centre Administrator',
     },
     {
       key: 'court-clerk',
-      label: 'Court Clerk'
-    }
+      label: 'Court Clerk',
+    },
   ],
   services: [
     {
       key: 'ABC1',
-      label: 'Service A'
+      label: 'Service A',
     },
     {
       key: 'BCD2',
-      label: 'Service B'
+      label: 'Service B',
     },
     {
       key: 'CDE3',
-      label: 'Service C'
+      label: 'Service C',
     },
     {
       key: 'DEF4',
-      label: 'Service D'
-    }
+      label: 'Service D',
+    },
   ],
   skills: [
     {
@@ -55,45 +55,45 @@ export const staffFilterOptionsTestData = {
       options: [
         {
           key: '1',
-          label: 'Underwriter'
+          label: 'Underwriter',
         },
         {
           key: '2',
-          label: 'Caseworker'
-        }
-      ]
+          label: 'Caseworker',
+        },
+      ],
     },
     {
       group: 'BCD2',
       options: [
         {
           key: '3',
-          label: 'Caseworker'
+          label: 'Caseworker',
         },
         {
           key: '4',
-          label: 'Case manager'
-        }
-      ]
+          label: 'Case manager',
+        },
+      ],
     },
     {
       group: 'CDE3',
       options: [
         {
           key: '5',
-          label: 'Underwriter'
-        }
-      ]
-    }
+          label: 'Underwriter',
+        },
+      ],
+    },
   ],
   regions: [
     {
       region_id: '1',
-      description: 'Region 1'
+      description: 'Region 1',
     },
     {
       region_id: '2',
-      description: 'Region 2'
-    }
-  ]
+      description: 'Region 2',
+    },
+  ],
 };

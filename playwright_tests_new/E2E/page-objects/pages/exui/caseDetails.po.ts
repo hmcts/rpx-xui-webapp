@@ -1,7 +1,7 @@
-import { Page } from "@playwright/test";
-import { Base } from "../../base";
-import { ValidatorUtils } from "../../../utils/validator.utils";
-import { TableUtils } from "@hmcts/playwright-common";
+import { Page } from '@playwright/test';
+import { Base } from '../../base';
+import { ValidatorUtils } from '../../../utils/validator.utils';
+import { TableUtils } from '@hmcts/playwright-common';
 
 const tableUtils = new TableUtils();
 const validatorUtils = new ValidatorUtils();
@@ -15,7 +15,7 @@ export interface CaseFlagItem {
 }
 
 export class CaseDetailsPage extends Base {
-  readonly container = this.page.locator("exui-case-details-home");
+  readonly container = this.page.locator('exui-case-details-home');
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
   readonly caseActionsDropdown = this.page.locator('#next-step');
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
@@ -30,12 +30,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
-
   constructor(page: Page) {
     super(page);
   }
   async getTableByName(tableName: string) {
-    return this.page.getByRole('table', { name: tableName, exact: true })
+    return this.page.getByRole('table', { name: tableName, exact: true });
   }
 
   async getCaseNumberFromAlert(): Promise<string> {
@@ -95,6 +94,6 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectCaseDetailsTab(tabName: string) {
-    await this.caseDetailsTabs.filter({ hasText: tabName }).click()
+    await this.caseDetailsTabs.filter({ hasText: tabName }).click();
   }
 }

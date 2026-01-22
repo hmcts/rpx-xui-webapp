@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 // import { MockStaffRefDataAPI } from './mock-staff-ref-data-api';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
 
-class StaffRefDataService {
+export default class StaffRefDataService {
   // Use below line to mock staff ref API
   // public constructor(private service: MockStaffRefDataAPI) {}
   // Use below line to use real staff ref API
@@ -48,5 +48,3 @@ class StaffRefDataService {
     return this.service.updateUser(req, res, next);
   }
 }
-
-module.exports = StaffRefDataService;

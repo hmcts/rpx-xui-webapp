@@ -10,7 +10,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   DurationOfRole,
-  Period
+  Period,
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
@@ -19,9 +19,8 @@ import { getTitleText } from '../../../utils';
   standalone: false,
   selector: 'exui-choose-duration',
   templateUrl: './choose-duration.component.html',
-  styleUrls: ['./choose-duration.component.scss']
+  styleUrls: ['./choose-duration.component.scss'],
 })
-
 export class ChooseDurationComponent implements OnInit {
   public static sevenDaysDesc = 'Starts from today and ends at midnight 7 days from now.';
   public static indefiniteDesc = 'Starts from today and lasts while the case is open.';
@@ -31,7 +30,7 @@ export class ChooseDurationComponent implements OnInit {
   public radioSelected: FormControl;
   public anotherPeriod: boolean;
   public title: string;
-  public readonly allDurations: DurationDescription [];
+  public readonly allDurations: DurationDescription[];
   public selectedDuration: DurationOfRole;
   public dayStartDate: FormControl;
   public monthStartDate: FormControl;
@@ -46,12 +45,19 @@ export class ChooseDurationComponent implements OnInit {
   public endDateErrorMessage: string;
   public dateFormat = 'YYYY-MM-DD';
 
-  constructor(private readonly store: Store<fromFeature.State>,
-              private readonly builder: FormBuilder) {
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly builder: FormBuilder
+  ) {
     this.allDurations = [
       { id: '1', duration: DurationOfRole.SEVEN_DAYS, description: ChooseDurationComponent.sevenDaysDesc, checked: false },
       { id: '2', duration: DurationOfRole.INDEFINITE, description: ChooseDurationComponent.indefiniteDesc, checked: false },
-      { id: '3', duration: DurationOfRole.ANOTHER_PERIOD, description: ChooseDurationComponent.anotherPeriodDesc, checked: false }
+      {
+        id: '3',
+        duration: DurationOfRole.ANOTHER_PERIOD,
+        description: ChooseDurationComponent.anotherPeriodDesc,
+        checked: false,
+      },
     ];
     this.dayStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(31)]);
     this.monthStartDate = new FormControl('', [Validators.required, Validators.min(1), Validators.max(12)]);
@@ -70,7 +76,7 @@ export class ChooseDurationComponent implements OnInit {
       dayEndDate: this.dayEndDate,
       monthEndDate: this.monthEndDate,
       yearEndDate: this.yearEndDate,
-      radioSelected: this.radioSelected
+      radioSelected: this.radioSelected,
     });
     this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((roleAllocate) => {
       this.selectDurationRole(roleAllocate);
@@ -105,11 +111,13 @@ export class ChooseDurationComponent implements OnInit {
     if (period) {
       switch (navEvent) {
         case AllocateRoleNavigationEvent.CONTINUE:
-          this.store.dispatch(new fromFeature.ChooseDurationAndGo({
-            durationOfRole: this.selectedDuration,
-            period,
-            allocateRoleState: AllocateRoleState.CHECK_ANSWERS }
-          ));
+          this.store.dispatch(
+            new fromFeature.ChooseDurationAndGo({
+              durationOfRole: this.selectedDuration,
+              period,
+              allocateRoleState: AllocateRoleState.CHECK_ANSWERS,
+            })
+          );
           break;
         default:
           throw new Error('Invalid option');
@@ -130,20 +138,26 @@ export class ChooseDurationComponent implements OnInit {
         const nextDate = this.getTodayDate().setDate(new Date().getDate() + 7);
         return {
           startDate: this.getTodayDate(),
-          endDate: new Date(nextDate)
+          endDate: new Date(nextDate),
         };
       }
       case DurationOfRole.INDEFINITE: {
         return {
           startDate: this.getTodayDate(),
-          endDate: null
+          endDate: null,
         };
       }
       case DurationOfRole.ANOTHER_PERIOD: {
-        if (this.isDateValid() && this.datesMissing() && this.formGroup.valid && this.startDateNotInPast() && this.startDateLessThanEndDate()) {
+        if (
+          this.isDateValid() &&
+          this.datesMissing() &&
+          this.formGroup.valid &&
+          this.startDateNotInPast() &&
+          this.startDateLessThanEndDate()
+        ) {
           return {
             startDate: this.getStartDate(),
-            endDate: this.getEndDate()
+            endDate: this.getEndDate(),
           };
         }
 
@@ -178,7 +192,11 @@ export class ChooseDurationComponent implements OnInit {
 
   public datesMissing(): boolean {
     let dateMissing = true;
-    if (!parseInt(this.dayStartDate.value, 10) || !parseInt(this.monthStartDate.value, 10) || !parseInt(this.yearStartDate.value, 10)) {
+    if (
+      !parseInt(this.dayStartDate.value, 10) ||
+      !parseInt(this.monthStartDate.value, 10) ||
+      !parseInt(this.yearStartDate.value, 10)
+    ) {
       this.startDateErrorMessage = 'Please enter some value';
       this.isStartDateError = true;
       dateMissing = false;

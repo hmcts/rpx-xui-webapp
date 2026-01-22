@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class HearingAmendmentsGuard extends HearingsGuard {
-  constructor(protected readonly appStore: Store<fromAppStore.State>,
+  constructor(
+    protected readonly appStore: Store<fromAppStore.State>,
     protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
     protected readonly hearingStore: Store<fromAppStore.State>,
     protected readonly router: Router

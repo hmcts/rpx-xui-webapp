@@ -17,14 +17,10 @@ describe('StaffSelectLocationComponent', () => {
     refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
-      imports: [MatAutocompleteModule,
-        ReactiveFormsModule],
+      imports: [MatAutocompleteModule, ReactiveFormsModule],
       declarations: [StaffSelectLocationComponent],
-      providers: [
-        { provide: RefDataService, useValue: refDataServiceMock }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: RefDataService, useValue: refDataServiceMock }],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -61,7 +57,7 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
           is_case_management_location: 'Y',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['BFA1'],
         },
         {
           site_name: 'Aberdeen Tribunal Hearing Centre',
@@ -80,7 +76,7 @@ describe('StaffSelectLocationComponent', () => {
           venue_name: 'Aberdeen',
           is_hearing_location: 'Y',
           is_case_management_location: 'Y',
-          serviceCodes: ['AAA7']
+          serviceCodes: ['AAA7'],
         },
         {
           epimms_id: '827534',
@@ -95,7 +91,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test3',
           postcode: 'SY23 1AS ',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['BFA1'],
         },
         {
           epimms_id: '827534',
@@ -110,7 +106,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test4',
           postcode: 'SY23 1AS ',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['BFA1'],
         },
         {
           epimms_id: '827534',
@@ -125,7 +121,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test5',
           postcode: 'SY23 1AS ',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['BFA1'],
         },
         {
           epimms_id: '827534',
@@ -140,7 +136,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'TREFECHAN test6',
           postcode: 'SY23 1AS ',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['BFA1'],
         },
         {
           epimms_id: '450049',
@@ -157,7 +153,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'THE COURT HOUSE, CIVIC CENTRE, WELLINGTON AVENUE test7',
           postcode: 'GU11 1NY',
-          serviceCodes: ['BFA1']
+          serviceCodes: ['BFA1'],
         },
         {
           epimms_id: '450049',
@@ -174,7 +170,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'THE COURT HOUSE, CIVIC CENTRE, WELLINGTON AVENUE test8',
           postcode: 'GU11 1NY',
-          serviceCodes: ['AAA7']
+          serviceCodes: ['AAA7'],
         },
         {
           epimms_id: '450049',
@@ -191,7 +187,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'THE COURT HOUSE, CIVIC CENTRE, WELLINGTON AVENUE test9',
           postcode: 'GU11 1NY',
-          serviceCodes: ['AAA7']
+          serviceCodes: ['AAA7'],
         },
         {
           epimms_id: '271588',
@@ -208,7 +204,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'KING GEORGE V ROAD AMERSHAM BUCKINGHAMSHIRE test10',
           postcode: 'HP6 5AJ',
-          serviceCodes: ['AAA7']
+          serviceCodes: ['AAA7'],
         },
         {
           epimms_id: '239985',
@@ -225,7 +221,7 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'COUNTY SQUARE test11',
           postcode: 'TN23 1YB',
-          serviceCodes: ['AAA7']
+          serviceCodes: ['AAA7'],
         },
         {
           epimms_id: '239985',
@@ -242,13 +238,11 @@ describe('StaffSelectLocationComponent', () => {
           open_for_public: 'Yes',
           court_address: 'MARCUS SQUARE',
           postcode: 'TN23 1YB',
-          serviceCodes: ['AAA7']
-        }
+          serviceCodes: ['AAA7'],
+        },
       ];
       component.serviceCodes$ = of(['AAA7', 'BFA1']);
-      refDataServiceMock.getLocationsByServiceCodes.and.returnValue(
-        of(dummyLocations)
-      );
+      refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of(dummyLocations));
     });
 
     describe('filteredList$', () => {
@@ -311,7 +305,7 @@ describe('StaffSelectLocationComponent', () => {
         component.locationsControl.setValue([mockLocationInControl]);
         let obsCount = 0;
         component.filteredList$.subscribe((result) => {
-          obsCount > 0 ? expect(result).toEqual([dummyLocations[0]]) : expect(result).toEqual(false);
+          expect(result).toEqual(obsCount > 0 ? [dummyLocations[0]] : false);
           expect(component.locationsControl.value[0].serviceCodes[0]).toEqual('BFA1');
           obsCount++;
         });

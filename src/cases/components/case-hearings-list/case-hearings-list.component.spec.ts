@@ -17,551 +17,584 @@ import { HearingsFeatureService } from '../../../hearings/services/hearings-feat
 import { HearingsService } from '../../../hearings/services/hearings.service';
 import { of } from 'rxjs';
 
-const UPCOMING_HEARING_LIST: HearingListViewModel[] = [{
-  hearingID: 'h100001',
-  hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-  hearingType: 'Case management hearing',
-  hmcStatus: 'Hearing requested',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv1',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'UPDATE REQUESTED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: true,
-  hearingGroupRequestId: 'g1000000',
-  hearingDaySchedule: null,
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
-}, {
-  hearingID: 'h100002',
-  hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
-  hearingType: 'Final hearing',
-  hmcStatus: 'Awaiting listing',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv2',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'AWAITING LISTING',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING
-}, {
-  hearingID: 'h100003',
-  hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-  hearingType: 'Initial hearing',
-  hmcStatus: 'Listed',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv3',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'LISTED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: 'g100000',
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-05-04T09:00:00.000Z',
-    hearingEndDateTime: '2021-05-04T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
-    hearingVenueId: 'venue 1',
-    hearingRoomId: 'room 1',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
+const UPCOMING_HEARING_LIST: HearingListViewModel[] = [
+  {
+    hearingID: 'h100001',
+    hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+    hearingType: 'Case management hearing',
+    hmcStatus: 'Hearing requested',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv1',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'UPDATE REQUESTED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: true,
+    hearingGroupRequestId: 'g1000000',
+    hearingDaySchedule: null,
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+  },
+  {
+    hearingID: 'h100002',
+    hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
+    hearingType: 'Final hearing',
+    hmcStatus: 'Awaiting listing',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv2',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'AWAITING LISTING',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+  },
+  {
+    hearingID: 'h100003',
+    hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+    hearingType: 'Initial hearing',
+    hmcStatus: 'Listed',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv3',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'LISTED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: 'g100000',
+    hearingDaySchedule: [
       {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-05-04T09:00:00.000Z',
+        hearingEndDateTime: '2021-05-04T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba5',
+        hearingVenueId: 'venue 1',
+        hearingRoomId: 'room 1',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
       },
       {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }, {
-    hearingStartDateTime: '2021-05-05T09:00:00.000Z',
-    hearingEndDateTime: '2021-05-05T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
-    hearingVenueId: 'venue 2',
-    hearingRoomId: 'room 2',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
+        hearingStartDateTime: '2021-05-05T09:00:00.000Z',
+        hearingEndDateTime: '2021-05-05T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7ba4',
+        hearingVenueId: 'venue 2',
+        hearingRoomId: 'room 2',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
+      },
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED,
+  },
+  {
+    hearingID: 'h100004',
+    hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
+    hearingType: 'Case management hearing',
+    hmcStatus: 'Update requested',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv4',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'UPDATE REQUESTED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
       {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
+        hearingVenueId: 'venue 3',
+        hearingRoomId: 'room 3',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
       },
       {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.LISTED
-}, {
-  hearingID: 'h100004',
-  hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
-  hearingType: 'Case management hearing',
-  hmcStatus: 'Update requested',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv4',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'UPDATE REQUESTED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-03-12T09:00:00.000Z',
-    hearingEndDateTime: '2021-03-12T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc4',
-    hearingVenueId: 'venue 3',
-    hearingRoomId: 'room 3',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
+        hearingStartDateTime: '2021-03-13T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-13T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
+        hearingVenueId: 'venue 4',
+        hearingRoomId: 'room 4',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
+      },
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
+  },
+  {
+    hearingID: 'h100005',
+    hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
+    hearingType: 'Case management preliminary hearing - open',
+    hmcStatus: 'Update submitted',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv5',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'UPDATE SUBMITTED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
       {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-04-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-04-12T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
+        hearingVenueId: 'venue 5',
+        hearingRoomId: 'room 5',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
+      },
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED,
+  },
+  {
+    hearingID: 'h100006',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
+    hearingType: 'Directions hearing',
+    hmcStatus: 'Exception',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv6',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'EXCEPTION',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
+      {
+        hearingStartDateTime: '2021-05-02T09:00:00.000Z',
+        hearingEndDateTime: '2021-05-02T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b55',
+        hearingVenueId: 'venue 1',
+        hearingRoomId: 'room 1',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
+      },
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.FAILURE,
+  },
+  {
+    hearingID: 'h100007',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
+    hearingType: 'Full hearing',
+    hmcStatus: 'Cancellation requested',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv7',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'CANCELLATION REQUESTED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
+      {
+        hearingStartDateTime: '2021-07-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-07-12T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b44',
+        hearingVenueId: 'venue 2',
+        hearingRoomId: 'room 2',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+          },
+        ],
       },
       {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }, {
-    hearingStartDateTime: '2021-03-13T09:00:00.000Z',
-    hearingEndDateTime: '2021-03-13T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc5',
-    hearingVenueId: 'venue 4',
-    hearingRoomId: 'room 4',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-02-13T09:00:00.000Z',
+        hearingEndDateTime: '2021-02-13T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b34',
+        hearingVenueId: 'venue 3',
+        hearingRoomId: 'room 3',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
       },
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED,
+  },
+  {
+    hearingID: 'h100009',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
+    hearingType: 'Pre-hearing review',
+    hmcStatus: 'Awaiting Actuals',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv9',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'AWAITING ACTUALS',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
       {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
-}, {
-  hearingID: 'h100005',
-  hearingRequestDateTime: '2021-10-01T16:00:00.000Z',
-  hearingType: 'Case management preliminary hearing - open',
-  hmcStatus: 'Update submitted',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv5',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'UPDATE SUBMITTED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-04-12T09:00:00.000Z',
-    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
-    hearingVenueId: 'venue 5',
-    hearingRoomId: 'room 5',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-03-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-03-12T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
+        hearingVenueId: 'venue 4',
+        hearingRoomId: 'room 4',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
       },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.UPDATE_REQUESTED
-}, {
-  hearingID: 'h100006',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
-  hearingType: 'Directions hearing',
-  hmcStatus: 'Exception',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv6',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'EXCEPTION',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-05-02T09:00:00.000Z',
-    hearingEndDateTime: '2021-05-02T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b55',
-    hearingVenueId: 'venue 1',
-    hearingRoomId: 'room 1',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.FAILURE
-}, {
-  hearingID: 'h100007',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
-  hearingType: 'Full hearing',
-  hmcStatus: 'Cancellation requested',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv7',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'CANCELLATION REQUESTED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-07-12T09:00:00.000Z',
-    hearingEndDateTime: '2021-07-12T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b44',
-    hearingVenueId: 'venue 2',
-    hearingRoomId: 'room 2',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant'
-      }
-    ]
-  }, {
-    hearingStartDateTime: '2021-02-13T09:00:00.000Z',
-    hearingEndDateTime: '2021-02-13T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b34',
-    hearingVenueId: 'venue 3',
-    hearingRoomId: 'room 3',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
-}, {
-  hearingID: 'h100009',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
-  hearingType: 'Pre-hearing review',
-  hmcStatus: 'Awaiting Actuals',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv9',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'AWAITING ACTUALS',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-03-12T09:00:00.000Z',
-    hearingEndDateTime: '2021-03-12T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b15',
-    hearingVenueId: 'venue 4',
-    hearingRoomId: 'room 4',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant'
-      },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS
-}];
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
+  },
+];
 
-const PAST_HEARING_LIST: HearingListViewModel[] = [{
-  hearingID: 'h100008',
-  hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
-  hearingType: 'Directions hearing',
-  hmcStatus: 'Vacated',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv8',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'VACATED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
-}, {
-  hearingID: 'h100010',
-  hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
-  hearingType: 'Case management preliminary hearing - open',
-  hmcStatus: 'Completed',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv10',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'COMPLETED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-04-12T09:00:00.000Z',
-    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b66',
-    hearingVenueId: 'venue 5',
-    hearingRoomId: 'room 5',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
+const PAST_HEARING_LIST: HearingListViewModel[] = [
+  {
+    hearingID: 'h100008',
+    hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
+    hearingType: 'Directions hearing',
+    hmcStatus: 'Vacated',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv8',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'VACATED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [],
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+  },
+  {
+    hearingID: 'h100010',
+    hearingRequestDateTime: '2021-09-01T14:00:00.000Z',
+    hearingType: 'Case management preliminary hearing - open',
+    hmcStatus: 'Completed',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv10',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'COMPLETED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
       {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-04-12T09:00:00.000Z',
+        hearingEndDateTime: '2021-04-12T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b66',
+        hearingVenueId: 'venue 5',
+        hearingRoomId: 'room 5',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
       },
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
+  },
+  {
+    hearingID: 'h100011',
+    hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
+    hearingType: 'Remedy hearing',
+    hmcStatus: 'Adjourned',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv11',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'ADJOURNED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [
       {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
-}, {
-  hearingID: 'h100011',
-  hearingRequestDateTime: '2021-09-14T16:00:00.000Z',
-  hearingType: 'Remedy hearing',
-  hmcStatus: 'Adjourned',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv11',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'ADJOURNED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [{
-    hearingStartDateTime: '2021-09-01T09:00:00.000Z',
-    hearingEndDateTime: '2021-09-01T16:00:00.000Z',
-    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b33',
-    hearingVenueId: 'venue 11',
-    hearingRoomId: 'room 11',
-    hearingJudgeId: 'hearingJudgeId1',
-    panelMemberIds: ['hearingJudgeId1'],
-    attendees: [
-      {
-        partyID: 'P1',
-        partyName: 'Jane and Smith',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        individualDetails: {
-          title: null,
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+        hearingStartDateTime: '2021-09-01T09:00:00.000Z',
+        hearingEndDateTime: '2021-09-01T16:00:00.000Z',
+        listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7b33',
+        hearingVenueId: 'venue 11',
+        hearingRoomId: 'room 11',
+        hearingJudgeId: 'hearingJudgeId1',
+        panelMemberIds: ['hearingJudgeId1'],
+        attendees: [
+          {
+            partyID: 'P1',
+            partyName: 'Jane and Smith',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            individualDetails: {
+              title: null,
+              firstName: 'Jane',
+              lastName: 'Smith',
+              preferredHearingChannel: 'inPerson',
+            },
+          },
+          {
+            partyID: 'P2',
+            partyName: 'DWP',
+            partyType: PartyType.ORG,
+            partyRole: 'claimant',
+            individualDetails: {
+              title: null,
+              firstName: 'DWP',
+              lastName: null,
+              preferredHearingChannel: 'byVideo',
+            },
+          },
+        ],
       },
-      {
-        partyID: 'P2',
-        partyName: 'DWP',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo'
-        }
-      }
-    ]
-  }],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED
-}, {
-  hearingID: 'h100012',
-  hearingRequestDateTime: '2021-10-14T16:00:00.000Z',
-  hearingType: 'Full hearing',
-  hmcStatus: 'Vacated',
-  lastResponseReceivedDateTime: '',
-  responseVersion: 'rv12',
-  earliestHearingStartDateTime: '',
-  hearingListingStatus: 'VACATED',
-  listAssistCaseStatus: '',
-  hearingIsLinkedFlag: false,
-  hearingGroupRequestId: null,
-  hearingDaySchedule: [],
-  exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-  exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED
-}];
+    ],
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.ADJOURNED,
+  },
+  {
+    hearingID: 'h100012',
+    hearingRequestDateTime: '2021-10-14T16:00:00.000Z',
+    hearingType: 'Full hearing',
+    hmcStatus: 'Vacated',
+    lastResponseReceivedDateTime: '',
+    responseVersion: 'rv12',
+    earliestHearingStartDateTime: '',
+    hearingListingStatus: 'VACATED',
+    listAssistCaseStatus: '',
+    hearingIsLinkedFlag: false,
+    hearingGroupRequestId: null,
+    hearingDaySchedule: [],
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
+    exuiDisplayStatus: EXUIDisplayStatusEnum.CANCELLED,
+  },
+];
 
 const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
   {
@@ -575,7 +608,7 @@ const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     value_cy: '',
-    value_en: 'Chambers Outcome'
+    value_en: 'Chambers Outcome',
   },
   {
     active_flag: 'Y',
@@ -588,7 +621,7 @@ const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     value_cy: '',
-    value_en: 'Substantive'
+    value_en: 'Substantive',
   },
   {
     active_flag: 'Y',
@@ -601,8 +634,8 @@ const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     value_cy: '',
-    value_en: 'Direction Hearings'
-  }
+    value_en: 'Direction Hearings',
+  },
 ];
 
 describe('CaseHearingsListComponent', () => {
@@ -616,16 +649,12 @@ describe('CaseHearingsListComponent', () => {
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
-    navigateByUrl: jasmine.createSpy('navigateByUrl')
+    navigateByUrl: jasmine.createSpy('navigateByUrl'),
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule,
-        RouterTestingModule.withRoutes([]),
-        HearingsPipesModule
-      ],
+      imports: [RouterModule, RouterTestingModule.withRoutes([]), HearingsPipesModule],
       declarations: [CaseHearingsListComponent, MockRpxTranslatePipe],
       providers: [
         provideMockStore({ initialState }),
@@ -634,28 +663,28 @@ describe('CaseHearingsListComponent', () => {
           useValue: {
             snapshot: {
               params: {
-                cid: '1111222233334444'
-              }
-            }
-          }
+                cid: '1111222233334444',
+              },
+            },
+          },
         },
         {
           provide: Router,
-          useValue: mockRouter
+          useValue: mockRouter,
         },
         {
           provide: FeatureToggleService,
-          useValue: featureToggleServiceMock
+          useValue: featureToggleServiceMock,
         },
         {
           provide: HearingsFeatureService,
-          useValue: hearingsFeatureServiceMock
+          useValue: hearingsFeatureServiceMock,
         },
         {
           provide: HearingsService,
-          useValue: hearingsService
-        }
-      ]
+          useValue: hearingsService,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsListComponent);
     mockStore = TestBed.inject(Store);
@@ -868,7 +897,11 @@ describe('CaseHearingsListComponent', () => {
     const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
     component.viewAndEdit('h100000');
     fixture.detectChanges();
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: true })));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining(
+        new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: true })
+      )
+    );
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-summary');
   });
 
@@ -886,7 +919,11 @@ describe('CaseHearingsListComponent', () => {
     component.viewAndEdit('h100000');
     expect(hearingsService.propertiesUpdatedAutomatically).toEqual({ pageless: {}, withinPage: {} });
     expect(hearingsService.propertiesUpdatedOnPageVisit).toEqual(null);
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: false })));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining(
+        new fromHearingStore.SaveHearingConditions({ mode: 'view-edit', isHearingAmendmentsEnabled: false })
+      )
+    );
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100000', '/hearings/request/hearing-view-edit-summary');
   });
 
@@ -912,7 +949,14 @@ describe('CaseHearingsListComponent', () => {
   it('should manageLinks', () => {
     component.caseId = '1111222233334444';
     component.manageLinks(UPCOMING_HEARING_LIST[0]);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'manage-links', '1111222233334444', 'g1000000', 'h100001']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'hearings',
+      'manage-links',
+      '1111222233334444',
+      'g1000000',
+      'h100001',
+    ]);
   });
 
   it('should check viewDetails', () => {
@@ -920,15 +964,27 @@ describe('CaseHearingsListComponent', () => {
     // AWAITING_LISTING
     component.viewDetails(UPCOMING_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100001', '/hearings/view/hearing-view-summary', '1111222233334444');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100001',
+      '/hearings/view/hearing-view-summary',
+      '1111222233334444'
+    );
     // LISTED
     component.viewDetails(UPCOMING_HEARING_LIST[2]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100003', '/hearings/view/hearing-view-summary', '1111222233334444');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100003',
+      '/hearings/view/hearing-view-summary',
+      '1111222233334444'
+    );
     // UPDATE_REQUESTED
     component.viewDetails(UPCOMING_HEARING_LIST[3]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100004', '/hearings/view/hearing-view-summary', '1111222233334444');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100004',
+      '/hearings/view/hearing-view-summary',
+      '1111222233334444'
+    );
     // CANCELLATION_REQUESTED
     component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
@@ -940,18 +996,29 @@ describe('CaseHearingsListComponent', () => {
     // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100010', '/hearings/view/hearing-completed-summary/h100010', '1111222233334444');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100010',
+      '/hearings/view/hearing-completed-summary/h100010',
+      '1111222233334444'
+    );
     component.viewDetails(UPCOMING_HEARING_LIST[7]);
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100009', '/hearings/view/hearing-view-actuals-summary/h100009');
     // ADJOURNED
     component.viewDetails(PAST_HEARING_LIST[2]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100011', '/hearings/view/hearing-adjourned-summary/h100011', '1111222233334444');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100011',
+      '/hearings/view/hearing-adjourned-summary/h100011',
+      '1111222233334444'
+    );
     // FAILURE
     component.viewDetails(UPCOMING_HEARING_LIST[5]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100006', '/hearings/view/hearing-request-failed-summary/h100006');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100006',
+      '/hearings/view/hearing-request-failed-summary/h100006'
+    );
   });
 
   afterEach(() => {

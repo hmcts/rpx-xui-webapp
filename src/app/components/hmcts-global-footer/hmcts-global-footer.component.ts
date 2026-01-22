@@ -6,7 +6,7 @@ import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
   standalone: false,
   selector: 'exui-app-hmcts-global-footer',
   templateUrl: './hmcts-global-footer.component.html',
-  styleUrls: ['./hmcts-global-footer.component.scss']
+  styleUrls: ['./hmcts-global-footer.component.scss'],
 })
 export class HmctsGlobalFooterComponent {
   @Input() public help: Helper;
@@ -16,7 +16,7 @@ export class HmctsGlobalFooterComponent {
     return this.langService.language;
   }
 
-  constructor(private readonly langService: RpxTranslationService) { }
+  constructor(private readonly langService: RpxTranslationService) {}
 
   public toggleLanguage(lang: RpxLanguage): void {
     this.langService.language = lang;

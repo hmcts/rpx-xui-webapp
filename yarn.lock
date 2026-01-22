@@ -3594,9 +3594,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz":
-  version: 4.2.5
-  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz"
+"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz":
+  version: 4.2.6
+  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3615,7 +3615,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/97ddd670f3443ef550a78bd3c54cd448cc0ee7e3cb5b9d7197cca1a4d33e3379dc00ac3f6148d39f29d7d7bcb7ec2b8abd4cd879f8aaeee79f48327fccf015a1
+  checksum: 10/91cbcf21709fafe25e0d417d80bd96015c677857813c04d8d90ae3e49c9bdb265e4d5e4a3ef98250c51838162e218e63337a8a9652df62fe1376dee85d87abb4
   languageName: node
   linkType: hard
 
@@ -12592,17 +12592,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie-signature@npm:1.0.7, cookie-signature@npm:~1.0.6":
-  version: 1.0.7
-  resolution: "cookie-signature@npm:1.0.7"
-  checksum: 10/1a62808cd30d15fb43b70e19829b64d04b0802d8ef00275b57d152de4ae6a3208ca05c197b6668d104c4d9de389e53ccc2d3bc6bcaaffd9602461417d8c40710
-  languageName: node
-  linkType: hard
-
 "cookie-signature@npm:^1.2.1, cookie-signature@npm:^1.2.2":
   version: 1.2.2
   resolution: "cookie-signature@npm:1.2.2"
   checksum: 10/be44a3c9a56f3771aea3a8bd8ad8f0a8e2679bcb967478267f41a510b4eb5ec55085386ba79c706c4ac21605ca76f4251973444b90283e0eb3eeafe8a92c7708
+  languageName: node
+  linkType: hard
+
+"cookie-signature@npm:~1.0.6, cookie-signature@npm:~1.0.7":
+  version: 1.0.7
+  resolution: "cookie-signature@npm:1.0.7"
+  checksum: 10/1a62808cd30d15fb43b70e19829b64d04b0802d8ef00275b57d152de4ae6a3208ca05c197b6668d104c4d9de389e53ccc2d3bc6bcaaffd9602461417d8c40710
   languageName: node
   linkType: hard
 
@@ -12689,12 +12689,12 @@ __metadata:
   linkType: hard
 
 "cors@npm:^2.8.5, cors@npm:~2.8.5":
-  version: 2.8.5
-  resolution: "cors@npm:2.8.5"
+  version: 2.8.6
+  resolution: "cors@npm:2.8.6"
   dependencies:
     object-assign: "npm:^4"
     vary: "npm:^1"
-  checksum: 10/66e88e08edee7cbce9d92b4d28a2028c88772a4c73e02f143ed8ca76789f9b59444eed6b1c167139e76fa662998c151322720093ba229f9941365ada5a6fc2c6
+  checksum: 10/aa7174305b21ceb90f9c84f4eaa32f04432d333addbfdc0d1eb7310393c48902e5364aada5ac2f5d054528d63b3179238444475426fcb74e1e345077de485727
   languageName: node
   linkType: hard
 
@@ -13469,7 +13469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.2.0":
+"debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:~2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:
@@ -15178,18 +15178,18 @@ __metadata:
   linkType: hard
 
 "express-session@npm:^1.17.0":
-  version: 1.18.2
-  resolution: "express-session@npm:1.18.2"
+  version: 1.19.0
+  resolution: "express-session@npm:1.19.0"
   dependencies:
-    cookie: "npm:0.7.2"
-    cookie-signature: "npm:1.0.7"
-    debug: "npm:2.6.9"
+    cookie: "npm:~0.7.2"
+    cookie-signature: "npm:~1.0.7"
+    debug: "npm:~2.6.9"
     depd: "npm:~2.0.0"
     on-headers: "npm:~1.1.0"
     parseurl: "npm:~1.3.3"
-    safe-buffer: "npm:5.2.1"
+    safe-buffer: "npm:~5.2.1"
     uid-safe: "npm:~2.1.5"
-  checksum: 10/1a89a4d3e579e1d2a729dc604c254c3e942b24a279681371c2d8042b1080f9e6de4ca787a091ec1a9178c9f2cc5c19bcb9f3929632d44db8972263e26c2cc4b8
+  checksum: 10/5f36b51d344ec40adb5b9cd8a915fd694cdaf64832632411d4f6e6de8e9a83d873a20389e9c3cce966fece76a18c0384c5f2763b3ac089f801e8d6e92cb543e6
   languageName: node
   linkType: hard
 
@@ -16675,18 +16675,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors@npm:~1.6.2":
-  version: 1.6.3
-  resolution: "http-errors@npm:1.6.3"
-  dependencies:
-    depd: "npm:~1.1.2"
-    inherits: "npm:2.0.3"
-    setprototypeof: "npm:1.1.0"
-    statuses: "npm:>= 1.4.0 < 2"
-  checksum: 10/e48732657ea0b4a09853d2696a584fa59fa2a8c1ba692af7af3137b5491a997d7f9723f824e7e08eb6a87098532c09ce066966ddf0f9f3dd30905e52301acadb
-  languageName: node
-  linkType: hard
-
 "http-errors@npm:~1.7.3":
   version: 1.7.3
   resolution: "http-errors@npm:1.7.3"
@@ -16697,6 +16685,19 @@ __metadata:
     statuses: "npm:>= 1.5.0 < 2"
     toidentifier: "npm:1.0.0"
   checksum: 10/157cb95296118e9c37034f04d5c372916db03bcb6b1097caf693fbc9cf85ac881c8cbdf892140acb7ede6cad6a1a3dbf86a8031b2b127dc47bfc0600b3fda8a0
+  languageName: node
+  linkType: hard
+
+"http-errors@npm:~1.8.0":
+  version: 1.8.1
+  resolution: "http-errors@npm:1.8.1"
+  dependencies:
+    depd: "npm:~1.1.2"
+    inherits: "npm:2.0.4"
+    setprototypeof: "npm:1.2.0"
+    statuses: "npm:>= 1.5.0 < 2"
+    toidentifier: "npm:1.0.1"
+  checksum: 10/76fc491bd8df2251e21978e080d5dae20d9736cfb29bb72b5b76ec1bcebb1c14f0f58a3a128dd89288934379d2173cfb0421c571d54103e93dd65ef6243d64d8
   languageName: node
   linkType: hard
 
@@ -17037,13 +17038,6 @@ __metadata:
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 10/cd45e923bee15186c07fa4c89db0aace24824c482fb887b528304694b2aa6ff8a898da8657046a5dcf3e46cd6db6c61629551f9215f208d7c3f157cf9b290521
-  languageName: node
-  linkType: hard
-
-"inherits@npm:2.0.3":
-  version: 2.0.3
-  resolution: "inherits@npm:2.0.3"
-  checksum: 10/8771303d66c51be433b564427c16011a8e3fbc3449f1f11ea50efb30a4369495f1d0e89f0fc12bdec0bd7e49102ced5d137e031d39ea09821cb3c717fcf21e69
   languageName: node
   linkType: hard
 
@@ -20081,7 +20075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:^2.1.12, mime-types@npm:^2.1.17, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31, mime-types@npm:^2.1.35, mime-types@npm:~2.1.17, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34":
+"mime-types@npm:^2.1.12, mime-types@npm:^2.1.17, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31, mime-types@npm:^2.1.35, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34, mime-types@npm:~2.1.35":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
@@ -22043,7 +22037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parseurl@npm:^1.3.3, parseurl@npm:~1.3.2, parseurl@npm:~1.3.3":
+"parseurl@npm:^1.3.3, parseurl@npm:~1.3.3":
   version: 1.3.3
   resolution: "parseurl@npm:1.3.3"
   checksum: 10/407cee8e0a3a4c5cd472559bca8b6a45b82c124e9a4703302326e9ab60fc1081442ada4e02628efef1eb16197ddc7f8822f5a91fd7d7c86b51f530aedb17dfa2
@@ -23832,7 +23826,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.8-marked-upgrade/hmcts-ccd-case-ui-toolkit-7.3.8-marked-upgrade.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.15"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.5/hmcts-media-viewer-4.2.5.tgz"
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
@@ -24076,7 +24070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0, safe-buffer@npm:~5.2.1":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 10/32872cd0ff68a3ddade7a7617b8f4c2ae8764d8b7d884c651b74457967a9e0e886267d3ecc781220629c44a865167b61c375d2da6c720c840ecd73f45d5d9451
@@ -24350,17 +24344,17 @@ __metadata:
   linkType: hard
 
 "serve-index@npm:^1.9.1":
-  version: 1.9.1
-  resolution: "serve-index@npm:1.9.1"
+  version: 1.9.2
+  resolution: "serve-index@npm:1.9.2"
   dependencies:
-    accepts: "npm:~1.3.4"
+    accepts: "npm:~1.3.8"
     batch: "npm:0.6.1"
     debug: "npm:2.6.9"
     escape-html: "npm:~1.0.3"
-    http-errors: "npm:~1.6.2"
-    mime-types: "npm:~2.1.17"
-    parseurl: "npm:~1.3.2"
-  checksum: 10/2adce2878d7e30f197e66f30e39f4a404d9ae39295c0c13849bb25e7cf976b93e883204739efd1510559588bed56f8101e32191cbe75f374c6e1e803852194cb
+    http-errors: "npm:~1.8.0"
+    mime-types: "npm:~2.1.35"
+    parseurl: "npm:~1.3.3"
+  checksum: 10/fdfada071e795da265845acca05be9b498443cb5b84f8c9fd4632f01ea107ecca110725a7963a2b4b3146ec01f41c5f95df4405ff61eda13e6f229474a9ed5a6
   languageName: node
   linkType: hard
 
@@ -24406,13 +24400,6 @@ __metadata:
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
   checksum: 10/76e3f5d7f4b581b6100ff819761f04a984fa3f3990e72a6554b57188ded53efce2d3d6c0932c10f810b7c59414f85e2ab3c11521877d1dea1ce0b56dc906f485
-  languageName: node
-  linkType: hard
-
-"setprototypeof@npm:1.1.0":
-  version: 1.1.0
-  resolution: "setprototypeof@npm:1.1.0"
-  checksum: 10/02d2564e02a260551bab3ec95358dcfde775fe61272b1b7c488de3676a4bb79f280b5668a324aebe0ec73f0d8ba408bc2d816a609ee5d93b1a7936b9d4ba1208
   languageName: node
   linkType: hard
 
@@ -25000,7 +24987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"statuses@npm:>= 1.4.0 < 2, statuses@npm:>= 1.5.0 < 2, statuses@npm:~1.5.0":
+"statuses@npm:>= 1.5.0 < 2, statuses@npm:~1.5.0":
   version: 1.5.0
   resolution: "statuses@npm:1.5.0"
   checksum: 10/c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
@@ -25756,7 +25743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"toidentifier@npm:~1.0.1":
+"toidentifier@npm:1.0.1, toidentifier@npm:~1.0.1":
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
   checksum: 10/952c29e2a85d7123239b5cfdd889a0dde47ab0497f0913d70588f19c53f7e0b5327c95f4651e413c74b785147f9637b17410ac8c846d5d4a20a5a33eb6dc3a45

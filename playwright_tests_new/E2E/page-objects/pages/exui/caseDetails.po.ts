@@ -42,7 +42,9 @@ export class CaseDetailsPage extends Base {
   readonly commonRadioButtons = this.page.locator('.govuk-radios__item');
   
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="success-banner-message" - brittle CSS selector
-  readonly caseAlertSuccessMessage = this.page.locator('.hmcts-banner--success .alert-message');
+  readonly caseAlertSuccessMessage = this.page
+    .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
+    .first();
   
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="notification-banner-title" - prefer test ID over #id
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
@@ -148,7 +150,8 @@ export class CaseDetailsPage extends Base {
 
   async getCaseNumberFromUrl(): Promise<string> {
     const url = this.page.url();
-    const caseNumberMatch = url.slice(url.lastIndexOf('/') + 1);
+    const pathname = new URL(url).pathname;
+    const caseNumberMatch = pathname.slice(pathname.lastIndexOf('/') + 1);
     // Validate format: EXUI case numbers are typically 16 digits
     if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
       throw new Error(`Failed to extract valid case number from URL: "${url}" (extracted: "${caseNumberMatch}")`);

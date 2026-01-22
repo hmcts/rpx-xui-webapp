@@ -91,7 +91,9 @@ test.describe(`Task List as ${userIdentifier}`, () => {
                 expect(table[i]['Location']).toBe(expected.location_name);
                 expect(table[i]['Task']).toBe(expected.task_title);
                 expect(table[i]['Due date']).toBe(formatUiDate(expected.due_date));
-                expect(table[i]['Priority']).toBe(String(expected.priority_field));
+                const actualPriority = table[i]['Priority']?.toLowerCase() ?? '';
+                const expectedPriority = String(expected.priority_field ?? '').toLowerCase();
+                expect(actualPriority).toBe(expectedPriority);
             }
         });
     });

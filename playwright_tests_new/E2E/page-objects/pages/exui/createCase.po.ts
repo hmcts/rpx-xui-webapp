@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator, expect } from "@playwright/test";
 import { createLogger } from '@hmcts/playwright-common';
 import { Base } from "../../base";
 import { faker } from '@faker-js/faker';
@@ -17,7 +17,7 @@ export class CreateCasePage extends Base {
   readonly eventTypeSelect = this.page.locator('#cc-event');
   readonly startButton = this.page.locator(`button[type="submit"]`);
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
-  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly continueButton = this.page.locator('button:has-text("Continue"):visible');
 
   // Locators for the Divorce - XUI Case flags V2
   readonly legalRepParty1Block = this.page.locator('#LegalRepParty1Flags_LegalRepParty1Flags');
@@ -116,8 +116,8 @@ export class CreateCasePage extends Base {
   // Warning modal
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
-  readonly errorMessage = this.page.locator('.error-message');
-  readonly errorSummary = this.page.locator('.error-summary');
+  readonly errorMessage = this.page.locator('.error-message, .govuk-error-message');
+  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
 
   constructor(page: Page) {
@@ -166,10 +166,67 @@ export class CreateCasePage extends Base {
     throw new Error(`Case event failed ${context}: The event could not be created.`);
   }
 
+  // CCD wizard steps change the path segment; ignore hash updates to avoid false positives.
+  private normalizePath(url: string): string {
+    return new URL(url, this.page.url()).pathname;
+  }
+
   private async clickContinueAndWait(context: string, options: { force?: boolean } = {}) {
+    await this.continueButton.waitFor({ state: 'visible' });
+    await this.continueButton.scrollIntoViewIfNeeded();
+    await expect(this.continueButton).toBeEnabled();
     await this.continueButton.click(options);
     await this.exuiSpinnerComponent.wait();
     await this.assertNoEventCreationError(context);
+    const hasValidationError = await this.checkForErrorMessage();
+    if (hasValidationError) {
+      throw new Error(`Validation error after ${context}`);
+    }
+  }
+
+  private async ensureWizardAdvanced(
+    context: string,
+    initialUrl: string,
+    options: {
+      expectedPathIncludes?: string;
+      expectedLocator?: Locator;
+      timeoutMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 20000;
+    const initialPath = this.normalizePath(initialUrl);
+    const expectedPathIncludes = options.expectedPathIncludes;
+    const expectedLocator = options.expectedLocator;
+    const waitForAdvance = async () => {
+      if (expectedPathIncludes) {
+        await this.page.waitForURL(
+          (url) => url.pathname.includes(expectedPathIncludes),
+          { timeout: timeoutMs }
+        );
+      } else {
+        await this.page.waitForURL(
+          (url) => this.normalizePath(url.toString()) !== initialPath,
+          { timeout: timeoutMs }
+        );
+      }
+      if (expectedLocator) {
+        await expectedLocator.waitFor({ state: 'visible', timeout: timeoutMs });
+      }
+    };
+
+    try {
+      await waitForAdvance();
+      return;
+    } catch {
+      const hasValidationError = await this.checkForErrorMessage();
+      if (hasValidationError) {
+        throw new Error(`Validation error after ${context}`);
+      }
+      await this.continueButton.scrollIntoViewIfNeeded();
+      await this.continueButton.click();
+      await this.exuiSpinnerComponent.wait();
+      await waitForAdvance();
+    }
   }
 
   /**
@@ -307,42 +364,58 @@ export class CreateCasePage extends Base {
       try {
         await this.createCase(jurisdiction, caseType, 'Create Case');
         await this.assertNoEventCreationError('after starting employment case');
+        await this.receiptDayInput.waitFor({ state: 'visible' });
         const today = new Date();
         await this.receiptDayInput.fill(today.getDate().toString());
         await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
-        await this.receiptYearInput.fill((today.getFullYear() - 1).toString());
+        await this.receiptYearInput.fill(today.getFullYear().toString());
         await this.tribunalOfficeSelect.selectOption('Leeds');
 
-        await this.clickContinueAndWait('after receipt details', { force: true });
-        await this.clickContinueAndWait('after claimant type', { force: true });
+        const receiptUrl = this.page.url();
+        await this.clickContinueAndWait('after receipt details');
+        await this.ensureWizardAdvanced('after receipt details', receiptUrl, {
+          expectedPathIncludes: 'initiateCase2',
+          expectedLocator: this.claimantIndividualRadio,
+        });
         await this.claimantIndividualRadio.check();
         await this.claimantIndividualFirstNameInput.fill('Test ');
         await this.claimantIndividualLastNameInput.fill('Person');
+        await this.manualEntryLink.waitFor({ state: 'visible' });
         await this.manualEntryLink.click();
+        await this.claimantAddressLine1Input.waitFor({ state: 'visible' });
         await this.claimantAddressLine1Input.fill('1 Test Street');
 
         await this.clickContinueAndWait('after claimant address');
 
+        await this.addRespondentButton.waitFor({ state: 'visible' });
         await this.addRespondentButton.click();
+        await this.respondentOneNameInput.waitFor({ state: 'visible' });
         await this.respondentOneNameInput.fill('Respondent One');
-        await this.respondentOrganisation.click()
-        await this.respondentAcasCertifcateSelectYes.click();
+        await this.respondentOrganisation.waitFor({ state: 'visible' });
+        await this.respondentOrganisation.check();
+        await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
+        await this.respondentAcasCertifcateSelectYes.check();
         await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
         await this.respondentCompanyNameInput.fill('Respondent Company');
+        await this.manualEntryLink.waitFor({ state: 'visible' });
         await this.manualEntryLink.click();
+        await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
         await this.respondentAddressLine1Input.fill('1 Respondent Street');
 
         await this.clickContinueAndWait('after respondent details');
+        await this.sameAsClaimantWorkAddressYes.waitFor({ state: 'visible' });
         await this.sameAsClaimantWorkAddressYes.click();
 
         await this.clickContinueAndWait('after work address confirmation');
 
         await this.clickContinueAndWait('after claim details');
 
+        await this.claimantRepresentedNo.waitFor({ state: 'visible' });
         await this.claimantRepresentedNo.click();
 
         await this.clickContinueAndWait('after claimant representation');
 
+        await this.hearingPreferenceVideo.waitFor({ state: 'visible' });
         await this.hearingPreferenceVideo.click();
 
         await this.submitButton.click();

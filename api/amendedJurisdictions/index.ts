@@ -34,9 +34,18 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
             id: caseType.id,
             name: caseType.name,
             description: '', // Empty - not displayed in UI
-            events: [], // Empty array to satisfy type requirement - not used in UI
             states: []
           };
+
+          // Keep events array with minimal fields - needed for Start button to be enabled
+          if (caseType.events) {
+            mappedCaseType.events = caseType.events.map((event) => ({
+              id: event.id,
+              name: event.name
+            }));
+          } else {
+            mappedCaseType.events = [];
+          }
 
           if (caseType.states) {
             mappedCaseType.states = caseType.states.map((state) => ({

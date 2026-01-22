@@ -126,7 +126,10 @@ describe('Amended Jurisdiction', () => {
             id: 'GENERALAPPLICATION',
             name: 'Civil General Application',
             description: '',
-            events: [],
+            events: [
+              { id: 'submitApplication', name: 'Submit Application' },
+              { id: 'issueApplication', name: 'Issue Application' }
+            ],
             states: [
               {
                 id: 'PENDING_APPLICATION_ISSUED',
@@ -149,7 +152,10 @@ describe('Amended Jurisdiction', () => {
             id: 'CIVIL',
             name: 'Civil',
             description: '',
-            events: [],
+            events: [
+              { id: 'submitClaim', name: 'Submit Claim' },
+              { id: 'issueClaim', name: 'Issue Claim' }
+            ],
             states: [
               {
                 id: 'PENDING_CASE_ISSUED',

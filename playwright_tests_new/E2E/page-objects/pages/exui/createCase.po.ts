@@ -3,9 +3,9 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from "../../base";
 import { faker, th } from '@faker-js/faker';
 
-const logger = createLogger({ 
+const logger = createLogger({
   serviceName: 'create-case',
-  format: 'pretty' 
+  format: 'pretty'
 });
 
 export class CreateCasePage extends Base {
@@ -44,7 +44,7 @@ export class CreateCasePage extends Base {
   readonly dateTimeFieldHourInput = this.page.locator('#DateTimeField-hour');
   readonly dateTimeFieldMinuteInput = this.page.locator('#DateTimeField-minute');
   readonly dateTimeFieldSecondInput = this.page.locator('#DateTimeField-second');
-  readonly currenyFieldInput = this.page.locator('#AmountInGBPField');
+  readonly currencyFieldInput = this.page.locator('#AmountInGBPField');
   readonly yesNoRadioButtons = this.page.locator('#YesOrNoField');
   readonly applicantPostcode = this.page.locator('#AppicantPostcodeField');
   readonly complexType1JudgeIsRightRadios = this.page.locator('#ComplexType_1_judgeLevelRadio');
@@ -143,7 +143,9 @@ export class CreateCasePage extends Base {
     ]);
 
     if (a || b) {
-      logger.error('Error shown:', a ? await this.errorMessage.textContent() : '', b ? await this.errorSummary.textContent() : '');
+      logger.error('Error shown:',
+        a ? await this.errorMessage.textContent() : '',
+        b ? await this.errorSummary.textContent() : '');
       return true;
     }
 
@@ -170,7 +172,7 @@ export class CreateCasePage extends Base {
   async uploadEmploymentFile(fileName: string, mimeType: string, fileContent: string) {
     await this.page.locator('#documentCollection button').click();
     await this.uploadFile(fileName, mimeType, fileContent);
-    await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc')
+    await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
     await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
     await this.submitButton.click();
   }
@@ -247,7 +249,7 @@ export class CreateCasePage extends Base {
 
     await this.continueButton.click();
     await this.sameAsClaimantWorkAddressYes.click();
-    
+
     await this.continueButton.click();
 
     await this.continueButton.click();
@@ -293,7 +295,7 @@ export class CreateCasePage extends Base {
     await this.dateTimeFieldHourInput.fill('10');
     await this.dateTimeFieldMinuteInput.fill('30');
     await this.dateTimeFieldSecondInput.fill('15');
-    await this.currenyFieldInput.fill('1000');
+    await this.currencyFieldInput.fill('1000');
     await this.continueButton.click();
 
     await this.yesNoRadioButtons.getByLabel('Yes').check();

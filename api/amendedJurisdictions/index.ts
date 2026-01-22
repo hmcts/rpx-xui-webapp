@@ -33,21 +33,16 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
           const mappedCaseType: any = {
             id: caseType.id,
             name: caseType.name,
-            description: '' // Include empty description to satisfy CCD toolkit types
+            description: '', // Empty - not displayed in UI
+            events: [], // Empty array to satisfy type requirement - not used in UI
+            states: []
           };
-
-          if (caseType.events) {
-            mappedCaseType.events = caseType.events.map((event) => ({
-              id: event.id,
-              name: event.name
-            }));
-          }
 
           if (caseType.states) {
             mappedCaseType.states = caseType.states.map((state) => ({
               id: state.id,
               name: state.name,
-              description: '' // Include empty description to satisfy CCD toolkit types
+              description: state.description || '' // Keep description as it's displayed in UI
             }));
           }
 

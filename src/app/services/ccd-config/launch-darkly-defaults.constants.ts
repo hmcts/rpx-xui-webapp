@@ -73,6 +73,16 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "PROBATE_ExceptionRecord",
+        "LegacySearch",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
     }
   ]
   }`;
@@ -217,6 +227,16 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "DIVORCE"
+    },
+    {
+      "caseTypes": [
+        "PROBATE_ExceptionRecord",
+        "LegacySearch",
+        "StandingSearch",
+        "WillLodgement"
+      ],
+      "releaseVersion": "4",
+       "serviceName": "PROBATE"
     }
     ]
   }`;

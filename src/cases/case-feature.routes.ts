@@ -112,16 +112,13 @@ export const ROUTES: Routes = [
                 pathMatch: 'full'
               },
               {
-                path: 'tasks',
-                component: TasksContainerComponent
+                path: 'tasks'
               },
               {
-                path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent
+                path: 'roles-and-access'
               },
               {
-                path: 'hearings',
-                component: CaseHearingsComponent
+                path: 'hearings'
               }
             ]
           },
@@ -145,16 +142,13 @@ export const ROUTES: Routes = [
                 pathMatch: 'full'
               },
               {
-                path: 'tasks',
-                component: TasksContainerComponent
+                path: 'tasks'
               },
               {
-                path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent
+                path: 'roles-and-access'
               },
               {
-                path: 'hearings',
-                component: CaseHearingsComponent
+                path: 'hearings'
               }
             ]
           },

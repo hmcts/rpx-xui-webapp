@@ -8,12 +8,13 @@ import {
   SessionStorageService
 } from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CaseDetailsHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import * as fromFeature from '../../store';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { NoResultsMessageId } from '../../../search/enums';
 
 describe('CaseDetailsHomeComponent', () => {
   let component: CaseDetailsHomeComponent;
@@ -26,7 +27,7 @@ describe('CaseDetailsHomeComponent', () => {
   let store: Store<fromFeature.State>;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storeDispatchMock: any;
-  const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
+  const mockLoggerService = jasmine.createSpyObj('LoggerService', ['log', 'error']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -93,6 +94,176 @@ describe('CaseDetailsHomeComponent', () => {
       // the alert service will have been called
       expect(mockAlertService.setPreserveAlerts).toHaveBeenCalled();
       expect(mockAlertService.success).toHaveBeenCalled();
+    });
+  });
+
+  describe('ngOnInit with case data scenarios', () => {
+    it('should set caseInfo when valid case data is provided', () => {
+      const mockRoute = {
+        data: of({
+          case: {
+            case_id: '1234567890123456',
+            case_type: {
+              id: 'Immigration',
+              jurisdiction: {
+                id: 'IA'
+              }
+            }
+          }
+        })
+      };
+      TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      
+      component.ngOnInit();
+
+      expect(component.caseInfo).toEqual({
+        cid: '1234567890123456',
+        caseType: 'Immigration',
+        jurisdiction: 'IA'
+      });
+    });
+
+    it('should navigate to no results page when case is not found', () => {
+      const mockRoute = {
+        data: of({ case: null })
+      };
+      TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      spyOn(mockRouter, 'navigate').and.returnValue(Promise.resolve(true));
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      
+      component.ngOnInit();
+
+      expect(mockLoggerService.error).toHaveBeenCalledWith('CaseDetailsHomeComponent: Case not found, redirecting to no results page');
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/search/noresults'],
+        { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: mockRoute }
+      );
+    });
+
+    it('should log message when case data is incomplete', () => {
+      const mockRoute = {
+        data: of({ case: { case_id: '123' } })
+      };
+      TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      
+      component.ngOnInit();
+
+      expect(mockLoggerService.log).toHaveBeenCalledWith('CaseDetailsHomeComponent: No data available to add caseInfo details in session storage');
+    });
+
+    it('should handle error when resolver fails', () => {
+      const mockError = new Error('Resolver error');
+      const mockRoute = {
+        data: throwError(() => mockError)
+      };
+      TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      spyOn(mockRouter, 'navigate').and.returnValue(Promise.resolve(true));
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      
+      component.ngOnInit();
+
+      expect(mockLoggerService.error).toHaveBeenCalledWith('CaseDetailsHomeComponent: Error loading case data', mockError);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/search/noresults'],
+        { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: mockRoute }
+      );
+    });
+  });
+
+  describe('navigateToNoResultsPage', () => {
+
+    it('should navigate to no results page with correct parameters', async () => {
+      const mockRoute = { data: of({ case: { case_id: '123', case_type: { id: 'type', jurisdiction: { id: 'IA' } } } }) };
+      TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      spyOn(mockRouter, 'navigate').and.returnValue(Promise.resolve(true));
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      
+      component['navigateToNoResultsPage']();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/search/noresults'],
+        { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: mockRoute }
+      );
+    });
+
+    it('should handle navigation error and log it', async () => {
+      const mockError = new Error('Navigation failed');
+      const mockRoute = { data: of({ case: { case_id: '123', case_type: { id: 'type', jurisdiction: { id: 'IA' } } } }) };
+      TestBed.overrideProvider(ActivatedRoute, { useValue: mockRoute });
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      spyOn(mockRouter, 'navigate').and.returnValue(Promise.reject(mockError));
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      
+      component['navigateToNoResultsPage']();
+
+      // Wait for the promise to resolve
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      expect(mockLoggerService.error).toHaveBeenCalledWith('Error navigating to /search/noresults', mockError);
+    });
+  });
+
+  describe('ngOnDestroy', () => {
+    beforeEach(() => {
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'getCurrentNavigation').and.returnValue(null);
+      store = TestBed.inject(Store);
+      storeDispatchMock = spyOn(store, 'dispatch');
+      fixture = TestBed.createComponent(CaseDetailsHomeComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should complete the destroy$ subject', () => {
+      spyOn(component['destroy$'], 'next');
+      spyOn(component['destroy$'], 'complete');
+
+      component.ngOnDestroy();
+
+      expect(component['destroy$'].next).toHaveBeenCalled();
+      expect(component['destroy$'].complete).toHaveBeenCalled();
+    });
+
+    it('should unsubscribe from subscriptions when destroyed', () => {
+      const nextSpy = spyOn(component['destroy$'], 'next');
+      const completeSpy = spyOn(component['destroy$'], 'complete');
+      
+      component.ngOnInit();
+      component.ngOnDestroy();
+
+      expect(nextSpy).toHaveBeenCalled();
+      expect(completeSpy).toHaveBeenCalled();
     });
   });
 });

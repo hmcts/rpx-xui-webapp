@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as fromActions from '../../../app/store';
-import { SearchStatePersistenceKey } from '../../../search/enums';
+import { NoResultsMessageId, SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchParameters } from '../../../search/models';
 import { SearchService } from '../../../search/services/search.service';
 import { CaseReferenceSearchBoxComponent } from './case-reference-search-box.component';
@@ -199,6 +199,271 @@ describe('CaseReferenceSearchBoxComponent', () => {
       component.onSubmit();
       expect(mockSearchService.storeState).toHaveBeenCalledTimes(1);
       expect(mockStore.dispatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('navigateToCaseDetails', () => {
+    const mockLogger = jasmine.createSpyObj('LoggerService', ['error']);
+    const mockRoute = {};
+
+    beforeEach(() => {
+      mockLogger.error.calls.reset();
+    });
+
+    it('should navigate to case details directly when not on case details page', async () => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      await component.navigateToCaseDetails(false, '1234-5678-9012-3456');
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/cases/case-details/1234567890123456'], 
+        { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: mockRoute }
+      );
+      expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
+    });
+
+    it('should sanitize case reference by removing spaces and dashes', async () => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      await component.navigateToCaseDetails(false, '1234 5678-9012 3456');
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/cases/case-details/1234567890123456'], 
+        { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: mockRoute }
+      );
+    });
+
+    it('should navigate via case-loader when already on case details page', async () => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
+      mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      await component.navigateToCaseDetails(true, '1234567890123456');
+
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/cases/case-loader', { skipLocationChange: true });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/cases/case-details/1234567890123456'], 
+        { state: { origin: '16digitCaseReferenceSearchFromHeader' }, relativeTo: mockRoute }
+      );
+    });
+
+    it('should handle navigation error when case-loader navigation fails', fakeAsync(() => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
+      mockRouter.navigateByUrl.and.returnValue(Promise.reject(new Error('Navigation failed')));
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      component.navigateToCaseDetails(true, '1234567890123456');
+      tick();
+
+      expect(mockLogger.error).toHaveBeenCalledWith('Error navigating to case-loader', jasmine.any(Error));
+      expect(mockSearchService.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.SEARCH_PARAMS, {
+        caseReferences: ['1234567890123456'],
+        CCDJurisdictionIds: null,
+        otherReferences: null,
+        fullName: null,
+        address: null,
+        postcode: null,
+        emailAddress: null,
+        dateOfBirth: null,
+        dateOfDeath: null
+      });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/search/noresults'], 
+        { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: mockRoute }
+      );
+    }));
+
+    it('should handle navigation error when case details navigation fails after case-loader', fakeAsync(() => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
+      mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
+      mockRouter.navigate.and.returnValues(
+        Promise.reject(new Error('Navigation failed')),
+        Promise.resolve(true)
+      );
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      component.navigateToCaseDetails(true, '1234567890123456');
+      tick();
+
+      expect(mockLogger.error).toHaveBeenCalledWith('Error navigating to /cases/case-details/case-ref', jasmine.any(Error));
+      expect(mockSearchService.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.SEARCH_PARAMS, {
+        caseReferences: ['1234567890123456'],
+        CCDJurisdictionIds: null,
+        otherReferences: null,
+        fullName: null,
+        address: null,
+        postcode: null,
+        emailAddress: null,
+        dateOfBirth: null,
+        dateOfDeath: null
+      });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/search/noresults'], 
+        { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: mockRoute }
+      );
+    }));
+
+    it('should handle navigation error when direct case details navigation fails', fakeAsync(() => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
+      mockRouter.navigate.and.returnValues(
+        Promise.reject(new Error('Navigation failed')),
+        Promise.resolve(true)
+      );
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      component.navigateToCaseDetails(false, '1234567890123456');
+      tick();
+
+      expect(mockLogger.error).toHaveBeenCalledWith('Error navigating to /cases/case-details/case-ref', jasmine.any(Error));
+      expect(mockSearchService.storeState).toHaveBeenCalledWith(SearchStatePersistenceKey.SEARCH_PARAMS, {
+        caseReferences: ['1234567890123456'],
+        CCDJurisdictionIds: null,
+        otherReferences: null,
+        fullName: null,
+        address: null,
+        postcode: null,
+        emailAddress: null,
+        dateOfBirth: null,
+        dateOfDeath: null
+      });
+    }));
+  });
+
+  describe('handleNavigationError', () => {
+    const mockLogger = jasmine.createSpyObj('LoggerService', ['error']);
+    const mockRoute = {};
+
+    beforeEach(() => {
+      mockLogger.error.calls.reset();
+      mockSearchService.storeState.calls.reset();
+    });
+
+    it('should store search parameters and navigate to no results page', async () => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      const expectedSearchParams: SearchParameters = {
+        caseReferences: ['1234567890123456'],
+        CCDJurisdictionIds: null,
+        otherReferences: null,
+        fullName: null,
+        address: null,
+        postcode: null,
+        emailAddress: null,
+        dateOfBirth: null,
+        dateOfDeath: null
+      };
+
+      component['handleNavigationError']('1234567890123456');
+
+      expect(mockSearchService.storeState).toHaveBeenCalledWith(
+        SearchStatePersistenceKey.SEARCH_PARAMS, 
+        expectedSearchParams
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        ['/search/noresults'], 
+        { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: mockRoute }
+      );
+    });
+
+    it('should handle error when navigating to no results page fails', fakeAsync(() => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+      mockRouter.navigate.and.returnValue(Promise.reject(new Error('Navigation failed')));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      component['handleNavigationError']('1234567890123456');
+      tick();
+
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Error navigating to /search/noresults from error handler', 
+        jasmine.any(Error)
+      );
+    }));
+
+    it('should store search parameters with case reference containing spaces and dashes', async () => {
+      const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+      mockRouter.navigate.and.returnValue(Promise.resolve(true));
+      
+      component = initializeComponent({ 
+        router: mockRouter, 
+        route: mockRoute, 
+        searchService: mockSearchService,
+        logger: mockLogger
+      });
+
+      const expectedSearchParams: SearchParameters = {
+        caseReferences: ['1234-5678-9012-3456'],
+        CCDJurisdictionIds: null,
+        otherReferences: null,
+        fullName: null,
+        address: null,
+        postcode: null,
+        emailAddress: null,
+        dateOfBirth: null,
+        dateOfDeath: null
+      };
+
+      component['handleNavigationError']('1234-5678-9012-3456');
+
+      expect(mockSearchService.storeState).toHaveBeenCalledWith(
+        SearchStatePersistenceKey.SEARCH_PARAMS, 
+        expectedSearchParams
+      );
     });
   });
 });

@@ -21102,7 +21102,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"min-document@npm:^2.19.0":
+"min-document@npm:^2.19.1":
   version: 2.19.2
   resolution: "min-document@npm:2.19.2"
   dependencies:

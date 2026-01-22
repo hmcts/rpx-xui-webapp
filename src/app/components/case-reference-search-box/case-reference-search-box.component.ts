@@ -93,47 +93,14 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
   }
 
   public navigateToCaseDetails(isCaseDetailsPage: boolean, caseReference: string): void {
-    const sanitizedCaseRef = caseReference.replace(/[\s-]/g, '');
-    
     if (isCaseDetailsPage) {
       this.router.navigateByUrl('/cases/case-loader', { skipLocationChange: true }).then(async () => {
-        try {
-          await this.router.navigate([`/cases/case-details/${sanitizedCaseRef}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
-        } catch (err) {
-          this.loggerService.error('Error navigating to /cases/case-details/case-ref', err);
-          this.handleNavigationError(caseReference);
-        }
-      }).catch((err) => {
-        this.loggerService.error('Error navigating to case-loader', err);
-        this.handleNavigationError(caseReference);
-      });
+        await this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
+      }).catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));
     } else {
-      this.router.navigate([`/cases/case-details/${sanitizedCaseRef}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route })
-        .catch((err) => {
-          this.loggerService.error('Error navigating to /cases/case-details/case-ref', err);
-          this.handleNavigationError(caseReference);
-        });
+      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route })
+        .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));
     }
-  }
-
-  private handleNavigationError(caseReference: string): void {
-    // Store the search parameters so the case reference can be pre-populated
-    const searchParameters: SearchParameters = {
-      caseReferences: [caseReference],
-      CCDJurisdictionIds: null,
-      otherReferences: null,
-      fullName: null,
-      address: null,
-      postcode: null,
-      emailAddress: null,
-      dateOfBirth: null,
-      dateOfDeath: null
-    };
-    this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
-    
-    // Navigate to no results page when case not found
-    this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route })
-      .catch((err) => this.loggerService.error('Error navigating to /search/noresults from error handler', err));
   }
 
   public ngOnDestroy(): void {

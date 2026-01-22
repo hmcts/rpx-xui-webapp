@@ -655,6 +655,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     if (this.pageVisitPartiesChangeExists()){
       return true;
     }
+    if (this.pageVisitPartiesHearingChannelChangeExists()){
+      return true;
+    }
     if (this.methodsOfAttendanceChangeExists()){
       return true;
     }
@@ -675,14 +678,26 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitPartiesChangeExists(): boolean {
-    return HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails) ||
-      HearingsUtils.havePartyHearingChannelChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
+    return HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
+  }
+
+  private pageVisitPartiesHearingChannelChangeExists(): boolean {
+    // Check if any party has a preferred hearing channel that needs comparison
+    const hasAnyPreferredHearingChannel = this.serviceHearingValuesModel.parties.some(
+      (party) => HearingsUtils.toCompareServiceHearingValueField(party.individualDetails?.preferredHearingChannel)
+    );
+    if (hasAnyPreferredHearingChannel) {
+      return HearingsUtils.havePartyHearingChannelChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
+    }
+    return false;
   }
 
   private methodsOfAttendanceChangeExists(): boolean {
     const methodsOfAttendanceSHV = (this.serviceHearingValuesModel.hearingChannels ?? []).slice().sort(this.defaultStringSort);
     const methodsOfAttendanceHMC = (this.hearingRequestMainModel.hearingDetails.hearingChannels ?? []).slice().sort(this.defaultStringSort);
-
+    if (methodsOfAttendanceSHV.length ===0) {
+      return false;
+    }
     if (methodsOfAttendanceSHV.length !== methodsOfAttendanceHMC.length) {
       return true;
     }

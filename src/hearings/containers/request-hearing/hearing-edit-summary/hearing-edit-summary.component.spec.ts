@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -1386,6 +1387,289 @@ describe('HearingEditSummaryComponent', () => {
       const result = (component as any).pageVisitAdditionalInstructionsChangeExists();
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('pageVisitPartiesHearingChannelChangeExists tests', () => {
+    beforeEach(() => {
+      component.hearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest.hearingRequestMainModel);
+      component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    });
+
+    // Helper function to create a mock party
+    function createMockParty(partyID: string, preferredHearingChannel: any, firstName = 'John', lastName = 'Doe') {
+      return {
+        partyID,
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName,
+          lastName,
+          preferredHearingChannel
+        }
+      } as any;
+    }
+
+    // Helper function to setup test with parties and spies
+    function setupTestWithParties(
+      srvParties: any[],
+      hmcParties: any[],
+      toCompareReturnValue: boolean | ((value: any) => boolean),
+      haveChangedReturnValue?: boolean
+    ) {
+      const toCompareSpy = typeof toCompareReturnValue === 'function'
+        ? spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.callFake(toCompareReturnValue)
+        : spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(toCompareReturnValue);
+
+      const haveChangedSpy = haveChangedReturnValue !== undefined
+        ? spyOn(HearingsUtils, 'havePartyHearingChannelChanged').and.returnValue(haveChangedReturnValue)
+        : spyOn(HearingsUtils, 'havePartyHearingChannelChanged');
+
+      component.serviceHearingValuesModel.parties = srvParties;
+      if (hmcParties) {
+        component.hearingRequestMainModel.partyDetails = hmcParties;
+      }
+
+      return { toCompareSpy, haveChangedSpy };
+    }
+
+    it('should return false when no parties have preferred hearing channel', () => {
+      const { toCompareSpy, haveChangedSpy } = setupTestWithParties(
+        [createMockParty('P1', null)],
+        null,
+        false
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(false);
+      expect(toCompareSpy).toHaveBeenCalledWith(null);
+      expect(haveChangedSpy).not.toHaveBeenCalled();
+    });
+
+    it('should return false when all parties have undefined preferred hearing channel', () => {
+      const { haveChangedSpy } = setupTestWithParties(
+        [
+          createMockParty('P1', undefined),
+          createMockParty('P2', undefined, 'Jane', 'Smith')
+        ],
+        null,
+        false
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(false);
+      expect(haveChangedSpy).not.toHaveBeenCalled();
+    });
+
+    it('should return false when all parties have empty string preferred hearing channel', () => {
+      const { toCompareSpy, haveChangedSpy } = setupTestWithParties(
+        [createMockParty('P1', '')],
+        null,
+        false
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(false);
+      expect(toCompareSpy).toHaveBeenCalledWith('');
+      expect(haveChangedSpy).not.toHaveBeenCalled();
+    });
+
+    it('should return true when at least one party has preferred hearing channel and changes exist', () => {
+      const { toCompareSpy, haveChangedSpy } = setupTestWithParties(
+        [createMockParty('P1', 'video')],
+        [createMockParty('P1', 'inPerson')],
+        true,
+        true
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(true);
+      expect(toCompareSpy).toHaveBeenCalledWith('video');
+      expect(haveChangedSpy).toHaveBeenCalledWith(
+        component.serviceHearingValuesModel.parties,
+        component.hearingRequestMainModel.partyDetails
+      );
+    });
+
+    it('should return false when at least one party has preferred hearing channel but no changes exist', () => {
+      const { toCompareSpy, haveChangedSpy } = setupTestWithParties(
+        [createMockParty('P1', 'video')],
+        [createMockParty('P1', 'video')],
+        true,
+        false
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(false);
+      expect(toCompareSpy).toHaveBeenCalledWith('video');
+      expect(haveChangedSpy).toHaveBeenCalledWith(
+        component.serviceHearingValuesModel.parties,
+        component.hearingRequestMainModel.partyDetails
+      );
+    });
+
+    it('should return true when multiple parties and at least one has valid preferred hearing channel with changes', () => {
+      const { haveChangedSpy } = setupTestWithParties(
+        [
+          createMockParty('P1', null),
+          createMockParty('P2', 'telephone', 'Jane', 'Smith'),
+          createMockParty('P3', 'video', 'Bob', 'Jones')
+        ],
+        null,
+        (value) => value === 'telephone' || value === 'video',
+        true
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(true);
+      expect(haveChangedSpy).toHaveBeenCalled();
+    });
+
+    it('should handle parties without individualDetails', () => {
+      const { haveChangedSpy } = setupTestWithParties(
+        [{
+          partyID: 'P1',
+          partyType: PartyType.ORG,
+          partyRole: 'appellant',
+          individualDetails: null
+        } as any],
+        null,
+        false
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(false);
+      expect(haveChangedSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle empty parties array', () => {
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField');
+      spyOn(HearingsUtils, 'havePartyHearingChannelChanged');
+
+      component.serviceHearingValuesModel.parties = [];
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(false);
+      expect(HearingsUtils.toCompareServiceHearingValueField).not.toHaveBeenCalled();
+      expect(HearingsUtils.havePartyHearingChannelChanged).not.toHaveBeenCalled();
+    });
+
+    it('should check all parties until finding one with valid preferred hearing channel', () => {
+      const { toCompareSpy } = setupTestWithParties(
+        [
+          createMockParty('P1', null),
+          createMockParty('P2', '', 'Jane', 'Smith'),
+          createMockParty('P3', 'video', 'Bob', 'Jones')
+        ],
+        null,
+        (value) => value === 'video',
+        true
+      );
+
+      const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
+
+      expect(result).toBe(true);
+      expect(toCompareSpy).toHaveBeenCalledTimes(3);
+      expect(toCompareSpy).toHaveBeenCalledWith(null);
+      expect(toCompareSpy).toHaveBeenCalledWith('');
+      expect(toCompareSpy).toHaveBeenCalledWith('video');
+    });
+  });
+
+  describe('methodsOfAttendanceChangeExists tests', () => {
+    beforeEach(() => {
+      component.hearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest.hearingRequestMainModel);
+      component.serviceHearingValuesModel = _.cloneDeep(initialState.hearings.hearingValues.serviceHearingValuesModel);
+    });
+
+    // Helper function to setup hearing channels and test
+    function setupAndTestChannels(srvChannels: string[] | null | undefined, hmcChannels: string[] | null | undefined, expectedResult: boolean) {
+      component.serviceHearingValuesModel.hearingChannels = srvChannels;
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = hmcChannels;
+
+      const result = (component as any).methodsOfAttendanceChangeExists();
+
+      expect(result).toBe(expectedResult);
+    }
+
+    it('should return false when SHV hearingChannels is empty', () => {
+      setupAndTestChannels([], ['TEL', 'VID'], false);
+    });
+
+    it('should return false when SHV hearingChannels is null', () => {
+      setupAndTestChannels(null, ['TEL', 'VID'], false);
+    });
+
+    it('should return false when SHV hearingChannels is undefined', () => {
+      setupAndTestChannels(undefined, ['TEL', 'VID'], false);
+    });
+
+    it('should return false when hearingChannels are identical in both models', () => {
+      setupAndTestChannels(['TEL', 'VID', 'INTER'], ['TEL', 'VID', 'INTER'], false);
+    });
+
+    it('should return false when hearingChannels are identical but in different order', () => {
+      setupAndTestChannels(['VID', 'TEL', 'INTER'], ['TEL', 'INTER', 'VID'], false);
+    });
+
+    it('should return true when hearingChannels have different lengths', () => {
+      setupAndTestChannels(['TEL', 'VID'], ['TEL', 'VID', 'INTER'], true);
+    });
+
+    it('should return true when SHV has more channels than HMC', () => {
+      setupAndTestChannels(['TEL', 'VID', 'INTER', 'ONPPR'], ['TEL', 'VID'], true);
+    });
+
+    it('should return true when HMC has more channels than SHV', () => {
+      setupAndTestChannels(['TEL'], ['TEL', 'VID', 'INTER'], true);
+    });
+
+    it('should return true when hearingChannels have same length but different values', () => {
+      setupAndTestChannels(['TEL', 'VID', 'INTER'], ['TEL', 'VID', 'ONPPR'], true);
+    });
+
+    it('should return true when SHV has one channel and HMC has different channel', () => {
+      setupAndTestChannels(['TEL'], ['VID'], true);
+    });
+
+    it('should handle HMC hearingChannels being null', () => {
+      setupAndTestChannels(['TEL', 'VID'], null, true);
+    });
+
+    it('should handle HMC hearingChannels being undefined', () => {
+      setupAndTestChannels(['TEL', 'VID'], undefined, true);
+    });
+
+    it('should handle HMC hearingChannels being empty array', () => {
+      setupAndTestChannels(['TEL'], [], true);
+    });
+
+    it('should return false when both arrays are empty', () => {
+      setupAndTestChannels([], [], false);
+    });
+
+    it('should handle case sensitivity correctly', () => {
+      setupAndTestChannels(['tel', 'vid'], ['TEL', 'VID'], true);
+    });
+
+    it('should return true when channels include paper hearing in one model only', () => {
+      setupAndTestChannels(['TEL', 'VID', 'ONPPR'], ['TEL', 'VID'], true);
+    });
+
+    it('should correctly sort and compare channels with duplicates in SHV', () => {
+      setupAndTestChannels(['TEL', 'TEL', 'VID'], ['TEL', 'VID'], true);
+    });
+
+    it('should return false when both models have identical single channel', () => {
+      setupAndTestChannels(['TEL'], ['TEL'], false);
     });
   });
 

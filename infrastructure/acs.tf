@@ -7,9 +7,9 @@ resource "azurerm_email_communication_service" "email_service" {
 }
 
 resource "azurerm_email_communication_service_domain" "email_domain" {
-  count            = var.welsh_reporting_enabled ? 1 : 0
-  name             = "AzureManagedDomain"
-  email_service_id = azurerm_email_communication_service.email_service.0.id
+  count             = var.welsh_reporting_enabled ? 1 : 0
+  name              = "AzureManagedDomain"
+  email_service_id  = azurerm_email_communication_service.email_service.0.id
   domain_management = "AzureManaged"
 
   tags = var.common_tags

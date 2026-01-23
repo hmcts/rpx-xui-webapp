@@ -39,7 +39,7 @@
     "exception-formatter": "1.0.7",
     "express": "^4.22.0",
     "global-agent": "^3.0.0",
-    "helmet": "^7.2.0",
+    "helmet": "^8.0.0",
     "http-proxy-middleware": "3.0.3",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",

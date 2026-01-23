@@ -1,20 +1,15 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 
 const userIdentifier = 'SOLICITOR';
 const jurisdiction = 'DIVORCE';
 const caseType = 'xuiTestJurisdiction';
 let sessionCookies: any[] = [];
 
-test.beforeAll(() => {
-    const { cookies } = loadSessionCookies(userIdentifier);
+test.beforeEach(async ({ page }) => {
+    // Lazy capture: only log in SOLICITOR when this test suite runs
+    const { cookies } = await applySessionCookies(page, userIdentifier);
     sessionCookies = cookies;
-});
-
-test.beforeEach(async ({ page, config }) => {
-    if (sessionCookies.length) {
-        await page.context().addCookies(sessionCookies);
-    }
 });
 
 // TODO : Enable and complete negative test case when functionality is available

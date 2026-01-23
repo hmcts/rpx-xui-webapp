@@ -1,17 +1,24 @@
-import { Page } from "@playwright/test";
+import { Page, Locator, expect } from "@playwright/test";
+import { createLogger } from '@hmcts/playwright-common';
 import { Base } from "../../base";
 import { faker } from '@faker-js/faker';
+
+const logger = createLogger({ 
+  serviceName: 'create-case',
+  format: 'pretty' 
+});
 
 export class CreateCasePage extends Base {
 
   readonly container = this.page.locator("exui-case-home");
+  readonly caseDetailsContainer = this.page.locator("exui-case-details-home");
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
-  readonly startButton = this.page.getByRole('button', { name: 'Start' });
+  readonly startButton = this.page.locator(`button[type="submit"]`);
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
-  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly continueButton = this.page.locator('button:has-text("Continue"):visible');
 
   // Locators for the Divorce - XUI Case flags V2
   readonly legalRepParty1Block = this.page.locator('#LegalRepParty1Flags_LegalRepParty1Flags');
@@ -25,19 +32,59 @@ export class CreateCasePage extends Base {
   readonly party2GroupId = this.page.locator('#LegalRepParty2Flags_groupId');
   readonly party2Visibility = this.page.locator('#LegalRepParty2Flags_visibility');
 
+  // Locators for the Divorce - xuiTestCaseType
+  readonly textFieldInput = this.page.locator('#TextField');
+  readonly emailFieldInput = this.page.locator('#EmailField');
+  readonly phoneNumberFieldInput = this.page.locator('#PhoneUKField');
+  readonly dateFieldDayInput = this.page.locator('#DateField-day');
+  readonly dateFieldMonthInput = this.page.locator('#DateField-month');
+  readonly dateFieldYearInput = this.page.locator('#DateField-year');
+  readonly dateTimeFieldDayInput = this.page.locator('#DateTimeField-day');
+  readonly dateTimeFieldMonthInput = this.page.locator('#DateTimeField-month');
+  readonly dateTimeFieldYearInput = this.page.locator('#DateTimeField-year');
+  readonly dateTimeFieldHourInput = this.page.locator('#DateTimeField-hour');
+  readonly dateTimeFieldMinuteInput = this.page.locator('#DateTimeField-minute');
+  readonly dateTimeFieldSecondInput = this.page.locator('#DateTimeField-second');
+  readonly currenyFieldInput = this.page.locator('#AmountInGBPField');
+  readonly yesNoRadioButtons = this.page.locator('#YesOrNoField');
+  readonly applicantPostcode = this.page.locator('#AppicantPostcodeField');
+  readonly complexType1JudgeIsRightRadios = this.page.locator('#ComplexType_1_judgeLevelRadio');
+  readonly complexType1LevelOfJudgeRadioButtons = this.page.locator('#ComplexType_1_proposal');
+  readonly complexType1LevelOfJudgeDetailsInput = this.page.locator('#ComplexType_1_proposalReason');
+  readonly complexType1LevelOfJudgeKeyInput = this.page.locator('#ComplexType_1_TextField');
+  readonly complexType2AddressLine1Input = this.page.locator('#ComplexType_2_address__detailAddressLine1');
+  readonly complexType2EmailInput = this.page.locator('#ComplexType_2_email');
+  readonly complexType3ComplianceButton = this.page.locator('#ComplexType_3_responses button');
+  readonly complexType3ComplianceInput = this.page.locator('#ComplexType_3_responses input');
+  readonly complexType3DateOfBirthDay = this.page.locator('#dateOfBirth-day');
+  readonly complexType3DateOfBirthMonth = this.page.locator('#dateOfBirth-month');
+  readonly complexType3DateOfBirthYear = this.page.locator('#dateOfBirth-year');
+  readonly complexType3FileUploadInput = this.page.locator('#ComplexType_3_document');
+  readonly complexType3DateOfHearingDay = this.page.locator('#dateTimeUploaded-day');
+  readonly complexType3DateOfHearingMonth = this.page.locator('#dateTimeUploaded-month');
+  readonly complexType3DateOfHearingYear = this.page.locator('#dateTimeUploaded-year');
+  readonly complexType3DateOfHearingHour = this.page.locator('#dateTimeUploaded-hour');
+  readonly complexType3DateOfHearingMinute = this.page.locator('#dateTimeUploaded-minute');
+  readonly complexType3DateOfHearingSecond = this.page.locator('#dateTimeUploaded-second');
+  readonly complexType4AmountInput = this.page.locator('#ComplexType_4_amount');
+  readonly complexType4FirstTickBox = this.page.locator('#ComplexType_4_selectedCategories-item_1');
+  readonly complexType4SelectList = this.page.locator('#ComplexType_4_FixedListField');
+
   // Locators for the Divorce - XUI Case PoC
   readonly person1Title = this.page.locator('#Person1_Title');
-  readonly firstNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('First Name (Optional)');
-  readonly lastNameInput = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)');
-  readonly genderSelect = this.page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Gender (Optional)');
-  readonly jobTitleInput = this.page.getByRole('group', { name: 'Job (Optional)' }).getByLabel('Title (Optional)');
-  readonly jobDescriptionInput = this.page.getByRole('textbox', { name: 'Description (Optional)' });
-  readonly textField0Input = this.page.getByLabel('Text Field 0');
-  readonly textField1Input = this.page.getByLabel('Text Field 1 (Optional)');
-  readonly textField2Input = this.page.getByLabel('Text Field 2 (Optional)');
-  readonly textField3Input = this.page.getByLabel('Text Field 3 (Optional)');
-  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: 'Check your answers' });
-  readonly testSubmitButton = this.page.getByRole('button', { name: 'Test submit' });
+  readonly firstNameInput = this.page.locator('#Person1_FirstName');
+  readonly lastNameInput = this.page.locator('#Person1_LastName');
+  readonly genderSelect = this.page.locator('#Person1_PersonGender');
+  readonly jobTitleInput = this.page.locator('#Person1_PersonJob_Title');
+  readonly jobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
+  readonly fileUploadInput = this.page.locator('#DocumentUrl');
+  readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
+  readonly textField0Input = this.page.locator('#TextField0');
+  readonly textField1Input = this.page.locator('#TextField1');
+  readonly textField2Input = this.page.locator('#TextField2');
+  readonly textField3Input = this.page.locator('#TextField3');
+  readonly checkYourAnswersHeading = this.page.locator('.check-your-answers h2');
+  readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 
   // Employment case locators
   readonly receiptDayInput = this.page.locator('#receiptDate-day');
@@ -58,7 +105,6 @@ export class CreateCasePage extends Base {
   readonly respondentAddressLine1Input = this.page.locator('#respondentCollection_0_respondent_address__detailAddressLine1');
   readonly sameAsClaimantWorkAddressYes = this.page.locator('#claimantWorkAddressQuestion_Yes');
   readonly claimantRepresentedNo = this.page.locator('#claimantRepresentedQuestion_No');
-
   readonly hearingPreferenceVideo = this.page.locator('#claimantHearingPreference_hearing_preferences-Video');
 
   // Address lookup locators
@@ -68,23 +114,195 @@ export class CreateCasePage extends Base {
   readonly postCodeSearchButton = this.page.locator('.postcodeLookup').getByRole('button');
   readonly addressSelect = this.page.locator('.postcodeLookup select');
 
-
   // Warning modal
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
-  readonly errorMessage = this.page.locator('.error-message');
+  readonly errorMessage = this.page.locator('.error-message, .govuk-error-message');
+  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
+  readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
 
   constructor(page: Page) {
     super(page);
   }
 
+  private async waitForSelectReady(selector: string) {
+    await this.page.waitForFunction(
+      (sel) => {
+        const el = document.querySelector(sel) as HTMLSelectElement | null;
+        return !!el && el.options.length > 1 && !el.disabled;
+      },
+      selector
+    );
+  }
+
+  private async selectOptionSmart(selectLocator: Locator, option: string) {
+    await selectLocator.waitFor({ state: 'visible' });
+    const options = await selectLocator.evaluate((el) =>
+      Array.from((el as HTMLSelectElement).options).map((o) => ({
+        value: o.value,
+        label: o.label
+      }))
+    );
+
+    const normalized = option.toLowerCase();
+    const match =
+      options.find((o) => o.value === option) ||
+      options.find((o) => o.label === option) ||
+      options.find((o) => o.value.toLowerCase() === normalized) ||
+      options.find((o) => o.label.toLowerCase() === normalized);
+
+    if (!match) {
+      const available = options.map((o) => `${o.label} (${o.value})`).join(', ');
+      throw new Error(`Option not found for "${option}". Available: ${available}`);
+    }
+
+    await selectLocator.selectOption({ value: match.value });
+  }
+
+  private async assertNoEventCreationError(context: string) {
+    const isVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+    if (!isVisible) {
+      return;
+    }
+    throw new Error(`Case event failed ${context}: The event could not be created.`);
+  }
+
+  // CCD wizard steps change the path segment; ignore hash updates to avoid false positives.
+  private normalizePath(url: string): string {
+    return new URL(url, this.page.url()).pathname;
+  }
+
+  private async waitForCaseDetails(context: string) {
+    await this.assertNoEventCreationError(context);
+    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: 60000 });
+  }
+
+  private async clickContinueAndWait(context: string, options: { force?: boolean } = {}) {
+    await this.continueButton.waitFor({ state: 'visible' });
+    await this.continueButton.scrollIntoViewIfNeeded();
+    await expect(this.continueButton).toBeEnabled();
+    await this.continueButton.click(options);
+    await this.exuiSpinnerComponent.wait();
+    await this.assertNoEventCreationError(context);
+    const hasValidationError = await this.checkForErrorMessage();
+    if (hasValidationError) {
+      throw new Error(`Validation error after ${context}`);
+    }
+  }
+
+  private async ensureWizardAdvanced(
+    context: string,
+    initialUrl: string,
+    options: {
+      expectedPathIncludes?: string;
+      expectedLocator?: Locator;
+      timeoutMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 20000;
+    const initialPath = this.normalizePath(initialUrl);
+    const expectedPathIncludes = options.expectedPathIncludes;
+    const expectedLocator = options.expectedLocator;
+    const waitForAdvance = async () => {
+      if (expectedPathIncludes) {
+        await this.page.waitForURL(
+          (url) => url.pathname.includes(expectedPathIncludes),
+          { timeout: timeoutMs }
+        );
+      } else {
+        await this.page.waitForURL(
+          (url) => this.normalizePath(url.toString()) !== initialPath,
+          { timeout: timeoutMs }
+        );
+      }
+      if (expectedLocator) {
+        await expectedLocator.waitFor({ state: 'visible', timeout: timeoutMs });
+      }
+    };
+
+    try {
+      await waitForAdvance();
+      return;
+    } catch {
+      const hasValidationError = await this.checkForErrorMessage();
+      if (hasValidationError) {
+        throw new Error(`Validation error after ${context}`);
+      }
+      await this.continueButton.scrollIntoViewIfNeeded();
+      await this.continueButton.click();
+      await this.exuiSpinnerComponent.wait();
+      await waitForAdvance();
+    }
+  }
+
+  /**
+   * Click the continue button multiple times
+   * @param count - Number of times to click
+   * @param options - Click options (force, timeout)
+   */
+  async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
+    for (let i = 0; i < count; i++) {
+      try {
+        await this.continueButton.waitFor({ state: 'visible', timeout: 5000 });
+      } catch (error) {
+        logger.info('Continue button not visible; stopping early', { iteration: i + 1, total: count });
+        break;
+      }
+      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, options);
+      logger.info('Clicked continue button', { iteration: i + 1, total: count });
+    }
+  }
+
+  async checkForErrorMessage(message?: string, timeout = 2000): Promise<boolean> {
+    const check = async (sel: Locator) => {
+      try {
+        await sel.waitFor({ state: 'visible', timeout });
+        if (message) {
+          const txt = await sel.textContent();
+          return !!txt && txt.includes(message);
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    const [a, b] = await Promise.all([
+      check(this.errorMessage),
+      check(this.errorSummary),
+    ]);
+
+    if (a || b) {
+      logger.error('Error message displayed on page', {
+        errorMessage: a ? await this.errorMessage.textContent() : null,
+        errorSummary: b ? await this.errorSummary.textContent() : null
+      });
+      return true;
+    }
+
+    return false;
+  }
+
   async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
-    await this.createCaseButton.click();
-    await this.jurisdictionSelect.selectOption(jurisdiction);
-    await this.caseTypeSelect.selectOption(caseType);
+    if (!this.page.url().includes('/cases/case-filter')) {
+      try {
+        await this.createCaseButton.waitFor({ state: 'visible', timeout: 5000 });
+        await this.createCaseButton.click();
+      } catch (error) {
+        await this.page.goto('/cases/case-filter');
+      }
+    }
+    await this.jurisdictionSelect.waitFor({ state: 'visible' });
+    await this.waitForSelectReady('#cc-jurisdiction');
+    await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
+
+    await this.caseTypeSelect.waitFor({ state: 'visible' });
+    await this.waitForSelectReady('#cc-case-type');
+    await this.selectOptionSmart(this.caseTypeSelect, caseType);
     if (eventType) {
       await this.eventTypeSelect.click();
-      await this.eventTypeSelect.selectOption({ label: eventType });
+      await this.waitForSelectReady('#cc-event');
+      await this.selectOptionSmart(this.eventTypeSelect, eventType);
     }
     await this.startButton.click();
   }
@@ -95,71 +313,213 @@ export class CreateCasePage extends Base {
     await this.addressSelect.selectOption(addressOption);
   }
 
-
-  async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
-    await this.createCase(jurisdiction, caseType, 'Create Case');
-    const today = new Date();
-    await this.receiptDayInput.fill(today.getDate().toString());
-    await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
-    await this.receiptYearInput.fill((today.getFullYear() - 1).toString());
-    await this.tribunalOfficeSelect.selectOption('Leeds');
-
-    await this.continueButton.click({ force: true });
-    await this.continueButton.click({ force: true });
-
-    await this.claimantIndividualRadio.check();
-    await this.claimantIndividualFirstNameInput.fill('Test ');
-    await this.claimantIndividualLastNameInput.fill('Person');
-
-    await this.manualEntryLink.click();
-    await this.claimantAddressLine1Input.fill('1 Test Street');
-
-    await this.continueButton.click();
-
-    await this.addRespondentButton.click();
-    await this.respondentOneNameInput.fill('Respondent One');
-    await this.respondentOrganisation.click()
-    await this.respondentAcasCertifcateSelectYes.click();
-    await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
-    await this.respondentCompanyNameInput.fill('Respondent Company');
-    await this.manualEntryLink.click();
-    await this.respondentAddressLine1Input.fill('1 Respondent Street');
-
-    await this.continueButton.click();
-
-    await this.sameAsClaimantWorkAddressYes.click();
-    await this.continueButton.click();
-
-    await this.continueButton.click();
-
-    await this.claimantRepresentedNo.click();
-
-    await this.continueButton.click();
-
-    await this.hearingPreferenceVideo.click();
-
+  async uploadEmploymentFile(fileName: string, mimeType: string, fileContent: string) {
+    await this.page.locator('#documentCollection button').click();
+    await this.uploadFile(fileName, mimeType, fileContent);
+    await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc')
+    await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
     await this.submitButton.click();
-    await this.exuiSpinnerComponent.wait();
   }
 
-  async createCaseFlagDivorceCase(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'XUI Case flags V2.1') {
+  async uploadFile(fileName: string, mimeType: string, fileContent: string) {
+    const maxRetries = 3;
+    const baseDelayMs = 3000; // initial backoff
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      // set the file directly on the input element (no filechooser needed)
+      await this.page.setInputFiles('input[type="file"]', {
+        name: fileName,
+        mimeType,
+        buffer: Buffer.from(fileContent),
+      });
+
+      const res = await this.page.waitForResponse(
+        r => r.url().includes('/document') && r.request().method() === 'POST',
+        { timeout: 5000 }
+      ).catch(() => null);
+
+      if (!res) {
+        // no response within timeout — treat as failure or retry depending on policy
+        if (attempt < maxRetries) {
+          await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+          continue;
+        } else {
+          throw new Error('Upload timed out after retries');
+        }
+      }
+
+      if (res.status() !== 200) {
+        if (attempt < maxRetries) {
+          // exponential backoff before retrying
+          await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+          continue;
+        } else {
+          throw new Error(`Upload failed: server returned status ${res.status()} after ${maxRetries} retries`);
+        }
+      }
+
+      break;
+    }
+    await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
+  }
+
+
+  async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
+    const maxAttempts = 2;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await this.createCase(jurisdiction, caseType, 'Create Case');
+        await this.assertNoEventCreationError('after starting employment case');
+        await this.receiptDayInput.waitFor({ state: 'visible' });
+        const today = new Date();
+        await this.receiptDayInput.fill(today.getDate().toString());
+        await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
+        await this.receiptYearInput.fill(today.getFullYear().toString());
+        await this.tribunalOfficeSelect.selectOption('Leeds');
+
+        const receiptUrl = this.page.url();
+        await this.clickContinueAndWait('after receipt details');
+        await this.ensureWizardAdvanced('after receipt details', receiptUrl, {
+          expectedPathIncludes: 'initiateCase2',
+          expectedLocator: this.claimantIndividualRadio,
+        });
+        await this.claimantIndividualRadio.check();
+        await this.claimantIndividualFirstNameInput.fill('Test ');
+        await this.claimantIndividualLastNameInput.fill('Person');
+        await this.manualEntryLink.waitFor({ state: 'visible' });
+        await this.manualEntryLink.click();
+        await this.claimantAddressLine1Input.waitFor({ state: 'visible' });
+        await this.claimantAddressLine1Input.fill('1 Test Street');
+
+        await this.clickContinueAndWait('after claimant address');
+
+        await this.addRespondentButton.waitFor({ state: 'visible' });
+        await this.addRespondentButton.click();
+        await this.respondentOneNameInput.waitFor({ state: 'visible' });
+        await this.respondentOneNameInput.fill('Respondent One');
+        await this.respondentOrganisation.waitFor({ state: 'visible' });
+        await this.respondentOrganisation.check();
+        await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
+        await this.respondentAcasCertifcateSelectYes.check();
+        await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
+        await this.respondentCompanyNameInput.fill('Respondent Company');
+        await this.manualEntryLink.waitFor({ state: 'visible' });
+        await this.manualEntryLink.click();
+        await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
+        await this.respondentAddressLine1Input.fill('1 Respondent Street');
+
+        await this.clickContinueAndWait('after respondent details');
+        await this.sameAsClaimantWorkAddressYes.waitFor({ state: 'visible' });
+        await this.sameAsClaimantWorkAddressYes.click();
+
+        await this.clickContinueAndWait('after work address confirmation');
+
+        await this.clickContinueAndWait('after claim details');
+
+        await this.claimantRepresentedNo.waitFor({ state: 'visible' });
+        await this.claimantRepresentedNo.click();
+
+        await this.clickContinueAndWait('after claimant representation');
+
+        await this.hearingPreferenceVideo.waitFor({ state: 'visible' });
+        await this.hearingPreferenceVideo.click();
+
+        await this.submitButton.click();
+        await this.exuiSpinnerComponent.wait();
+        await this.waitForCaseDetails('after submitting employment case');
+        return;
+      } catch (error) {
+        const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+        if (eventErrorVisible && attempt < maxAttempts) {
+          logger.warn('Employment case creation failed; retrying', { attempt, maxAttempts });
+          await this.page.goto('/cases/case-filter');
+          continue;
+        }
+        throw error;
+      }
+    }
+  }
+
+  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string) {
+    switch (caseType) {
+      case 'xuiCaseFlagsV1':
+        return this.createDivorceCaseFlag(jurisdiction, caseType, testInput);
+      case 'XUI Case PoC':
+        return this.createDivorceCasePoC(jurisdiction, caseType, testInput);
+      case 'xuiTestCaseType':
+        return this.createDivorceCaseTest(jurisdiction, caseType, testInput);
+      default:
+        throw new Error(`createDivorceCase does not support case type: ${caseType}`);
+    }
+  }
+
+  async createDivorceCaseTest(jurisdiction: string = 'DIVORCE', caseType: string = 'xuiTestCaseType', testData: string) {
+    const today = new Date();
     await this.createCase(jurisdiction, caseType, '');
 
+    await this.textFieldInput.fill(testData);
+    await this.continueButton.click();
+
+    await this.emailFieldInput.fill(faker.internet.email({ provider: 'example.com' }));
+    await this.phoneNumberFieldInput.fill('07123456789');
+    await this.dateFieldDayInput.fill(today.getDate().toString());
+    await this.dateFieldMonthInput.fill((today.getMonth() + 1).toString());
+    await this.dateFieldYearInput.fill((today.getFullYear() - 20).toString());
+    await this.dateTimeFieldDayInput.fill(today.getDate().toString());
+    await this.dateTimeFieldMonthInput.fill((today.getMonth() + 1).toString());
+    await this.dateTimeFieldYearInput.fill(today.getFullYear().toString());
+    await this.dateTimeFieldHourInput.fill('10');
+    await this.dateTimeFieldMinuteInput.fill('30');
+    await this.dateTimeFieldSecondInput.fill('15');
+    await this.currenyFieldInput.fill('1000');
+    await this.continueButton.click();
+
+    await this.yesNoRadioButtons.getByLabel('Yes').check();
+    await this.applicantPostcode.fill('SW1A 1AA');
+    await this.complexType1JudgeIsRightRadios.getByLabel('No').check();
+    await this.complexType1LevelOfJudgeRadioButtons.getByLabel('Item 1').check();
+    await this.complexType1LevelOfJudgeDetailsInput.fill('Details about why this level of judge is needed.');
+    await this.complexType1LevelOfJudgeKeyInput.fill('Key information');
+    await this.manualEntryLink.click();
+    await this.complexType2AddressLine1Input.fill('10 Test Street');
+    await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
+    await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF');
+    await this.complexType3ComplianceButton.click();
+    await this.complexType3ComplianceInput.fill('Compliant response');
+    await this.complexType3DateOfBirthDay.fill('15');
+    await this.complexType3DateOfBirthMonth.fill('06');
+    await this.complexType3DateOfBirthYear.fill('1990');
+    await this.complexType3DateOfHearingDay.fill(today.getDate().toString());
+    await this.complexType3DateOfHearingMonth.fill((today.getMonth() + 1).toString());
+    await this.complexType3DateOfHearingYear.fill(today.getFullYear().toString());
+    await this.complexType3DateOfHearingHour.fill('14');
+    await this.complexType3DateOfHearingMinute.fill('45');
+    await this.complexType3DateOfHearingSecond.fill('30');
+    await this.complexType4AmountInput.fill('500');
+    await this.complexType4FirstTickBox.check();
+    await this.complexType4SelectList.selectOption('Item 1');
+    await this.continueButton.click();
+    await this.submitButton.click();
+    await this.exuiSpinnerComponent.wait();
+    await this.waitForCaseDetails('after submitting divorce test case');
+  }
+
+  async createDivorceCaseFlag(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'xuiCaseFlagsV1') {
+    await this.createCase(jurisdiction, caseType, '');
     await this.party1RoleOnCase.fill(testData);
     await this.party1Name.fill(testData);
-
     await this.party2RoleOnCase.fill(`${testData}2`);
     await this.party2Name.fill(`${testData}2`);
-
     await this.continueButton.click();
     await this.exuiSpinnerComponent.wait()
     await this.testSubmitButton.click();
     await this.exuiSpinnerComponent.wait()
+    await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
-  async createDivorceCase(jurisdiction: string, caseType: string, textField0: string) {
+  async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
-    await this.createCase(jurisdiction, caseType, undefined);
+    await this.createCase(jurisdiction, caseType, '');
 
     await this.page.getByLabel(gender, { exact: true }).check();
     await this.person1Title.click();
@@ -186,5 +546,6 @@ export class CreateCasePage extends Base {
     await this.continueButton.click();
     await this.testSubmitButton.click();
     await this.exuiSpinnerComponent.wait()
+    await this.waitForCaseDetails('after submitting divorce PoC case');
   };
 }

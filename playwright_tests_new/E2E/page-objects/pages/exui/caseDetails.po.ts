@@ -1,10 +1,11 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { Base } from "../../base";
 import { ValidatorUtils } from "../../../utils/validator.utils";
 import { TableUtils } from "@hmcts/playwright-common";
+import { TIMEOUTS } from "../../../test/documentUpload/constants";
 
-const tableUtils = new TableUtils();
 const validatorUtils = new ValidatorUtils();
+const tableUtils = new TableUtils();
 
 export interface CaseFlagItem {
   flagType: string;
@@ -15,30 +16,130 @@ export interface CaseFlagItem {
 }
 
 export class CaseDetailsPage extends Base {
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-details-container" - brittle custom element selector
   readonly container = this.page.locator("exui-case-details-home");
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-tab-{name}" - prefer test ID for each tab
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-actions-dropdown" - prefer test ID over #id
   readonly caseActionsDropdown = this.page.locator('#next-step');
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-action-go-button" - brittle CSS selector
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="submit-case-flag-button" - brittle CSS selector
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
 
-  //Case flags
+  // Case flags
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-flag-comment-input" - prefer test ID over #id
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-flag-table" - brittle CSS class selector
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
 
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="radio-option-{index}" - brittle CSS class selector
   readonly commonRadioButtons = this.page.locator('.govuk-radios__item');
-  readonly caseAlertSuccessMessage = this.page.locator('.hmcts-banner--success .alert-message');
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="success-banner-message" - brittle CSS selector
+  readonly caseAlertSuccessMessage = this.page
+    .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
+    .first();
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="notification-banner-title" - prefer test ID over #id
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="notification-banner-body" - brittle CSS selector
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
-
+  
+  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="documents-table" - brittle CSS class selector
+  readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
 
   constructor(page: Page) {
     super(page);
   }
+
   async getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true })
   }
 
+  /**
+   * Parse CCD key-value table (case details tabs)
+   * @param selector - CSS selector string or Playwright Locator
+   * @returns Object with key-value pairs from the table
+   */
+  async parseKeyValueTable(selector: string | Locator): Promise<Record<string, string>> {
+    return tableUtils.parseKeyValueTable(selector, this.page);
+  }
+
+  /**
+   * Parse data table with headers (collections, documents, flags)
+   * @param selector - CSS selector string or Playwright Locator
+   * @returns Array of row objects
+   */
+  async parseDataTable(selector: string | Locator): Promise<Array<Record<string, string>>> {
+    return tableUtils.parseDataTable(selector, this.page);
+  }
+
+  /**
+   * Get case details tab data as key-value pairs
+   * @param tabClass - CSS class name for the tab table (e.g., 'tab1')
+   */
+  async getCaseDetailsTabData(tabClass: string): Promise<Record<string, string>> {
+    const tableLocator = this.page.locator('.case-viewer-container').locator(`table.${tabClass}`);
+    try {
+      await tableLocator.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+      return this.parseKeyValueTable(tableLocator);
+    } catch (error) {
+      const fallbackTable = this.page
+        .locator('[role="tabpanel"]')
+        .filter({ has: this.page.locator('table') })
+        .first()
+        .locator('table')
+        .first();
+      await fallbackTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+      return this.parseKeyValueTable(fallbackTable);
+    }
+  }
+
+  /**
+   * Get documents list from documents table
+   */
+  async getDocumentsList(): Promise<Array<Record<string, string>>> {
+    const tables = await this.page.locator('table').elementHandles();
+    let targetIndex = -1;
+
+    for (let i = 0; i < tables.length; i++) {
+      const hasHeaders = await tables[i].evaluate((table) => {
+        const thead = table.querySelector(':scope > thead');
+        if (!thead) {
+          return false;
+        }
+        const headerCells = Array.from(thead.querySelectorAll('th, td'))
+          .map(el => (el.textContent || '').trim());
+        return headerCells.includes('Number')
+          && headerCells.includes('Document Category')
+          && headerCells.includes('Type of Document');
+      });
+      if (hasHeaders) {
+        targetIndex = i;
+        break;
+      }
+    }
+
+    if (targetIndex >= 0) {
+      const documentsTable = this.page.locator('table').nth(targetIndex);
+      await documentsTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+      return this.parseDataTable(documentsTable);
+    }
+
+    const fallbackTable = this.caseDocumentsTable.first();
+    await fallbackTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+    return this.parseDataTable(fallbackTable);
+  }
+
   async getCaseNumberFromAlert(): Promise<string> {
+    await this.caseAlertSuccessMessage.waitFor({ state: 'visible', timeout: TIMEOUTS.ALERT_VISIBLE });
     const alertText = await this.caseAlertSuccessMessage.innerText();
     const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
     if (!caseNumberMatch) {
@@ -47,11 +148,31 @@ export class CaseDetailsPage extends Base {
     return caseNumberMatch ? caseNumberMatch[0] : '';
   }
 
+  async getCaseNumberFromUrl(): Promise<string> {
+    const url = this.page.url();
+    const pathname = new URL(url).pathname;
+    const caseNumberMatch = pathname.slice(pathname.lastIndexOf('/') + 1);
+    // Validate format: EXUI case numbers are typically 16 digits
+    if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
+      throw new Error(`Failed to extract valid case number from URL: "${url}" (extracted: "${caseNumberMatch}")`);
+    }
+    return caseNumberMatch;
+  }
+
   async selectCaseAction(action: string) {
-    await this.caseActionGoButton.waitFor();
-    await this.caseActionsDropdown.selectOption(action);
+    await this.caseActionGoButton.waitFor({ state: 'visible' });
+    await this.caseActionsDropdown.waitFor({ state: 'visible' });
+    try {
+      await this.caseActionsDropdown.selectOption({ label: action });
+    } catch (error) {
+      await this.caseActionsDropdown.selectOption(action);
+    }
     await this.caseActionGoButton.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  async selectCaseDetailsEvent(action: string) {
+    await this.selectCaseAction(action);
   }
 
   async selectFirstRadioOption() {
@@ -95,6 +216,11 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectCaseDetailsTab(tabName: string) {
-    await this.caseDetailsTabs.filter({ hasText: tabName }).click()
+    const tab = this.caseDetailsTabs.filter({ hasText: tabName });
+    await tab.click();
+    // Wait for tab content to load
+    await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.TAB_LOAD }).catch(() => {
+      // Swallow timeout - some tabs don't trigger network activity
+    });
   }
 }

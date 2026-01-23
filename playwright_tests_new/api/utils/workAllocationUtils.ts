@@ -247,13 +247,16 @@ type SeededActionDeps = {
 };
 
 export async function runSeededAction(action: string, getId: () => string, deps: SeededActionDeps): Promise<boolean> {
-  const hasSeeded = deps.hasSeededEnvTasksFn ?? hasSeededEnvTasks;
   const withXsrfFn = deps.withXsrfFn ?? withXsrf;
-  if (!hasSeeded(deps.envTaskId, deps.envAssignedTaskId)) {
+  const taskId = getId();
+  
+  // Skip only if no valid task ID available (neither env nor dynamic)
+  if (!taskId || taskId === '00000000-0000-0000-0000-000000000000') {
     return false;
   }
+  
   await withXsrfFn('solicitor', async (headers) => {
-    const res = await deps.apiClient.post(`workallocation/task/${getId()}/${action}`, {
+    const res = await deps.apiClient.post(`workallocation/task/${taskId}/${action}`, {
       data: {},
       headers,
       throwOnError: false

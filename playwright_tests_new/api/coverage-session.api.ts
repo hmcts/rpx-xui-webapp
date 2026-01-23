@@ -116,7 +116,7 @@ test.describe('Session and cookie utilities coverage', () => {
       expect(invalidCookies.cookies).toHaveLength(0);
 
       await fsp.writeFile(storagePath, '{bad-json', 'utf8');
-      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file missing');
+      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
 
       await fsp.rm(storagePath, { force: true });
       expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
@@ -165,7 +165,12 @@ test.describe('Session and cookie utilities coverage', () => {
       existsSync: () => false,
       mkdirSync: () => {
         mkdirCalls += 1;
-      }
+      },
+      writeFileSync: () => {}
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => async () => {}
     } as any;
 
     const userUtils = {
@@ -175,9 +180,10 @@ test.describe('Session and cookie utilities coverage', () => {
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
       userUtils,
-      isSessionFresh: () => true
+      isSessionFresh: () => true,
+      lockfile: lockfileStub
     });
-    expect(mkdirCalls).toBe(1);
+    expect(mkdirCalls).toBe(2); // Called once per sessionCaptureWith invocation
 
     let persistCalls = 0;
     const page = {
@@ -212,7 +218,8 @@ test.describe('Session and cookie utilities coverage', () => {
         persistCalls += 1;
       },
       env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
-      config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any
+      config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
+      lockfile: lockfileStub
     });
     expect(persistCalls).toBe(1);
   });
@@ -220,7 +227,11 @@ test.describe('Session and cookie utilities coverage', () => {
   test('sessionCaptureWith surfaces launch failures', async () => {
     const fsStub = {
       existsSync: () => true,
-      mkdirSync: () => {}
+      mkdirSync: () => {},
+      writeFileSync: () => {}
+    } as any;
+    const lockfileStub = {
+      lock: async () => async () => {}
     } as any;
     const userUtils = {
       getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
@@ -235,7 +246,8 @@ test.describe('Session and cookie utilities coverage', () => {
         fs: fsStub,
         userUtils,
         isSessionFresh: () => false,
-        chromiumLauncher
+        chromiumLauncher,
+        lockfile: lockfileStub
       })
     ).rejects.toThrow('launch failed');
   });
@@ -243,7 +255,11 @@ test.describe('Session and cookie utilities coverage', () => {
   test('sessionCaptureWith surfaces login failures', async () => {
     const fsStub = {
       existsSync: () => true,
-      mkdirSync: () => {}
+      mkdirSync: () => {},
+      writeFileSync: () => {}
+    } as any;
+    const lockfileStub = {
+      lock: async () => async () => {}
     } as any;
     const userUtils = {
       getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
@@ -277,7 +293,8 @@ test.describe('Session and cookie utilities coverage', () => {
         idamPageFactory,
         persistSession: async () => {},
         env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
-        config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any
+        config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
+        lockfile: lockfileStub
       })
     ).rejects.toThrow(/login failed/i);
   });

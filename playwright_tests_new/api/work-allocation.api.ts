@@ -307,20 +307,19 @@ test.describe('Work allocation (read-only)', () => {
     }
   });
 
-  test.describe('deterministic task actions (env-seeded)', () => {
-    const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
+  test.describe('deterministic task actions (env-seeded or dynamic)', () => {
     const positive = [
-      { action: 'claim', id: () => selectTaskId([envTaskId], fallbackTaskId) },
-      { action: 'assign', id: () => selectTaskId([envTaskId], fallbackTaskId) },
-      { action: 'unclaim', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
-      { action: 'unassign', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
-      { action: 'complete', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
-      { action: 'cancel', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) }
+      { action: 'claim', id: () => selectTaskId([envTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      { action: 'assign', id: () => selectTaskId([envTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      { action: 'unclaim', id: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      { action: 'unassign', id: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      { action: 'complete', id: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      { action: 'cancel', id: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') }
     ] as const;
 
     positive.forEach(({ action, id }) => {
-      test(`${action} succeeds with XSRF when seeded task ids provided`, async ({ apiClient }) => {
-        const executed = await runSeededAction(action, id, { apiClient, envTaskId, envAssignedTaskId });
+      test(`${action} succeeds with XSRF when task ids available`, async ({ apiClient }) => {
+        const executed = await runSeededAction(action, id, { apiClient, envTaskId: envTaskId || sampleTaskId, envAssignedTaskId: envAssignedTaskId || sampleMyTaskId });
         if (!executed) {
           expect(true).toBe(true);
         }
@@ -493,7 +492,7 @@ test.describe('Work allocation helper coverage', () => {
     expect(executed).toBe(true);
     expect(xsrfCalls).toBe(1);
 
-    const skipped = await runSeededAction('claim', () => 'task-1', {
+    const skipped = await runSeededAction('claim', () => '', {
       apiClient,
       withXsrfFn,
       hasSeededEnvTasksFn: () => false,

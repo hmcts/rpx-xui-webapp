@@ -2,8 +2,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
-
-const StaffRefDataService = require('./staff-ref-data.service');
+import { StaffRefDataService } from './staff-ref-data.service';
 
 describe('StaffRefDataService', () => {
   let sandbox: sinon.SinonSandbox;
@@ -15,9 +14,10 @@ describe('StaffRefDataService', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    const getFilteredUsers = sandbox.stub();
 
     mockRealStaffRefDataAPI = {
-      getFilteredUsers: sandbox.stub(),
+      getFilteredUsers,
       getUserTypes: sandbox.stub(),
       getJobTitles: sandbox.stub(),
       getServices: sandbox.stub(),
@@ -270,6 +270,7 @@ describe('StaffRefDataService', () => {
       const serviceWithRealAPI = new StaffRefDataService(realAPI);
 
       expect(serviceWithRealAPI).to.be.an.instanceof(StaffRefDataService);
+      // @ts-expect-error - test inspecting protected field
       expect(serviceWithRealAPI.service).to.equal(realAPI);
     });
   });

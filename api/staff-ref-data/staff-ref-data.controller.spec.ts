@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as controller from './staff-ref-data.controller';
 
-const StaffRefDataService = require('./staff-ref-data.service');
+import { StaffRefDataService } from './staff-ref-data.service';
 
 describe('staff-ref-data.controller', () => {
   let sandbox: sinon.SinonSandbox;

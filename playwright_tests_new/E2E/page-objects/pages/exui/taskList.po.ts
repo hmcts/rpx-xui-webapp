@@ -9,8 +9,14 @@ export class TaskListPage extends Base {
   readonly taskListTable = this.page.locator(".cdk-table.govuk-table");
   readonly taskListResultsAmount = this.page.locator('[data-test="search-result-summary__text"]');
 
+  readonly workMenuItems = this.page.locator('.hmcts-sub-navigation');
+
   constructor(page: Page) {
     super(page);
+  }
+
+  async selectWorkMenuItem(itemName: string) {
+    await this.workMenuItems.getByRole('link', { name: itemName }).click();
   }
 
   async applyAllFilterOptions() {

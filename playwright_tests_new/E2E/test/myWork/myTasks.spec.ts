@@ -15,14 +15,24 @@ test.describe("Verify my tasks works as expected", () => {
 
 
     test("Verify tasks", async ({ taskListPage }) => {
-        let caseNumber: string;
-        let textField0 = faker.lorem.word();
 
-        await test.step("Create ", async () => {
+        await test.step("Navigate to the task list page", async () => {
             await taskListPage.goto();
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
         });
 
+        await test.step("Click on the first task in the task list", async () => {
+            await taskListPage.selectWorkMenuItem('My tasks');
+            await taskListPage.exuiSpinnerComponent.wait();
+
+            await taskListPage.selectWorkMenuItem('Available tasks');
+            await taskListPage.exuiSpinnerComponent.wait();
+
+            await taskListPage.selectWorkMenuItem('My cases');
+            await taskListPage.exuiSpinnerComponent.wait();
+
+            await taskListPage.selectWorkMenuItem('My Access');
+        });
     });
 });

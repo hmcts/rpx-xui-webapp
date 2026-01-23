@@ -7,6 +7,7 @@ export class ExuiHeaderComponent {
   
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="header-search-results" - brittle custom element selector
   readonly results = this.page.locator("ccd-search-result");
+<<<<<<< HEAD
   
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="nav-item-{name}" - brittle CSS class selector
   readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation__item');
@@ -14,6 +15,14 @@ export class ExuiHeaderComponent {
   private readonly waitUtils = new WaitUtils();
 
   constructor(private readonly page: Page) {}
+=======
+  readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
+  readonly selectedPageItem = this.header.locator('.hmcts-header a.hmcts-header__link')
+  readonly languageToggle = this.header.locator('button.language');
+  private waitUtils = new WaitUtils();
+
+  constructor(private page: Page) { }
+>>>>>>> master
 
   public async selectHeaderMenuItem(menuItemText: string): Promise<void> {
     const menuItem = this.headerMenuItems.filter({ hasText: menuItemText });
@@ -27,4 +36,15 @@ export class ExuiHeaderComponent {
     });
     await expect(this.header).toBeVisible();
   }
+
+  public async switchLanguage(language: string): Promise<void> {
+    if (language === await this.languageToggle.innerText()) {
+      await this.languageToggle.click();
+      await this.page.waitForLoadState('domcontentloaded');
+       }
+    else {
+      console.log(`Language is already set to ${language}`);
+    }
+  }
+
 }

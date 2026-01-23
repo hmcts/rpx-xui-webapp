@@ -14,7 +14,7 @@ export interface CaseFlagItem {
   creationDate: string;
   lastModified: string;
   status: string;
-  Locator: string;
+
 }
 
 export class CaseDetailsPage extends Base {
@@ -51,6 +51,9 @@ export class CaseDetailsPage extends Base {
   }
 
   async mapHistoryTable(): Promise<Record<string, string>[]> {
+    if (await this.historyTable.count() === 0) {
+      throw new Error('History table not found on page');
+    }
     const headers = (await this.historyTable.locator('thead tr th').allInnerTexts())
       .map(h => h.replace(/\t.*/, ''));
     const rows = this.historyTable.locator('tbody tr');

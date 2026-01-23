@@ -1,7 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { expect, test } from "../../fixtures";
-import { executablePath } from "puppeteer";
-import { table } from "console";
 
 
 test.describe("Verify creating and updating a case works as expected", () => {
@@ -45,34 +43,36 @@ test.describe("Verify creating and updating a case works as expected", () => {
     await test.step("Verify the 'Some more data' tab has updated names correctly", async () => {
       await caseDetailsPage.selectCaseDetailsTab('Some more data');
       const labels = ['First Name', 'Last Name'];
+      const expectedValues: Record<string, string> = {
+        'First Name': updatedFirstName,
+        'Last Name': updatedLastName,
+      };
 
       for (const label of labels) {
-        const row = caseDetailsPage.page.locator('.complex-panel-table tr',{has: caseDetailsPage.page.locator(`th span:text-is("${label}")`) }
-        );
-        const cell = row.locator('td').first();
-        await expect(cell, `${label} should be visible`).toBeVisible();
-        await expect(cell, `${label} should not be empty`).not.toHaveText('');
-        
+        const value = await caseDetailsPage.getSomeMoreDataField(label);
+        expect(value, `${label} should match updated value`).toBe(expectedValues[label]);
+
       }
     });
     await test.step('Verify that event details are shown on the History tab', async () => {
-      await caseDetailsPage.openHistoryTab('History');
-      const rows = await caseDetailsPage.mapHistoryTable();
+      await caseDetailsPage.selectCaseDetailsTab('History');
+      const { updateRow, updateDate, updateAuthor, expectedDate } =
+        await caseDetailsPage.getUpdateCaseHistoryInfo();
+      
+      expect(updateRow, 'Update case row should be present').toBeTruthy();
+      expect(updateDate.startsWith(expectedDate), 'Update case date should match today (ignore time)').toBe(true);
+      expect(updateAuthor, 'Update case author should be present').not.toBe('');
 
-      const updateRow = rows.find(r => r['Event']?.trim() === 'Update case');
-      const expectedDetails = {
-        Date: await caseDetailsPage.todaysDateFormatted(),
-        'End state': 'Case created',
-        Event: 'Update case',
-        Summary: '-',
-        Comment: '-',
-      };
-
-      for (const [label, expectedValue] of Object.entries(expectedDetails)) {
-        const actualValue = await caseDetailsPage.getDetailField(label);
-        expect(actualValue, `${label} value mismatch`).toBe(expectedValue);
-
-      };
+      const expectedDetails: Array<[string, string]> = [
+        ['Date', expectedDate],
+        ['Author', updateAuthor],
+        ['End state', 'Case created'],
+        ['Event', 'Update case'],
+        ['Summary', '-'],
+        ['Comment', '-'],
+      ];
+      
+      await caseDetailsPage.assertDetailFields(expectedDetails);
     });
   });
 })

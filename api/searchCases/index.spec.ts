@@ -211,5 +211,59 @@ describe('Search Cases Elastic Search', () => {
       const wildCardSearchQuery = result.native_es_query.query.bool.must[2].match['data.generatedSurname'];
       expect(wildCardSearchQuery.query).to.equal('Beckham');
     });
+
+    it('should build ES query for collection subfield criteria', async () => {
+      const queryParams = {
+        'case.scannedDocuments.value.controlNumber': 'DCN-123',
+        page: 1
+      };
+
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones'
+      };
+
+      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, {}, userInfo);
+      const match = result.native_es_query.query.bool.must[0].match;
+
+      expect(match['data.scannedDocuments.value.controlNumber'].query).to.equal('DCN-123');
+    });
+
+    it('should build ES query for complex subfield criteria', async () => {
+      const queryParams = {
+        'case.applicant.address.postcode': 'SW1A 1AA',
+        page: 1
+      };
+
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones'
+      };
+
+      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, {}, userInfo);
+      const match = result.native_es_query.query.bool.must[0].match;
+
+      expect(match['data.applicant.address.postcode'].query).to.equal('SW1A 1AA');
+    });
+
+    it('should build ES query for simple field criteria', async () => {
+      const queryParams = {
+        'case.reference': '1234',
+        page: 1
+      };
+
+      const userInfo: UserInfo = {
+        forename: 'Thomas',
+        roles: ['case'],
+        surname: 'Jones'
+      };
+
+      const result: ElasticSearchQuery = searchCases.prepareElasticQuery(queryParams, {}, userInfo);
+      const match = result.native_es_query.query.bool.must[0].match;
+
+      expect(match['data.reference'].query).to.equal('1234');
+    });
   });
 });

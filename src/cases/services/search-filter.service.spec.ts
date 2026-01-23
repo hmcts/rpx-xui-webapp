@@ -137,6 +137,75 @@ describe('SearchFilterService', () => {
     }, 'SEARCH');
   });
 
+  it('should include collection subfield ids in query parameters', () => {
+    const control = new FormControl('DCN-123');
+    const formGroupDummy = new FormGroup({
+      'scannedDocuments.value.controlNumber': control
+    });
+    const filter = {
+      selected: {
+        formGroup: formGroupDummy,
+        jurisdiction: JURISDICTION,
+        caseType: CASE_TYPES[0],
+        caseState: CASE_STATE,
+        page: 1,
+        view: 'SEARCH'
+      }
+    };
+
+    searchFilterService.search(filter);
+
+    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
+      'scannedDocuments.value.controlNumber': 'DCN-123'
+    }, 'SEARCH');
+  });
+
+  it('should include complex subfield ids in query parameters', () => {
+    const control = new FormControl('SW1A 1AA');
+    const formGroupDummy = new FormGroup({
+      'applicant.address.postcode': control
+    });
+    const filter = {
+      selected: {
+        formGroup: formGroupDummy,
+        jurisdiction: JURISDICTION,
+        caseType: CASE_TYPES[0],
+        caseState: CASE_STATE,
+        page: 1,
+        view: 'SEARCH'
+      }
+    };
+
+    searchFilterService.search(filter);
+
+    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
+      'applicant.address.postcode': 'SW1A 1AA'
+    }, 'SEARCH');
+  });
+
+  it('should include simple field ids in query parameters', () => {
+    const control = new FormControl('1234');
+    const formGroupDummy = new FormGroup({
+      reference: control
+    });
+    const filter = {
+      selected: {
+        formGroup: formGroupDummy,
+        jurisdiction: JURISDICTION,
+        caseType: CASE_TYPES[0],
+        caseState: CASE_STATE,
+        page: 1,
+        view: 'SEARCH'
+      }
+    };
+
+    searchFilterService.search(filter);
+
+    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
+      reference: '1234'
+    }, 'SEARCH');
+  });
+
   it('should make metadata inputs fields turn into query parameters', () => {
     const nameControl1 = new FormControl();
     const NAME_VALUE1 = 'something';

@@ -132,25 +132,27 @@ else {
     $htmlTable += "<tfoot><tr><th>Total</th><th>$totalSessions</th></tr></tfoot>"
     $htmlTable += "</table>"
     
-    # Build bar chart
+    # Build bar chart (vertical)
     $htmlChart = "<div class='chart-container'>"
     $htmlChart += "<h3>Visual Trend:</h3>"
+    $htmlChart += "<div class='chart-wrapper'>"
     foreach ($row in $dataRows) {
         if ($null -ne $row) {
             $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
             $sessionValue = if ($null -ne $row.Sessions) { [int]$row.Sessions } else { 0 }
-            # Use absolute values: 5px per session (adjust scale as needed)
-            $barWidth = $sessionValue * 5
+            # Use absolute values: 5px per session for vertical bars
+            $barHeight = [int]$sessionValue * 5
             
-            $htmlChart += "<div class='bar-row'>"
-            $htmlChart += "<div class='bar-label'>$dateValue</div>"
-            $htmlChart += "<div class='bar-container-abs'>"
-            $htmlChart += "<div class='bar' style='width: $($barWidth)px;'></div>"
+            $htmlChart += "<div class='bar-column'>"
+            $htmlChart += "<div class='bar-value-top'>$sessionValue</div>"
+            $htmlChart += "<div class='bar-wrapper'>"
+            $htmlChart += "<div class='bar-vertical' style='height: $($barHeight)px;'></div>"
             $htmlChart += "</div>"
-            $htmlChart += "<div class='bar-value'>$sessionValue</div>"
+            $htmlChart += "<div class='bar-label-bottom'>$dateValue</div>"
             $htmlChart += "</div>"
         }
     }
+    $htmlChart += "</div>"
     $htmlChart += "</div>"
     
     Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
@@ -169,11 +171,12 @@ tr:nth-child(even) { background-color: #f2f2f2; }
 tr:hover { background-color: #e0e0e0; }
 
 .chart-container { margin: 30px 0; }
-.bar-row { display: flex; align-items: center; margin: 8px 0; }
-.bar-label { width: 120px; font-size: 12px; color: #0b0c0c; font-weight: 500; }
-.bar-container-abs { background-color: #f0f0f0; height: 30px; border-radius: 4px; overflow: visible; margin: 0 10px; min-width: 200px; }
-.bar { height: 100%; background: linear-gradient(90deg, #005ea5 0%, #1d70b8 100%); transition: width 0.3s ease; border-radius: 4px; }
-.bar-value { width: 50px; text-align: right; font-weight: bold; color: #0b0c0c; }
+.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 15px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
+.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
+.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; }
+.bar-wrapper { display: flex; align-items: flex-end; height: 200px; }
+.bar-vertical { width: 40px; background: linear-gradient(180deg, #1d70b8 0%, #005ea5 100%); border-radius: 4px 4px 0 0; min-height: 0; }
+.bar-label-bottom { font-size: 11px; color: #505a5f; margin-top: 8px; transform: rotate(-45deg); transform-origin: center; width: 80px; text-align: right; }
 </style>
 </head>
 <body>

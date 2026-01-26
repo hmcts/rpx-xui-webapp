@@ -3098,7 +3098,14 @@ describe('HearingEditSummaryComponent', () => {
     // Helper function to setup component with specific hearing window/duration/priority values
     function setupHearingWindowTest(
       serviceHearingValues: Partial<ServiceHearingValuesModel>,
-      hearingRequestValues: Partial<HearingRequestMainModel>,
+      hearingRequestValues: {
+        hearingDetails?: {
+          hearingWindow?: any;
+          duration?: number | null;
+          hearingPriorityType?: string | null;
+        };
+        partyDetails?: PartyDetailsModel[];
+      },
       sectionsToDisplay: string[] = ['hearing-timing']
     ) {
       component.serviceHearingValuesModel = {
@@ -3116,7 +3123,7 @@ describe('HearingEditSummaryComponent', () => {
           hearingWindow: hearingRequestValues.hearingDetails?.hearingWindow,
           duration: hearingRequestValues.hearingDetails?.duration,
           hearingPriorityType: hearingRequestValues.hearingDetails?.hearingPriorityType
-        } as any,
+        },
         partyDetails: hearingRequestValues.partyDetails || []
       };
 
@@ -3304,7 +3311,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should return true when duration is valid and has changed', () => {
         setupHearingWindowTest(
           { duration: 120 },
-          { hearingDetails: { duration: 60 } } as any
+          { hearingDetails: { duration: 60 } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
@@ -3317,7 +3324,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should return false when duration is valid but has not changed', () => {
         setupHearingWindowTest(
           { duration: 120 },
-          { hearingDetails: { duration: 120 } } as any
+          { hearingDetails: { duration: 120 } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
@@ -3329,7 +3336,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should skip duration check when duration is null', () => {
         setupHearingWindowTest(
           { duration: null },
-          { hearingDetails: { duration: null } } as any
+          { hearingDetails: { duration: null } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3341,7 +3348,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should skip duration check when duration is undefined', () => {
         setupHearingWindowTest(
           { duration: undefined },
-          { hearingDetails: { duration: undefined } } as any
+          { hearingDetails: { duration: undefined } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3353,7 +3360,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should skip duration check when duration is 0', () => {
         setupHearingWindowTest(
           { duration: 0 },
-          { hearingDetails: { duration: 0 } } as any
+          { hearingDetails: { duration: 0 } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3367,7 +3374,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should return true when hearingPriorityType is valid and has changed', () => {
         setupHearingWindowTest(
           { hearingPriorityType: 'Urgent' },
-          { hearingDetails: { hearingPriorityType: 'Standard' } } as any
+          { hearingDetails: { hearingPriorityType: 'Standard' } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
@@ -3380,7 +3387,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should return false when hearingPriorityType is valid but has not changed', () => {
         setupHearingWindowTest(
           { hearingPriorityType: 'Urgent' },
-          { hearingDetails: { hearingPriorityType: 'Urgent' } } as any
+          { hearingDetails: { hearingPriorityType: 'Urgent' } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
@@ -3392,7 +3399,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should skip hearingPriorityType check when hearingPriorityType is null', () => {
         setupHearingWindowTest(
           { hearingPriorityType: null },
-          { hearingDetails: { hearingPriorityType: null } } as any
+          { hearingDetails: { hearingPriorityType: null } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3404,7 +3411,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should skip hearingPriorityType check when hearingPriorityType is undefined', () => {
         setupHearingWindowTest(
           { hearingPriorityType: undefined },
-          { hearingDetails: { hearingPriorityType: undefined } } as any
+          { hearingDetails: { hearingPriorityType: undefined } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3416,7 +3423,7 @@ describe('HearingEditSummaryComponent', () => {
       it('should skip hearingPriorityType check when hearingPriorityType is empty string', () => {
         setupHearingWindowTest(
           { hearingPriorityType: '' },
-          { hearingDetails: { hearingPriorityType: '' } } as any
+          { hearingDetails: { hearingPriorityType: '' } }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3440,7 +3447,7 @@ describe('HearingEditSummaryComponent', () => {
               duration: 60,
               hearingPriorityType: 'Standard'
             }
-          } as any
+          }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(true);
@@ -3463,7 +3470,7 @@ describe('HearingEditSummaryComponent', () => {
               duration: null,
               hearingPriorityType: null
             }
-          } as any
+          }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
@@ -3485,7 +3492,7 @@ describe('HearingEditSummaryComponent', () => {
               duration: 60,
               hearingPriorityType: null
             }
-          } as any
+          }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(false, true, false);
 
@@ -3507,7 +3514,7 @@ describe('HearingEditSummaryComponent', () => {
               duration: 120,
               hearingPriorityType: 'Urgent'
             }
-          } as any
+          }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
@@ -3530,7 +3537,7 @@ describe('HearingEditSummaryComponent', () => {
               duration: 120,
               hearingPriorityType: 'Urgent'
             }
-          } as any
+          }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(true);

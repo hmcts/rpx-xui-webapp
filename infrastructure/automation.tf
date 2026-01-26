@@ -108,25 +108,51 @@ Write-Output "Found $($dataRows.Count) days with Welsh translation usage."
 # Generate HTML table or no-data message
 if (-not $dataRows -or $dataRows.Count -eq 0) {
     $htmlTable = "<p><strong>No Welsh language translation usage was recorded in the reporting period.</strong></p>"
+    $htmlChart = ""
 }
 else {
+    # Build HTML table
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Unique Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
     
     $totalSessions = 0
+    $maxSessions = 0
     foreach ($row in $dataRows) {
         if ($null -ne $row) {
             $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
             $sessionValue = if ($null -ne $row.Sessions) { $row.Sessions } else { "0" }
             $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
             $totalSessions += [int]$sessionValue
+            if ([int]$sessionValue -gt $maxSessions) { $maxSessions = [int]$sessionValue }
         }
     }
     
     $htmlTable += "</tbody>"
     $htmlTable += "<tfoot><tr><th>Total</th><th>$totalSessions</th></tr></tfoot>"
     $htmlTable += "</table>"
+    
+    # Build bar chart
+    $htmlChart = "<div class='chart-container'>"
+    $htmlChart += "<h3>Visual Trend:</h3>"
+    foreach ($row in $dataRows) {
+        if ($null -ne $row) {
+            $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+            $sessionValue = if ($null -ne $row.Sessions) { [int]$row.Sessions } else { 0 }
+            # Use absolute values: 5px per session (adjust scale as needed)
+            $barWidth = $sessionValue * 5
+            
+            $htmlChart += "<div class='bar-row'>"
+            $htmlChart += "<div class='bar-label'>$dateValue</div>"
+            $htmlChart += "<div class='bar-container-abs'>"
+            $htmlChart += "<div class='bar' style='width: $($barWidth)px;'></div>"
+            $htmlChart += "</div>"
+            $htmlChart += "<div class='bar-value'>$sessionValue</div>"
+            $htmlChart += "</div>"
+        }
+    }
+    $htmlChart += "</div>"
+    
     Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
 }
 
@@ -141,6 +167,13 @@ th { background-color: #0b0c0c; color: white; font-weight: bold; }
 tfoot th { background-color: #005ea5; }
 tr:nth-child(even) { background-color: #f2f2f2; }
 tr:hover { background-color: #e0e0e0; }
+
+.chart-container { margin: 30px 0; }
+.bar-row { display: flex; align-items: center; margin: 8px 0; }
+.bar-label { width: 120px; font-size: 12px; color: #0b0c0c; font-weight: 500; }
+.bar-container-abs { background-color: #f0f0f0; height: 30px; border-radius: 4px; overflow: visible; margin: 0 10px; min-width: 200px; }
+.bar { height: 100%; background: linear-gradient(90deg, #005ea5 0%, #1d70b8 100%); transition: width 0.3s ease; border-radius: 4px; }
+.bar-value { width: 50px; text-align: right; font-weight: bold; color: #0b0c0c; }
 </style>
 </head>
 <body>
@@ -148,6 +181,7 @@ tr:hover { background-color: #e0e0e0; }
 <p>Environment: <strong>$($env:MODULE_PROJECT) $($env:MODULE_ENV)</strong></p>
 <p>Reporting Period: <strong>$reportMonth</strong></p>
 <p>This report shows the daily unique sessions using Welsh language translation services (URL: /api/translation/cy).</p>
+$htmlChart
 <h3>Daily Welsh Translation Usage:</h3>
 $htmlTable
 <hr/>

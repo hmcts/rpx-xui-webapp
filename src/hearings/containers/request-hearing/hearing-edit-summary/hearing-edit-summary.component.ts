@@ -726,15 +726,23 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
         return true;
       }
     }
-    if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)) {
-      return true;
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow)) {
+      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)) {
+        return true;
+      }
     }
 
-    if (this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration) {
-      return true;
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.duration)) {
+      if (this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration) {
+        return true;
+      }
     }
 
-    return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingPriorityType)) {
+      return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+    }
+
+    return false;
   }
 
   private pageVisitAdditionalInstructionsChangeExists(): boolean {

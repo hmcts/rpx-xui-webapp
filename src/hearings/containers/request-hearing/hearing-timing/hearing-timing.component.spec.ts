@@ -933,6 +933,273 @@ describe('HearingTimingComponent', () => {
     return { SHVUnavailabilityDatesInd, SHVUnavailabilityDatesOrg, SHVPartyDetail };
   }
 
+  describe('setAmendmentFlags - with toCompareServiceHearingValueField checks', () => {
+    // Helper function to set up component with specific service hearing values
+    function setupComponentWithServiceHearingValues(
+      hearingWindow?: any,
+      duration?: number | null,
+      hearingPriorityType?: string | null
+    ) {
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        hearingWindow,
+        duration,
+        hearingPriorityType
+      };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          hearingWindow: hearingWindow || {},
+          duration: duration || 0,
+          hearingPriorityType: hearingPriorityType || ''
+        }
+      };
+    }
+
+    describe('hearingWindow field checks', () => {
+      it('should set dateRangeStartChanged when hearingWindow is valid', () => {
+        setupComponentWithServiceHearingValues({
+          dateRangeStart: '2024-01-01T09:00:00.000Z',
+          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+        });
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(component.serviceHearingValuesModel.hearingWindow);
+        expect(component.dateRangeStartChanged).toBe(true);
+      });
+
+      it('should not set dateRangeStartChanged when hearingWindow is null', () => {
+        setupComponentWithServiceHearingValues(null);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBeUndefined();
+      });
+
+      it('should not set dateRangeStartChanged when hearingWindow is undefined', () => {
+        setupComponentWithServiceHearingValues(undefined);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBeUndefined();
+      });
+
+      it('should not set dateRangeStartChanged when hearingWindow is empty object', () => {
+        setupComponentWithServiceHearingValues({});
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBeUndefined();
+      });
+
+      it('should set dateRangeEndChanged when hearingWindow is valid', () => {
+        setupComponentWithServiceHearingValues({
+          dateRangeStart: '2024-01-01T09:00:00.000Z',
+          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+        });
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeEndChanged).toBe(true);
+      });
+
+      it('should set firstDateTimeMustBeChanged when hearingWindow is valid', () => {
+        setupComponentWithServiceHearingValues({
+          firstDateTimeMustBe: '2024-01-15T09:00:00.000Z'
+        });
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(component.firstDateTimeMustBeChanged).toBe(true);
+      });
+
+      it('should not set date changes when hearingWindow is valid but dates match', () => {
+        setupComponentWithServiceHearingValues({
+          dateRangeStart: '2024-01-01T09:00:00.000Z',
+          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+        });
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBe(false);
+        expect(component.dateRangeEndChanged).toBe(false);
+      });
+    });
+
+    describe('duration field checks', () => {
+      it('should set durationChanged to true when duration is valid and changed', () => {
+        setupComponentWithServiceHearingValues({}, 120);
+        component.hearingRequestMainModel.hearingDetails.duration = 60;
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(120);
+        expect(component.durationChanged).toBe(true);
+      });
+
+      it('should set durationChanged to false when duration is valid but not changed', () => {
+        setupComponentWithServiceHearingValues({}, 120);
+        component.hearingRequestMainModel.hearingDetails.duration = 120;
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.durationChanged).toBe(false);
+      });
+
+      it('should set durationChanged to false when duration is null', () => {
+        setupComponentWithServiceHearingValues({}, null);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.durationChanged).toBe(false);
+      });
+
+      it('should set durationChanged to false when duration is undefined', () => {
+        setupComponentWithServiceHearingValues({}, undefined);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.durationChanged).toBe(false);
+      });
+
+      it('should set durationChanged to false when duration is 0', () => {
+        setupComponentWithServiceHearingValues({}, 0);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.durationChanged).toBe(false);
+      });
+    });
+
+    describe('hearingPriorityType field checks', () => {
+      it('should set priorityChanged to true when hearingPriorityType is valid and changed', () => {
+        setupComponentWithServiceHearingValues({}, null, 'Urgent');
+        component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Standard';
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingStringChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith('Urgent');
+        expect(component.priorityChanged).toBe(true);
+      });
+
+      it('should set priorityChanged to false when hearingPriorityType is valid but not changed', () => {
+        setupComponentWithServiceHearingValues({}, null, 'Urgent');
+        component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingStringChanged').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.priorityChanged).toBe(false);
+      });
+
+      it('should set priorityChanged to false when hearingPriorityType is null', () => {
+        setupComponentWithServiceHearingValues({}, null, null);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.priorityChanged).toBe(false);
+      });
+
+      it('should set priorityChanged to false when hearingPriorityType is undefined', () => {
+        setupComponentWithServiceHearingValues({}, null, undefined);
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.priorityChanged).toBe(false);
+      });
+
+      it('should set priorityChanged to false when hearingPriorityType is empty string', () => {
+        setupComponentWithServiceHearingValues({}, null, '');
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.priorityChanged).toBe(false);
+      });
+    });
+
+    describe('combined field checks', () => {
+      it('should handle all fields being valid with various changes', () => {
+        setupComponentWithServiceHearingValues(
+          { dateRangeStart: '2024-01-01T09:00:00.000Z', dateRangeEnd: '2024-01-10T09:00:00.000Z' },
+          120,
+          'Urgent'
+        );
+        component.hearingRequestMainModel.hearingDetails.duration = 60;
+        component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Standard';
+
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
+        spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingStringChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBe(true);
+        expect(component.dateRangeEndChanged).toBe(true);
+        expect(component.durationChanged).toBe(true);
+        expect(component.priorityChanged).toBe(true);
+      });
+
+      it('should handle all fields being invalid/null', () => {
+        setupComponentWithServiceHearingValues(null, null, null);
+
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBeUndefined();
+        expect(component.dateRangeEndChanged).toBeUndefined();
+        expect(component.firstDateTimeMustBeChanged).toBeUndefined();
+        expect(component.durationChanged).toBe(false);
+        expect(component.priorityChanged).toBe(false);
+      });
+
+      it('should handle mixed valid and invalid fields', () => {
+        setupComponentWithServiceHearingValues(
+          { dateRangeStart: '2024-01-01T09:00:00.000Z' },
+          null,
+          'Urgent'
+        );
+
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, false, true);
+        spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingStringChanged').and.returnValue(true);
+
+        component.setAmendmentFlags();
+
+        expect(component.dateRangeStartChanged).toBe(true);
+        expect(component.durationChanged).toBe(false);
+        expect(component.priorityChanged).toBe(true);
+      });
+    });
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

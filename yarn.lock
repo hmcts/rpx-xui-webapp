@@ -3699,6 +3699,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.7-idam-token-fix-5/hmcts-rpx-xui-node-lib-2.30.7-idam-token-fix-5.tgz":
+  version: 2.30.7-idam-token-fix-5
+  resolution: "@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.7-idam-token-fix-5/hmcts-rpx-xui-node-lib-2.30.7-idam-token-fix-5.tgz"
+  dependencies:
+    "@hapi/joi": "npm:^17.1.1"
+    axios: "npm:^1.11.0"
+    caller-path: "npm:^3.0.0"
+    connect-redis: "npm:^4.0.4"
+    csurf: "npm:^1.11.0"
+    debug: "npm:^4.3.7"
+    deepmerge: "npm:^4.2.2"
+    express: "npm:^4.20.0"
+    express-session: "npm:^1.17.0"
+    jest-mock-axios: "npm:^4.8.0"
+    jest-ts-auto-mock: "npm:^2.1.0"
+    jwt-decode: "npm:^3.1.2"
+    openid-client: "npm:^3.10.0"
+    otplib: "npm:^12.0.1"
+    passport: "npm:^0.5.3"
+    passport-oauth2: "npm:^1.5.0"
+    redis: "npm:^3.0.2"
+    session-file-store: "npm:^1.5.0"
+  peerDependencies:
+    helmet: ^7.0.0
+  checksum: 10/cd6b875334f2a453eede31a4476de74e68abcb27079c3c9e4b70546bebed18bd9b5af9e05a46f2b14d631e43d9b08f24f6fd80afd854c50f2b51bcc0cfe1eb12
+  languageName: node
+  linkType: hard
+
 "@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-3":
   version: 2.30.7-csp-final-change-3
   resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-3"
@@ -3724,34 +3752,6 @@ __metadata:
   peerDependencies:
     helmet: ^7.0.0
   checksum: 10/7fe5003efdf7d3f23f5faf671df4ef35bdc4646efdafde168f180a65fcac163863e39b2abdb8b83a20314524b4b086c22ec75721e7c5cd7a518b5def2bac4e68
-  languageName: node
-  linkType: hard
-
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-idam-token-fix.2":
-  version: 2.30.7-idam-token-fix.2
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-idam-token-fix.2"
-  dependencies:
-    "@hapi/joi": "npm:^17.1.1"
-    axios: "npm:^1.11.0"
-    caller-path: "npm:^3.0.0"
-    connect-redis: "npm:^4.0.4"
-    csurf: "npm:^1.11.0"
-    debug: "npm:^4.3.7"
-    deepmerge: "npm:^4.2.2"
-    express: "npm:^4.20.0"
-    express-session: "npm:^1.17.0"
-    jest-mock-axios: "npm:^4.8.0"
-    jest-ts-auto-mock: "npm:^2.1.0"
-    jwt-decode: "npm:^3.1.2"
-    openid-client: "npm:^3.10.0"
-    otplib: "npm:^12.0.1"
-    passport: "npm:^0.5.3"
-    passport-oauth2: "npm:^1.5.0"
-    redis: "npm:^3.0.2"
-    session-file-store: "npm:^1.5.0"
-  peerDependencies:
-    helmet: ^7.0.0
-  checksum: 10/76bd87bc5dd617e5f83da2e717eadaa1730b80f873a1a8bc94d036da31d582d8a4731a7dc585bfe24732546cd57dbe6ab2b36114eae59d5db1e02f6dce910cd1
   languageName: node
   linkType: hard
 
@@ -25025,7 +25025,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.0.39"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2/hmcts-rpx-xui-common-lib-3.2.2.tgz"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-idam-token-fix.2"
+    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.7-idam-token-fix-5/hmcts-rpx-xui-node-lib-2.30.7-idam-token-fix-5.tgz"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

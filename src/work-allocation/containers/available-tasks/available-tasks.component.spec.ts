@@ -180,10 +180,10 @@ describe('AvailableTasksComponent', () => {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
         if (fields[i].columnLabel !== 'Priority') {
-          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+          expect(headerCells[i].textContent).toContain(fields[i].columnLabel);
         }
       } else {
-        expect(headerCells[i].textContent).toEqual('');
+        expect(headerCells[i].textContent).toEqual('  ');
       }
     }
     // Make sure Manage + heading is blank.

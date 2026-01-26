@@ -305,7 +305,7 @@ describe('StaffSelectLocationComponent', () => {
         component.locationsControl.setValue([mockLocationInControl]);
         let obsCount = 0;
         component.filteredList$.subscribe((result) => {
-          expect(result).toEqual(obsCount > 0 ? [dummyLocations[0]] : false);
+          obsCount > 0 ? expect(result).toEqual([dummyLocations[0]]) : expect(result).toEqual(false);
           expect(component.locationsControl.value[0].serviceCodes[0]).toEqual('BFA1');
           obsCount++;
         });

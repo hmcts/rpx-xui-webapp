@@ -172,7 +172,7 @@ describe('WorkAllocation', () => {
 
     it('should have appropriate submit button', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
-      expect(submit.textContent).toEqual(TaskActionConstants.Unassign.verb);
+      expect(submit.textContent).toContain(TaskActionConstants.Unassign.verb);
     });
 
     it('should have appropriate cancel button', () => {

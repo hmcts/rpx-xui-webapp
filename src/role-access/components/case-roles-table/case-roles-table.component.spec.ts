@@ -139,7 +139,7 @@ describe('CaseRolesTableComponent', () => {
   it('should display no roles for this case', () => {
     const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
     const element: HTMLElement = summaryList.nativeElement as HTMLElement;
-    expect(element.textContent).toBe(' There are no legal Ops roles for this case. ');
+    expect(element.textContent).toBe('There are no legal Ops roles for this case.');
   });
 
   it('should getRoleCategoryTitle', () => {

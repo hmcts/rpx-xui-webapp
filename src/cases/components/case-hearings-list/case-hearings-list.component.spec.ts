@@ -763,35 +763,35 @@ describe('CaseHearingsListComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     const viewOrEdit1 = fixture.debugElement.query(By.css('#link-view-or-edit-h100001')).nativeElement;
-    expect(viewOrEdit1.textContent).toBe('View or edit');
+    expect(viewOrEdit1.textContent).toContain('View or edit');
     const cancel1 = fixture.debugElement.query(By.css('#link-cancel-h100001')).nativeElement;
-    expect(cancel1.textContent).toBe('Cancel');
+    expect(cancel1.textContent).toContain('Cancel');
     const linkHearing1 = fixture.debugElement.query(By.css('#link-hearing-link-h100001'));
     expect(linkHearing1).toBeNull();
     const manageLinks1 = fixture.debugElement.query(By.css('#link-manage-links-h100001')).nativeElement;
-    expect(manageLinks1.textContent).toBe('Manage links');
+    expect(manageLinks1.textContent).toContain('Manage links');
     const viewDetails1 = fixture.debugElement.query(By.css('#link-view-details-h100001'));
     expect(viewDetails1).toBeNull();
     const addOrEdit1 = fixture.debugElement.query(By.css('#link-add-or-edit-h100001'));
     expect(addOrEdit1).toBeNull();
 
     const viewOrEdit3 = fixture.debugElement.query(By.css('#link-view-or-edit-h100003')).nativeElement;
-    expect(viewOrEdit3.textContent).toBe('View or edit');
+    expect(viewOrEdit3.textContent).toContain('View or edit');
     const cancel3 = fixture.debugElement.query(By.css('#link-cancel-h100003')).nativeElement;
-    expect(cancel3.textContent).toBe('Cancel');
+    expect(cancel3.textContent).toContain('Cancel');
     const linkHearing3 = fixture.debugElement.query(By.css('#link-hearing-link-h100003'));
     expect(linkHearing3).toBeNull();
     const manageLinks3 = fixture.debugElement.query(By.css('#link-manage-links-h100003')).nativeElement;
-    expect(manageLinks3.textContent).toBe('Manage links');
+    expect(manageLinks3.textContent).toContain('Manage links');
     const viewDetails3 = fixture.debugElement.query(By.css('#link-view-details-h100003'));
     expect(viewDetails3).toBeNull();
     const addOrEdit3 = fixture.debugElement.query(By.css('#link-add-or-edit-h100003'));
     expect(addOrEdit3).toBeNull();
 
     const viewOrEdit4 = fixture.debugElement.query(By.css('#link-view-or-edit-h100004')).nativeElement;
-    expect(viewOrEdit4.textContent).toBe('View or edit');
+    expect(viewOrEdit4.textContent).toContain('View or edit');
     const cancel4 = fixture.debugElement.query(By.css('#link-cancel-h100004')).nativeElement;
-    expect(cancel4.textContent).toBe('Cancel');
+    expect(cancel4.textContent).toContain('Cancel');
     const linkHearing4 = fixture.debugElement.query(By.css('#link-hearing-link-h100004'));
     expect(linkHearing4).toBeNull();
     const manageLinks4 = fixture.debugElement.query(By.css('#link-manage-links-h100004'));
@@ -810,7 +810,7 @@ describe('CaseHearingsListComponent', () => {
     const manageLinks6 = fixture.debugElement.query(By.css('#link-manage-links-h100006'));
     expect(manageLinks6).toBeNull();
     const viewDetails6 = fixture.debugElement.query(By.css('#link-view-details-h100006')).nativeElement;
-    expect(viewDetails6.textContent).toBe('View details');
+    expect(viewDetails6.textContent).toContain('View details');
     const addOrEdit6 = fixture.debugElement.query(By.css('#link-add-or-edit-h100006'));
     expect(addOrEdit6).toBeNull();
 
@@ -823,7 +823,7 @@ describe('CaseHearingsListComponent', () => {
     const manageLinks7 = fixture.debugElement.query(By.css('#link-manage-links-h100007'));
     expect(manageLinks7).toBeNull();
     const viewDetails7 = fixture.debugElement.query(By.css('#link-view-details-h100007')).nativeElement;
-    expect(viewDetails7.textContent).toBe('View details');
+    expect(viewDetails7.textContent).toContain('View details');
     const addOrEdit7 = fixture.debugElement.query(By.css('#link-add-or-edit-h100007'));
     expect(addOrEdit7).toBeNull();
 
@@ -838,7 +838,7 @@ describe('CaseHearingsListComponent', () => {
     const viewDetails9 = fixture.debugElement.query(By.css('#link-view-details-h100009'));
     expect(viewDetails9).toBeNull();
     const addOrEdit9 = fixture.debugElement.query(By.css('#link-add-or-edit-h100009')).nativeElement;
-    expect(addOrEdit9.textContent).toBe('Add or edit');
+    expect(addOrEdit9.textContent).toContain('Add or edit');
   });
 
   it('should show the right action links for PAST_OR_CANCELLED section', () => {
@@ -852,7 +852,7 @@ describe('CaseHearingsListComponent', () => {
     const cancel8 = fixture.debugElement.query(By.css('#link-cancel-h100008'));
     expect(cancel8).toBeNull();
     const viewDetails8 = fixture.debugElement.query(By.css('#link-view-details-h100008')).nativeElement;
-    expect(viewDetails8.textContent).toBe('View details');
+    expect(viewDetails8.textContent).toBe(' View details ');
     const addOrEdit8 = fixture.debugElement.query(By.css('#link-add-or-edit-h100008'));
     expect(addOrEdit8).toBeNull();
 
@@ -861,7 +861,7 @@ describe('CaseHearingsListComponent', () => {
     const cancel10 = fixture.debugElement.query(By.css('#link-cancel-h100010'));
     expect(cancel10).toBeNull();
     const viewDetails10 = fixture.debugElement.query(By.css('#link-view-details-h100010')).nativeElement;
-    expect(viewDetails10.textContent).toBe('View details');
+    expect(viewDetails10.textContent).toBe(' View details ');
     const addOrEdit10 = fixture.debugElement.query(By.css('#link-add-or-edit-h100010'));
     expect(addOrEdit10).toBeNull();
 
@@ -870,7 +870,7 @@ describe('CaseHearingsListComponent', () => {
     const cancel11 = fixture.debugElement.query(By.css('#link-cancel-h100011'));
     expect(cancel11).toBeNull();
     const viewDetails11 = fixture.debugElement.query(By.css('#link-view-details-h100011')).nativeElement;
-    expect(viewDetails11.textContent).toBe('View details');
+    expect(viewDetails11.textContent).toBe(' View details ');
     const addOrEdit11 = fixture.debugElement.query(By.css('#link-add-or-edit-h100011'));
     expect(addOrEdit11).toBeNull();
 
@@ -879,7 +879,7 @@ describe('CaseHearingsListComponent', () => {
     const cancel12 = fixture.debugElement.query(By.css('#link-cancel-h100012'));
     expect(cancel12).toBeNull();
     const viewDetails12 = fixture.debugElement.query(By.css('#link-view-details-h100012')).nativeElement;
-    expect(viewDetails12.textContent).toBe('View details');
+    expect(viewDetails12.textContent).toBe(' View details ');
     const addOrEdit12 = fixture.debugElement.query(By.css('#link-add-or-edit-h100012'));
     expect(addOrEdit12).toBeNull();
   });

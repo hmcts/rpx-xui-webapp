@@ -173,12 +173,12 @@ tr:nth-child(even) { background-color: #f2f2f2; }
 tr:hover { background-color: #e0e0e0; }
 
 .chart-container { margin: 30px 0; }
-.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 15px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
-.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
-.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; }
-.bar-wrapper { display: flex; align-items: flex-end; height: 250px; border-bottom: 2px solid #505a5f; }
+.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 20px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
+.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; text-align: center; }
+.bar-wrapper { display: flex; align-items: flex-end; justify-content: center; height: 250px; border-bottom: 2px solid #505a5f; width: 50px; }
 .bar-vertical { width: 40px; background-color: #005ea5; border-radius: 4px 4px 0 0; }
-.bar-label-bottom { font-size: 11px; color: #505a5f; margin-top: 8px; transform: rotate(-45deg); transform-origin: center; width: 80px; text-align: right; }
+.bar-label-bottom { font-size: 10px; color: #505a5f; margin-top: 8px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -186,9 +186,9 @@ tr:hover { background-color: #e0e0e0; }
 <p>Environment: <strong>$($env:MODULE_PROJECT) $($env:MODULE_ENV)</strong></p>
 <p>Reporting Period: <strong>$reportMonth</strong></p>
 <p>This report shows the daily unique sessions using Welsh language translation services (URL: /api/translation/cy).</p>
-$htmlChart
 <h3>Daily Welsh Translation Usage:</h3>
 $htmlTable
+$htmlChart
 <hr/>
 <p><small><em>Generated on: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC</em></small></p>
 </body>

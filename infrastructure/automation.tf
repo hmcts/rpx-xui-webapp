@@ -230,10 +230,10 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   name                    = "monthly-welsh-schedule"
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
-  frequency               = "Month"
+  frequency               = "Hour"
   interval                = 1
-  # Run 5 minutes from now for testing
-  start_time              = formatdate("YYYY-MM-23'T'17:37:00Z", timestamp())
+  # Run hourly for testing
+  start_time              = formatdate("YYYY-MM-DD'T'HH:mm:00Z", timeadd(timestamp(), "8m"))
   timezone                = "Etc/UTC"
 }
 

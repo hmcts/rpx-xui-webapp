@@ -108,25 +108,55 @@ Write-Output "Found $($dataRows.Count) days with Welsh translation usage."
 # Generate HTML table or no-data message
 if (-not $dataRows -or $dataRows.Count -eq 0) {
     $htmlTable = "<p><strong>No Welsh language translation usage was recorded in the reporting period.</strong></p>"
+    $htmlChart = ""
 }
 else {
+    # Build HTML table
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Unique Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
     
     $totalSessions = 0
+    $maxSessions = 0
     foreach ($row in $dataRows) {
         if ($null -ne $row) {
             $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
             $sessionValue = if ($null -ne $row.Sessions) { $row.Sessions } else { "0" }
             $htmlTable += "<tr><td>$dateValue</td><td>$sessionValue</td></tr>"
             $totalSessions += [int]$sessionValue
+            if ([int]$sessionValue -gt $maxSessions) { $maxSessions = [int]$sessionValue }
         }
     }
     
     $htmlTable += "</tbody>"
     $htmlTable += "<tfoot><tr><th>Total</th><th>$totalSessions</th></tr></tfoot>"
     $htmlTable += "</table>"
+    
+    # Build bar chart (vertical)
+    $htmlChart = "<div class='chart-container'>"
+    $htmlChart += "<h3>Visual Trend:</h3>"
+    $htmlChart += "<div class='chart-wrapper'>"
+    foreach ($row in $dataRows) {
+        if ($null -ne $row) {
+            $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+            $sessionValue = if ($null -ne $row.Sessions) { [int]$row.Sessions } else { 0 }
+            # Use absolute values: 10px per session for vertical bars
+            $barHeight = ([int]$sessionValue * 10)
+            # Show at least 5px for zero values so they're visible
+            if ($barHeight -eq 0) { $barHeight = 5 }
+            
+            $htmlChart += "<div class='bar-column'>"
+            $htmlChart += "<div class='bar-value-top'>$sessionValue</div>"
+            $htmlChart += "<div class='bar-wrapper'>"
+            $htmlChart += "<div class='bar-vertical' style='height: " + $barHeight + "px !important;'></div>"
+            $htmlChart += "</div>"
+            $htmlChart += "<div class='bar-label-bottom'>$dateValue</div>"
+            $htmlChart += "</div>"
+        }
+    }
+    $htmlChart += "</div>"
+    $htmlChart += "</div>"
+    
     Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
 }
 
@@ -141,6 +171,14 @@ th { background-color: #0b0c0c; color: white; font-weight: bold; }
 tfoot th { background-color: #005ea5; }
 tr:nth-child(even) { background-color: #f2f2f2; }
 tr:hover { background-color: #e0e0e0; }
+
+.chart-container { margin: 30px 0; }
+.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 20px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
+.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; text-align: center; }
+.bar-wrapper { display: flex; align-items: flex-end; justify-content: center; height: 250px; border-bottom: 2px solid #505a5f; width: 50px; }
+.bar-vertical { width: 40px; background-color: #005ea5; border-radius: 4px 4px 0 0; }
+.bar-label-bottom { font-size: 10px; color: #505a5f; margin-top: 8px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -150,6 +188,7 @@ tr:hover { background-color: #e0e0e0; }
 <p>This report shows the daily unique sessions using Welsh language translation services (URL: /api/translation/cy).</p>
 <h3>Daily Welsh Translation Usage:</h3>
 $htmlTable
+$htmlChart
 <hr/>
 <p><small><em>Generated on: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC</em></small></p>
 </body>
@@ -174,9 +213,11 @@ try {
     $endpoint = "https://$acsresourcename.communication.azure.com"
     $apiVersion = "2023-03-31"
     $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
-    $recipientAddrList = $recipientaddress -split "," | ForEach-Object {
+    
+    # Split and ensure array format even with single recipient
+    $recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
         @{ address = $_.Trim() }
-    }
+    })
 
     $emailPayload = @{
         senderAddress = $senderaddress

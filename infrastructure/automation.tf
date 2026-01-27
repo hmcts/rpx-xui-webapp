@@ -213,9 +213,11 @@ try {
     $endpoint = "https://$acsresourcename.communication.azure.com"
     $apiVersion = "2023-03-31"
     $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
-    $recipientAddrList = $recipientaddress -split "," | ForEach-Object {
+    
+    # Split and ensure array format even with single recipient
+    $recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
         @{ address = $_.Trim() }
-    }
+    })
 
     $emailPayload = @{
         senderAddress = $senderaddress

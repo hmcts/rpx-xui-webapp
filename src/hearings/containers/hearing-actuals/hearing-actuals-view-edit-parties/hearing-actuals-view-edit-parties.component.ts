@@ -296,7 +296,8 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
 
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
         hearingId: this.id,
-        hearingActuals
+        hearingActuals,
+        caseId: this.route.snapshot.queryParams.caseId
       }));
 
       if (this.id) {

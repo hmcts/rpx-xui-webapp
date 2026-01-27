@@ -208,6 +208,9 @@ describe('HearingActualsViewEditPartiesComponent', () => {
               data: {
                 partyChannels,
                 hearingRole
+              },
+              queryParams: {
+                caseId: '1234'
               }
             }
           }

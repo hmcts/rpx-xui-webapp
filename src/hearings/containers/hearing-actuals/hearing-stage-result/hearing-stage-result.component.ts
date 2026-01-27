@@ -123,7 +123,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       };
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActualsStage({
         hearingId: this.id,
-        hearingActuals
+        hearingActuals,
+        caseId: this.hearingActualsMainModel.caseDetails.caseRef
       }));
     }
   }

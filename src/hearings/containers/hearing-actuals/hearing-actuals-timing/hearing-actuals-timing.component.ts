@@ -183,7 +183,8 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
     this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
       hearingId: this.id,
-      hearingActuals: patchedHearingActuals
+      hearingActuals: patchedHearingActuals,
+      caseId: this.hearingActuals.caseDetails.caseRef
     }));
 
     if (this.id) {

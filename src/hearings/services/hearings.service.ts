@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HearingActualsMainModel, HearingActualsModel } from '../models/hearingActualsMainModel';
@@ -62,21 +62,20 @@ export class HearingsService {
     return this.http.get<LovRefDataByServiceModel>('/refdata/commondata/lov/categories/CaseLinkingReasonCode');
   }
 
-  public cancelHearingRequest(hearingId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
+  public cancelHearingRequest(hearingId: string, caseId: string, reasons: LovRefDataModel[]): Observable<ResponseDetailsModel> {
     const cancellationReasonCodes: string[] = reasons.map((reason) => reason.key);
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
-      body: {
-        cancellationReasonCodes
-      }
-    };
-    return this.http.delete<ResponseDetailsModel>(`api/hearings/cancelHearings?hearingId=${hearingId}`, options);
+    const params = new HttpParams()
+      .set('hearingId', hearingId)
+      .set('caseId', caseId);
+
+    return this.http.delete<ResponseDetailsModel>('api/hearings/cancelHearings', {
+      params,
+      body: { cancellationReasonCodes }
+    });
   }
 
-  public loadHearingRequest(hearingId: string): Observable<HearingRequestMainModel> {
-    return this.http.get<HearingRequestMainModel>(`api/hearings/getHearing?hearingId=${hearingId}`);
+  public loadHearingRequest(hearingId: string, caseRef: string): Observable<HearingRequestMainModel> {
+    return this.http.get<HearingRequestMainModel>(`api/hearings/getHearing?hearingId=${hearingId}&caseRef=${caseRef}`);
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
@@ -91,34 +90,36 @@ export class HearingsService {
     return this.http.put<ResponseDetailsModel>('api/hearings/updateHearingRequest', this.prepareHearingRequestModel(hearingRequestMainModel), options);
   }
 
-  public getHearingActuals(hearingId: string): Observable<HearingActualsMainModel> {
-    return this.http.get<any>(`api/hearings/hearingActuals/${hearingId}`);
+  public getHearingActuals(hearingId: string, caseRef: string): Observable<HearingActualsMainModel> {
+    return this.http.get<any>(`api/hearings/hearingActuals/${hearingId}?caseRef=${caseRef}`);
   }
 
-  public updateHearingActuals(hearingId: string, hearingActualsModel: HearingActualsModel): Observable<HearingActualsMainModel> {
-    return this.http.put<HearingActualsMainModel>(`api/hearings/hearingActuals?hearingId=${hearingId}`, hearingActualsModel);
+  public updateHearingActuals(hearingId: string, hearingActualsModel: HearingActualsModel, caseId: string): Observable<HearingActualsMainModel> {
+    return this.http.put<HearingActualsMainModel>(`api/hearings/hearingActuals?hearingId=${hearingId}&caseId=${caseId}`, hearingActualsModel);
   }
 
-  public submitHearingActuals(hearingId: string): Observable<HttpResponse<number>> {
-    return this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}`, null);
+  public submitHearingActuals(hearingId: string, caseRef: string): Observable<HttpResponse<number>> {
+    return this.http.post<HttpResponse<number>>(`api/hearings/hearingActualsCompletion/${hearingId}?caseRef=${caseRef}`, null);
   }
 
-  public getLinkedHearingGroup(groupId: string): Observable<LinkedHearingGroupMainModel> {
-    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/getLinkedHearingGroup?groupId=${groupId}`);
+  public getLinkedHearingGroup(groupId: string, hearingId: string, caseId: string): Observable<LinkedHearingGroupMainModel> {
+    return this.http.get<LinkedHearingGroupMainModel>(`api/hearings/getLinkedHearingGroup?groupId=${groupId}&hearingId=${hearingId}&caseId=${caseId}`);
   }
 
-  public postLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
-    return this.http.post<LinkedHearingGroupResponseModel>('api/hearings/postLinkedHearingGroup', linkedHearingGroupMainModel);
+  public postLinkedHearingGroup(linkedHearingGroupMainModel: LinkedHearingGroupMainModel, caseId: string, hearingId: string): Observable<LinkedHearingGroupResponseModel> {
+    return this.http.post<LinkedHearingGroupResponseModel>(`api/hearings/postLinkedHearingGroup?caseId=${caseId}&hearingId=${hearingId}`, linkedHearingGroupMainModel);
   }
 
-  public putLinkedHearingGroup(groupId: string, linkedHearingGroupMainModel: LinkedHearingGroupMainModel): Observable<LinkedHearingGroupResponseModel> {
-    return this.http.put<LinkedHearingGroupResponseModel>(`api/hearings/putLinkedHearingGroup?groupId=${groupId}`, linkedHearingGroupMainModel);
+  public putLinkedHearingGroup(groupId: string, linkedHearingGroupMainModel: LinkedHearingGroupMainModel, caseId: string, hearingId: string): Observable<LinkedHearingGroupResponseModel> {
+    return this.http.put<LinkedHearingGroupResponseModel>(`api/hearings/putLinkedHearingGroup?groupId=${groupId}&caseId=${caseId}&hearingId=${hearingId}`, linkedHearingGroupMainModel);
   }
 
-  public deleteLinkedHearingGroup(hearingGroupId: string): Observable<LinkedHearingGroupResponseModel> {
+  public deleteLinkedHearingGroup(hearingGroupId: string, caseId: string, hearingId: string): Observable<LinkedHearingGroupResponseModel> {
     const options = {
       params: new HttpParams()
         .set('hearingGroupId', hearingGroupId)
+        .set('caseId', caseId)
+        .set('hearingId', hearingId)
     };
     return this.http.delete<LinkedHearingGroupResponseModel>('api/hearings/deleteLinkedHearingGroup', options);
   }

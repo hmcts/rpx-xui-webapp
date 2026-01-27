@@ -27,7 +27,7 @@ export class SaveHearingActualsPlannedDays implements Action {
 export class GetHearingActuals implements Action {
   public readonly type = GET_HEARING_ACTUALS;
 
-  constructor(public payload: string) {}
+  constructor(public payload: { id: string, caseRef: string }) {}
 }
 
 export class GetHearingActualsSuccess implements Action {
@@ -39,13 +39,13 @@ export class GetHearingActualsSuccess implements Action {
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
 
-  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {}
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel, caseId: string }) {}
 }
 
 export class UpdateHearingActualsStage implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS_STAGE;
 
-  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {}
+  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel, caseId: string }) {}
 }
 
 export class UpdateHearingActualsSuccess implements Action {
@@ -57,7 +57,7 @@ export class UpdateHearingActualsSuccess implements Action {
 export class SubmitHearingActuals implements Action {
   public readonly type = SUBMIT_HEARING_ACTUALS;
 
-  constructor(public payload: string) {}
+  constructor(public payload: { id: string, caseRef: string }) {}
 }
 
 export class SubmitHearingActualsSuccess implements Action {

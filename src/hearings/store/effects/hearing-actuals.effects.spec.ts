@@ -41,7 +41,7 @@ describe('Hearing Actuals Effects', () => {
   describe('loadHearingActual$', () => {
     it('should return a response with service hearing actuals', () => {
       hearingsServiceMock.getHearingActuals.and.returnValue(of(hearingActualsMainModel));
-      const action = new hearingActualsActions.GetHearingActuals('1111222233334444');
+      const action = new hearingActualsActions.GetHearingActuals({ id: '1111222233334444', caseRef: '5555666677778888' });
       const completion = new hearingActualsActions.GetHearingActualsSuccess(hearingActualsMainModel);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -54,7 +54,8 @@ describe('Hearing Actuals Effects', () => {
       hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.UpdateHearingActuals({
         hearingId: '1111222233334444',
-        hearingActuals: hearingActualsMainModel.hearingActuals
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+        caseId: '5555666677778888'
       });
       const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
       actions$ = hot('-a', { a: action });
@@ -68,7 +69,8 @@ describe('Hearing Actuals Effects', () => {
       hearingsServiceMock.updateHearingActuals.and.returnValue(of(hearingActualsMainModel));
       const action = new hearingActualsActions.UpdateHearingActualsStage({
         hearingId: '1111222233334444',
-        hearingActuals: hearingActualsMainModel.hearingActuals
+        hearingActuals: hearingActualsMainModel.hearingActuals,
+        caseId: '5555666677778888'
       });
       const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
       actions$ = hot('-a', { a: action });
@@ -80,7 +82,7 @@ describe('Hearing Actuals Effects', () => {
   describe('submitHearingActuals$', () => {
     it('should submit hearing actuals', () => {
       hearingsServiceMock.submitHearingActuals.and.returnValue(of(200));
-      const action = new hearingActualsActions.SubmitHearingActuals('1111222233334444');
+      const action = new hearingActualsActions.SubmitHearingActuals({ id: '1111222233334444', caseRef: '5555666677778888' });
       const completion = new hearingActualsActions.SubmitHearingActualsSuccess('1111222233334444');
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -95,7 +97,7 @@ describe('Hearing Actuals Effects', () => {
         errors: []
       };
       hearingsServiceMock.submitHearingActuals.and.returnValue(throwError(error));
-      const action = new hearingActualsActions.SubmitHearingActuals('1111222233334444');
+      const action = new hearingActualsActions.SubmitHearingActuals({ id: '1111222233334444', caseRef: '5555666677778888' });
       const completion = new hearingActualsActions.SubmitHearingActualsFailure(error);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });

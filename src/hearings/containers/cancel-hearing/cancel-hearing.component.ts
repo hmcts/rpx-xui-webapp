@@ -106,7 +106,7 @@ export class CancelHearingComponent implements OnInit {
   public executeContinue(): void {
     const cancellationErrorMessage = 'There was a system error and your request could not be processed. Please try again.';
     if (this.isFormValid()) {
-      this.hearingsService.cancelHearingRequest(this.hearingId, this.getChosenReasons()).subscribe(
+      this.hearingsService.cancelHearingRequest(this.hearingId, this.caseId, this.getChosenReasons()).subscribe(
         () => {
           this.validationErrors = null;
           this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])

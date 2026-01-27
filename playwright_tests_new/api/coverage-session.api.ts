@@ -9,6 +9,8 @@ import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } fr
 
 test.describe.configure({ mode: 'serial' });
 
+const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+
 test.describe('Session and cookie utilities coverage', () => {
   test('isSessionFresh returns false when stat fails', () => {
     const fsStub = {
@@ -164,7 +166,7 @@ test.describe('Session and cookie utilities coverage', () => {
     } as any;
 
     const userUtils = {
-      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' }),
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
 
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
@@ -218,7 +220,7 @@ test.describe('Session and cookie utilities coverage', () => {
       mkdirSync: () => {},
     } as any;
     const userUtils = {
-      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' }),
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
     const chromiumLauncher = {
       launch: async () => {
@@ -241,7 +243,7 @@ test.describe('Session and cookie utilities coverage', () => {
       mkdirSync: () => {},
     } as any;
     const userUtils = {
-      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' }),
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
     const page = {
       goto: async () => {},

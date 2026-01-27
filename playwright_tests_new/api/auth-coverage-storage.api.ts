@@ -14,6 +14,9 @@ import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
 
+const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+const mockCredentials = { username: 'test-user', password: mockPassword };
+
 test.describe('Auth helper coverage - storage operations', () => {
   test('tryReadState returns parsed state or undefined for invalid content', async () => {
     const tmpDir = path.join(process.cwd(), 'test-results', 'tmp-auth-state');
@@ -96,7 +99,7 @@ test.describe('Auth helper coverage - storage operations', () => {
     const tokenSuccess = await authTest.createStorageStateWith('solicitor', {
       storageRoot,
       mkdir: async () => undefined,
-      getCredentials: () => ({ username: 'test-user', password: 'mock-pass' }),
+      getCredentials: () => mockCredentials,
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => true,
       createStorageStateViaForm: onForm,
@@ -107,7 +110,7 @@ test.describe('Auth helper coverage - storage operations', () => {
     const tokenFallback = await authTest.createStorageStateWith('solicitor', {
       storageRoot,
       mkdir: async () => undefined,
-      getCredentials: () => ({ username: 'test-user', password: 'mock-pass' }),
+      getCredentials: () => mockCredentials,
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => false,
       createStorageStateViaForm: onForm,

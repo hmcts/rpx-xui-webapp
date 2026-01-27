@@ -13,13 +13,13 @@ test.describe("Verify users can switch the language", () => {
         await page.goto('/');
     });
 
-    test.skip("Verify translations are shown when the user selects to view the site in Welsh", async ({ caseListPage, waitUtils }) => {
+    test("Verify translations are shown when the user selects to view the site in Welsh", async ({ caseListPage, waitUtils }) => {
         await test.step("Change the language to Welsh", async () => {
             await caseListPage.exuiHeader.switchLanguage('Cymraeg');
             await caseListPage.page.waitForResponse(res =>
                 res.url().includes('/api/translation/cy') && res.ok()
             );
-            await caseListPage.exuiSpinnerComponent.wait();            
+            await caseListPage.exuiSpinnerComponent.wait();
         });
 
         await test.step("Check the translation for Manage Cases is shown and the language toggle switches to English", async () => {

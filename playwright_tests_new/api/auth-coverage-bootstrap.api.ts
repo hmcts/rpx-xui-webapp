@@ -65,6 +65,9 @@ type AuthEnvironmentConfig = Partial<Record<AuthEnvironmentKey, string>>;
 
 test.describe.configure({ mode: 'serial' });
 
+const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+const mockCredentials = { username: 'test-user', password: mockPassword };
+
 test.describe('Auth helper coverage - token bootstrap', () => {
   test('isTokenBootstrapEnabled respects env overrides', async () => {
     // SECURITY: Use non-sensitive mock values only - no real secrets in tests
@@ -108,7 +111,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
   test('createStorageStateViaForm handles csrf and login errors', async () => {
     await expect(
       authTest.createStorageStateViaForm(
-        { username: 'test-user', password: 'mock-pass' },
+        mockCredentials,
         'state.json',
         'solicitor',
         { requestFactory: async () => createFormLoginContext(400, 200, '') as any }
@@ -117,7 +120,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
 
     await expect(
       authTest.createStorageStateViaForm(
-        { username: 'test-user', password: 'mock-pass' },
+        mockCredentials,
         'state.json',
         'solicitor',
         { requestFactory: async () => createFormLoginContext(200, 401, '') as any }
@@ -125,14 +128,14 @@ test.describe('Auth helper coverage - token bootstrap', () => {
     ).rejects.toThrow('POST https://example.test/login');
 
     await authTest.createStorageStateViaForm(
-      { username: 'test-user', password: 'mock-pass' },
+      mockCredentials,
       'state.json',
       'solicitor',
       { requestFactory: async () => createFormLoginContext(200, 200, '<input name="_csrf" value="token">') as any }
     );
 
     await authTest.createStorageStateViaForm(
-      { username: 'test-user', password: 'mock-pass' },
+      mockCredentials,
       'state.json',
       'solicitor',
       { requestFactory: async () => createFormLoginContext(200, 200, '<html></html>') as any }
@@ -145,7 +148,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
 
     const missingEnv = await authTest.tryTokenBootstrap(
       'solicitor',
-      { username: 'test-user', password: 'mock-pass' },
+      mockCredentials,
       'state.json',
       { env: {} as NodeJS.ProcessEnv }
     );
@@ -172,7 +175,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
 
     const success = await authTest.tryTokenBootstrap(
       'solicitor',
-      { username: 'test-user', password: 'mock-pass' },
+      mockCredentials,
       'state.json',
       {
         env: mockEnv,
@@ -192,7 +195,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
     };
     const failure = await authTest.tryTokenBootstrap(
       'solicitor',
-      { username: 'test-user', password: 'mock-pass' },
+      mockCredentials,
       'state.json',
       {
         env: mockEnv,
@@ -221,7 +224,7 @@ test.describe('Auth helper coverage - token bootstrap', () => {
 
     const result = await authTest.tryTokenBootstrap(
       'solicitor',
-      { username: 'test-user', password: 'mock-pass' },
+      mockCredentials,
       'state.json',
       {
         env: mockEnv,

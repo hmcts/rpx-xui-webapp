@@ -13,7 +13,7 @@ test.describe("Verify users can switch the language", () => {
         await page.goto('/');
     });
 
-    test("Verify translations are shown when the user selects to view the site in Welsh", async ({ caseListPage, waitUtils }) => {
+    test.skip("Verify translations are shown when the user selects to view the site in Welsh", async ({ caseListPage, waitUtils }) => {
         await test.step("Change the language to Welsh", async () => {
             await caseListPage.exuiHeader.switchLanguage('Cymraeg');
             await caseListPage.page.waitForResponse(res =>

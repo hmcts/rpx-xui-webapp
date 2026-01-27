@@ -19,9 +19,9 @@ const defaultConfig = {
 };
 export function getSearchTaskOverrides(waTaskAPiUrl) {
   return {
+    ...defaultConfig,
     'services.work_allocation.taskApi': waTaskAPiUrl,
     waSupportedJurisdictions: 'IA',
-    ...defaultConfig,
   };
 }
 

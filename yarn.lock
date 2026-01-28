@@ -721,6 +721,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular/elements@npm:^20.3.14":
+  version: 20.3.16
+  resolution: "@angular/elements@npm:20.3.16"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/core": 20.3.16
+    rxjs: ^6.5.3 || ^7.4.0
+  checksum: 10/c4718b30c6de8b3bbdbe9c35717d78424d820bf1b5cca09bd020ef124cc655973df232a0280aef619d973815fe01c990e8bc3086ca76b5e168d822bd6d362e11
+  languageName: node
+  linkType: hard
+
 "@angular/forms@npm:^20.3.14":
   version: 20.3.15
   resolution: "@angular/forms@npm:20.3.15"
@@ -3678,12 +3690,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23/hmcts-ccd-case-ui-toolkit-7.3.23.tgz":
-  version: 7.3.23
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23/hmcts-ccd-case-ui-toolkit-7.3.23.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23-2918/hmcts-ccd-case-ui-toolkit-7.3.23-2918.tgz":
+  version: 7.3.23-2918
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23-2918/hmcts-ccd-case-ui-toolkit-7.3.23-2918.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/cbf30248fa52cfe706b3729034d3932baddd380193f8a3a465a31b0622b72e9453c03793aca97b531e25fdf54971ed9b703fdc072a17a75ad19506f827426e0c
+  checksum: 10/625aefa5e20d958ce246fc944f3e04e44c68730db1fd12f904afdbb494b0849a9338b9ef39c01d5e679e45e80cc44e76a4630be27138fd3a59d7d0586e3d3d45
   languageName: node
   linkType: hard
 
@@ -18605,7 +18617,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.1.1, js-yaml@npm:^4.0.0":
+"js-yaml@npm:4.1.1":
   version: 4.1.1
   resolution: "js-yaml@npm:4.1.1"
   dependencies:
@@ -18613,6 +18625,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/a52d0519f0f4ef5b4adc1cde466cb54c50d56e2b4a983b9d5c9c0f2f99462047007a6274d7e95617a21d3c91fde3ee6115536ed70991cd645ba8521058b78f77
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "js-yaml@npm:4.1.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
   languageName: node
   linkType: hard
 
@@ -23966,6 +23989,7 @@ __metadata:
     "@angular/compiler": "npm:^20.3.14"
     "@angular/compiler-cli": "npm:^20.3.14"
     "@angular/core": "npm:^20.3.14"
+    "@angular/elements": "npm:^20.3.14"
     "@angular/forms": "npm:^20.3.14"
     "@angular/language-service": "npm:^20.3.14"
     "@angular/material": "npm:^16.2.0"
@@ -23977,7 +24001,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23/hmcts-ccd-case-ui-toolkit-7.3.23.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23-2918/hmcts-ccd-case-ui-toolkit-7.3.23-2918.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.7/hmcts-media-viewer-4.2.7.tgz"

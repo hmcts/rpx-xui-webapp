@@ -14,7 +14,6 @@ export default defineConfig(
       '@typescript-eslint/no-explicit-any': 'warn',
       'no-case-declarations': 'warn',
       'no-prototype-builtins': 'warn',
-
       'eslint-comments/no-use': 'warn',
     },
   },

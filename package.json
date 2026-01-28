@@ -274,16 +274,9 @@
   },
   "resolutions": {
     "form-data@^4": "4.0.4",
-    "form-data@^3": "3.0.4",
-    "form-data@^2": "2.5.5",
-    "form-data@npm:^4.0.0": "npm:4.0.4",
-    "form-data@npm:^2.5.0": "npm:2.5.5",
-    "form-data@npm:~2.3.2": "npm:2.5.5",
-    "cacache/tar": "7.5.4",
-    "node-gyp/tar": "7.5.4",
-    "js-yaml@npm:^3.13.1": "npm:3.14.2",
+    "cacache/tar": "^7.5.7",
+    "node-gyp/tar": "^7.5.7",
     "js-yaml@npm:^4.1.0": "npm:4.1.1",
-    "js-yaml@npm:4.1.0": "npm:4.1.1",
     "flat": "~5.0.1",
     "loader-utils": "~2.0.3",
     "minimist": "^1.2.8",
@@ -299,7 +292,10 @@
     "semver": "^7.6.3",
     "superagent": "^10.2.2",
     "cookie": "^0.7.2",
-    "min-document": "^2.19.1"
+    "min-document": "^2.19.1",
+    "glob": "^11.1.0",
+    "jws": "^4.0.1",
+    "tar": "^7.5.7"
   },
   "packageManager": "yarn@4.7.0"
 }

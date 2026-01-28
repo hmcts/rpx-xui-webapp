@@ -1,9 +1,8 @@
 locals {
-  app_full_name       = "xui-${var.component}"
-  ase_name            = "core-compute-${var.env}"
-  local_env           = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
-  shared_vault_name   = "${var.shared_product_name}-${local.local_env}"
-  managed_api_base_id = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/providers/Microsoft.Web/locations/${var.location}/managedApis"
+  app_full_name     = "xui-${var.component}"
+  ase_name          = "core-compute-${var.env}"
+  local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
+  shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
 data "azurerm_client_config" "current" {}
@@ -76,7 +75,6 @@ resource "azurerm_application_insights" "appinsight" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = var.application_type
-  workspace_id        = azurerm_log_analytics_workspace.app_insights_workspace.id
 
   tags = var.common_tags
 
@@ -96,16 +94,6 @@ resource "azurerm_resource_group" "rg" {
   tags = var.common_tags
 }
 
-resource "azurerm_log_analytics_workspace" "app_insights_workspace" {
-  name                = "${local.app_full_name}-law-${var.env}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = var.location
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-  tags                = var.common_tags
-}
-
-
 resource "azurerm_key_vault_secret" "app_insights_key" {
   name         = "appinsights-instrumentationkey-mc"
   value        = azurerm_application_insights.appinsight.instrumentation_key
@@ -116,14 +104,6 @@ resource "azurerm_key_vault_secret" "app_insights_connection_string" {
   name         = "appinsights-connection-string-mc"
   value        = module.application_insights.connection_string
   key_vault_id = data.azurerm_key_vault.key_vault.id
-}
-
-resource "azurerm_api_connection" "azure_monitor" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
-  name                = "${local.app_full_name}-azuremonitor-${var.env}"
-  resource_group_name = azurerm_resource_group.rg.name
-  managed_api_id      = "${local.managed_api_base_id}/azuremonitorlogs"
-  display_name        = "Azure Monitor Logs Connection"
 }
 
 # Welsh Language Usage Reporting - Logic App Implementation

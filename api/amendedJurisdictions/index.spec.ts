@@ -44,30 +44,268 @@ describe('Amended Jurisdiction', () => {
   it('should filter jurisdictions for the jurisdictions endpoint', () => {
     const data = [
       {
-        id: 'PROBATE'
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application',
+            description: 'General application for civil cases',
+            events: [
+              { id: 'submitApplication', name: 'Submit Application' },
+              { id: 'issueApplication', name: 'Issue Application' }
+            ],
+            states: [
+              {
+                id: 'PENDING_APPLICATION_ISSUED',
+                name: 'General Application Issue Pending',
+                description: 'Application is pending issuance',
+                order: 1
+              },
+              {
+                id: 'AWAITING_RESPONDENT_RESPONSE',
+                name: 'Awaiting Respondent Response',
+                description: 'Waiting for respondent to respond',
+                order: 2
+              },
+              {
+                id: 'APPLICATION_SUBMITTED_AWAITING_JUDICIAL_DECISION',
+                name: 'Application Submitted - Awaiting Judicial Decision',
+                description: 'Waiting for judicial decision',
+                order: 3
+              }
+            ]
+          },
+          {
+            id: 'CIVIL',
+            name: 'Civil',
+            description: 'Standard civil case',
+            events: [
+              { id: 'submitClaim', name: 'Submit Claim' },
+              { id: 'issueClaim', name: 'Issue Claim' }
+            ],
+            states: [
+              {
+                id: 'PENDING_CASE_ISSUED',
+                name: 'Claim Issue Pending',
+                description: 'Claim is pending issuance',
+                order: 1
+              },
+              {
+                id: 'CASE_ISSUED',
+                name: 'Awaiting Claim Notification',
+                description: 'Claim has been issued',
+                order: 2
+              },
+              {
+                id: 'AWAITING_CASE_DETAILS_NOTIFICATION',
+                name: 'Awaiting Claim Details Notification',
+                description: 'Waiting for claim details notification',
+                order: 3
+              }
+            ]
+          }
+        ]
       },
       {
-        id: 'RANDOM'
+        id: 'RANDOM',
+        description: 'This jurisdiction should be filtered out'
       }
     ];
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
     // Unknown jurisdiction should be filtered
+    // Expected result should only contain the fields that are mapped in the getJurisdictions function
     const expected = [
       {
-        id: 'PROBATE'
+        id: 'CIVIL',
+        name: 'Civil',
+        description: '',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application',
+            description: 'General application for civil cases',
+            events: [
+              { id: 'submitApplication', name: 'Submit Application', pre_states: [], acls: [] },
+              { id: 'issueApplication', name: 'Issue Application', pre_states: [], acls: [] }
+            ],
+            states: [
+              {
+                id: 'PENDING_APPLICATION_ISSUED',
+                name: 'General Application Issue Pending',
+                description: 'Application is pending issuance'
+              },
+              {
+                id: 'AWAITING_RESPONDENT_RESPONSE',
+                name: 'Awaiting Respondent Response',
+                description: 'Waiting for respondent to respond'
+              },
+              {
+                id: 'APPLICATION_SUBMITTED_AWAITING_JUDICIAL_DECISION',
+                name: 'Application Submitted - Awaiting Judicial Decision',
+                description: 'Waiting for judicial decision'
+              }
+            ]
+          },
+          {
+            id: 'CIVIL',
+            name: 'Civil',
+            description: 'Standard civil case',
+            events: [
+              { id: 'submitClaim', name: 'Submit Claim', pre_states: [], acls: [] },
+              { id: 'issueClaim', name: 'Issue Claim', pre_states: [], acls: [] }
+            ],
+            states: [
+              {
+                id: 'PENDING_CASE_ISSUED',
+                name: 'Claim Issue Pending',
+                description: 'Claim is pending issuance'
+              },
+              {
+                id: 'CASE_ISSUED',
+                name: 'Awaiting Claim Notification',
+                description: 'Claim has been issued'
+              },
+              {
+                id: 'AWAITING_CASE_DETAILS_NOTIFICATION',
+                name: 'Awaiting Claim Details Notification',
+                description: 'Waiting for claim details notification'
+              }
+            ]
+          }
+        ]
       }
     ];
     expect(response).to.eql(expected);
   });
 
+  it('should filter jurisdictions for access=create endpoint', () => {
+    const data = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application'
+          }
+        ]
+      },
+      {
+        id: 'RANDOM',
+        description: 'This jurisdiction should be filtered out'
+      }
+    ];
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=create';
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+
+    const expected = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        description: '',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application',
+            description: '',
+            events: [],
+            states: []
+          }
+        ]
+      }
+    ];
+    expect(response).to.eql(expected);
+    expect(req.session.createJurisdictions).to.eql(expected);
+  });
+
+  it('should filter jurisdictions with no access parameter', () => {
+    const data = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application'
+          }
+        ]
+      },
+      {
+        id: 'RANDOM',
+        description: 'This jurisdiction should be filtered out'
+      }
+    ];
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions?';
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+
+    const expected = [
+      {
+        id: 'CIVIL',
+        name: 'Civil',
+        description: '',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application',
+            description: '',
+            events: [],
+            states: []
+          }
+        ]
+      }
+    ];
+    expect(response).to.eql(expected);
+    expect(req.session.jurisdictions).to.eql(expected);
+  });
+
   it('should not filter jurisdictions for non-jurisdictions endpoint', () => {
     const expected = [
       {
-        id: 'PROBATE'
+        id: 'CIVIL',
+        name: 'Civil',
+        caseTypes: [
+          {
+            id: 'GENERALAPPLICATION',
+            name: 'Civil General Application',
+            description: 'General application for civil cases',
+            events: [
+              { id: 'submitApplication', name: 'Submit Application' }
+            ],
+            states: [
+              {
+                id: 'PENDING_APPLICATION_ISSUED',
+                name: 'General Application Issue Pending',
+                description: 'Application is pending issuance',
+                order: 1
+              }
+            ]
+          }
+        ]
       },
       {
-        id: 'RANDOM'
+        id: 'RANDOM',
+        name: 'Random Jurisdiction',
+        description: 'Random jurisdiction for testing',
+        caseTypes: [
+          {
+            id: 'RANDOMCASE',
+            name: 'Random Case Type',
+            description: 'Random case type for testing',
+            events: [
+              { id: 'randomEvent', name: 'Random Event' }
+            ],
+            states: [
+              {
+                id: 'RANDOM_STATE',
+                name: 'Random State',
+                description: 'Random state for testing',
+                order: 1
+              }
+            ]
+          }
+        ]
       }
     ];
     req.url = '/aggregated/some/other/url';
@@ -76,7 +314,7 @@ describe('Amended Jurisdiction', () => {
     expect(response).to.eql(expected);
   });
 
-  it('should send empty array', () => {
+  it('should handle empty jurisdictions array correctly', () => {
     const expected = [];
 
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
@@ -119,8 +357,8 @@ describe('Amended Jurisdiction', () => {
     const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
 
     expect(req.session[sessionKey]).to.deep.equal([
-      { id: 'PROBATE' },
-      { id: 'DIVORCE' }
+      { id: 'PROBATE', description: '' },
+      { id: 'DIVORCE', description: '' }
     ]);
     expect(response).to.equal(req.session[sessionKey]);
   });

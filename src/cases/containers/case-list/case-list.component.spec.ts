@@ -463,16 +463,16 @@ describe('CaseListComponent', () => {
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'some id',
         name: 'some name',
-        description: 'some desc',
+        description: '',
         caseTypes: [{
           id: 'some id',
-          events: null,
+          events: [],
           name: 'some name',
-          description: 'some desc',
+          description: '',
           states: [{
             id: 'some state id',
             name: 'some name',
-            description: 'some desc'
+            description: 'some state description'
           }]
         }]
       }]);
@@ -495,12 +495,12 @@ describe('CaseListComponent', () => {
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'Probate',
         name: 'some name',
-        description: 'some desc',
+        description: '',
         caseTypes: [{
           id: 'GrantOfRepresentation',
-          events: null,
+          events: [],
           name: 'some name',
-          description: 'some desc',
+          description: '',
           states: [{
             id: 'BOReadyToIssue',
             name: 'some name',
@@ -531,12 +531,12 @@ describe('CaseListComponent', () => {
       component.jurisdictionsBehaviourSubject$.next([{
         id: 'Probate',
         name: 'some name',
-        description: 'some desc',
+        description: '',
         caseTypes: [{
           id: 'GrantOfRepresentation',
-          events: null,
+          events: [],
           name: 'some name',
-          description: 'some desc',
+          description: '',
           states: [{
             id: 'BOReadyToIssue',
             name: 'some name',

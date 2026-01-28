@@ -6,6 +6,7 @@ const jurisdictions = /aggregated\/.+jurisdictions\?/;
 /**
  * Manually filtering returned jurisdictions
  * to make available jurisdiction in filters array only
+ * and reducing the data size by only keeping the required fields
  */
 export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   if (!Array.isArray(data) || !jurisdictions.test(req.url)) {
@@ -13,10 +14,59 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
   }
 
   const filters = getConfigValue(JURISDICTIONS);
-  const params = new URLSearchParams(req.url.split('?')[1]);
-  const access = params.get('access');
-  const filtered = data.filter((o) => filters.includes(o.id));
+  const filteredJurisdictions = [...data]
+    .filter((o) => filters.includes(o.id))
+    .map((jurisdiction) => {
+      const result: any = {
+        id: jurisdiction.id
+      };
 
+      if (jurisdiction.name !== undefined) {
+        result.name = jurisdiction.name;
+      }
+
+      // Keep original description or empty string if not present
+      result.description = jurisdiction.description || '';
+
+      if (jurisdiction.caseTypes !== undefined) {
+        result.caseTypes = jurisdiction.caseTypes.map((caseType) => {
+          const mappedCaseType: any = {
+            id: caseType.id,
+            name: caseType.name,
+            description: caseType.description || '', // Keep original description for CCD UI toolkit validation
+            states: []
+          };
+
+          // Keep events array with required fields for CCD UI toolkit filtering
+          if (caseType.events) {
+            mappedCaseType.events = caseType.events.map((event) => ({
+              id: event.id,
+              name: event.name,
+              pre_states: event.pre_states || [], // Required by retainEventsWithNoPreStates filter
+              acls: event.acls || [] // Required by retainEventsWithCreateRights filter
+            }));
+          } else {
+            mappedCaseType.events = [];
+          }
+
+          if (caseType.states) {
+            mappedCaseType.states = caseType.states.map((state) => ({
+              id: state.id,
+              name: state.name,
+              description: state.description || '' // Keep description as it's displayed in UI
+            }));
+          }
+
+          return mappedCaseType;
+        });
+      }
+
+      return result;
+    });
+
+  // Determine session key based on access type
+  const params = new URLSearchParams(req.url.split('?')[1] || '');
+  const access = params.get('access');
   let sessionKey: 'readJurisdictions' | 'createJurisdictions' | 'jurisdictions';
   if (access === 'read') {
     sessionKey = 'readJurisdictions';
@@ -26,10 +76,7 @@ export const getJurisdictions = (proxyRes, req, res, data: any[]) => {
     sessionKey = 'jurisdictions';
   }
 
-  if (!req.session[sessionKey]) {
-    req.session[sessionKey] = filtered;
-  }
-
+  req.session[sessionKey] = filteredJurisdictions;
   return req.session[sessionKey];
 };
 

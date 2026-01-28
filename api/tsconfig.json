@@ -7,7 +7,7 @@
     "skipLibCheck": true,
     "types": ["node", "mocha", "rxjs"],
     "baseUrl": ".",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2017", "dom"]
   },
   "include": ["**/*.ts", "../*.ts"],
   "exclude": ["**/*.spec.ts", "test/**"]

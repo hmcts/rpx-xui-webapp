@@ -54,7 +54,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   const markupPath: string = `${hmcHearingsUrl}/hearings/${caseId}`;
 
   try {
-    const { status, data }: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req);
     data.caseHearings.forEach((hearing) =>
       hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
         hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
@@ -77,7 +77,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
   // const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   console.log(req.query);
   try {
-    const { status, data }: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseRef, 'getHearing', req, markupPath, next);
@@ -110,7 +110,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
   // req.body.cancellationReasonCodes = null; // TESTING PURPOSES ONLY - to be removed when front end is sending reason codes
   try {
     const reqBody = req.body;
-    const { status, data }: { status: number, data: any } = await handleDelete(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: any } = await handleDelete(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'cancelHearingRequest', req, markupPath, next);
@@ -126,7 +126,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
   // reqBody.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
-    const { status, data }: { status: number, data: any } = await handlePut(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: any } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, null, 'updateHearingRequest', req, markupPath, next);
@@ -142,7 +142,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
     const { status, data }: { status: number, data: HearingActualsMainModel } =
-      await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}`, req, next);
+      await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}`, req);
       // await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, req, next); // TESTING PURPOSES ONLY - to be removed when backend is fixed
     res.status(status).send(data);
   } catch (error) {
@@ -192,7 +192,7 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   // const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getLinkedHearingGroup', req, markupPath, next);
@@ -223,7 +223,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'putLinkedHearingGroup', req, markupPath, next);
@@ -240,7 +240,7 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   // const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}1234`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req, next);
+    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'deleteLinkedHearingGroup', req, markupPath, next);

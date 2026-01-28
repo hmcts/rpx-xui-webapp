@@ -16,7 +16,7 @@ const ccdUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
 export async function getUsers(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const path = `${prdUrl}/refdata/external/v1/organisations/users?returnRoles=false&status=active`;
-    const { status, data }: {status: number, data: any} = await handleGet(path, req, next);
+    const { status, data }: {status: number, data: any} = await handleGet(path, req);
     const users = [...data.users]
       .map((user) => prdToUserDetails(user));
     return res.status(status).send(users);
@@ -29,7 +29,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   try {
     const caseIds = req.query.case_ids;
     const path = `${ccdUrl}/case-assignments?case_ids=${caseIds}`;
-    const { status, data }: {status: number, data: any} = await handleGet(path, req, next);
+    const { status, data }: {status: number, data: any} = await handleGet(path, req);
     const caseUsers: CCDRawCaseUserModel[] = [...data.case_assignments];
     const sharedCases: SharedCase[] = [];
     for (const caseUser of caseUsers) {

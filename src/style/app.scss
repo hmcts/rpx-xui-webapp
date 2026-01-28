@@ -3,7 +3,7 @@
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
-@import '~material-design-icons/iconfont/material-icons.css';
+@import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
 
@@ -427,7 +427,8 @@ form.check-your-answers table td .markdown p {
 header {
   .govuk-skip-link {
     &:link, &:visited {
-      color: #fff;
+      background-color: #ffdd00;
+      color: #0b0c0c;
     }
   }
 }

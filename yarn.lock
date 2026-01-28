@@ -179,7 +179,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/build-angular@npm:^20.3.13":
+"@angular-devkit/build-angular@npm:^20.3.14":
   version: 20.3.15
   resolution: "@angular-devkit/build-angular@npm:20.3.15"
   dependencies:
@@ -459,7 +459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:^20.3.14":
+"@angular/animations@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/animations@npm:20.3.16"
   dependencies:
@@ -567,7 +567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cli@npm:^20.3.13":
+"@angular/cli@npm:^20.3.14":
   version: 20.3.15
   resolution: "@angular/cli@npm:20.3.15"
   dependencies:
@@ -595,7 +595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/common@npm:^20.3.14":
+"@angular/common@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/common@npm:20.3.16"
   dependencies:
@@ -607,7 +607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler-cli@npm:^20.3.14":
+"@angular/compiler-cli@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/compiler-cli@npm:20.3.16"
   dependencies:
@@ -641,7 +641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler@npm:^20.3.14":
+"@angular/compiler@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/compiler@npm:20.3.16"
   dependencies:
@@ -661,7 +661,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/core@npm:^20.3.14":
+"@angular/core@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/core@npm:20.3.16"
   dependencies:
@@ -679,7 +679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/forms@npm:^20.3.14":
+"@angular/forms@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/forms@npm:20.3.16"
   dependencies:
@@ -693,7 +693,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/language-service@npm:^20.3.14":
+"@angular/language-service@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/language-service@npm:20.3.16"
   checksum: 10/04109790d4081ffd9f8e53d765c3efcbb6ae89c314b4445aafd14ce1cb0f092e9c1798428b16fdf114861a7f7b14a3ee433f4efcb72abaf8441d678a0c1e9938
@@ -764,7 +764,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-browser-dynamic@npm:^20.3.14":
+"@angular/platform-browser-dynamic@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/platform-browser-dynamic@npm:20.3.16"
   dependencies:
@@ -778,7 +778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-browser@npm:^20.3.14":
+"@angular/platform-browser@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/platform-browser@npm:20.3.16"
   dependencies:
@@ -794,7 +794,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/router@npm:^20.3.14":
+"@angular/router@npm:^20.3.16":
   version: 20.3.16
   resolution: "@angular/router@npm:20.3.16"
   dependencies:
@@ -3566,12 +3566,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23-marked-upgrade/hmcts-ccd-case-ui-toolkit-7.3.23-marked-upgrade.tgz":
-  version: 7.3.23-marked-upgrade
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23-marked-upgrade/hmcts-ccd-case-ui-toolkit-7.3.23-marked-upgrade.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.25/hmcts-ccd-case-ui-toolkit-7.3.25.tgz":
+  version: 7.3.25
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.25/hmcts-ccd-case-ui-toolkit-7.3.25.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/170e7eececfb07e5a60e993685997a966bd4a04f0871bfe82d65dc311f135f295084ac0402668fa2b8607dfbf0b62244d014b3bd353925563fb2b5649c1a45de
+  checksum: 10/b3e2b129e1d4dfd70c29e71d8c4cfd1ca0afe1efe38a9459cd6a957cf04187c127809164c7d89c9761a1d0d6a20ef6d359f0540daf9fc0662fdfa7c9f751728a
   languageName: node
   linkType: hard
 
@@ -23829,7 +23829,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@edium/fsm": "npm:^2.1.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.23-marked-upgrade/hmcts-ccd-case-ui-toolkit-7.3.23-marked-upgrade.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.25/hmcts-ccd-case-ui-toolkit-7.3.25.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.7/hmcts-media-viewer-4.2.7.tgz"

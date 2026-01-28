@@ -706,7 +706,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private numberOfPhysicalAttendeesChangeExists(): boolean {
     if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.numberOfPhysicalAttendees)){
-      HearingsUtils.hasHearingNumberChanged(this.serviceHearingValuesModel?.numberOfPhysicalAttendees, this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees);
+      return HearingsUtils.hasHearingNumberChanged(this.serviceHearingValuesModel?.numberOfPhysicalAttendees, this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees);
     }
     return false;
   }

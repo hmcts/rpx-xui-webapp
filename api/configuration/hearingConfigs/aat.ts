@@ -13,12 +13,6 @@ export const aatEnableHearingAmendments = {
         'Bail'
       ],
       jurisdiction: 'IA'
-    },
-    {
-      includeCaseTypes: [
-        'PRLAPPS'
-      ],
-      jurisdiction: 'PRIVATELAW'
     }
   ]
 };

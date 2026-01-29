@@ -706,7 +706,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
   private numberOfPhysicalAttendeesChangeExists(): boolean {
     if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.numberOfPhysicalAttendees)){
-      HearingsUtils.hasHearingNumberChanged(this.serviceHearingValuesModel?.numberOfPhysicalAttendees, this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees);
+      return HearingsUtils.hasHearingNumberChanged(this.serviceHearingValuesModel?.numberOfPhysicalAttendees, this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees);
     }
     return false;
   }
@@ -721,20 +721,31 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
 
-    if (this.hearingRequestMainModel.partyDetails) {
-      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)) {
-        return true;
-      }
+    if (
+      this.hearingRequestMainModel.partyDetails &&
+      HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
+    ) {
+      return true;
     }
-    if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)) {
+    if (
+      HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow) &&
+      HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)
+    ) {
       return true;
     }
 
-    if (this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration) {
+    if (
+      HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.duration) &&
+      this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration
+    ) {
       return true;
     }
 
-    return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingPriorityType)) {
+      return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+    }
+
+    return false;
   }
 
   private pageVisitAdditionalInstructionsChangeExists(): boolean {

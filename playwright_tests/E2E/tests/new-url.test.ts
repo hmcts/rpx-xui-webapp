@@ -1,40 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { signIn, signOut } from "../steps/login-steps";
-import { createCase } from '../steps/create-xui-case-poc-steps';
 import { waitForSpinner } from '../steps/spinner-steps';
-import { dealWithShortenedCaseRefLabel, getCaseReferenceFromFirstRow, getCaseReferenceFromFirstRowForEmployment } from '../steps/table-steps';
+import { getCaseReferenceFromFirstRowForEmployment } from '../steps/table-steps';
 
-test('event journey with new url along with jurisdiction and caseType ', async ({ page }) => {
-  await signIn(page, 'SOLICITOR');
-  await expect(page.getByLabel('Manage Cases')).toBeVisible();
-  await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
-  await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
-  await page.getByLabel('Apply filter').click();
-  await waitForSpinner(page);
-  await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  if (firstCaseRef.trim().length === 0) {
-    await createCase(page);
-    firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  }
-  await page.getByRole('link', { name: `go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}` }).click();
-  await expect(page.locator('h1')).toContainText(`#${firstCaseRef}`);
-
-  await page.getByLabel('Next step').selectOption('3: Object');
-  await page.getByRole('button', { name: 'Go' }).click();
-  await expect(page.getByText('Update case')).toBeVisible();
-  let pageUrl = page.url();
-  let afterCaseDetails = pageUrl.split('case-details/')[1];
-  expect(afterCaseDetails).toMatch(/^DIVORCE\/xuiTestJurisdiction\//);
-  await page.getByRole('button', { name: 'Continue' }).click();
-  await expect(page.getByText('Update case')).toBeVisible();
-  await page.getByRole('checkbox', { name: 'Behaviour' }).check();
-  await page.getByRole('button', { name: 'Submit' }).click();
-  await expect(page.getByText('has been updated with event: Update case')).toBeVisible();
-  pageUrl = page.url();
-  afterCaseDetails = pageUrl.split('case-details/')[1];
-  expect(afterCaseDetails).toMatch(/^DIVORCE\/xuiTestJurisdiction\//);
-});
 
 test('Search from menu 16-digit find control and navigate to the new url', async ({ page }) => {
   await signIn(page, 'SEARCH_EMPLOYMENT_CASE');

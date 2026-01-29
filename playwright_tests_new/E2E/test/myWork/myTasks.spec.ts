@@ -5,7 +5,7 @@ let sessionCookies: any[] = [];
 
 test.describe("Verify my tasks works as expected", () => {
     test.beforeEach(async ({ page }) => {
-        const { cookies } = loadSessionCookies('CASEWORKER_GLOBALSEARCH');
+        const { cookies } = loadSessionCookies('STAFF_ADMIN');
         sessionCookies = cookies;
         if (sessionCookies.length) {
             await page.context().addCookies(sessionCookies);
@@ -16,11 +16,12 @@ test.describe("Verify my tasks works as expected", () => {
         );
     });
 
-    test("Verify tasks", async ({ taskListPage, tableUtils, page }) => {
+    test("Verify task actions work as expected", async ({ taskListPage, tableUtils, page }) => {
 
         await test.step("Navigate to the task list page", async () => {
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
+            await taskListPage.manageCaseButtons.nth(0).waitFor();
         });
 
         await test.step("Check my available tasks has data in the table", async () => {
@@ -28,14 +29,13 @@ test.describe("Verify my tasks works as expected", () => {
             expect(table.length).toBeGreaterThan(0);
         });
 
-        await test.step("Verify task details view", async () => {
+        await test.step("Verify tasks actions shown as expected", async () => {
             await taskListPage.manageCaseButtons.nth(0).click();
-            const table = await tableUtils.mapExuiTable(taskListPage.taskListTable);
-            console.log(table);
-
-            await page.getByLabel('Go to task').click();
-            await taskListPage.exuiSpinnerComponent.wait();
+            expect(taskListPage.taskActionCancel).toBeVisible();
+            expect(taskListPage.taskActionGoTo).toBeVisible();
+            expect(taskListPage.taskActionMarkAsDone).toBeVisible();
+            expect(taskListPage.taskActionReassign).toBeVisible();
+            expect(taskListPage.taskActionUnassign).toBeVisible();
         });
-
     });
 });

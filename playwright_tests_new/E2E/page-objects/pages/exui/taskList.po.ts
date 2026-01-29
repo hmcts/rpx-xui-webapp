@@ -12,6 +12,12 @@ export class TaskListPage extends Base {
 
   readonly workMenuItems = this.page.locator('.hmcts-sub-navigation');
 
+  readonly taskActionCancel = this.page.locator('#action_cancel');
+  readonly taskActionMarkAsDone = this.page.locator('#action_complete');
+  readonly taskActionGoTo = this.page.locator('#action_go');
+  readonly taskActionReassign = this.page.locator('#action_reassign');
+  readonly taskActionUnassign = this.page.locator('#action_unclaim');
+
   constructor(page: Page) {
     super(page);
   }

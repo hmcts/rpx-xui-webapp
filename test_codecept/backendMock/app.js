@@ -187,7 +187,7 @@ class MockApp {
     });
 
     // ── serve the built UI from dist on :8080 ─────────────────────────────────
-    const staticRoot = path.resolve(__dirname, '../../dist/rpx-exui');
+    const staticRoot = path.resolve(__dirname, '../../dist/rpx-exui/browser');
 
     // 1) static files (no index auto-serve)
     app.use(express.static(staticRoot, { index: false, cacheControl: false }));

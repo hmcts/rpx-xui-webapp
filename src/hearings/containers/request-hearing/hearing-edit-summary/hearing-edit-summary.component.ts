@@ -4,7 +4,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { cloneDeep } from 'lodash';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CaseCategoryModel } from '../../../models/caseCategory.model';

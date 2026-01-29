@@ -9,7 +9,7 @@ const logger = createLogger({
 });
 
 export class CreateCasePage extends Base {
- 
+
   readonly container = this.page.locator("exui-case-home");
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
@@ -71,11 +71,13 @@ export class CreateCasePage extends Base {
 
   // Locators for the Divorce - XUI Case PoC
   readonly person1Title = this.page.locator('#Person1_Title');
-  readonly firstNameInput = this.page.locator('#Person1_FirstName');
-  readonly lastNameInput = this.page.locator('#Person1_LastName');
-  readonly genderSelect = this.page.locator('#Person1_PersonGender');
-  readonly jobTitleInput = this.page.locator('#Person1_PersonJob_Title');
-  readonly jobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
+  readonly person1FirstNameInput = this.page.locator('#Person1_FirstName');
+  readonly person1LastNameInput = this.page.locator('#Person1_LastName');
+  readonly person1GenderSelect = this.page.locator('#Person1_PersonGender');
+  readonly person1JobTitleInput = this.page.locator('#Person1_PersonJob_Title');
+  readonly person1JobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
+  readonly person2FirstNameInput = this.page.locator('#Person2_FirstName');
+  readonly person2LastNameInput = this.page.locator('#Person2_LastName');
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
   readonly textField0Input = this.page.locator('#TextField0');
@@ -162,7 +164,7 @@ export class CreateCasePage extends Base {
     }
     await this.startButton.click();
   }
-  
+
   async addressLookup(postCode: string, addressOption: string) {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();
@@ -344,24 +346,15 @@ export class CreateCasePage extends Base {
     await this.page.getByLabel(gender, { exact: true }).check();
     await this.person1Title.click();
     await this.person1Title.fill(faker.person.prefix());
-    await this.person1Title.press('Tab');
-    await this.person1FirstName.fill(faker.person.firstName());
-    await this.person2FirstName.press('Tab');
-    await this.person1LastName.fill(faker.person.lastName());
-    await this.person2LastName.press('Tab');
-    await this.genderSelect.selectOption(gender);
-    await this.jobTitleInput.click();
-    await this.jobTitleInput.fill(faker.person.jobTitle());
-    await this.jobDescriptionInput.click();
-    await this.jobDescriptionInput.fill(faker.lorem.sentence());
+    await this.person1FirstNameInput.fill(faker.person.firstName());
+    await this.person1LastNameInput.fill(faker.person.lastName());
+    await this.person1GenderSelect.selectOption(gender);
+    await this.person1JobTitleInput.fill(faker.person.jobTitle());
+    await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
     await this.continueButton.click();
-    await this.textField0Input.click();
     await this.textField0Input.fill(textField0);
-    await this.textField0Input.press('Tab');
     await this.textField3Input.fill(faker.lorem.word());
-    await this.textField3Input.press('Tab');
     await this.textField1Input.fill(faker.lorem.word());
-    await this.textField1Input.press('Tab');
     await this.textField2Input.fill(faker.lorem.word());
     await this.continueButton.click();
     await this.testSubmitButton.click();

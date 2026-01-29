@@ -25,7 +25,6 @@ export class CaseDetailsPage extends Base {
   readonly continueButton = this.page.getByRole("button", { name: "Continue" });
   readonly submitButton = this.page.getByRole("button", { name: "Submit" });
   readonly eventTable = this.page.locator("EventLogTable");
-  readonly someMoreDataTab = this.page.locator('table.complex-panel-table');
   readonly firstNameCell = this.page.locator('tr:has-text("First Name") + td');
   readonly lastNameCell = this.page.locator('tr:has-text("Last Name") + td');
   readonly updateCase = this.page.getByText('Update case', { exact: true });
@@ -43,6 +42,7 @@ export class CaseDetailsPage extends Base {
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
+  readonly someMoreDataTable = this.page.locator('table.SomeMoreData')
 
   constructor(page: Page) {
     super(page);
@@ -195,45 +195,6 @@ export class CaseDetailsPage extends Base {
     return { updateRow, updateDate, updateAuthor, expectedDate };
   }
 
-  async assertDetailFields(expected: Array<[string, string]>): Promise<void> {
-    for (const [label, expectedValue] of expected) {
-      const actualValue = await this.getDetailField(label);
-      expect(actualValue, `${label} value mismatch`).toBe(expectedValue);
-    }
-  }
-
-  async getDetailField(label: string): Promise<string> {
-    const valueCell = this.historyDetailsTable.locator(`tr:has(th:has-text("${label}")) td`).first();
-    await valueCell.waitFor({ state: 'visible' });
-    const text = (await valueCell.textContent()) || '';
-    return label === 'Date' ? text.split(',')[0] : text;
-  }
-
-
-  async getDetailsTable(testValue: any): Promise<Record<string, string>> {
-    await this.historyDetailsTable.waitFor({ state: 'visible' });
-    const rows = this.historyDetailsTable.locator('tr');
-    const rowCount = await rows.count();
-    const data: Record<string, string> = {};
-
-    for (let i = 0; i < rowCount; i++) {
-      const row = rows.nth(i);
-      const label = (await row.locator('th').first().textContent()) || '';
-      const value = (await row.locator('td').first().textContent()) || '';
-      if (label) {
-        data[label] = value;
-      }
-    }
-
-    return data;
-  }
-
-  async getSomeMoreDataField(label: string): Promise<string> {
-    await this.someMoreDataTab.waitFor({ state: 'visible' });
-    const valueCell = this.someMoreDataTab.locator(`tr:has(th:has-text("${label}")) td`).first();
-    await valueCell.waitFor({ state: 'visible' });
-    return (await valueCell.textContent()) || '';
-  }
   async getCaseNumberFromAlert(): Promise<string> {
     const alertText = await this.caseAlertSuccessMessage.innerText();
     const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);

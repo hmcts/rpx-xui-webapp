@@ -14,25 +14,29 @@ test.describe("Verify my tasks works as expected", () => {
     });
 
 
-    test("Verify tasks", async ({ taskListPage }) => {
+    test("Verify tasks", async ({ taskListPage, tableUtils, page }) => {
 
         await test.step("Navigate to the task list page", async () => {
-            await taskListPage.goto();
+
+           // await taskListPage.applyAllFilterOptions();
+
+            
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
         });
 
-        await test.step("Click on the first task in the task list", async () => {
-            await taskListPage.selectWorkMenuItem('My tasks');
-            await taskListPage.exuiSpinnerComponent.wait();
-
-            await taskListPage.selectWorkMenuItem('Available tasks');
-            await taskListPage.exuiSpinnerComponent.wait();
-
-            await taskListPage.selectWorkMenuItem('My cases');
-            await taskListPage.exuiSpinnerComponent.wait();
-
-            await taskListPage.selectWorkMenuItem('My Access');
+        await test.step("Check my available tasks has data in the table", async () => {
+            const table = await tableUtils.mapExuiTable( taskListPage.taskListTable);
+            expect(table.length).toBeGreaterThan(0);            
         });
+
+         await test.step("Verify task details view", async () => {
+            await taskListPage.manageCaseButtons.nth(0).click();
+            const table = await tableUtils.mapExuiTable( taskListPage.taskListTable);
+            console.log(table);
+            page.getByLabel('Go to task').click();
+            await taskListPage.exuiSpinnerComponent.wait();
+         });
+
     });
 });

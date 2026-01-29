@@ -9,7 +9,7 @@ const logger = createLogger({
 });
 
 export class CreateCasePage extends Base {
-
+ 
   readonly container = this.page.locator("exui-case-home");
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
@@ -162,7 +162,7 @@ export class CreateCasePage extends Base {
     }
     await this.startButton.click();
   }
-
+  
   async addressLookup(postCode: string, addressOption: string) {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();
@@ -218,7 +218,6 @@ export class CreateCasePage extends Base {
     }
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
   }
-
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     await this.createCase(jurisdiction, caseType, 'Create Case');
@@ -342,15 +341,14 @@ export class CreateCasePage extends Base {
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     await this.createCase(jurisdiction, caseType, '');
-
     await this.page.getByLabel(gender, { exact: true }).check();
     await this.person1Title.click();
     await this.person1Title.fill(faker.person.prefix());
     await this.person1Title.press('Tab');
-    await this.firstNameInput.fill(faker.person.firstName());
-    await this.firstNameInput.press('Tab');
-    await this.lastNameInput.fill(faker.person.lastName());
-    await this.lastNameInput.press('Tab');
+    await this.person1FirstName.fill(faker.person.firstName());
+    await this.person2FirstName.press('Tab');
+    await this.person1LastName.fill(faker.person.lastName());
+    await this.person2LastName.press('Tab');
     await this.genderSelect.selectOption(gender);
     await this.jobTitleInput.click();
     await this.jobTitleInput.fill(faker.person.jobTitle());

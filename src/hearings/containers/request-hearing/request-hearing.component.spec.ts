@@ -6,13 +6,14 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../hearing.test.data';
+import { HearingRequestMainModel } from '../../models/hearingRequestMain.model';
 import { ACTION, PartyType } from '../../models/hearings.enum';
+import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingStore from '../../store';
 import { AbstractPageFlow } from '../../utils/abstract-page-flow';
+import { HearingsUtils } from '../../utils/hearings.utils';
 import { RequestHearingComponent } from './request-hearing.component';
-import { ServiceHearingValuesModel } from 'src/hearings/models/serviceHearingValues.model';
-import { HearingRequestMainModel } from 'src/hearings/models/hearingRequestMain.model';
 
 describe('RequestHearingComponent', () => {
   let component: RequestHearingComponent;
@@ -395,7 +396,7 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     component.submitRequest(ACTION.SUBMIT);
     expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: 'The Party IDs for this request appear mismatched, please reload and start the request again.' });
+    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
   });
 
   afterEach(() => {

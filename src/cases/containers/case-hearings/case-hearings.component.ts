@@ -80,7 +80,11 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({
+      jurisdictionId: this.jurisdiction,
+      caseReference: this.caseId,
+      caseType: this.caseType
+    }));
   }
 
   public ngOnInit(): void {
@@ -88,7 +92,11 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     const loadingToken = this.loadingService.register();
     this.hearingStore.dispatch(new fromHearingStore.StoreJurisdictionAndCaseRef({ jurisdictionId: this.jurisdiction, caseReference: this.caseId, caseType: this.caseType }));
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({
+      jurisdictionId: this.jurisdiction,
+      caseReference: this.caseId,
+      caseType: this.caseType
+    }));
 
     this.hearingValuesSubscription = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).subscribe((serviceHearingValuesModel) => {
       if (serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID) {

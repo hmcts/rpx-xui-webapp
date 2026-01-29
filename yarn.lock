@@ -501,14 +501,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:^20.3.14":
-  version: 20.3.15
-  resolution: "@angular/animations@npm:20.3.15"
+"@angular/animations@npm:^20.3.16":
+  version: 20.3.16
+  resolution: "@angular/animations@npm:20.3.16"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": 20.3.15
-  checksum: 10/59a7f2532c8fd71b272ad89e4f111eac69ca289d7baf7a08f5cdb01df17852f8a62fdf41d3957fded3490b9fd36a5400230d302d2b603017f0e61d8313381efb
+    "@angular/core": 20.3.16
+  checksum: 10/923731d643f049a2328ac9736182d57e39b566fe96370a2254810b66c00535dd94651bb3df86fd18c728505ad596e7139675c42f22a668e17fb76c6e15a7ffb3
   languageName: node
   linkType: hard
 
@@ -23999,7 +23999,7 @@ __metadata:
     "@angular-eslint/template-parser": "npm:20.4.0"
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:^16.0.1"
-    "@angular/animations": "npm:^20.3.14"
+    "@angular/animations": "npm:^20.3.16"
     "@angular/cdk": "npm:^16.2.0"
     "@angular/cli": "npm:^20.3.15"
     "@angular/common": "npm:^20.3.16"

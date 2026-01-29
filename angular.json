@@ -2,6 +2,13 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+  "cli": {
+    "cache": {
+      "enabled": true,
+      "environment": "all",
+      "path": ".angular/cache"
+    }
+  },
   "projects": {
     "rpx-exui": {
       "root": "",
@@ -11,14 +18,12 @@
       "schematics": {},
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "aot": true,
-            "buildOptimizer": true,
             "outputPath": "dist/rpx-exui",
             "sourceMap": true,
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -28,6 +33,7 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
+                ".",
                 "node_modules/govuk_frontend_toolkit/stylesheets",
                 "node_modules/govuk-elements-sass/public/sass",
                 "node_modules"
@@ -70,8 +76,6 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -94,11 +98,8 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "buildOptimizer": false,
               "namedChunks": false,
-              "aot": true,
-              "extractLicenses": false,
-              "vendorChunk": false
+              "extractLicenses": false
             }
           }
         },

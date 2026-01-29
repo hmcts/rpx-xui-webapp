@@ -99,8 +99,8 @@ describe('Auth Module', () => {
 
       expect(loggerStub.info).to.have.been.calledWith('Setting session and cookies');
       expect(res.cookie).to.have.been.calledTwice;
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', 'test-user-id', { sameSite: 'strict' });
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', 'test-access-token', { sameSite: 'strict' });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', 'test-user-id', { sameSite: 'strict', secure: false });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', 'test-access-token', { sameSite: 'strict', secure: false });
     });
 
     it('should redirect to root when not refresh', () => {
@@ -127,8 +127,8 @@ describe('Auth Module', () => {
 
       successCallback(req, res, next);
 
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', undefined, { sameSite: 'strict' });
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', undefined, { sameSite: 'strict' });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', undefined, { sameSite: 'strict', secure: false });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', undefined, { sameSite: 'strict', secure: false });
     });
   });
 

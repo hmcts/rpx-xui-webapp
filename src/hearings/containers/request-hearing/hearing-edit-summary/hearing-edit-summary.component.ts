@@ -721,21 +721,24 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
 
-    if (this.hearingRequestMainModel.partyDetails) {
-      if (HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)) {
-        return true;
-      }
+    if (
+      this.hearingRequestMainModel.partyDetails &&
+      HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
+    ) {
+      return true;
     }
-    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow)) {
-      if (HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)) {
-        return true;
-      }
+    if (
+      HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow) &&
+      HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)
+    ) {
+      return true;
     }
 
-    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.duration)) {
-      if (this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration) {
-        return true;
-      }
+    if (
+      HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.duration) &&
+      this.hearingRequestMainModel.hearingDetails?.duration !== this.serviceHearingValuesModel?.duration
+    ) {
+      return true;
     }
 
     if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingPriorityType)) {

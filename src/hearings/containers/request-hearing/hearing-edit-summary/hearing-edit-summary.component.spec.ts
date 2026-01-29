@@ -3093,4 +3093,460 @@ describe('HearingEditSummaryComponent', () => {
       }
     };
   }
+
+  describe('pageVisitHearingWindowChangeExists', () => {
+    // Helper function to setup component with specific hearing window/duration/priority values
+    function setupHearingWindowTest(
+      serviceHearingValues: Partial<ServiceHearingValuesModel>,
+      hearingRequestValues: {
+        hearingDetails?: {
+          hearingWindow?: any;
+          duration?: number | null;
+          hearingPriorityType?: string | null;
+        };
+        partyDetails?: PartyDetailsModel[];
+      },
+      sectionsToDisplay: string[] = ['hearing-timing']
+    ) {
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        hearingWindow: serviceHearingValues.hearingWindow,
+        duration: serviceHearingValues.duration,
+        hearingPriorityType: serviceHearingValues.hearingPriorityType,
+        parties: serviceHearingValues.parties || []
+      };
+
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          hearingWindow: hearingRequestValues.hearingDetails?.hearingWindow,
+          duration: hearingRequestValues.hearingDetails?.duration,
+          hearingPriorityType: hearingRequestValues.hearingDetails?.hearingPriorityType
+        },
+        partyDetails: hearingRequestValues.partyDetails || []
+      };
+
+      component.hearingRequestToCompareMainModel = {
+        ...component.hearingRequestToCompareMainModel,
+        partyDetails: hearingRequestValues.partyDetails || []
+      };
+
+      component.sectionsToDisplay = sectionsToDisplay;
+    }
+
+    beforeEach(() => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: {
+          reasonableAdjustmentChangesConfirmed: false,
+          reasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesRequired: false,
+          nonReasonableAdjustmentChangesConfirmed: false,
+          participantAttendanceChangesRequired: false,
+          participantAttendanceChangesConfirmed: false,
+          hearingWindowChangesRequired: false,
+          hearingWindowChangesConfirmed: false,
+          hearingFacilitiesChangesRequired: false,
+          partyDetailsAnyChangesRequired: false,
+          hearingUnavailabilityDatesChanged: false,
+          additionalInstructionsChangesRequired: false
+        }
+      };
+    });
+
+    it('should return false when hearing timing is not in sectionsToDisplay', () => {
+      setupHearingWindowTest({}, {}, []);
+
+      const result = (component as any).pageVisitHearingWindowChangeExists();
+
+      expect(result).toBeFalse();
+    });
+
+    it('should return false when hearingWindowChangesConfirmed is true', () => {
+      setupHearingWindowTest({}, {});
+      hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = true;
+
+      const result = (component as any).pageVisitHearingWindowChangeExists();
+
+      expect(result).toBeFalse();
+    });
+
+    describe('party unavailability dates checks', () => {
+      it('should return true when party unavailability dates have changed', () => {
+        const parties: PartyDetailsModel[] = [{
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          unavailabilityRanges: [{
+            unavailableFromDate: '2024-01-01T09:00:00.000Z',
+            unavailableToDate: '2024-01-05T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY
+          }]
+        }];
+
+        setupHearingWindowTest(
+          { parties },
+          { partyDetails: parties }
+        );
+        spyOn(HearingsUtils, 'hasPartyUnavailabilityDatesChanged').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeTrue();
+      });
+
+      it('should return false when party unavailability dates have not changed', () => {
+        const parties: PartyDetailsModel[] = [{
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          unavailabilityRanges: []
+        }];
+
+        setupHearingWindowTest(
+          { parties },
+          { partyDetails: parties }
+        );
+        spyOn(HearingsUtils, 'hasPartyUnavailabilityDatesChanged').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+    });
+
+    describe('hearing window checks with toCompareServiceHearingValueField', () => {
+      it('should return true when hearingWindow is valid and dates have changed', () => {
+        setupHearingWindowTest(
+          {
+            hearingWindow: {
+              dateRangeStart: '2024-01-01T09:00:00.000Z',
+              dateRangeEnd: '2024-01-10T09:00:00.000Z'
+            }
+          },
+          {
+            hearingDetails: {
+              hearingWindow: {
+                dateRangeStart: '2024-02-01T09:00:00.000Z',
+                dateRangeEnd: '2024-02-10T09:00:00.000Z'
+              }
+            }
+          }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(component.serviceHearingValuesModel.hearingWindow);
+        expect(result).toBeTrue();
+      });
+
+      it('should return false when hearingWindow is valid but dates have not changed', () => {
+        const hearingWindow = {
+          dateRangeStart: '2024-01-01T09:00:00.000Z',
+          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+        };
+
+        setupHearingWindowTest(
+          { hearingWindow },
+          { hearingDetails: { hearingWindow } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip hearing window check when hearingWindow is null', () => {
+        setupHearingWindowTest(
+          { hearingWindow: null },
+          { hearingDetails: { hearingWindow: null } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(HearingsUtils.hasHearingDatesChanged).not.toHaveBeenCalled();
+        expect(result).toBeFalse();
+      });
+
+      it('should skip hearing window check when hearingWindow is undefined', () => {
+        setupHearingWindowTest(
+          { hearingWindow: undefined },
+          { hearingDetails: { hearingWindow: undefined } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(HearingsUtils.hasHearingDatesChanged).not.toHaveBeenCalled();
+        expect(result).toBeFalse();
+      });
+
+      it('should skip hearing window check when hearingWindow is empty object', () => {
+        setupHearingWindowTest(
+          { hearingWindow: {} },
+          { hearingDetails: { hearingWindow: {} } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(HearingsUtils.hasHearingDatesChanged).not.toHaveBeenCalled();
+        expect(result).toBeFalse();
+      });
+    });
+
+    describe('duration checks with toCompareServiceHearingValueField', () => {
+      it('should return true when duration is valid and has changed', () => {
+        setupHearingWindowTest(
+          { duration: 120 },
+          { hearingDetails: { duration: 60 } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(120);
+        expect(result).toBeTrue();
+      });
+
+      it('should return false when duration is valid but has not changed', () => {
+        setupHearingWindowTest(
+          { duration: 120 },
+          { hearingDetails: { duration: 120 } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip duration check when duration is null', () => {
+        setupHearingWindowTest(
+          { duration: null },
+          { hearingDetails: { duration: null } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip duration check when duration is undefined', () => {
+        setupHearingWindowTest(
+          { duration: undefined },
+          { hearingDetails: { duration: undefined } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip duration check when duration is 0', () => {
+        setupHearingWindowTest(
+          { duration: 0 },
+          { hearingDetails: { duration: 0 } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+    });
+
+    describe('hearingPriorityType checks with toCompareServiceHearingValueField', () => {
+      it('should return true when hearingPriorityType is valid and has changed', () => {
+        setupHearingWindowTest(
+          { hearingPriorityType: 'Urgent' },
+          { hearingDetails: { hearingPriorityType: 'Standard' } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith('Urgent');
+        expect(result).toBeTrue();
+      });
+
+      it('should return false when hearingPriorityType is valid but has not changed', () => {
+        setupHearingWindowTest(
+          { hearingPriorityType: 'Urgent' },
+          { hearingDetails: { hearingPriorityType: 'Urgent' } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip hearingPriorityType check when hearingPriorityType is null', () => {
+        setupHearingWindowTest(
+          { hearingPriorityType: null },
+          { hearingDetails: { hearingPriorityType: null } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip hearingPriorityType check when hearingPriorityType is undefined', () => {
+        setupHearingWindowTest(
+          { hearingPriorityType: undefined },
+          { hearingDetails: { hearingPriorityType: undefined } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should skip hearingPriorityType check when hearingPriorityType is empty string', () => {
+        setupHearingWindowTest(
+          { hearingPriorityType: '' },
+          { hearingDetails: { hearingPriorityType: '' } }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+    });
+
+    describe('combined scenarios', () => {
+      it('should return true when multiple fields have changed', () => {
+        setupHearingWindowTest(
+          {
+            hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
+            duration: 120,
+            hearingPriorityType: 'Urgent'
+          },
+          {
+            hearingDetails: {
+              hearingWindow: { dateRangeStart: '2024-02-01T09:00:00.000Z' },
+              duration: 60,
+              hearingPriorityType: 'Standard'
+            }
+          }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeTrue();
+      });
+
+      it('should return false when all fields are invalid/null', () => {
+        setupHearingWindowTest(
+          {
+            hearingWindow: null,
+            duration: null,
+            hearingPriorityType: null
+          },
+          {
+            hearingDetails: {
+              hearingWindow: null,
+              duration: null,
+              hearingPriorityType: null
+            }
+          }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should return true when only one field is valid and changed', () => {
+        setupHearingWindowTest(
+          {
+            hearingWindow: null,
+            duration: 120,
+            hearingPriorityType: null
+          },
+          {
+            hearingDetails: {
+              hearingWindow: null,
+              duration: 60,
+              hearingPriorityType: null
+            }
+          }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(false, true, false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeTrue();
+      });
+
+      it('should return false when all valid fields have not changed', () => {
+        setupHearingWindowTest(
+          {
+            hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
+            duration: 120,
+            hearingPriorityType: 'Urgent'
+          },
+          {
+            hearingDetails: {
+              hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
+              duration: 120,
+              hearingPriorityType: 'Urgent'
+            }
+          }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        expect(result).toBeFalse();
+      });
+
+      it('should check each field in sequence and return true on first change', () => {
+        setupHearingWindowTest(
+          {
+            hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
+            duration: 120,
+            hearingPriorityType: 'Urgent'
+          },
+          {
+            hearingDetails: {
+              hearingWindow: { dateRangeStart: '2024-02-01T09:00:00.000Z' },
+              duration: 120,
+              hearingPriorityType: 'Urgent'
+            }
+          }
+        );
+        spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
+        spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(true);
+
+        const result = (component as any).pageVisitHearingWindowChangeExists();
+
+        // Should return true after finding first change (hearingWindow)
+        expect(result).toBeTrue();
+      });
+    });
+  });
 });

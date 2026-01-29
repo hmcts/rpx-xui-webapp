@@ -68,7 +68,7 @@ test.describe("Party level case flags", () => {
             await page.context().addCookies(sessionCookies);
         }
         await page.goto('/');
-        await createCasePage.createCaseFlagDivorceCase(testValue, jurisdiction, caseType);
+        await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
     });
 

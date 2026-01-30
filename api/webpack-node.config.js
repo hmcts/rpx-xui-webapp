@@ -5,22 +5,25 @@ const nodeExternals = require('webpack-node-externals');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const { NODE_ENV = 'production' } = process.env;
+const isProduction = NODE_ENV === 'production';
 
 module.exports = {
   optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          sourceMap: true,
-        },
-      }),
-    ],
+    minimize: isProduction,
+    minimizer: isProduction
+      ? [
+          new TerserPlugin({
+            terserOptions: {
+              sourceMap: true,
+            },
+          }),
+        ]
+      : [],
   },
   entry: ['./server.ts'],
   mode: NODE_ENV,
   target: 'node',
-  devtool: 'source-map',
+  devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',
   node: {
     __dirname: false,
     __filename: false,

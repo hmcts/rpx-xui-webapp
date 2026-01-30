@@ -33,8 +33,31 @@ function writeInt(fp, n) {
   fs.writeFileSync(fp, String(n));
 }
 
+function isPidAlive(pid) {
+  if (!pid || Number.isNaN(pid)) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function cleanupStaleLock() {
+  if (!fs.existsSync(LOCK_DIR)) return;
+  try {
+    const ownerPid = fs.existsSync(OWNER_PIDFILE) ? readInt(OWNER_PIDFILE) : 0;
+    if (!isPidAlive(ownerPid)) {
+      fs.rmSync(LOCK_DIR, { recursive: true, force: true });
+    }
+  } catch {
+    // best effort: stale lock will be treated as shared if we cannot clean it
+  }
+}
+
 /* ── lock helpers ───────────────────────────────────────────── */
 function acquireLock() {
+  cleanupStaleLock();
   try {
     fs.mkdirSync(LOCK_DIR, { recursive: false });
     writeInt(COUNTER_FILE, 1);

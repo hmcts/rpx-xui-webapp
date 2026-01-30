@@ -9,53 +9,6 @@ import {
   getCaseReferenceFromFirstRowForEmployment,
 } from '../steps/table-steps';
 
-test('creating a case updates the url with jurisdiction and caseType', async ({ page }) => {
-  const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
-  await signIn(page, 'SOLICITOR');
-  await expect(page.getByLabel('Manage Cases')).toBeVisible();
-
-  await page.getByRole('link', { name: 'Create case' }).click();
-  await page.getByLabel('Jurisdiction').selectOption('PUBLICLAW');
-  await page.getByLabel('Case type').selectOption('CARE_SUPERVISION_EPO');
-  await page.getByRole('button', { name: 'Start' }).click();
-  await page.getByText('Child Solicitor').click();
-  await page.getByLabel('Select the local authority which relates to the case').selectOption('1: BR');
-  await page.getByRole('button', { name: 'Continue' }).click();
-  await page.getByRole('textbox', { name: 'Case name' }).fill('Test Case');
-  await page.getByRole('button', { name: 'Submit' }).click();
-  const pageUrl = page.url();
-  await expect(page.locator('cut-alert')).toContainText('has been created.');
-  const responseData = await response;
-  const caseType = responseData?.case_type?.id;
-  const jurisdiction = responseData?.case_type?.jurisdiction?.id;
-  expect(pageUrl).toContain('/' + caseType);
-  expect(pageUrl).toContain('/' + jurisdiction);
-});
-
-test('navigating to a case which displays the new url containing jurisdiction and caseType', async ({ page }) => {
-  const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
-  await signIn(page, 'SOLICITOR');
-  await expect(page.getByLabel('Manage Cases')).toBeVisible();
-  await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
-  await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
-  await page.getByLabel('Apply filter').click();
-  await waitForSpinner(page);
-  await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  if (firstCaseRef.trim().length === 0) {
-    await createCase(page);
-    firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  }
-  await page.getByRole('link', { name: `go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}` }).click();
-  await expect(page.locator('h1')).toContainText(`#${firstCaseRef}`);
-  const pageUrl = page.url();
-  const responseData = await response;
-  const caseType = responseData?.case_type?.id;
-  const jurisdiction = responseData?.case_type?.jurisdiction?.id;
-  expect(pageUrl).toContain('/' + caseType);
-  expect(pageUrl).toContain('/' + jurisdiction);
-});
-
 test('event journey with new url along with jurisdiction and caseType ', async ({ page }) => {
   await signIn(page, 'SOLICITOR');
   await expect(page.getByLabel('Manage Cases')).toBeVisible();

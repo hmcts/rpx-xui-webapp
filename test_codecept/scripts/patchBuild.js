@@ -3,7 +3,24 @@ const fs = require('fs');
 const path = require('path');
 
 const distRoot = path.resolve(__dirname, '../../dist/rpx-exui');
-const indexPath = path.join(distRoot, 'index.html');
+const candidateIndexPaths = [
+  // Older Angular builds
+  path.join(distRoot, 'index.html'),
+  // Angular application builder output (browser bundle)
+  path.join(distRoot, 'browser', 'index.html'),
+];
+
+const indexPath = candidateIndexPaths.find((p) => fs.existsSync(p));
+
+if (!indexPath) {
+  const existing = fs.existsSync(distRoot) ? fs.readdirSync(distRoot).join(', ') : '(dist root missing)';
+  throw new Error(
+    '[patchBuild] Could not find index.html. Tried:\n' +
+      candidateIndexPaths.map((p) => ` - ${p}`).join('\n') +
+      `\n\nContents of dist root (${distRoot}): ${existing}\n` +
+      'Did the Angular build run (yarn build:prod) before patch:static?'
+  );
+}
 
 let html = fs.readFileSync(indexPath, 'utf8');
 

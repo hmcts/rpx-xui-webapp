@@ -251,14 +251,14 @@ export function addLocationToLocationsByService(locationsByServices: LocationsBy
     return locationsByServices;
   }
   let locationsByService = locationsByServices.find((serviceLocations) => serviceLocations.service === service);
-  if (!locationsByService) {
-    // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [] }) : locationsByServices.push({ service, locations: [location] });
-  } else {
+  if (locationsByService) {
     const finalDataWithoutService = locationsByServices.filter((serviceLocations) => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
     locationsByService = { service, locations: locationsByService.locations.concat([location]) };
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
+  } else {
+    // check to ensure that if service present with null location (i.e. a base location not within region), we register this
+    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [] }) : locationsByServices.push({ service, locations: [location] });
   }
   return locationsByServices;
 }

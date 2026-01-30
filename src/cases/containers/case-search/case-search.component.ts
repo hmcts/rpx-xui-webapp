@@ -250,10 +250,10 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   }
 
   private triggerQuery() {
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata();
-    } else {
+    if (this.elasticSearchFlag) {
       this.getElasticSearchResults();
+    } else {
+      this.findCaseListPaginationMetadata();
     }
   }
 

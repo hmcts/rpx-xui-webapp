@@ -16,7 +16,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 @Component({
   standalone: false,
   selector: 'exui-hearing-link',
-  templateUrl: './hearing-link.component.html'
+  templateUrl: './hearing-link.component.html',
 })
 export class HearingLinkComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   private caseLinkingReasons: LovRefDataByServiceModel;
@@ -24,19 +24,21 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
   public jurisdictionId: string;
   public linkedCases: ServiceLinkedCasesModel[];
   public hearingLinkForm: FormGroup;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   public caseName: string;
   public showSpinner: boolean = true;
   public hearingLinksSub: Subscription;
   public jurisdiction: string;
   public caseType: string;
 
-  constructor(private readonly router: Router,
-              private readonly formBuilder: FormBuilder,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService,
-              protected readonly route: ActivatedRoute) {
+  constructor(
+    private readonly router: Router,
+    private readonly formBuilder: FormBuilder,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute
+  ) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.caseId = this.hearingListMainModel.caseRef || '';
     this.jurisdictionId = '';
@@ -45,45 +47,63 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
 
   public ngOnInit(): void {
     this.hearingLinkForm = this.formBuilder.group({
-      hearingLink: ['', Validators.required]
+      hearingLink: ['', Validators.required],
     });
     this.initialiseFromHearingValues();
-    this.hearingStore.select(fromHearingStore.caseInfoSelector).pipe(
-      tap((caseInfo) => {
-        this.jurisdiction = caseInfo?.jurisdictionId;
-        this.caseType = caseInfo?.caseType;
-        this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({ jurisdictionId: caseInfo.jurisdictionId, caseReference: caseInfo.caseReference, hearingId: '' }));
-      })
-    ).subscribe();
+    this.hearingStore
+      .select(fromHearingStore.caseInfoSelector)
+      .pipe(
+        tap((caseInfo) => {
+          this.jurisdiction = caseInfo?.jurisdictionId;
+          this.caseType = caseInfo?.caseType;
+          this.hearingStore.dispatch(
+            new fromHearingStore.LoadServiceLinkedCases({
+              jurisdictionId: caseInfo.jurisdictionId,
+              caseReference: caseInfo.caseReference,
+              hearingId: '',
+            })
+          );
+        })
+      )
+      .subscribe();
     this.generateLinkedCasesWithReasonDescription();
   }
 
   public generateLinkedCasesWithReasonDescription(): void {
-    this.hearingLinksSub = this.hearingsService.loadCaseLinkingReasonCodes().pipe(
-      switchMap((reasons) => {
-        this.caseLinkingReasons = reasons;
-        return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks));
-      })
-    ).subscribe({
-      next: (hearingLinks: HearingLinksStateData) => {
-        if (hearingLinks.serviceLinkedCases) {
-          this.linkedCases = [];
-          hearingLinks.serviceLinkedCases.forEach((linkedCase) => {
-            const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter((reason) => linkedCase.reasonsForLink.some((reasonCode) => reason.key === reasonCode));
-            const caseLinkingReasonsValues = caseLinkingReasons.map((x) => x.value_en);
-            if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
-              this.linkedCases.push({ caseName: linkedCase.caseName, caseReference: linkedCase.caseReference, reasonsForLink: caseLinkingReasonsValues });
-            } else {
-              this.linkedCases.push(linkedCase);
-            }
-          });
-        }
-        this.showSpinner = false;
-      },
-      error: () => {
-        this.router.navigate(['/hearings/error']);
-      }
-    });
+    this.hearingLinksSub = this.hearingsService
+      .loadCaseLinkingReasonCodes()
+      .pipe(
+        switchMap((reasons) => {
+          this.caseLinkingReasons = reasons;
+          return this.hearingStore.pipe(select(fromHearingStore.getHearingLinks));
+        })
+      )
+      .subscribe({
+        next: (hearingLinks: HearingLinksStateData) => {
+          if (hearingLinks.serviceLinkedCases) {
+            this.linkedCases = [];
+            hearingLinks.serviceLinkedCases.forEach((linkedCase) => {
+              const caseLinkingReasons = this.caseLinkingReasons.list_of_values.filter((reason) =>
+                linkedCase.reasonsForLink.some((reasonCode) => reason.key === reasonCode)
+              );
+              const caseLinkingReasonsValues = caseLinkingReasons.map((x) => x.value_en);
+              if (caseLinkingReasonsValues && caseLinkingReasonsValues.length > 0) {
+                this.linkedCases.push({
+                  caseName: linkedCase.caseName,
+                  caseReference: linkedCase.caseReference,
+                  reasonsForLink: caseLinkingReasonsValues,
+                });
+              } else {
+                this.linkedCases.push(linkedCase);
+              }
+            });
+          }
+          this.showSpinner = false;
+        },
+        error: () => {
+          this.router.navigate(['/hearings/error']);
+        },
+      });
   }
 
   public initialiseFromHearingValues(): void {
@@ -98,8 +118,8 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
           ...this.hearingRequestMainModel,
           hearingDetails: {
             ...this.hearingRequestMainModel.hearingDetails,
-            hearingIsLinkedFlag: this.hearingLinkForm.get('hearingLink').value === 'yes'
-          }
+            hearingIsLinkedFlag: this.hearingLinkForm.get('hearingLink').value === 'yes',
+          },
         };
         super.navigateAction(action);
       }
@@ -113,7 +133,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
     if (!this.hearingLinkForm.controls.hearingLink.valid) {
       this.validationErrors.push({
         id: 'yes',
-        message: HearingLinkMessages.SELECT_HEARING_LINK_OPTION
+        message: HearingLinkMessages.SELECT_HEARING_LINK_OPTION,
       });
       window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
       return false;

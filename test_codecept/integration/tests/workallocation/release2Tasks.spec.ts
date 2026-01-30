@@ -15,7 +15,7 @@ describe('Work allocations Release 2: Tasks', () => {
   const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
   const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
-  beforeEach(function() {
+  beforeEach(function () {
     setTestContext(this);
     Request.clearSession();
   });
@@ -27,10 +27,15 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-    const reqBody = getSearchTaskReqBody('MyTasks', ['3db21928-cbbc-4364-bd91-137c7031fe17'], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
+    const reqBody = getSearchTaskReqBody(
+      'MyTasks',
+      ['3db21928-cbbc-4364-bd91-137c7031fe17'],
+      [config.workallocation[config.testEnv].locationId],
+      'caseworker'
+    ).getRequestBody();
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': JSON.stringify(reqBody).length,
     };
 
     const response = await Request.post('workallocation/task', reqBody, headers, 200);
@@ -38,7 +43,7 @@ describe('Work allocations Release 2: Tasks', () => {
     const actual = response.data;
     const expected = workAllocationDataModels.getRelease2Tasks();
     expect(actual).to.have.all.keys(Object.keys(expected));
-    if (actual.tasks.length > 0){
+    if (actual.tasks.length > 0) {
       expect(actual.tasks[0]).to.have.all.keys(Object.keys(expected.tasks[0]));
     }
   });
@@ -48,10 +53,15 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-    const reqBody = getSearchTaskReqBody('AvailableTasks', [], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
+    const reqBody = getSearchTaskReqBody(
+      'AvailableTasks',
+      [],
+      [config.workallocation[config.testEnv].locationId],
+      'caseworker'
+    ).getRequestBody();
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': JSON.stringify(reqBody).length,
     };
 
     const response = await Request.post('workallocation/task', reqBody, headers, 200);
@@ -72,10 +82,15 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
-    const reqBody = getSearchTaskReqBody('AllWork', ['77f9a4a4-1bf1-4903-aa6c-cab334875d91'], [config.workallocation[config.testEnv].locationId], 'caseworker').getRequestBody();
+    const reqBody = getSearchTaskReqBody(
+      'AllWork',
+      ['77f9a4a4-1bf1-4903-aa6c-cab334875d91'],
+      [config.workallocation[config.testEnv].locationId],
+      'caseworker'
+    ).getRequestBody();
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': JSON.stringify(reqBody).length,
     };
 
     const response = await Request.post('workallocation/task', reqBody, headers, 200);
@@ -96,7 +111,7 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
@@ -108,17 +123,27 @@ describe('Work allocations Release 2: Tasks', () => {
     const assignTaskReqBody = {};
     let assignTasksHeader = {
       'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-      'content-length': JSON.stringify(assignTaskReqBody).length
+      'content-length': JSON.stringify(assignTaskReqBody).length,
     };
     if (tasksRes.data.tasks.length > 1) {
-      const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+      const assignTaskRes = await Request.post(
+        `workallocation/task/${tasksRes.data.tasks[0].id}/claim`,
+        assignTaskReqBody,
+        assignTasksHeader,
+        204
+      );
       expect(assignTaskRes.status).to.equal(204);
 
       assignTasksHeader = {
         'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-        'content-length': JSON.stringify(assignTaskReqBody).length
+        'content-length': JSON.stringify(assignTaskReqBody).length,
       };
-      const assignTaskRes2 = await Request.post(`workallocation/task/${tasksRes.data.tasks[1].id}/claim`, assignTaskReqBody, assignTasksHeader, 204);
+      const assignTaskRes2 = await Request.post(
+        `workallocation/task/${tasksRes.data.tasks[1].id}/claim`,
+        assignTaskReqBody,
+        assignTasksHeader,
+        204
+      );
       expect(assignTaskRes2.status).to.equal(204);
     }
   });
@@ -128,11 +153,13 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-    const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
+    const sessionUserIdamId = userDetailsRes.data.userInfo.id
+      ? userDetailsRes.data.userInfo.id
+      : userDetailsRes.data.userInfo.uid;
 
     const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
     const caseworkerRes = await Request.get('workallocation/caseworker', headers, 200);
@@ -142,10 +169,15 @@ describe('Work allocations Release 2: Tasks', () => {
     const assignTaskReqBody = { userId: idamId };
     const assignTasksHeader = {
       'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-      'content-length': JSON.stringify(assignTaskReqBody).length
+      'content-length': JSON.stringify(assignTaskReqBody).length,
     };
     if (tasksRes.data.tasks.length > 0) {
-      const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/assign`, assignTaskReqBody, assignTasksHeader, 204);
+      const assignTaskRes = await Request.post(
+        `workallocation/task/${tasksRes.data.tasks[0].id}/assign`,
+        assignTaskReqBody,
+        assignTasksHeader,
+        204
+      );
       expect(assignTaskRes.status).to.equal(204);
     }
   });
@@ -155,21 +187,28 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
-    const sessionUserIdamId = userDetailsRes.data.userInfo.id ? userDetailsRes.data.userInfo.id : userDetailsRes.data.userInfo.uid;
+    const sessionUserIdamId = userDetailsRes.data.userInfo.id
+      ? userDetailsRes.data.userInfo.id
+      : userDetailsRes.data.userInfo.uid;
 
     const tasksRes = await getTasks('MyTasks', [userDetailsRes.data.userInfo.id], 1);
 
     const assignTaskReqBody = {};
     const assignTasksHeader = {
       'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-      'content-length': JSON.stringify(assignTaskReqBody).length
+      'content-length': JSON.stringify(assignTaskReqBody).length,
     };
     if (tasksRes.data.tasks.length > 0) {
-      const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/unclaim`, assignTaskReqBody, assignTasksHeader, 204);
+      const assignTaskRes = await Request.post(
+        `workallocation/task/${tasksRes.data.tasks[0].id}/unclaim`,
+        assignTaskReqBody,
+        assignTasksHeader,
+        204
+      );
       expect(assignTaskRes.status).to.equal(204);
     }
   });
@@ -179,7 +218,7 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const tasksRes = await getTasks('AllWork', [], 1);
@@ -187,20 +226,27 @@ describe('Work allocations Release 2: Tasks', () => {
     const assignTaskReqBody = {};
     const assignTasksHeader = {
       'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-      'content-length': JSON.stringify(assignTaskReqBody).length
+      'content-length': JSON.stringify(assignTaskReqBody).length,
     };
 
     let taskWithAssignee = null;
-    for (const task of tasksRes.data.tasks){
-      if (task.assignee){
+    for (const task of tasksRes.data.tasks) {
+      if (task.assignee) {
         taskWithAssignee = task.id;
       }
     }
     if (taskWithAssignee) {
-      const assignTaskRes = await Request.post(`workallocation/task/${taskWithAssignee}/complete`, assignTaskReqBody, assignTasksHeader, 204);
+      const assignTaskRes = await Request.post(
+        `workallocation/task/${taskWithAssignee}/complete`,
+        assignTaskReqBody,
+        assignTasksHeader,
+        204
+      );
       expect(assignTaskRes.status).to.equal(204);
     } else {
-      reporterMsg('No tasks retuened with assignee, complete task can be performed only on already assigned tasks. skipping complete task step in tests due to data unavailability');
+      reporterMsg(
+        'No tasks retuened with assignee, complete task can be performed only on already assigned tasks. skipping complete task step in tests due to data unavailability'
+      );
     }
   });
 
@@ -209,7 +255,7 @@ describe('Work allocations Release 2: Tasks', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const tasksRes = await getTasks('AllWork', [], 1);
@@ -217,10 +263,15 @@ describe('Work allocations Release 2: Tasks', () => {
     const assignTaskReqBody = {};
     const assignTasksHeader = {
       'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-      'content-length': JSON.stringify(assignTaskReqBody).length
+      'content-length': JSON.stringify(assignTaskReqBody).length,
     };
     if (tasksRes.data.tasks.length > 0) {
-      const assignTaskRes = await Request.post(`workallocation/task/${tasksRes.data.tasks[0].id}/cancel`, assignTaskReqBody, assignTasksHeader, 204);
+      const assignTaskRes = await Request.post(
+        `workallocation/task/${tasksRes.data.tasks[0].id}/cancel`,
+        assignTaskReqBody,
+        assignTasksHeader,
+        204
+      );
       expect(assignTaskRes.status).to.equal(204);
     }
   });
@@ -246,7 +297,7 @@ describe('Work allocations Release 2: Tasks', () => {
     }
   });
 
-  async function getTasks(view, users, pageNum){
+  async function getTasks(view, users, pageNum) {
     const reqBodyObj = getSearchTaskReqBody(view, users, [config.workallocation[config.testEnv].locationId], 'caseworker');
     if (pageNum) {
       reqBodyObj.withPageNumber(pageNum);
@@ -254,7 +305,7 @@ describe('Work allocations Release 2: Tasks', () => {
     const reqBody = reqBodyObj.getRequestBody();
     const headersForGetTasks = {
       'X-XSRF-TOKEN': await getXSRFToken(caseOfficer, caseofficerPass),
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': JSON.stringify(reqBody).length,
     };
 
     const tasksRes = await Request.post('workallocation/task', reqBody, headersForGetTasks, 200);
@@ -316,4 +367,3 @@ describe('Work allocations Release 2: Tasks', () => {
     return taskRequestBody;
   }
 });
-

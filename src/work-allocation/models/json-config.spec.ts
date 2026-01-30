@@ -14,9 +14,7 @@ describe('WorkAllocation', () => {
     it('should correctly coerce a JSON object to a Task with actions', () => {
       const JSON: object = {
         id: 'Bob',
-        actions: [
-          { id: 'Action ID', title: 'Action title' }
-        ]
+        actions: [{ id: 'Action ID', title: 'Action title' }],
       };
       const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
@@ -31,7 +29,7 @@ describe('WorkAllocation', () => {
     it('should correctly coerce a JSON object to a Task with an unexpected property', () => {
       const JSON: object = {
         id: 'Bob',
-        'surprise-property': 'Surprise value'
+        'surprise-property': 'Surprise value',
       };
       const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();

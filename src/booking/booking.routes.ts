@@ -16,14 +16,14 @@ export const ROUTES: Routes = [
         component: BookingHomeComponent,
         canActivate: [BookingGuard],
         resolve: {
-          LocationResolver
+          LocationResolver,
         },
         data: {
-          title: 'Booking'
-        }
-      }
-    ]
-  }
+          title: 'Booking',
+        },
+      },
+    ],
+  },
 ];
 
 export const bookingRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

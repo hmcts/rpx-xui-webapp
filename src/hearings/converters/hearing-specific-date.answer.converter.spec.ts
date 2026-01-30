@@ -13,9 +13,9 @@ import { HearingSpecificDateAnswerConverter } from './hearing-specific-date.answ
 
 describe('HearingSpecificDateAnswerConverter', () => {
   let converter: AnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: any;
 
   beforeEach(() => {
@@ -27,12 +27,12 @@ describe('HearingSpecificDateAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingStageOptions: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -44,7 +44,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: '2022-12-12T09:00:00.000Z',
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
-      firstDateTimeMustBe: null
+      firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022`;
@@ -57,7 +57,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: null,
       dateRangeEnd: null,
-      firstDateTimeMustBe: '2022-12-12T09:00:00.000Z'
+      firstDateTimeMustBe: '2022-12-12T09:00:00.000Z',
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.YES}<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt>12 December 2022`;
@@ -70,7 +70,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: '2022-12-12T09:00:00.000Z',
       dateRangeEnd: null,
-      firstDateTimeMustBe: null
+      firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Earliest start date: 12 December 2022`;
@@ -83,7 +83,7 @@ describe('HearingSpecificDateAnswerConverter', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: null,
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
-      firstDateTimeMustBe: null
+      firstDateTimeMustBe: null,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Latest end date: 12 December 2022`;

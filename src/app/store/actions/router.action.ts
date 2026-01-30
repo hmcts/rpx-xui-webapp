@@ -25,12 +25,12 @@ export class NewCaseLoadedSuccessfully implements Action {
 export class CreateCaseGo implements Action {
   public readonly type = CREATE_CASE_GO;
   constructor(
-      public payload: {
-        path: any[];
-        query?: object;
-        extras?: NavigationExtras;
-        caseId: string
-      }
+    public payload: {
+      path: any[];
+      query?: object;
+      extras?: NavigationExtras;
+      caseId: string;
+    }
   ) {}
 }
 

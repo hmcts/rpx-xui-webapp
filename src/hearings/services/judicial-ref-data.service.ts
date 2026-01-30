@@ -8,12 +8,12 @@ export class JudicialRefDataService {
   public constructor(private readonly http: HttpClient) {}
 
   public searchJudicialUserByPersonalCodes(personalCodes: string[]): Observable<JudicialUserModel[]> {
-    return this.http.post<JudicialUserModel[]>('api/prd/judicial/searchJudicialUserByPersonalCodes',
-      { personal_code: personalCodes });
+    return this.http.post<JudicialUserModel[]>('api/prd/judicial/searchJudicialUserByPersonalCodes', {
+      personal_code: personalCodes,
+    });
   }
 
   public searchJudicialUserByIdamID(idamIds: string[]): Observable<JudicialUserModel[]> {
-    return this.http.post<JudicialUserModel[]>('api/prd/judicial/searchJudicialUserByIdamId',
-      { sidam_ids: idamIds });
+    return this.http.post<JudicialUserModel[]>('api/prd/judicial/searchJudicialUserByIdamId', { sidam_ids: idamIds });
   }
 }

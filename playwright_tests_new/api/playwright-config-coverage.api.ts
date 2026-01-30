@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 
 import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
@@ -30,9 +29,9 @@ test.describe('Playwright config coverage', () => {
     const withTest = resolveConfigModule({
       __test__: {
         buildConfig: () => ({}),
-        resolveWorkerCount: () => 1
+        resolveWorkerCount: () => 1,
       },
-      default: { name: 'default' }
+      default: { name: 'default' },
     });
     expect(withTest.__test__).toBeDefined();
 
@@ -51,7 +50,7 @@ test.describe('Playwright config coverage', () => {
       PLAYWRIGHT_REPORT_RELEASE: 'Custom Release',
       TEST_URL: 'https://example.test',
       TEST_TYPE: undefined,
-      HEAD: 'true'
+      HEAD: 'true',
     });
     expect(config.workers).toBe(8);
     expect(config.use.baseURL).toBe('https://example.test');
@@ -76,7 +75,7 @@ test.describe('Playwright config coverage', () => {
       GIT_BRANCH: undefined,
       TEST_URL: undefined,
       TEST_TYPE: undefined,
-      HEAD: undefined
+      HEAD: undefined,
     });
     expect(config.reporter[0][0]).toBe('list');
     expect(config.reporter[1][1].outputFolder).toContain('playwright-e2e/odhin-report');

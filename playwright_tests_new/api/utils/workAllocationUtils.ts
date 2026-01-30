@@ -32,7 +32,7 @@ export function assertLocationsListResponse(status: number, data: unknown): void
     expect(data[0]).toEqual(
       expect.objectContaining({
         id: expect.any(String),
-        locationName: expect.any(String)
+        locationName: expect.any(String),
       })
     );
   }
@@ -58,7 +58,7 @@ export function assertTypesOfWorkResponse(status: number, data: unknown): void {
   if (types.length > 0 && typeof types[0] === 'object' && types[0] !== null) {
     expect(types[0]).toEqual(
       expect.objectContaining({
-        id: expect.any(String)
+        id: expect.any(String),
       })
     );
   }
@@ -126,7 +126,7 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
       expect.objectContaining({
         firstName: expect.any(String),
         lastName: expect.any(String),
-        idamId: expect.any(String)
+        idamId: expect.any(String),
       })
     );
   }
@@ -142,14 +142,14 @@ export async function fetchFirstTask(
     locations: toLocationList(locationId),
     states,
     searchBy: 'caseworker',
-    pageSize: 5
+    pageSize: 5,
   });
 
   const response = (await withRetry(
     () =>
       apiClient.post('workallocation/task', {
         data: body,
-        throwOnError: false
+        throwOnError: false,
       }),
     { retries: 1, retryStatuses: [502, 504] }
   )) as { data: TaskListResponse; status: number };
@@ -256,7 +256,7 @@ export async function runSeededAction(action: string, getId: () => string, deps:
     const res = await deps.apiClient.post(`workallocation/task/${getId()}/${action}`, {
       data: {},
       headers,
-      throwOnError: false
+      throwOnError: false,
     });
     expectStatus(res.status, [200, 204]);
   });

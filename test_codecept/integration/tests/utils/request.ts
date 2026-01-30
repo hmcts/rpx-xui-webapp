@@ -42,7 +42,7 @@ class Request {
     this.sessionUser = username;
   }
 
-  public sessionUpdateSetCookie(name, value){
+  public sessionUpdateSetCookie(name, value) {
     this.cookieString = updateSessionCookieString(this.sessionUser, name, value);
   }
 
@@ -72,7 +72,7 @@ class Request {
     return error;
   }
 
-  public async get(reqpath: string, headers: any, expectedStatus:any){
+  public async get(reqpath: string, headers: any, expectedStatus: any) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`GET : ${reqpath}`);
     reporterMsg('----------------------------------------------------->>');
@@ -89,7 +89,7 @@ class Request {
     return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
   }
 
-  public async put(reqpath: string, data, headers: any, expectedStatus: number){
+  public async put(reqpath: string, data, headers: any, expectedStatus: number) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`PUT : ${reqpath}`);
     reporterJson(data);
@@ -98,7 +98,7 @@ class Request {
     return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
   }
 
-  public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
+  public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus: any) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`DELETE : ${reqpath}`);
     reporterJson(payload);
@@ -111,7 +111,7 @@ class Request {
     return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedStatus);
   }
 
-  async retryRequest(callback, expectedResponsecode){
+  async retryRequest(callback, expectedResponsecode) {
     let retryAttemptCounter = 0;
     const isCallbackSuccess = false;
     let retVal = null;
@@ -119,7 +119,7 @@ class Request {
     const retryErrorLogs = [];
     let error = null;
     let isExpectedResponseReceived = false;
-    while (retryAttemptCounter < 3 && !isExpectedResponseReceived){
+    while (retryAttemptCounter < 3 && !isExpectedResponseReceived) {
       retryAttemptCounter++;
       isExpectedResponseReceived = false;
       retVal = null;
@@ -133,19 +133,21 @@ class Request {
         retVal = err.response ? err.response : null;
       }
 
-      if (retVal && expectedResponsecode instanceof Array){
+      if (retVal && expectedResponsecode instanceof Array) {
         isExpectedResponseReceived = expectedResponsecode.includes(retVal.status);
-      } else if (retVal){
+      } else if (retVal) {
         isExpectedResponseReceived = expectedResponsecode === retVal.status;
       }
 
-      if (!isExpectedResponseReceived){
+      if (!isExpectedResponseReceived) {
         // console.log(retVal);
         // console.log(error);
         const status = retVal ? retVal.status : 'unknown';
         const responseBody = retVal ? retVal.data : 'unknown';
-        const errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}` : `unknown request error occured ${error} `;
-        retryErrorLogs.push(`\n Retry ${retryAttemptCounter } : ${errorMessage}`);
+        const errorMessage = retVal
+          ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}`
+          : `unknown request error occured ${error} `;
+        retryErrorLogs.push(`\n Retry ${retryAttemptCounter} : ${errorMessage}`);
         reporterMsg('<<-------------------- ERROR RESPONSE---------------------------------');
         reporterMsg(` Unexpected response : ${errorMessage}`);
         reporterMsg('-------------------- ERROR RESPONSE--------------------------------->>');
@@ -164,12 +166,11 @@ class Request {
       }
     }
 
-    if (isExpectedResponseReceived){
+    if (isExpectedResponseReceived) {
       return retVal;
     }
-    throw new Error('Following errors occured in retry attempts '+(retryErrorLogs));
+    throw new Error('Following errors occured in retry attempts ' + retryErrorLogs);
   }
 }
 const request = new Request();
 export default request;
-

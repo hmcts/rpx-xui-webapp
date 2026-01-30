@@ -21,7 +21,7 @@ const healthCheckEndpointDictionary = {
   '/cases/case-details': ['ccdComponentApi'],
   '/cases/case-filter': ['ccdComponentApi'],
   '/cases/case-search': ['ccdComponentApi'],
-  '/cases/case-share': ['ccdComponentApi']
+  '/cases/case-share': ['ccdComponentApi'],
 };
 
 /*
@@ -66,9 +66,11 @@ export async function healthCheckRoute(req, res) {
     }
 
     // comment out following block to bypass actual check
-    await Promise.all(PromiseArr).then().catch(() => {
-      response = { healthState: false };
-    });
+    await Promise.all(PromiseArr)
+      .then()
+      .catch(() => {
+        response = { healthState: false };
+      });
 
     logger.info('response::', response);
     res.send(response);

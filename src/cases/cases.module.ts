@@ -43,7 +43,7 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule
+  WorkbasketFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -72,69 +72,75 @@ import * as fromServices from './services';
 import { effects, reducers } from './store';
 import { WorkAllocationComponentsModule } from '../work-allocation/components/work-allocation.components.module';
 
-@NgModule({ declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives], imports: [AlertModule,
-  CommonModule,
-  CreateCaseFiltersModule,
-  SearchResultModule,
-  StoreModule.forFeature('cases', reducers),
-  EffectsModule.forFeature(effects),
-  casesRouting,
-  SharedModule,
-  OrganisationModule,
-  SearchFiltersModule,
-  MatDialogModule,
-  CaseListFiltersModule,
-  WorkbasketFiltersModule,
-  ExuiCommonLibModule,
-  LoadingModule,
-  ReactiveFormsModule,
-  HearingsModule,
-  HearingsPipesModule,
-  CaseHeaderModule,
-  CaseEditorModule,
-  CaseListModule,
-  PaletteModule,
-  CaseViewerModule,
-  PipesModule,
-  queryManagementRouting,
-  RpxTranslationModule.forChild(),
-  WorkAllocationComponentsModule], providers: [
-  PlaceholderService,
-  CaseReferencePipe,
-  CaseNotifier,
-  ErrorNotifierService,
-  NavigationNotifierService,
-  CasesService,
-  RetryUtil,
-  CCDAuthService,
-  HttpService,
-  HttpErrorService,
-  DraftService,
-  PageValidationService,
-  CaseEditWizardGuard,
-  RouterHelperService,
-  DocumentManagementService,
-  RequestOptionsBuilder,
-  {
-    provide: AbstractAppConfig,
-    useExisting: AppConfig
-  },
-  ScrollToService,
-  ...fromServices.services,
-  CreateCaseEventTriggerResolver,
-  CaseResolver,
-  ActivityResolver,
-  HearingsService,
-  FormatTranslatorService,
-  WASupportedJurisdictionsService,
-  OrganisationService,
-  OrganisationConverter,
-  IsCompoundPipe,
-  CcdCYAPageLabelFilterPipe,
-  CaseFileViewService,
-  JurisdictionService,
-  provideHttpClient(withInterceptorsFromDi())
-] })
+@NgModule({
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
+  imports: [
+    AlertModule,
+    CommonModule,
+    CreateCaseFiltersModule,
+    SearchResultModule,
+    StoreModule.forFeature('cases', reducers),
+    EffectsModule.forFeature(effects),
+    casesRouting,
+    SharedModule,
+    OrganisationModule,
+    SearchFiltersModule,
+    MatDialogModule,
+    CaseListFiltersModule,
+    WorkbasketFiltersModule,
+    ExuiCommonLibModule,
+    LoadingModule,
+    ReactiveFormsModule,
+    HearingsModule,
+    HearingsPipesModule,
+    CaseHeaderModule,
+    CaseEditorModule,
+    CaseListModule,
+    PaletteModule,
+    CaseViewerModule,
+    PipesModule,
+    queryManagementRouting,
+    RpxTranslationModule.forChild(),
+    WorkAllocationComponentsModule,
+  ],
+  providers: [
+    PlaceholderService,
+    CaseReferencePipe,
+    CaseNotifier,
+    ErrorNotifierService,
+    NavigationNotifierService,
+    CasesService,
+    RetryUtil,
+    CCDAuthService,
+    HttpService,
+    HttpErrorService,
+    DraftService,
+    PageValidationService,
+    CaseEditWizardGuard,
+    RouterHelperService,
+    DocumentManagementService,
+    RequestOptionsBuilder,
+    {
+      provide: AbstractAppConfig,
+      useExisting: AppConfig,
+    },
+    ScrollToService,
+    ...fromServices.services,
+    CreateCaseEventTriggerResolver,
+    CaseResolver,
+    ActivityResolver,
+    HearingsService,
+    FormatTranslatorService,
+    WASupportedJurisdictionsService,
+    OrganisationService,
+    OrganisationConverter,
+    IsCompoundPipe,
+    CcdCYAPageLabelFilterPipe,
+    CaseFileViewService,
+    JurisdictionService,
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 /**
  * Entry point for Cases Module that is also lazy loaded.
  */
@@ -147,9 +153,7 @@ export class CasesModule {
   public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: CasesModule,
-      providers: [
-        AlertService
-      ]
+      providers: [AlertService],
     };
   }
 }

@@ -33,7 +33,7 @@ describe('CancelHearingComponent', () => {
       category_key: 'CancelHearingReason',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'reasonTwo',
@@ -46,7 +46,7 @@ describe('CancelHearingComponent', () => {
       category_key: 'CancelHearingReason',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'reasonThree',
@@ -59,8 +59,8 @@ describe('CancelHearingComponent', () => {
       category_key: 'CancelHearingReason',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   const HEARING_ID = 'h00001';
@@ -72,9 +72,10 @@ describe('CancelHearingComponent', () => {
     TestBed.configureTestingModule({
       declarations: [CancelHearingComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([
-        { path: 'cases/case-details/IA/Asylum/1111222233334444/hearings', redirectTo: '' }
-      ])],
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule.withRoutes([{ path: 'cases/case-details/IA/Asylum/1111222233334444/hearings', redirectTo: '' }]),
+      ],
       providers: [
         LoadingService,
         { provide: HearingsService, useValue: hearingsService },
@@ -84,19 +85,18 @@ describe('CancelHearingComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingCancelOptions: reasons
-              }
+                hearingCancelOptions: reasons,
+              },
             },
-            params: of({ hearingId: HEARING_ID })
-          }
+            params: of({ hearingId: HEARING_ID }),
+          },
         },
         provideMockStore({ initialState }),
         FormBuilder,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CancelHearingComponent);
     component = fixture.componentInstance;
@@ -123,7 +123,9 @@ describe('CancelHearingComponent', () => {
 
   it('should localise casehearing variables', () => {
     expect(component.caseId).toEqual(CASE_REF);
-    expect(component.caseHearing.hearingID).toEqual(initialState.hearings.hearingList.hearingListMainModel.caseHearings[0].hearingID);
+    expect(component.caseHearing.hearingID).toEqual(
+      initialState.hearings.hearingList.hearingListMainModel.caseHearings[0].hearingID
+    );
   });
 
   it('should create', () => {
@@ -138,8 +140,7 @@ describe('CancelHearingComponent', () => {
   it('should call cancelHearingRequest when executeAction is called with a valid form', () => {
     const ngZone = TestBed.inject(NgZone);
     ngZone.run(() => {
-      (component.hearingCancelForm.controls.reasons as FormArray).controls
-        .forEach((reason) => reason.value.selected = true);
+      (component.hearingCancelForm.controls.reasons as FormArray).controls.forEach((reason) => (reason.value.selected = true));
       component.executeContinue();
       expect(mockHearingService.cancelHearingRequest).toHaveBeenCalled();
       expect(component.getChosenReasons).toHaveBeenCalled();
@@ -147,8 +148,7 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should be true when calling isFormValid reasons selected', () => {
-    (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingCancelForm.controls.reasons as FormArray).controls.forEach((reason) => (reason.value.selected = true));
     const formValid = component.isFormValid();
     expect(formValid).toEqual(true);
   });
@@ -160,8 +160,7 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should have a validation error message mapped when cancel hearing DELETE request failed', () => {
-    (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingCancelForm.controls.reasons as FormArray).controls.forEach((reason) => (reason.value.selected = true));
     hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
     expect(component.validationErrors).not.toBeNull();
@@ -204,8 +203,7 @@ describe('CancelHearingComponent', () => {
   });
 
   it('should reset cancelActioned to false when cancelHearingRequest fails', () => {
-    (component.hearingCancelForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingCancelForm.controls.reasons as FormArray).controls.forEach((reason) => (reason.value.selected = true));
     hearingsService.cancelHearingRequest = jasmine.createSpy().and.returnValue(throwError(''));
     component.executeContinue();
     expect(component.cancelActioned).toBe(false);

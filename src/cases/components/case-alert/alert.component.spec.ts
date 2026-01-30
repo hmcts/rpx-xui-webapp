@@ -8,7 +8,7 @@ import { By } from '@angular/platform-browser';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -21,21 +21,20 @@ describe('AlertComponent', () => {
   let fixture: ComponentFixture<AlertComponent>;
 
   const alertServiceMock = {
-    alerts: of({ message: 'success message', level: 'success' })
+    alerts: of({ message: 'success message', level: 'success' }),
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([])
-      ],
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
-      providers: [{
-        provide: AlertService,
-        useValue: alertServiceMock
-      }]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: AlertService,
+          useValue: alertServiceMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -45,7 +44,6 @@ describe('AlertComponent', () => {
   });
 
   afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
@@ -96,22 +94,20 @@ describe('AlertComponent warning message', () => {
   let fixture: ComponentFixture<AlertComponent>;
 
   const alertServiceMock = {
-    alerts: of({ message: 'warning message', level: 'warning' })
+    alerts: of({ message: 'warning message', level: 'warning' }),
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([
-        ])
-      ],
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
-      providers: [{
-        provide: AlertService,
-        useValue: alertServiceMock
-      }]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: AlertService,
+          useValue: alertServiceMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -121,7 +117,6 @@ describe('AlertComponent warning message', () => {
   });
 
   afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
@@ -141,21 +136,20 @@ describe('AlertComponent error message', () => {
   let fixture: ComponentFixture<AlertComponent>;
 
   const alertServiceMock = {
-    alerts: of({ message: 'error message', level: 'error' })
+    alerts: of({ message: 'error message', level: 'error' }),
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([])
-      ],
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
-      providers: [{
-        provide: AlertService,
-        useValue: alertServiceMock
-      }]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: AlertService,
+          useValue: alertServiceMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -165,7 +159,6 @@ describe('AlertComponent error message', () => {
   });
 
   afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
@@ -186,21 +179,20 @@ describe('AlertComponent no message', () => {
   let fixture: ComponentFixture<AlertComponent>;
 
   const alertServiceMock = {
-    alerts: of({ message: '', level: '' })
+    alerts: of({ message: '', level: '' }),
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([])
-      ],
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [AlertComponent, CCDAlertComponent, AlertIconClassPipe, RpxTranslateMockPipe],
-      providers: [{
-        provide: AlertService,
-        useValue: alertServiceMock
-      }]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: AlertService,
+          useValue: alertServiceMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -210,7 +202,6 @@ describe('AlertComponent no message', () => {
   });
 
   afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });

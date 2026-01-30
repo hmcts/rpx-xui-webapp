@@ -16,7 +16,7 @@ const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
 const MEDIA_VIEWER_DATA = {
   document_binary_url: GATEWAY_DOCUMENT_URL,
   document_filename: 'sample.pdf',
-  content_type: 'pdf'
+  content_type: 'pdf',
 };
 
 describe('MediaViewerWrapperComponent', () => {
@@ -46,25 +46,21 @@ describe('MediaViewerWrapperComponent', () => {
           baseUrl: '',
           debounceTimeMs: 300,
           validity: {
-            days: 1
+            days: 1,
           },
-          testMode: true
-        })
+          testMode: true,
+        }),
       ],
-      declarations: [
-        MediaViewerWrapperComponent,
-        DocumentUrlPipe
-      ],
+      declarations: [MediaViewerWrapperComponent, DocumentUrlPipe],
       providers: [
         { provide: AbstractAppConfig, useValue: mockAppConfig },
         { provide: WindowService, useValue: windowService },
         { provide: FeatureToggleService, useValue: featureToggleService },
         { provide: SessionStorageService, useValue: sessionStorageService },
-        { provide: Title, useValue: titleService }
+        { provide: Title, useValue: titleService },
       ],
-      teardown: { destroyAfterEach: false }
-    })
-      .compileComponents();
+      teardown: { destroyAfterEach: false },
+    }).compileComponents();
   }));
 
   beforeEach(() => {

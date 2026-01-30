@@ -1,10 +1,6 @@
-import {
-  ExuiCaseDetailsComponent,
-  ExuiCaseListComponent,
-  ExuiSpinnerComponent,
-} from "@hmcts/playwright-common";
-import { Page } from "@playwright/test";
-import { ExuiHeaderComponent } from "./components/index.js";
+import { ExuiCaseDetailsComponent, ExuiCaseListComponent, ExuiSpinnerComponent } from '@hmcts/playwright-common';
+import { Page } from '@playwright/test';
+import { ExuiHeaderComponent } from './components/index.js';
 
 // A base page inherited by pages & components
 // can contain any additional config needed + instantiated page object

@@ -18,33 +18,33 @@ describe('Global serarch API', () => {
   describe('post /results', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
     const REQUEST_BODY = {
-      'searchCriteria': {
-        'CCDJurisdictionIds': somethingLike(['PUBLICLAW']),
-        'caseReferences': somethingLike(['1675871084353511'])
+      searchCriteria: {
+        CCDJurisdictionIds: somethingLike(['PUBLICLAW']),
+        caseReferences: somethingLike(['1675871084353511']),
       },
-      'sortCriteria': null,
-      'maxReturnRecordCount': somethingLike(25),
-      'startRecordNumber': somethingLike(1)
+      sortCriteria: null,
+      maxReturnRecordCount: somethingLike(25),
+      startRecordNumber: somethingLike(1),
     };
 
     const RESPONSE_BODY = {
-      'resultInfo': {
-        'casesReturned': somethingLike(1),
-        'caseStartRecord': somethingLike(1),
-        'moreResultsToGo': somethingLike(false)
+      resultInfo: {
+        casesReturned: somethingLike(1),
+        caseStartRecord: somethingLike(1),
+        moreResultsToGo: somethingLike(false),
       },
-      'results': [
+      results: [
         {
-          'stateId': somethingLike('PREPARE_FOR_HEARING'),
-          'processForAccess': somethingLike('SPECIFIC'),
-          'caseReference': somethingLike('1675871084353511'),
-          'otherReferences': somethingLike([]),
-          'CCDJurisdictionId': somethingLike('PUBLICLAW'),
-          'CCDJurisdictionName': somethingLike('Public Law'),
-          'CCDCaseTypeId': somethingLike('CARE_SUPERVISION_EPO'),
-          'CCDCaseTypeName': somethingLike('Public Law Applications')
-        }
-      ]
+          stateId: somethingLike('PREPARE_FOR_HEARING'),
+          processForAccess: somethingLike('SPECIFIC'),
+          caseReference: somethingLike('1675871084353511'),
+          otherReferences: somethingLike([]),
+          CCDJurisdictionId: somethingLike('PUBLICLAW'),
+          CCDJurisdictionName: somethingLike('Public Law'),
+          CCDCaseTypeId: somethingLike('CARE_SUPERVISION_EPO'),
+          CCDCaseTypeName: somethingLike('Public Law Applications'),
+        },
+      ],
     };
 
     beforeEach(() => {
@@ -59,19 +59,19 @@ describe('Global serarch API', () => {
           method: 'POST',
           path: '/globalSearch',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -92,19 +92,19 @@ describe('Global serarch API', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
-            'searchCriteria': {
-              'CCDJurisdictionIds': ['PUBLICLAW'],
-              'caseReferences': ['1675871084353511']
+            searchCriteria: {
+              CCDJurisdictionIds: ['PUBLICLAW'],
+              caseReferences: ['1675871084353511'],
             },
-            'sortCriteria': null,
-            'maxReturnRecordCount': 25,
-            'startRecordNumber': 1
-          }
+            sortCriteria: null,
+            maxReturnRecordCount: 25,
+            startRecordNumber: 1,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

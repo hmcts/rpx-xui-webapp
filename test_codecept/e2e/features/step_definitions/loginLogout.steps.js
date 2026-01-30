@@ -1,11 +1,11 @@
 'use strict';
 
-const {
-  $, $$, navigate, waitForElement, currentUrl, isPresent, getText
-} = require('../../../helpers/globals'); 
+const { $, $$, navigate, waitForElement, currentUrl, isPresent, getText } = require('../../../helpers/globals');
 
 const loginPage = require('../pageObjects/loginLogoutObjects');
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY, LOG_LEVELS } = require('../../support/constants');
 const config = require('../../config/conf.js');
@@ -34,27 +34,27 @@ async function loginattemptCheckAndRelogin(username, password, world) {
         const isEmailFieldDisplayed = await isPresent(loginPage.emailAddress);
         const credentialsErrorPresent = await loginPage.isLoginCredentialsErrorDisplayed();
         const isEmailValuePresent = false;
-        if (isEmailFieldDisplayed){
+        if (isEmailFieldDisplayed) {
           const isEmailValuePresent = (await getText(loginPage.emailAddress)) !== '';
         }
         let errorMessage = '';
-        if (credentialsErrorPresent){
+        if (credentialsErrorPresent) {
           invalidCredentialsCounter++;
           errorMessage = testCounter + ' Credentials error occured ' + invalidCredentialsCounter;
         }
 
-        if (isEmailFieldDisplayed && !isEmailValuePresent){
-          errorMessage = errorMessage +' : ' +testCounter+' login page refresh ';
+        if (isEmailFieldDisplayed && !isEmailValuePresent) {
+          errorMessage = errorMessage + ' : ' + testCounter + ' login page refresh ';
         }
 
         const currentUrl = await currentUrl();
-        if (!isEmailFieldDisplayed && currentUrl.includes('idam-web-public')){
-          errorMessage = errorMessage + ':' +testCounter+' Unknown IDAM service error occured. See attached screenshot ';
+        if (!isEmailFieldDisplayed && currentUrl.includes('idam-web-public')) {
+          errorMessage = errorMessage + ':' + testCounter + ' Unknown IDAM service error occured. See attached screenshot ';
         }
         // console.log(testCounter +" : error message =>"+errorMessage+"<=");
-        if (errorMessage !== ''){
+        if (errorMessage !== '') {
           throw new Error(errorMessage);
-        } else if (isEmailFieldDisplayed && emailValuePresent){
+        } else if (isEmailFieldDisplayed && emailValuePresent) {
           console.log(testCounter + '  ');
 
           return false;
@@ -95,7 +95,7 @@ let firstAttemptFailedLogins = 0;
 let secondAttemptFailedLogins = 0;
 
 When('I navigate to Expert UI Url', async function () {
-  await BrowserWaits.retryWithActionCallback(async function(){
+  await BrowserWaits.retryWithActionCallback(async function () {
     CucumberReportLogger.AddMessage('App base url : ' + config.config.baseUrl, LOG_LEVELS.Info);
     await navigate(config.config.baseUrl);
     await BrowserWaits.waitForElement(loginPage.signinTitle);
@@ -110,19 +110,14 @@ When('I navigate to Expert UI Url', async function () {
 Then(/^I should see failure error summary$/, async function () {
   await $('.heading-large').waitFor(20);
   await expect(loginPage.failure_error_heading.isVisible()).to.eventually.be.true;
-  await expect(getText(loginPage.failure_error_heading))
-    .to
-    .eventually
-    .contains('Incorrect email or password');
+  await expect(getText(loginPage.failure_error_heading)).to.eventually.contains('Incorrect email or password');
   BrowserWaits.waitForSeconds(SHORT_DELAY);
 });
 
 Then(/^I am on Idam login page$/, async function () {
   await loginPage.signinTitle.waitFor();
   await expect(loginPage.signinTitle.isVisible()).to.eventually.be.true;
-  await expect(await getText(loginPage.signinTitle))
-    .to
-    .contains('Sign in');
+  await expect(await getText(loginPage.signinTitle)).to.contains('Sign in');
   await expect(loginPage.emailAddress.isVisible()).to.eventually.be.true;
   await expect(loginPage.password.isVisible()).to.eventually.be.true;
   BrowserWaits.waitForSeconds(SHORT_DELAY);
@@ -149,10 +144,7 @@ When(/^I enter an Invalid email-address and password to login$/, async function 
 Given(/^I should be redirected to the Idam login page$/, async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await BrowserWaits.waitForElement(loginPage.signinTitle);
-    await expect(getText(loginPage.signinTitle))
-      .to
-      .eventually
-      .contains('Sign in');
+    await expect(getText(loginPage.signinTitle)).to.eventually.contains('Sign in');
   });
   BrowserWaits.waitForSeconds(LONG_DELAY);
 });
@@ -179,7 +171,7 @@ Then('I should be redirected to EUI dashboard page', async function () {
 
       const cookies = await resolvePage().context().cookies();
       reportLogger.AddMessage(JSON.stringify(cookies, null, 2));
-    } catch (err){
+    } catch (err) {
       await navigate(config.config.baseUrl);
       throw new Error(err);
     }
@@ -307,12 +299,19 @@ Then('I should see the expected banner for IA {string}', async function (usertyp
 });
 
 Given('I am logged into Expert UI caseworker-ia-adm user details', async function () {
-  await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password);
+  await loginPage.givenIAmLoggedIn(
+    config.config.params.caseworker_iac_adm_username,
+    config.config.params.caseworker_iac_adm_password
+  );
   const world = this;
   CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.caseworker_iac_adm_username}`);
 
   loginAttempts++;
-  await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_adm_username, config.config.params.caseworker_iac_adm_password, this);
+  await loginattemptCheckAndRelogin(
+    config.config.params.caseworker_iac_adm_username,
+    config.config.params.caseworker_iac_adm_password,
+    this
+  );
 
   await BrowserWaits.retryForPageLoad($('exui-app-header'), function (message) {
     world.attach('Login success page load load attempt : ' + message);
@@ -320,12 +319,19 @@ Given('I am logged into Expert UI caseworker-ia-adm user details', async functio
 });
 
 Given('I am logged into Expert UI caseworker-ia-caseofficer user details', async function () {
-  await loginPage.givenIAmLoggedIn(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password);
+  await loginPage.givenIAmLoggedIn(
+    config.config.params.caseworker_iac_off_username,
+    config.config.params.caseworker_iac_off_password
+  );
   const world = this;
   CucumberReportLogger.AddMessage(`Login user  is ${config.config.params.caseworker_iac_off_username}`);
 
   loginAttempts++;
-  await loginattemptCheckAndRelogin(config.config.params.caseworker_iac_off_username, config.config.params.caseworker_iac_off_password, this);
+  await loginattemptCheckAndRelogin(
+    config.config.params.caseworker_iac_off_username,
+    config.config.params.caseworker_iac_off_password,
+    this
+  );
 
   await BrowserWaits.retryForPageLoad($('exui-app-header'), function (message) {
     world.attach('Login success page load load attempt : ' + message);
@@ -336,7 +342,7 @@ Given('I am logged into Expert UI with test user identified as {string}', async 
   const world = this;
 
   const matchingUsers = testConfig.users[testConfig.testEnv].filter((user) => user.userIdentifier === testUserIdentifier);
-  if (matchingUsers.length === 0){
+  if (matchingUsers.length === 0) {
     throw new Error(`Test user with identifier ${testUserIdentifier} is not found, check app test config anf fix test issue`);
   }
 
@@ -379,10 +385,6 @@ Given(/^I navigate to Expert UI Url direct link$/, async function () {
 
 Then(/^I should be redirected back to Login page after direct link$/, async function () {
   await BrowserWaits.waitForElement(loginPage.signinBtn);
-  await expect(loginPage.signinTitle.getText())
-    .to
-    .eventually
-    .contains('Sign in');
+  await expect(loginPage.signinTitle.getText()).to.eventually.contains('Sign in');
   BrowserWaits.waitForSeconds(LONG_DELAY);
 });
-

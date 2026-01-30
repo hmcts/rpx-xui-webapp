@@ -3,12 +3,10 @@
 Forms
 */
 
-$module: "form";
+$module: 'form';
 
 .#{$module} {
-
   &-money {
-
     .#{$module}-currency {
       font-weight: 600;
       margin-right: em(10);

@@ -16,28 +16,33 @@ export class HearingValuesEffects {
     private readonly actions$: Actions,
     private readonly hearingStore: Store<fromHearingReducers.State>,
     private readonly hearingsService: HearingsService,
-    private readonly sessionStorage: SessionStorageService,
+    private readonly sessionStorage: SessionStorageService
   ) {}
 
-  public loadHearingValue$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingValuesActions.LOAD_HEARING_VALUES),
-    withLatestFrom(this.hearingStore.select(fromHearingReducers.caseInfoSelector)),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    switchMap(([action, caseInfo]) => {
-      return this.hearingsService.loadHearingValues(caseInfo?.jurisdictionId, caseInfo?.caseReference).pipe(
-        map(
-          (response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
-        catchError((error) => {
-          this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-          return HearingValuesEffects.handleError(error, caseInfo);
-        })
-      );
-    })
-  ));
+  public loadHearingValue$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(hearingValuesActions.LOAD_HEARING_VALUES),
+      withLatestFrom(this.hearingStore.select(fromHearingReducers.caseInfoSelector)),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      switchMap(([action, caseInfo]) => {
+        return this.hearingsService.loadHearingValues(caseInfo?.jurisdictionId, caseInfo?.caseReference).pipe(
+          map((response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
+          catchError((error) => {
+            this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
+            return HearingValuesEffects.handleError(error, caseInfo);
+          })
+        );
+      })
+    )
+  );
 
   public static handleError(error: HttpError, caseInfo: any): Observable<Action> {
     if (error && error.status) {
-      return of(new fromAppStoreActions.Go({ path: [`/cases/case-details/${caseInfo?.jurisdictionId}/${caseInfo?.caseType}/${caseInfo.caseReference}/hearings`] }));
+      return of(
+        new fromAppStoreActions.Go({
+          path: [`/cases/case-details/${caseInfo?.jurisdictionId}/${caseInfo?.caseType}/${caseInfo.caseReference}/hearings`],
+        })
+      );
     }
   }
 }

@@ -11,4 +11,3 @@ Then('I see the event with the current timestamp', async function () {
   const currentDate = new Date();
   expect(await caseManager.getTimestampDisplayed()).to.be.contain(currentDate.toLocaleTimeString());
 });
-

@@ -21,19 +21,18 @@ describe('SpecificAccessDuplicateRecordComponent', () => {
               data: {
                 taskAndRole: {
                   task: {
-                    task: getMockTasks()[0]
+                    task: getMockTasks()[0],
                   },
-                  role: []
-                }
-              }
-            }
-          }
+                  role: [],
+                },
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

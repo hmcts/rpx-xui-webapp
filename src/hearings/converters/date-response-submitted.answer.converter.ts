@@ -24,4 +24,3 @@ export class DateResponseSubmittedAnswerConverter implements AnswerConverter {
     );
   }
 }
-

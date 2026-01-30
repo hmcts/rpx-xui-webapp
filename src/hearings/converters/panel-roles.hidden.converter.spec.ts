@@ -24,7 +24,7 @@ describe('PanelRolesHiddenConverter', () => {
   it('should transform hidden of false answer', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelSpecialisms: ['cardiologist']
+      panelSpecialisms: ['cardiologist'],
     };
     const result$ = panelRolesHiddenConverter.transformHidden(of(STATE));
     const showAnswer = false;

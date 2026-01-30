@@ -20,7 +20,7 @@ export class PactV3TestSetup {
       provider: config.provider,
       dir: path.resolve(process.cwd(), 'api/test/pact/pacts'),
       port: this.port,
-      spec: SpecificationVersion.SPECIFICATION_VERSION_V3
+      spec: SpecificationVersion.SPECIFICATION_VERSION_V3,
     });
   }
 }

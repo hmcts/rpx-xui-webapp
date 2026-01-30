@@ -1,9 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { signIn, signOut } from "../steps/login-steps";
+import { signIn, signOut } from '../steps/login-steps';
 import { waitForSpecificResponse } from '../helpers/responseListenerHelper';
 import { createCase } from '../steps/create-xui-case-poc-steps';
 import { waitForSpinner } from '../steps/spinner-steps';
-import { dealWithShortenedCaseRefLabel, getCaseReferenceFromFirstRow, getCaseReferenceFromFirstRowForEmployment } from '../steps/table-steps';
+import {
+  dealWithShortenedCaseRefLabel,
+  getCaseReferenceFromFirstRow,
+  getCaseReferenceFromFirstRowForEmployment,
+} from '../steps/table-steps';
 
 test('event journey with new url along with jurisdiction and caseType ', async ({ page }) => {
   await signIn(page, 'SOLICITOR');

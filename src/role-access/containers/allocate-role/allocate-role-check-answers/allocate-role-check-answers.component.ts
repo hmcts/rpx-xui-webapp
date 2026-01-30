@@ -13,7 +13,7 @@ import {
   AllocateTo,
   Answer,
   DurationOfRole,
-  TypeOfRole
+  TypeOfRole,
 } from '../../../models';
 import { AnswerHeaderText, AnswerLabelText } from '../../../models/enums';
 import { RoleCaptionText } from '../../../models/enums/allocation-text';
@@ -22,7 +22,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-allocate-role-check-answers',
-  templateUrl: './allocate-role-check-answers.component.html'
+  templateUrl: './allocate-role-check-answers.component.html',
 })
 export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   @Input() public navEvent: AllocateRoleNavigation;
@@ -39,7 +39,8 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.storeSubscription = this.store.pipe(select(fromFeature.getAllocateRoleState))
+    this.storeSubscription = this.store
+      .pipe(select(fromFeature.getAllocateRoleState))
       .subscribe((allocateRole) => this.setAnswersFromAllocateRoleStateStore(allocateRole));
   }
 
@@ -67,20 +68,33 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       } else if (roleCategory === RoleCategory.ADMIN) {
         this.caption = `${action} an admin role`;
       } else {
-        this.caption = roleCategory !== undefined ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
+        this.caption =
+          roleCategory !== undefined ? `${action} a ${roleCategory.replace('_', ' ').toLowerCase()} role` : `${action} a role`;
       }
     }
     this.answers = [];
     if (allocateRoleStateData.action === Actions.Allocate) {
-      this.answers.push({ label: AnswerLabelText.TypeOfRole, value: allocateRoleStateData.typeOfRole.name, action: AllocateRoleState.CHOOSE_ROLE });
+      this.answers.push({
+        label: AnswerLabelText.TypeOfRole,
+        value: allocateRoleStateData.typeOfRole.name,
+        action: AllocateRoleState.CHOOSE_ROLE,
+      });
       if (allocateRoleStateData.allocateTo) {
-        this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+        this.answers.push({
+          label: AnswerLabelText.WhoBeAllocatedTo,
+          value: allocateRoleStateData.allocateTo,
+          action: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+        });
       }
     }
     if (allocateRoleStateData.action === Actions.Reallocate) {
       this.heading = AnswerHeaderText.CheckChanges;
       if (allocateRoleStateData.allocateTo) {
-        this.answers.push({ label: AnswerLabelText.WhoBeAllocatedTo, value: allocateRoleStateData.allocateTo, action: AllocateRoleState.CHOOSE_ALLOCATE_TO });
+        this.answers.push({
+          label: AnswerLabelText.WhoBeAllocatedTo,
+          value: allocateRoleStateData.allocateTo,
+          action: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+        });
       }
     }
     this.setPersonDetails(allocateRoleStateData);
@@ -92,9 +106,11 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
     if (allocateRoleStateData.person && allocateRoleStateData.person.email) {
       personDetails += `${allocateRoleStateData.person.name}\n${allocateRoleStateData.person.email}`;
     }
-    if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
+    if (
+      allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON ||
       (allocateRoleStateData.allocateTo === null && allocateRoleStateData.typeOfRole.name === TypeOfRole.CaseManager) ||
-      allocateRoleStateData.action === Actions.Reallocate) {
+      allocateRoleStateData.action === Actions.Reallocate
+    ) {
       this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: AllocateRoleState.SEARCH_PERSON });
     } else if (allocateRoleStateData.allocateTo === AllocateTo.ALLOCATE_TO_ME) {
       if (personDetails) {
@@ -115,7 +131,11 @@ export class AllocateRoleCheckAnswersComponent implements OnInit, OnDestroy {
       endDate = moment.parseZone(allocateRoleStateData.period.endDate).format('D MMMM YYYY');
       durationOfRole = `${startDate} to ${endDate}`;
     }
-    this.answers.push({ label: AnswerLabelText.DurationOfRole, value: durationOfRole, action: AllocateRoleState.CHOOSE_DURATION });
+    this.answers.push({
+      label: AnswerLabelText.DurationOfRole,
+      value: durationOfRole,
+      action: AllocateRoleState.CHOOSE_DURATION,
+    });
   }
 
   public onNavigate(action) {

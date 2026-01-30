@@ -12,7 +12,7 @@ import { z } from 'zod';
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const locationSchema = z.object({
   id: z.string(),
-  locationName: z.string()
+  locationName: z.string(),
 });
 
 test.describe('Work Allocation API Contracts', () => {
@@ -29,7 +29,7 @@ test.describe('Work Allocation API Contracts', () => {
     // And: Response structure matches LocationList contract when successful
     if (response.status === 200 && Array.isArray(response.data)) {
       expectContract(response.data, WorkAllocationSchemas.LocationList, {
-        context: { endpoint, status: response.status }
+        context: { endpoint, status: response.status },
       });
 
       // And: Each location has required fields
@@ -39,17 +39,19 @@ test.describe('Work Allocation API Contracts', () => {
     }
   });
 
-  test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({ apiClient }) => {
+  test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({
+    apiClient,
+  }) => {
     // Given: A task search request for MyTasks view
     const searchRequest = {
       view: 'MyTasks',
-      searchRequest: []
+      searchRequest: [],
     };
 
     // When: Searching for tasks
     const response = await apiClient.post('workallocation/task', {
       data: searchRequest,
-      throwOnError: false
+      throwOnError: false,
     });
 
     // Then: Response status is within expected range
@@ -58,7 +60,7 @@ test.describe('Work Allocation API Contracts', () => {
     // And: Response structure matches TaskList contract when successful
     if (response.status === 200) {
       expectContract(response.data, WorkAllocationSchemas.TaskList, {
-        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status }
+        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
       });
 
       // And: tasks array is present
@@ -137,7 +139,7 @@ test.describe('Search and Ref Data API Contracts', () => {
     // And: Response structure matches GlobalSearchServices contract when successful
     if (response.status === 200 && Array.isArray(response.data)) {
       expectContract(response.data, SearchSchemas.GlobalSearchServices, {
-        context: { endpoint: 'api/globalSearch/services', status: response.status }
+        context: { endpoint: 'api/globalSearch/services', status: response.status },
       });
 
       // And: Each service has required fields
@@ -215,14 +217,11 @@ test.describe('Test Data Builders Validation', () => {
     const tasks = [
       new TaskBuilder().withId('task-1').assigned().build(),
       new TaskBuilder().withId('task-2').unassigned().build(),
-      new TaskBuilder().withId('task-3').completed().build()
+      new TaskBuilder().withId('task-3').completed().build(),
     ];
 
     // When: Building a task list
-    const taskList = new TaskListBuilder()
-      .withTasks(tasks)
-      .withTotalRecords(50)
-      .build();
+    const taskList = new TaskListBuilder().withTasks(tasks).withTotalRecords(50).build();
 
     // Then: Task list matches expected structure
     expect(taskList.tasks).toHaveLength(3);
@@ -273,9 +272,7 @@ test.describe('Test Data Builders Validation', () => {
 
   test('TaskBuilder.buildMany creates multiple tasks with incremental IDs', () => {
     // Given: TaskBuilder configured with base properties
-    const builder = new TaskBuilder()
-      .withTitle('Standard Task')
-      .assigned('user-1');
+    const builder = new TaskBuilder().withTitle('Standard Task').assigned('user-1');
 
     // When: Building multiple tasks
     const tasks = builder.buildMany(3);

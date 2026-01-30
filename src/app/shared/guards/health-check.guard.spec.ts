@@ -11,13 +11,9 @@ class HttpClientMock {
   }
 }
 
-const healthCheckServiceMock = jasmine.createSpyObj('HealthCheckService', [
-  'doHealthCheck'
-]);
+const healthCheckServiceMock = jasmine.createSpyObj('HealthCheckService', ['doHealthCheck']);
 
-const storeMock = jasmine.createSpyObj('Store', [
-  'dispatch'
-]);
+const storeMock = jasmine.createSpyObj('Store', ['dispatch']);
 
 describe('HealthCheckGuard', () => {
   let healthCheckServiceInstance: HealthCheckService;
@@ -25,15 +21,13 @@ describe('HealthCheckGuard', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({})
-      ],
+      imports: [StoreModule.forRoot({})],
       providers: [
         HealthCheckGuard,
         { provide: HttpClient, useClass: HttpClientMock },
         { provide: HealthCheckService, useValue: healthCheckServiceMock },
-        { provide: Store, useValue: storeMock }
-      ]
+        { provide: Store, useValue: storeMock },
+      ],
     });
   });
 

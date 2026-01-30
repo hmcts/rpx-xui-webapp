@@ -9,10 +9,13 @@ test.describe('Postcode lookup', () => {
     await withXsrf('solicitor', async (headers) => {
       const response = await apiClient.get<AddressLookupResponse>('api/addresses?postcode=E1', {
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
 
-      expectStatus(response.status, StatusSets.guardedBasic.filter((s) => s !== 403));
+      expectStatus(
+        response.status,
+        StatusSets.guardedBasic.filter((s) => s !== 403)
+      );
       if (!shouldAssertAddress(response.status)) {
         return;
       }

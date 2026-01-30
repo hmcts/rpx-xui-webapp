@@ -221,14 +221,11 @@ export class LaunchDarklyDefaultsConstants {
     ]
   }`;
 
-  public static readonly waServiceConfigTest: WAFeatureConfig
-    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTEST);
+  public static readonly waServiceConfigTest: WAFeatureConfig = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTEST);
 
-  public static readonly waServiceConfigProd:WAFeatureConfig
-    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGPROD);
+  public static readonly waServiceConfigProd: WAFeatureConfig = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGPROD);
 
-  public static readonly waServiceConfigTestQm:WAFeatureConfig
-    = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTESTQM);
+  public static readonly waServiceConfigTestQm: WAFeatureConfig = JSON.parse(LaunchDarklyDefaultsConstants.WASERVICECONFIGTESTQM);
 
   public static getWaServiceConfig(env: DeploymentEnvironmentEnum): WAFeatureConfig {
     if (env === DeploymentEnvironmentEnum.PROD) {

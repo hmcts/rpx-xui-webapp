@@ -26,7 +26,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Immigration detention centre',
       hintTextCY: '',
       order: 1,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'inCameraCourt',
@@ -35,7 +35,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'In camera court',
       hintTextCY: '',
       order: 2,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'sameSexCourtroom',
@@ -44,7 +44,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Same sex courtroom',
       hintTextCY: '',
       order: 3,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'secureDock',
@@ -53,7 +53,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Secure Dock',
       hintTextCY: '',
       order: 4,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'witnessScreen',
@@ -62,7 +62,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Witness Screen',
       hintTextCY: '',
       order: 4,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'witnessRoom',
@@ -71,7 +71,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Witness Room',
       hintTextCY: '',
       order: 5,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'videoConferencing',
@@ -80,7 +80,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Video Conferencing',
       hintTextCY: '',
       order: 5,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'VideoFacility',
@@ -89,7 +89,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Video Facility',
       hintTextCY: '',
       order: 5,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'prisonVideoLink',
@@ -98,8 +98,8 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Prison Video Link',
       hintTextCY: '',
       order: 5,
-      parentKey: null
-    }
+      parentKey: null,
+    },
   ];
 
   const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
@@ -109,7 +109,7 @@ describe('HearingFacilitiesComponent', () => {
       flagParentId: 'RA0008',
       flagId: 'RA0042',
       flagDescription: 'Sign language interpreter required',
-      flagStatus: 'ACTIVE'
+      flagStatus: 'ACTIVE',
     },
     {
       partyId: '1234-uytr-7654-asdf-0001',
@@ -117,7 +117,7 @@ describe('HearingFacilitiesComponent', () => {
       flagParentId: 'CF0001',
       flagId: 'CF0006',
       flagDescription: 'Potential fraud',
-      flagStatus: 'ACTIVE'
+      flagStatus: 'ACTIVE',
     },
     {
       partyId: '1234-uytr-7654-asdf-0002',
@@ -125,8 +125,8 @@ describe('HearingFacilitiesComponent', () => {
       flagParentId: 'CF0001',
       flagId: 'CF0007',
       flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    }
+      flagStatus: 'ACTIVE',
+    },
   ];
 
   const partiesInSHV: PartyDetailsModel[] = [
@@ -139,10 +139,8 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party1 name FN',
         lastName: 'Party1 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
+        reasonableAdjustments: ['RA001'],
+      },
     },
     {
       partyID: '1234-uytr-7654-asdf-0002',
@@ -153,11 +151,9 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party2 name FN',
         lastName: 'Party2 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
-    }
+        reasonableAdjustments: ['RA001'],
+      },
+    },
   ];
 
   const partiesInHMC: PartyDetailsModel[] = [
@@ -170,10 +166,8 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party1 name FN',
         lastName: 'Party1 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
+        reasonableAdjustments: ['RA001'],
+      },
     },
     {
       partyID: '1234-uytr-7654-asdf-0002',
@@ -184,11 +178,9 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party2 name FN',
         lastName: 'Party2 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
-    }
+        reasonableAdjustments: ['RA001'],
+      },
+    },
   ];
 
   beforeEach(() => {
@@ -205,14 +197,14 @@ describe('HearingFacilitiesComponent', () => {
             snapshot: {
               data: {
                 caseFlags: caseFlagsRefData,
-                additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS
-              }
+                additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS,
+              },
             },
-            fragment: of('point-to-me')
-          }
-        }
+            fragment: of('point-to-me'),
+          },
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingFacilitiesComponent);
@@ -250,7 +242,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData set hearingFacilitiesChangesConfirmed to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -263,8 +255,8 @@ describe('HearingFacilitiesComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed).toEqual(true);
@@ -297,7 +289,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
     component.hearingCondition = {
-      mode: 'create'
+      mode: 'create',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -310,8 +302,8 @@ describe('HearingFacilitiesComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.nonReasonableAdjustmentFlags.length).toEqual(3);
@@ -319,7 +311,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -332,16 +324,16 @@ describe('HearingFacilitiesComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.hearingRequestMainModel = {
       ...component.hearingRequestMainModel,
-      partyDetails: partiesInHMC
+      partyDetails: partiesInHMC,
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      parties: partiesInSHV
+      parties: partiesInSHV,
     };
     component.ngOnInit();
     expect(component.nonReasonableAdjustmentFlags.length).toEqual(2);
@@ -349,7 +341,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData set nonReasonableAdjustmentChangesConfirmed property to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -362,8 +354,8 @@ describe('HearingFacilitiesComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toEqual(true);
@@ -371,7 +363,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData not set nonReasonableAdjustmentChangesConfirmed property to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -384,8 +376,8 @@ describe('HearingFacilitiesComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toBeUndefined();
@@ -393,7 +385,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -407,12 +399,12 @@ describe('HearingFacilitiesComponent', () => {
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingFacilitiesChangesConfirmed: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      facilitiesRequired: ['facility']
+      facilitiesRequired: ['facility'],
     };
     component.ngOnInit();
     expect(component.additionalFacilities[0].showAmendedLabel).toBe(true);
@@ -421,23 +413,27 @@ describe('HearingFacilitiesComponent', () => {
   it('should return true if additional facilities have changed', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility', 'Some other facility']
-      }
+        facilitiesRequired: ['Some facility', 'Some other facility'],
+      },
     };
-    // eslint-disable-next-line dot-notation
+
     const result = component['haveUpdatesMadeToSelections']();
     expect(result).toBe(true);
   });
@@ -445,24 +441,27 @@ describe('HearingFacilitiesComponent', () => {
   it('should return false if additional facilities have not changed', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
 
-    // eslint-disable-next-line dot-notation
     const result = component['haveUpdatesMadeToSelections']();
     expect(result).toBe(false);
   });
@@ -470,23 +469,27 @@ describe('HearingFacilitiesComponent', () => {
   it('should return true if caseAdditionalSecurityFlag has changed', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: false },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: false,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
-    // eslint-disable-next-line dot-notation
+
     const result = component['haveUpdatesMadeToSelections']();
     expect(result).toBe(true);
   });
@@ -494,23 +497,27 @@ describe('HearingFacilitiesComponent', () => {
   it('should return false if caseAdditionalSecurityFlag has not changed', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        caseAdditionalSecurityFlag: true,
+      },
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
+        facilitiesRequired: ['Some facility'],
+      },
     };
-    // eslint-disable-next-line dot-notation
+
     const result = component['haveUpdatesMadeToSelections']();
     expect(result).toBe(false);
   });

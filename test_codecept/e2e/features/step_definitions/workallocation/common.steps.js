@@ -27,7 +27,7 @@ const { DataTableArgument } = require('codeceptjs');
 const taskListTable = new TaskListTable();
 const waCaseListTable = new casesTable();
 
-Then('I see My work My Tasks page', async function(){
+Then('I see My work My Tasks page', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await myWorkPage.amOnPage();
     await myWorkPage.amOnMyTasksTab();
@@ -105,32 +105,44 @@ When('I click WA case list pagination link {string}', async function (pagination
   }
 });
 
-When('I click task list table header column {string}', async function(columnHeaderLabel){
+When('I click task list table header column {string}', async function (columnHeaderLabel) {
   await taskListTable.clickColumnHeader(columnHeaderLabel);
 });
 
-Then('I validate task list table sorted with column {string} in order {string}', async function(columnheaderlabel, sortOrder){
+Then('I validate task list table sorted with column {string} in order {string}', async function (columnheaderlabel, sortOrder) {
   const columnSortVal = await taskListTable.getColumnSortState(columnheaderlabel);
   expect(columnSortVal).to.include(sortOrder.toLowerCase());
 });
 
-When('I click task list table header column {string}, I validate task list table sorted with column {string} in order {string}', async function (columnHeaderLabel, columnheaderlabel, sortOrder) {
-  await BrowserWaits.retryWithActionCallback(async () => {
-    await taskListTable.clickColumnHeader(columnHeaderLabel);
-    const columnSortVal = await taskListTable.getColumnSortState(columnheaderlabel);
-    await BrowserWaits.waitForConditionAsync(async () => {
-      return columnSortVal.includes(sortOrder.toLowerCase());
-    }, 3000, 'Sort column state to be ' + sortOrder.toLowerCase());
-  });
-});
+When(
+  'I click task list table header column {string}, I validate task list table sorted with column {string} in order {string}',
+  async function (columnHeaderLabel, columnheaderlabel, sortOrder) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await taskListTable.clickColumnHeader(columnHeaderLabel);
+      const columnSortVal = await taskListTable.getColumnSortState(columnheaderlabel);
+      await BrowserWaits.waitForConditionAsync(
+        async () => {
+          return columnSortVal.includes(sortOrder.toLowerCase());
+        },
+        3000,
+        'Sort column state to be ' + sortOrder.toLowerCase()
+      );
+    });
+  }
+);
 
 Then('I validate task list table columns displayed', async function (datatable) {
   reportLogger.reportDatatable(datatable);
   const columnHeadersHash = datatable.parse().hashes();
   const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
   const actualHeadeColumns = await taskListTable.getColumnHeaderNames();
-  expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
-  expect(actualHeadeColumns, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.include.members(expectdColHeaders);
+  expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(
+    expectdColHeaders.length
+  );
+  expect(
+    actualHeadeColumns,
+    `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `
+  ).to.include.members(expectdColHeaders);
 });
 
 Then('I validate task list table columns displayed for user {string}', async function (userType, datatable) {
@@ -140,9 +152,9 @@ Then('I validate task list table columns displayed for user {string}', async fun
 
   let actualHeadeColumns = await taskListTable.getColumnHeaderNames();
   actualHeadeColumns = actualHeadeColumns.map((col) => col.toLowerCase());
-  for (const headerHash of columnHeadersHash){
+  for (const headerHash of columnHeadersHash) {
     const columnHeader = headerHash.ColumnHeader;
-    if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')){
+    if (headerHash[userType].toLowerCase().includes('yes') || headerHash[userType].toLowerCase().includes('true')) {
       expect(actualHeadeColumns).to.include(columnHeader.toLowerCase());
     } else {
       expect(actualHeadeColumns).to.not.include(columnHeader.toLowerCase());
@@ -166,7 +178,7 @@ Then('I validate check your changes table columns displayed for user {string}', 
   }
 });
 
-Then('I validate task list columns are links', async function(datatable){
+Then('I validate task list columns are links', async function (datatable) {
   reportLogger.reportDatatable(datatable);
 
   const columnHeadersHash = datatable.parse().hashes();
@@ -179,11 +191,13 @@ Then('I validate task list columns are links', async function(datatable){
   });
 
   actuallinkColumns = actuallinkColumns.filter((col) => col !== '');
-  expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(expectdLinkCols.length);
+  expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(
+    expectdLinkCols.length
+  );
   expect(actuallinkColumns).to.include.members(expectdLinkCols);
 });
 
-When('I click task column link {string} at row {int}', async function(colName, rowPos){
+When('I click task column link {string} at row {int}', async function (colName, rowPos) {
   await BrowserWaits.retryWithActionCallback(async () => {
     await taskListTable.clickTaskColLink(colName, rowPos);
   });
@@ -201,7 +215,7 @@ When('I click task column link {string} at row {int}, I see case details page', 
   });
 });
 
-Then('I see manage link displayed for task at position {int}', async function(row){
+Then('I see manage link displayed for task at position {int}', async function (row) {
   expect(await taskListTable.isManageLinkPresent(row)).to.be.true;
 });
 
@@ -218,22 +232,22 @@ Then('I validate manage link actions for tasks', async function (tasksDatatable)
   for (let i = 0; i < taskHashes.length; i++) {
     const taskActions = taskHashes[i].actions.split(',');
     const taskIndex = parseInt(taskHashes[i].index);
-    if (taskHashes[i].actions === ''){
+    if (taskHashes[i].actions === '') {
       softAssert.setScenario(`Manage link no actionDescription for task  ${JSON.stringify(taskHashes[i])} `);
       await softAssert.assert(async () => expect(await taskListTable.isManageLinkPresent(taskIndex)).to.be.true);
     }
 
     const isManagelinkOpen = await taskListTable.isManageLinkOpenForTaskAtPos(taskIndex);
-    if (!isManagelinkOpen){
+    if (!isManagelinkOpen) {
       await taskListTable.clickManageLinkForTaskAt(taskIndex);
     }
 
-    if (taskActions.length === 0){
+    if (taskActions.length === 0) {
       await softAssert.assert(async () => expect(await taskListTable.isTaskActionPresent('Go to task')).to.be.true);
       await softAssert.assert(async () => expect((await taskListTable.getTaskActions()).length === 1).to.be.true);
     }
 
-    for (let j = 0; j < taskActions.length; j++){
+    for (let j = 0; j < taskActions.length; j++) {
       const action = taskActions[j];
 
       softAssert.setScenario(`Action ${action} present for task  ${JSON.stringify(taskHashes[i])} isPresent`);
@@ -290,15 +304,16 @@ When('I open Manage link for wa cases at row {int}', async function (taskAtRow) 
   }
 });
 
-Then('I see action link {string} is present for task with Manage link open', async function(manageLinkAction){
+Then('I see action link {string} is present for task with Manage link open', async function (manageLinkAction) {
   expect(await taskListTable.isTaskActionPresent(manageLinkAction), `Task action ${manageLinkAction} is not present`).to.be.true;
 });
 
 Then('I see action link {string} is present for case with Manage link open', async function (manageLinkAction) {
-  expect(await waCaseListTable.isCaseActionPresent(manageLinkAction), `Case action ${manageLinkAction} is not present`).to.be.true;
+  expect(await waCaseListTable.isCaseActionPresent(manageLinkAction), `Case action ${manageLinkAction} is not present`).to.be
+    .true;
 });
 
-When('I click action link {string} on task with Manage link open', async function (manageLinkAction){
+When('I click action link {string} on task with Manage link open', async function (manageLinkAction) {
   await taskListTable.clickTaskAction(manageLinkAction);
 });
 
@@ -306,12 +321,12 @@ When('I click action link {string} on case with Manage link open', async functio
   await waCaseListTable.clickCaseAction(manageLinkAction);
 });
 
-Then('I validate notification message banner is displayed in {string} page', async function(page){
+Then('I validate notification message banner is displayed in {string} page', async function (page) {
   page = page.toLowerCase();
   let pageObject = null;
-  if (page.includes('my work')){
+  if (page.includes('my work')) {
     pageObject = myWorkPage;
-  } else if (page.includes('all work')){
+  } else if (page.includes('all work')) {
     pageObject = allWorkPage;
   } else if (page.includes('case details')) {
     pageObject = caseDetailsPage;
@@ -321,7 +336,10 @@ Then('I validate notification message banner is displayed in {string} page', asy
     throw new Error(`message banner validation step not implemented for page ${page}`);
   }
 
-  expect(await pageObject.taskInfoMessageBanner.isBannerMessageDisplayed(), `Not on page  ${page} or message banner not displayed`).to.be.true;
+  expect(
+    await pageObject.taskInfoMessageBanner.isBannerMessageDisplayed(),
+    `Not on page  ${page} or message banner not displayed`
+  ).to.be.true;
 });
 
 Then('I validate notification banner messages displayed in {string} page', async function (page, messagesDatatable) {
@@ -346,23 +364,27 @@ Then('I validate notification banner messages displayed in {string} page', async
     for (let i = 0; i < messages.length; i++) {
       const matchingMsgs = await ArrayUtil.filter(actualmessages, async (msg) => msg.includes(messages[i].message));
       if (messages[i].message !== '') {
-        expect(matchingMsgs.length > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`).to.be.true;
+        expect(matchingMsgs.length > 0, `expected "${messages[i].message}" to be included in ${JSON.stringify(actualmessages)}`)
+          .to.be.true;
       }
     }
   });
 });
 
-Then('If user type {string} is {string}, I validate task details displayed in task action page', async function (currentUserType, stepForUserType, taskDetailsDatatable){
-  reportLogger.reportDatatable(taskDetailsDatatable);
+Then(
+  'If user type {string} is {string}, I validate task details displayed in task action page',
+  async function (currentUserType, stepForUserType, taskDetailsDatatable) {
+    reportLogger.reportDatatable(taskDetailsDatatable);
 
-  if (currentUserType === stepForUserType){
-    const taskDetails = taskDetailsDatatable.parse().hashes()[0];
+    if (currentUserType === stepForUserType) {
+      const taskDetails = taskDetailsDatatable.parse().hashes()[0];
 
-    validateTaskDetailsDisplayed(taskDetails, taskActionPage);
-  } else {
-    reportLogger.AddMessage(`"Step is not for scenario user ${currentUserType}" .Step is ignored`);
+      validateTaskDetailsDisplayed(taskDetails, taskActionPage);
+    } else {
+      reportLogger.AddMessage(`"Step is not for scenario user ${currentUserType}" .Step is ignored`);
+    }
   }
-});
+);
 
 Then('I validate task details displayed in task action page', async function (taskDetailsDatatable) {
   reportLogger.reportDatatable(taskDetailsDatatable);
@@ -392,7 +414,7 @@ Then('I validate task details displayed in check your changes page matching refe
   await validateTaskDetailsDisplayed(taskDetails, taskCheckYourChangesPage);
 });
 
-async function validateTaskDetailsDisplayed(taskDetails, actionPage){
+async function validateTaskDetailsDisplayed(taskDetails, actionPage) {
   const softAssert = new SoftAssert();
   reportLogger.AddMessage('Task details:');
   reportLogger.AddJson(taskDetails);
@@ -407,7 +429,7 @@ async function validateTaskDetailsDisplayed(taskDetails, actionPage){
   softAssert.finally();
 }
 
-Then('I see {string} task action page', async function(actionHeader){
+Then('I see {string} task action page', async function (actionHeader) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await taskActionPage.getPageHeader()).to.contain(actionHeader);
   });
@@ -419,20 +441,20 @@ Then('I validate task action page has description {string}', async function (act
   });
 });
 
-When('I click {string} submit button in task action page', async function(actionSubmitBtnLabel){
+When('I click {string} submit button in task action page', async function (actionSubmitBtnLabel) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await taskActionPage.getSubmitBtnActionLabel()).to.contain(actionSubmitBtnLabel);
     await taskActionPage.clickSubmit();
   });
 });
 
-When('I click Cancel link in task action page', async function(){
+When('I click Cancel link in task action page', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await taskActionPage.clickCancelLink();
   });
 });
 
-When('In workflow {string}, I click cancel link', async function (workflow){
+When('In workflow {string}, I click cancel link', async function (workflow) {
   const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
   expect(workFlowPage, 'workFlowPage pagee is null. test issue, include step Then I am in workflow page "xxx" ').to.be.not.null;
   await workFlowPage.workFlowContainer.clickCancelLink();
@@ -450,7 +472,7 @@ Then('I validate tasks count in page {int}', async function (tasksCount) {
   });
 });
 
-Then('I validate WA tasks table footer displayed status is {string}', async function(displayStateBool){
+Then('I validate WA tasks table footer displayed status is {string}', async function (displayStateBool) {
   const expectedDisplayState = displayStateBool.toLowerCase().includes('true');
   expect(await taskListTable.isTableFooterDisplayed()).to.equal(expectedDisplayState);
 });
@@ -471,65 +493,74 @@ Then('I validate WA cases table footer message is {string}', async function (mes
   expect(await waCaseListTable.getTableFooterMessage()).to.include(message);
 });
 
-Given('I have a caseworker details other than logged in user with reference {string} for service {string}', async function(caseWorkerRef, service){
-  const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage(`${service}-caseworkers`);
-  const caseworkers = JSON.parse(caseworkersInSessionStorage);
+Given(
+  'I have a caseworker details other than logged in user with reference {string} for service {string}',
+  async function (caseWorkerRef, service) {
+    const caseworkersInSessionStorage = await browserUtil.getFromSessionStorage(`${service}-caseworkers`);
+    const caseworkers = JSON.parse(caseworkersInSessionStorage);
 
-  const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('userDetails');
-  const loggedInUser = JSON.parse(loggedinuserDetailsInSessionStorage);
-  const loggedinUserIdamId = loggedInUser.uid ? loggedInUser.uid : loggedInUser.id;
-  let caseWorkerForRef = null;
-  for (const cw of caseworkers){
-    if (cw.roleCategory === 'LEGAL_OPERATIONS' && cw.idamId !== loggedinUserIdamId){
-      caseWorkerForRef = cw;
-      break;
+    const loggedinuserDetailsInSessionStorage = await browserUtil.getFromSessionStorage('userDetails');
+    const loggedInUser = JSON.parse(loggedinuserDetailsInSessionStorage);
+    const loggedinUserIdamId = loggedInUser.uid ? loggedInUser.uid : loggedInUser.id;
+    let caseWorkerForRef = null;
+    for (const cw of caseworkers) {
+      if (cw.roleCategory === 'LEGAL_OPERATIONS' && cw.idamId !== loggedinUserIdamId) {
+        caseWorkerForRef = cw;
+        break;
+      }
     }
+
+    reportLogger.AddJson(caseWorkerForRef);
+    global.scenarioData[caseWorkerRef] = caseWorkerForRef;
   }
+);
 
-  reportLogger.AddJson(caseWorkerForRef);
-  global.scenarioData[caseWorkerRef] = caseWorkerForRef;
-});
-
-Then('I see see page task assignment person not authorised page', async function(){
+Then('I see see page task assignment person not authorised page', async function () {
   try {
     await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container);
-  } catch (err){
+  } catch (err) {
     throw new Error('Task assignment person authorised page is not displayed.');
   }
 });
 
-Then('I see see page task assignment authorisation error message {string}', async function(message){
+Then('I see see page task assignment authorisation error message {string}', async function (message) {
   await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container);
   expect(await taskAssignmentPersonNotAuthorisedPage.message.getText()).to.includes(message);
 });
 
-When('I click back button in task assignment authorisation error page', async function(){
+When('I click back button in task assignment authorisation error page', async function () {
   await BrowserWaits.waitForElement(taskAssignmentPersonNotAuthorisedPage.container);
   await taskAssignmentPersonNotAuthorisedPage.backButton.click();
 });
 
-Then('I validate work allocation task table column {string} width less than or equal to {int}', async function(columnName, size){
-  await BrowserWaits.retryWithActionCallback(async () => {
-    const columnWidthActual = await taskListTable.getHeaderColumnWidth(columnName);
-    reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`);
-    expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
-  });
-});
+Then(
+  'I validate work allocation task table column {string} width less than or equal to {int}',
+  async function (columnName, size) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      const columnWidthActual = await taskListTable.getHeaderColumnWidth(columnName);
+      reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`);
+      expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
+    });
+  }
+);
 
-Then('I validate work allocation case table column {string} width less than or equal to {int}', async function (columnName, size) {
-  await BrowserWaits.retryWithActionCallback(async () => {
-    const columnWidthActual = await waCaseListTable.getHeaderColumnWidth(columnName);
-    reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`);
-    expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
-  });
-});
+Then(
+  'I validate work allocation case table column {string} width less than or equal to {int}',
+  async function (columnName, size) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      const columnWidthActual = await waCaseListTable.getHeaderColumnWidth(columnName);
+      reportLogger.AddMessage(`Actual column "${columnName}" width is ${columnWidthActual}`);
+      expect(columnWidthActual <= size, `Size max width does not match. actual width ${columnWidthActual}`).to.be.true;
+    });
+  }
+);
 
-Given('I unassign the task at row 1', async function(){
+Given('I unassign the task at row 1', async function () {
   const rowActions = await taskListTable.getRowActionLinksTexts();
 
   const unassignLinkText = rowActions.filter((t) => t.includes('Unassign'));
 
-  if (unassignLinkText.length > 0){
+  if (unassignLinkText.length > 0) {
     await taskListTable.clickTaskAction(unassignLinkText[0]);
     await taskActionPage.amOnPage();
     await taskActionPage.clickSubmit();

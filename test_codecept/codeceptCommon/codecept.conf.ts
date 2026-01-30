@@ -1,4 +1,3 @@
-
 const { setDefaultResultOrder } = require('dns');
 
 const report = require('cucumber-html-reporter');
@@ -49,14 +48,10 @@ const testType = process.env.TEST_TYPE;
 
 const CODECEPT_OUT = path.resolve(
   __dirname,
-  '../../functional-output/tests/codecept-' + testType   // screenshots etc.
+  '../../functional-output/tests/codecept-' + testType // screenshots etc.
 );
 
-
-const CUKE_OUT = path.resolve(
-  __dirname,
-  '../../functional-output/tests/codecept-' + testType
-);
+const CUKE_OUT = path.resolve(__dirname, '../../functional-output/tests/codecept-' + testType);
 fs.mkdirSync(CUKE_OUT, { recursive: true });
 
 const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
@@ -70,9 +65,9 @@ console.log(`headless : ${head}`);
 const TEST_URL = process.env.TEST_URL || '';
 const pipelineBranch = externalServers //   running against localhost
   ? 'local' //   value won’t be used later
-  : (TEST_URL.includes('pr-') || TEST_URL.includes('manage-case.aat.platform.hmcts.net')
+  : TEST_URL.includes('pr-') || TEST_URL.includes('manage-case.aat.platform.hmcts.net')
     ? 'preview'
-    : 'master');
+    : 'master';
 let features = '';
 if (testType === 'e2e' || testType === 'smoke') {
   features = '../e2e/features/app/**/*.feature';
@@ -100,24 +95,24 @@ console.log(grepTags);
 exports.config = {
   require: [path.resolve(__dirname, 'steps_file.js')],
   timeout: 600,
-  'gherkin': {
-    'features': features,
-    'steps': [
+  gherkin: {
+    features: features,
+    steps: [
       // Ensure this sets up setXUITestPage(page) before anything else
       '../e2e/features/step_definitions/setup.steps.js',
       ...e2eStepFiles,
-      ...ngIntegrationStepFiles
-    ]
+      ...ngIntegrationStepFiles,
+    ],
   },
   grep: grepTags,
   output: CODECEPT_OUT,
 
   helpers: {
     CustomHelper: {
-      require: './customHelper.js'
+      require: './customHelper.js',
     },
-    'Mochawesome': {
-      'uniqueScreenshotNames': 'true'
+    Mochawesome: {
+      uniqueScreenshotNames: 'true',
     },
     // Puppeteer: {
     //   url: 'https://manage-case.aat.platform.hmcts.net/',
@@ -151,8 +146,7 @@ exports.config = {
 
     // },
     Playwright: {
-      url: externalServers ? (process.env.WEB_BASE_URL || 'http://localhost:8080')
-        : 'https://manage-case.aat.platform.hmcts.net',
+      url: externalServers ? process.env.WEB_BASE_URL || 'http://localhost:8080' : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
       show: head,
       waitForNavigation: 'domcontentloaded',
@@ -163,12 +157,11 @@ exports.config = {
       uniqueScreenshotNames: true,
       video: false,
       screenshot: true,
-      windowSize: '1600x900'
-    }
+      windowSize: '1600x900',
+    },
   },
-  'mocha': {
+  mocha: {
     // reporter: 'mochawesome',
-
     // "reporterOptions": {
     //   "reportDir": functional_output_dir,
     //   reportName:'XUI_MC',
@@ -189,9 +182,7 @@ exports.config = {
     //     }
     //   }
     //   // inlineAssets: true,
-
     // },
-
     //   "mochawesome": {
     //     "stdout": `${functional_output_dir}/`,
     //     "options": {
@@ -210,40 +201,39 @@ exports.config = {
     //     }
     //   }
     // }
-
   },
   plugins: {
     screenshotOnFail: {
       enabled: true,
-      fullPageScreenshots: true
+      fullPageScreenshots: true,
     },
     retryFailedStep: {
-      enabled: true
+      enabled: true,
     },
     pauseOnFail: {},
-    cucumberJsonReporter: {      // 3rd-party plugin that WRITES the *.json
+    cucumberJsonReporter: {
+      // 3rd-party plugin that WRITES the *.json
       require: 'codeceptjs-cucumber-json-reporter',
       enabled: true,
 
       // NOTE: correct option name is *outputDir*, not output
-      outputDir: cucumber_functional_output_dir,     // ← single place we chose
+      outputDir: cucumber_functional_output_dir, // ← single place we chose
       fileNamePrefix: 'cucumber_output_',
-      uniqueFileNames: true,     // 1 JSON per worker
+      uniqueFileNames: true, // 1 JSON per worker
       attachScreenshots: true,
       attachComments: true,
       includeExampleValues: false,
-      timeMultiplier: 1000000
-    }
+      timeMultiplier: 1000000,
+    },
   },
-  include: {
-  },
+  include: {},
   retry: {
-    Feature: 3
-
+    Feature: 3,
   },
   bootstrap: async () => {
     share({ users: [], reuseCounter: 0 });
-    if (!parallel && testType !== 'smoke') { // smoke tests are run in serial even with PARALLEL=true
+    if (!parallel && testType !== 'smoke') {
+      // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },
@@ -252,21 +242,24 @@ exports.config = {
     const path = require('path');
     require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 
-    if (parallel && testType !== 'smoke') { // smoke tests are run in serial even with PARALLEL=true
+    if (parallel && testType !== 'smoke') {
+      // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },
-  teardown: async () => {                  // ← worker‑level finaliser
-    if (!parallel) await teardown();       // no report here any more
+  teardown: async () => {
+    // ← worker‑level finaliser
+    if (!parallel) await teardown(); // no report here any more
   },
-  teardownAll: async () => {               // ← fires after *all* workers
+  teardownAll: async () => {
+    // ← fires after *all* workers
     if (parallel) {
       await teardown();
 
       exitWithStatus();
     }
-    await generateCucumberReport();        // JSON is now on disk
-    exitWithStatus();                      // evaluate pass / fail
+    await generateCucumberReport(); // JSON is now on disk
+    exitWithStatus(); // evaluate pass / fail
   },
 };
 
@@ -298,11 +291,11 @@ async function teardown() {
 
 async function mochawesomeGenerateReport() {
   const report = await merge({
-    files: [`${functional_output_dir}/*.json`]
+    files: [`${functional_output_dir}/*.json`],
   });
   await marge.create(report, {
-    'reportDir': `${functional_output_dir}/`,
-    'reportFilename': `${functional_output_dir}/report`
+    reportDir: `${functional_output_dir}/`,
+    reportFilename: `${functional_output_dir}/report`,
   });
 
   console.log(`FAILED: ${report.stats.failures}, PASSED: ${report.stats.passes}, TOTAL: ${report.stats.tests}`);
@@ -314,46 +307,46 @@ async function generateCucumberReport() {
   console.log('Generating cucumber report');
 
   // --- collect only NON-EMPTY cucumber_output_*.json files -------------
-  const jsonFiles = fs.readdirSync(CUKE_OUT)
-    .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'))
-    .map(f => path.join(CUKE_OUT, f))
-    .filter(f => {
+  const jsonFiles = fs
+    .readdirSync(CUKE_OUT)
+    .filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+    .map((f) => path.join(CUKE_OUT, f))
+    .filter((f) => {
       try {
         const data = JSON.parse(fs.readFileSync(f, 'utf8'));
         return Array.isArray(data) && data.length > 0; // keep only real results
       } catch {
-        return false;          // skip broken JSON
+        return false; // skip broken JSON
       }
     });
 
   if (jsonFiles.length === 0) {
     console.warn('⚠️  No cucumber JSONs with features – skipping HTML report');
-    return;                    // nothing to show, so don’t throw
+    return; // nothing to show, so don’t throw
   }
 
   const reportFile = path.join(CUKE_OUT, 'cucumber_report.html');
 
-  await new Promise(r => setTimeout(r, 2000)); // let reporters flush
+  await new Promise((r) => setTimeout(r, 2000)); // let reporters flush
   report.generate({
     theme: 'bootstrap',
-    jsonDir: CUKE_OUT,      // folder that holds all accepted files
+    jsonDir: CUKE_OUT, // folder that holds all accepted files
     output: reportFile,
-    files: jsonFiles,     // ← tell reporter which files to read
+    files: jsonFiles, // ← tell reporter which files to read
     displayDuration: true,
     ignoreBadJsonFile: true,
     metadata: {
       browser: { name: 'chrome', version: '60' },
       device: 'Local test machine',
-      platform: { name: 'ubuntu', version: '16.04' }
-    }
+      platform: { name: 'ubuntu', version: '16.04' },
+    },
   });
   console.log('completed cucumber report');
 }
 
 function processCucumberJsonReports() {
   const executionOutcomes: Record<string, string> = {};
-  const goodFiles = fs.readdirSync(CUKE_OUT)
-    .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'));
+  const goodFiles = fs.readdirSync(CUKE_OUT).filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'));
   for (const f of goodFiles) {
     const full = path.join(CUKE_OUT, f);
     const json = JSON.parse(fs.readFileSync(full, 'utf8'));

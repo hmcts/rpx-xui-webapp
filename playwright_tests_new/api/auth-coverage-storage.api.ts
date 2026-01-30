@@ -48,7 +48,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       tryReadState: async (path: string) => (path === 'state-2' ? { cookies: [] } : undefined),
       unlink: async () => {
         throw new Error('unlink failed');
-      }
+      },
     };
 
     const first = await authTest.ensureStorageStateWith('solicitor', deps as any);
@@ -73,7 +73,7 @@ test.describe('Auth helper coverage - storage operations', () => {
         }
         return undefined;
       },
-      unlink: async () => {}
+      unlink: async () => {},
     };
 
     const value = await authTest.getStoredCookieWith('solicitor', 'XSRF-TOKEN', deps as any);
@@ -83,7 +83,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       storagePromises: new Map<string, Promise<string>>(),
       createStorageState: async () => 'state-1',
       tryReadState: async () => undefined,
-      unlink: async () => {}
+      unlink: async () => {},
     };
     await expect(authTest.getStoredCookieWith('solicitor', 'XSRF-TOKEN', emptyDeps as any)).rejects.toThrow(
       'Unable to read storage state'
@@ -102,7 +102,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       getCredentials: () => mockCredentials,
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => true,
-      createStorageStateViaForm: onForm
+      createStorageStateViaForm: onForm,
     });
     expect(tokenSuccess).toContain(path.join(config.testEnv, 'solicitor.json'));
     expect(formCalls).toBe(0);
@@ -113,7 +113,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       getCredentials: () => mockCredentials,
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => false,
-      createStorageStateViaForm: onForm
+      createStorageStateViaForm: onForm,
     });
     expect(tokenFallback).toContain(path.join(config.testEnv, 'solicitor.json'));
     expect(formCalls).toBe(1);

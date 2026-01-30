@@ -7,28 +7,24 @@ import {
   PACT_BROKER_PASSWORD,
   PACT_BROKER_URL,
   PACT_BROKER_USERNAME,
-  PACT_CONSUMER_VERSION
+  PACT_CONSUMER_VERSION,
 } from '../../../configuration/references';
 
 const publish = async (): Promise<void> => {
   try {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
-    const pactTag = getConfigValue(PACT_BRANCH_NAME) ?
-      getConfigValue(PACT_BRANCH_NAME) : 'Dev';
+    const pactTag = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
 
-    const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
-      getConfigValue(PACT_CONSUMER_VERSION) : git.short();
+    const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ? getConfigValue(PACT_CONSUMER_VERSION) : git.short();
 
     const opts = {
       consumerVersion,
       pactBroker,
       pactBrokerPassword: getConfigValue(PACT_BROKER_PASSWORD),
       pactBrokerUsername: getConfigValue(PACT_BROKER_USERNAME),
-      pactFilesOrDirs: [
-        path.resolve(__dirname, '../pacts/')
-      ],
+      pactFilesOrDirs: [path.resolve(__dirname, '../pacts/')],
       publishVerificationResult: true,
-      tags: [pactTag]
+      tags: [pactTag],
     };
     await pact.publishPacts(opts);
     console.log('Pact contract publishing complete!');

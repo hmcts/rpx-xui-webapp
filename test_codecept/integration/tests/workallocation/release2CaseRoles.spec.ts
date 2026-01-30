@@ -43,15 +43,15 @@ describe('Work allocation Release 2:  Case roles', () => {
       const caseRolesRequest = {
         caseId: caseId,
         caseType: 'Asylum',
-        jurisdiction: 'IA'
+        jurisdiction: 'IA',
       };
       const headers = {
         'X-XSRF-TOKEN': xsrfToken,
-        'content-length': JSON.stringify(caseRolesRequest).length
+        'content-length': JSON.stringify(caseRolesRequest).length,
       };
       const caseRolesResponse = await Request.post('api/role-access/roles/post', caseRolesRequest, headers, 200);
       const expectedCaseRoleKeys = Object.keys(workAllocationDataModels.getCaseRole());
-      if (caseRolesResponse.data.length > 0){
+      if (caseRolesResponse.data.length > 0) {
         expect(Object.keys(caseRolesResponse.data[0])).to.include.members(expectedCaseRoleKeys);
       } else {
         reporterMsg('No cases roles returned');
@@ -70,11 +70,11 @@ describe('Work allocation Release 2:  Case roles', () => {
     const caseRolesRequest = {
       caseId: caseId,
       caseType: 'Asylum',
-      jurisdiction: 'IA'
+      jurisdiction: 'IA',
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRolesRequest).length
+      'content-length': JSON.stringify(caseRolesRequest).length,
     };
     const caseExclusionResponse = await Request.post('api/role-access/exclusions/post', caseRolesRequest, headers, 200);
     const expectedCaseRoleKeys = Object.keys(workAllocationDataModels.getCaseExclusion());
@@ -92,26 +92,26 @@ describe('Work allocation Release 2:  Case roles', () => {
     const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
 
     const caseRolesRequest = {
-      'caseId': caseId.toString(),
-      'state': 4,
-      'typeOfRole': {
-        'id': 'ftpa-judge',
-        'name': 'FTPA Judge'
+      caseId: caseId.toString(),
+      state: 4,
+      typeOfRole: {
+        id: 'ftpa-judge',
+        name: 'FTPA Judge',
       },
-      'allocateTo': 'Allocate to another person',
-      'person': config.workallocation[config.testEnv].judgeUser,
-      'durationOfRole': 'Indefinite',
-      'action': 'allocate',
-      'period': {
-        'startDate': '2022-01-14T00:00:00.000Z',
-        'endDate': null
+      allocateTo: 'Allocate to another person',
+      person: config.workallocation[config.testEnv].judgeUser,
+      durationOfRole: 'Indefinite',
+      action: 'allocate',
+      period: {
+        startDate: '2022-01-14T00:00:00.000Z',
+        endDate: null,
       },
-      'lastError': null,
-      'roleCategory': 'JUDICIAL'
+      lastError: null,
+      roleCategory: 'JUDICIAL',
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRolesRequest).length
+      'content-length': JSON.stringify(caseRolesRequest).length,
     };
     const caseExclusionResponse = await Request.post('api/role-access/allocate-role/confirm', caseRolesRequest, headers, 201);
     addAssignmentIdToCleanUp(caseExclusionResponse);
@@ -133,22 +133,27 @@ describe('Work allocation Release 2:  Case roles', () => {
     const caseRolesRequest = {
       caseId: caseId,
       caseType: 'Asylum',
-      jurisdiction: 'IA'
+      jurisdiction: 'IA',
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRolesRequest).length
+      'content-length': JSON.stringify(caseRolesRequest).length,
     };
     const caseRolesResponse = await Request.post('api/role-access/roles/post', caseRolesRequest, headers, 200);
     if (caseRolesResponse.data.length > 0) {
       const removeAllocateRequestBody = {
-        assigmentId: caseRolesResponse.data[0].id
+        assigmentId: caseRolesResponse.data[0].id,
       };
       const headersForRemoveAllocate = {
         'X-XSRF-TOKEN': xsrfToken,
-        'content-length': JSON.stringify(removeAllocateRequestBody).length
+        'content-length': JSON.stringify(removeAllocateRequestBody).length,
       };
-      const caseREmoveRolesResponse = await Request.post('api/role-access/allocate-role/delete', removeAllocateRequestBody, headersForRemoveAllocate, 204);
+      const caseREmoveRolesResponse = await Request.post(
+        'api/role-access/allocate-role/delete',
+        removeAllocateRequestBody,
+        headersForRemoveAllocate,
+        204
+      );
     } else {
       reporterMsg('No cases roles returned');
     }
@@ -168,11 +173,11 @@ describe('Work allocation Release 2:  Case roles', () => {
       lastError: null,
       person: null,
       personRole: null,
-      state: 4
+      state: 4,
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseExclusionAddRequest).length
+      'content-length': JSON.stringify(caseExclusionAddRequest).length,
     };
     const caseRoleExclusion = await Request.post('api/role-access/exclusions/confirm', caseExclusionAddRequest, headers, 201);
     addAssignmentIdToCleanUp(caseRoleExclusion);
@@ -182,12 +187,10 @@ describe('Work allocation Release 2:  Case roles', () => {
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
     const caseRequestObj = getSearchCaseReqBody(view, users, [config.workallocation[config.testEnv].locationId], 'caseworker');
-    caseRequestObj.withSearchBy('caseworker')
-      .sortWith('startDate', 'asc')
-      .withPageNumber(1);
+    caseRequestObj.withSearchBy('caseworker').sortWith('startDate', 'asc').withPageNumber(1);
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length
+      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length,
     };
 
     const response = await Request.post('workallocation/my-work/cases', caseRequestObj.getRequestBody(), headers, 200);
@@ -228,7 +231,7 @@ describe('Work allocation Release 2:  Case roles', () => {
     return caseRequestBody;
   }
 
-  function addAssignmentIdToCleanUp(assignmentResponse){
+  function addAssignmentIdToCleanUp(assignmentResponse) {
     const roleAssignmentCleanUp = require('../../../dataCleanup/roleAssignments');
     const assignmentId = assignmentResponse.data.roleAssignmentResponse.requestedRoles[0].id;
     roleAssignmentCleanUp.addRoleAssignmentid(assignmentId);
@@ -242,13 +245,16 @@ describe('Work allocation Release 2:  Case roles', () => {
     const headers = {
       'x-xsrf-token': xsrfToken,
       'content-length': JSON.stringify(body).length,
-      'accept': 'application/json',
-      'content-type': 'application/json'
-
+      accept: 'application/json',
+      'content-type': 'application/json',
     };
-    const response = await Request.post('data/internal/searchCases?ctid=Asylum&use_case=WORKBASKET&view=WORKBASKET&state=Any&page=1', body, headers, 200);
+    const response = await Request.post(
+      'data/internal/searchCases?ctid=Asylum&use_case=WORKBASKET&view=WORKBASKET&state=Any&page=1',
+      body,
+      headers,
+      200
+    );
 
     return response;
   }
 });
-

@@ -1,8 +1,8 @@
-import * as fs from "fs";
-import { Cookie } from "playwright-core";
-import { config } from "./config.utils.js";
+import * as fs from 'fs';
+import { Cookie } from 'playwright-core';
+import { config } from './config.utils.js';
 
-type FileSystem = Pick<typeof fs, "readFileSync" | "writeFileSync" | "existsSync" | "mkdirSync">;
+type FileSystem = Pick<typeof fs, 'readFileSync' | 'writeFileSync' | 'existsSync' | 'mkdirSync'>;
 
 export class CookieUtils {
   private readonly fs: FileSystem;
@@ -22,27 +22,20 @@ export class CookieUtils {
   //   }
   // }
 
-  public async addManageCasesAnalyticsCookie(
-    sessionPath: string
-  ): Promise<void> {
+  public async addManageCasesAnalyticsCookie(sessionPath: string): Promise<void> {
     try {
-      const domain = (config.urls.exuiDefaultUrl as string).replace(
-        "https://",
-        ""
-      );
-      const state = JSON.parse(this.fs.readFileSync(sessionPath, "utf-8"));
-      const userId = state.cookies.find(
-        (cookie: Cookie) => cookie.name === "__userid__"
-      )?.value;
+      const domain = (config.urls.exuiDefaultUrl as string).replace('https://', '');
+      const state = JSON.parse(this.fs.readFileSync(sessionPath, 'utf-8'));
+      const userId = state.cookies.find((cookie: Cookie) => cookie.name === '__userid__')?.value;
       state.cookies.push({
         name: `hmcts-exui-cookies-${userId}-mc-accepted`,
-        value: "true",
+        value: 'true',
         domain: `${domain}`,
-        path: "/",
+        path: '/',
         expires: -1,
         httpOnly: false,
         secure: false,
-        sameSite: "Lax",
+        sameSite: 'Lax',
       });
       this.fs.writeFileSync(sessionPath, JSON.stringify(state, null, 2));
     } catch (error) {
@@ -61,22 +54,22 @@ export class CookieUtils {
       if (dir && !this.fs.existsSync(dir)) {
         this.fs.mkdirSync(dir, { recursive: true });
       }
-      const domain = (config.urls.exuiDefaultUrl as string).replace("https://", "");
-      const userId = cookies.find(c => c.name === "__userid__")?.value;
+      const domain = (config.urls.exuiDefaultUrl as string).replace('https://', '');
+      const userId = cookies.find((c) => c.name === '__userid__')?.value;
       if (userId) {
         cookies.push({
           name: `hmcts-exui-cookies-${userId}-mc-accepted`,
-          value: "true",
+          value: 'true',
           domain,
-          path: "/",
+          path: '/',
           expires: -1,
           httpOnly: false,
           secure: false,
-          sameSite: "Lax",
+          sameSite: 'Lax',
         });
       }
       const state = { cookies };
-      this.fs.writeFileSync(sessionPath, JSON.stringify(state, null, 2), "utf-8");
+      this.fs.writeFileSync(sessionPath, JSON.stringify(state, null, 2), 'utf-8');
     } catch (error) {
       throw new Error(`Failed to write session file: ${error}`);
     }

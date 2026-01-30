@@ -13,10 +13,7 @@ export interface TaskSearchOptions {
  * Builds the payload expected by /workallocation/task.
  * Mirrors the legacy TaskRequestBody helper but in a typed form.
  */
-export function buildTaskSearchRequest(
-  view: 'MyTasks' | 'AvailableTasks' | 'AllWork',
-  options: TaskSearchOptions = {}
-) {
+export function buildTaskSearchRequest(view: 'MyTasks' | 'AvailableTasks' | 'AllWork', options: TaskSearchOptions = {}) {
   const {
     userIds = [],
     locations = [],
@@ -25,7 +22,7 @@ export function buildTaskSearchRequest(
     states = [],
     pageNumber = 1,
     pageSize = 25,
-    searchBy = 'caseworker'
+    searchBy = 'caseworker',
   } = options;
 
   const searchParameters: Array<{ key: string; operator: 'IN'; values: string[] }> = [];
@@ -51,9 +48,9 @@ export function buildTaskSearchRequest(
       search_by: searchBy,
       sorting_parameters: [{ sort_by: 'dueDate', sort_order: 'asc' }],
       search_parameters: searchParameters,
-      pagination_parameters: { page_number: pageNumber, page_size: pageSize }
+      pagination_parameters: { page_number: pageNumber, page_size: pageSize },
     },
-    view
+    view,
   };
 }
 
@@ -69,7 +66,7 @@ export interface SeededTaskResult {
 export async function seedTaskId(apiClient: any, locationId?: string): Promise<SeededTaskResult | undefined> {
   const candidateStates: Array<{ type: SeededTaskResult['type']; states: string[]; view: 'MyTasks' | 'AvailableTasks' }> = [
     { type: 'assigned', states: ['assigned'], view: 'MyTasks' },
-    { type: 'unassigned', states: ['unassigned'], view: 'AvailableTasks' }
+    { type: 'unassigned', states: ['unassigned'], view: 'AvailableTasks' },
   ];
 
   for (const candidate of candidateStates) {
@@ -77,11 +74,11 @@ export async function seedTaskId(apiClient: any, locationId?: string): Promise<S
       locations: locationId ? [locationId] : [],
       states: candidate.states,
       searchBy: 'caseworker',
-      pageSize: 5
+      pageSize: 5,
     });
     const response = (await apiClient.post('workallocation/task', {
       data: body,
-      throwOnError: false
+      throwOnError: false,
     })) as { data?: TaskListResponse; status: number };
     if (response.status === 200 && Array.isArray(response.data?.tasks) && response.data.tasks.length > 0) {
       const id = response.data.tasks[0]?.id;

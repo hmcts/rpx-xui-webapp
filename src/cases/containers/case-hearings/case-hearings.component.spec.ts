@@ -472,7 +472,7 @@ describe('CaseHearingsComponent', () => {
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
     expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore
-      .LoadHearingValues());
+      .LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1234', caseType: 'CIVIL' }));
   });
 
   it('should unsubscribe', () => {

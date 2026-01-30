@@ -506,6 +506,129 @@ describe('HearingsUtils', () => {
       ).toBeFalsy();
     });
   });
+
+  describe('checkHearingCaseConsistency', () => {
+    it('should return true when HRM case details match SHV and caseReference matches HRM caseRef', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name'
+        }
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name'
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeTruthy();
+    });
+
+    it('should return false when caseReference differs from HRM caseRef', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1111111111111111',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name'
+        }
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name'
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '2222222222222222')
+      ).toBeFalsy();
+    });
+
+    it('should return false when service code differs between HRM and SHV', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name'
+        }
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'BBA3',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name'
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeFalsy();
+    });
+
+    it('should return false when hmctsInternalCaseName differs between HRM and SHV', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name A',
+          publicCaseName: 'Public Name'
+        }
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name B',
+        publicCaseName: 'Public Name'
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeFalsy();
+    });
+
+    it('should ignore empty-string caseReference and still return true when names/service match', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name'
+        }
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name'
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '')
+      ).toBeTruthy();
+    });
+  });
+
   describe('Update the hearing window static data to a future date\'', () => {
     const mochSHVData = {
       'hmctsServiceID': 'ABA5',

@@ -30,7 +30,6 @@ import moment from 'moment';
 })
 export class HearingRequirementsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
-  private readonly reloadMessage = 'The Party IDs for this request appear mismatched, please reload and start the request again.';
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
   public lostFocus = false;
@@ -46,7 +45,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public onFocus(): void {
     if (this.lostFocus) {
       this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({ jurisdictionId: this.jurisdictionId, caseReference: this.caseReference }));
       if (HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE_EDIT)
         || HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.VIEW_EDIT)) {
         setTimeout(() => this.updatePartyFlagsFromHearingValues(), 500);
@@ -84,9 +83,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.initializeHearingRequestFromHearingValues();
     }
     this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.serviceHearingValuesModel.caseCategories);
-    if (!HearingsUtils.checkHearingPartiesConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
+    if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel, this.caseReference)) {
       this.showMismatchErrorMessage = true;
-      this.validationErrors = { id: 'reload-error-message', message: this.reloadMessage };
+      this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
     }
   }
 

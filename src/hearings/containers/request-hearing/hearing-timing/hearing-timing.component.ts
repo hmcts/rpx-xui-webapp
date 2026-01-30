@@ -196,14 +196,14 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
       name: 'earliestHearingDate',
       hint: '',
       classes: 'govuk-fieldset__legend govuk-fieldset__legend--s',
-      label: 'Earliest start date'
+      label: 'Must list after'
     };
     this.latestHearingDate = {
       id: 'latestHearingDate',
       name: 'latestHearingDate',
       hint: '',
       classes: 'govuk-fieldset__legend govuk-fieldset__legend--s',
-      label: 'Latest end date'
+      label: 'Must list before'
     };
   }
 

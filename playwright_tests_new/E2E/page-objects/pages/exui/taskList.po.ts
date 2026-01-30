@@ -17,6 +17,8 @@ export class TaskListPage extends Base {
   readonly taskActionGoTo = this.page.locator('#action_go');
   readonly taskActionReassign = this.page.locator('#action_reassign');
   readonly taskActionUnassign = this.page.locator('#action_unclaim');
+  readonly taskActionClaim = this.page.locator('#action_claim');
+  readonly taskActionClaimAndGo = this.page.locator('#action_claim-and-go');
 
   constructor(page: Page) {
     super(page);
@@ -27,12 +29,12 @@ export class TaskListPage extends Base {
   }
 
   async applyAllFilterOptions() {
-    await this.taskListFilterToggle.waitFor({state:"visible"});
+    await this.taskListFilterToggle.waitFor({ state: "visible" });
     await this.taskListFilterToggle.click();
-    await this.selectAllServicesFilter.waitFor({state:"visible"});
+    await this.selectAllServicesFilter.waitFor({ state: "visible" });
     await this.selectAllServicesFilter.check();
     await this.selectAllTypesOfWorksFilter.check();
-    await this.applyFilterButton.waitFor({state:'visible'});
+    await this.applyFilterButton.waitFor({ state: 'visible' });
     await this.applyFilterButton.click();
   }
 

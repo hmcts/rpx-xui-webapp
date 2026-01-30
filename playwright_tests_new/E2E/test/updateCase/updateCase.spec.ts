@@ -55,7 +55,7 @@ test.describe("Verify creating and updating a case works as expected", () => {
     await test.step('Verify that event details are shown on the History tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
       const { updateRow, updateDate, updateAuthor, expectedDate } =
-        await caseDetailsPage.getUpdateCaseHistoryInfo();
+        await caseDetailsPage.getUpdateCaseHistoryInfo('Update case');
 
       expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
       expect.soft(updateDate.startsWith(expectedDate), 'Update case date should match today (ignore time)').toBe(true);

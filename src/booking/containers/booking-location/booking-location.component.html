@@ -23,15 +23,6 @@
         <span class="govuk-visually-hidden">Error:</span> Enter a valid location
       </span>
       <div class="govuk-hint">Enter the location name, for example, Taylor House Tribunal Hearing Centre.</div>
-        <!--
-          TODO: CAM_BOOKING - this can be removed later
-          <exui-search-location class="search-location"
-          [control]="findLocationFormGroup.controls.locationSelectedFormControl" [disabled]="false"
-          [serviceIds]="jurisdictions" (locationChanged)="onLocationChanged($event)"></exui-search-location>
-        -->
-        <!-- TODO: CAM_BOOKING what should be passed in here -->
-        <!-- TODO: deteremine serviceIds (don't hardcode) -->
-        <!-- TODO: determine selectedLocations -->
         <exui-search-location
           class="search-location"
           [selectedLocations]="selectedLocations"

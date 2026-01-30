@@ -142,9 +142,6 @@ describe('CaseListComponent', () => {
   });
 
   describe('toggleFilter()', () => {
-    /**
-     * TODO: We should always give the payload a proper name, not just payload.
-     */
     it('should dispatch an action on toggle of the filter to show and hide the filter.', () => {
       component.toggleFilter();
 

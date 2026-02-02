@@ -3,9 +3,9 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from "../../base";
 import { faker } from '@faker-js/faker';
 
-const logger = createLogger({ 
+const logger = createLogger({
   serviceName: 'create-case',
-  format: 'pretty' 
+  format: 'pretty'
 });
 
 export class CreateCasePage extends Base {
@@ -16,7 +16,7 @@ export class CreateCasePage extends Base {
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
-  readonly startButton = this.page.locator(`button[type="submit"]`);
+  readonly startButton = this.page.locator('button[type="submit"]');
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
   readonly continueButton = this.page.locator('button:has-text("Continue"):visible');
 
@@ -45,7 +45,7 @@ export class CreateCasePage extends Base {
   readonly dateTimeFieldHourInput = this.page.locator('#DateTimeField-hour');
   readonly dateTimeFieldMinuteInput = this.page.locator('#DateTimeField-minute');
   readonly dateTimeFieldSecondInput = this.page.locator('#DateTimeField-second');
-  readonly currenyFieldInput = this.page.locator('#AmountInGBPField');
+  readonly currencyFieldInput = this.page.locator('#AmountInGBPField');
   readonly yesNoRadioButtons = this.page.locator('#YesOrNoField');
   readonly applicantPostcode = this.page.locator('#AppicantPostcodeField');
   readonly complexType1JudgeIsRightRadios = this.page.locator('#ComplexType_1_judgeLevelRadio');
@@ -72,11 +72,13 @@ export class CreateCasePage extends Base {
 
   // Locators for the Divorce - XUI Case PoC
   readonly person1Title = this.page.locator('#Person1_Title');
-  readonly firstNameInput = this.page.locator('#Person1_FirstName');
-  readonly lastNameInput = this.page.locator('#Person1_LastName');
-  readonly genderSelect = this.page.locator('#Person1_PersonGender');
-  readonly jobTitleInput = this.page.locator('#Person1_PersonJob_Title');
-  readonly jobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
+  readonly person1FirstNameInput = this.page.locator('#Person1_FirstName');
+  readonly person1LastNameInput = this.page.locator('#Person1_LastName');
+  readonly person1GenderSelect = this.page.locator('#Person1_PersonGender');
+  readonly person1JobTitleInput = this.page.locator('#Person1_PersonJob_Title');
+  readonly person1JobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
+  readonly person2FirstNameInput = this.page.locator('#Person2_FirstName');
+  readonly person2LastNameInput = this.page.locator('#Person2_LastName');
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
   readonly textField0Input = this.page.locator('#TextField0');
@@ -317,7 +319,7 @@ export class CreateCasePage extends Base {
   async uploadEmploymentFile(fileName: string, mimeType: string, fileContent: string) {
     await this.page.locator('#documentCollection button').click();
     await this.uploadFile(fileName, mimeType, fileContent);
-    await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc')
+    await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
     await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
     await this.submitButton.click();
   }
@@ -363,7 +365,6 @@ export class CreateCasePage extends Base {
     }
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
   }
-
 
   async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
     const maxAttempts = 2;
@@ -446,7 +447,7 @@ export class CreateCasePage extends Base {
   async createDivorceCase(jurisdiction: string, caseType: string, testInput: string) {
     switch (caseType) {
       case 'xuiCaseFlagsV1':
-        return this.createDivorceCaseFlag(jurisdiction, caseType, testInput);
+        return this.createDivorceCaseFlag(testInput, jurisdiction, caseType);
       case 'XUI Case PoC':
         return this.createDivorceCasePoC(jurisdiction, caseType, testInput);
       case 'xuiTestCaseType':
@@ -474,7 +475,7 @@ export class CreateCasePage extends Base {
     await this.dateTimeFieldHourInput.fill('10');
     await this.dateTimeFieldMinuteInput.fill('30');
     await this.dateTimeFieldSecondInput.fill('15');
-    await this.currenyFieldInput.fill('1000');
+    await this.currencyFieldInput.fill('1000');
     await this.continueButton.click();
 
     await this.yesNoRadioButtons.getByLabel('Yes').check();
@@ -514,41 +515,31 @@ export class CreateCasePage extends Base {
     await this.party2RoleOnCase.fill(`${testData}2`);
     await this.party2Name.fill(`${testData}2`);
     await this.continueButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
     await this.testSubmitButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
     await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
     const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     await this.createCase(jurisdiction, caseType, '');
-
     await this.page.getByLabel(gender, { exact: true }).check();
     await this.person1Title.click();
     await this.person1Title.fill(faker.person.prefix());
-    await this.person1Title.press('Tab');
-    await this.firstNameInput.fill(faker.person.firstName());
-    await this.firstNameInput.press('Tab');
-    await this.lastNameInput.fill(faker.person.lastName());
-    await this.lastNameInput.press('Tab');
-    await this.genderSelect.selectOption(gender);
-    await this.jobTitleInput.click();
-    await this.jobTitleInput.fill(faker.person.jobTitle());
-    await this.jobDescriptionInput.click();
-    await this.jobDescriptionInput.fill(faker.lorem.sentence());
+    await this.person1FirstNameInput.fill(faker.person.firstName());
+    await this.person1LastNameInput.fill(faker.person.lastName());
+    await this.person1GenderSelect.selectOption(gender);
+    await this.person1JobTitleInput.fill(faker.person.jobTitle());
+    await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
     await this.continueButton.click();
-    await this.textField0Input.click();
     await this.textField0Input.fill(textField0);
-    await this.textField0Input.press('Tab');
     await this.textField3Input.fill(faker.lorem.word());
-    await this.textField3Input.press('Tab');
     await this.textField1Input.fill(faker.lorem.word());
-    await this.textField1Input.press('Tab');
     await this.textField2Input.fill(faker.lorem.word());
     await this.continueButton.click();
     await this.testSubmitButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
     await this.waitForCaseDetails('after submitting divorce PoC case');
   };
 }

@@ -58,4 +58,10 @@ export class CaseListPage extends Base {
     const items = (await this.pagination.locator('li').allTextContents()).map(i => i.trim());
     return items.at(-1);
   }
+
+   async openCaseByReference(cleanedCaseNumber: string) {
+  const caseLink = this.page.locator(`a:has-text("${cleanedCaseNumber}")`);
+  await caseLink.first().waitFor({ state: 'visible' });
+  await caseLink.first().click();
+}
 }

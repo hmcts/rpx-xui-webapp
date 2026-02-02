@@ -13,19 +13,19 @@ test.describe("Document upload V2", () => {
         // Set deterministic seed once per suite
         faker.seed(12345);
     });
-    
+
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
         // Generate fresh value per test for retry safety
         testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
         logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
-        
+
         await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
         await createCasePage.createDivorceCase(TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
         logger.info('Created divorce case', { caseNumber, testValue });
     });
 
-    test("Check the documentV2 upload works as expected", async ({ createCasePage, caseDetailsPage, tableUtils }) => {
+    test("Check the documentV2 upload works as expected", async ({ createCasePage, caseDetailsPage }) => {
 
         await test.step("Verify case details tab does not contain an uploaded file", async () => {
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
@@ -55,8 +55,6 @@ test.describe("Document upload V2", () => {
 
             const documentRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
             await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
-
-            // Key-value table already verified above; document tables are not present for V2.
         });
     });
 });
@@ -69,13 +67,13 @@ test.describe("Document upload V1", () => {
         // Set deterministic seed once per suite
         faker.seed(67890);
     });
-    
+
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
         // Generate fresh values per test for retry safety
         testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
         testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
         logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
-        
+
         await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
         await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, testValue);
         expect(await createCasePage.checkForErrorMessage(), "Error message seen after creating employment case").toBe(false);

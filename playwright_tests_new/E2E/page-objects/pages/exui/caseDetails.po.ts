@@ -1,8 +1,8 @@
-import { Locator, Page } from "@playwright/test";
-import { Base } from "../../base";
-import { ValidatorUtils } from "../../../utils/validator.utils";
-import { TableUtils } from "@hmcts/playwright-common";
-import { TIMEOUTS } from "../../../test/documentUpload/constants";
+import { Locator, Page } from '@playwright/test';
+import { Base } from '../../base';
+import { ValidatorUtils } from '../../../utils/validator.utils';
+import { TableUtils } from '@hmcts/playwright-common';
+import { TIMEOUTS } from '../../../test/documentUpload/constants';
 
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
@@ -17,7 +17,7 @@ export interface CaseFlagItem {
 
 export class CaseDetailsPage extends Base {
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-details-container" - brittle custom element selector
-  readonly container = this.page.locator("exui-case-details-home");
+  readonly container = this.page.locator('exui-case-details-home');
 
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-tab-{name}" - prefer test ID for each tab
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
@@ -30,9 +30,9 @@ export class CaseDetailsPage extends Base {
 
   // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="submit-case-flag-button" - brittle CSS selector
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
-  readonly continueButton = this.page.getByRole("button", { name: "Continue" });
-  readonly submitButton = this.page.getByRole("button", { name: "Submit" });
-  readonly eventTable = this.page.locator("EventLogTable");
+  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
+  readonly eventTable = this.page.locator('EventLogTable');
   readonly firstNameCell = this.page.locator('tr:has-text("First Name") + td');
   readonly lastNameCell = this.page.locator('tr:has-text("Last Name") + td');
   readonly updateCase = this.page.getByText('Update case', { exact: true });
@@ -72,7 +72,9 @@ export class CaseDetailsPage extends Base {
 
   // Internal helper: obtain rows either from a selector string or a Locator
   private async _runOnRows<T>(selector: string | Locator, fn: (rows: Element[]) => T): Promise<T> {
-    if (!selector) return (null as unknown) as T;
+    if (!selector) {
+      return (null as unknown) as T;
+    }
     if (typeof selector !== 'string') {
       // Locator: evaluate on the located rows
       return (selector as Locator).locator('tr').evaluateAll(fn as any) as unknown as T;
@@ -138,7 +140,7 @@ export class CaseDetailsPage extends Base {
           return false;
         }
         const headerCells = Array.from(thead.querySelectorAll('th, td'))
-          .map(el => (el.textContent || '').trim());
+          .map((el) => (el.textContent || '').trim());
         return headerCells.includes('Number')
           && headerCells.includes('Document Category')
           && headerCells.includes('Type of Document');
@@ -161,43 +163,65 @@ export class CaseDetailsPage extends Base {
   }
 
   async trRowsToObjectInPage(selector: string | Locator): Promise<Record<string, string>> {
-    if (!selector) return {};
+    if (!selector) {
+      return {};
+    }
 
     const fn = (rows: Element[]) => {
       function findFirstText(node: Node | null): string {
-        if (!node) return '';
+        if (!node) {
+          return '';
+        }
         for (const child of Array.from(node.childNodes)) {
           if (child.nodeType === Node.TEXT_NODE) {
             const t = (child.textContent || '').trim();
-            if (t) return t;
+            if (t) {
+              return t;
+            }
           } else if (child.nodeType === Node.ELEMENT_NODE) {
             const t = findFirstText(child);
-            if (t) return t;
+            if (t) {
+              return t;
+            }
           }
         }
         return '';
       }
 
       const out: Record<string, string> = {};
-      const dataRows = Array.from(rows).filter(row => {
+      const dataRows = Array.from(rows).filter((row) => {
         const el = row as Element;
-        if (el.hasAttribute && el.hasAttribute('hidden')) return false;
-        if ('hidden' in row && (row as any).hidden) return false;
+        if (el.hasAttribute && el.hasAttribute('hidden')) {
+          return false;
+        }
+        if ('hidden' in row && (row as any).hidden) {
+          return false;
+        }
         const style = window.getComputedStyle(el);
-        if (!style) return false;
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if (el.getClientRects().length === 0) return false;
+        if (!style) {
+          return false;
+        }
+        if (style.display === 'none' || style.visibility === 'hidden') {
+          return false;
+        }
+        if (el.getClientRects().length === 0) {
+          return false;
+        }
         return true;
       });
 
       for (const row of dataRows) {
         const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-        if (cells.length < 2) continue;
+        if (cells.length < 2) {
+          continue;
+        }
 
         const rawKey = findFirstText(cells[0]).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-        if (!rawKey) continue;
+        if (!rawKey) {
+          continue;
+        }
 
-        const valueParts = cells.slice(1).map(c => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
+        const valueParts = cells.slice(1).map((c) => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
         const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
 
         out[rawKey] = value;
@@ -214,30 +238,44 @@ export class CaseDetailsPage extends Base {
    * Reads the header row and skips reading any hidden rows.
    */
   async trTableToObjectsInPage(selector: string | Locator): Promise<Record<string, string>[]> {
-    if (!selector) return [];
+    if (!selector) {
+      return [];
+    }
 
     const fn = (rows: Element[]) => {
       const arr: Record<string, string>[] = [];
-      if (!rows || rows.length === 0) return arr;
+      if (!rows || rows.length === 0) {
+        return arr;
+      }
 
       // header is first tr
       const headerRow = rows[0];
       const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize((h as HTMLElement).innerText || ''));
 
       // data rows are after header; filter hidden rows
-      const dataRows = Array.from(rows).slice(1).filter(row => {
-        if ((row as HTMLTableRowElement).hidden) return false;
+      const dataRows = Array.from(rows).slice(1).filter((row) => {
+        if ((row as HTMLTableRowElement).hidden) {
+          return false;
+        }
         const style = window.getComputedStyle(row as Element);
-        if (!style) return false;
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if ((row as Element).getClientRects().length === 0) return false;
+        if (!style) {
+          return false;
+        }
+        if (style.display === 'none' || style.visibility === 'hidden') {
+          return false;
+        }
+        if ((row as Element).getClientRects().length === 0) {
+          return false;
+        }
         return true;
       });
 
       for (const row of dataRows) {
         const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
-        if (cells.length === 0) continue;
+        if (cells.length === 0) {
+          continue;
+        }
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
@@ -257,7 +295,7 @@ export class CaseDetailsPage extends Base {
       throw new Error('History table not found on page');
     }
     const headers = (await this.historyTable.locator('thead tr th').allInnerTexts())
-      .map(h => h.replace(/\t.*/, ''));
+      .map((h) => h.replace(/\t.*/, ''));
     const rows = this.historyTable.locator('tbody tr');
     const rowCount = await rows.count();
     const data: Record<string, string>[] = [];
@@ -283,9 +321,9 @@ export class CaseDetailsPage extends Base {
     expectedDate: string;
   }> {
     const rows = await this.mapHistoryTable();
-    const updateRow = rows.find(r => r['Event'] === 'Update case');
-    const updateDate = updateRow?.['Date'] || '';
-    const updateAuthor = updateRow?.['Author'] || '';
+    const updateRow = rows.find((r) => r.Event === 'Update case');
+    const updateDate = updateRow?.Date || '';
+    const updateAuthor = updateRow?.Author || '';
     const expectedDate = await this.todaysDateFormatted();
 
     return { updateRow, updateDate, updateAuthor, expectedDate };

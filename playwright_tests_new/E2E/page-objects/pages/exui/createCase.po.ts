@@ -1,6 +1,6 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { Page, Locator, expect } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
-import { Base } from "../../base";
+import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
 
 const logger = createLogger({
@@ -9,9 +9,8 @@ const logger = createLogger({
 });
 
 export class CreateCasePage extends Base {
-
-  readonly container = this.page.locator("exui-case-home");
-  readonly caseDetailsContainer = this.page.locator("exui-case-details-home");
+  readonly container = this.page.locator('exui-case-home');
+  readonly caseDetailsContainer = this.page.locator('exui-case-details-home');
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
@@ -273,7 +272,7 @@ export class CreateCasePage extends Base {
 
     const [a, b] = await Promise.all([
       check(this.errorMessage),
-      check(this.errorSummary),
+      check(this.errorSummary)
     ]);
 
     if (a || b) {
@@ -346,11 +345,11 @@ export class CreateCasePage extends Base {
       await this.page.setInputFiles('input[type="file"]', {
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent),
+        buffer: Buffer.from(fileContent)
       });
 
       const res = await this.page.waitForResponse(
-        r => r.url().includes('/document') && r.request().method() === 'POST',
+        (r) => r.url().includes('/document') && r.request().method() === 'POST',
         { timeout: 5000 }
       ).catch(() => null);
 
@@ -379,7 +378,7 @@ export class CreateCasePage extends Base {
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
   }
 
-  async createCaseEmployment(jurisdiction: string, caseType: string, textField0: string) {
+  async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
@@ -396,7 +395,7 @@ export class CreateCasePage extends Base {
         await this.clickContinueAndWait('after receipt details');
         await this.ensureWizardAdvanced('after receipt details', receiptUrl, {
           expectedPathIncludes: 'initiateCase2',
-          expectedLocator: this.claimantIndividualRadio,
+          expectedLocator: this.claimantIndividualRadio
         });
         await this.claimantIndividualRadio.check();
         await this.claimantIndividualFirstNameInput.fill('Test ');
@@ -554,5 +553,5 @@ export class CreateCasePage extends Base {
     await this.testSubmitButton.click();
     await this.exuiSpinnerComponent.wait();
     await this.waitForCaseDetails('after submitting divorce PoC case');
-  };
+  }
 }

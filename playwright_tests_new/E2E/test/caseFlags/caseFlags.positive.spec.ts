@@ -9,7 +9,7 @@ test.describe("Case level case flags", () => {
     const caseType = 'ET_EnglandWales';
     test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
         await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-        await createCasePage.createCaseEmployment(jurisdiction, caseType, testValue);
+        await createCasePage.createCaseEmployment(jurisdiction, caseType);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
     });
 

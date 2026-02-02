@@ -264,13 +264,25 @@ export function isSessionFresh(
     const fsApi = deps.fs ?? fs;
     const now = deps.now ?? Date.now;
     try {
-        if (!fsApi.existsSync(sessionPath)) return false;        
+        if (!fsApi.existsSync(sessionPath)) return false;
         const stat = fsApi.statSync(sessionPath);
         const ageMs = now() - stat.mtimeMs;
-        return ageMs < maxAgeMs;
+        if (ageMs >= maxAgeMs) return false;
+
+        const state = JSON.parse(fsApi.readFileSync(sessionPath, 'utf8'));
+        const cookies = Array.isArray(state.cookies) ? state.cookies : [];
+        if (cookies.length === 0) return false;
+
+        // Treat session as stale if all cookies are expired or nearly expired.
+        const nowSeconds = Math.floor(now() / 1000);
+        const hasValidCookie = cookies.some((cookie: Cookie) => {
+            if (typeof cookie.expires !== 'number') return true;
+            return cookie.expires > nowSeconds + 60;
+        });
+        return hasValidCookie;
     } catch (err) {
-        logger.warn('Failed to stat session file', { 
-          sessionPath, 
+        logger.warn('Failed to stat session file', {
+          sessionPath,
           error: (err as Error).message,
           operation: 'check-session-freshness'
         });

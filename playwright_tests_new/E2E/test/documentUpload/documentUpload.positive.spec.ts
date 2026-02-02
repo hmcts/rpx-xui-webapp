@@ -75,7 +75,7 @@ test.describe("Document upload V1", () => {
         logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
 
         await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-        await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, testValue);
+        await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE);
         expect(await createCasePage.checkForErrorMessage(), "Error message seen after creating employment case").toBe(false);
         caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
         logger.info('Created employment case', { caseNumber, testValue });

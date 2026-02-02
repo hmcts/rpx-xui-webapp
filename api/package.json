@@ -10,7 +10,7 @@
   "scripts": {
     "ng": "ng",
     "build": "NODE_ENV=production webpack --config ./webpack-node.config.js",
-    "build:dev": "webpack --config ./webpack-node.config.js",
+    "build:dev": "NODE_ENV=development webpack --config ./webpack-node.config.js",
     "coverage": "c8 --config ./.c8rc.json mocha --config ./test/.mocharc.json -r dotenv-extended/config",
     "lint": "eslint .",
     "watch": "nodemon -r dotenv-extended/config --watch '**/*.ts' --exec ts-node local.ts",

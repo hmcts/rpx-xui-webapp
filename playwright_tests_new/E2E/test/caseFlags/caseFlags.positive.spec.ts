@@ -58,7 +58,7 @@ test.describe("Case level case flags", () => {
                 await caseDetailsPage.getUpdateCaseHistoryInfo('Create a case flag');
 
             expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
-            expect.soft(updateDate.startsWith(expectedDate), 'Update case date should match today (ignore time)').toBe(true);
+            expect.soft(updateDate.startsWith(expectedDate), `${updateDate} should start with ${expectedDate}`).toBe(true);
             expect.soft(updateAuthor, 'Update case author should be present').not.toBe('');
 
             const expectedDetails = {

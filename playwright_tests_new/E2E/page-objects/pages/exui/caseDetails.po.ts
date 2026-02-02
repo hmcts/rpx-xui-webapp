@@ -190,7 +190,7 @@ export class CaseDetailsPage extends Base {
     const updateRow = rows.find(r => r['Event'] === event);
     const updateDate = updateRow?.['Date'] || '';
     const updateAuthor = updateRow?.['Author'] || '';
-    const expectedDate = await this.todaysDateFormatted();
+    const expectedDate = (await this.todaysDateFormatted()).replace(/^0+/, '');
 
     return { updateRow, updateDate, updateAuthor, expectedDate };
   }

@@ -32,7 +32,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         });
 
         await test.step('Navigate to the my tasks list page', async () => {
-            await taskListPage.goto();
+            await page.goto('/');
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
         });
@@ -64,7 +64,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
             });
         });
         await test.step('Navigate to the my tasks list page', async () => {
-            await taskListPage.goto();
+            await page.goto('/');
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
         });
@@ -82,7 +82,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
             });
         });
         await test.step('Navigate to the my tasks list page', async () => {
-            await taskListPage.goto();
+            await page.goto('/');
             await expect(taskListPage.taskListTable).toBeVisible();
             await taskListPage.exuiSpinnerComponent.wait();
         });

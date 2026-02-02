@@ -237,7 +237,6 @@ export class HearingsUtils {
     serviceHearingValuesModel: ServiceHearingValuesModel,
     caseReference?: string
   ): boolean {
-    console.log('Checking hearing case consistency...', { hearingRequestMainModel, serviceHearingValuesModel, caseReference });
     const hrmCaseDetails = hearingRequestMainModel?.caseDetails;
     const shv = serviceHearingValuesModel;
 

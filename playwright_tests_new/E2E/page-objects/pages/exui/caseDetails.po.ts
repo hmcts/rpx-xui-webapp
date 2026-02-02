@@ -180,17 +180,17 @@ export class CaseDetailsPage extends Base {
     return data;
   }
 
-  async getUpdateCaseHistoryInfo(): Promise<{
+  async getUpdateCaseHistoryInfo(event:string): Promise<{
     updateRow: Record<string, string> | undefined;
     updateDate: string;
     updateAuthor: string;
     expectedDate: string;
   }> {
     const rows = await this.mapHistoryTable();
-    const updateRow = rows.find(r => r['Event'] === 'Update case');
+    const updateRow = rows.find(r => r['Event'] === event);
     const updateDate = updateRow?.['Date'] || '';
     const updateAuthor = updateRow?.['Author'] || '';
-    const expectedDate = await this.todaysDateFormatted();
+    const expectedDate = (await this.todaysDateFormatted()).replace(/^0+/, '');
 
     return { updateRow, updateDate, updateAuthor, expectedDate };
   }

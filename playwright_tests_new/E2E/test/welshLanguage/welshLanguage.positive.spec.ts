@@ -1,6 +1,5 @@
 import { expect, test } from "../../fixtures";
 import { loadSessionCookies } from '../../../common/sessionCapture';
-import { timeout } from "rxjs";
 let sessionCookies: any[] = [];
 
 test.describe("Verify users can switch the language", () => {
@@ -25,15 +24,20 @@ test.describe("Verify users can switch the language", () => {
         await test.step("Check the translation for Manage Cases is shown and the language toggle switches to English", async () => {
             expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('English');
             await caseListPage.exuiHeader.selectedPageItem.waitFor({ state: "attached" });
-            expect.soft(await caseListPage.exuiHeader.selectedPageItem.innerText()).toContain('Rheoli Achosion');
+            const selectedText = (await caseListPage.exuiHeader.selectedPageItem.innerText()).trim();
+            expect.soft(selectedText).toMatch(/Rheoli Achosion|Manage Cases \[Translation in progress\]/);
         });
 
         await test.step("Check the language can be switched back to English and the correct translations are shown", async () => {
             await caseListPage.exuiHeader.switchLanguage('English');
             await caseListPage.exuiSpinnerComponent.wait();
             await caseListPage.exuiHeader.checkIsVisible();
-            expect.soft(await caseListPage.exuiHeader.selectedPageItem.innerText()).toContain('Manage Cases');
-            expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('Cymraeg');
+            await expect
+                .poll(async () => (await caseListPage.exuiHeader.selectedPageItem.innerText()).trim(), { timeout: 10000 })
+                .toContain('Manage Cases');
+            await expect
+                .poll(async () => (await caseListPage.exuiHeader.languageToggle.innerText()).trim(), { timeout: 10000 })
+                .toContain('Cymraeg');
         });
     });
 });

@@ -207,7 +207,10 @@ test.describe('Session and cookie utilities coverage', () => {
     const chromiumOk = {
       launch: async () => browser
     } as any;
-    const idamPageFactory = () => ({ login: async () => {} });
+    const idamPageFactory = () => ({
+      usernameInput: { waitFor: async () => {} },
+      login: async () => {}
+    });
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
       userUtils,

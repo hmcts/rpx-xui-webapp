@@ -124,7 +124,7 @@ const buildConfig = (env: EnvMap = process.env) => {
         name: 'node-api',
         testMatch: ['playwright_tests_new/api/**/*.api.ts'],
         fullyParallel: true,
-        workers: env.CI ? 8 : Math.min(8, cpus()?.length ?? 4),
+        workers: env.CI ? 8 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
         retries: 0,
         timeout: 60 * 1000,
         expect: {

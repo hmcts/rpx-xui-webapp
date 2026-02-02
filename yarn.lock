@@ -3641,9 +3641,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/playwright-common@file:/tmp/playwright-common.tgz::locator=rpx-exui%40workspace%3A.":
-  version: 1.1.1
-  resolution: "@hmcts/playwright-common@file:/tmp/playwright-common.tgz#/tmp/playwright-common.tgz::hash=638db7&locator=rpx-exui%40workspace%3A."
+"@hmcts/playwright-common@file:../playwright-common::locator=rpx-exui%40workspace%3A.":
+  version: 1.1.2
+  resolution: "@hmcts/playwright-common@file:../playwright-common#../playwright-common::hash=279cd7&locator=rpx-exui%40workspace%3A."
   dependencies:
     "@axe-core/playwright": "npm:^4.11.0"
     "@eslint/js": "npm:^9.11.1"
@@ -3666,7 +3666,7 @@ __metadata:
   bin:
     delete-nightly-dev-branch: dist/scripts/delete-nightly-dev-branch.js
     get-secrets: dist/scripts/get-secrets.js
-  checksum: 10/7686d2ffccafe7a8c936c1b6e07c00bc46900d703452fa7ec6ba04817417ddb3d029a8946a0a3411d05203df70f03d474dd0d7fddba2bde15afc84bb39b90d60
+  checksum: 10/20c60122d503fb66496666e5e9dc7aca5565bac5e2742c734838a3eb43541fd47484db3d8b617a8cec7a22714e0fc595e81a93cff183d935910a24b2236dfbc6
   languageName: node
   linkType: hard
 
@@ -22736,6 +22736,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proper-lockfile@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "proper-lockfile@npm:4.1.2"
+  dependencies:
+    graceful-fs: "npm:^4.2.4"
+    retry: "npm:^0.12.0"
+    signal-exit: "npm:^3.0.2"
+  checksum: 10/000a4875f543f591872b36ca94531af8a6463ddb0174f41c0b004d19e231d7445268b422ff1ea595e43d238655c702250cd3d27f408e7b9d97b56f1533ba26bf
+  languageName: node
+  linkType: hard
+
 "property-expr@npm:^2.0.4":
   version: 2.0.6
   resolution: "property-expr@npm:2.0.6"
@@ -23815,7 +23826,7 @@ __metadata:
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.6/hmcts-media-viewer-4.2.6.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
-    "@hmcts/playwright-common": /tmp/playwright-common.tgz
+    "@hmcts/playwright-common": "file:../playwright-common"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
@@ -23935,6 +23946,7 @@ __metadata:
     pegjs: "npm:^0.10.0"
     playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
+    proper-lockfile: "npm:^4.1.2"
     puppeteer: "npm:^24.0.0"
     rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
     rx-polling-hmcts: "npm:1.1.1"

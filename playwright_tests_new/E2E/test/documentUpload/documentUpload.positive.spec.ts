@@ -25,12 +25,15 @@ test.describe("Document upload V2", () => {
         logger.info('Created divorce case', { caseNumber, testValue });
     });
 
-    test("Check the documentV2 upload works as expected", async ({ createCasePage, caseDetailsPage }) => {
+    test("Check the documentV2 upload works as expected", async ({ createCasePage, caseDetailsPage, tableUtils }) => {
 
         await test.step("Verify case details tab does not contain an uploaded file", async () => {
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-            const tableData = await caseDetailsPage.getCaseDetailsTabData(TEST_DATA.V2.TAB_CLASS);
-            expect(tableData).toMatchObject({ [TEST_DATA.V2.TEXT_FIELD_LABEL]: testValue });
+            // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-viewer-table" to prefer test IDs.
+            const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
+            await caseViewerTable.waitFor({ state: 'visible' });
+            const textFieldRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });
+            await expect(textFieldRow).toContainText(testValue);
         });
 
         await test.step("Upload a document to the case", async () => {
@@ -44,11 +47,16 @@ test.describe("Document upload V2", () => {
         await test.step("Verify the document upload was successful", async () => {
             expect(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: ${TEST_DATA.V2.ACTION}`);
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-            const tableData = await caseDetailsPage.getCaseDetailsTabData(TEST_DATA.V2.TAB_CLASS);
-            expect(tableData).toMatchObject({ 
-                [TEST_DATA.V2.TEXT_FIELD_LABEL]: testValue, 
-                [TEST_DATA.V2.DOCUMENT_FIELD_LABEL]: TEST_DATA.V2.FILE_NAME 
-            });
+            // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-viewer-table" to prefer test IDs.
+            const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
+            await caseViewerTable.waitFor({ state: 'visible' });
+            const textFieldRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });
+            await expect(textFieldRow).toContainText(testValue);
+
+            const documentRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
+            await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
+
+            // Key-value table already verified above; document tables are not present for V2.
         });
     });
 });
@@ -75,7 +83,7 @@ test.describe("Document upload V1", () => {
         logger.info('Created employment case', { caseNumber, testValue });
     });
 
-    test("Check the documentV1 upload works as expected", async ({ createCasePage, caseDetailsPage }) => {
+    test("Check the documentV1 upload works as expected", async ({ createCasePage, caseDetailsPage, tableUtils }) => {
 
         await test.step("Start document upload process", async () => {
             await caseDetailsPage.selectCaseDetailsEvent(TEST_DATA.V1.ACTION);
@@ -91,6 +99,11 @@ test.describe("Document upload V1", () => {
             const table = await caseDetailsPage.getDocumentsList();
             expect(table.length, 'Documents table should contain at least 1 row').toBeGreaterThan(0);
             expect(table[0]).toMatchObject({ "Number": '1', 'Document': testFileName, 'Document Category': 'Misc', 'Type of Document': 'Other' });
+
+            const documentsTable = caseDetailsPage.caseDocumentsTable.first();
+            const parsedRows = await tableUtils.parseDataTable(documentsTable, caseDetailsPage.page);
+            const hasUploadedDocument = parsedRows.some(row => row["Document"] === testFileName);
+            expect(hasUploadedDocument, "TableUtils should find the uploaded document row").toBe(true);
         });
     });
 });

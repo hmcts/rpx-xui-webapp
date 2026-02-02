@@ -103,6 +103,7 @@ export class CreateCasePage extends Base {
   readonly respondentAcasCertifcateSelectYes = this.page.locator('#respondentCollection_0_respondent_ACAS_question_Yes');
   readonly respondentAcasCertificateNumberInput = this.page.locator('#respondentCollection_0_respondent_ACAS');
   readonly respondentAddressLine1Input = this.page.locator('#respondentCollection_0_respondent_address__detailAddressLine1');
+  readonly respondentAddressPostcodeInput = this.page.locator('#respondentCollection_0_respondent_address__detailPostCode');
   readonly sameAsClaimantWorkAddressYes = this.page.locator('#claimantWorkAddressQuestion_Yes');
   readonly claimantRepresentedNo = this.page.locator('#claimantRepresentedQuestion_No');
   readonly hearingPreferenceVideo = this.page.locator('#claimantHearingPreference_hearing_preferences-Video');
@@ -407,6 +408,8 @@ export class CreateCasePage extends Base {
         await this.manualEntryLink.click();
         await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
         await this.respondentAddressLine1Input.fill('1 Respondent Street');
+        await this.respondentAddressPostcodeInput.waitFor({ state: 'visible' });
+        await this.respondentAddressPostcodeInput.fill('SW1A 1AA');
 
         await this.clickContinueAndWait('after respondent details');
         await this.sameAsClaimantWorkAddressYes.waitFor({ state: 'visible' });

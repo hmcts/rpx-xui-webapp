@@ -5,10 +5,38 @@ import { buildCaseListMock } from '../../mocks/caseList.mock';
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
+const caseListJurisdictionsMock = [
+	{
+		id: 'DIVORCE',
+		name: 'Family Divorce',
+		caseTypes: [
+			{
+				id: 'xuiTestJurisdiction',
+				name: 'XUI Case PoC',
+				states: [
+					{
+						id: 'CaseCreated',
+						name: 'Case Created'
+					}
+				]
+			}
+		]
+	}
+];
 
 test.beforeEach(async ({ page }) => {
 	const { cookies } = await applySessionCookies(page, userIdentifier);
 	sessionCookies = cookies;
+
+	await page.route('**/caseworkers/**/jurisdictions*', async route => {
+		const body = JSON.stringify(caseListJurisdictionsMock);
+		await route.fulfill({ status: 200, contentType: 'application/json', body });
+	});
+
+	await page.route('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*', async route => {
+		const body = JSON.stringify({ workbasketInputs: [] });
+		await route.fulfill({ status: 200, contentType: 'application/json', body });
+	});
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {

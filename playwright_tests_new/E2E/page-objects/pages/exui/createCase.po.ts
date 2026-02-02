@@ -128,13 +128,14 @@ export class CreateCasePage extends Base {
     super(page);
   }
 
-  private async waitForSelectReady(selector: string) {
+  private async waitForSelectReady(selector: string, timeoutMs = 20000) {
     await this.page.waitForFunction(
       (sel) => {
         const el = document.querySelector(sel) as HTMLSelectElement | null;
         return !!el && el.options.length > 1 && !el.disabled;
       },
-      selector
+      selector,
+      { timeout: timeoutMs }
     );
   }
 
@@ -287,27 +288,39 @@ export class CreateCasePage extends Base {
   }
 
   async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
-    if (!this.page.url().includes('/cases/case-filter')) {
+    const maxAttempts = 2;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        await this.createCaseButton.waitFor({ state: 'visible', timeout: 5000 });
-        await this.createCaseButton.click();
+        if (!this.page.url().includes('/cases/case-filter')) {
+          try {
+            await this.createCaseButton.waitFor({ state: 'visible', timeout: 5000 });
+            await this.createCaseButton.click();
+          } catch (error) {
+            await this.page.goto('/cases/case-filter');
+          }
+        }
+        await this.jurisdictionSelect.waitFor({ state: 'visible' });
+        await this.waitForSelectReady('#cc-jurisdiction', 30000);
+        await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
+
+        await this.caseTypeSelect.waitFor({ state: 'visible' });
+        await this.waitForSelectReady('#cc-case-type', 30000);
+        await this.selectOptionSmart(this.caseTypeSelect, caseType);
+        if (eventType) {
+          await this.eventTypeSelect.click();
+          await this.waitForSelectReady('#cc-event', 30000);
+          await this.selectOptionSmart(this.eventTypeSelect, eventType);
+        }
+        await this.startButton.click();
+        return;
       } catch (error) {
+        if (attempt === maxAttempts) {
+          throw error;
+        }
+        logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
         await this.page.goto('/cases/case-filter');
       }
     }
-    await this.jurisdictionSelect.waitFor({ state: 'visible' });
-    await this.waitForSelectReady('#cc-jurisdiction');
-    await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
-
-    await this.caseTypeSelect.waitFor({ state: 'visible' });
-    await this.waitForSelectReady('#cc-case-type');
-    await this.selectOptionSmart(this.caseTypeSelect, caseType);
-    if (eventType) {
-      await this.eventTypeSelect.click();
-      await this.waitForSelectReady('#cc-event');
-      await this.selectOptionSmart(this.eventTypeSelect, eventType);
-    }
-    await this.startButton.click();
   }
 
   async addressLookup(postCode: string, addressOption: string) {

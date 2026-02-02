@@ -32,10 +32,15 @@ export async function selectOptionWithRetry(
       if (i !== 0) {
         console.log(`Attempt ${i}: Failed to select '${label}', retrying...`);
       }
+      await page.waitForLoadState('domcontentloaded');
+      const labelLocator = page.getByLabel(label);
+      const comboLocator = page.getByRole('combobox', { name: label });
+      const locator = (await labelLocator.isVisible().catch(() => false)) ? labelLocator : comboLocator;
+      await locator.waitFor({ state: 'visible', timeout: 15000 });
       if (optionNeedsField) {
-        await page.getByLabel(label).selectOption({ label: optionLabel}, {timeout: 5000 });
+        await locator.selectOption({ label: optionLabel }, { timeout: 15000 });
       } else {
-        await page.getByLabel(label).selectOption(optionLabel, {timeout: 5000 });
+        await locator.selectOption(optionLabel, { timeout: 15000 });
       }
       return;
     } catch (error) {

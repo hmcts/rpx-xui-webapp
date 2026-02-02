@@ -231,7 +231,24 @@ export async function ensureAuthenticatedPage(
   }
 
   if (options.waitForSelector) {
-    await page.waitForSelector(options.waitForSelector, { timeout: timeoutMs });
+    const selectors = options.waitForSelector;
+    const waitForAppShell = async () => {
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForSelector(selectors, { timeout: timeoutMs });
+    };
+    try {
+      await waitForAppShell();
+    } catch (error) {
+      logger.warn('App shell not detected; retrying once', {
+        userIdentifier,
+        selector: selectors,
+        timeoutMs,
+        error: (error as Error).message,
+        operation: 'wait-for-shell'
+      });
+      await page.goto(targetUrl);
+      await waitForAppShell();
+    }
   }
 
   return session;

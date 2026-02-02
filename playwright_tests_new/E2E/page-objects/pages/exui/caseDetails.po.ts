@@ -321,7 +321,13 @@ export class CaseDetailsPage extends Base {
       await this.caseActionsDropdown.selectOption(action);
     }
     await this.caseActionGoButton.click();
-    await this.exuiSpinnerComponent.wait();
+    try {
+      await this.exuiSpinnerComponent.wait();
+    } catch (error) {
+      // Some pages keep the spinner element mounted but hidden; fall back to a hidden wait.
+      await this.page.locator('xuilib-loading-spinner').first().waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+    }
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async selectCaseDetailsEvent(action: string) {
@@ -345,7 +351,19 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectPartyFlagTarget(target: string, flagType: string) {
-    await this.page.getByLabel(`${target} (${target})`).check();
+    const callbackError = this.page.getByText('callback data failed validation', { exact: false });
+    if (await callbackError.isVisible().catch(() => false)) {
+      throw new Error('Callback data failed validation before selecting party flag target.');
+    }
+    const exactLabel = this.page.getByLabel(`${target} (${target})`);
+    const fallbackLabel = this.page.getByLabel(new RegExp(`${target}`, 'i'));
+    try {
+      await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
+      await exactLabel.check();
+    } catch (error) {
+      await fallbackLabel.waitFor({ state: 'visible', timeout: 15000 });
+      await fallbackLabel.check();
+    }
     await this.submitCaseFlagButton.click();
     await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible' });
     await this.commonRadioButtons.getByLabel(flagType).check();

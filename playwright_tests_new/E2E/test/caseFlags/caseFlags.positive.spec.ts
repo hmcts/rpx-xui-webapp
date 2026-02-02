@@ -74,7 +74,13 @@ test.describe("Party level case flags", () => {
         });
 
         await test.step("Check the case flag creation messages are seen", async () => {
-            expect.soft(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: Create case flag`);
+            const callbackError = caseDetailsPage.page.getByText('callback data failed validation', { exact: false });
+            if (await callbackError.isVisible().catch(() => false)) {
+                throw new Error('Callback data failed validation while creating party-level case flag.');
+            }
+            await expect
+                .poll(async () => (await caseDetailsPage.caseAlertSuccessMessage.innerText()).trim(), { timeout: 60000 })
+                .toContain(`Case ${caseNumber} has been updated with event: Create case flag`);
             expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
             expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
         });

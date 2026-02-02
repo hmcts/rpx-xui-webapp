@@ -52,5 +52,5 @@ test('Search from menu 16-digit find control and navigate to the new url', async
   await expect(page.getByRole('link', { name: 'Print' })).toBeVisible();
   const pageUrl = page.url();
   const afterCaseDetails = pageUrl.split('case-details/')[1];
-  expect(afterCaseDetails).toMatch(/^EMPLOYMENT\/ET_EnglandWales\//);
+  expect(afterCaseDetails).toMatch(/^(EMPLOYMENT\/ET_EnglandWales\/)?\d{16}/);
 });

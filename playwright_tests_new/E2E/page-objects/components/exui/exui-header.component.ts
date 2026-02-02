@@ -30,13 +30,22 @@ export class ExuiHeaderComponent {
 
   public async switchLanguage(language: string): Promise<void> {
     const toggleText = (await this.languageToggle.innerText()).trim();
-    if (toggleText.includes(language)) {
-      await this.languageToggle.click();
-      await this.page.waitForLoadState('domcontentloaded');
-       }
-    else {
+    if (!toggleText.includes(language)) {
       console.log(`Language is already set to ${language}`);
+      return;
     }
+
+    await this.languageToggle.click();
+    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for the toggle to flip to the other language to confirm the switch.
+    await this.page.waitForFunction(
+      (selector, expected) => {
+        const el = document.querySelector(selector);
+        return !el?.textContent?.trim().includes(expected);
+      },
+      'exui-header button.language',
+      language
+    );
   }
 
 }

@@ -4053,6 +4053,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz":
+  version: 2.30.11
+  resolution: "@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz"
+  dependencies:
+    "@dr.pogodin/csurf": "npm:^1.14.0"
+    "@hapi/joi": "npm:^17.1.1"
+    axios: "npm:^1.11.0"
+    caller-path: "npm:^3.0.0"
+    connect-redis: "npm:^4.0.4"
+    debug: "npm:^4.3.7"
+    deepmerge: "npm:^4.2.2"
+    express: "npm:^4.20.0"
+    express-session: "npm:^1.17.0"
+    jest-mock-axios: "npm:^4.8.0"
+    jest-ts-auto-mock: "npm:^2.1.0"
+    joi: "npm:^17.13.3 "
+    jwt-decode: "npm:^3.1.2"
+    openid-client: "npm:^5.7.1"
+    otplib: "npm:^12.0.1"
+    passport: "npm:^0.7.0"
+    passport-oauth2: "npm:^1.8.0"
+    redis: "npm:^3.0.2"
+    session-file-store: "npm:^1.5.0"
+  peerDependencies:
+    helmet: ^7.0.0
+  checksum: 10/b077d21e65fdf213608f5f94ef2b1b3f7881f943756d88662bed64bca4e6dc0d844838e98e3ff0dc1cd5f46db294bf2b7f3f27c48840046791303734af2ff655
+  languageName: node
+  linkType: hard
+
 "@hono/node-server@npm:^1.19.7":
   version: 1.19.9
   resolution: "@hono/node-server@npm:1.19.9"
@@ -22735,15 +22764,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.56.1":
-  version: 1.56.1
-  resolution: "playwright-core@npm:1.56.1"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/df785eb3b3a8392b10dcde5f768e09b7fe459a7b06ed81180da69e048f2154b761f86d79572c2b62037a1f18a44e4ace72f5b6547f4f473b4ab13ab1d94007d2
-  languageName: node
-  linkType: hard
-
 "playwright-lighthouse@npm:^4.0.0":
   version: 4.0.0
   resolution: "playwright-lighthouse@npm:4.0.0"
@@ -22772,21 +22792,6 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10/214175446089000c2ac997b925063b95f7d86d129c5d7c74caa5ddcb05bcad598dfd569d2133a10dc82d288bf67e7858877dcd099274b0b928b9c63db7d6ecec
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.52.0":
-  version: 1.56.1
-  resolution: "playwright@npm:1.56.1"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.56.1"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 10/f1743f93b26f1d497257771428d93f3c9ed2d75b00d935f0cd1556ff2dc61d47f2df8b381d752fbd2c47082b685f0ffe4cc4b7ba440d7b4ba3a08572aec58fba
   languageName: node
   linkType: hard
 
@@ -24211,7 +24216,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.1"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
-    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11-rc2/hmcts-rpx-xui-node-lib-2.30.11-rc2.tgz"
+    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -24327,7 +24332,7 @@ __metadata:
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
     pegjs: "npm:^0.10.0"
-    playwright: "npm:^1.52.0"
+    playwright: "npm:1.52.0"
     portfinder: "npm:^1.0.28"
     puppeteer: "npm:^24.0.0"
     rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"

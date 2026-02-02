@@ -12,7 +12,7 @@ import { existsSync, readFileSync } from 'fs';
 import { removeCacheHeaders } from '../api/lib/middleware/removeCacheHeaders';
 
 function loadIndexHtml(): string {
-  const built = path.join(__dirname, '../dist/rpx-exui', 'index.html');
+  const built = path.join(__dirname, '../dist/rpx-exui/browser', 'index.html');
   return readFileSync(built, 'utf8');
 }
 const indexHtmlRaw = loadIndexHtml();
@@ -31,11 +31,11 @@ class ApplicationServer {
     // Serve static assets only (don’t let static serve index)
     this.app.use([
       removeCacheHeaders,
-      express.static(path.join(__dirname, '../dist/rpx-exui', 'assets'), { index: false, cacheControl: false })
+      express.static(path.join(__dirname, '../dist/rpx-exui/browser', 'assets'), { index: false, cacheControl: false })
     ]);
     this.app.use([
       removeCacheHeaders,
-      express.static(path.join(__dirname, '../dist/rpx-exui'), { index: false, cacheControl: false })
+      express.static(path.join(__dirname, '../dist/rpx-exui/browser'), { index: false, cacheControl: false })
     ]);
 
     // Catch-all → send the nonce-injected HTML

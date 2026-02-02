@@ -23,7 +23,7 @@
     "@faker-js/faker": "^9.2.0",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
-    "@hmcts/rpx-xui-common-lib": "3.2.0",
+    "@hmcts/rpx-xui-common-lib": "3.2.2-exui-3994-2",
     "@hmcts/rpx-xui-node-lib": "2.30.7-csp-final-change-3",
     "applicationinsights": "1.8.10",
     "axios": "1.8.4",

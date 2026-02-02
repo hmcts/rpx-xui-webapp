@@ -1,17 +1,20 @@
 const { defineConfig, devices } = require('@playwright/test');
 const { version: appVersion } = require('./package.json');
-const { cpus } = require('os');
+const { cpus } = require('node:os');
 
 const headlessMode = process.env.HEAD !== 'true';
 const odhinOutputFolder =
   process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-  if (configured) {
-    return parseInt(configured, 10);
-  }
   if (process.env.CI) {
-    return 1;
+    return 8;
+  }
+  if (configured) {
+    const parsed = Number.parseInt(configured, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
   }
   const logical = cpus()?.length ?? 1;
   const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));

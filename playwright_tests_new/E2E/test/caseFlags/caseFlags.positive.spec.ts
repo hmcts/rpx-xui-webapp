@@ -51,6 +51,27 @@ test.describe("Case level case flags", () => {
             const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName('Case level flags'));
             expect(table[0]).toMatchObject(expectedFlag);
         });
+
+        await test.step('Verify that event details are shown on the History tab', async () => {
+            await caseDetailsPage.selectCaseDetailsTab('History');
+            const { updateRow, updateDate, updateAuthor, expectedDate } =
+                await caseDetailsPage.getUpdateCaseHistoryInfo('Create a case flag');
+
+            expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
+            expect.soft(updateDate.startsWith(expectedDate), `${updateDate} should start with ${expectedDate}`).toBe(true);
+            expect.soft(updateAuthor, 'Update case author should be present').not.toBe('');
+
+            const expectedDetails = {
+                'Date': updateDate,
+                'Author': updateAuthor,
+                'End state': 'Submitted',
+                'Event': 'Create a case flag',
+                'Summary': '-',
+                'Comment': '-',
+            };
+            const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+            expect(table).toMatchObject(expectedDetails);
+        });
     });
 });
 

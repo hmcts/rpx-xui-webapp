@@ -2,15 +2,16 @@ import { WaitUtils } from "@hmcts/playwright-common";
 import { expect, Page } from "@playwright/test";
 
 export class ExuiHeaderComponent {
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="app-header" - brittle custom element selector
   readonly header = this.page.locator("exui-header");
   
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="header-search-results" - brittle custom element selector
   readonly results = this.page.locator("ccd-search-result");
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="nav-item-{name}" - brittle CSS class selector
   readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
-  readonly selectedPageItem = this.header.locator('.hmcts-header a.hmcts-header__link')
-  readonly languageToggle = this.header.locator('button.language');
+  readonly selectedPageItem = this.header
+    .locator('.hmcts-header a.hmcts-header__link')
+    .or(this.page.getByRole('banner').getByRole('link', { name: /Manage Cases|Rheoli Achosion/ }));
+  readonly languageToggle = this.header
+    .locator('button.language')
+    .or(this.page.getByRole('banner').getByRole('button', { name: /Cymraeg|English/ }));
   private waitUtils = new WaitUtils();
 
   constructor(private page: Page) { }
@@ -31,7 +32,6 @@ export class ExuiHeaderComponent {
   public async switchLanguage(language: string): Promise<void> {
     const toggleText = (await this.languageToggle.innerText()).trim();
     if (!toggleText.includes(language)) {
-      console.log(`Language is already set to ${language}`);
       return;
     }
 

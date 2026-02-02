@@ -9,6 +9,7 @@ import {
   WaitUtils,
   ServiceAuthUtils
 } from "@hmcts/playwright-common";
+import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import { chromium, Page } from "playwright/test";
@@ -94,6 +95,11 @@ export const utilsFixtures = {
       // Provide the page to the test
       await use(context.pages()[0]);
       await context.close();
+      try {
+        fs.rmSync(userDataDir, { recursive: true, force: true });
+      } catch (error) {
+        // Best-effort cleanup; avoid test failure if temp removal fails.
+      }
     } else {
       await use(page);
     }

@@ -2,22 +2,16 @@ import { Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class CaseListPage extends Base {
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-list-container" - brittle custom element selector
   readonly container = this.page.locator('exui-case-home');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="jurisdiction-select" - prefer test ID over #id
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-type-select" - prefer test ID over #id
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="text-field-0-input" - prefer test ID over #id
   readonly textField0Input = this.page.locator('#TextField0');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="search-results-message" - prefer test ID over #id
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="pagination-container" - brittle CSS class selector
   readonly pagination = this.page.locator('.ngx-pagination');
 
   // Some case list views use an id, others a data-test attribute for the summary

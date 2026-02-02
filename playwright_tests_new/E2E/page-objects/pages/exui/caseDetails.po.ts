@@ -16,19 +16,14 @@ export interface CaseFlagItem {
 }
 
 export class CaseDetailsPage extends Base {
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-details-container" - brittle custom element selector
   readonly container = this.page.locator('exui-case-details-home');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-tab-{name}" - prefer test ID for each tab
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-actions-dropdown" - prefer test ID over #id
   readonly caseActionsDropdown = this.page.locator('#next-step');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-action-go-button" - brittle CSS selector
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="submit-case-flag-button" - brittle CSS selector
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
   readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
@@ -40,29 +35,22 @@ export class CaseDetailsPage extends Base {
   readonly historyDetailsTable = this.page.locator('table.EventLogDetails');
 
   // Case flags
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-flag-comment-input" - prefer test ID over #id
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-flag-table" - brittle CSS class selector
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="radio-option-{index}" - brittle CSS class selector
   readonly commonRadioButtons = this.page.locator('.govuk-radios__item');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="success-banner-message" - brittle CSS selector
   readonly caseAlertSuccessMessage = this.page
     .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
     .first();
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="notification-banner-title" - prefer test ID over #id
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
 
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="notification-banner-body" - brittle CSS selector
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
-  // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="documents-table" - brittle CSS class selector
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
 

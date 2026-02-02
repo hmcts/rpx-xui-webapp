@@ -29,7 +29,6 @@ test.describe("Document upload V2", () => {
 
         await test.step("Verify case details tab does not contain an uploaded file", async () => {
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-            // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-viewer-table" to prefer test IDs.
             const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
             await caseViewerTable.waitFor({ state: 'visible' });
             const textFieldRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });
@@ -47,7 +46,6 @@ test.describe("Document upload V2", () => {
         await test.step("Verify the document upload was successful", async () => {
             expect(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: ${TEST_DATA.V2.ACTION}`);
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-            // TODO(TEST_ID_REQUIREMENTS.md): Add data-testid="case-viewer-table" to prefer test IDs.
             const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
             await caseViewerTable.waitFor({ state: 'visible' });
             const textFieldRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });

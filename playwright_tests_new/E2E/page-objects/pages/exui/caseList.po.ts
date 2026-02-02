@@ -14,8 +14,8 @@ export class CaseListPage extends Base {
 
   constructor(page: Page) {
     super(page);
-  } 
-  
+  }
+
   public async searchByJurisdiction(jurisdiction: string): Promise<void> {
     await this.jurisdictionSelect.selectOption(jurisdiction);
   }

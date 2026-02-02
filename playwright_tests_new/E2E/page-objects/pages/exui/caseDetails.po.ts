@@ -44,6 +44,15 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData')
 
+  // Search case
+  readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
+  // GlobalSearch
+  readonly tabsCount  =  this.page.locator('.mat-tab-label-container .mat-tab-list');
+  readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
+  readonly addOrRemoveFlagsLink = this.page.locator('#addCaseFlagEventLink');
+  readonly extend26WeekTimelineLink = this.page.locator('#extend26WeekTimelineLink');
+
+
   constructor(page: Page) {
     super(page);
 

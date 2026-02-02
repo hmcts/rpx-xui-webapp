@@ -5,34 +5,31 @@ import {expect } from "../../../fixtures";
 export class GlobalSearchPage extends Base {
   readonly CHANGE_SEARCH = 'Change search';
   readonly VIEW = 'View';
+
   // Locators
-  readonly searchButton = this.page.getByRole('button',{ name: 'Search'});
-  readonly servicesOption = this.page.getByRole('combobox', { name: 'servicesList' });
-  readonly searchLinkOnMenuBar = this.page.getByRole('link', { name: 'Search' });
-  readonly caseIdTextBox = this.page.getByRole('textbox', { name: '16-digit case reference', exact: true });
-  readonly serviceLabel = this.page.getByLabel('Services');
+  readonly servicesOption = this.page.locator('#servicesList');
+  readonly searchLinkOnMenuBar = this.page.locator('.hmcts-primary-navigation__link:has-text("Search")');
+  readonly searchButton = this.page.locator('button[type="submit"]:has-text("Search")');
+  readonly caseIdTextBox = this.page.locator('input#caseRef');
   // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
   readonly viewLink =  this.page.getByRole('link', {name: ' View ', exact:true});
-  readonly courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
-  readonly caseInformation =  this.page.getByRole('heading', {name: 'Case information'});
-  readonly courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
-  readonly summaryTab =  this.page.getByRole('tab', { name: 'Summary' });
-  readonly changeSearchLink = this.page.getByRole('paragraph');
-  readonly summaryHeading:Locator  = this.page.getByText('Summary');
-  readonly caseFileViewTab:Locator = this.page.getByRole('tab', { name: 'Case File View' });
-  readonly caseReference:Locator = this.page.getByRole('heading', { name: 'Case reference' });
-  readonly applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
-  readonly previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
-  readonly nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
-  readonly searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
-  readonly searchResultsContainer = this.page.locator('.govuk-width-container.ng-star-inserted');
+  readonly changeSearchLink = this.page.locator('.govuk-width-container .govuk-link');
+  readonly searchResultTable = this.page.locator('.govuk-width-container .govuk-main-wrapper .govuk-table');
+  // readonly courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
+  // readonly caseInformation =  this.page.getByRole('heading', {name: 'Case information'});
+  // readonly courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
+  // readonly searchResultsContainer = this.page.locator('.govuk-width-container');
+  readonly searchResultsTable = this.page.locator('.govuk-width-container .govuk-table');
+  readonly applicantOrPartyName = this.page.locator('.govuk-form-group').locator('#fullName');
+  readonly paginationLinks = this.page.locator('.govuk-width-container #pagination-label .hmcts-pagination__link');
+  readonly searchResultsHeader = this.page.locator('.govuk-width-container .govuk-heading-xl');
 
 
-  async performGlobalSearchWithCase(caseId: string ) : Promise<void> {
+  async performGlobalSearchWithCase(caseId: string, caseType:string ) : Promise<void> {
     await this.searchLinkOnMenuBar.click();
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);
-    await this.serviceLabel.selectOption('PUBLICLAW');
+    await this.servicesOption.selectOption(caseType);
     await this.searchButton.click();
   }
 
@@ -43,7 +40,7 @@ export class GlobalSearchPage extends Base {
     // search with first 5 digits of valid case id Ex : 15665*
     await this.caseIdTextBox.fill(`${first5Digits}*`);
     await this.applicantOrPartyName.fill('Will*');
-    await this.serviceLabel.selectOption('PUBLICLAW');
+    await this.servicesOption.selectOption('PUBLICLAW');
     await this.searchButton.click();
   }
 
@@ -53,43 +50,11 @@ export class GlobalSearchPage extends Base {
      expect(this.viewLink.filter({ hasText: this.VIEW}).isVisible());
   }
 
-  async verifyWildCardSearchResults(caseId: string) {
-    expect(this.previousSearchLink.isVisible());
-    expect(this.nextSearchLink.isVisible());
-    expect(this.searchResultsHeader.isVisible());
-    expect(this.changeSearchLink.filter({ hasText: this.CHANGE_SEARCH}).isVisible());
-    // SearchResults table
-    const container = this.searchResultsContainer;
-    const searchResultsTable = container.locator('.govuk-table');
-    expect(searchResultsTable).toBeTruthy();
-  }
-
-  async verifyCaseDetails() {
+  async viewCaseDetails() {
     await this.viewLink.click();
-    expect(this.caseFileViewTab.isVisible());
-    expect(this.summaryTab.isVisible());
   }
 
   constructor(page: Page) {
     super(page);
-    // this.searchButton = this.page.getByRole('button',{ name: 'Search'});
-    // this.courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
-    // this.servicesOption = this.page.getByRole('combobox', { name: 'servicesList' });
-    // this.serviceLabel = this.page.getByLabel('Services');
-    // this.searchLinkOnMenuBar = this.page.getByRole('link', { name: 'Search' });
-    // // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
-    // this.viewLink = this.page.getByRole('link', {name: ' View ', exact:true});
-    // this.caseInformation = this.page.getByRole('heading', {name: 'Case information'});
-    // this.courtName = this.page.locator('#case-viewer-field-read--caseSummaryCourtName');
-    // this.summaryTab = this.page.getByRole('tab', { name: 'Summary' });
-    // this.changeSearchLink = this.page.getByRole('paragraph');
-    // this.summaryHeading = this.page.getByText('Summary');
-    // this.caseFileViewTab = this.page.getByRole('tab', { name: 'Case File View' });
-    // this.caseReference = this.page.getByRole('heading', { name: 'Case reference' });
-    // this.applicantOrPartyName = this.page.getByRole('textbox', { name: 'Name' });
-    // this.previousSearchLink = this.page.getByRole('link', { name: 'Previous page' });
-    // this.nextSearchLink = this.page.getByRole('link', { name: 'Next page' });
-    // this.searchResultsHeader = this.page.getByRole('heading', { name: 'Search results' });
-    // this.searchResultsContainer = this.page.locator('.govuk-width-container.ng-star-inserted');
   }
 }

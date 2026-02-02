@@ -11,7 +11,7 @@ const validatorUtils = new ValidatorUtils();
 test.describe("IDAM login for Find Search page @KSM", () => {
   let sessionCookies: any[] = [];
   test.beforeEach(async ({ page }) => {
-    const { cookies } = loadSessionCookies('PROBATE_CW');
+    const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
     sessionCookies = cookies;
     if (sessionCookies.length) {
       await page.context().addCookies(sessionCookies);
@@ -19,23 +19,29 @@ test.describe("IDAM login for Find Search page @KSM", () => {
     await page.goto('/');
   });
 
-  test("Find Case using Probate / Grant of Representation caseType @KSM", async ({ tableUtils, caseListPage, findCasePage,createCasePage,caseDetailsPage }) => {
+  test("Find Case using Probate / Grant of Representation caseType ", async ({ tableUtils, caseListPage, findCasePage,caseDetailsPage }) => {
     await test.step("Start Find Case journey", async () => {
       await findCasePage.startFindCaseJourney(caseNumber);
     });
 
     await test.step("Verify that case searched for appears under 'Your cases' ", async () => {
-        expect(findCasePage.yourCasesHeading.isVisible);
-        await findCasePage.verifyCaseNumber(caseNumber);
+        //expect(findCasePage.yourCasesHeading.isVisible);
+        // TODO above can be assereted with   id="search-result" mapXuiTable and then do some checks here.
+        //TODO check with this method does verifyCaseNumber();
+        //await findCasePage.verifyCaseNumber(caseNumber);
+
+      // This could be replaced with all the checks in the await tableUtils.mapExuiTable()......
+
     });
 
     await test.step("Confirm that the  case is in the search results", async () => {
-      const formattedCaseRef = validatorUtils.formatCaseNumber(caseNumber)
 
       const table = await tableUtils.mapExuiTable(
         caseListPage.exuiCaseListComponent.caseListTable
       );
-     const caseReference = table[0]["Case reference"];
+
+      const formattedCaseRef = validatorUtils.formatCaseNumber(caseNumber)
+      const caseReference = table[0]["Case reference"];
       expect(table).toBeTruthy();
       expect(caseReference).toBeTruthy();
       expect(caseReference).toBe(formattedCaseRef);

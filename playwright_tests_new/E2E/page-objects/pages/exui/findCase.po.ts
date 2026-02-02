@@ -1,19 +1,24 @@
 import { Locator, Page } from '@playwright/test';
 import { Base } from "../../base";
 import {expect } from "../../../fixtures";
+import { CaseListPage } from './caseList.po.ts';
 
-export class FindCasePage extends Base {
+export class FindCasePage extends CaseListPage  {
   // Locators
-  readonly findCaseLinkOnMenu : Locator =   this.page.getByRole('link', { name: ' Find case ' });
-  readonly showFilterButton : Locator = this.page.getByRole('button',{ name: ' Show Filter '});
-  readonly hideFilterButton : Locator = this.page.getByRole('button',{ name: ' Hide Filter '});
-  readonly resetFilterButton : Locator = this.page.getByRole('button',{ name: ' Reset filter '});
-  readonly backToTopButton : Locator = this.page.getByRole('button',{ name: 'Back to top'});
-  readonly caseTypeDropDown : Locator = this.page.getByRole('option', { name: 'case-type' });
-  readonly jurisdictionSelect : Locator = this.page.getByRole('option', { name: 'jurisdiction' });
-  readonly searchResults_caseLink : Locator = this.page.getByRole('link', { name: 'go to case with Case' });
-  readonly caseReference : Locator = this.page.getByRole('textbox', { name: 'Case reference', exact: true });
-  readonly yourCasesHeading : Locator = this.page.getByRole('heading', { name: 'Your cases' });
+  // TODO
+  // TODO ALSO caseTypeDropDown AND jurisdictionSelect SHOULD BE USED FURTHER DOWN IN startFindCaseJourney.
+  readonly findCaseLinkOnMenu =  this.page.getByRole('link', { name: ' Find case ' });
+  readonly showFilterButton  = this.page.getByRole('button',{ name: ' Show Filter '});
+  readonly hideFilterButton  = this.page.getByRole('button',{ name: ' Hide Filter '});
+  readonly resetFilterButton  = this.page.getByRole('button',{ name: ' Reset filter '});
+  readonly backToTopButton  = this.page.getByRole('button',{ name: 'Back to top'});
+  readonly caseTypeDropDown  = this.page.getByRole('option', { name: 'case-type' });
+  readonly jurisdictionSelect = this.page.getByRole('option', { name: 'jurisdiction' });
+  readonly searchResults_caseLink = this.page.getByRole('link', { name: 'go to case with Case' });
+  readonly caseReference  = this.page.getByRole('textbox', { name: 'Case reference', exact: true });
+  readonly yourCasesHeading = this.page.getByRole('heading', { name: 'Your cases' });
+
+  id="search-result"
 
   async startFindCaseJourney(caseNumber:string) : Promise<void> {
     await this.findCaseLinkOnMenu.click();
@@ -24,8 +29,8 @@ export class FindCasePage extends Base {
   }
 
   async displayCaseDetailsFor(caseNumber : string) : Promise<void> {
-    const caseReferenceLink = this.page.locator(`#search-result a.govuk-link[href*="${caseNumber}"]`);
-    await caseReferenceLink.click();
+    const caseReferenceLink = this.page.locator(`#search-result a.govuk-link[href*="${caseNumber}"]`).click();
+    //await caseReferenceLink.click();
   }
 
   async verifyCaseNumber(caseNumber:string) : Promise<void> {
@@ -34,10 +39,10 @@ export class FindCasePage extends Base {
      await(this.searchResults_caseLink.isVisible());
    }
 
-  private async applyFilters(): Promise<void> {
-    await this.exuiCaseListComponent.filters.applyFilterBtn.click();
-    await this.exuiSpinnerComponent.wait();
-  }
+  // private async applyFilters(): Promise<void> {
+  //   await this.exuiCaseListComponent.filters.applyFilterBtn.click();
+  //   await this.exuiSpinnerComponent.wait();
+  // }
 
   private async checkButtonVisibility() {
     await this.exuiCaseListComponent.filters.applyFilterBtn.isVisible();

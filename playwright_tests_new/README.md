@@ -95,6 +95,7 @@ rm -rf .sessions && npx playwright test
 - **Utilities**: `E2E/utils/` - Table parsing, user management, configuration
 - **Tests**: `E2E/test/` - Test specifications organized by feature
 - **Fixtures**: `E2E/fixtures.ts` - Custom Playwright fixtures
+- **Welsh Language**: Welsh language coverage now lives in `playwright_tests_new/integration/test/welshLanguage/` (removed from E2E)
 
 ---
 

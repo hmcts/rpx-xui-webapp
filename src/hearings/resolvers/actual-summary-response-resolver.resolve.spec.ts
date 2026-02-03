@@ -16,10 +16,9 @@ describe('ActualSummaryResponseResolver', () => {
         ActualSummaryResponseResolver,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
   });
 
   it('should be created', () => {

@@ -4,7 +4,6 @@ import { Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 import { DataBaseModel } from './models/data-base.model';
 import { OrganisationModel } from './models/organisation.model';
-// @ts-ignore
 import * as dbJson from './stubs/db.json';
 
 const dbModule = plainToClass(DataBaseModel, dbJson);
@@ -22,10 +21,13 @@ export function getUsers(req: EnhancedRequest, res: Response) {
   }
 
   const users = org.users;
-  const filterUser = users.filter((aUser) => aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-        aUser.firstName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-        aUser.lastName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-        aUser.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
+  const filterUser = users.filter(
+    (aUser) =>
+      aUser.idamId.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+      aUser.firstName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+      aUser.lastName.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+      aUser.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1
+  );
   if (!filterUser || filterUser.length === 0) {
     return res.status(404).send('{"errorMessage": "User is not found}"');
   }
@@ -58,7 +60,7 @@ export function assignCases(req: EnhancedRequest, res: Response) {
     const newSharedCase = {
       ...aCase,
       pendingShares: newPendingShares,
-      sharedWith: newSharedWith
+      sharedWith: newSharedWith,
     };
     updatedSharedCases.push(newSharedCase);
   }

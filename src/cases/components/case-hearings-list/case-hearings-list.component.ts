@@ -14,9 +14,8 @@ import * as fromHearingStore from '../../../hearings/store';
   standalone: false,
   selector: 'exui-case-hearings-list',
   templateUrl: './case-hearings-list.component.html',
-  styleUrls: ['./case-hearings-list.component.scss']
+  styleUrls: ['./case-hearings-list.component.scss'],
 })
-
 export class CaseHearingsListComponent implements OnInit {
   @Input()
   public status: EXUISectionStatusEnum;
@@ -41,11 +40,13 @@ export class CaseHearingsListComponent implements OnInit {
   public hasReadOnlyAction: boolean = false;
   public isHearingAmendmentsEnabled = false;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly hearingsFeatureService: HearingsFeatureService,
-    private readonly hearingsService: HearingsService) {
+    private readonly hearingsService: HearingsService
+  ) {
     this.caseId = this.activatedRoute.snapshot.params.cid;
   }
 
@@ -76,8 +77,9 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public isNonCancellable(exuiDisplayStatus: EXUIDisplayStatusEnum): boolean {
-    return exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED
-      || exuiDisplayStatus === EXUIDisplayStatusEnum.FAILURE;
+    return (
+      exuiDisplayStatus === EXUIDisplayStatusEnum.CANCELLATION_REQUESTED || exuiDisplayStatus === EXUIDisplayStatusEnum.FAILURE
+    );
   }
 
   public isManageLinksEnabled(hearingGroupRequestId: string): boolean {
@@ -85,9 +87,11 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public isLinkableStatus(exuiDisplayStatus: EXUIDisplayStatusEnum) {
-    return exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
-      || exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
-      || exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED;
+    return (
+      exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING ||
+      exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED ||
+      exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED
+    );
   }
 
   public addAndEdit(hearingID: string): void {
@@ -103,11 +107,13 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public manageLinks(hearing: HearingListViewModel): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
-      jurisdictionId: this.jurisdictionId,
-      caseReference: this.caseId,
-      hearingId: hearing.hearingID
-    }));
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadServiceLinkedCases({
+        jurisdictionId: this.jurisdictionId,
+        caseReference: this.caseId,
+        hearingId: hearing.hearingID,
+      })
+    );
     this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({ groupId: hearing.hearingGroupRequestId }));
     this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
@@ -115,7 +121,7 @@ export class CaseHearingsListComponent implements OnInit {
   public viewAndEdit(hearingID: string): void {
     const hearingCondition: HearingConditions = {
       mode: Mode.VIEW_EDIT,
-      isHearingAmendmentsEnabled: this.isHearingAmendmentsEnabled
+      isHearingAmendmentsEnabled: this.isHearingAmendmentsEnabled,
     };
     // Clear the in-memory objects for hearing amendments
     this.hearingsService.propertiesUpdatedAutomatically = { pageless: {}, withinPage: {} };
@@ -130,7 +136,9 @@ export class CaseHearingsListComponent implements OnInit {
       }));
     }
     // Set the navigation url based on the hearing amendments enabled Launch Darkly setting
-    const url = this.isHearingAmendmentsEnabled ? '/hearings/request/hearing-view-summary' : '/hearings/request/hearing-view-edit-summary';
+    const url = this.isHearingAmendmentsEnabled
+      ? '/hearings/request/hearing-view-summary'
+      : '/hearings/request/hearing-view-edit-summary';
     // Load hearing request and navigate
     this.loadHearingRequestAndRedirect(hearingID, url);
   }
@@ -149,16 +157,27 @@ export class CaseHearingsListComponent implements OnInit {
         this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-completed-summary/${hearing.hearingID}`, this.caseId);
+        this.loadHearingRequestAndRedirect(
+          hearing.hearingID,
+          `/hearings/view/hearing-completed-summary/${hearing.hearingID}`,
+          this.caseId
+        );
         break;
       case EXUIDisplayStatusEnum.ADJOURNED:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`, this.caseId);
+        this.loadHearingRequestAndRedirect(
+          hearing.hearingID,
+          `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`,
+          this.caseId
+        );
         break;
       case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
         this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-view-actuals-summary/${hearing.hearingID}`);
         break;
       case EXUIDisplayStatusEnum.FAILURE:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`);
+        this.loadHearingRequestAndRedirect(
+          hearing.hearingID,
+          `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`
+        );
         break;
       default:
         this.router.navigate(['/', 'hearings', 'view']);

@@ -1,19 +1,9 @@
-
 const requestMapping = {
   mockServiceResetCallbacks: [],
-  get: {
-
-  },
-  post: {
-
-  },
-  put: {
-
-  },
-  delete: {
-
-  }
-
+  get: {},
+  post: {},
+  put: {},
+  delete: {},
 };
 module.exports = { requestMapping };
 

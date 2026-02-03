@@ -23,7 +23,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
       parent_key: null,
       category_key: 'HearingChannel',
       active_flag: 'Y',
-      parent_category: null
+      parent_category: null,
     },
     {
       key: 'byPhone',
@@ -35,7 +35,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
       parent_key: null,
       category_key: 'HearingChannel',
       active_flag: 'Y',
-      parent_category: null
+      parent_category: null,
     },
     {
       key: 'byVideo',
@@ -47,7 +47,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
       parent_key: null,
       category_key: 'HearingChannel',
       active_flag: 'Y',
-      parent_category: null
+      parent_category: null,
     },
     {
       key: 'notAttending',
@@ -59,20 +59,16 @@ describe('ParticipantAttendanceSectionComponent', () => {
       parent_key: null,
       category_key: 'HearingChannel',
       active_flag: 'Y',
-      parent_category: null
-    }
+      parent_category: null,
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        ParticipantAttendanceSectionComponent
-      ],
+      declarations: [ParticipantAttendanceSectionComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        { provide: HearingsService, useValue: hearingsService }
-      ]
+      providers: [{ provide: HearingsService, useValue: hearingsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ParticipantAttendanceSectionComponent);
@@ -92,9 +88,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
   it('should set participant attendance details', () => {
     expect(component.isPaperHearing).toEqual('No');
     expect(component.participantChannels).toEqual(['By phone']);
-    expect(component.participantAttendanceModes).toEqual(
-      [{ partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true }]
-    );
+    expect(component.participantAttendanceModes).toEqual([
+      { partyName: 'Jane Smith', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true },
+    ]);
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 
@@ -110,8 +106,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.partyDetailsChangesRequired).toEqual(true);
@@ -131,8 +127,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyDetailsChangesConfirmed: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.partyDetailsChangesRequired).toEqual(true);
@@ -151,8 +147,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.partyDetailsChangesRequired).toEqual(false);
@@ -163,19 +159,23 @@ describe('ParticipantAttendanceSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('paperHearing');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'paperHearing', changeLink: '/hearings/request/hearing-attendance#paperHearingYes'
+      fragmentId: 'paperHearing',
+      changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
     });
     component.onChange('howParticipantsAttendant');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'howParticipantsAttendant', changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList'
+      fragmentId: 'howParticipantsAttendant',
+      changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList',
     });
     component.onChange('howAttendant');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'howAttendant', changeLink: '/hearings/request/hearing-attendance#partyChannel0'
+      fragmentId: 'howAttendant',
+      changeLink: '/hearings/request/hearing-attendance#partyChannel0',
     });
     component.onChange('attendantPersonAmount');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'attendantPersonAmount', changeLink: '/hearings/request/hearing-attendance#attendance-number'
+      fragmentId: 'attendantPersonAmount',
+      changeLink: '/hearings/request/hearing-attendance#attendance-number',
     });
   });
 
@@ -192,15 +192,15 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingChannels: ['ONPPRS']
-        }
+          hearingChannels: ['ONPPRS'],
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -218,15 +218,15 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          numberOfPhysicalAttendees: 10
-        }
+          numberOfPhysicalAttendees: 10,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -244,15 +244,15 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingChannels: []
-        }
+          hearingChannels: [],
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -272,8 +272,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesConfirmed: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
@@ -293,8 +293,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
           partyDetailsChangesConfirmed: true,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);

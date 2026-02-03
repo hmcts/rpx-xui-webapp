@@ -5,7 +5,7 @@ import { ImageFieldComponent } from './image-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-image-field [src]="src" [alt]="alt"></exui-image-field>'
+  template: '<exui-image-field [src]="src" [alt]="alt"></exui-image-field>',
 })
 class WrapperComponent {
   @ViewChild(ImageFieldComponent, { static: true }) public appComponentRef: ImageFieldComponent;
@@ -22,9 +22,8 @@ describe('WorkAllocation', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

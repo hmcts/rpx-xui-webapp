@@ -9,12 +9,13 @@ import { HearingsUtils } from '../utils/hearings.utils';
 import { AnswerConverter } from './answer.converter';
 
 export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
-  constructor(
-    protected readonly route: ActivatedRoute) {}
+  constructor(protected readonly route: ActivatedRoute) {}
 
   private static getPartyChannelValue(refData: LovRefDataModel[], party: PartyDetailsModel): string {
     const preferredHearingChannelRefData = refData.find((ref) => ref.key === party.hearingSubChannel);
-    return preferredHearingChannelRefData?.value_en ? preferredHearingChannelRefData.value_en : `Error: ${party.hearingSubChannel}`;
+    return preferredHearingChannelRefData?.value_en
+      ? preferredHearingChannelRefData.value_en
+      : `Error: ${party.hearingSubChannel}`;
   }
 
   private static getPartyName(partiesFromServiceValue: PartyDetailsModel[], partyInfo: PartyDetailsModel): string {
@@ -37,18 +38,24 @@ export class ParticipantAttendenceAnswerConverter implements AnswerConverter {
         if (!hearingDaySchedule) {
           return '';
         }
-        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties?.filter((party) => party.partyType === PartyType.IND);
+        const partiesFromServiceValue = state.hearingValues.serviceHearingValuesModel.parties?.filter(
+          (party) => party.partyType === PartyType.IND
+        );
         if (!partiesFromServiceValue) {
           return '';
         }
         const partyIds = partiesFromServiceValue.map((party) => party.partyID);
         hearingDaySchedule = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
-        const partiesFromRequest = hearingDaySchedule[index || 0].attendees?.filter((attendee) => partyIds.includes(attendee.partyID));
-        return partiesFromRequest.map((partyInfo) => {
-          const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);
-          const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);
-          return `${name} - ${value}`;
-        }).join('<br>');
+        const partiesFromRequest = hearingDaySchedule[index || 0].attendees?.filter((attendee) =>
+          partyIds.includes(attendee.partyID)
+        );
+        return partiesFromRequest
+          .map((partyInfo) => {
+            const name = ParticipantAttendenceAnswerConverter.getPartyName(partiesFromServiceValue, partyInfo);
+            const value = ParticipantAttendenceAnswerConverter.getPartyChannelValue(partyChannels, partyInfo);
+            return `${name} - ${value}`;
+          })
+          .join('<br>');
       })
     );
   }

@@ -2,10 +2,18 @@ const { $, getText } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class DescribeExclusionPage {
-  get container() { return $('exui-describe-exclusion'); }
-  get headerCaption() { return this.container.locator('h1 span'); }
-  get header() { return this.container.locator('h1'); }
-  get textArea() { return this.container.locator('#exclusion-description'); }
+  get container() {
+    return $('exui-describe-exclusion');
+  }
+  get headerCaption() {
+    return this.container.locator('h1 span');
+  }
+  get header() {
+    return this.container.locator('h1');
+  }
+  get textArea() {
+    return this.container.locator('#exclusion-description');
+  }
 
   async isDisplayed() {
     try {

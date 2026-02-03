@@ -20,7 +20,7 @@ import {
   EXUIDisplayStatusEnum,
   EXUISectionStatusEnum,
   HMCStatus,
-  HearingListingStatusEnum
+  HearingListingStatusEnum,
 } from '../../../hearings/models/hearings.enum';
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
@@ -44,7 +44,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_2: HearingDayScheduleModel = {
@@ -55,7 +55,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_3: HearingDayScheduleModel = {
@@ -66,7 +66,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_4: HearingDayScheduleModel = {
@@ -77,7 +77,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId2',
     panelMemberIds: ['hearingJudgeId2'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_5: HearingDayScheduleModel = {
@@ -88,7 +88,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId3',
     panelMemberIds: ['hearingJudgeId3'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_6: HearingDayScheduleModel = {
@@ -99,7 +99,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 1',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_7: HearingDayScheduleModel = {
@@ -110,7 +110,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 2',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_8: HearingDayScheduleModel = {
@@ -121,7 +121,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 3',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_9: HearingDayScheduleModel = {
@@ -132,7 +132,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 4',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_10: HearingDayScheduleModel = {
@@ -143,7 +143,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 5',
     hearingJudgeId: 'hearingJudgeId1',
     panelMemberIds: ['hearingJudgeId1'],
-    attendees: []
+    attendees: [],
   };
 
   const HEARING_DAY_SCHEDULE_11: HearingDayScheduleModel = {
@@ -154,7 +154,7 @@ describe('CaseHearingsComponent', () => {
     hearingRoomId: 'room 11',
     hearingJudgeId: 'child',
     panelMemberIds: ['child'],
-    attendees: []
+    attendees: [],
   };
 
   const CASE_HEARING_1: HearingListModel = {
@@ -170,7 +170,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: true,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_1]
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
   };
 
   const CASE_HEARING_2: HearingListModel = {
@@ -186,7 +186,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_2]
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
   };
 
   const CASE_HEARING_3: HearingListModel = {
@@ -202,7 +202,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_3]
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_3],
   };
 
   const CASE_HEARING_4: HearingListModel = {
@@ -218,7 +218,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_4]
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_4],
   };
 
   const CASE_HEARING_5: HearingListModel = {
@@ -234,7 +234,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_5]
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_5],
   };
 
   const CASE_HEARING_6: HearingListModel = {
@@ -250,7 +250,7 @@ describe('CaseHearingsComponent', () => {
     listAssistCaseStatus: '',
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
-    hearingDaySchedule: [HEARING_DAY_SCHEDULE_6]
+    hearingDaySchedule: [HEARING_DAY_SCHEDULE_6],
   };
 
   const CASE_HEARING_7: HearingListModel = {
@@ -266,7 +266,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_7],
-    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING
+    exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
   };
 
   const CASE_HEARING_8: HearingListModel = {
@@ -282,7 +282,7 @@ describe('CaseHearingsComponent', () => {
     hearingIsLinkedFlag: false,
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_8],
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   };
 
   const CASE_HEARING_9: HearingListModel = {
@@ -298,7 +298,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_9],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS
+    exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_ACTUALS,
   };
 
   const CASE_HEARING_10: HearingListModel = {
@@ -314,7 +314,7 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
     exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
-    exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED
+    exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
   };
 
   const CASE_HEARING_11: HearingListModel = {
@@ -330,27 +330,39 @@ describe('CaseHearingsComponent', () => {
     hearingGroupRequestId: null,
     hearingDaySchedule: [HEARING_DAY_SCHEDULE_11],
     exuiDisplayStatus: EXUIDisplayStatusEnum.COMPLETED,
-    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED
+    exuiSectionStatus: EXUISectionStatusEnum.PAST_OR_CANCELLED,
   };
 
   const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'BBA3',
     caseRef: '1568642646198441',
-    caseHearings: [CASE_HEARING_1, CASE_HEARING_2, CASE_HEARING_3, CASE_HEARING_4, CASE_HEARING_5, CASE_HEARING_6, CASE_HEARING_7, CASE_HEARING_8, CASE_HEARING_9, CASE_HEARING_10, CASE_HEARING_11]
+    caseHearings: [
+      CASE_HEARING_1,
+      CASE_HEARING_2,
+      CASE_HEARING_3,
+      CASE_HEARING_4,
+      CASE_HEARING_5,
+      CASE_HEARING_6,
+      CASE_HEARING_7,
+      CASE_HEARING_8,
+      CASE_HEARING_9,
+      CASE_HEARING_10,
+      CASE_HEARING_11,
+    ],
   };
 
   const initialState = {
     hearings: {
       hearingList: {
-        hearingListMainModel: HEARINGS_LIST
+        hearingListMainModel: HEARINGS_LIST,
       },
       hearingValues: {
         serviceHearingValuesModel: {
-          hmctsServiceID: 'BBA3'
+          hmctsServiceID: 'BBA3',
         },
-        lastError: null
-      }
-    }
+        lastError: null,
+      },
+    },
   };
 
   const HEARING_TYPES_REF_DATA: LovRefDataModel[] = [
@@ -365,7 +377,7 @@ describe('CaseHearingsComponent', () => {
       parent_category: '',
       parent_key: '',
       value_cy: '',
-      value_en: 'Chambers Outcome'
+      value_en: 'Chambers Outcome',
     },
     {
       active_flag: 'Y',
@@ -378,7 +390,7 @@ describe('CaseHearingsComponent', () => {
       parent_category: '',
       parent_key: '',
       value_cy: '',
-      value_en: 'Substantive'
+      value_en: 'Substantive',
     },
     {
       active_flag: 'Y',
@@ -391,12 +403,12 @@ describe('CaseHearingsComponent', () => {
       parent_category: '',
       parent_key: '',
       value_cy: '',
-      value_en: 'Direction Hearings'
-    }
+      value_en: 'Direction Hearings',
+    },
   ];
 
   const mockRouter = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
   };
 
   const cv = {
@@ -407,9 +419,9 @@ describe('CaseHearingsComponent', () => {
       jurisdiction: {
         id: 'CIVIL',
         name: '',
-        description: ''
-      }
-    }
+        description: '',
+      },
+    },
   } as CaseView;
 
   beforeEach(() => {
@@ -432,30 +444,30 @@ describe('CaseHearingsComponent', () => {
           useValue: {
             snapshot: {
               params: {
-                cid: '1234'
-              }
-            }
-          }
+                cid: '1234',
+              },
+            },
+          },
         },
         {
           provide: Router,
-          useValue: mockRouter
+          useValue: mockRouter,
         },
         {
           provide: LovRefDataService,
-          useValue: mockLovRefDataService
+          useValue: mockLovRefDataService,
         },
         {
           provide: SessionStorageService,
-          useValue: mockSessionStore
+          useValue: mockSessionStore,
         },
         {
           provide: CaseNotifier,
-          useValue: mockCaseNotifier
+          useValue: mockCaseNotifier,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
     mockStore = TestBed.inject(Store);
@@ -493,7 +505,7 @@ describe('CaseHearingsComponent', () => {
     const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
-        totalIdleTime: 10
+        totalIdleTime: 10,
       },
       canShareCases: true,
       userInfo: {
@@ -502,8 +514,8 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['hearing-manager']
-      }
+        roles: ['hearing-manager'],
+      },
     };
     mockSessionStore.getItem.and.returnValue(JSON.stringify(USER_DETAILS.userInfo));
     component.ngOnInit();
@@ -517,7 +529,7 @@ describe('CaseHearingsComponent', () => {
     const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
-        totalIdleTime: 10
+        totalIdleTime: 10,
       },
       canShareCases: true,
       userInfo: {
@@ -526,8 +538,8 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['hearing-viewer']
-      }
+        roles: ['hearing-viewer'],
+      },
     };
     mockSessionStore.getItem.and.returnValue(JSON.stringify(USER_DETAILS.userInfo));
     component.ngOnInit();
@@ -541,7 +553,7 @@ describe('CaseHearingsComponent', () => {
     const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
-        totalIdleTime: 10
+        totalIdleTime: 10,
       },
       canShareCases: true,
       userInfo: {
@@ -550,8 +562,8 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['listed-hearing-viewer']
-      }
+        roles: ['listed-hearing-viewer'],
+      },
     };
     mockSessionStore.getItem.and.returnValue(JSON.stringify(USER_DETAILS.userInfo));
     component.ngOnInit();
@@ -566,7 +578,7 @@ describe('CaseHearingsComponent', () => {
     const USER_DETAILS = {
       sessionTimeout: {
         idleModalDisplayTime: 12,
-        totalIdleTime: 10
+        totalIdleTime: 10,
       },
       canShareCases: true,
       userInfo: {
@@ -575,8 +587,8 @@ describe('CaseHearingsComponent', () => {
         surname: 'test',
         email: 'test@test.com',
         active: 'true',
-        roles: ['listed-hearing-viewer', 'hearing-manager', 'hearing-viewer']
-      }
+        roles: ['listed-hearing-viewer', 'hearing-manager', 'hearing-viewer'],
+      },
     };
     mockSessionStore.getItem.and.returnValue(JSON.stringify(USER_DETAILS.userInfo));
     component.ngOnInit();
@@ -623,7 +635,7 @@ describe('CaseHearingsComponent', () => {
       listAssistCaseStatus: '',
       hearingIsLinkedFlag: false,
       hearingGroupRequestId: null,
-      hearingDaySchedule: [HEARING_DAY_SCHEDULE_2]
+      hearingDaySchedule: [HEARING_DAY_SCHEDULE_2],
     };
 
     const testVM2: HearingListViewModel = {
@@ -639,7 +651,7 @@ describe('CaseHearingsComponent', () => {
       listAssistCaseStatus: '',
       hearingIsLinkedFlag: false,
       hearingGroupRequestId: null,
-      hearingDaySchedule: [HEARING_DAY_SCHEDULE_10]
+      hearingDaySchedule: [HEARING_DAY_SCHEDULE_10],
     };
 
     const arrangeData = [testVM, testVM2];
@@ -668,11 +680,13 @@ describe('CaseHearingsComponent', () => {
     const hearingCondition: HearingConditions = {
       mode: 'create',
       isInit: true,
-      caseId: '1234'
+      caseId: '1234',
     };
     component.createHearingRequest();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request']);
-    expect(dispatchSpy).toHaveBeenCalledWith(jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition)));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining(new fromHearingStore.SaveHearingConditions(hearingCondition))
+    );
   });
 
   it('should call the reloadhearings when reload clicked', () => {

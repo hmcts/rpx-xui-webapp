@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   standalone: false,
   selector: 'exui-request-hearing',
   templateUrl: './request-hearing.component.html',
-  styleUrls: ['./request-hearing.component.scss']
+  styleUrls: ['./request-hearing.component.scss'],
 })
 export class RequestHearingComponent implements OnDestroy {
   public action = ACTION;
@@ -21,16 +21,17 @@ export class RequestHearingComponent implements OnDestroy {
   public serviceHearingValuesModel: ServiceHearingValuesModel;
   public hearingRequestMainModel: HearingRequestMainModel;
   public showMismatchErrorMessage: boolean;
-  public validationErrors: { id: string, message: string };
+  public validationErrors: { id: string; message: string };
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
     private readonly pageFlow: AbstractPageFlow,
-    private readonly hearingsService: HearingsService) {
-    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      (hearingState) => {
-        this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
-        this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
-      });
+    private readonly hearingsService: HearingsService
+  ) {
+    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((hearingState) => {
+      this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
+      this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+    });
   }
 
   public onBack(): void {
@@ -97,12 +98,14 @@ export class RequestHearingComponent implements OnDestroy {
   }
 
   public get isChildPage(): boolean {
-    return !this.isCreateEditSummary &&
+    return (
+      !this.isCreateEditSummary &&
       !this.isViewEditSummary &&
       !this.isViewSummary &&
       !this.isEditSummary &&
       !this.isViewEditReason &&
-      !this.isConfirmationPage;
+      !this.isConfirmationPage
+    );
   }
 
   public ngOnDestroy(): void {

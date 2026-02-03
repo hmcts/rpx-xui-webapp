@@ -8,7 +8,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-submit-success',
   templateUrl: './noc-submit-success.component.html',
-  styleUrls: ['./noc-submit-success.component.scss']
+  styleUrls: ['./noc-submit-success.component.scss'],
 })
 export class NocSubmitSuccessComponent implements OnInit {
   public caseReference$: Observable<string>;

@@ -11,7 +11,7 @@ import { Task } from '../../models/tasks';
   selector: 'exui-work-field',
   templateUrl: './work-field.component.html',
   styleUrls: ['./work-field.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class WorkFieldComponent {
   /**
@@ -34,9 +34,7 @@ export class WorkFieldComponent {
   public clickSubject = new Subject<Task | Case>();
 
   constructor() {
-    this.clickSubject.pipe(
-      take(1)
-    ).subscribe((item) => this.itemClick.emit(item));
+    this.clickSubject.pipe(take(1)).subscribe((item) => this.itemClick.emit(item));
   }
 
   /**

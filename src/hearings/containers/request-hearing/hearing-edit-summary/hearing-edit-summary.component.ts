@@ -42,7 +42,7 @@ import { cloneDeep } from 'lodash';
   templateUrl: './hearing-edit-summary.component.html'
 })
 export class HearingEditSummaryComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
-  private readonly notUpdatedMessage = 'The request has not been updated';
+  private readonly notUpdatedMessage = 'The request has not been updated as there is no change in hearing requirements';
 
   public readonly REGION_ID = '7';
   public readonly LANGUAGE_INTERPRETER_FLAG_ID = 'PF0015';
@@ -587,6 +587,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
+
+    if (this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag) {
+      return true;
+    }
+
     const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
     const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
 

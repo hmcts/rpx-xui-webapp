@@ -88,7 +88,8 @@ export enum AmendmentLabelStatus {
   ACTION_NEEDED = 'ACTION NEEDED',
   AMENDED = 'AMENDED',
   WARNING = 'WARNING',
-  NONE = 'NONE'
+  NONE = 'NONE',
+  EMPTY = ''
 }
 
 export interface ParticipantAttendanceMode {

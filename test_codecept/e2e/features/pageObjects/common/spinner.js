@@ -2,7 +2,6 @@ const { $, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class Spinner {
-
   get loadingSpinner() {
     return $('.loading-spinner-in-action');
   }

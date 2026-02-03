@@ -17,7 +17,7 @@ import {
   ErrorNotifierService,
   AlertService,
   QueryWriteRespondToQueryComponent,
-  SessionStorageService
+  SessionStorageService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -28,7 +28,7 @@ import { FormControl } from '@angular/forms';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class MockRpxTranslatePipe implements PipeTransform {
   transform(value: string): string {
@@ -46,7 +46,7 @@ describe('QueryManagementContainerComponent', () => {
   const mockRouter = {
     events: of(new NavigationStart(1, '/some-other-route')),
     navigate: jasmine.createSpy('navigate'),
-    navigateByUrl: jasmine.createSpy('navigateByUrl')
+    navigateByUrl: jasmine.createSpy('navigateByUrl'),
   };
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   let router: Router;
@@ -59,17 +59,17 @@ describe('QueryManagementContainerComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test'
-      }
+        name: 'Test',
+      },
     },
     channels: [],
     state: {
       id: 'CaseCreated',
-      name: 'Case created'
+      name: 'Case created',
     },
     tabs: [],
     triggers: [],
-    events: []
+    events: [],
   };
 
   const eventMockData = {
@@ -88,10 +88,10 @@ describe('QueryManagementContainerComponent', () => {
           max: null,
           min: null,
           regular_expression: null,
-          type: 'ComponentLauncher'
+          type: 'ComponentLauncher',
         } as FieldType,
         id: 'QueryManagement1',
-        label: 'Query management component'
+        label: 'Query management component',
       } as CaseField,
       {
         field_type: {
@@ -102,30 +102,32 @@ describe('QueryManagementContainerComponent', () => {
           max: null,
           min: null,
           regular_expression: null,
-          type: 'Complex'
+          type: 'Complex',
         } as FieldType,
         id: 'qmCaseQueriesCollection',
         label: 'Query management case queries collection',
         display_context: 'OPTIONAL',
         value: {
-          caseMessages: [{
-            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
-            value: {
-              attachments: [],
-              body: 'testing by olu',
-              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
-              createdOn: new Date('2024-08-27T15:44:50.700Z'),
-              hearingDate: '2023-01-10',
-              id: 'id-007',
-              isHearingRelated: 'Yes',
-              name: 'Piran Sam',
-              parentId: 'ca',
-              subject: 'Review attached document'
-            }
-          }],
+          caseMessages: [
+            {
+              id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+              value: {
+                attachments: [],
+                body: 'testing by olu',
+                createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c1005',
+                createdOn: new Date('2024-08-27T15:44:50.700Z'),
+                hearingDate: '2023-01-10',
+                id: 'id-007',
+                isHearingRelated: 'Yes',
+                name: 'Piran Sam',
+                parentId: 'ca',
+                subject: 'Review attached document',
+              },
+            },
+          ],
           partyName: '',
-          roleOnCase: ''
-        }
+          roleOnCase: '',
+        },
       },
       {
         field_type: {
@@ -136,31 +138,33 @@ describe('QueryManagementContainerComponent', () => {
           max: null,
           min: null,
           regular_expression: null,
-          type: 'Complex'
+          type: 'Complex',
         } as FieldType,
         id: 'qmCaseQueriesCollection1',
         label: 'Query management case queries collection',
         display_context: 'READONLY',
         value: {
-          caseMessages: [{
-            id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
-            value: {
-              attachments: [],
-              body: 'testing by olu',
-              createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c10051',
-              createdOn: new Date('2024-08-27T15:44:50.700Z'),
-              hearingDate: '2023-01-10',
-              id: 'id-007',
-              isHearingRelated: 'Yes',
-              name: 'Piran Sam',
-              parentId: 'ca',
-              subject: 'Review attached document'
-            }
-          }],
+          caseMessages: [
+            {
+              id: '42ea7fd3-178c-4584-b48b-f1275bf1804f',
+              value: {
+                attachments: [],
+                body: 'testing by olu',
+                createdBy: '120b3665-0b8a-4e80-ace0-01d8d63c10051',
+                createdOn: new Date('2024-08-27T15:44:50.700Z'),
+                hearingDate: '2023-01-10',
+                id: 'id-007',
+                isHearingRelated: 'Yes',
+                name: 'Piran Sam',
+                parentId: 'ca',
+                subject: 'Review attached document',
+              },
+            },
+          ],
           partyName: '',
-          roleOnCase: ''
-        }
-      } as CaseField
+          roleOnCase: '',
+        },
+      } as CaseField,
     ],
     wizard_pages: [],
     hasFields(): boolean {
@@ -168,24 +172,34 @@ describe('QueryManagementContainerComponent', () => {
     },
     hasPages(): boolean {
       return false;
-    }
+    },
   };
 
   const roleAssignmentInfo = [
-    { substantive: 'Y',
+    {
+      substantive: 'Y',
       caseId: '123',
       jurisdiction: 'PUBLICLAW',
       isCaseAllocator: false,
       roleType: 'CASE',
       roleName: '[SOLICITORA]',
-      beginTime: '2022-12-18T18:08:48.526067Z'
-    }
+      beginTime: '2022-12-18T18:08:48.526067Z',
+    },
   ];
 
   const mockAlertService = jasmine.createSpyObj('alertService', ['error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
-  const casesService = jasmine.createSpyObj('casesService', ['caseView', 'getEventTrigger', 'createEvent', 'getCaseViewV2', 'cachedCaseView']);
-  const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', ['setQualifyingQuestionSelection', 'clearQualifyingQuestionSelection']);
+  const casesService = jasmine.createSpyObj('casesService', [
+    'caseView',
+    'getEventTrigger',
+    'createEvent',
+    'getCaseViewV2',
+    'cachedCaseView',
+  ]);
+  const qualifyingQuestionService = jasmine.createSpyObj('qualifyingQuestionService', [
+    'setQualifyingQuestionSelection',
+    'clearQualifyingQuestionSelection',
+  ]);
   const mockCaseNotifier = jasmine.createSpyObj('CaseNotifier', ['caseView', 'fetchAndRefresh']);
   mockCaseNotifier.caseView = new BehaviorSubject(CASE_VIEW).asObservable();
   mockCaseNotifier.fetchAndRefresh.and.returnValue(of(CASE_VIEW));
@@ -198,7 +212,7 @@ describe('QueryManagementContainerComponent', () => {
         QueryManagementContainerComponent,
         QueryWriteRaiseQueryComponent,
         QueryWriteRespondToQueryComponent,
-        MockRpxTranslatePipe
+        MockRpxTranslatePipe,
       ],
       imports: [RouterTestingModule],
       providers: [
@@ -207,25 +221,26 @@ describe('QueryManagementContainerComponent', () => {
             appConfig: {
               userDetails: {
                 userInfo: {
-                  name: 'Test User'
+                  name: 'Test User',
                 },
-                roleAssignmentInfo
-              }
-            }
-          }
+                roleAssignmentInfo,
+              },
+            },
+          },
         }),
         {
-          provide: ActivatedRoute, useValue: {
+          provide: ActivatedRoute,
+          useValue: {
             snapshot: {
               data: {
-                case: CASE_VIEW
+                case: CASE_VIEW,
               },
               params: {
                 cid: '123',
-                dataid: 'id-007'
-              }
-            }
-          }
+                dataid: 'id-007',
+              },
+            },
+          },
         },
         { provide: QualifyingQuestionService, useValue: qualifyingQuestionService },
         { provide: CasesService, useValue: casesService },
@@ -237,8 +252,8 @@ describe('QueryManagementContainerComponent', () => {
         { provide: AlertService, useValue: mockAlertService },
         { provide: GoogleTagManagerService, useValue: googleTagManagerService },
         LoadingService,
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
-      ]
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+      ],
     }).compileComponents();
   }));
 
@@ -290,7 +305,7 @@ describe('QueryManagementContainerComponent', () => {
   it('should return true on check', () => {
     const errorContext = {
       ignoreWarning: true,
-      triggerText: 'Some error!'
+      triggerText: 'Some error!',
     };
     component.callbackErrorsNotify(errorContext);
     expect(component.ignoreWarning).toBeTruthy();
@@ -332,8 +347,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: '123'
-        }
+          qid: '123',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
@@ -344,8 +359,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: '4'
-        }
+          qid: '4',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.FOLLOWUP);
@@ -358,8 +373,8 @@ describe('QueryManagementContainerComponent', () => {
         params: {
           ...activatedRoute.snapshot.params,
           qid: '4',
-          dataid: 'id-007'
-        }
+          dataid: 'id-007',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryItem.id).toEqual('id-007');
@@ -379,8 +394,8 @@ describe('QueryManagementContainerComponent', () => {
           ...activatedRoute.snapshot,
           params: {
             ...activatedRoute.snapshot.params,
-            qid: 'raiseAQuery'
-          }
+            qid: 'raiseAQuery',
+          },
         } as unknown as ActivatedRouteSnapshot;
         component.ngOnInit();
         fixture.detectChanges();
@@ -411,8 +426,8 @@ describe('QueryManagementContainerComponent', () => {
         params: {
           ...activatedRoute.snapshot.params,
           qid: '4',
-          dataid: 'id-00EEE7'
-        }
+          dataid: 'id-00EEE7',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
 
@@ -421,7 +436,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages[0]).toEqual({
         title: '',
         description: 'This case is not configured for query management.',
-        fieldId: 'caseNotFoundError'
+        fieldId: 'caseNotFoundError',
       });
     });
 
@@ -430,8 +445,8 @@ describe('QueryManagementContainerComponent', () => {
         ...eventMockData,
         case_fields: eventMockData.case_fields.map((field) => ({
           ...field,
-          value: null
-        }))
+          value: null,
+        })),
       };
       casesService.getEventTrigger.and.returnValue(of(modifiedMockData));
 
@@ -440,8 +455,8 @@ describe('QueryManagementContainerComponent', () => {
         params: {
           ...activatedRoute.snapshot.params,
           qid: '4',
-          dataid: 'id-00EEE7'
-        }
+          dataid: 'id-00EEE7',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
 
@@ -450,7 +465,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages[0]).toEqual({
         title: '',
         description: 'This case is not configured for query management.',
-        fieldId: 'caseNotFoundError'
+        fieldId: 'caseNotFoundError',
       });
     });
   });
@@ -460,8 +475,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: 'raiseAQuery'
-        }
+          qid: 'raiseAQuery',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
@@ -472,13 +487,13 @@ describe('QueryManagementContainerComponent', () => {
         {
           document_filename: 'file1',
           document_url: 'url1',
-          document_binary_url: 'binary_url1'
+          document_binary_url: 'binary_url1',
         },
         {
           document_filename: 'file2',
           document_url: 'url2',
-          document_binary_url: 'binary_url2'
-        }
+          document_binary_url: 'binary_url2',
+        },
       ];
 
       component.onDocumentCollectionUpdate(documents);
@@ -486,25 +501,25 @@ describe('QueryManagementContainerComponent', () => {
         {
           _links: {
             self: {
-              href: documents[0].document_url
+              href: documents[0].document_url,
             },
             binary: {
-              href: documents[0].document_binary_url
-            }
+              href: documents[0].document_binary_url,
+            },
           },
-          originalDocumentName: documents[0].document_filename
+          originalDocumentName: documents[0].document_filename,
         },
         {
           _links: {
             self: {
-              href: documents[1].document_url
+              href: documents[1].document_url,
             },
             binary: {
-              href: documents[1].document_binary_url
-            }
+              href: documents[1].document_binary_url,
+            },
           },
-          originalDocumentName: documents[1].document_filename
-        }
+          originalDocumentName: documents[1].document_filename,
+        },
       ]);
     });
   });
@@ -541,7 +556,7 @@ describe('QueryManagementContainerComponent', () => {
       component.qualifyingQuestion = {
         name: 'Raise a new query',
         markdown: '',
-        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}}`
+        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}}`,
       };
       fixture.detectChanges();
       component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_DETAIL;
@@ -566,7 +581,7 @@ describe('QueryManagementContainerComponent', () => {
         const qualifyingQuestion = {
           name: 'Raise a new query',
           markdown: '<p>Test markdown</p>',
-          url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
+          url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`,
         };
         beforeEach(() => {
           component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
@@ -588,7 +603,7 @@ describe('QueryManagementContainerComponent', () => {
           const qualifyingQuestion = {
             name: 'Raise a new query',
             markdown: '<p>Test markdown</p>',
-            url: ''
+            url: '',
           };
 
           component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
@@ -604,7 +619,7 @@ describe('QueryManagementContainerComponent', () => {
         const qualifyingQuestion = {
           name: 'Raise a new query',
           markdown: '',
-          url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
+          url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`,
         };
         beforeEach(() => {
           component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
@@ -614,7 +629,9 @@ describe('QueryManagementContainerComponent', () => {
           spyOn(component, 'validateQualifyingQuestion').and.returnValue(true);
           component.submitForm();
           expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
-          expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+          expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
+            `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
+          );
         });
 
         it('should not change the queryCreateContext if qualifying questions validation failed', () => {
@@ -635,8 +652,8 @@ describe('QueryManagementContainerComponent', () => {
             {
               title: '',
               description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
-              fieldId: 'qualifyingQuestionsOption'
-            }
+              fieldId: 'qualifyingQuestionsOption',
+            },
           ]);
         });
 
@@ -655,8 +672,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION
-        }
+          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION,
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
@@ -695,7 +712,7 @@ describe('QueryManagementContainerComponent', () => {
       const error = {
         title: '',
         description: RaiseQueryErrorMessage.QUERY_HEARING_RELATED,
-        fieldId: 'isHearingRelated-yes'
+        fieldId: 'isHearingRelated-yes',
       };
       expect(component.errorMessages).toContain(error);
     });
@@ -707,7 +724,7 @@ describe('QueryManagementContainerComponent', () => {
       const error = {
         title: '',
         description: RaiseQueryErrorMessage.QUERY_HEARING_DATE,
-        fieldId: 'hearingDate-day'
+        fieldId: 'hearingDate-day',
       };
       expect(component.errorMessages).toContain(error);
     });
@@ -718,7 +735,7 @@ describe('QueryManagementContainerComponent', () => {
       const qualifyingQuestion = {
         name: 'Raise a new query',
         markdown: '',
-        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
+        url: `/query-management/query/123/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`,
       };
       component.qualifyingQuestionsControl.setValue(qualifyingQuestion);
       component.queryCreateContext = QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS;
@@ -734,7 +751,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages[0]).toEqual({
         title: '',
         description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
-        fieldId: 'qualifyingQuestionsOption'
+        fieldId: 'qualifyingQuestionsOption',
       });
     });
   });
@@ -742,7 +759,8 @@ describe('QueryManagementContainerComponent', () => {
   describe('cancel navigation', () => {
     it('should navigate to case overview tab', () => {
       component.navigateToCaseOverviewTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
+      expect(router.navigate).toHaveBeenCalledWith(
+        ['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
         { fragment: 'Overview' }
       );
     });
@@ -751,7 +769,8 @@ describe('QueryManagementContainerComponent', () => {
   describe('navigateToCaseOverviewTab', () => {
     it('should navigate to case overview tab', () => {
       component.navigateToCaseOverviewTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
+      expect(router.navigate).toHaveBeenCalledWith(
+        ['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
         { fragment: 'Overview' }
       );
     });
@@ -760,14 +779,22 @@ describe('QueryManagementContainerComponent', () => {
   describe('navigateToCaseTaskTab', () => {
     it('should navigate to case tasks tab', () => {
       component.navigateToCaseTaskTab();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId, 'tasks']);
+      expect(router.navigate).toHaveBeenCalledWith([
+        'cases',
+        'case-details',
+        CASE_VIEW.case_type.jurisdiction.id,
+        CASE_VIEW.case_type.id,
+        component.caseId,
+        'tasks',
+      ]);
     });
   });
 
   describe('goToQueryList', () => {
     it('should navigate to case Queries tab', () => {
       component.goToQueryList();
-      expect(router.navigate).toHaveBeenCalledWith(['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
+      expect(router.navigate).toHaveBeenCalledWith(
+        ['cases', 'case-details', CASE_VIEW.case_type.jurisdiction.id, CASE_VIEW.case_type.id, component.caseId],
         { fragment: 'Queries' }
       );
     });
@@ -779,8 +806,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: '3'
-        }
+          qid: '3',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.RESPOND);
@@ -791,8 +818,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: '4'
-        }
+          qid: '4',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.FOLLOWUP);
@@ -804,8 +831,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: '5'
-        }
+          qid: '5',
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       expect(component.queryCreateContext).toEqual(QueryCreateContext.NEW_QUERY_QUALIFYING_QUESTION_OPTIONS);
@@ -830,8 +857,9 @@ describe('QueryManagementContainerComponent', () => {
       const qualifyingQuestions = {
         TestAddressBookCase: [
           { name: 'Question 1', markdown: markdown('${[CASE_REFERENCE]}'), url: '' },
-          { name: 'Question 2', markdown: markdown('${[CASE_REFERENCE]}'), url: '' }
-        ] };
+          { name: 'Question 2', markdown: markdown('${[CASE_REFERENCE]}'), url: '' },
+        ],
+      };
 
       beforeEach(() => {
         mockFeatureToggleService.getValue.and.returnValue(of(qualifyingQuestions));
@@ -852,7 +880,7 @@ describe('QueryManagementContainerComponent', () => {
     it('should set the custom text if provided', () => {
       const customText = {
         body: 'Our team will read your query and respond.',
-        header: 'Confirmation'
+        header: 'Confirmation',
       };
 
       component.callbackConfirmationMessage(customText);
@@ -866,19 +894,19 @@ describe('QueryManagementContainerComponent', () => {
       component.callbackConfirmationMessage({ body: '', header: '' });
       expect(component.callbackConfirmationMessageText).toEqual({
         body: confirmationMesssageBody,
-        header: confirmationMesssageHeader
+        header: confirmationMesssageHeader,
       });
 
       component.callbackConfirmationMessage(null as any);
       expect(component.callbackConfirmationMessageText).toEqual({
         body: confirmationMesssageBody,
-        header: confirmationMesssageHeader
+        header: confirmationMesssageHeader,
       });
 
       component.callbackConfirmationMessage(undefined as any);
       expect(component.callbackConfirmationMessageText).toEqual({
         body: confirmationMesssageBody,
-        header: confirmationMesssageHeader
+        header: confirmationMesssageHeader,
       });
     });
   });
@@ -889,7 +917,7 @@ describe('QueryManagementContainerComponent', () => {
       casesService.getEventTrigger.and.returnValue(throwError(() => ({ status: 401 })));
 
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-      // eslint-disable-next-line dot-notation
+
       component['getEventTrigger']();
 
       expect(component.eventDataError).toBe(true);
@@ -899,7 +927,7 @@ describe('QueryManagementContainerComponent', () => {
       expect(component.errorMessages[0]).toEqual({
         title: '',
         description: 'Something unexpected happened. Please try again later.',
-        fieldId: 'eventDataError'
+        fieldId: 'eventDataError',
       });
     });
 
@@ -909,7 +937,7 @@ describe('QueryManagementContainerComponent', () => {
       casesService.getEventTrigger.and.returnValue(throwError(() => error));
 
       component.queryCreateContext = QueryCreateContext.NEW_QUERY;
-      // eslint-disable-next-line dot-notation
+
       component['getEventTrigger']();
 
       expect(mockErrorNotifierService.announceError).toHaveBeenCalledWith(error);
@@ -920,7 +948,7 @@ describe('QueryManagementContainerComponent', () => {
   describe('Extra Qualifying questions Option', () => {
     const qualifyingQuestions = [
       { name: 'Question 1', markdown: 'Details 1', url: 'http://example.com/1' },
-      { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' }
+      { name: 'Question 2', markdown: 'Details 2', url: 'http://example.com/2' },
     ];
 
     beforeEach(() => {
@@ -941,45 +969,43 @@ describe('QueryManagementContainerComponent', () => {
       const qualifyingQuestion = {
         name: 'Raise a new query',
         markdown: '### Details<br><p>To find out more about updating using MyHMCTS',
-        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+        url: 'https://example.com/${[CASE_REFERENCE]}/details',
       };
 
       component.logSelection(qualifyingQuestion);
 
-      expect(googleTagManagerService.event).toHaveBeenCalledWith(
-        'QM_QualifyingQuestion_Selection', {
-          caseTypeId: '123',
-          caseJurisdiction: 'TEST',
-          name: 'Raise a new query',
-          url: 'https://example.com/123/details',
-          selectionType: 'raiseNewQuery'
-        });
+      expect(googleTagManagerService.event).toHaveBeenCalledWith('QM_QualifyingQuestion_Selection', {
+        caseTypeId: '123',
+        caseJurisdiction: 'TEST',
+        name: 'Raise a new query',
+        url: 'https://example.com/123/details',
+        selectionType: 'raiseNewQuery',
+      });
     });
 
     it('should push virtual pageview with metadata to dataLayer', () => {
       const qualifyingQuestion = {
         name: 'Test question',
         markdown: '### Details<br><p>To find out more about updating using MyHMCTS',
-        url: ''
+        url: '',
       };
 
       component.logSelection(qualifyingQuestion);
 
-      expect(googleTagManagerService.event).toHaveBeenCalledWith(
-        'QM_QualifyingQuestion_Selection', {
-          caseTypeId: '123',
-          caseJurisdiction: 'TEST',
-          name: 'Test question',
-          url: '/query-management/query/123',
-          selectionType: 'qualifyingQuestion'
-        });
+      expect(googleTagManagerService.event).toHaveBeenCalledWith('QM_QualifyingQuestion_Selection', {
+        caseTypeId: '123',
+        caseJurisdiction: 'TEST',
+        name: 'Test question',
+        url: '/query-management/query/123',
+        selectionType: 'qualifyingQuestion',
+      });
     });
 
     it('should call setQualifyingQuestionSelection and logSelection if markdown is present and selectedQualifyingQuestion is set', () => {
       const qualifyingQuestion = {
         name: 'Raise a new query',
         markdown: '### Markdown content',
-        url: 'https://example.com/${[CASE_REFERENCE]}/details'
+        url: 'https://example.com/${[CASE_REFERENCE]}/details',
       };
 
       // Setup component state
@@ -1004,8 +1030,8 @@ describe('QueryManagementContainerComponent', () => {
         ...activatedRoute.snapshot,
         params: {
           ...activatedRoute.snapshot.params,
-          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION
-        }
+          qid: QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION,
+        },
       } as unknown as ActivatedRouteSnapshot;
       component.ngOnInit();
       fixture.detectChanges();
@@ -1016,8 +1042,8 @@ describe('QueryManagementContainerComponent', () => {
           jurisdiction: 'TEST',
           caseType: 'TestAddressBookCase',
           pages: 'RAISE, OTHER',
-          markdown: '### Important notice!'
-        }
+          markdown: '### Important notice!',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
@@ -1035,8 +1061,8 @@ describe('QueryManagementContainerComponent', () => {
           jurisdiction: 'OTHER_JURISDICTION',
           caseType: 'OTHER_CASE_TYPE',
           pages: 'NOTRAISE',
-          markdown: 'Should not match'
-        }
+          markdown: 'Should not match',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
@@ -1053,13 +1079,13 @@ describe('QueryManagementContainerComponent', () => {
         {
           jurisdiction: 'TEST',
           pages: 'RAISE',
-          markdown: 'Message One'
+          markdown: 'Message One',
         },
         {
           caseType: 'TestAddressBookCase',
           pages: 'RAISE',
-          markdown: 'Message Two'
-        }
+          markdown: 'Message Two',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ messages }));
@@ -1075,8 +1101,8 @@ describe('QueryManagementContainerComponent', () => {
         {
           jurisdiction: 'TEST',
           caseType: 'TestAddressBookCase',
-          hintText: 'Important notice!'
-        }
+          hintText: 'Important notice!',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
@@ -1092,8 +1118,8 @@ describe('QueryManagementContainerComponent', () => {
         {
           jurisdiction: 'OTHER',
           caseType: 'OtherCase',
-          hintText: 'You should not see this'
-        }
+          hintText: 'You should not see this',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
@@ -1108,8 +1134,8 @@ describe('QueryManagementContainerComponent', () => {
       const attachment = [
         {
           jurisdiction: 'TEST',
-          hintText: 'Jurisdiction-only hint'
-        }
+          hintText: 'Jurisdiction-only hint',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
@@ -1123,8 +1149,8 @@ describe('QueryManagementContainerComponent', () => {
     it('should return hintText when neither jurisdiction nor caseType are specified (generic message)', fakeAsync(() => {
       const attachment = [
         {
-          hintText: 'Generic message'
-        }
+          hintText: 'Generic message',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));
@@ -1141,15 +1167,15 @@ describe('QueryManagementContainerComponent', () => {
         {
           jurisdiction: 'TEST',
           caseType: 'TestAddressBookCase',
-          hintText: 'Message 1'
+          hintText: 'Message 1',
         },
         {
           jurisdiction: 'TEST',
-          hintText: 'Message 2'
+          hintText: 'Message 2',
         },
         {
-          hintText: 'Generic Message'
-        }
+          hintText: 'Generic Message',
+        },
       ];
 
       mockFeatureToggleService.getValue.and.returnValue(of({ attachment }));

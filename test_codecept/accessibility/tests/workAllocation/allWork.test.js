@@ -1,4 +1,3 @@
-
 const AppActions = require('../../helpers/applicationActions');
 const PallyActions = require('../../helpers/pallyActions');
 
@@ -33,4 +32,3 @@ describe('Work Allocation: ', function () {
     await pa11ytest(this, actions, conf.baseUrl + '/');
   });
 });
-

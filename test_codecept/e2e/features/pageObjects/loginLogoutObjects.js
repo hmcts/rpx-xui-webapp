@@ -43,7 +43,7 @@ class LoginLogout {
     const matchingSession = users.filter((user) => user.email === email);
     CucumberReportLogger.AddMessage(`Users sessions available ${users.length}`);
     CucumberReportLogger.AddMessage(`User ${email} session ${matchingSession.length > 0 ? 'exists' : 'does not exist'}`);
-    share({ reuseCounter: matchingSession.length > 0 ? (reuseCounter + 1) : reuseCounter });
+    share({ reuseCounter: matchingSession.length > 0 ? reuseCounter + 1 : reuseCounter });
   }
 
   async givenIAmLoggedIn(email, password) {

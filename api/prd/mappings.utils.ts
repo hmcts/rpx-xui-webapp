@@ -1,8 +1,7 @@
 import { SERVICES_COURT_TYPE_MAPPINGS } from '../locations/data/serviceCourtType.mapping';
 
 export function getCourtTypeIdsByServices(ServicesIdArray: string[]): string[] {
-  return ServicesIdArray.map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
-    .reduce(concatWithoutDuplicates);
+  return ServicesIdArray.map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId]).reduce(concatWithoutDuplicates);
 }
 
 function concatWithoutDuplicates(array1: number[], array2: number[]) {

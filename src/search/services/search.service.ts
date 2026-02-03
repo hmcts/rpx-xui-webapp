@@ -58,7 +58,7 @@ export class SearchService {
       return newStartRecord;
     }
     // Return original start record or 1 as a default, if it cannot be retrieved
-    return startRecord !== null ? startRecord : 1;
+    return startRecord === null ? 1 : startRecord;
   }
 
   private mapSearchParametersToRequestCriteria(searchParameters: SearchParameters): SearchRequestCriteria {

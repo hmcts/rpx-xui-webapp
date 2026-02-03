@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 
 import {
@@ -7,7 +6,7 @@ import {
   expectBookmarkShape,
   expectAnnotationShape,
   expectCaseShareShape,
-  expectAddressLookupShape
+  expectAddressLookupShape,
 } from './utils/assertions';
 import { extractCaseShareEntries, isTaskList } from './utils/types';
 import nodeAppDataModels from './data/nodeAppDataModels';
@@ -17,7 +16,7 @@ test.describe('Assertion shape validators', () => {
     expectTaskList({ tasks: [], total_records: 0 });
     expectTaskList({
       tasks: [{ id: 'task-1', task_state: 'assigned' }],
-      total_records: 1
+      total_records: 1,
     });
   });
 
@@ -26,11 +25,11 @@ test.describe('Assertion shape validators', () => {
       roleCategory: 'LEGAL',
       roleName: 'caseworker',
       actorId: 'user-1',
-      actions: ['read']
+      actions: ['read'],
     });
     expectRoleAssignmentShape({
       roleCategory: 'LEGAL',
-      roleName: 'caseworker'
+      roleName: 'caseworker',
     });
   });
 
@@ -40,22 +39,10 @@ test.describe('Assertion shape validators', () => {
   });
 
   test('expectCaseShareShape handles property variants', () => {
-    expectCaseShareShape(
-      { organisations: [{ organisationIdentifier: 'org-1', name: 'Org' }] },
-      'organisations'
-    );
-    expectCaseShareShape(
-      { users: [{ userIdentifier: 'user-1', email: 'user@example.com' }] },
-      'users'
-    );
-    expectCaseShareShape(
-      { cases: [{ caseId: 'case-1', sharedWith: [] }] },
-      'cases'
-    );
-    expectCaseShareShape(
-      { sharedCases: [{ caseId: 'case-2', sharedWith: [] }] },
-      'sharedCases'
-    );
+    expectCaseShareShape({ organisations: [{ organisationIdentifier: 'org-1', name: 'Org' }] }, 'organisations');
+    expectCaseShareShape({ users: [{ userIdentifier: 'user-1', email: 'user@example.com' }] }, 'users');
+    expectCaseShareShape({ cases: [{ caseId: 'case-1', sharedWith: [] }] }, 'cases');
+    expectCaseShareShape({ sharedCases: [{ caseId: 'case-2', sharedWith: [] }] }, 'sharedCases');
     expectCaseShareShape({ payload: {} }, 'unknown');
   });
 
@@ -67,11 +54,11 @@ test.describe('Assertion shape validators', () => {
           DPA: {
             POSTCODE: 'E1 1AA',
             ADDRESS: '1 Example Street',
-            POST_TOWN: 'London'
-          }
-        }
+            POST_TOWN: 'London',
+          },
+        },
       ],
-      header: {}
+      header: {},
     });
   });
 

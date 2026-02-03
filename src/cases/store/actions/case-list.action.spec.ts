@@ -7,7 +7,7 @@ describe('Case List Actions', () => {
         const action = new fromCaseList.CaseListJurisdictionSelected();
 
         expect({ ...action }).toEqual({
-          type: fromCaseList.CASELIST_JURISDICTION_SELECTED
+          type: fromCaseList.CASELIST_JURISDICTION_SELECTED,
         });
       });
     });
@@ -19,7 +19,7 @@ describe('Case List Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCaseList.CASELIST_APPLIED,
-          payload
+          payload,
         });
       });
     });
@@ -29,7 +29,7 @@ describe('Case List Actions', () => {
         const action = new fromCaseList.CaseListReset();
 
         expect({ ...action }).toEqual({
-          type: fromCaseList.CASELIST_RESET
+          type: fromCaseList.CASELIST_RESET,
         });
       });
     });
@@ -41,7 +41,7 @@ describe('Case List Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCaseList.CASELIST_RESULT_PAGE_CHANGE,
-          payload
+          payload,
         });
       });
     });
@@ -53,7 +53,7 @@ describe('Case List Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCaseList.FIND_CASELIST_PAGINATION_METADATA_SUCCESS,
-          payload
+          payload,
         });
       });
     });
@@ -65,7 +65,7 @@ describe('Case List Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCaseList.APPLY_CASELIST_FILTER_SUCCESS,
-          payload
+          payload,
         });
       });
     });
@@ -77,7 +77,7 @@ describe('Case List Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCaseList.APPLY_CASELIST_FILTER_FAIL,
-          payload
+          payload,
         });
       });
     });
@@ -89,7 +89,7 @@ describe('Case List Actions', () => {
 
         expect({ ...action }).toEqual({
           type: fromCaseList.CASE_FILTER_DISPLAY_TOGGLE_SUCCESS,
-          payload
+          payload,
         });
       });
     });

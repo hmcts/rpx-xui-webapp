@@ -9,7 +9,7 @@ import {
   getSkills,
   getUsersByPartialName,
   getUserTypes,
-  updateUser
+  updateUser,
 } from './staff-ref-data.controller';
 
 const router = express.Router({ mergeParams: true });

@@ -6,17 +6,9 @@ class BrowserLogs {
     this.browserlogs = [];
     this.javascriptErrors = [];
 
-    this.ignoreItemsList = [
-      'activity/cases',
-      '/api/monitoring-tools',
-      'dc.services.visualstudio.com'
+    this.ignoreItemsList = ['activity/cases', '/api/monitoring-tools', 'dc.services.visualstudio.com'];
 
-    ];
-
-    this.ignoreItemsList = [
-      'activity/cases',
-      '/api/monitoring-tools'
-    ];
+    this.ignoreItemsList = ['activity/cases', '/api/monitoring-tools'];
   }
 
   clearLogs() {
@@ -31,7 +23,7 @@ class BrowserLogs {
     for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
       if (browserLog[browserLogCounter].level.value > 900) {
         try {
-          browserLog[browserLogCounter].time = (new Date(browserLog[browserLogCounter].timestamp)).toISOString();
+          browserLog[browserLogCounter].time = new Date(browserLog[browserLogCounter].timestamp).toISOString();
         } catch (err) {
           browserLog[browserLogCounter].time = browserLog[browserLogCounter].timestamp + '' + err;
         }
@@ -45,9 +37,13 @@ class BrowserLogs {
         }
 
         if (browserLog[browserLogCounter].message.includes('ERROR [') || browserLog[browserLogCounter].message.includes('.js')) {
-          this.javascriptErrors.push(`${browserLog[browserLogCounter].time} : [${browserLog[browserLogCounter].level}] ${browserLog[browserLogCounter].message} ${JSON.stringify(browserLog[browserLogCounter])}`);
+          this.javascriptErrors.push(
+            `${browserLog[browserLogCounter].time} : [${browserLog[browserLogCounter].level}] ${browserLog[browserLogCounter].message} ${JSON.stringify(browserLog[browserLogCounter])}`
+          );
         } else if (!ignore) {
-          browserErrorLogs.push(`${browserLog[browserLogCounter].time} : [${browserLog[browserLogCounter].level}] ${browserLog[browserLogCounter].message} `);
+          browserErrorLogs.push(
+            `${browserLog[browserLogCounter].time} : [${browserLog[browserLogCounter].level}] ${browserLog[browserLogCounter].message} `
+          );
         }
       }
     }
@@ -81,7 +77,7 @@ class BrowserLogs {
         cucumberReporter.AddMessage(log);
       }
       return this.browserlogs;
-    } catch (err){
+    } catch (err) {
       cucumberReporter.AddMessage('error occures in collecting browser logs');
       cucumberReporter.AddMessage(err);
     }
@@ -95,27 +91,32 @@ class BrowserLogs {
     for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
       const networkMessage = JSON.parse(browserLog[browserLogCounter].message);
 
-      browserLog[browserLogCounter].time = (new Date(browserLog[browserLogCounter].timestamp)).toISOString();
+      browserLog[browserLogCounter].time = new Date(browserLog[browserLogCounter].timestamp).toISOString();
 
       if (!methods.includes(networkMessage.message.method)) {
         methods.push(networkMessage.message.method);
       }
 
-      if (networkMessage.message.method === 'Network.responseReceived' ||
-                networkMessage.message.method === 'Network.requestWillBeSent') {
+      if (
+        networkMessage.message.method === 'Network.responseReceived' ||
+        networkMessage.message.method === 'Network.requestWillBeSent'
+      ) {
         try {
           browserLog[browserLogCounter].requestDetails = {
             method: networkMessage.message.params.request.method,
-            url: networkMessage.message.params.request.url
+            url: networkMessage.message.params.request.url,
           };
 
           if (networkMessage.message.method === 'Network.responseReceived') {
             browserLog[browserLogCounter].responseDetails = {
               status: networkMessage.message.params.response.status + ' ' + networkMessage.message.params.response.statusText,
-              url: networkMessage.message.params.response.url
+              url: networkMessage.message.params.response.url,
             };
           }
-          const perfItem = { ...browserLog[browserLogCounter], time: (new Date(browserLog[browserLogCounter].timestamp)).toISOString() };
+          const perfItem = {
+            ...browserLog[browserLogCounter],
+            time: new Date(browserLog[browserLogCounter].timestamp).toISOString(),
+          };
           delete perfItem.message;
 
           browserErrorLogs.push(perfItem);

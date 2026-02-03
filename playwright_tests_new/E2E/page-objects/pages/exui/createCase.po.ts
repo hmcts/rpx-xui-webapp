@@ -1,16 +1,15 @@
-import { Page, Locator } from "@playwright/test";
+import { Page, Locator } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
-import { Base } from "../../base";
-import { faker, th } from '@faker-js/faker';
+import { Base } from '../../base';
+import { faker } from '@faker-js/faker';
 
 const logger = createLogger({
   serviceName: 'create-case',
-  format: 'pretty'
+  format: 'pretty',
 });
 
 export class CreateCasePage extends Base {
-
-  readonly container = this.page.locator("exui-case-home");
+  readonly container = this.page.locator('exui-case-home');
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
@@ -139,15 +138,14 @@ export class CreateCasePage extends Base {
       }
     };
 
-    const [a, b] = await Promise.all([
-      check(this.errorMessage),
-      check(this.errorSummary),
-    ]);
+    const [a, b] = await Promise.all([check(this.errorMessage), check(this.errorSummary)]);
 
     if (a || b) {
-      logger.error('Error shown:',
+      logger.error(
+        'Error shown:',
         a ? await this.errorMessage.textContent() : '',
-        b ? await this.errorSummary.textContent() : '');
+        b ? await this.errorSummary.textContent() : ''
+      );
       return true;
     }
 
@@ -191,10 +189,9 @@ export class CreateCasePage extends Base {
         buffer: Buffer.from(fileContent),
       });
 
-      const res = await this.page.waitForResponse(
-        r => r.url().includes('/document') && r.request().method() === 'POST',
-        { timeout: 5000 }
-      ).catch(() => null);
+      const res = await this.page
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', { timeout: 5000 })
+        .catch(() => null);
 
       if (!res) {
         // no response within timeout — treat as failure or retry depending on policy
@@ -241,7 +238,7 @@ export class CreateCasePage extends Base {
 
     await this.addRespondentButton.click();
     await this.respondentOneNameInput.fill('Respondent One');
-    await this.respondentOrganisation.click()
+    await this.respondentOrganisation.click();
     await this.respondentAcasCertifcateSelectYes.click();
     await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
     await this.respondentCompanyNameInput.fill('Respondent Company');
@@ -335,9 +332,9 @@ export class CreateCasePage extends Base {
     await this.party2RoleOnCase.fill(`${testData}2`);
     await this.party2Name.fill(`${testData}2`);
     await this.continueButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
     await this.testSubmitButton.click();
-    await this.exuiSpinnerComponent.wait()
+    await this.exuiSpinnerComponent.wait();
   }
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
@@ -358,6 +355,6 @@ export class CreateCasePage extends Base {
     await this.textField2Input.fill(faker.lorem.word());
     await this.continueButton.click();
     await this.testSubmitButton.click();
-    await this.exuiSpinnerComponent.wait()
-  };
+    await this.exuiSpinnerComponent.wait();
+  }
 }

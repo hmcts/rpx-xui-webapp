@@ -4,12 +4,12 @@ const SpecificReviewPage = require('./reviewSARPage');
 const SpecificAccessDurationSelectionPage = require('./durationSelectionPage');
 const requestMoreInformationPage = require('./requestMoreInformationPage');
 
-class SpecificAccessRequestWorkflow{
-  constructor(){
+class SpecificAccessRequestWorkflow {
+  constructor() {
     this.pages = {
       'Review specific access request': new SpecificReviewPage(),
       'How long do you want to give access to this case for?': new SpecificAccessDurationSelectionPage(),
-      'Request more information': new requestMoreInformationPage()
+      'Request more information': new requestMoreInformationPage(),
     };
   }
 
@@ -29,11 +29,11 @@ class SpecificAccessRequestWorkflow{
     return $('');
   }
 
-  async isErrorMessageDisplayed(){
+  async isErrorMessageDisplayed() {
     return this.errorBanner.isVisible();
   }
 
-  async getErrorMessageDisplayed(){
+  async getErrorMessageDisplayed() {
     return getText(this.errorBanner);
   }
 }

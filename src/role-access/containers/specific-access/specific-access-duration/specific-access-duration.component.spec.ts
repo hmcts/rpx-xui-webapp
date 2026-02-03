@@ -1,11 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  GovUkErrorMessageComponent,
-  GovUkFieldsetComponent,
-  GovUkLabelComponent,
-  RoleCategory
-} from '@hmcts/rpx-xui-common-lib';
+import { GovUkErrorMessageComponent, GovUkFieldsetComponent, GovUkLabelComponent, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
 import { RpxTranslationService } from 'rpx-xui-translation';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
@@ -16,27 +11,18 @@ import { SpecificAccessDurationComponent } from './specific-access-duration.comp
 describe('SpecificAccessDurationComponent', () => {
   let component: SpecificAccessDurationComponent;
   let fixture: ComponentFixture<SpecificAccessDurationComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        StoreModule.forRoot({})
-      ],
-      declarations: [
-        SpecificAccessDurationComponent,
-        GovUkFieldsetComponent,
-        GovUkErrorMessageComponent,
-        GovUkLabelComponent
-      ],
+      imports: [FormsModule, ReactiveFormsModule, StoreModule.forRoot({})],
+      declarations: [SpecificAccessDurationComponent, GovUkFieldsetComponent, GovUkErrorMessageComponent, GovUkLabelComponent],
       providers: [
         FormBuilder,
         { provide: DurationHelperService, useClass: DurationHelperService },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
-      ]
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+      ],
     });
   }));
 
@@ -113,16 +99,16 @@ describe('SpecificAccessDurationComponent', () => {
               startDate: {
                 day: 11,
                 month: 11,
-                year: 2024
+                year: 2024,
               },
               endDate: {
                 day: 11,
                 month: 11,
-                year: 2024
-              }
-            }
-          }
-        }
+                year: 2024,
+              },
+            },
+          },
+        },
       };
       component.selectSpecificAccessDuration(specificAccessState);
       expect(component.selectedDuration).toEqual(DurationType.SEVEN_DAYS);
@@ -151,13 +137,11 @@ describe('SpecificAccessDurationComponent', () => {
           specificAccessDurationForm: {
             selectedOption: DurationType.ANOTHER_PERIOD,
             selectedDuration: {
-              startDate: {
-              },
-              endDate: {
-              }
-            }
-          }
-        }
+              startDate: {},
+              endDate: {},
+            },
+          },
+        },
       };
       // fake form group and form control values
       component.endDateDayCtrl = new FormControl(8);
@@ -287,7 +271,10 @@ describe('SpecificAccessDurationComponent', () => {
       component.endDateYearCtrl = new FormControl(2021);
 
       component.getPeriod(DurationType.ANOTHER_PERIOD);
-      expect(component.endDateErrorMessage).toEqual({ isInvalid: true, messages: ['The access end date must be after the access start date'] });
+      expect(component.endDateErrorMessage).toEqual({
+        isInvalid: true,
+        messages: ['The access end date must be after the access start date'],
+      });
     });
   });
 

@@ -1,5 +1,3 @@
 import { CancelHearingComponent } from './cancel-hearing.component';
 
-export const containers: any[] = [
-  CancelHearingComponent
-];
+export const containers: any[] = [CancelHearingComponent];

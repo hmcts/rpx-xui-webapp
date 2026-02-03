@@ -17,11 +17,11 @@ export class StaffUser {
   public is_resend_invite?: boolean;
 
   public roles: {
-    role_id: string,
-    role: string,
-    is_primary: boolean,
-    created_time?: Date,
-    last_updated_time?: Date,
+    role_id: string;
+    role: string;
+    is_primary: boolean;
+    created_time?: Date;
+    last_updated_time?: Date;
   }[];
 
   public skills: {

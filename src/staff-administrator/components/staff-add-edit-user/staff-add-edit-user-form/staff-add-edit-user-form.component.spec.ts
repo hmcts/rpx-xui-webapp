@@ -15,9 +15,10 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-  selector: 'exui-stub-component', template: ''
+  selector: 'exui-stub-component',
+  template: '',
 })
-class StubComponent { }
+class StubComponent {}
 
 describe('StaffAddEditUserFormComponent', () => {
   let component: StaffAddEditUserFormComponent;
@@ -28,9 +29,7 @@ describe('StaffAddEditUserFormComponent', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
 
   beforeEach(async () => {
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
-      'mockStaffDataAccessService', ['updateUser']
-    );
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['updateUser']);
     mockStaffAddEditFormService = {
       selectedServiceCodes$: of(['code1', 'code2']),
       formGroup: new FormGroup({
@@ -44,23 +43,24 @@ describe('StaffAddEditUserFormComponent', () => {
         staff_admin: new FormControl(false),
         roles: new FormArray([...staffFilterOptionsTestData.jobTitles.map(() => new FormControl())]), // Job Titles
         skills: new FormGroup({
-          [staffFilterOptionsTestData.skills[0].group]: new FormArray(
-            [...staffFilterOptionsTestData.skills[0].options.map(() => new FormControl())])
+          [staffFilterOptionsTestData.skills[0].group]: new FormArray([
+            ...staffFilterOptionsTestData.skills[0].options.map(() => new FormControl()),
+          ]),
         }),
         services: new FormArray([...staffFilterOptionsTestData.services.map(() => new FormControl())]),
         base_locations: new FormArray([new FormControl()]),
-        region_id: new FormControl(null)
-      })
+        region_id: new FormControl(null),
+      }),
     };
 
     await TestBed.configureTestingModule({
       declarations: [StaffAddEditUserFormComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [RouterTestingModule.withRoutes([
-        { path: 'staff', component: StubComponent }
-      ]),
-      ReactiveFormsModule,
-      ExuiCommonLibModule],
+      imports: [
+        RouterTestingModule.withRoutes([{ path: 'staff', component: StubComponent }]),
+        ReactiveFormsModule,
+        ExuiCommonLibModule,
+      ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
@@ -73,16 +73,15 @@ describe('StaffAddEditUserFormComponent', () => {
                 userTypes: staffFilterOptionsTestData.userTypes,
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
-                services: staffFilterOptionsTestData.services
-              }
-            }
-          }
+                services: staffFilterOptionsTestData.services,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -103,7 +102,7 @@ describe('StaffAddEditUserFormComponent', () => {
         title: 'There is a problem',
         description: 'Check the form for errors and try again.',
         multiple: true,
-        errors: []
+        errors: [],
       };
       expect(component.errors).not.toBeFalsy();
       expect(component.submitted).toBe(false);
@@ -123,7 +122,7 @@ describe('StaffAddEditUserFormComponent', () => {
         title: 'There is a problem',
         description: 'Check the form for errors and try again.',
         multiple: true,
-        errors: []
+        errors: [],
       };
       expect(component.errors).not.toBeFalsy();
       expect(component.submitted).toBe(false);
@@ -136,7 +135,9 @@ describe('StaffAddEditUserFormComponent', () => {
       validForm.get('services').setValue('AAA7');
       component.baseLocationsFormControl.patchValue([{ location_id: '123', location: 'Manchester', service_codes: ['BFA1'] }]);
       component.submitForm(validForm);
-      expect(component.wrongLocationError).toEqual('There is a problem. Location Manchester is not valid for the services selected');
+      expect(component.wrongLocationError).toEqual(
+        'There is a problem. Location Manchester is not valid for the services selected'
+      );
     });
 
     it('should give location multiple error if incorrect locations', () => {
@@ -144,7 +145,7 @@ describe('StaffAddEditUserFormComponent', () => {
         title: 'There is a problem',
         description: 'Check the form for errors and try again.',
         multiple: true,
-        errors: []
+        errors: [],
       };
       expect(component.errors).not.toBeFalsy();
       expect(component.submitted).toBe(false);
@@ -155,7 +156,10 @@ describe('StaffAddEditUserFormComponent', () => {
 
       validForm.setControl('services', new FormControl());
       validForm.get('services').setValue('AAA7');
-      component.baseLocationsFormControl.patchValue([{ location_id: '125', location: 'Cardiff', service_codes: ['ABA5'] }, { location_id: '126', location: 'Birmingham', service_codes: ['AAA7'] }]);
+      component.baseLocationsFormControl.patchValue([
+        { location_id: '125', location: 'Cardiff', service_codes: ['ABA5'] },
+        { location_id: '126', location: 'Birmingham', service_codes: ['AAA7'] },
+      ]);
       component.submitForm(validForm);
       expect(component.wrongLocationError).toEqual('There is a problem. Location Cardiff is not valid for the services selected');
     });
@@ -173,7 +177,7 @@ describe('StaffAddEditUserFormComponent', () => {
       // Two invalid form controls
       const invalidForm = new FormGroup({
         first_name: new FormControl(null, [Validators.required]),
-        last_name: new FormControl(null, [Validators.required])
+        last_name: new FormControl(null, [Validators.required]),
       });
       spyOn(window, 'scrollTo');
 

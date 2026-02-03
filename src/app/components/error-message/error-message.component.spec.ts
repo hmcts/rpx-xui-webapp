@@ -7,7 +7,7 @@ import { ErrorMessageComponent } from './error-message.component';
 
 @Component({
   standalone: false,
-  template: '<exui-error-message [title]="title" [error]="error"></exui-error-message>'
+  template: '<exui-error-message [title]="title" [error]="error"></exui-error-message>',
 })
 class WrapperComponent {
   @ViewChild(ErrorMessageComponent, { static: true }) public appComponentRef: ErrorMessageComponent;
@@ -22,7 +22,7 @@ describe('ErrorMessageComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [WrapperComponent, ErrorMessageComponent, MockRpxTranslatePipe],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

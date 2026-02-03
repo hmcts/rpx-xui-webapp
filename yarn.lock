@@ -4024,35 +4024,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11-rc2/hmcts-rpx-xui-node-lib-2.30.11-rc2.tgz":
-  version: 2.30.11-rc2
-  resolution: "@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11-rc2/hmcts-rpx-xui-node-lib-2.30.11-rc2.tgz"
-  dependencies:
-    "@dr.pogodin/csurf": "npm:^1.14.0"
-    "@hapi/joi": "npm:^17.1.1"
-    axios: "npm:^1.11.0"
-    caller-path: "npm:^3.0.0"
-    connect-redis: "npm:^4.0.4"
-    debug: "npm:^4.3.7"
-    deepmerge: "npm:^4.2.2"
-    express: "npm:^4.20.0"
-    express-session: "npm:^1.17.0"
-    jest-mock-axios: "npm:^4.8.0"
-    jest-ts-auto-mock: "npm:^2.1.0"
-    joi: "npm:^17.13.3 "
-    jwt-decode: "npm:^3.1.2"
-    openid-client: "npm:^5.7.1"
-    otplib: "npm:^12.0.1"
-    passport: "npm:^0.7.0"
-    passport-oauth2: "npm:^1.8.0"
-    redis: "npm:^3.0.2"
-    session-file-store: "npm:^1.5.0"
-  peerDependencies:
-    helmet: ^7.0.0
-  checksum: 10/433f13ebb98b1393231d18c6a66092afde12f3bd8374959fa4c3762af56ae367ea9e3f207eecef2246ad647d5b1cfa6948c95943a81edf1efc4d01c60335d19f
-  languageName: node
-  linkType: hard
-
 "@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz":
   version: 2.30.11
   resolution: "@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz"
@@ -19093,7 +19064,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.0"
-    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11-rc2/hmcts-rpx-xui-node-lib-2.30.11-rc2.tgz"
+    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
     "@types/config": "npm:^3.0.0"

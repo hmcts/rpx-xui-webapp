@@ -47,7 +47,7 @@ module.exports = defineConfig({
   ],
   globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
   use: {
-    baseURL: process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net",
+    baseURL: process.env.TEST_URL || 'localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

@@ -5,7 +5,7 @@ const { version: appVersion } = require('./package.json');
 
 type EnvMap = NodeJS.ProcessEnv;
 
-const defaultBaseUrl = 'localhost:3000';
+const defaultBaseUrl = "https://manage-case.aat.platform.hmcts.net";
 
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 

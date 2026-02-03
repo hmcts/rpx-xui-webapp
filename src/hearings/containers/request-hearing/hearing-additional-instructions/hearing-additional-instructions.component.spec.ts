@@ -288,8 +288,33 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   describe('prepareHearingRequestData', () => {
-    it('should set additionalInstructionsChangesConfirmed to true when in VIEW_EDIT mode', () => {
-      // Set up the service properties with VIEW_EDIT mode
+    it('should set additionalInstructionsChangesConfirmed to true when in VIEW_EDIT mode and additionalInstructionsChangesRequired is true', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+      } as any;
+
+      fixture.detectChanges();
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        autoListFlag: false
+      };
+      component.instructionsForm.controls.instructions.setValue('Test instructions');
+
+      component.prepareHearingRequestData();
+
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(true);
+      expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
+      expect(component.hearingRequestMainModel.hearingDetails.autolistFlag).toBe(false);
+      expect(component.hearingRequestMainModel.hearingDetails.listingAutoChangeReasonCode).toBe('user-added-comments');
+    });
+
+    it('should not set additionalInstructionsChangesConfirmed when additionalInstructionsChangesRequired is false', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',
         caseFlags: null,
@@ -307,25 +332,21 @@ describe('HearingAdditionalInstructionsComponent', () => {
       };
       component.instructionsForm.controls.instructions.setValue('Test instructions');
 
-      // Call prepareHearingRequestData which should hit line 71
+      const originalConfirmedValue = hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
+
       component.prepareHearingRequestData();
 
-      // Verify that additionalInstructionsChangesConfirmed was set to true (line 71)
-      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(true);
-      // Also verify the hearing request model was updated correctly
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(originalConfirmedValue);
       expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
-      expect(component.hearingRequestMainModel.hearingDetails.autolistFlag).toBe(false);
-      expect(component.hearingRequestMainModel.hearingDetails.listingAutoChangeReasonCode).toBe('user-added-comments');
     });
 
     it('should not set additionalInstructionsChangesConfirmed when not in VIEW_EDIT mode', () => {
-      // Set up the service properties with CREATE mode
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
       } as any;
 
       fixture.detectChanges();
@@ -339,12 +360,9 @@ describe('HearingAdditionalInstructionsComponent', () => {
 
       const originalConfirmedValue = hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
 
-      // Call prepareHearingRequestData - line 71 should NOT be hit
       component.prepareHearingRequestData();
 
-      // Verify that additionalInstructionsChangesConfirmed was NOT changed
       expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(originalConfirmedValue);
-      // But hearing request model should still be updated
       expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
     });
   });

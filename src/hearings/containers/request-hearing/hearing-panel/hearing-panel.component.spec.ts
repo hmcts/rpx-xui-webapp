@@ -36,7 +36,7 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'PanelMemberType',
@@ -61,7 +61,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -74,7 +74,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -87,7 +87,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -100,9 +100,9 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
+          child_nodes: null,
+        },
+      ],
     },
     {
       category_key: 'PanelMemberType',
@@ -127,7 +127,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -140,7 +140,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -153,7 +153,7 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -166,9 +166,9 @@ describe('HearingPanelComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
+          child_nodes: null,
+        },
+      ],
     },
     {
       category_key: 'PanelMemberType',
@@ -181,7 +181,7 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'PanelMemberType',
@@ -194,14 +194,16 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
-  const JUDICAIL_USER_DETAILS = [{
-    memberID: 'P0000001',
-    memberType: MemberType.PANEL_MEMBER,
-    requirementType: RequirementType.MUSTINC
-  }];
+  const JUDICAIL_USER_DETAILS = [
+    {
+      memberID: 'P0000001',
+      memberType: MemberType.PANEL_MEMBER,
+      requirementType: RequirementType.MUSTINC,
+    },
+  ];
 
   const MEDICALLY_QUALIFIED_PANEL_MEMBERS: LovRefDataModel = {
     category_key: 'PanelMemberType',
@@ -226,7 +228,7 @@ describe('HearingPanelComponent', () => {
         parent_category: 'PanelMemberType',
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
-        child_nodes: null
+        child_nodes: null,
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -239,7 +241,7 @@ describe('HearingPanelComponent', () => {
         parent_category: 'PanelMemberType',
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
-        child_nodes: null
+        child_nodes: null,
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -252,7 +254,7 @@ describe('HearingPanelComponent', () => {
         parent_category: 'PanelMemberType',
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
-        child_nodes: null
+        child_nodes: null,
       },
       {
         category_key: 'PanelMemberSpecialism',
@@ -265,10 +267,10 @@ describe('HearingPanelComponent', () => {
         parent_category: 'PanelMemberType',
         parent_key: 'BBA3-MQPM2',
         active_flag: 'Y',
-        child_nodes: null
-      }
+        child_nodes: null,
+      },
     ],
-    selected: false
+    selected: false,
   };
 
   beforeEach(() => {
@@ -276,7 +278,7 @@ describe('HearingPanelComponent', () => {
     STATE.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
       panelPreferences: JUDICAIL_USER_DETAILS,
       panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001', 'BBA3-MQPM1-001'],
-      roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1']
+      roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1'],
     };
 
     TestBed.configureTestingModule({
@@ -292,20 +294,20 @@ describe('HearingPanelComponent', () => {
             snapshot: {
               data: {
                 otherPanelRoles: OTHER_PANEL_ROLES,
-                judicialUsers: JUDICAIL_USER_DETAILS
-              }
-            }
-          }
+                judicialUsers: JUDICAIL_USER_DETAILS,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingPanelComponent);
     component = fixture.componentInstance;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    spyOn(component, 'fragmentFocus').and.callFake(() => { });
+
+    spyOn(component, 'fragmentFocus').and.callFake(() => {});
     spyOn(component, 'prepareData').and.callThrough();
     fixture.detectChanges();
   });
@@ -339,20 +341,22 @@ describe('HearingPanelComponent', () => {
   });
 
   it('should check getPanelMemberList', () => {
-    component.personalCodejudgeList = [{
-      title: 'Mr',
-      knownAs: 'Hearing Judge',
-      surname: 'Jacky Collins',
-      fullName: 'Jacky Collins',
-      emailId: 'jacky.collins@judicial.com',
-      idamId: '1102839232',
-      initials: 'JC',
-      postNominals: 'JP',
-      personalCode: 'P0000001',
-      isJudge: '',
-      isMagistrate: '',
-      isPanelMember: ''
-    }];
+    component.personalCodejudgeList = [
+      {
+        title: 'Mr',
+        knownAs: 'Hearing Judge',
+        surname: 'Jacky Collins',
+        fullName: 'Jacky Collins',
+        emailId: 'jacky.collins@judicial.com',
+        idamId: '1102839232',
+        initials: 'JC',
+        postNominals: 'JP',
+        personalCode: 'P0000001',
+        isJudge: '',
+        isMagistrate: '',
+        isPanelMember: '',
+      },
+    ];
     component.initForm();
     expect(component.includedJudgeList.length).toBe(1);
     expect(component.getPanelMemberList(RequirementType.MUSTINC).length).toBe(1);
@@ -373,7 +377,7 @@ describe('HearingPanelComponent', () => {
       personalCode: 'P0000001',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: ''
+      isPanelMember: '',
     };
 
     component.includedJudge.judgeList = [judgeInfo];
@@ -403,7 +407,7 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      selected: false
+      selected: false,
     };
     const result = component.loadPanel(panelMembers, panelSpecialism);
     expect(result).toBe(false);
@@ -423,7 +427,7 @@ describe('HearingPanelComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      selected: false
+      selected: false,
     };
     const result = component.loadPanel(panelMembers, panelSpecialism);
     expect(result).toBe(true);

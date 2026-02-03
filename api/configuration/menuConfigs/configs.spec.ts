@@ -33,23 +33,23 @@ describe('Menu Configuration', () => {
             text: 'My work',
             roles: ['caseworker-civil', 'caseworker-ia-iacjudge'],
             href: '/work/my-work/list',
-            active: true
+            active: true,
           },
           {
             text: 'Search',
             roles: ['caseworker-civil'],
             href: '/cases',
-            active: false
-          }
+            active: false,
+          },
         ],
         '(pui-case-manager)': [
           {
             text: 'Case list',
             roles: ['pui-case-manager'],
             href: '/cases/case-filter',
-            active: true
-          }
-        ]
+            active: true,
+          },
+        ],
       };
 
       // Mock AAT differences structure
@@ -57,25 +57,25 @@ describe('Menu Configuration', () => {
         '(judge)|(judiciary)|(panelmember)': [
           {
             text: 'My work',
-            roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember']
+            roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember'],
           },
           {
             text: 'Search',
-            roles: ['caseworker-sscs-judge']
-          }
+            roles: ['caseworker-sscs-judge'],
+          },
         ],
         '(pui-case-manager)': [
           {
             text: 'Notice of change',
-            roles: ['caseworker-civil', 'caseworker-civil-solictor']
-          }
+            roles: ['caseworker-civil', 'caseworker-civil-solictor'],
+          },
         ],
         '.+': [
           {
             text: 'My work',
-            roles: ['caseworker-sscs-clerk']
-          }
-        ]
+            roles: ['caseworker-sscs-clerk'],
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(mockBaseConfig);
@@ -115,7 +115,7 @@ describe('Menu Configuration', () => {
           'caseworker-civil',
           'caseworker-ia-iacjudge',
           'caseworker-sscs-judge',
-          'caseworker-sscs-panelmember'
+          'caseworker-sscs-panelmember',
         ]);
       });
 
@@ -206,7 +206,7 @@ describe('Menu Configuration', () => {
 
       it('should handle base config with no matching regex keys', () => {
         const baseConfigWithoutJudge = {
-          '(admin)': [{ text: 'Admin panel', roles: ['admin'] }]
+          '(admin)': [{ text: 'Admin panel', roles: ['admin'] }],
         };
         sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfigWithoutJudge);
 
@@ -231,10 +231,10 @@ describe('Menu Configuration', () => {
     it('should replace existing regex keys', () => {
       const testConfig = {
         '(judge)|(judiciary)': [{ text: 'Test', roles: ['test-role'] }],
-        'other-key': [{ text: 'Other', roles: ['other-role'] }]
+        'other-key': [{ text: 'Other', roles: ['other-role'] }],
       };
       const rolesRegexChanges = {
-        '(judge)|(judiciary)': '(judge)|(judiciary)|(panelmember)'
+        '(judge)|(judiciary)': '(judge)|(judiciary)|(panelmember)',
       };
 
       // Test through setupMenuConfig since replaceRolesRegex is internal
@@ -250,7 +250,7 @@ describe('Menu Configuration', () => {
 
     it('should handle non-existent regex keys gracefully', () => {
       const testConfig = {
-        'existing-key': [{ text: 'Test', roles: ['test-role'] }]
+        'existing-key': [{ text: 'Test', roles: ['test-role'] }],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(testConfig);
@@ -271,18 +271,18 @@ describe('Menu Configuration', () => {
             text: 'My work',
             roles: ['role1', 'role2'],
             href: '/work',
-            active: true
-          }
-        ]
+            active: true,
+          },
+        ],
       };
 
       const aatDiffs = {
         'test-key': [
           {
             text: 'My work',
-            roles: ['role3', 'role4']
-          }
-        ]
+            roles: ['role3', 'role4'],
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
@@ -302,18 +302,18 @@ describe('Menu Configuration', () => {
           {
             text: 'My work',
             roles: ['role1'],
-            href: '/work'
-          }
-        ]
+            href: '/work',
+          },
+        ],
       };
 
       const aatDiffs = {
         'test-key': [
           {
             text: 'New item',
-            roles: ['role2']
-          }
-        ]
+            roles: ['role2'],
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
@@ -327,11 +327,11 @@ describe('Menu Configuration', () => {
 
     it('should create new keys when they do not exist in base config', () => {
       const baseConfig = {
-        'existing-key': [{ text: 'Existing', roles: ['role1'] }]
+        'existing-key': [{ text: 'Existing', roles: ['role1'] }],
       };
 
       const aatDiffs = {
-        'new-key': [{ text: 'New', roles: ['role2'] }]
+        'new-key': [{ text: 'New', roles: ['role2'] }],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
@@ -350,18 +350,18 @@ describe('Menu Configuration', () => {
           {
             text: 'My work',
             roles: ['role1', 'role2'],
-            href: '/work'
-          }
-        ]
+            href: '/work',
+          },
+        ],
       };
 
       const aatDiffs = {
         'test-key': [
           {
             text: 'My work',
-            roles: ['role2', 'role3'] // role2 is duplicate
-          }
-        ]
+            roles: ['role2', 'role3'], // role2 is duplicate
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
@@ -380,18 +380,18 @@ describe('Menu Configuration', () => {
           {
             text: 'My work',
             roles: ['role1'],
-            href: '/work'
-          }
-        ]
+            href: '/work',
+          },
+        ],
       };
 
       const aatDiffs = {
         'test-key': [
           {
-            text: 'No roles item'
+            text: 'No roles item',
             // No roles property
-          }
-        ]
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
@@ -408,19 +408,19 @@ describe('Menu Configuration', () => {
         'test-key': [
           {
             text: 'My work',
-            href: '/work'
+            href: '/work',
             // No roles property
-          }
-        ]
+          },
+        ],
       };
 
       const aatDiffs = {
         'test-key': [
           {
             text: 'My work',
-            roles: ['role1']
-          }
-        ]
+            roles: ['role1'],
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);
@@ -434,16 +434,16 @@ describe('Menu Configuration', () => {
 
     it('should handle empty arrays in config', () => {
       const baseConfig = {
-        'test-key': []
+        'test-key': [],
       };
 
       const aatDiffs = {
         'test-key': [
           {
             text: 'New item',
-            roles: ['role1']
-          }
-        ]
+            roles: ['role1'],
+          },
+        ],
       };
 
       sandbox.stub(baseConfigModule, 'baseConfig').value(baseConfig);

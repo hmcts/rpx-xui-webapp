@@ -27,7 +27,7 @@ describe('Hearing List Reducer', () => {
           hearingRoomId: 'room 1',
           hearingJudgeId: 'child',
           panelMemberIds: ['child'],
-          attendees: []
+          attendees: [],
         };
         const CASE_HEARING_1: HearingListModel = {
           hearingID: 'h111111',
@@ -41,12 +41,12 @@ describe('Hearing List Reducer', () => {
           exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
           hearingIsLinkedFlag: true,
           hearingGroupRequestId: null,
-          hearingDaySchedule: [HEARING_DAY_SCHEDULE_1]
+          hearingDaySchedule: [HEARING_DAY_SCHEDULE_1],
         };
         const HEARINGS_LIST: HearingListMainModel = {
           hmctsServiceID: 'BBA3',
           caseRef: '1568642646198441',
-          caseHearings: [CASE_HEARING_1]
+          caseHearings: [CASE_HEARING_1],
         };
         const action = new fromHearingListActions.LoadAllHearingsSuccess(HEARINGS_LIST);
         const hearingsState = fromHearingListReducer.hearingListReducer(initialState, action);

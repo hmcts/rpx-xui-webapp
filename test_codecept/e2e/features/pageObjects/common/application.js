@@ -1,11 +1,11 @@
 const { $, isPresent } = require('../../../../helpers/globals');
 
-class Application{
+class Application {
   get loadingSpinner() {
     return $('.loading-spinner-in-action');
   }
 
-  async isSpinnerDisplayed(){
+  async isSpinnerDisplayed() {
     return await isPresent(this.loadingSpinner);
   }
 }

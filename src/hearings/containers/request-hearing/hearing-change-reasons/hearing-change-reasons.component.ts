@@ -8,7 +8,8 @@ import {
   ACTION,
   HearingChangeReasonMessages,
   HearingChannelEnum,
-  HearingSummaryEnum, PartyType
+  HearingSummaryEnum,
+  PartyType,
 } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -19,12 +20,12 @@ import { HearingsFeatureService } from '../../../services/hearings-feature.servi
 @Component({
   standalone: false,
   selector: 'exui-hearing-change-reasons',
-  templateUrl: './hearing-change-reasons.component.html'
+  templateUrl: './hearing-change-reasons.component.html',
 })
 export class HearingChangeReasonsComponent extends RequestHearingPageFlow implements OnInit, OnDestroy {
   public hearingChangeReasons: LovRefDataModel[];
   public hearingChangeReasonForm: FormGroup;
-  public errors: { id: string, message: string }[] = [];
+  public errors: { id: string; message: string }[] = [];
   public selectionValid: boolean = true;
   public hearingRequestLastError$: Observable<fromHearingStore.State>;
   public lastErrorSubscription: Subscription;
@@ -32,26 +33,33 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public hearingChangeReasonMessages = HearingChangeReasonMessages;
   public isHearingAmendmentsEnabled: boolean;
 
-  constructor(private readonly formBuilder: FormBuilder,
-              protected readonly router: Router,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService,
-              protected readonly hearingsFeatureService: HearingsFeatureService,
-              protected readonly route: ActivatedRoute) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    protected readonly router: Router,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly hearingsFeatureService: HearingsFeatureService,
+    protected readonly route: ActivatedRoute
+  ) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingRequestLastError$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
   }
 
   public ngOnInit(): void {
-    this.featureToggleServiceSubscription = this.hearingsFeatureService.hearingAmendmentsEnabled().subscribe((enabled: boolean) => {
-      this.isHearingAmendmentsEnabled = enabled;
-    });
+    this.featureToggleServiceSubscription = this.hearingsFeatureService
+      .hearingAmendmentsEnabled()
+      .subscribe((enabled: boolean) => {
+        this.isHearingAmendmentsEnabled = enabled;
+      });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {
       if (lastError) {
-        this.errors = [{
-          id: 'backendError', message: HearingSummaryEnum.BackendError
-        }];
+        this.errors = [
+          {
+            id: 'backendError',
+            message: HearingSummaryEnum.BackendError,
+          },
+        ];
       }
     });
     this.hearingChangeReasons = this.route.snapshot.data.hearingChangeReasons;
@@ -59,21 +67,25 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   }
 
   public get getReasonsTypeFormArray(): FormArray {
-    return this.formBuilder.array(this.hearingChangeReasons.map((val) => this.formBuilder.group({
-      key: [val.key],
-      value_en: [val.value_en],
-      value_cy: [val.value_cy],
-      hint_text_en: [val.hint_text_en],
-      hint_text_cy: [val.hint_text_cy],
-      lov_order: [val.lov_order],
-      parent_key: [val.parent_key],
-      selected: [!!val.selected]
-    })));
+    return this.formBuilder.array(
+      this.hearingChangeReasons.map((val) =>
+        this.formBuilder.group({
+          key: [val.key],
+          value_en: [val.value_en],
+          value_cy: [val.value_cy],
+          hint_text_en: [val.hint_text_en],
+          hint_text_cy: [val.hint_text_cy],
+          lov_order: [val.lov_order],
+          parent_key: [val.parent_key],
+          selected: [!!val.selected],
+        })
+      )
+    );
   }
 
   public initForm(): void {
     this.hearingChangeReasonForm = this.formBuilder.group({
-      reasons: this.getReasonsTypeFormArray
+      reasons: this.getReasonsTypeFormArray,
     });
   }
 
@@ -82,12 +94,16 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       return true;
     }
     this.selectionValid = true;
-    const isReasons = (this.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .filter((reason) => reason.value.selected === true).length > 0;
+    const isReasons =
+      (this.hearingChangeReasonForm.controls.reasons as FormArray).controls.filter((reason) => reason.value.selected === true)
+        .length > 0;
     if (!isReasons) {
-      this.errors = [{
-        id: 'hearing-option-container', message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON
-      }];
+      this.errors = [
+        {
+          id: 'hearing-option-container',
+          message: HearingChangeReasonMessages.NOT_SELECTED_A_REASON,
+        },
+      ];
       this.selectionValid = false;
     }
     return this.selectionValid;
@@ -110,38 +126,41 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     let hearingChannels = this.hearingRequestMainModel.hearingDetails.hearingChannels;
     let updatedPartyDetails = [];
 
-    if (!!this.hearingRequestMainModel.hearingDetails?.isPaperHearing) {
+    if (this.hearingRequestMainModel.hearingDetails?.isPaperHearing) {
       hearingChannels = [HearingChannelEnum.ONPPR];
-      this.hearingRequestMainModel.partyDetails
-        .forEach((party) => {
-          if (party.partyType === PartyType.IND) {
-            party = {
-              ...party,
-              individualDetails: {
-                ...party.individualDetails,
-                preferredHearingChannel: 'NA'
-              }
-            };
-          }
-          updatedPartyDetails.push(party);
+      this.hearingRequestMainModel.partyDetails.forEach((party) => {
+        if (party.partyType === PartyType.IND) {
+          party = {
+            ...party,
+            individualDetails: {
+              ...party.individualDetails,
+              preferredHearingChannel: 'NA',
+            },
+          };
         }
-        );
+        updatedPartyDetails.push(party);
+      });
     } else {
       updatedPartyDetails = [...this.hearingRequestMainModel.partyDetails];
     }
 
-    this.hearingRequestMainModel = JSON.parse(JSON.stringify({
-      ...this.hearingRequestMainModel,
-      hearingDetails: {
-        ...this.hearingRequestMainModel.hearingDetails,
-        hearingChannels: [...hearingChannels],
-        amendReasonCodes: this.getChosenReasons()
-      },
-      partyDetails: updatedPartyDetails
-    }, this.replacer));
+    this.hearingRequestMainModel = JSON.parse(
+      JSON.stringify(
+        {
+          ...this.hearingRequestMainModel,
+          hearingDetails: {
+            ...this.hearingRequestMainModel.hearingDetails,
+            hearingChannels: [...hearingChannels],
+            amendReasonCodes: this.getChosenReasons(),
+          },
+          partyDetails: updatedPartyDetails,
+        },
+        this.replacer
+      )
+    );
   }
 
-  private replacer (key: any, value: any) {
+  private replacer(key: any, value: any) {
     // Is paper hearing flag is transient to indicate whether it is paper hearing
     if (key === 'isPaperHearing') {
       return undefined;

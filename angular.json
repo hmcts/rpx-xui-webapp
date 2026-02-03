@@ -24,13 +24,9 @@
             "sourceMap": true,
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "src/tsconfig.app.json",
-            "allowedCommonJsDependencies": [
-              "hammerjs"
-            ],
+            "allowedCommonJsDependencies": ["hammerjs"],
             "stylePreprocessorOptions": {
               "includePaths": [
                 ".",
@@ -49,9 +45,7 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "preserveSymlinks": true
           },
@@ -146,10 +140,7 @@
               "src/app/app.routes.ts"
             ],
             "main": "src/test.ts",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "stylePreprocessorOptions": {
@@ -159,27 +150,18 @@
                 "node_modules"
               ]
             },
-            "styles": [
-              "src/styles.scss"
-            ],
-            "include": [
-              "src/**/*.spec.*"
-            ],
+            "styles": ["src/styles.scss"],
+            "include": ["src/**/*.spec.*"],
             "exclude": [],
             "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
+            "assets": ["src/favicon.ico", "src/assets"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.cjs",
-            "lintFilePatterns": [
-              "src/**/*.ts"
-            ]
+            "eslintConfig": "eslint.config.ts",
+            "lintFilePatterns": ["src/**/*.ts"]
           }
         }
       }
@@ -192,11 +174,9 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.js",
+            "eslintConfig": "eslint.config.ts",
             "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }

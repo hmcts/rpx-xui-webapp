@@ -4,7 +4,7 @@ import { NocFillFormOfflineComponent } from './noc-fill-form-offline.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -18,9 +18,8 @@ describe('NocFillFormOfflineComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [NocFillFormOfflineComponent, RpxTranslateMockPipe]
-    })
-      .compileComponents();
+      declarations: [NocFillFormOfflineComponent, RpxTranslateMockPipe],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

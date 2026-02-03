@@ -6,9 +6,7 @@ class ManageCaseFlagsPage {
   }
 
   get h1ManageCaseFlags() {
-    return elementByXpath(
-      '//ccd-manage-case-flags//h1[contains(text(),"Manage case flags")]'
-    );
+    return elementByXpath('//ccd-manage-case-flags//h1[contains(text(),"Manage case flags")]');
   }
 
   get h1Any() {
@@ -18,7 +16,7 @@ class ManageCaseFlagsPage {
   get fieldMapping() {
     return {
       'Manage case flags': this.h1ManageCaseFlags,
-      'Manage case flags1': this.h1Any
+      'Manage case flags1': this.h1Any,
     };
   }
 
@@ -26,7 +24,9 @@ class ManageCaseFlagsPage {
     switch (field) {
       case 'Manage case flag':
         const flagDetails = value.split('-');
-        const ele = elementByXpath(`//ccd-manage-case-flags//label[contains(text(),'${flagDetails[0].trim()}')]/span[contains(text(),'${flagDetails[1].trim()}')]`);
+        const ele = elementByXpath(
+          `//ccd-manage-case-flags//label[contains(text(),'${flagDetails[0].trim()}')]/span[contains(text(),'${flagDetails[1].trim()}')]`
+        );
         await ele.click();
         break;
       default:
@@ -35,4 +35,3 @@ class ManageCaseFlagsPage {
   }
 }
 module.exports = ManageCaseFlagsPage;
-

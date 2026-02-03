@@ -24,7 +24,7 @@
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "3.2.0",
-    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11-rc2/hmcts-rpx-xui-node-lib-2.30.11-rc2.tgz",
+    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.11/hmcts-rpx-xui-node-lib-2.30.11.tgz",
     "applicationinsights": "1.8.10",
     "axios": "1.8.4",
     "axios-mock-adapter": "^1.22.0",

@@ -3797,16 +3797,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.2-exui-3994-2":
-  version: 3.2.2-exui-3994-2
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.2-exui-3994-2"
+"@hmcts/rpx-xui-common-lib@npm:3.2.3-exui-3994":
+  version: 3.2.3-exui-3994
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.3-exui-3994"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/b53f5deb2b18a06ff88e9d9d62c1dabad8b44e1e9018913a24f8a9411fecf6dffbd28cebd4c14f5f29f2c995f815f859f7020a63ee75f46597caab729f084b86
+  checksum: 10/dea3596e0748a8593179547c989f5df983822d64e860b6edc563a5e984f176a80df7116723239f2f1049f0b7b53a25d7c27fc77c2cb84f32cdccde167bf174c1
   languageName: node
   linkType: hard
 
@@ -18932,7 +18932,7 @@ __metadata:
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.2-exui-3994-2"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.3-exui-3994"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@pact-foundation/pact": "npm:^15.0.1"
     "@pact-foundation/pact-node": "npm:^10.18.0"
@@ -24066,7 +24066,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.1"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.2-exui-3994-2"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.3-exui-3994"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

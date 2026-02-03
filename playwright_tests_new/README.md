@@ -102,6 +102,7 @@ rm -rf .sessions && npx playwright test
 Use the table parser from `@hmcts/playwright-common` for **all** tables. This avoids brittle locators and standardizes table handling across tests.
 
 Rules:
+
 - Prefer `tableUtils.parseDataTable()` for normal tables with headers.
 - Use `tableUtils.parseWorkAllocationTable()` for WA task tables.
 - Do not assert `table.length === 0` for empty tables. Empty state rows are returned as a single row.

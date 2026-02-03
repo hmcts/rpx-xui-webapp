@@ -16,13 +16,17 @@ function processRecursive(part) {
 }
 
 function processSelector(selector) {
-  if (selector.search(/\s/ig) !== -1) {
+  if (selector.search(/\s/gi) !== -1) {
     throw new Error('selector cannot contain spaces');
   }
-  return selector.split('|')
-    .map((level) => level.split('.')
-      .map((part) => processRecursive(part) || `[data-selector~="${part}"]`)
-      .join(''))
+  return selector
+    .split('|')
+    .map((level) =>
+      level
+        .split('.')
+        .map((part) => processRecursive(part) || `[data-selector~="${part}"]`)
+        .join('')
+    )
     .join(' ');
 }
 

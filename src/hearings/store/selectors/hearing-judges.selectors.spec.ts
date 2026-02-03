@@ -9,10 +9,7 @@ describe('Hearing Judges selectors', () => {
   let store: Store<State>;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers)
-      ]
+      imports: [StoreModule.forRoot({}), StoreModule.forFeature('hearings', reducers)],
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -48,9 +45,9 @@ describe('Hearing Judges selectors', () => {
           hearingListMainModel: {
             caseRef: '1111222233334444',
             hmctsServiceID: 'BBA3',
-            caseHearings: undefined
-          }
-        }
+            caseHearings: undefined,
+          },
+        },
       };
       const result = getHearingJudgeIds.projector(state);
       expect(result).toEqual([]);
@@ -62,9 +59,9 @@ describe('Hearing Judges selectors', () => {
           hearingListMainModel: {
             caseRef: '1111222233334444',
             hmctsServiceID: 'BBA3',
-            caseHearings: []
-          }
-        }
+            caseHearings: [],
+          },
+        },
       };
       const result = getHearingJudgeIds.projector(state);
       expect(result).toEqual([]);
@@ -76,76 +73,80 @@ describe('Hearing Judges selectors', () => {
           hearingListMainModel: {
             caseRef: '1111222233334444',
             hmctsServiceID: 'BBA3',
-            caseHearings: [{
-              hearingID: 'h00001',
-              hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-              hearingType: 'Case management hearing',
-              hmcStatus: HMCStatus.HEARING_REQUESTED,
-              lastResponseReceivedDateTime: '',
-              responseVersion: 'rv1',
-              hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-              listAssistCaseStatus: '',
-              hearingIsLinkedFlag: true,
-              hearingGroupRequestId: null,
-              hearingDaySchedule: [{
-                hearingStartDateTime: '2021-04-12T09:00:00.000Z',
-                hearingEndDateTime: '2021-04-12T16:00:00.000Z',
-                listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
-                hearingVenueId: 'venue 5',
-                hearingRoomId: 'room 5',
-                hearingJudgeId: 'hearingJudgeId1',
-                panelMemberIds: ['hearingJudgeId1'],
-                attendees: [
-                  {
-                    partyID: 'P1',
-                    partyName: 'Jane and Smith',
-                    partyType: PartyType.IND,
-                    partyRole: 'appellant'
-                  },
-                  {
-                    partyID: 'P2',
-                    partyName: 'DWP',
-                    partyType: PartyType.ORG,
-                    partyRole: 'claimant',
-                    individualDetails: {
-                      firstName: 'DWP',
-                      lastName: null,
-                      preferredHearingChannel: 'byVideo'
-                    }
-                  }
-                ]
-              },
+            caseHearings: [
               {
-                hearingStartDateTime: '2021-04-12T09:00:00.000Z',
-                hearingEndDateTime: '2021-04-12T16:00:00.000Z',
-                listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
-                hearingVenueId: 'venue 5',
-                hearingRoomId: 'room 5',
-                hearingJudgeId: 'hearingJudgeId2',
-                panelMemberIds: ['hearingJudgeId1'],
-                attendees: [
+                hearingID: 'h00001',
+                hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+                hearingType: 'Case management hearing',
+                hmcStatus: HMCStatus.HEARING_REQUESTED,
+                lastResponseReceivedDateTime: '',
+                responseVersion: 'rv1',
+                hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+                listAssistCaseStatus: '',
+                hearingIsLinkedFlag: true,
+                hearingGroupRequestId: null,
+                hearingDaySchedule: [
                   {
-                    partyID: 'P1',
-                    partyName: 'Jane and Smith',
-                    partyType: PartyType.IND,
-                    partyRole: 'appellant'
+                    hearingStartDateTime: '2021-04-12T09:00:00.000Z',
+                    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
+                    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
+                    hearingVenueId: 'venue 5',
+                    hearingRoomId: 'room 5',
+                    hearingJudgeId: 'hearingJudgeId1',
+                    panelMemberIds: ['hearingJudgeId1'],
+                    attendees: [
+                      {
+                        partyID: 'P1',
+                        partyName: 'Jane and Smith',
+                        partyType: PartyType.IND,
+                        partyRole: 'appellant',
+                      },
+                      {
+                        partyID: 'P2',
+                        partyName: 'DWP',
+                        partyType: PartyType.ORG,
+                        partyRole: 'claimant',
+                        individualDetails: {
+                          firstName: 'DWP',
+                          lastName: null,
+                          preferredHearingChannel: 'byVideo',
+                        },
+                      },
+                    ],
                   },
                   {
-                    partyID: 'P2',
-                    partyName: 'DWP',
-                    partyType: PartyType.ORG,
-                    partyRole: 'claimant',
-                    individualDetails: {
-                      firstName: 'DWP',
-                      lastName: null,
-                      preferredHearingChannel: 'byVideo'
-                    }
-                  }
-                ]
-              }]
-            }]
-          }
-        }
+                    hearingStartDateTime: '2021-04-12T09:00:00.000Z',
+                    hearingEndDateTime: '2021-04-12T16:00:00.000Z',
+                    listAssistSessionID: '0d22d836-b25a-11eb-a18c-f2d58a9b7bc6',
+                    hearingVenueId: 'venue 5',
+                    hearingRoomId: 'room 5',
+                    hearingJudgeId: 'hearingJudgeId2',
+                    panelMemberIds: ['hearingJudgeId1'],
+                    attendees: [
+                      {
+                        partyID: 'P1',
+                        partyName: 'Jane and Smith',
+                        partyType: PartyType.IND,
+                        partyRole: 'appellant',
+                      },
+                      {
+                        partyID: 'P2',
+                        partyName: 'DWP',
+                        partyType: PartyType.ORG,
+                        partyRole: 'claimant',
+                        individualDetails: {
+                          firstName: 'DWP',
+                          lastName: null,
+                          preferredHearingChannel: 'byVideo',
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
       };
 
       const result = getHearingJudgeIds.projector(state);

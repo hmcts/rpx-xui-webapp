@@ -27,25 +27,15 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
     MediaViewerModule,
     ExuiCommonLibModule,
     ReactiveFormsModule,
-    RpxTranslationModule.forChild()
+    RpxTranslationModule.forChild(),
   ],
-  declarations: [
-    ...fromAppComponents.components,
-    ...fromAppContainers.containers,
-    ...fromAppDirectives.directives
-  ],
+  declarations: [...fromAppComponents.components, ...fromAppContainers.containers, ...fromAppDirectives.directives],
   exports: [
     ...fromAppComponents.components,
     ...fromAppContainers.containers,
     ...fromAppDirectives.directives,
-    RpxTranslationModule
+    RpxTranslationModule,
   ],
-  providers: [
-    HealthCheckGuard,
-    HealthCheckService,
-    WindowService,
-    McLaunchDarklyService,
-    TaskSupervisorGuard
-  ]
+  providers: [HealthCheckGuard, HealthCheckService, WindowService, McLaunchDarklyService, TaskSupervisorGuard],
 })
 export class SharedModule {}

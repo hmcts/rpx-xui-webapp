@@ -29,13 +29,13 @@ describe('Work allocation Release 2: Find person', () => {
         userRole: 'Judicial',
         services: ['IA'],
         userIncluded: false,
-        assignedUser: null
-      }
+        assignedUser: null,
+      },
     };
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': JSON.stringify(reqBody).length,
     };
 
     const response = await Request.post('workallocation/findPerson', reqBody, headers, 200);
@@ -46,4 +46,3 @@ describe('Work allocation Release 2: Find person', () => {
     expect(response.data[0]).to.have.all.keys(Object.keys(expectedCases));
   });
 });
-

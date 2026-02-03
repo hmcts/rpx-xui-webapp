@@ -10,11 +10,11 @@ class ReassignTaskWorkflow {
   }
 
   get findPersonPage() {
-    return this._findPersonPage ??= new FindPersonComponent(this.workFlowContainer.container);
+    return (this._findPersonPage ??= new FindPersonComponent(this.workFlowContainer.container));
   }
 
   get checkYourchanges() {
-    return this._checkYourchanges ??= new CheckYourChangesTable(this.workFlowContainer.container);
+    return (this._checkYourchanges ??= new CheckYourChangesTable(this.workFlowContainer.container));
   }
 
   get workFlowContainer() {

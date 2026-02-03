@@ -1,12 +1,12 @@
 import { Page } from '@playwright/test';
-import { Base } from "../../base";
+import { Base } from '../../base';
 
 export class TaskListPage extends Base {
-  readonly taskListFilterToggle = this.page.locator(".govuk-grid-column-full .govuk-button.hmcts-button--secondary");
-  readonly selectAllServicesFilter = this.page.locator("input#checkbox_servicesservices_all");
-  readonly selectAllTypesOfWorksFilter = this.page.locator("input#checkbox_types-of-worktypes_of_work_all");
-  readonly applyFilterButton = this.page.locator("#applyFilter");
-  readonly taskListTable = this.page.locator(".cdk-table.govuk-table");
+  readonly taskListFilterToggle = this.page.locator('.govuk-grid-column-full .govuk-button.hmcts-button--secondary');
+  readonly selectAllServicesFilter = this.page.locator('input#checkbox_servicesservices_all');
+  readonly selectAllTypesOfWorksFilter = this.page.locator('input#checkbox_types-of-worktypes_of_work_all');
+  readonly applyFilterButton = this.page.locator('#applyFilter');
+  readonly taskListTable = this.page.locator('.cdk-table.govuk-table');
   readonly taskListResultsAmount = this.page.locator('[data-test="search-result-summary__text"]');
   readonly manageCaseButtons = this.page.locator('.xui-manage-button');
 
@@ -29,9 +29,9 @@ export class TaskListPage extends Base {
   }
 
   async applyAllFilterOptions() {
-    await this.taskListFilterToggle.waitFor({ state: "visible" });
+    await this.taskListFilterToggle.waitFor({ state: 'visible' });
     await this.taskListFilterToggle.click();
-    await this.selectAllServicesFilter.waitFor({ state: "visible" });
+    await this.selectAllServicesFilter.waitFor({ state: 'visible' });
     await this.selectAllServicesFilter.check();
     await this.selectAllTypesOfWorksFilter.check();
     await this.applyFilterButton.waitFor({ state: 'visible' });

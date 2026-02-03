@@ -11,7 +11,7 @@ import {
   CaseShareCompleteComponent,
   CaseShareComponent,
   CaseShareConfirmComponent,
-  CasesCreateComponent
+  CasesCreateComponent,
 } from './containers';
 import { CaseLoaderComponent } from './containers/case-loader/case-loader.component';
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
@@ -26,7 +26,7 @@ export const ROUTES: Routes = [
   {
     path: '',
     resolve: {
-      activity: ActivityResolver
+      activity: ActivityResolver,
     },
     component: CaseHomeComponent,
     children: [
@@ -34,68 +34,68 @@ export const ROUTES: Routes = [
         path: '',
         component: CaseListComponent,
         data: {
-          title: 'Case list'
-        }
+          title: 'Case list',
+        },
       },
       {
         path: 'case-loader',
-        component: CaseLoaderComponent
+        component: CaseLoaderComponent,
       },
       {
         path: 'case-share',
         component: CaseShareComponent,
         data: {
-          title: 'HMCTS Share Cases | Case Share'
-        }
+          title: 'HMCTS Share Cases | Case Share',
+        },
       },
       {
         path: 'case-share-confirm',
         component: CaseShareConfirmComponent,
         data: {
-          title: 'HMCTS Share Cases | Case Share Confirm'
-        }
+          title: 'HMCTS Share Cases | Case Share Confirm',
+        },
       },
       {
         path: 'case-share-complete',
         component: CaseShareCompleteComponent,
         data: {
-          title: 'HMCTS Share Cases | Case Share Complete'
-        }
+          title: 'HMCTS Share Cases | Case Share Complete',
+        },
       },
       {
         path: 'case-filter',
         component: CaseFilterComponent,
         data: {
-          title: 'Create a case'
-        }
+          title: 'Create a case',
+        },
       },
       {
         path: 'case-create',
         children: [
           {
             path: '',
-            component: CasesCreateComponent
+            component: CasesCreateComponent,
           },
           {
             path: ':jid/:ctid/:eid',
             component: CaseCreateSubmitComponent,
             resolve: {
-              eventTrigger: CreateCaseEventTriggerResolver
+              eventTrigger: CreateCaseEventTriggerResolver,
             },
-            children: editorRouting
-          }
+            children: editorRouting,
+          },
         ],
         data: {
-          title: 'Create a case'
-        }
+          title: 'Create a case',
+        },
       },
       {
         path: 'case-search',
         component: CaseSearchComponent,
         children: editorRouting,
         data: {
-          title: 'Find a case'
-        }
+          title: 'Find a case',
+        },
       },
       {
         path: 'case-details/:cid',
@@ -109,26 +109,27 @@ export const ROUTES: Routes = [
             children: [
               {
                 path: '',
-                pathMatch: 'full'
+                pathMatch: 'full',
               },
               {
                 path: 'tasks',
-                component: TasksContainerComponent
+                component: TasksContainerComponent,
               },
               {
                 path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent
+                component: RolesAndAccessContainerComponent,
               },
               {
                 path: 'hearings',
-                component: CaseHearingsComponent
-              }
-            ]
+                component: CaseHearingsComponent,
+              },
+            ],
           },
-          ...caseViewRouting],
+          ...caseViewRouting,
+        ],
         data: {
-          title: 'Case Details'
-        }
+          title: 'Case Details',
+        },
       },
       {
         path: 'case-details/:jurisdiction/:caseType/:cid',
@@ -142,37 +143,37 @@ export const ROUTES: Routes = [
             children: [
               {
                 path: '',
-                pathMatch: 'full'
+                pathMatch: 'full',
               },
               {
                 path: 'tasks',
-                component: TasksContainerComponent
+                component: TasksContainerComponent,
               },
               {
                 path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent
+                component: RolesAndAccessContainerComponent,
               },
               {
                 path: 'hearings',
-                component: CaseHearingsComponent
-              }
-            ]
+                component: CaseHearingsComponent,
+              },
+            ],
           },
-          ...caseViewRouting],
+          ...caseViewRouting,
+        ],
         data: {
-          title: 'Case Details'
-        }
+          title: 'Case Details',
+        },
       },
       {
         path: 'restricted-case-access/:cid',
         component: RestrictedCaseAccessContainerComponent,
         data: {
-          title: 'Restricted case access'
-        }
-      }
-    ]
-  }
-
+          title: 'Restricted case access',
+        },
+      },
+    ],
+  },
 ];
 
 export const casesRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

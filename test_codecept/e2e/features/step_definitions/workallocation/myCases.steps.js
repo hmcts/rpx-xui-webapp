@@ -1,4 +1,3 @@
-
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const SoftAssert = require('../../../../ngIntegration/util/softAssert');
@@ -18,8 +17,13 @@ Then('I validate work allocation cases table columns displayed', async function 
   const expectdColHeaders = await ArrayUtil.map(columnHeadersHash, (headerhash) => headerhash.ColumnHeader);
   let actualHeadeColumns = await casesListTable.getColumnHeaderNames();
   actualHeadeColumns = actualHeadeColumns.map((c) => c.trim()).filter((colName) => colName !== '');
-  expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(expectdColHeaders.length);
-  expect(actualHeadeColumns, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.include.members(expectdColHeaders);
+  expect(actualHeadeColumns.length, `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `).to.equal(
+    expectdColHeaders.length
+  );
+  expect(
+    actualHeadeColumns,
+    `Actual Cols ||${actualHeadeColumns}|| !== Expected Cols ||${expectdColHeaders}|| `
+  ).to.include.members(expectdColHeaders);
 });
 
 Then('I validate work allocation table columns are links', async function (datatable) {
@@ -33,7 +37,9 @@ Then('I validate work allocation table columns are links', async function (datat
     return casesListTable.isColValForCaseALink(headerCol, 1);
   });
 
-  expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(expectdLinkCols.length);
+  expect(actuallinkColumns.length, `Actual Cols ||${actuallinkColumns}|| !== Expected Cols ||${expectdLinkCols}|| `).to.equal(
+    expectdLinkCols.length
+  );
   expect(actuallinkColumns).to.include.members(expectdLinkCols);
 });
 
@@ -67,4 +73,3 @@ When('I click work allocation case column link {string} at row {int}', async fun
     await casesListTable.clickCaseColLink(colName, rowPos);
   });
 });
-

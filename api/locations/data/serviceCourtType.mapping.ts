@@ -24,5 +24,5 @@ export const SERVICES_COURT_TYPE_MAPPINGS = {
   AAA4: ['10'], // Civil
   AAA5: ['10'], // Civil
   AAA6: ['10'], // Civil
-  AAA7: ['10'] // Civil
+  AAA7: ['10'], // Civil
 };

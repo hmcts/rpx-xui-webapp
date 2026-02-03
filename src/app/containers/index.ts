@@ -13,7 +13,7 @@ export const containers: any[] = [
   AppHeaderSignedOutComponent,
   TermsAndConditionsComponent,
   AcceptTcWrapperComponent,
-  LegacyTermsAndConditionsComponent
+  LegacyTermsAndConditionsComponent,
 ];
 
 export * from './accept-tc.wrapper/accept-tc-wrapper.component';

@@ -1,4 +1,4 @@
-import { Action } from '@ngrx/store';
+import Action from '@ngrx/store';
 
 export const STORE_JURISDICTION_AND_CASE_REF = '[HEARING VALUES] Store Jurisdiction and Case Ref';
 export const RESET_JURISDICTION_AND_CASE_REF = '[HEARING VALUES] Reset Jurisdiction and Case Ref';

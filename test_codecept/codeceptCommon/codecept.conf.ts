@@ -251,8 +251,9 @@ exports.config = {
     // ← worker‑level finaliser
     if (!parallel) await teardown(); // no report here any more
   },
-  teardownAll: async () => {               // ← fires after *all* workers
-    console.log('tearing down all')
+  teardownAll: async () => {
+    // ← fires after *all* workers
+    console.log('tearing down all');
     if (parallel) {
       await teardown();
     }
@@ -263,13 +264,14 @@ exports.config = {
 
 function exitWithStatus() {
   console.log('Evaluating test results for exit status...');
-  
+
   // Check for failed tests by reading the generated report
   let status = 'PASS';
   try {
-    const cucumberReports = fs.readdirSync(CUKE_OUT)
-      .filter(f => f.startsWith('cucumber_output_') && f.endsWith('.json'))
-      .map(f => path.join(CUKE_OUT, f));
+    const cucumberReports = fs
+      .readdirSync(CUKE_OUT)
+      .filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+      .map((f) => path.join(CUKE_OUT, f));
 
     if (cucumberReports.length === 0) {
       console.warn('No cucumber JSON files found - failing the run');
@@ -299,17 +301,19 @@ function exitWithStatus() {
         const elements = feature.elements || [];
         for (const scenario of elements) {
           const steps = scenario.steps || [];
-          const scenarioFailed = steps.some(step => step.result?.status === 'failed');
+          const scenarioFailed = steps.some((step) => step.result?.status === 'failed');
           if (scenarioFailed) {
             failedScenarios++;
-            failedSteps += steps.filter(step => step.result?.status === 'failed').length;
+            failedSteps += steps.filter((step) => step.result?.status === 'failed').length;
           }
         }
       }
     }
 
-    const status = nonEmpty === 0 ? 'FAIL' : (failedScenarios > 0 ? 'FAIL' : 'PASS');
-    console.log(`Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`);
+    const status = nonEmpty === 0 ? 'FAIL' : failedScenarios > 0 ? 'FAIL' : 'PASS';
+    console.log(
+      `Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`
+    );
     process.exit(status === 'PASS' ? 0 : 1);
   } catch (err) {
     console.error('Error checking test results:', err);

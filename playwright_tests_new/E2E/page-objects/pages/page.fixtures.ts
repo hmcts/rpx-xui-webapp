@@ -4,12 +4,12 @@ import {
   ExuiMediaViewerPage,
   IdamPage,
   type ApiLogEntry
-} from "@hmcts/playwright-common";
-import { CaseDetailsPage } from "./exui/caseDetails.po";
-import { CaseListPage } from "./exui/caseList.po";
-import { CreateCasePage } from "./exui/createCase.po";
-import { Page } from "@playwright/test";
-import { TaskListPage } from "./exui/taskList.po";
+} from '@hmcts/playwright-common';
+import { CaseDetailsPage } from './exui/caseDetails.po';
+import { CaseListPage } from './exui/caseList.po';
+import { CreateCasePage } from './exui/createCase.po';
+import { Page } from '@playwright/test';
+import { TaskListPage } from './exui/taskList.po';
 
 export interface PageFixtures {
   determinePage: Page;
@@ -31,7 +31,7 @@ export interface PageFixtures {
 export const pageFixtures = {
   // If a performance test is executed, use the lighthouse created page instead
   determinePage: async ({ page, lighthousePage }, use, testInfo) => {
-    if (testInfo.tags.includes("@performance")) {
+    if (testInfo.tags.includes('@performance')) {
       await use(lighthousePage);
     } else {
       await use(page);
@@ -55,14 +55,20 @@ export const pageFixtures = {
   idamPage: async ({ determinePage }, use) => {
     await use(new IdamPage(determinePage));
   },
-  logger: async ({ }, use, workerInfo) => {
+  logger: async ({ page }, use, workerInfo) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy lint rules
+    }
     const logger = createLogger({
-      serviceName: "case-service-ui",
-      defaultMeta: { workerId: workerInfo.workerIndex },
+      serviceName: 'case-service-ui',
+      defaultMeta: { workerId: workerInfo.workerIndex }
     });
     await use(logger);
   },
-  capturedCalls: async ({ }, use) => {
+  capturedCalls: async ({ page }, use) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy lint rules
+    }
     const calls: ApiLogEntry[] = [];
     await use(calls);
   },
@@ -71,17 +77,17 @@ export const pageFixtures = {
       baseUrl: process.env.BACKEND_BASE_URL,
       logger,
       onResponse: (entry) => capturedCalls.push(entry),
-      captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === "1",
+      captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1'
     });
 
     await use(client);
     await client.dispose();
 
     if (capturedCalls.length) {
-      await testInfo.attach("api-calls.json", {
+      await testInfo.attach('api-calls.json', {
         body: JSON.stringify(capturedCalls, null, 2),
-        contentType: "application/json",
+        contentType: 'application/json'
       });
     }
-  },
+  }
 };

@@ -60,15 +60,16 @@ export class CaseDetailsPage extends Base {
 
   // Internal helper: obtain rows either from a selector string or a Locator
   private async _runOnRows<T>(selector: string | Locator, fn: (rows: Element[]) => T): Promise<T> {
-    if (!selector) {
-      return (null as unknown) as T;
-    }
     if (typeof selector !== 'string') {
       // Locator: evaluate on the located rows
-      return (selector as Locator).locator('tr').evaluateAll(fn as any) as unknown as T;
+      return selector.locator('tr').evaluateAll(fn);
+    }
+    // Validate selector to prevent injection - only allow safe characters
+    if (!/^[a-zA-Z0-9._#[\]="'\s:>+~-]+$/.test(selector)) {
+      throw new Error('Invalid CSS selector: contains potentially unsafe characters');
     }
     // Selector string: use page.$$eval to run fn in page context
-    return this.page.$$eval(`${selector} tr`, fn as any) as unknown as T;
+    return this.page.$$eval(`${selector} tr`, fn);
   }
 
   async getTableByName(tableName: string) {
@@ -103,6 +104,8 @@ export class CaseDetailsPage extends Base {
       await tableLocator.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
       return this.parseKeyValueTable(tableLocator);
     } catch (error) {
+      // Primary table not found, fall back to generic tabpanel table
+      this.logger.error(`Table with class '${tabClass}' not found, using fallback selector`, error);
       const fallbackTable = this.page
         .locator('[role="tabpanel"]')
         .filter({ has: this.page.locator('table') })
@@ -122,16 +125,18 @@ export class CaseDetailsPage extends Base {
     let targetIndex = -1;
 
     for (let i = 0; i < tables.length; i++) {
-      const hasHeaders = await tables[i].evaluate((table) => {
+      const hasHeaders = await tables[i].evaluate((table: Element) => {
         const thead = table.querySelector(':scope > thead');
         if (!thead) {
           return false;
         }
-        const headerCells = Array.from(thead.querySelectorAll('th, td'))
-          .map((el) => (el.textContent || '').trim());
-        return headerCells.includes('Number')
-          && headerCells.includes('Document Category')
-          && headerCells.includes('Type of Document');
+        const headerCells = new Set(
+          Array.from(thead.querySelectorAll('th, td'))
+            .map((el) => (el.textContent || '').trim())
+        );
+        return headerCells.has('Number')
+          && headerCells.has('Document Category')
+          && headerCells.has('Type of Document');
       });
       if (hasHeaders) {
         targetIndex = i;
@@ -178,14 +183,14 @@ export class CaseDetailsPage extends Base {
 
       const out: Record<string, string> = {};
       const dataRows = Array.from(rows).filter((row) => {
-        const el = row as Element;
-        if (el.hasAttribute && el.hasAttribute('hidden')) {
+        const el = row;
+        if (el.hasAttribute?.('hidden')) {
           return false;
         }
-        if ('hidden' in row && (row as any).hidden) {
+        if (row instanceof HTMLElement && row.hidden) {
           return false;
         }
-        const style = window.getComputedStyle(el);
+        const style = globalThis.getComputedStyle(el);
         if (!style) {
           return false;
         }
@@ -199,25 +204,28 @@ export class CaseDetailsPage extends Base {
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
+        const cells = Array.from(row.querySelectorAll('th, td'));
         if (cells.length < 2) {
           continue;
         }
 
-        const rawKey = findFirstText(cells[0]).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+        const rawKey = findFirstText(cells[0]).replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
         if (!rawKey) {
           continue;
         }
 
-        const valueParts = cells.slice(1).map((c) => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
-        const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
+        const valueParts = cells
+          .slice(1)
+          .map((c) => findFirstText(c).replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim())
+          .filter(Boolean);
+        const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
 
         out[rawKey] = value;
       }
       return out;
     };
 
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>>;
+    return this._runOnRows(selector, fn);
   }
 
   /**
@@ -238,36 +246,37 @@ export class CaseDetailsPage extends Base {
 
       // header is first tr
       const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize((h as HTMLElement).innerText || ''));
+      const sanitize = (s: string) => (s || '').replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize(h.textContent || ''));
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows).slice(1).filter((row) => {
-        if ((row as HTMLTableRowElement).hidden) {
+        if (row instanceof HTMLTableRowElement && row.hidden) {
           return false;
         }
-        const style = window.getComputedStyle(row as Element);
+        const style = globalThis.getComputedStyle(row);
         if (!style) {
           return false;
         }
         if (style.display === 'none' || style.visibility === 'hidden') {
           return false;
         }
-        if ((row as Element).getClientRects().length === 0) {
+        if (row.getClientRects().length === 0) {
           return false;
         }
         return true;
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
+        const cells = Array.from(row.querySelectorAll('th, td'));
         if (cells.length === 0) {
           continue;
         }
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const value = sanitize(cells[i].innerText || '').replace(/\s+/g, ' ');
+          const cellText = cells[i].textContent || '';
+          const value = sanitize(cellText).replaceAll(/\s+/g, ' ');
           obj[key] = value;
         }
         arr.push(obj);
@@ -275,7 +284,7 @@ export class CaseDetailsPage extends Base {
       return arr;
     };
 
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>[]>;
+    return this._runOnRows(selector, fn);
   }
 
   async mapHistoryTable(): Promise<Record<string, string>[]> {
@@ -283,7 +292,7 @@ export class CaseDetailsPage extends Base {
       throw new Error('History table not found on page');
     }
     const headers = (await this.historyTable.locator('thead tr th').allInnerTexts())
-      .map((h) => h.replace(/\t.*/, ''));
+      .map((h) => h.replaceAll(/\t.*/g, ''));
     const rows = this.historyTable.locator('tbody tr');
     const rowCount = await rows.count();
     const data: Record<string, string>[] = [];
@@ -320,11 +329,12 @@ export class CaseDetailsPage extends Base {
   async getCaseNumberFromAlert(): Promise<string> {
     await this.caseAlertSuccessMessage.waitFor({ state: 'visible', timeout: TIMEOUTS.ALERT_VISIBLE });
     const alertText = await this.caseAlertSuccessMessage.innerText();
-    const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
+    const caseNumberMatch = validatorUtils.DIVORCE_CASE_NUMBER_REGEX.exec(alertText);
     if (!caseNumberMatch) {
-      throw new Error(`Failed to extract case number from alert: "${alertText}"`);
+      this.logger.error('Failed to extract case number from alert', { alertLength: alertText?.length });
+      throw new Error('Failed to extract case number from alert');
     }
-    return caseNumberMatch ? caseNumberMatch[0] : '';
+    return caseNumberMatch[0];
   }
 
   async getCaseNumberFromUrl(): Promise<string> {
@@ -333,7 +343,11 @@ export class CaseDetailsPage extends Base {
     const caseNumberMatch = pathname.slice(pathname.lastIndexOf('/') + 1);
     // Validate format: EXUI case numbers are typically 16 digits
     if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
-      throw new Error(`Failed to extract valid case number from URL: "${url}" (extracted: "${caseNumberMatch}")`);
+      this.logger.error('Failed to extract valid case number from URL', {
+        pathnameLength: pathname.length,
+        extractedLength: caseNumberMatch?.length
+      });
+      throw new Error('Failed to extract valid case number from URL');
     }
     return caseNumberMatch;
   }
@@ -344,6 +358,8 @@ export class CaseDetailsPage extends Base {
     try {
       await this.caseActionsDropdown.selectOption({ label: action });
     } catch (error) {
+      // Fallback: some dropdowns don't support label selector, use value directly
+      this.logger.warn('Failed to select option by label, falling back to value selector', { error });
       await this.caseActionsDropdown.selectOption(action);
     }
     await this.caseActionGoButton.click();
@@ -351,7 +367,10 @@ export class CaseDetailsPage extends Base {
       await this.exuiSpinnerComponent.wait();
     } catch (error) {
       // Some pages keep the spinner element mounted but hidden; fall back to a hidden wait.
-      await this.page.locator('xuilib-loading-spinner').first().waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+      this.logger.warn('Standard spinner wait failed, attempting hidden state wait', { error });
+      await this.page.locator('xuilib-loading-spinner').first().waitFor({ state: 'hidden', timeout: 30000 }).catch((err) => {
+        this.logger.warn('Spinner hidden wait also failed, proceeding anyway', { err });
+      });
     }
     await this.page.waitForLoadState('domcontentloaded');
   }
@@ -378,15 +397,19 @@ export class CaseDetailsPage extends Base {
 
   async selectPartyFlagTarget(target: string, flagType: string) {
     const callbackError = this.page.getByText('callback data failed validation', { exact: false });
-    if (await callbackError.isVisible().catch(() => false)) {
+    if (await callbackError.isVisible({ timeout: 1000 }).catch(() => false)) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
     const exactLabel = this.page.getByLabel(`${target} (${target})`);
-    const fallbackLabel = this.page.getByLabel(new RegExp(`${target}`, 'i'));
+    // Escape regex special characters to prevent unintended matches
+    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
     try {
       await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
       await exactLabel.check();
     } catch (error) {
+      // Exact label format not found, use case-insensitive fallback
+      this.logger.warn('Exact label not found, using regex fallback', { error });
       await fallbackLabel.waitFor({ state: 'visible', timeout: 15000 });
       await fallbackLabel.check();
     }

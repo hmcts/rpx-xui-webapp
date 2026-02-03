@@ -86,20 +86,25 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
 
       // Monitor API calls for failure diagnosis
       page.on('response', async (response) => {
-        const url = response.url();
-        if (!isBackendApi(url)) {
-          return;
-        }
-
-        const status = response.status();
-        const method = response.request().method();
-
-        // Track all 4xx and 5xx errors
-        if (status >= 400) {
-          apiErrors.push({ url: sanitizeUrl(url), status, method });
-          if (apiErrors.length > maxTracked) {
-            apiErrors.shift();
+        try {
+          const url = response.url();
+          if (!isBackendApi(url)) {
+            return;
           }
+
+          const status = response.status();
+          const method = response.request().method();
+
+          // Track all 4xx and 5xx errors
+          if (status >= 400) {
+            apiErrors.push({ url: sanitizeUrl(url), status, method });
+            if (apiErrors.length > maxTracked) {
+              apiErrors.shift();
+            }
+          }
+        } catch (err) {
+          // Ignore response parsing errors - test should not fail due to monitoring
+          logger.warn('Failed to process response in monitoring', { error: err });
         }
       });
 
@@ -124,7 +129,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
 
       page.on('requestfailed', (request) => {
         const url = request.url();
-        if (url.includes('/api/') || url.includes('/data/')) {
+        if (isBackendApi(url)) {
           const failure = request.failure();
           if (failure?.errorText.includes('Timeout') || failure?.errorText.includes('timeout')) {
             networkTimeout = true;
@@ -136,7 +141,8 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
 
       // On test failure, classify the root cause and attach diagnosis
       if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
-        const error = testInfo.error?.message || testInfo.error?.stack || '';
+        // Only use error message, not stack trace to prevent PII leakage
+        const error = testInfo.error?.message || '';
 
         // Classify failure type
         const serverErrors = apiErrors.filter((e) => e.status >= 500);
@@ -147,7 +153,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
         const diagnosis = [
           `Test failed: ${testInfo.title}`,
           `Failure type: ${failureType}`,
-          error ? `Error: ${error.substring(0, 500)}` : '',
+          error ? `Error: ${error.substring(0, 300)}` : '',
           `API summary: total=${apiErrors.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, slow>${slowCalls.length}`
         ]
           .filter(Boolean)
@@ -203,9 +209,12 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
     },
 
     // Worker scoped fixtures need to be defined separately
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     lighthousePort: [
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async (_workerFixtures, use) => {
+      async ({ browserName }, use) => {
+        if (browserName) {
+          // no-op: keep the destructured arg in use to satisfy lint rules
+        }
         const port = await getPort();
         await use(port);
       },

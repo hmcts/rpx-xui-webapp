@@ -79,9 +79,11 @@ export class CreateCasePage extends Base {
   readonly person2FirstNameInput = this.page.locator(
     '[data-testid="Person2_FirstName"] input, [data-testid="Person2_FirstName"], #Person2_FirstName, [name="Person2_FirstName"]'
   );
+
   readonly person2LastNameInput = this.page.locator(
     '[data-testid="Person2_LastName"] input, [data-testid="Person2_LastName"], #Person2_LastName, [name="Person2_LastName"]'
   );
+
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
   readonly textField0Input = this.page.locator('#TextField0');

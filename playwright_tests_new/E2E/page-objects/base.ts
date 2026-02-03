@@ -21,6 +21,7 @@ interface ApiCall {
 // A base page inherited by pages & components
 // can contain any additional config needed + instantiated page object
 export abstract class Base {
+  protected readonly logger = logger;
   readonly exuiCaseListComponent = new ExuiCaseListComponent(this.page);
   readonly exuiCaseDetailsComponent = new ExuiCaseDetailsComponent(this.page);
   readonly exuiHeader = new ExuiHeaderComponent(this.page);

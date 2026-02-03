@@ -59,6 +59,8 @@ api/.nyc_output
 /.agent
 execplan-api-pw-coverage.md
 /.ssr.lock
+/.sonar
+/.scannerwork
 
 # System Files
 .DS_Store

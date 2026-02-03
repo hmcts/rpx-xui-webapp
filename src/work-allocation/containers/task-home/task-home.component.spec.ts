@@ -17,8 +17,7 @@ import { TaskHomeComponent } from './task-home.component';
 
 @Component({
   standalone: false,
-  template: `
-    <exui-task-home></exui-task-home>`
+  template: ` <exui-task-home></exui-task-home>`,
 })
 class WrapperComponent {
   @ViewChild(TaskHomeComponent, { static: true }) public appComponentRef: TaskHomeComponent;
@@ -28,43 +27,43 @@ describe('TaskHomeComponent', () => {
   let component: TaskHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks']);
   mockTaskService.getUsersAssignedTasks.and.returnValue(of([]));
   const typesOfWork = [
     {
       key: 'hearing_work',
-      label: 'Hearing work'
+      label: 'Hearing work',
     },
     {
       key: 'upper_tribunal',
-      label: 'Upper Tribunal'
+      label: 'Upper Tribunal',
     },
     {
       key: 'routine_work',
-      label: 'Routine work'
+      label: 'Routine work',
     },
     {
       key: 'decision_making_work',
-      label: 'Decision-making work'
+      label: 'Decision-making work',
     },
     {
       key: 'applications',
-      label: 'Applications'
+      label: 'Applications',
     },
     {
       key: 'priority',
-      label: 'Priority'
+      label: 'Priority',
     },
     {
       key: 'access_requests',
-      label: 'Access requests'
+      label: 'Access requests',
     },
     {
       key: 'error_management',
-      label: 'Error management'
-    }
+      label: 'Error management',
+    },
   ];
   const SELECTED_LOCATIONS = {
     id: 'locations',
@@ -72,9 +71,9 @@ describe('TaskHomeComponent', () => {
       { name: 'locations', value: ['231596', '698118'] },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
-      }
-    ]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)],
+      },
+    ],
   };
   const mockFilterService: any = {
     getStream: () => of(SELECTED_LOCATIONS),
@@ -83,19 +82,29 @@ describe('TaskHomeComponent', () => {
     givenErrors: {
       subscribe: () => null,
       next: () => null,
-      unsubscribe: () => null
-    }
+      unsubscribe: () => null,
+    },
   };
   const rpxTranslationServiceStub = () => ({
     language: 'en',
-    translate: () => { },
+    translate: () => {},
     getTranslation: (phrase: string) => phrase,
     getTranslation$: (phrase: string) => of(phrase),
-    language$: of('en')
+    language$: of('en'),
   });
 
-  const appSessionStorageService = jasmine.createSpyObj('appSessionStorageService', ['getItem', 'setItem', 'removeItem', 'clear']);
-  const ccdSessionStorageService = jasmine.createSpyObj('ccdSessionStorageService', ['getItem', 'setItem', 'removeItem', 'clear']);
+  const appSessionStorageService = jasmine.createSpyObj('appSessionStorageService', [
+    'getItem',
+    'setItem',
+    'removeItem',
+    'clear',
+  ]);
+  const ccdSessionStorageService = jasmine.createSpyObj('ccdSessionStorageService', [
+    'getItem',
+    'setItem',
+    'removeItem',
+    'clear',
+  ]);
   const locationDataService = jasmine.createSpyObj('locationDataService', ['getItem', 'getSpecificLocations']);
   const featureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
   appSessionStorageService.getItem.and.returnValue(null);
@@ -105,12 +114,7 @@ describe('TaskHomeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CdkTableModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        WorkAllocationComponentsModule
-      ],
+      imports: [CdkTableModule, ExuiCommonLibModule, RouterTestingModule, WorkAllocationComponentsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [TaskHomeComponent, WrapperComponent],
       providers: [
@@ -119,21 +123,26 @@ describe('TaskHomeComponent', () => {
         // { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         { provide: LocationDataService, useValue: locationDataService },
         {
-          provide: FilterService, useValue: mockFilterService
+          provide: FilterService,
+          useValue: mockFilterService,
         },
         {
-          provide: AppSessionStorageService, useValue: appSessionStorageService
+          provide: AppSessionStorageService,
+          useValue: appSessionStorageService,
         },
         {
-          provide: SessionStorageService, useValue: ccdSessionStorageService
+          provide: SessionStorageService,
+          useValue: ccdSessionStorageService,
         },
         {
-          provide: FeatureToggleService, useValue: featureToggleService
+          provide: FeatureToggleService,
+          useValue: featureToggleService,
         },
         {
-          provide: RpxTranslationService, useFactory: rpxTranslationServiceStub
-        }
-      ]
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -156,8 +165,8 @@ describe('TaskHomeComponent', () => {
       errors: [
         { name: 'services', error: 'Select a service' },
         { name: 'locations', error: 'Search for a location by name' },
-        { name: 'types-of-work', error: 'Select a type of work' }
-      ]
+        { name: 'types-of-work', error: 'Select a type of work' },
+      ],
     };
 
     component.errorChangedHandler(error);

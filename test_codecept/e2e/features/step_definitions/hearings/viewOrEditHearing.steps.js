@@ -14,7 +14,7 @@ function getPageObject(page) {
   return pageObj;
 }
 
-Then('I validate view or edit hearing page displayed', async function(){
+Then('I validate view or edit hearing page displayed', async function () {
   await browserWaits.retryWithActionCallback(async () => {
     expect(await viewOrEditHearingPage.container.isVisible()).to.be.true;
     expect(await viewOrEditHearingPage.headerElement.textContent()).to.include('View or edit hearing');
@@ -31,7 +31,7 @@ Then('I validate Edit hearing page displayed', async function () {
 Then('I validate fields displayed in view or edit hearing page', async function (datatable) {
   const fields = datatable.parse().hashes();
 
-  for (const row of fields){
+  for (const row of fields) {
     const field = row.field;
     const expectedVal = row.value;
     const expectedChangeLinkDisplayed = row.changeLinkDisplay;
@@ -53,15 +53,21 @@ Then('I validate fields displayed in view or edit hearing page', async function 
     expect(actualValue, `Field:${field}  ${expectedAmendFlagDisplayed} not displayed in ${actualValue} `).to.not.equal(undefined);
 
     if (expectedAmendFlagDisplayed && expectedAmendFlagDisplayed !== '') {
-      expect(actualValue, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.includes(expectedAmendFlagDisplayed);
-    } else if (expectedAmendFlagDisplayed_preCR84 && expectedAmendFlagDisplayed_preCR84 !== ''){
+      expect(actualValue, `Field:${field} to include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.includes(
+        expectedAmendFlagDisplayed
+      );
+    } else if (expectedAmendFlagDisplayed_preCR84 && expectedAmendFlagDisplayed_preCR84 !== '') {
       const actionColText = await viewOrEditHearingPage.getActionColumnTextForKeyField(field);
       expect(actionColText.toLowerCase()).includes(expectedAmendFlagDisplayed_preCR84.toLowerCase());
     } else if (expectedAmendFlagDisplayed_preCR84 && expectedAmendFlagDisplayed_preCR84 === '') {
       expect(await viewOrEditHearingPage.getActionColumnTextForKeyField(field)).to.not.includes('AMENDED');
     } else {
-      expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes('AMENDED');
-      expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes('ACTION NEEDED');
+      expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes(
+        'AMENDED'
+      );
+      expect(actualValue, `Field:${field} to not include label AMENDED actual ${expectedAmendFlagDisplayed}`).to.not.includes(
+        'ACTION NEEDED'
+      );
     }
 
     expect(isValueDisplayed !== undefined, `Field:${field} to include value ${expectedVal} not found`).to.be.true;
@@ -69,9 +75,9 @@ Then('I validate fields displayed in view or edit hearing page', async function 
   }
 });
 
-Then('I validate edit hearing section heading labels', async function (datatable){
+Then('I validate edit hearing section heading labels', async function (datatable) {
   const fields = datatable.parse().hashes();
-  for (const row of fields){
+  for (const row of fields) {
     const heading = row.Heading;
     const expectedLabel = row.Label;
     await browserWaits.retryWithActionCallback(async () => {
@@ -85,7 +91,7 @@ Then('I validate edit hearing section heading labels', async function (datatable
   }
 });
 
-When('In view or edit hearing page, I click change link for field {string}', async function(field){
+When('In view or edit hearing page, I click change link for field {string}', async function (field) {
   await viewOrEditHearingPage.clickChangeLinkForField(field);
 });
 
@@ -93,10 +99,10 @@ When('In view or edit hearing page, I click Submit updated request', async funct
   await viewOrEditHearingPage.s(field);
 });
 
-Then('I validate edit heating change links and navigation', async function(datatable){
+Then('I validate edit heating change links and navigation', async function (datatable) {
   const validationPages = datatable.parse().hashes();
   let ctr = 0;
-  for (const validationPage of validationPages){
+  for (const validationPage of validationPages) {
     ctr++;
     const changeLinkFor = validationPage.changeLinkFor;
     const navigationPage = validationPage.navigationPage;
@@ -108,7 +114,8 @@ Then('I validate edit heating change links and navigation', async function(datat
 
       const navigationPageObject = getPageObject(navigationPage);
       await browserWaits.retryWithActionCallback(async () => {
-        expect(await navigationPageObject.isVisible(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be.true;
+        expect(await navigationPageObject.isVisible(), `For change link ${changeLinkFor}, ${navigationPage} not displayed`).to.be
+          .true;
       });
 
       const actualheaderCaption = await $('span.govuk-caption-l').textContent();
@@ -138,4 +145,3 @@ Then('In edit hearing page error banner displayed with message {string}', async 
 Then('In edit hearing page error displayed with message {string}', async function (errorMessage) {
   expect(await editHearingPage.errorMessage.textContent()).to.includes(errorMessage);
 });
-

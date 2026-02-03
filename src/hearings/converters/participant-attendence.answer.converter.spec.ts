@@ -11,7 +11,7 @@ import { ParticipantAttendenceAnswerConverter } from './participant-attendence.a
 
 describe('ParticipantAttendenceAnswerConverter', () => {
   let converter: ParticipantAttendenceAnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
 
@@ -25,12 +25,12 @@ describe('ParticipantAttendenceAnswerConverter', () => {
             snapshot: {
               data: {
                 partyChannels: partyChannelsRefData,
-                partySubChannels: partySubChannelsRefData
-              }
-            }
-          }
-        }
-      ]
+                partySubChannels: partySubChannelsRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -65,7 +65,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           hearingWindow: {
             dateRangeStart: '2022-11-23T09:00:00.000Z',
             dateRangeEnd: '2022-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
           },
           duration: 45,
           hearingPriorityType: 'standard',
@@ -92,15 +92,15 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 title: 'Mrs',
                 firstName: 'Jane',
                 lastName: 'Smith',
-                preferredHearingChannel: 'inPerson'
+                preferredHearingChannel: 'inPerson',
               },
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
             },
             {
               partyID: 'P2',
@@ -111,31 +111,31 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 title: null,
                 firstName: 'DWP',
                 lastName: null,
-                preferredHearingChannel: 'inPerson'
+                preferredHearingChannel: 'inPerson',
               },
               organisationDetails: {
                 name: 'DWP',
                 organisationType: 'GOV',
-                cftOrganisationID: 'O100000'
+                cftOrganisationID: 'O100000',
               },
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
-            }
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
+            },
           ],
           caseFlags: null,
           screenFlow: null,
-          vocabulary: null
+          vocabulary: null,
         },
         caseInfo: {
           caseReference: '1111222233334444',
           jurisdictionId: '',
-          hearingId: ''
-        }
+          hearingId: '',
+        },
       },
       hearingRequestToCompare: null,
       hearingRequest: {
@@ -148,50 +148,52 @@ describe('ParticipantAttendenceAnswerConverter', () => {
             laCaseStatus: LaCaseStatus.PENDING_RELISTING,
             listingStatus: HearingListingStatusEnum.COMPLETED,
             hearingCancellationReason: '',
-            hearingDaySchedule: [{
-              hearingStartDateTime: '2022-12-12T09:00:00.000Z',
-              hearingEndDateTime: '2022-12-12T16:00:00.000Z',
-              listAssistSessionID: '',
-              hearingVenueId: '815833',
-              hearingRoomId: 'room 3',
-              hearingJudgeId: 'p1000002',
-              panelMemberIds: ['p1000001'],
-              attendees: [
-                {
-                  partyID: 'P1',
-                  hearingSubChannel: 'invalidChannel',
-                  partyName: null,
-                  partyType: PartyType.IND,
-                  partyRole: 'appellant',
-                  individualDetails: {
-                    firstName: 'Jane',
-                    lastName: 'Smith',
-                    preferredHearingChannel: 'invalidChannel'
-                  }
-                },
-                {
-                  partyID: 'P2',
-                  hearingSubChannel: 'byVideo',
-                  partyName: 'DWP',
-                  partyType: PartyType.ORG,
-                  partyRole: 'claimant',
-                  individualDetails: {
-                    firstName: 'DWP',
-                    lastName: null,
-                    preferredHearingChannel: 'byVideo'
-                  }
-                }
-              ]
-            }]
+            hearingDaySchedule: [
+              {
+                hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+                hearingEndDateTime: '2022-12-12T16:00:00.000Z',
+                listAssistSessionID: '',
+                hearingVenueId: '815833',
+                hearingRoomId: 'room 3',
+                hearingJudgeId: 'p1000002',
+                panelMemberIds: ['p1000001'],
+                attendees: [
+                  {
+                    partyID: 'P1',
+                    hearingSubChannel: 'invalidChannel',
+                    partyName: null,
+                    partyType: PartyType.IND,
+                    partyRole: 'appellant',
+                    individualDetails: {
+                      firstName: 'Jane',
+                      lastName: 'Smith',
+                      preferredHearingChannel: 'invalidChannel',
+                    },
+                  },
+                  {
+                    partyID: 'P2',
+                    hearingSubChannel: 'byVideo',
+                    partyName: 'DWP',
+                    partyType: PartyType.ORG,
+                    partyRole: 'claimant',
+                    individualDetails: {
+                      firstName: 'DWP',
+                      lastName: null,
+                      preferredHearingChannel: 'byVideo',
+                    },
+                  },
+                ],
+              },
+            ],
           },
           hearingDetails: null,
           caseDetails: null,
-          partyDetails: null
-        }
+          partyDetails: null,
+        },
       },
       hearingConditions: null,
       hearingActuals: null,
-      hearingLinks: null
+      hearingLinks: null,
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
     const room = 'Jane Smith - Error: invalidChannel';
@@ -219,7 +221,7 @@ describe('ParticipantAttendenceAnswerConverter', () => {
           hearingWindow: {
             dateRangeStart: '2022-11-23T09:00:00.000Z',
             dateRangeEnd: '2022-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
           },
           duration: 45,
           hearingPriorityType: 'standard',
@@ -246,15 +248,15 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 title: 'Mrs',
                 firstName: 'Jane',
                 lastName: 'Smith',
-                preferredHearingChannel: 'inPerson'
+                preferredHearingChannel: 'inPerson',
               },
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
             },
             {
               partyID: 'P2',
@@ -265,31 +267,31 @@ describe('ParticipantAttendenceAnswerConverter', () => {
                 title: null,
                 firstName: 'DWP',
                 lastName: null,
-                preferredHearingChannel: 'inPerson'
+                preferredHearingChannel: 'inPerson',
               },
               organisationDetails: {
                 name: 'DWP',
                 organisationType: 'GOV',
-                cftOrganisationID: 'O100000'
+                cftOrganisationID: 'O100000',
               },
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
-            }
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
+            },
           ],
           caseFlags: null,
           screenFlow: null,
-          vocabulary: null
+          vocabulary: null,
         },
         caseInfo: {
           caseReference: '1111222233334444',
           jurisdictionId: '',
-          hearingId: ''
-        }
+          hearingId: '',
+        },
       },
       hearingRequestToCompare: null,
       hearingRequest: {
@@ -302,50 +304,52 @@ describe('ParticipantAttendenceAnswerConverter', () => {
             laCaseStatus: LaCaseStatus.PENDING_RELISTING,
             listingStatus: HearingListingStatusEnum.COMPLETED,
             hearingCancellationReason: '',
-            hearingDaySchedule: [{
-              hearingStartDateTime: '2022-12-12T09:00:00.000Z',
-              hearingEndDateTime: '2022-12-12T16:00:00.000Z',
-              listAssistSessionID: '',
-              hearingVenueId: '815833',
-              hearingRoomId: 'room 3',
-              hearingJudgeId: 'p1000002',
-              panelMemberIds: ['p1000001'],
-              attendees: [
-                {
-                  partyID: 'P1',
-                  hearingSubChannel: 'invalidChannel',
-                  partyName: null,
-                  partyType: PartyType.IND,
-                  partyRole: 'appellant',
-                  individualDetails: {
-                    firstName: 'Jane',
-                    lastName: 'Smith',
-                    preferredHearingChannel: 'invalidChannel'
-                  }
-                },
-                {
-                  partyID: 'P2',
-                  hearingSubChannel: 'byVideo',
-                  partyName: 'DWP',
-                  partyType: PartyType.ORG,
-                  partyRole: 'claimant',
-                  individualDetails: {
-                    firstName: 'DWP',
-                    lastName: null,
-                    preferredHearingChannel: 'byVideo'
-                  }
-                }
-              ]
-            }]
+            hearingDaySchedule: [
+              {
+                hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+                hearingEndDateTime: '2022-12-12T16:00:00.000Z',
+                listAssistSessionID: '',
+                hearingVenueId: '815833',
+                hearingRoomId: 'room 3',
+                hearingJudgeId: 'p1000002',
+                panelMemberIds: ['p1000001'],
+                attendees: [
+                  {
+                    partyID: 'P1',
+                    hearingSubChannel: 'invalidChannel',
+                    partyName: null,
+                    partyType: PartyType.IND,
+                    partyRole: 'appellant',
+                    individualDetails: {
+                      firstName: 'Jane',
+                      lastName: 'Smith',
+                      preferredHearingChannel: 'invalidChannel',
+                    },
+                  },
+                  {
+                    partyID: 'P2',
+                    hearingSubChannel: 'byVideo',
+                    partyName: 'DWP',
+                    partyType: PartyType.ORG,
+                    partyRole: 'claimant',
+                    individualDetails: {
+                      firstName: 'DWP',
+                      lastName: null,
+                      preferredHearingChannel: 'byVideo',
+                    },
+                  },
+                ],
+              },
+            ],
           },
           hearingDetails: null,
           caseDetails: null,
-          partyDetails: null
-        }
+          partyDetails: null,
+        },
       },
       hearingConditions: null,
       hearingActuals: null,
-      hearingLinks: null
+      hearingLinks: null,
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
     const room = 'Jane Smith - Error: invalidChannel';

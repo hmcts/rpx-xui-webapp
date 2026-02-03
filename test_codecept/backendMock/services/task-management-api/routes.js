@@ -1,4 +1,3 @@
-
 const express = require('express');
 
 const router = express.Router({ mergeParams: true });
@@ -11,8 +10,13 @@ router.post('/', (req, res) => {
   const caseFilter = search_parameters.find((param) => param.key === 'caseId');
 
   const tasksResponse = service.getSearchTasks(24, 150);
-  tasksResponse.tasks.push(service.getTaskWithProperties({ assignee: '52b5a4b0-a69f-41c5-a89f-84b884d7a04d', description: '[Respond to query](/query-management/query/1604309496714935/3)' }));
-  if (caseFilter){
+  tasksResponse.tasks.push(
+    service.getTaskWithProperties({
+      assignee: '52b5a4b0-a69f-41c5-a89f-84b884d7a04d',
+      description: '[Respond to query](/query-management/query/1604309496714935/3)',
+    })
+  );
+  if (caseFilter) {
     userApiData.sendResponse(req, res, 'OnCaseTasks', () => tasksResponse);
   } else {
     userApiData.sendResponse(req, res, 'OnSearchTasks', () => tasksResponse);

@@ -21,10 +21,10 @@ describe('NoC Service', () => {
   let setHeadersStub: sinon.SinonStub;
 
   const mockHeaders = {
-    'Authorization': 'Bearer token123',
-    'ServiceAuthorization': 'Bearer s2stoken123',
+    Authorization: 'Bearer token123',
+    ServiceAuthorization: 'Bearer s2stoken123',
     'Content-Type': 'application/json',
-    'accept': 'application/json'
+    accept: 'application/json',
   };
 
   const createMockAxiosResponse = (status: number, data: any): AxiosResponse => ({
@@ -33,7 +33,7 @@ describe('NoC Service', () => {
     statusText: status === 200 ? 'OK' : status === 404 ? 'Not Found' : 'Internal Server Error',
     headers: {},
     config: { headers: {} } as any,
-    request: {}
+    request: {},
   });
 
   beforeEach(() => {
@@ -42,19 +42,19 @@ describe('NoC Service', () => {
     // Mock request object
     req = mockReq({
       headers: {
-        'Authorization': 'Bearer token123',
-        'ServiceAuthorization': 'Bearer s2stoken123'
+        Authorization: 'Bearer token123',
+        ServiceAuthorization: 'Bearer s2stoken123',
       },
       session: {
         passport: {
           user: {
             userinfo: {
               id: 'user123',
-              uid: 'user123'
-            }
-          }
-        }
-      }
+              uid: 'user123',
+            },
+          },
+        },
+      },
     });
 
     // Mock logger to prevent console output during tests
@@ -64,7 +64,7 @@ describe('NoC Service', () => {
       debug: sandbox.stub(),
       warn: sandbox.stub(),
       trackRequest: sandbox.stub(),
-      _logger: {} as any
+      _logger: {} as any,
     };
     loggerSpy = sandbox.stub(log4jui, 'getLogger').returns(mockLogger);
 
@@ -97,12 +97,12 @@ describe('NoC Service', () => {
             regular_expression: null,
             fixed_list_items: [],
             complex_fields: [],
-            collection_field_type: null
+            collection_field_type: null,
           },
           display_context_parameter: '1',
           challenge_question_id: 'NoC',
           answer_field: null,
-          question_id: 'QuestionId123'
+          question_id: 'QuestionId123',
         },
         {
           case_type_id: 'AAT',
@@ -116,14 +116,14 @@ describe('NoC Service', () => {
             regular_expression: null,
             fixed_list_items: [],
             complex_fields: [],
-            collection_field_type: null
+            collection_field_type: null,
           },
           display_context_parameter: '1',
           challenge_question_id: 'NoC',
           answer_field: null,
-          question_id: 'QuestionId456'
-        }
-      ]
+          question_id: 'QuestionId456',
+        },
+      ],
     };
 
     it('should successfully retrieve NoC questions for valid case ID', async () => {
@@ -240,7 +240,7 @@ describe('NoC Service', () => {
     it('should handle timeout errors', async () => {
       const timeoutError = {
         code: 'ECONNABORTED',
-        message: 'timeout of 30000ms exceeded'
+        message: 'timeout of 30000ms exceeded',
       };
       httpGetStub.rejects(timeoutError);
 
@@ -255,7 +255,7 @@ describe('NoC Service', () => {
     it('should handle connection refused errors', async () => {
       const connectionError = {
         code: 'ECONNREFUSED',
-        message: 'connect ECONNREFUSED 127.0.0.1:8080'
+        message: 'connect ECONNREFUSED 127.0.0.1:8080',
       };
       httpGetStub.rejects(connectionError);
 
@@ -272,8 +272,8 @@ describe('NoC Service', () => {
         message: 'Request failed',
         response: {
           status: 503,
-          data: { error: 'Service Unavailable' }
-        }
+          data: { error: 'Service Unavailable' },
+        },
       };
       httpGetStub.rejects(networkError);
 
@@ -350,21 +350,21 @@ describe('NoC Service', () => {
       answers: [
         {
           question_id: 'QuestionId123',
-          value: 'John'
+          value: 'John',
         },
         {
           question_id: 'QuestionId456',
-          value: 'Doe'
-        }
-      ]
+          value: 'Doe',
+        },
+      ],
     };
 
     const mockValidationResponse = {
       OrganisationPolicy: {
-        Organisation: 'orgId123'
+        Organisation: 'orgId123',
       },
       code: '',
-      status_message: 'success'
+      status_message: 'success',
     };
 
     it('should successfully post NoC validation request', async () => {
@@ -393,7 +393,7 @@ describe('NoC Service', () => {
     it('should handle 400 bad request response', async () => {
       const badRequestResponse = {
         message: 'Case ID has to be a valid 16-digit',
-        code: 'case-id-invalid'
+        code: 'case-id-invalid',
       };
       const mockResponse = createMockAxiosResponse(400, badRequestResponse);
       httpPostStub.resolves(mockResponse);
@@ -407,7 +407,7 @@ describe('NoC Service', () => {
     it('should handle 404 case not found response', async () => {
       const notFoundResponse = {
         message: 'Case could not be found',
-        code: 'case-not-found'
+        code: 'case-not-found',
       };
       const mockResponse = createMockAxiosResponse(404, notFoundResponse);
       httpPostStub.resolves(mockResponse);
@@ -421,7 +421,7 @@ describe('NoC Service', () => {
     it('should handle 422 validation error response', async () => {
       const validationErrorResponse = {
         message: 'The answers did not match those for any litigant',
-        code: 'answers-not-matched-any-litigant'
+        code: 'answers-not-matched-any-litigant',
       };
       const mockResponse = createMockAxiosResponse(422, validationErrorResponse);
       httpPostStub.resolves(mockResponse);
@@ -468,7 +468,7 @@ describe('NoC Service', () => {
       const incompleteBody = { case_id: '1234567890123456' };
       const mockResponse = createMockAxiosResponse(400, {
         message: 'The number of provided answers must match the number of questions',
-        code: 'answers-mismatch-questions'
+        code: 'answers-mismatch-questions',
       });
       httpPostStub.resolves(mockResponse);
 
@@ -480,13 +480,11 @@ describe('NoC Service', () => {
 
     it('should handle request body with missing case_id', async () => {
       const bodyWithoutCaseId = {
-        answers: [
-          { question_id: 'QuestionId123', value: 'John' }
-        ]
+        answers: [{ question_id: 'QuestionId123', value: 'John' }],
       };
       const mockResponse = createMockAxiosResponse(400, {
         message: 'Case ID can not be empty',
-        code: 'case-id-empty'
+        code: 'case-id-empty',
       });
       httpPostStub.resolves(mockResponse);
 
@@ -499,11 +497,11 @@ describe('NoC Service', () => {
     it('should handle request body with empty answers array', async () => {
       const bodyWithEmptyAnswers = {
         case_id: '1234567890123456',
-        answers: []
+        answers: [],
       };
       const mockResponse = createMockAxiosResponse(400, {
         message: 'Challenge question answers can not be empty',
-        code: 'answers-empty'
+        code: 'answers-empty',
       });
       httpPostStub.resolves(mockResponse);
 
@@ -542,7 +540,7 @@ describe('NoC Service', () => {
     it('should handle timeout errors on POST requests', async () => {
       const timeoutError = {
         code: 'ECONNABORTED',
-        message: 'timeout of 30000ms exceeded'
+        message: 'timeout of 30000ms exceeded',
       };
       httpPostStub.rejects(timeoutError);
 
@@ -559,8 +557,8 @@ describe('NoC Service', () => {
         message: 'Request failed',
         response: {
           status: 502,
-          data: { error: 'Bad Gateway' }
-        }
+          data: { error: 'Bad Gateway' },
+        },
       };
       httpPostStub.rejects(networkError);
 
@@ -576,7 +574,7 @@ describe('NoC Service', () => {
       const customHeaders = {
         ...mockHeaders,
         'X-Custom-Header': 'custom-value',
-        'Accept': 'application/vnd.api+json'
+        Accept: 'application/vnd.api+json',
       };
       setHeadersStub.returns(customHeaders);
       const mockResponse = createMockAxiosResponse(200, mockValidationResponse);
@@ -593,8 +591,8 @@ describe('NoC Service', () => {
         case_id: '1234567890123456',
         answers: Array.from({ length: 100 }, (_, i) => ({
           question_id: `QuestionId${i}`,
-          value: `Answer${i}`.repeat(100)
-        }))
+          value: `Answer${i}`.repeat(100),
+        })),
       };
       const mockResponse = createMockAxiosResponse(200, mockValidationResponse);
       httpPostStub.resolves(mockResponse);
@@ -611,13 +609,13 @@ describe('NoC Service', () => {
         answers: [
           {
             question_id: 'QuestionId123',
-            value: 'José María-Ñuñez & Sons (£500)'
+            value: 'José María-Ñuñez & Sons (£500)',
           },
           {
             question_id: 'QuestionId456',
-            value: '中文测试'
-          }
-        ]
+            value: '中文测试',
+          },
+        ],
       };
       const mockResponse = createMockAxiosResponse(200, mockValidationResponse);
       httpPostStub.resolves(mockResponse);
@@ -644,9 +642,9 @@ describe('NoC Service', () => {
         ...mockValidationResponse,
         metadata: {
           timestamp: '2023-01-01T12:00:00Z',
-          version: '1.0'
+          version: '1.0',
         },
-        warnings: ['This is a warning message']
+        warnings: ['This is a warning message'],
       };
       const mockResponse = createMockAxiosResponse(200, extendedResponse);
       httpPostStub.resolves(mockResponse);
@@ -691,10 +689,7 @@ describe('NoC Service', () => {
       httpGetStub.onFirstCall().resolves(mockResponse1);
       httpGetStub.onSecondCall().resolves(mockResponse2);
 
-      const [result1, result2] = await Promise.all([
-        handleGet(path1, req),
-        handleGet(path2, req)
-      ]);
+      const [result1, result2] = await Promise.all([handleGet(path1, req), handleGet(path2, req)]);
 
       expect(result1.data.questions).to.deep.equal(['q1']);
       expect(result2.data.questions).to.deep.equal(['q2']);
@@ -712,7 +707,7 @@ describe('NoC Service', () => {
 
       const [result1, result2] = await Promise.all([
         handlePost('/noc/verify1', body1, req),
-        handlePost('/noc/verify2', body2, req)
+        handlePost('/noc/verify2', body2, req),
       ]);
 
       expect(result1.data.result).to.equal('success1');
@@ -722,7 +717,7 @@ describe('NoC Service', () => {
 
     it('should handle request object without session', async () => {
       const reqWithoutSession = mockReq({
-        headers: mockHeaders
+        headers: mockHeaders,
       });
       delete reqWithoutSession.session;
 
@@ -752,8 +747,8 @@ describe('NoC Service', () => {
         questions: Array.from({ length: 1000 }, (_, i) => ({
           id: `question_${i}`,
           text: `Question ${i}`.repeat(100),
-          answers: Array.from({ length: 10 }, (_, j) => `Answer ${j}`.repeat(50))
-        }))
+          answers: Array.from({ length: 10 }, (_, j) => `Answer ${j}`.repeat(50)),
+        })),
       };
 
       const mockResponse = createMockAxiosResponse(200, largeResponseData);
@@ -774,14 +769,14 @@ describe('NoC Service', () => {
         case_id: '1234567890123456',
         answers: Array.from({ length: 1000 }, (_, i) => ({
           question_id: `question_${i}`,
-          value: 'Very long answer that repeats many times '.repeat(50)
+          value: 'Very long answer that repeats many times '.repeat(50),
         })),
         metadata: {
           additionalData: Array.from({ length: 500 }, (_, i) => ({
             key: `key_${i}`,
-            value: `value_${i}`.repeat(100)
-          }))
-        }
+            value: `value_${i}`.repeat(100),
+          })),
+        },
       };
 
       const mockResponse = createMockAxiosResponse(200, { success: true });

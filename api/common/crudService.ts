@@ -25,12 +25,16 @@ export async function handleGet(path: string, req: EnhancedRequest, next: NextFu
   }
 }
 
-export async function sendGet(path: string, req: EnhancedRequest, customHeaders: { [x: string]: string } = {}): Promise<AxiosResponse> {
+export async function sendGet(
+  path: string,
+  req: EnhancedRequest,
+  customHeaders: { [x: string]: string } = {}
+): Promise<AxiosResponse> {
   try {
     logger.info('sendGet to:', path);
     const headers = {
       ...setHeaders(req),
-      ...customHeaders
+      ...customHeaders,
     };
     return await http.get(path, { headers });
   } catch (e) {
@@ -81,7 +85,7 @@ export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequ
     const headers = setHeaders(req);
     return await http.post(path, body, {
       headers,
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer',
     });
   } catch (e) {
     next(e);
@@ -131,7 +135,7 @@ export async function handleDelete<T>(path: string, body: T, req: EnhancedReques
     const headers = setHeaders(req);
     return await http.delete(path, {
       data: body,
-      headers
+      headers,
     });
   } catch (e) {
     next(e);
@@ -146,7 +150,7 @@ export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest)
     delete headers.accept;
     return await http.delete(path, {
       data: body,
-      headers
+      headers,
     });
   } catch (e) {
     logger.error(e.status, e.statusText, JSON.stringify(e.data));

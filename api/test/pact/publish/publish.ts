@@ -15,7 +15,21 @@ const publish = async (): Promise<void> => {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
 
-    const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ? getConfigValue(PACT_CONSUMER_VERSION) : git.short();
+    const resolveConsumerVersion = (): string => {
+      try {
+        return git.short();
+      } catch (error) {
+        const envSha = process.env.GIT_COMMIT || process.env.CI_COMMIT_SHA || process.env.BUILD_VCS_NUMBER;
+        if (envSha && envSha.trim()) {
+          return envSha.trim().slice(0, 12);
+        }
+        return `local-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+      }
+    };
+
+    const configuredConsumerVersion = getConfigValue(PACT_CONSUMER_VERSION);
+    const consumerVersion =
+      configuredConsumerVersion && configuredConsumerVersion.trim() !== '' ? configuredConsumerVersion : resolveConsumerVersion();
 
     const opts = {
       consumerVersion,

@@ -2,6 +2,11 @@ import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 
+const isEmptyFlagsRow = (row: Record<string, string>): boolean => {
+  const text = Object.values(row).join(' ').replace(/\s+/g, ' ').trim();
+  return !text || /no flags|no active flags|no case flags/i.test(text);
+};
+
 test.describe('Case level case flags', () => {
   const testValue = faker.person.firstName();
   let caseNumber: string;
@@ -14,10 +19,12 @@ test.describe('Case level case flags', () => {
   });
 
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
-    await test.step('Check there are no flags already present', async () => {
+    let existingFlagsCount = 0;
+
+    await test.step('Record existing case level flags count', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
-      expect.soft(table.length).toBe(0);
+      existingFlagsCount = table.filter((row) => !isEmptyFlagsRow(row)).length;
     });
 
     await test.step('Create a new case level flag', async () => {
@@ -44,7 +51,9 @@ test.describe('Case level case flags', () => {
         'Flag status': 'ACTIVE',
       };
       const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
-      expect(table[0]).toMatchObject(expectedFlag);
+      const visibleRows = table.filter((row) => !isEmptyFlagsRow(row));
+      expect(visibleRows.length).toBe(existingFlagsCount + 1);
+      expect(visibleRows).toEqual(expect.arrayContaining([expect.objectContaining(expectedFlag)]));
     });
   });
 });
@@ -61,10 +70,12 @@ test.describe('Party level case flags', () => {
   });
 
   test('Create a new party level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
-    await test.step('Check there are no flags already present', async () => {
+    let existingFlagsCount = 0;
+
+    await test.step('Record existing party level flags count', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
-      expect.soft(table.length).toBe(0);
+      existingFlagsCount = table.filter((row) => !isEmptyFlagsRow(row)).length;
     });
 
     await test.step('Create a new party level flag', async () => {
@@ -95,7 +106,9 @@ test.describe('Party level case flags', () => {
         'Flag status': 'ACTIVE',
       };
       const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
-      expect(table[0]).toMatchObject(expectedFlag);
+      const visibleRows = table.filter((row) => !isEmptyFlagsRow(row));
+      expect(visibleRows.length).toBe(existingFlagsCount + 1);
+      expect(visibleRows).toEqual(expect.arrayContaining([expect.objectContaining(expectedFlag)]));
     });
   });
 });

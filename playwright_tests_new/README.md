@@ -97,6 +97,25 @@ rm -rf .sessions && npx playwright test
 - **Fixtures**: `E2E/fixtures.ts` - Custom Playwright fixtures
 - **Welsh Language**: Welsh language coverage now lives in `playwright_tests_new/integration/test/welshLanguage/` (removed from E2E)
 
+### Table Parsing (Playwright Common)
+
+Use the table parser from `@hmcts/playwright-common` for **all** tables. This avoids brittle locators and standardizes table handling across tests.
+
+Rules:
+- Prefer `tableUtils.parseDataTable()` for normal tables with headers.
+- Use `tableUtils.parseWorkAllocationTable()` for WA task tables.
+- Do not assert `table.length === 0` for empty tables. Empty state rows are returned as a single row.
+
+Example:
+
+```ts
+// Case flags table
+await caseDetailsPage.selectCaseDetailsTab('Flags');
+const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
+const visibleRows = table.filter((row) => Object.values(row).join(' ').trim() !== '');
+expect(visibleRows.length).toBeGreaterThan(0);
+```
+
 ---
 
 ## Session Management

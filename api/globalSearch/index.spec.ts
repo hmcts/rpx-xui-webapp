@@ -4,6 +4,8 @@ import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { getConfigValue } from '../configuration';
+import { GLOBAL_SEARCH_SERVICES } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import * as globalSearchServices from './index';
@@ -156,6 +158,16 @@ describe('Jurisdiction', () => {
     sandbox.restore();
   });
 
+  const getExpectedServiceList = (): HMCTSServiceDetails[] => {
+    const serviceIds = getConfigValue<string>(GLOBAL_SEARCH_SERVICES)
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+    return serviceIds.map((serviceId) =>
+      serviceList.find((service) => service.serviceId.toLowerCase() === serviceId.toLowerCase()) || { serviceId, serviceName: serviceId }
+    );
+  };
+
   it('should get global search services', async() => {
     const req = mockReq();
     const res = mockRes({
@@ -180,20 +192,24 @@ describe('Jurisdiction', () => {
   });
 
   it('should return global search services', async() => {
+    const expectedCount = getConfigValue<string>(GLOBAL_SEARCH_SERVICES)
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .length;
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(expectedCount);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(expectedCount);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(expectedCount);
   });
 
   it('should return global search services2', async() => {
-    console.log('refDataHMCTS size: ' + refDataHMCTS.length);
     const services = globalSearchServices.generateServices(refDataHMCTS);
-    expect(services).to.deep.equal(serviceList);
+    expect(services).to.deep.equal(getExpectedServiceList());
   });
 
   it('should get global search results', async () => {

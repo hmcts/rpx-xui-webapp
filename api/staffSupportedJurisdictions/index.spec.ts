@@ -3,6 +3,8 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import { getConfigValue } from '../configuration';
+import { STAFF_SUPPORTED_JURISDICTIONS } from '../configuration/references';
 import * as staffSupportedJurisdictions from './index';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -27,12 +29,19 @@ describe('Staff Supported Jurisdictions', () => {
   it('should get supported jurisdictions', async() => {
     await staffSupportedJurisdictions.getStaffSupportedJurisdictions(req, res, null);
     // note: CMC not included for caseworker errors
-    const response = ['ST_CIC', 'CIVIL', 'EMPLOYMENT', 'PRIVATELAW', 'PUBLICLAW', 'IA', 'SSCS', 'DIVORCE', 'FR', 'PROBATE'];
+    const response = getConfigValue<string>(STAFF_SUPPORTED_JURISDICTIONS)
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
     expect(res.send).to.have.been.calledWith(sinon.match(response));
   });
 
   it('should get only the list of supported jurisdictions', async() => {
     const jurisdictionList = staffSupportedJurisdictions.getStaffSupportedJurisdictionsList();
-    expect(jurisdictionList).to.deep.equal(['ST_CIC', 'CIVIL', 'EMPLOYMENT', 'PRIVATELAW', 'PUBLICLAW', 'IA', 'SSCS', 'DIVORCE', 'FR', 'PROBATE']);
+    const expected = getConfigValue<string>(STAFF_SUPPORTED_JURISDICTIONS)
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+    expect(jurisdictionList).to.deep.equal(expected);
   });
 });

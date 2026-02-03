@@ -1329,7 +1329,7 @@ describe('workAllocation', () => {
 
         const req = mockReq({
           body: { someData: 'test' },
-          params: { action: 'cancel', taskId: '123456' } // Changed to cancel action
+          params: { action: 'cancel', taskId: '123456' }, // Changed to cancel action
         });
         const response = mockRes();
 

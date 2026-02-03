@@ -27,7 +27,7 @@ describe('Task management api, cancel a task', () => {
           method: 'POST',
           path: `/task/${taskId}/cancel`,
           query: {
-            cancellation_process: cancelProcess
+            cancellation_process: cancelProcess,
           },
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
@@ -66,11 +66,11 @@ describe('Task management api, cancel a task', () => {
           },
           params: {
             taskId: taskId,
-            action: 'cancel'
+            action: 'cancel',
           },
           query: {
-            cancellation_process: cancelProcess
-          }
+            cancellation_process: cancelProcess,
+          },
         });
         let resStatus = null;
         const response = mockRes();

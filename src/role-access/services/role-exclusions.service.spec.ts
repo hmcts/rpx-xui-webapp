@@ -12,9 +12,11 @@ describe('RoleExclusionsService', () => {
 
   it('getCurrentUserRoleExclusions', () => {
     roleExclusionsService.getCurrentUserRoleExclusions('12343454545', 'JUR', 'caseType', 'someId');
-    expect(mockHttp.post).toHaveBeenCalledWith(
-      `${RoleExclusionsService.exclusionsUrl}/post`,
-      { caseId: '12343454545', jurisdiction: 'JUR', caseType: 'caseType', exclusionId: 'someId' }
-    );
+    expect(mockHttp.post).toHaveBeenCalledWith(`${RoleExclusionsService.exclusionsUrl}/post`, {
+      caseId: '12343454545',
+      jurisdiction: 'JUR',
+      caseType: 'caseType',
+      exclusionId: 'someId',
+    });
   });
 });

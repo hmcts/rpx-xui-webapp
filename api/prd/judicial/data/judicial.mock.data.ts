@@ -16,7 +16,7 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     active_flag: 'Y',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y'
+    is_magistrate: 'Y',
   },
   {
     sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c2',
@@ -33,7 +33,7 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     active_flag: 'Y',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y'
+    is_magistrate: 'Y',
   },
   {
     sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
@@ -50,7 +50,7 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     active_flag: 'Y',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y'
+    is_magistrate: 'Y',
   },
   {
     sidam_id: '38eb0c5e-29c7-453e-b92d-f2029aaed6c4',
@@ -67,8 +67,8 @@ export const RAW_JUDICIAL_USERS: RawJudicialUserModel[] = [
     active_flag: 'Y',
     is_judge: 'Y',
     is_panel_number: 'Y',
-    is_magistrate: 'Y'
-  }
+    is_magistrate: 'Y',
+  },
 ];
 
 export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
@@ -84,7 +84,7 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     personalCode: 'p1000000',
     isJudge: 'Y',
     isMagistrate: 'Y',
-    isPanelMember: 'Y'
+    isPanelMember: 'Y',
   },
   {
     title: 'Mr',
@@ -98,7 +98,7 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     personalCode: 'p1000001',
     isJudge: 'Y',
     isMagistrate: 'Y',
-    isPanelMember: 'Y'
+    isPanelMember: 'Y',
   },
   {
     title: 'Mr',
@@ -112,7 +112,7 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     personalCode: 'p1000002',
     isJudge: 'Y',
     isMagistrate: 'Y',
-    isPanelMember: 'Y'
+    isPanelMember: 'Y',
   },
   {
     title: 'Mr',
@@ -126,6 +126,6 @@ export const ALL_JUDICIAL_USERS: JudicialUserModel[] = [
     personalCode: 'p1000003',
     isJudge: 'Y',
     isMagistrate: 'Y',
-    isPanelMember: 'Y'
-  }
+    isPanelMember: 'Y',
+  },
 ];

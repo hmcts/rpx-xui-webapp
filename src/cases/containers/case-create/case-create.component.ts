@@ -14,10 +14,10 @@ import * as fromCaseCreate from '../../store';
   standalone: false,
   selector: 'exui-create-case',
   templateUrl: './case-create.component.html',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {
-  public caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};
+  public caseCreateInputs: { jurisdictionId: string; caseTypeId: string; eventId: string };
 
   public caseCreateEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -28,23 +28,24 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
-    this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
-      .subscribe((caseFilterInput) => {
-        // if state is reseated then redirect
-        if (!caseFilterInput.jurisdictionId) {
-          this.store.dispatch(new fromRoot.Go({
-            path: ['/cases/case-list']
-          }));
-          return;
-        }
-        this.caseCreateInputs = caseFilterInput;
-      });
+    this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState)).subscribe((caseFilterInput) => {
+      // if state is reseated then redirect
+      if (!caseFilterInput.jurisdictionId) {
+        this.store.dispatch(
+          new fromRoot.Go({
+            path: ['/cases/case-list'],
+          })
+        );
+        return;
+      }
+      this.caseCreateInputs = caseFilterInput;
+    });
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
      */
     this.caseCreateEventsBindings = [
       { type: 'cancelled', action: 'CreateCaseReset' },
-      { type: 'submitted', action: 'ApplyChange' }
+      { type: 'submitted', action: 'ApplyChange' },
     ];
   }
 

@@ -11,7 +11,7 @@ import {
   getMyAccessNewCount,
   getRolesByCaseId,
   manageLabellingRoleAssignment,
-  reallocateRole
+  reallocateRole,
 } from './index';
 import { getPossibleRoles } from './roleAssignmentService';
 

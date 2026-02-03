@@ -13,13 +13,10 @@ describe('DescribeExclusionComponent', () => {
   const mockStore = jasmine.createSpyObj('mockFormBuilder', ['pipe', 'dispatch']);
   const mockFormBuilder = jasmine.createSpyObj('mockFormBuilder', ['group']);
   const formGroup = new FormBuilder().group({
-    infoCtrl: 'test'
+    infoCtrl: 'test',
   });
   mockFormBuilder.group.and.returnValue(formGroup);
-  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(
-    mockStore,
-    mockFormBuilder
-  );
+  const component: SpecificAccessInformationComponent = new SpecificAccessInformationComponent(mockStore, mockFormBuilder);
   component.error = {};
   component.formGroup = formGroup;
   let fixture: ComponentFixture<SpecificAccessInformationComponent>;
@@ -32,9 +29,9 @@ describe('DescribeExclusionComponent', () => {
         FormBuilder,
         {
           provide: Store,
-          useValue: mockStore
-        }
-      ]
+          useValue: mockStore,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(SpecificAccessInformationComponent);
     mockStore.pipe.and.returnValue(of({}));
@@ -57,7 +54,7 @@ describe('DescribeExclusionComponent', () => {
       comment: 'test',
       roleCategory: RoleCategory.LEGAL_OPERATIONS,
       requestedRole: 'specific-access-legal-operations',
-      person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null }
+      person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
     };
 
     it('should correctly navigate on click of back link in the navigation handler', () => {

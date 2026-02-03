@@ -17,10 +17,10 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
     queryRequests: [
       {
         attributes: {
-          caseId: [somethingLike('12345')]
-        }
-      }
-    ]
+          caseId: [somethingLike('12345')],
+        },
+      },
+    ],
   };
   const RESPONSE_BODY = {
     roleAssignmentResponse: [
@@ -40,10 +40,10 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
           substantive: somethingLike('Y'),
           caseId: somethingLike('1546883526751282'),
           jurisdiction: somethingLike('IA'),
-          caseType: somethingLike('Asylum')
-        }
-      }
-    ]
+          caseType: somethingLike('Asylum'),
+        },
+      },
+    ],
   };
 
   describe('post /am/role-assignments/query', () => {
@@ -62,19 +62,21 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
           method: 'POST',
           path: '/am/role-assignments/query',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -96,14 +98,14 @@ xdescribe('getAccessRolesByCaseId - access management service, query role assign
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
           body: {
-            caseId: caseId
-          }
-
+            caseId: caseId,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

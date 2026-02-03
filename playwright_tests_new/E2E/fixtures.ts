@@ -209,7 +209,6 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
     },
 
     // Worker scoped fixtures need to be defined separately
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     lighthousePort: [
       async ({ browserName }, use) => {
         if (browserName) {

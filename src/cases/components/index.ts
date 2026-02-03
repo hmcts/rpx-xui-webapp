@@ -19,7 +19,7 @@ export const components: any[] = [
   AllocateARoleLinkComponent,
   RoleAccessSectionComponent,
   CaseHearingsListComponent,
-  RestrictedCaseAccessComponent
+  RestrictedCaseAccessComponent,
 ];
 
 export * from './allocate-a-role/allocate-a-role-link.component';

@@ -44,7 +44,7 @@ const buildConfig = (env: EnvMap = process.env) => {
 
   return defineConfig({
     use: {
-      baseURL: resolveBaseUrl(env)
+      baseURL: resolveBaseUrl(env),
     },
     testDir: '.',
     testMatch: [
@@ -61,7 +61,7 @@ const buildConfig = (env: EnvMap = process.env) => {
 
     timeout: 3 * 60 * 1000,
     expect: {
-      timeout: 1 * 60 * 1000
+      timeout: 1 * 60 * 1000,
     },
     reportSlowTests: null,
 
@@ -70,27 +70,27 @@ const buildConfig = (env: EnvMap = process.env) => {
 
     reporter: [
       [env.CI ? 'dot' : 'list'],
-      ['odhin-reports-playwright', {
-        outputFolder: odhinOutputFolder,
-        indexFilename: 'xui-playwright.html',
-        title: 'RPX XUI Playwright',
-        testEnvironment: `${env.TEST_TYPE ?? (env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
-        project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-        release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
-        startServer: false,
-        consoleLog: true,
-        consoleError: true,
-        testOutput: 'only-on-failure'
-      }]
+      [
+        'odhin-reports-playwright',
+        {
+          outputFolder: odhinOutputFolder,
+          indexFilename: 'xui-playwright.html',
+          title: 'RPX XUI Playwright',
+          testEnvironment: `${env.TEST_TYPE ?? (env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
+          startServer: false,
+          consoleLog: true,
+          consoleError: true,
+          testOutput: 'only-on-failure',
+        },
+      ],
     ],
 
     projects: [
       {
         name: 'chromium',
-        testIgnore: [
-          'playwright_tests_new/api/**',
-          'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'
-        ],
+        testIgnore: ['playwright_tests_new/api/**', 'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],
@@ -99,10 +99,10 @@ const buildConfig = (env: EnvMap = process.env) => {
           trace: 'retain-on-failure',
           screenshot: {
             mode: 'only-on-failure',
-            fullPage: true
+            fullPage: true,
           },
-          video: 'retain-on-failure'
-        }
+          video: 'retain-on-failure',
+        },
       },
       {
         name: 'smoke',
@@ -115,10 +115,10 @@ const buildConfig = (env: EnvMap = process.env) => {
           trace: 'retain-on-failure',
           screenshot: {
             mode: 'only-on-failure',
-            fullPage: true
+            fullPage: true,
           },
-          video: 'retain-on-failure'
-        }
+          video: 'retain-on-failure',
+        },
       },
       {
         name: 'node-api',
@@ -128,16 +128,16 @@ const buildConfig = (env: EnvMap = process.env) => {
         retries: 0,
         timeout: 60 * 1000,
         expect: {
-          timeout: 10 * 1000
+          timeout: 10 * 1000,
         },
         use: {
           headless: true,
           screenshot: 'off',
           video: 'off',
-          trace: 'off'
-        }
-      }
-    ]
+          trace: 'off',
+        },
+      },
+    ],
   });
 };
 
@@ -146,7 +146,7 @@ const config = buildConfig(process.env);
 (config as { __test__?: unknown }).__test__ = {
   resolveBaseUrl,
   resolveWorkerCount,
-  buildConfig
+  buildConfig,
 };
 
 module.exports = config;

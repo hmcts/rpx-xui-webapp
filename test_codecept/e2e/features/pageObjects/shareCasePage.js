@@ -10,24 +10,44 @@ class ShareCasePage {
     this.testData_lastAddedUser = '';
   }
 
-  get backLink() { return $('.govuk-back-link'); }
-  get shareCaseContainer() { return $('exui-case-share'); }
-  get selectedCases() { return $$('xuilib-selected-case-list xuilib-selected-case'); }
+  get backLink() {
+    return $('.govuk-back-link');
+  }
+  get shareCaseContainer() {
+    return $('exui-case-share');
+  }
+  get selectedCases() {
+    return $$('xuilib-selected-case-list xuilib-selected-case');
+  }
 
-  get continueButton() { return $('#share-case-nav button'); }
-  get noCaseDisplay() { return $('#noCaseDisplay'); }
+  get continueButton() {
+    return $('#share-case-nav button');
+  }
+  get noCaseDisplay() {
+    return $('#noCaseDisplay');
+  }
 
-  get userEmailInput() { return $('#add-user xuilib-user-select .govuk-input'); }
-  get userFilterContainer() { return $('.mat-autocomplete-panel'); }
-  get userFilterList() { return $$('.mat-autocomplete-panel .mat-option-text'); }
-  get addUserBtn() { return $('#btn-add-user'); }
+  get userEmailInput() {
+    return $('#add-user xuilib-user-select .govuk-input');
+  }
+  get userFilterContainer() {
+    return $('.mat-autocomplete-panel');
+  }
+  get userFilterList() {
+    return $$('.mat-autocomplete-panel .mat-option-text');
+  }
+  get addUserBtn() {
+    return $('#btn-add-user');
+  }
 
-  get openCloseAll() { return $('.govuk-accordion__open-all'); }
+  get openCloseAll() {
+    return $('.govuk-accordion__open-all');
+  }
 
   async waitForPageToLoad() {
     await BrowserWaits.waitForElement(this.shareCaseContainer);
     await BrowserWaits.waitForCondition(async () => {
-      return await this.selectedCases.count() > 0;
+      return (await this.selectedCases.count()) > 0;
     });
     await BrowserWaits.waitForSeconds(2);
   }
@@ -110,7 +130,8 @@ class ShareCasePage {
       const userEmail = usernameEmailText.split('-')[1].trim();
       userEmails.push(userEmail);
     }
-    return userEmails; s;
+    return userEmails;
+    s;
   }
 
   async getFilteredUserNameEmails() {
@@ -127,7 +148,7 @@ class ShareCasePage {
 
   async selectUserFromFilteredList(userNum) {
     const userToSelect = await this.userFilterList.nth(userNum - 1);
-    CucumberReportLog.AddMessage('Selected User : ' + await userToSelect.textContent(), LOG_LEVELS.Debug);
+    CucumberReportLog.AddMessage('Selected User : ' + (await userToSelect.textContent()), LOG_LEVELS.Debug);
     await userToSelect.click();
   }
 
@@ -155,7 +176,7 @@ class ShareCasePage {
 
   async clickDeselectCase(caseNum) {
     const selectedCase = await this.selectedCases.nth(caseNum - 1);
-    CucumberReportLog.AddMessage('Deselecting Case ' + await selectedCase.textContent(), LOG_LEVELS.Debug);
+    CucumberReportLog.AddMessage('Deselecting Case ' + (await selectedCase.textContent()), LOG_LEVELS.Debug);
     await selectedCase.locator('#btn-deselect-case').click();
 
     await BrowserWaits.waitForCondition(async () => {
@@ -168,8 +189,7 @@ class ShareCasePage {
     const button = await selectedCase.locator('.govuk-accordion__section-button');
     await BrowserWaits.waitForElement(button, 'Expand/collapse icon not present');
     await BrowserWaits.waitForSeconds(1);
-    await browser.executeScript('arguments[0].scrollIntoView()',
-      button);
+    await browser.executeScript('arguments[0].scrollIntoView()', button);
     await button.click();
   }
 
@@ -191,8 +211,7 @@ class ShareCasePage {
 
   async getActionLinkTextForUser(caseNum, userNum) {
     const actionLink = await this.getActionLinkForUser(caseNum, userNum);
-    const linkText = await browser.executeScript('return arguments[0].textContent',
-      actionLink);
+    const linkText = await browser.executeScript('return arguments[0].textContent', actionLink);
     return linkText;
   }
 
@@ -224,8 +243,7 @@ class ShareCasePage {
   async getEmailForUserIncase(caseNum, userNum) {
     const selectedCase = await this.selectedCases.nth(caseNum - 1);
     const userRow = await selectedCase.locator('tbody tr').nth(userNum - 1);
-    const email = await browser.executeScript('return arguments[0].textContent',
-      userRow.locator('td:nth-of-type(2)'));
+    const email = await browser.executeScript('return arguments[0].textContent', userRow.locator('td:nth-of-type(2)'));
     return email;
   }
 
@@ -233,8 +251,7 @@ class ShareCasePage {
     const selectedCase = await this.selectedCases.nth(caseNum - 1);
     const user = await selectedCase.locator('tbody tr').nth(userNum - 1);
     const actionLabelCol = user.locator('td:nth-of-type(4)');
-    const actionLabel = await browser.executeScript('return arguments[0].textContent',
-      actionLabelCol);
+    const actionLabel = await browser.executeScript('return arguments[0].textContent', actionLabelCol);
     return actionLabel;
   }
 
@@ -245,8 +262,7 @@ class ShareCasePage {
     for (let user = 0; user < userCount; user++) {
       const userRow = await users.nth(user);
 
-      const userEmail = await browser.executeScript('return arguments[0].textContent',
-        userRow.locator('td:nth-of-type(2)'));
+      const userEmail = await browser.executeScript('return arguments[0].textContent', userRow.locator('td:nth-of-type(2)'));
 
       if (userEmail === email) {
         return userRow;
@@ -262,15 +278,13 @@ class ShareCasePage {
 
   async isUserWithEmailMarkedToBeAdded(caseNum, email) {
     const userRow = await this.getUserRowInCase(caseNum, email);
-    const actionLabel = await browser.executeScript('return arguments[0].textContent',
-      userRow.locator('td:nth-of-type(4)'));
+    const actionLabel = await browser.executeScript('return arguments[0].textContent', userRow.locator('td:nth-of-type(4)'));
     return actionLabel.toLowerCase().includes('added');
   }
 
   async isUserWithEmailMarkedToBeRemoved(caseNum, email) {
     const userRow = await this.getUserRowInCase(caseNum, email);
-    const actionLabel = await browser.executeScript('return arguments[0].textContent',
-      userRow.locator('td:nth-of-type(4)'));
+    const actionLabel = await browser.executeScript('return arguments[0].textContent', userRow.locator('td:nth-of-type(4)'));
     return actionLabel.toLowerCase().includes('removed');
   }
 
@@ -280,11 +294,9 @@ class ShareCasePage {
     const userCount = await users.count();
     for (let user = 0; user < userCount; user++) {
       const userRow = await users.nth(user);
-      const userEmail = await browser.executeScript('return arguments[0].textContent',
-        userRow.locator('td:nth-of-type(2)'));
+      const userEmail = await browser.executeScript('return arguments[0].textContent', userRow.locator('td:nth-of-type(2)'));
       if (userEmail === email) {
-        const actionLabel = await browser.executeScript('return arguments[0].textContent',
-          userRow.locator('td:nth-of-type(4)'));
+        const actionLabel = await browser.executeScript('return arguments[0].textContent', userRow.locator('td:nth-of-type(4)'));
         return actionLabel;
       }
     }
@@ -318,7 +330,7 @@ class ShareCasePage {
   async isUserWithEmailSharedWithAtleastOneCase(email) {
     const totalCases = await this.casesCount();
     for (let i = 1; i <= totalCases; i++) {
-      if ((await this.isUserWithEmailListedInCase(i, email))) {
+      if (await this.isUserWithEmailListedInCase(i, email)) {
         return i;
       }
     }
@@ -342,7 +354,9 @@ class ShareCasePage {
       this.testData_lastSelectedUser = email;
       CucumberReportLog.AddMessage('Selected a user not shared with any case : ' + email);
     } else {
-      throw Error('AllUsers shared with all selected cases. cannot proceed with test step to select a user not shared with atleast one case');
+      throw Error(
+        'AllUsers shared with all selected cases. cannot proceed with test step to select a user not shared with atleast one case'
+      );
     }
   }
 
@@ -363,7 +377,9 @@ class ShareCasePage {
       this.testData_lastSelectedUser = email;
       CucumberReportLog.AddMessage('Selected a user  shared with atleast one case : ' + email);
     } else {
-      throw Error('No user is list is shared with any case already. cannot proceed with test step to select a user not shared with atleast one case');
+      throw Error(
+        'No user is list is shared with any case already. cannot proceed with test step to select a user not shared with atleast one case'
+      );
     }
   }
 

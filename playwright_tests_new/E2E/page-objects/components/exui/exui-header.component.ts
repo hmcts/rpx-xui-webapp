@@ -13,10 +13,9 @@ export class ExuiHeaderComponent {
   readonly languageToggle = this.header
     .locator('button.language')
     .or(this.page.getByRole('banner').getByRole('button', { name: /Cymraeg|English/ }));
-
   private waitUtils = new WaitUtils();
 
-  constructor(private page: Page) { }
+  constructor(private page: Page) {}
 
   public async selectHeaderMenuItem(menuItemText: string): Promise<void> {
     const menuItem = this.headerMenuItems.filter({ hasText: menuItemText });

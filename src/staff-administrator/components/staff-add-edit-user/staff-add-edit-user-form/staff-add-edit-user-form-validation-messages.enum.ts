@@ -7,5 +7,5 @@ export enum StaffAddEditUserFormValidationMessages {
   'services.minlength' = 'Select at least one service',
   'base_locations.noPrimaryLocation' = 'Select at least one primary location',
   'user_type.required' = 'Select a user type',
-  'roles.minlength' = 'Select at least one job title'
+  'roles.minlength' = 'Select at least one job title',
 }

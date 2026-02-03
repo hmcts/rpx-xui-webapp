@@ -1,8 +1,8 @@
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const { $, elementByXpath, elementsByXpath, getText } = require('../../../../helpers/globals');
 
-class HearingsTabPage{
-  constructor(){
+class HearingsTabPage {
+  constructor() {
     this.currentAndUpcomingHearings = new HearingsTable('Current and upcoming');
     this.pastOrCancelledHearings = new HearingsTable('Past or cancelled');
   }
@@ -12,14 +12,14 @@ class HearingsTabPage{
   }
 
   get requesthearingBtn() {
-    return elementByXpath('//exui-case-hearings//a[contains(text(),\'Request a hearing\')]');
+    return elementByXpath("//exui-case-hearings//a[contains(text(),'Request a hearing')]");
   }
 
   isDisplayed() {
     return this.tabContainer.isVisible();
   }
 
-  getTableObject(tableName){
+  getTableObject(tableName) {
     return new HearingsTable(tableName);
   }
 
@@ -78,20 +78,19 @@ class HearingsTable {
       const xPath = `${tdXpath}/strong`;
       return elementByXpath(xPath);
     } else if (valueForHeader === 'Actions') {
-      const xPath = `${tdXpath}/div[contains(@class,'div-action')]/button` +
-    ` | ${tdXpath}/div[contains(@class,'div-action')]/a`;
+      const xPath = `${tdXpath}/div[contains(@class,'div-action')]/button` + ` | ${tdXpath}/div[contains(@class,'div-action')]/a`;
       return elementsByXpath(xPath);
     }
     throw new Error(`Unknown column ${valueForHeader}`);
   }
 
-  async clickActionLinkForHearing(hearing, action){
+  async clickActionLinkForHearing(hearing, action) {
     const elements = this.getHearingTypeColumnElement(hearing, 'Actions');
 
     let actionLinkEle = null;
 
     const actionsCount = await elements.count();
-    if (actionsCount === 0){
+    if (actionsCount === 0) {
       reportLogger.AddMessage(`no actions forund for ${JSON.stringify(elements.selector)}`);
     }
     const actionNames = [];
@@ -100,7 +99,7 @@ class HearingsTable {
 
       const name = await getText(e);
       reportLogger.AddMessage(`action "${name}", to click "${action}"`);
-      if (name === action){
+      if (name === action) {
         actionLinkEle = e;
         break;
       }

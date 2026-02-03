@@ -5,7 +5,7 @@ import { NotAuthorisedComponent } from './not-authorised.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -20,9 +20,8 @@ describe('Not Authorised component', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NotAuthorisedComponent, RpxTranslateMockPipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -38,8 +37,8 @@ describe('Not Authorised component', () => {
     const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
     fixture.detectChanges();
     const headingElement = fixture.debugElement.query(By.css('.govuk-heading-xl')).nativeElement;
-    expect(headingElement.textContent).toContain('Sorry, you\'re not authorised to perform this action');
-    expect(translatePipeSpy).toHaveBeenCalledWith('Sorry, you\'re not authorised to perform this action');
+    expect(headingElement.textContent).toContain("Sorry, you're not authorised to perform this action");
+    expect(translatePipeSpy).toHaveBeenCalledWith("Sorry, you're not authorised to perform this action");
     const bodyElement = fixture.debugElement.query(By.css('.govuk-body')).nativeElement;
     expect(bodyElement.textContent).toContain('Try again later.');
     expect(translatePipeSpy).toHaveBeenCalledWith('Try again later.');

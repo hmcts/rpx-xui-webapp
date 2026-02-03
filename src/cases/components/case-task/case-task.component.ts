@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
@@ -11,8 +11,8 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
+import { WINDOW } from '../../../app/shared/tokens/window.token';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
-import { DecentralisedRoutingService } from '../../../app/shared/services/decentralised-routing.service';
 
 @Component({
   standalone: false,
@@ -36,13 +36,13 @@ export class CaseTaskComponent implements OnInit {
   private pTask: Task;
   public userRoleCategory: string;
 
-  constructor(private readonly alertService: AlertService,
-              private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService,
-              private readonly decentralisedRoutingService: DecentralisedRoutingService,
-              private readonly window: Window) {
-  }
+  constructor(
+    private readonly alertService: AlertService,
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    protected taskService: WorkAllocationTaskService,
+    @Inject(WINDOW) private readonly window: Window
+  ) {}
 
   public get returnUrl(): string {
     return this.router ? this.router.url : `case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.task.case_id}/tasks`;
@@ -157,26 +157,14 @@ export class CaseTaskComponent implements OnInit {
 
   public async onClick(event: string) {
     const url = event.substring(event.indexOf('(') + 1, event.indexOf(')'));
-    let qp = {};
-    let base = null;
-    if (!url.startsWith('http')) {
-      base = this.window.location.origin;
-    }
     try {
-      const u = base ? new URL(url, base) : new URL(url);
-      const redirectUrl = this.decentralisedRoutingService.getRedirectUrlFromPathname(u.pathname, u.searchParams);
-      if (redirectUrl) {
-        this.window.location.assign(redirectUrl);
+      const base = url.startsWith('http') ? undefined : this.window.location.origin;
+      const u = new URL(url, base);
+      if (u.origin !== this.window.location.origin) {
+        this.window.location.assign(u.toString());
         return;
       }
-      const tid = u.searchParams.get('tid');
-      if (tid) {
-        qp = { tid: tid };
-        u.searchParams.delete('tid');
-      }
-      await this.router.navigate([u.toString()], {
-        queryParams: qp
-      });
+      await this.router.navigateByUrl(`${u.pathname}${u.search}${u.hash}`);
     } catch (e) {
       console.log('Invalid url found in task onClick', e);
     }

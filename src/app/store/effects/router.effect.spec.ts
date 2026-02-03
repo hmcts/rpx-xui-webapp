@@ -9,7 +9,6 @@ import { AppConfigService } from '../../services/config/configuration.services';
 import { Back, CreateCaseGo, Forward, Go } from '../actions/router.action';
 import * as fromRouterEffects from './router.effect';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { DecentralisedRoutingService } from '../../shared/services/decentralised-routing.service';
 
 describe('Router Effects', () => {
   let actions$;
@@ -23,15 +22,6 @@ describe('Router Effects', () => {
   const RouterMock = jasmine.createSpyObj('Router', [
     'navigate'
   ]);
-  const DecentralisedRoutingServiceMock = jasmine.createSpyObj('DecentralisedRoutingService', [
-    'getRedirectUrlFromPath'
-  ]);
-  const WindowMock = {
-    location: {
-      assign: jasmine.createSpy('assign')
-    }
-  };
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnDispatchToStore = jasmine.createSpy();
 
@@ -48,14 +38,6 @@ describe('Router Effects', () => {
           provide: Router,
           useValue: RouterMock
         },
-        {
-          provide: DecentralisedRoutingService,
-          useValue: DecentralisedRoutingServiceMock
-        },
-        {
-          provide: Window,
-          useValue: WindowMock
-        },
         fromRouterEffects.RouterEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
@@ -67,9 +49,6 @@ describe('Router Effects', () => {
 
     effects = TestBed.inject(fromRouterEffects.RouterEffects);
     RouterMock.navigate.calls.reset();
-    WindowMock.location.assign.calls.reset();
-    DecentralisedRoutingServiceMock.getRedirectUrlFromPath.calls.reset();
-    DecentralisedRoutingServiceMock.getRedirectUrlFromPath.and.returnValue(null);
   });
 
   describe('navigate$', () => {
@@ -141,21 +120,6 @@ describe('Router Effects', () => {
       });
     });
 
-    it('should redirect to decentralised url when configured', (done) => {
-      const payload = {
-        path: ['/cases/case-details/IA/Asylum/123/trigger/ext:customEvent']
-      };
-
-      DecentralisedRoutingServiceMock.getRedirectUrlFromPath.and.returnValue('https://example.com/cases/123/event/ext:customEvent');
-      const action = new Go(payload);
-      actions$ = of(action);
-
-      effects.navigate$.subscribe(() => {
-        expect(WindowMock.location.assign).toHaveBeenCalledWith('https://example.com/cases/123/event/ext:customEvent');
-        expect(RouterMock.navigate).not.toHaveBeenCalled();
-        done();
-      });
-    });
   });
 
   describe('navigateNewCase$', () => {

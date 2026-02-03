@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Params } from '@angular/router';
+import { ActivatedRouteSnapshot, Params } from '@angular/router';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { EnvironmentService } from './environment.service';
 
@@ -21,20 +21,33 @@ export class DecentralisedRoutingService {
     private readonly sessionStorageService: SessionStorageService
   ) {}
 
-  public getRedirectUrlFromPath(path: any[], queryParams?: Params): string | null {
-    const pathString = this.normalisePath(path);
-    if (!pathString) {
+  public getRedirectUrlFromRoute(route: ActivatedRouteSnapshot): string | null {
+    if (!route) {
       return null;
     }
-    return this.getRedirectUrlFromPathname(pathString, queryParams);
-  }
 
-  public getRedirectUrlFromPathname(pathname: string, queryParams?: Params | URLSearchParams): string | null {
-    const context = this.extractContext(pathname);
-    if (!context) {
+    const params = this.collectParams(route);
+    const eventId = params.eid;
+    const caseTypeId = params.caseType || params.ctid;
+    const jurisdictionId = params.jurisdiction || params.jid;
+    const caseId = params.cid;
+
+    if (!eventId || !caseTypeId) {
       return null;
     }
-    return this.buildRedirectUrl(context, queryParams);
+
+    if (!caseId && !jurisdictionId) {
+      return null;
+    }
+
+    const context: DecentralisedEventContext = {
+      caseTypeId,
+      eventId,
+      caseId,
+      jurisdictionId
+    };
+
+    return this.buildRedirectUrl(context, route.queryParams);
   }
 
   private buildRedirectUrl(context: DecentralisedEventContext, queryParams?: Params | URLSearchParams): string | null {
@@ -163,64 +176,27 @@ export class DecentralisedRoutingService {
     });
   }
 
-  private extractContext(pathname: string): DecentralisedEventContext | null {
-    if (!pathname) {
-      return null;
-    }
-    const cleanedPath = this.stripPath(pathname);
-    if (!cleanedPath) {
-      return null;
-    }
-
-    const segments = cleanedPath.split('/').filter(Boolean);
-    const caseCreateIndex = segments.indexOf('case-create');
-    if (caseCreateIndex > -1 && segments.length >= caseCreateIndex + 4) {
-      return {
-        jurisdictionId: segments[caseCreateIndex + 1],
-        caseTypeId: segments[caseCreateIndex + 2],
-        eventId: segments[caseCreateIndex + 3]
-      };
-    }
-
-    const triggerIndex = segments.indexOf('trigger');
-    if (triggerIndex > -1 && segments.length > triggerIndex + 1) {
-      const eventId = segments[triggerIndex + 1];
-      const caseDetailsIndex = segments.indexOf('case-details');
-      const caseIndex = segments.indexOf('case');
-      const detailsIndex = caseDetailsIndex > -1 ? caseDetailsIndex : caseIndex;
-      if (detailsIndex > -1 && triggerIndex > detailsIndex + 3) {
-        return {
-          jurisdictionId: segments[detailsIndex + 1],
-          caseTypeId: segments[detailsIndex + 2],
-          caseId: segments[detailsIndex + 3],
-          eventId
-        };
-      }
-    }
-
-    return null;
-  }
-
-  private stripPath(pathname: string): string {
-    const withoutQuery = pathname.split('?')[0].split('#')[0];
-    return withoutQuery.replace(/^\/+|\/+$/g, '');
-  }
-
   private normaliseBaseUrl(baseUrl: string): string {
     return baseUrl.replace(/\/+$/g, '');
   }
 
-  private normalisePath(path: any[]): string | null {
-    if (!path || !path.length) {
-      return null;
+  private collectParams(route: ActivatedRouteSnapshot): Record<string, string> {
+    if (route.pathFromRoot && route.pathFromRoot.length) {
+      return route.pathFromRoot.reduce((acc, snapshot) => ({
+        ...acc,
+        ...snapshot.params
+      }), {} as Record<string, string>);
     }
-    const segments = path.filter((segment) => segment !== undefined && segment !== null).map(String);
-    if (!segments.length) {
-      return null;
-    }
-    if (segments.length === 1 && segments[0].includes('/')) {
-      return segments[0];
-    }
-    return `/${segments.join('/')}`;
+
+    const params: Record<string, string> = {};
+    const visit = (snapshot: ActivatedRouteSnapshot): void => {
+      if (!snapshot) {
+        return;
+      }
+      Object.assign(params, snapshot.params);
+      snapshot.children?.forEach((child) => visit(child));
+    };
+    visit(route);
+    return params;
   }
 }

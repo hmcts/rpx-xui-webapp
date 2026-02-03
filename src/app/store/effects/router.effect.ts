@@ -9,7 +9,6 @@ import { Store } from '@ngrx/store';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import * as fromCases from '../../../cases/store/index';
 import { from } from 'rxjs';
-import { DecentralisedRoutingService } from '../../shared/services/decentralised-routing.service';
 
 @Injectable()
 export class RouterEffects {
@@ -17,20 +16,13 @@ export class RouterEffects {
     private readonly actions$: Actions,
     private readonly router: Router,
     private readonly location: Location,
-    private readonly store: Store<fromCases.State>,
-    private readonly decentralisedRoutingService: DecentralisedRoutingService,
-    private readonly window: Window
+    private readonly store: Store<fromCases.State>
   ) {}
 
   public navigate$ = createEffect(() => this.actions$.pipe(
     ofType(RouterActions.GO),
     map((action: RouterActions.Go) => action.payload),
     mergeMap(({ path, query: queryParams, extras, callback, errorHandler }) => {
-      const redirectUrl = this.decentralisedRoutingService.getRedirectUrlFromPath(path, queryParams);
-      if (redirectUrl) {
-        this.window.location.assign(redirectUrl);
-        return from(Promise.resolve(false));
-      }
       return from(
         this.router.navigate(path, { queryParams, ...extras })
           .then(() => callback ? callback() : false)

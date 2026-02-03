@@ -13,28 +13,26 @@ describe('CaseTaskComponent', () => {
   let mockRouter: any;
   let mockTaskService: any;
   let mockFeatureToggleService: any;
-  let mockDecentralisedRoutingService: any;
   let mockWindow: any;
   let component: CaseTaskComponent;
 
   beforeEach(() => {
     mockAlertService = jasmine.createSpyObj('alertService', ['success', 'warning']);
     mockSessionStorage = jasmine.createSpyObj('mockSessionStorage', ['getItem']);
-    mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
+    mockRouter = jasmine.createSpyObj('router', ['navigate', 'navigateByUrl', 'url']);
     mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
     mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
     mockRouter.url = '/case-details/IA/Asylum/123243430403904/tasks';
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mockRouter.navigate.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
-    mockDecentralisedRoutingService = jasmine.createSpyObj('DecentralisedRoutingService', ['getRedirectUrlFromPathname']);
-    mockDecentralisedRoutingService.getRedirectUrlFromPathname.and.returnValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    mockRouter.navigateByUrl.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
     mockWindow = { location: { origin: 'https://manage-case.hmcts.platform.net', assign: jasmine.createSpy('assign') } };
     component = new CaseTaskComponent(
       mockAlertService,
       mockRouter,
       mockSessionStorage,
       mockTaskService,
-      mockDecentralisedRoutingService,
       mockWindow
     );
     mockFeatureToggleService.getValue.and.returnValue(of({
@@ -241,7 +239,6 @@ describe('CaseTaskComponent', () => {
       mockRouter,
       mockSessionStorage,
       mockTaskService,
-      mockDecentralisedRoutingService,
       mockWindow
     );
     component.task = {
@@ -369,29 +366,28 @@ describe('CaseTaskComponent', () => {
 
   describe('onClick() with no tid', () => {
     it('should navigate correctly on click', () => {
-      component.onClick('exampleUrl(http://firsturlpart/?foo=fooparam)end');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['http://firsturlpart/?foo=fooparam'], { queryParams: {} });
+      component.onClick('exampleUrl(/firsturlpart/?foo=fooparam)end');
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/firsturlpart/?foo=fooparam');
     });
   });
   describe('onClick() with tid', () => {
     it('should navigate correctly on click', () => {
-      component.onClick('exampleUrl(http://firsturlpart/?tid=1234)end');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['http://firsturlpart/'], { queryParams: { tid: '1234' } });
+      component.onClick('exampleUrl(/firsturlpart/?tid=1234)end');
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/firsturlpart/?tid=1234');
     });
   });
-  describe('onClick() with relative URL and tid', () => {
-    it('should navigate correctly on click', () => {
-      component.onClick('exampleUrl(/firsturlpart/?tid=1234)end');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['https://manage-case.hmcts.platform.net/firsturlpart/'], { queryParams: { tid: '1234' } });
+  describe('onClick() with external URL', () => {
+    it('should navigate externally on click', () => {
+      component.onClick('exampleUrl(http://firsturlpart/?foo=fooparam)end');
+      expect(mockWindow.location.assign).toHaveBeenCalledWith('http://firsturlpart/?foo=fooparam');
+      expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
     });
   });
 
   describe('onClick() with decentralised redirect', () => {
-    it('should redirect externally when url is decentralised', () => {
-      mockDecentralisedRoutingService.getRedirectUrlFromPathname.and.returnValue('https://example.com/cases/123/event/ext:custom');
+    it('should navigate to internal url and let routing guard handle redirect', () => {
       component.onClick('exampleUrl(/cases/case-details/CIVIL/PCS/123/trigger/ext:custom)end');
-      expect(mockWindow.location.assign).toHaveBeenCalledWith('https://example.com/cases/123/event/ext:custom');
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
+      expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/cases/case-details/CIVIL/PCS/123/trigger/ext:custom');
     });
   });
 });

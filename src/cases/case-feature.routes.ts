@@ -21,6 +21,7 @@ import { RolesAndAccessContainerComponent } from './containers/roles-and-access-
 import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
+import { decentralisedEventGuard, decentralisedEventChildGuard } from '../app/shared/guards/decentralised-event.guard';
 
 export const ROUTES: Routes = [
   {
@@ -82,6 +83,7 @@ export const ROUTES: Routes = [
             resolve: {
               eventTrigger: CreateCaseEventTriggerResolver
             },
+            canActivate: [decentralisedEventGuard],
             children: editorRouting
           }
         ],
@@ -101,6 +103,7 @@ export const ROUTES: Routes = [
         path: 'case-details/:cid',
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },
+        canActivateChild: [decentralisedEventChildGuard],
         runGuardsAndResolvers: 'always',
         children: [
           {
@@ -134,6 +137,7 @@ export const ROUTES: Routes = [
         path: 'case-details/:jurisdiction/:caseType/:cid',
         component: CaseDetailsHomeComponent,
         resolve: { case: CaseResolver },
+        canActivateChild: [decentralisedEventChildGuard],
         runGuardsAndResolvers: 'always',
         children: [
           {

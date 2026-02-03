@@ -14,6 +14,7 @@ export interface EnvironmentConfig {
   accessManagementEnabled?: boolean;
   paymentReturnUrl: string;
   waSupportedServices?: WAFeatureConfig;
+  decentralisedCaseTypes?: Record<string, string> | string;
   headerConfig: object;
   hearingJurisdictionConfig: {
     hearingJurisdictions: object,

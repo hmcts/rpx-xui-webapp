@@ -101,6 +101,8 @@ export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJuris
 
 export const SERVICE_REF_DATA_MAPPING = 'serviceRefDataMapping';
 
+export const DECENTRALISED_CASE_TYPES = 'decentralisedCaseTypes';
+
 export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';

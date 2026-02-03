@@ -144,6 +144,10 @@
     "__name": "SERVICE_REF_DATA_MAPPING",
     "__format": "json"
   },
+  "decentralisedCaseTypes": {
+    "__name": "DECENTRALISED_CASE_TYPES",
+    "__format": "json"
+  },
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"

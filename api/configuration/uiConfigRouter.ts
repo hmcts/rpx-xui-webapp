@@ -7,6 +7,7 @@ import {
   FEATURE_SUBSTANTIVE_ROLE_ENABLED,
   LAUNCH_DARKLY_CLIENT_ID,
   PROTOCOL,
+  DECENTRALISED_CASE_TYPES,
   SERVICES_CCD_COMPONENT_API_PATH,
   SERVICES_IDAM_CLIENT_ID,
   SERVICES_IDAM_LOGIN_URL,
@@ -69,6 +70,7 @@ async function uiConfigurationRouter(req, res) {
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
+    decentralisedCaseTypes: getConfigValue(DECENTRALISED_CASE_TYPES),
     headerConfig: getHeaderConfig(),
     hearingJurisdictionConfig: getHearingJurisdictions()
   });

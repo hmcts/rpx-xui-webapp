@@ -12,6 +12,7 @@ import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
+import { DecentralisedRoutingService } from '../../../app/shared/services/decentralised-routing.service';
 
 @Component({
   standalone: false,
@@ -39,6 +40,7 @@ export class CaseTaskComponent implements OnInit {
               private readonly router: Router,
               private readonly sessionStorageService: SessionStorageService,
               protected taskService: WorkAllocationTaskService,
+              private readonly decentralisedRoutingService: DecentralisedRoutingService,
               private readonly window: Window) {
   }
 
@@ -162,6 +164,11 @@ export class CaseTaskComponent implements OnInit {
     }
     try {
       const u = base ? new URL(url, base) : new URL(url);
+      const redirectUrl = this.decentralisedRoutingService.getRedirectUrlFromPathname(u.pathname, u.searchParams);
+      if (redirectUrl) {
+        this.window.location.assign(redirectUrl);
+        return;
+      }
       const tid = u.searchParams.get('tid');
       if (tid) {
         qp = { tid: tid };

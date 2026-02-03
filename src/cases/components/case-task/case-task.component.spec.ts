@@ -13,6 +13,7 @@ describe('CaseTaskComponent', () => {
   let mockRouter: any;
   let mockTaskService: any;
   let mockFeatureToggleService: any;
+  let mockDecentralisedRoutingService: any;
   let mockWindow: any;
   let component: CaseTaskComponent;
 
@@ -25,8 +26,17 @@ describe('CaseTaskComponent', () => {
     mockRouter.url = '/case-details/IA/Asylum/123243430403904/tasks';
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mockRouter.navigate.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
-    mockWindow = { location: new URL('https://manage-case.hmcts.platform.net') };
-    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockWindow);
+    mockDecentralisedRoutingService = jasmine.createSpyObj('DecentralisedRoutingService', ['getRedirectUrlFromPathname']);
+    mockDecentralisedRoutingService.getRedirectUrlFromPathname.and.returnValue(null);
+    mockWindow = { location: { origin: 'https://manage-case.hmcts.platform.net', assign: jasmine.createSpy('assign') } };
+    component = new CaseTaskComponent(
+      mockAlertService,
+      mockRouter,
+      mockSessionStorage,
+      mockTaskService,
+      mockDecentralisedRoutingService,
+      mockWindow
+    );
     mockFeatureToggleService.getValue.and.returnValue(of({
       configurations: [
         {
@@ -226,7 +236,14 @@ describe('CaseTaskComponent', () => {
   it('should get the correct returnUrl', () => {
     expect(component.returnUrl).toEqual(mockRouter.url);
     mockRouter = null;
-    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockWindow);
+    component = new CaseTaskComponent(
+      mockAlertService,
+      mockRouter,
+      mockSessionStorage,
+      mockTaskService,
+      mockDecentralisedRoutingService,
+      mockWindow
+    );
     component.task = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Some Name',
@@ -366,6 +383,15 @@ describe('CaseTaskComponent', () => {
     it('should navigate correctly on click', () => {
       component.onClick('exampleUrl(/firsturlpart/?tid=1234)end');
       expect(mockRouter.navigate).toHaveBeenCalledWith(['https://manage-case.hmcts.platform.net/firsturlpart/'], { queryParams: { tid: '1234' } });
+    });
+  });
+
+  describe('onClick() with decentralised redirect', () => {
+    it('should redirect externally when url is decentralised', () => {
+      mockDecentralisedRoutingService.getRedirectUrlFromPathname.and.returnValue('https://example.com/cases/123/event/ext:custom');
+      component.onClick('exampleUrl(/cases/case-details/CIVIL/PCS/123/trigger/ext:custom)end');
+      expect(mockWindow.location.assign).toHaveBeenCalledWith('https://example.com/cases/123/event/ext:custom');
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
   });
 });

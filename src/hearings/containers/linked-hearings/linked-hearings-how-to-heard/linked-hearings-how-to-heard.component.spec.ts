@@ -14,7 +14,7 @@ import {
   GroupLinkType,
   HMCStatus,
   HearingListingStatusEnum,
-  Mode
+  Mode,
 } from '../../../models/hearings.enum';
 import { ServiceLinkedCasesWithHearingsModel } from '../../../models/linkHearings.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -28,14 +28,14 @@ const mockLinkedHearingGroup = {
       groupName: 'Group A',
       groupReason: 'Reason 1',
       groupLinkType: GroupLinkType.ORDERED,
-      groupComments: 'Comment 1'
+      groupComments: 'Comment 1',
     },
     hearingsInGroup: [
       { hearingId: 'h100010', hearingOrder: 1, caseRef: '4652724902696213' },
-      { hearingId: 'h1000002', hearingOrder: 2, caseRef: '8254902572336147' }
-    ]
+      { hearingId: 'h1000002', hearingOrder: 2, caseRef: '8254902572336147' },
+    ],
   },
-  lastError: null
+  lastError: null,
 };
 const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
   {
@@ -57,14 +57,14 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
         hearingDaySchedule: [],
-        isSelected: true
-      }
-    ]
+        isSelected: true,
+      },
+    ],
   },
   {
     caseRef: '5283819672542864',
     caseName: 'Smith vs Peterson',
-    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case']
+    reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
   },
   {
     caseRef: '8254902572336147',
@@ -85,8 +85,9 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
         hearingDaySchedule: [],
-        isSelected: true
-      }, {
+        isSelected: true,
+      },
+      {
         hearingID: 'h1000003',
         hearingType: 'Chambers Outcome',
         hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
@@ -100,10 +101,10 @@ const mockLinkedCasesWithHearings: ServiceLinkedCasesWithHearingsModel[] = [
         hearingIsLinkedFlag: true,
         hearingGroupRequestId: null,
         hearingDaySchedule: [],
-        isSelected: true
-      }
-    ]
-  }
+        isSelected: true,
+      },
+    ],
+  },
 ];
 
 const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
@@ -118,7 +119,7 @@ const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: 'Y',
-    child_nodes: null
+    child_nodes: null,
   },
   {
     category_key: 'HearingType',
@@ -131,7 +132,7 @@ const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: 'Y',
-    child_nodes: null
+    child_nodes: null,
   },
   {
     category_key: 'HearingType',
@@ -144,13 +145,13 @@ const HEARING_STAGE_OPTIONS: LovRefDataModel[] = [
     parent_category: '',
     parent_key: '',
     active_flag: 'Y',
-    child_nodes: null
-  }
+    child_nodes: null,
+  },
 ];
 
 const hearingLinksMock = {
   ...mockLinkedHearingGroup,
-  ...mockLinkedCasesWithHearings
+  ...mockLinkedCasesWithHearings,
 };
 
 let component: HowLinkedHearingsBeHeardComponent;
@@ -183,8 +184,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   it('should able to submit when form particularOrder radio is selected', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    const firstRadioButtonElement =
-      nativeElement.querySelector('#particularOrder');
+    const firstRadioButtonElement = nativeElement.querySelector('#particularOrder');
     firstRadioButtonElement.click();
     fixture.detectChanges();
     component.form.patchValue({ hearingGroup: 'particularOrder' });
@@ -195,8 +195,7 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
 
   it('should able to submit when form together radio is selected', () => {
     const nativeElement = fixture.debugElement.nativeElement;
-    const firstRadioButtonElement =
-      nativeElement.querySelector('#heardTogether');
+    const firstRadioButtonElement = nativeElement.querySelector('#heardTogether');
     firstRadioButtonElement.click();
     fixture.detectChanges();
     expect(component.validationErrors.length).toBe(0);
@@ -206,18 +205,20 @@ describe('Linking - HowLinkedHearingsBeHeardComponent', () => {
     component.caseId = '8254902572336147';
     component.hearingId = 'h1000002';
     component.onBack();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/',
-      'hearings',
-      'link',
-      '8254902572336147',
-      'h1000002'
-    ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'link', '8254902572336147', 'h1000002']);
   });
 
   it('should navigate to hearings tab', () => {
     component.onCancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', 'IA', 'Asylum', '8254902572336147', 'hearings']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([
+      '/',
+      'cases',
+      'case-details',
+      'IA',
+      'Asylum',
+      '8254902572336147',
+      'hearings',
+    ]);
   });
 
   afterEach(() => {
@@ -283,19 +284,18 @@ function ConfigureTestBedModule(hearingMockService: HearingsService, mockRouterS
           snapshot: {
             data: {
               mode: modeOfLinking,
-              hearingStageOptions: HEARING_STAGE_OPTIONS
+              hearingStageOptions: HEARING_STAGE_OPTIONS,
             },
             params: {
               caseId: '8254902572336147',
-              hearingId: 'h1000002'
-            }
+              hearingId: 'h1000002',
+            },
           },
-          fragment: of('point-to-me')
-        }
+          fragment: of('point-to-me'),
+        },
       },
-      FormBuilder
+      FormBuilder,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
   }).compileComponents();
 }
-

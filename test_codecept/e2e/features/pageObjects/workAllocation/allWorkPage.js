@@ -21,24 +21,47 @@ class AllWork extends TaskList {
       'Person',
       'Tasks',
       'Select a role type',
-      'Location radios'
+      'Location radios',
     ];
   }
 
   get FILTER_ITEMS() {
     return {
-      'Service': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/../..//select'),
-      'Location': $('.all-work-filter #selectLocation'),
+      Service: new Select(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Service")]/../..//select'
+      ),
+      Location: $('.all-work-filter #selectLocation'),
       'Location radios': new GovUKRadios('css', '.all-work-filter #selectLocation .govuk-radios'),
       'Location search': $('.all-work-filter  #location xuilib-find-location .search-location exui-search-location input'),
-      'Person': new GovUKRadios('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'),
-      'Tasks': new GovUKRadios('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Tasks")]/../..//div[contains(@class,"govuk-radios")]'),
-      'Tasks by role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'),
-      'Person input': elementByXpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input'),
-      'Task type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'),
-      'Priority': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'),
-      'Select a role type': new Select('xpath', '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Select a role type")]/../..//select'),
-      'Person': elementByXpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input')
+      Person: new GovUKRadios(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Person")]/..//div[contains(@class,"govuk-radios")]'
+      ),
+      Tasks: new GovUKRadios(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Tasks")]/../..//div[contains(@class,"govuk-radios")]'
+      ),
+      'Tasks by role type': new Select(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//select[contains(@id,"select_role")]'
+      ),
+      'Person input': elementByXpath(
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input'
+      ),
+      'Task type': new Select(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Task type")]/..//select'
+      ),
+      Priority: new Select(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Priority")]/..//select'
+      ),
+      'Select a role type': new Select(
+        'xpath',
+        '//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//h3[contains(text(),"Select a role type")]/../..//select'
+      ),
+      Person: elementByXpath('//xuilib-generic-filter//div[contains(@class,"govuk-form-group")]//xuilib-find-person//input'),
     };
   }
 
@@ -102,8 +125,7 @@ class AllWork extends TaskList {
     if (!filtersItems.includes(filterItem)) {
       throw new Error(`Filter item "${filterItem}" not recognised or not implemented in test.${filtersItems}`);
     }
-    return await this.FILTER_ITEMS[filterItem].isDisplayed()
-      && await this.FILTER_ITEMS[filterItem].isEnabled();
+    return (await this.FILTER_ITEMS[filterItem].isDisplayed()) && (await this.FILTER_ITEMS[filterItem].isEnabled());
   }
 
   async getFilterSelectOrRadioOptions(filterItem) {
@@ -157,22 +179,18 @@ class AllWork extends TaskList {
 
       await this.pageHeader.waitFor({ state: 'visible', timeout: 20_000 });
 
-      await BrowserWaits.waitForConditionAsync(
-        async () => (await getText(this.pageHeader)).includes('All work'),
-        20_000
-      );
+      await BrowserWaits.waitForConditionAsync(async () => (await getText(this.pageHeader)).includes('All work'), 20_000);
 
       return true;
     } catch (err) {
-      cucumberReporter.AddMessage('All work page not displayed ' + err.stack,
-        LOG_LEVELS.Error);
+      cucumberReporter.AddMessage('All work page not displayed ' + err.stack, LOG_LEVELS.Error);
       return false;
     }
   }
 
   // Task container methods
   async isTasksContainerDisplayed() {
-    return await isPresent(this.tasksContainer) && await this.tasksContainer.isVisible();
+    return (await isPresent(this.tasksContainer)) && (await this.tasksContainer.isVisible());
   }
 
   //Cases container methods
@@ -238,4 +256,3 @@ class AllWork extends TaskList {
 }
 
 module.exports = new AllWork();
-

@@ -17,7 +17,7 @@ const REQUEST_ORIGINATED_FROM = '16digitCaseReferenceSearchFromHeader';
   standalone: false,
   selector: 'exui-case-reference-search-box',
   templateUrl: './case-reference-search-box.component.html',
-  styleUrls: ['./case-reference-search-box.component.scss']
+  styleUrls: ['./case-reference-search-box.component.scss'],
 })
 export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public item: NavItemsModel;
@@ -35,12 +35,12 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
     private readonly searchService: SearchService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly loggerService: LoggerService,
+    private readonly loggerService: LoggerService
   ) {}
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
-      [this.CASE_REF_FIELD]: ['', SearchValidators.caseReferenceValidator()]
+      [this.CASE_REF_FIELD]: ['', SearchValidators.caseReferenceValidator()],
     });
 
     // If search returned no case, retrieve case reference from session storage
@@ -73,14 +73,18 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
       postcode: null,
       emailAddress: null,
       dateOfBirth: null,
-      dateOfDeath: null
+      dateOfDeath: null,
     };
     // Store the search parameters to session
     this.searchService.storeState(SearchStatePersistenceKey.SEARCH_PARAMS, searchParameters);
 
     // If the input to the 16-digit case reference search box is invalid, navigate to the "no results" error page
     if (this.formGroup.get(this.CASE_REF_FIELD).invalid) {
-      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH }, relativeTo: this.route })
+      this.router
+        .navigate(['/search/noresults'], {
+          state: { messageId: NoResultsMessageId.NO_RESULTS_FROM_HEADER_SEARCH },
+          relativeTo: this.route,
+        })
         .catch((err) => this.loggerService.error('Error navigating to /search/noresults', err));
       return;
     }
@@ -94,11 +98,21 @@ export class CaseReferenceSearchBoxComponent implements OnInit, OnDestroy, After
 
   public navigateToCaseDetails(isCaseDetailsPage: boolean, caseReference: string): void {
     if (isCaseDetailsPage) {
-      this.router.navigateByUrl('/cases/case-loader', { skipLocationChange: true }).then(async () => {
-        await this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route });
-      }).catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));
+      this.router
+        .navigateByUrl('/cases/case-loader', { skipLocationChange: true })
+        .then(async () => {
+          await this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], {
+            state: { origin: REQUEST_ORIGINATED_FROM },
+            relativeTo: this.route,
+          });
+        })
+        .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));
     } else {
-      this.router.navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], { state: { origin: REQUEST_ORIGINATED_FROM }, relativeTo: this.route })
+      this.router
+        .navigate([`/cases/case-details/${caseReference.replace(/[\s-]/g, '')}`], {
+          state: { origin: REQUEST_ORIGINATED_FROM },
+          relativeTo: this.route,
+        })
         .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/case-ref', err));
     }
   }

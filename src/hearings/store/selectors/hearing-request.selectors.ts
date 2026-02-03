@@ -7,10 +7,7 @@ export const getHearingRequest = createSelector(
   (state: fromFeature.State) => state.hearingRequest
 );
 
-export const getHearingRequestLastError = createSelector(
-  getHearingRequest,
-  fromFeature.hearingRequestLastError
-);
+export const getHearingRequestLastError = createSelector(getHearingRequest, fromFeature.hearingRequestLastError);
 
 export const selectGetJudicialUsersError = createSelector(
   fromFeature.getHearingsFeatureState,

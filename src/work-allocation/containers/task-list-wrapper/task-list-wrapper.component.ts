@@ -25,13 +25,13 @@ import {
   CaseworkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
-  WorkAllocationTaskService
+  WorkAllocationTaskService,
 } from '../../services';
 import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   standalone: false,
-  templateUrl: 'task-list-wrapper.component.html'
+  templateUrl: 'task-list-wrapper.component.html',
 })
 export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public specificPage: string = '';
@@ -75,7 +75,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>
-  ) { }
+  ) {}
 
   public get tasks(): Task[] {
     return this.pTasks;
@@ -143,7 +143,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       service: TaskService.IAC,
       defaultSortDirection: SortOrder.ASC,
       defaultSortFieldName: this.fields.some((f) => f.name === 'priority') ? 'priority' : 'created_date',
-      fields: this.fields
+      fields: this.fields,
     };
   }
 
@@ -171,7 +171,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public loadCaseWorkersAndLocations() {
-    this.myWorkSubscription = this.filterService.getStream(TaskListFilterComponent.FILTER_NAME)
+    this.myWorkSubscription = this.filterService
+      .getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
@@ -186,7 +187,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
           this.resetPagination(newLocations, newWorkTypes, services);
         }
         this.initialFilterApplied = true;
-        this.selectedLocations = (newLocations).map((l) => l.epimms_id);
+        this.selectedLocations = newLocations.map((l) => l.epimms_id);
         this.selectedWorkTypes = newWorkTypes.filter((workType) => workType !== 'types_of_work_all');
         this.selectedServices = services?.filter((service) => service !== 'services_all');
         this.doLoad();
@@ -195,39 +196,42 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   public setupTaskList() {
     // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getUsersFromServices(jurisdictions)
-    ));
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(
+      switchMap((jurisdictions) => this.caseworkerService.getUsersFromServices(jurisdictions))
+    );
     // similar to case list wrapper changes
-    caseworkersByService$.subscribe((caseworkers) => {
-      this.caseworkers = caseworkers;
-      // EUI-2027 - Load tasks again in case this is start of new caching of caseworkers
-      // note: the if is relevant to stop the same request happening at exactly the same time on available tasks causing an error
-      if (this.tasks.length > 0) {
-        this.doLoad();
+    caseworkersByService$.subscribe(
+      (caseworkers) => {
+        this.caseworkers = caseworkers;
+        // EUI-2027 - Load tasks again in case this is start of new caching of caseworkers
+        // note: the if is relevant to stop the same request happening at exactly the same time on available tasks causing an error
+        if (this.tasks.length > 0) {
+          this.doLoad();
+        }
+      },
+      (error) => {
+        handleFatalErrors(error.status, this.router);
       }
-    }, (error) => {
-      handleFatalErrors(error.status, this.router);
-    });
+    );
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
       const { fieldName, order } = JSON.parse(sortStored);
       this.sortedBy = {
         fieldName,
-        order: order as SortOrder
+        order: order as SortOrder,
       };
     } else {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.taskServiceConfig.defaultSortFieldName,
-        order: this.taskServiceConfig.defaultSortDirection
+        order: this.taskServiceConfig.defaultSortDirection,
       };
     }
     const pageSorted = +this.sessionStorageService.getItem(this.pageSessionKey);
     this.pagination = {
       page_number: pageSorted ? pageSorted : 1,
-      page_size: 25
+      page_size: 25,
     };
   }
 
@@ -248,7 +252,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public refreshTasks(): void {
     this.infoMessageCommService.addMessage({
       type: InfoMessageType.INFO,
-      message: InfoMessage.LIST_OF_TASKS_REFRESHED
+      message: InfoMessage.LIST_OF_TASKS_REFRESHED,
     });
     this.doLoad();
   }
@@ -271,16 +275,18 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     return {
       search_parameters: [],
       sorting_parameters: this.getSortParameter(),
-      pagination_parameters: this.getPaginationParameter()
+      pagination_parameters: this.getPaginationParameter(),
     };
   }
 
   public getSortParameter(): SortParameter[] {
     if (this.sortedBy && this.sortedBy.fieldName !== 'priority') {
-      return [{
-        sort_by: this.sortedBy.fieldName,
-        sort_order: this.sortedBy.order
-      }];
+      return [
+        {
+          sort_by: this.sortedBy.fieldName,
+          sort_order: this.sortedBy.order,
+        },
+      ];
     }
 
     return [] as SortParameter[];
@@ -335,7 +341,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       }
       const state = {
         returnUrl: this.returnUrl,
-        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN
+        showAssigneeColumn: taskAction.action.id !== TaskActionIds.ASSIGN,
       };
       const actionUrl = `/work/${taskAction.task.id}/${taskAction.action.id}/${this.specificPage}`;
       this.router.navigate([actionUrl], { queryParams: { service: taskAction.task.jurisdiction }, state });
@@ -348,33 +354,39 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
   public claimTask(taskId: string): void {
-    this.taskService.claimTask(taskId).subscribe(() => {
-      this.infoMessageCommService.nextMessage({
-        type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-      });
-      this.refreshTasks();
-    }, (error) => {
-      this.claimTaskErrors(error.status);
-    });
+    this.taskService.claimTask(taskId).subscribe(
+      () => {
+        this.infoMessageCommService.nextMessage({
+          type: InfoMessageType.SUCCESS,
+          message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        });
+        this.refreshTasks();
+      },
+      (error) => {
+        this.claimTaskErrors(error.status);
+      }
+    );
   }
 
   /**
    * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
    */
   public claimTaskAndGo(task: Task): void {
-    this.taskService.claimTask(task.id).subscribe(() => {
-      const goToCaseUrl = `/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${task.case_id}/tasks`;
-      // navigates to case details page for specific case id
-      this.router.navigate([goToCaseUrl], {
-        state: {
-          showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-        }
-      });
-    }, (error) => {
-      this.claimTaskErrors(error.status);
-    });
+    this.taskService.claimTask(task.id).subscribe(
+      () => {
+        const goToCaseUrl = `/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${task.case_id}/tasks`;
+        // navigates to case details page for specific case id
+        this.router.navigate([goToCaseUrl], {
+          state: {
+            showMessage: true,
+            messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+          },
+        });
+      },
+      (error) => {
+        this.claimTaskErrors(error.status);
+      }
+    );
   }
 
   /**
@@ -387,7 +399,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
       });
     }
   }
@@ -412,31 +424,38 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const tasksSearch$ = this.performSearchPreviousTaskPermissions();
-    const mappedSearchResult$ = tasksSearch$.pipe(mergeMap(((result: TaskResponse) => {
-      const assignedJudicialUsers: string[] = [];
-      result.tasks.forEach((task) => {
-        task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
-        if (!task.assigneeName && task.assignee) {
-          assignedJudicialUsers.push(task.assignee);
-        }
-      });
-      if (!assignedJudicialUsers) {
-        return of(result);
-      }
-      return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(switchMap(((judicialUserData) => {
-        result.tasks.map((task) => {
-          const judicialAssignedData = judicialUserData.find((judicialUser) => judicialUser.sidam_id === task.assignee);
-          task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
+    const mappedSearchResult$ = tasksSearch$.pipe(
+      mergeMap((result: TaskResponse) => {
+        const assignedJudicialUsers: string[] = [];
+        result.tasks.forEach((task) => {
+          task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+          if (!task.assigneeName && task.assignee) {
+            assignedJudicialUsers.push(task.assignee);
+          }
         });
-        return of(result);
-      })));
-    })));
-    mappedSearchResult$.subscribe((result) => {
-      this.setTaskListDetails(result, loadingToken);
-    }, (error) => {
-      this.loadingService.unregister(loadingToken);
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+        if (!assignedJudicialUsers) {
+          return of(result);
+        }
+        return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, this.selectedServices).pipe(
+          switchMap((judicialUserData) => {
+            result.tasks.map((task) => {
+              const judicialAssignedData = judicialUserData.find((judicialUser) => judicialUser.sidam_id === task.assignee);
+              task.assigneeName = judicialAssignedData ? judicialAssignedData.full_name : task.assigneeName;
+            });
+            return of(result);
+          })
+        );
+      })
+    );
+    mappedSearchResult$.subscribe(
+      (result) => {
+        this.setTaskListDetails(result, loadingToken);
+      },
+      (error) => {
+        this.loadingService.unregister(loadingToken);
+        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+      }
+    );
   }
 
   private setTaskListDetails(result: TaskResponse, loadingToken: string): void {
@@ -461,7 +480,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
 
   // reset pagination when filter is applied
   private resetPagination(locations: string[], workTypes: string[], services: string[]): void {
-    if (!this.locationListsEqual(locations) || !this.listsEquivalent(this.selectedWorkTypes, workTypes) || !this.listsEquivalent(this.selectedServices, services)) {
+    if (
+      !this.locationListsEqual(locations) ||
+      !this.listsEquivalent(this.selectedWorkTypes, workTypes) ||
+      !this.listsEquivalent(this.selectedServices, services)
+    ) {
       // Sreekanth - to test looping back functionality please comment these two lines out
       this.pagination.page_number = 1;
       this.sessionStorageService.setItem(this.pageSessionKey, '1');

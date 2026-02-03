@@ -12,11 +12,11 @@ export interface StaffUser {
   up_idam_status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
 
   roles: {
-    role_id: string,
-    role: string,
-    is_primary: boolean,
-    created_time?: Date,
-    last_updated_time?: Date,
+    role_id: string;
+    role: string;
+    is_primary: boolean;
+    created_time?: Date;
+    last_updated_time?: Date;
   }[];
 
   skills: {
@@ -30,11 +30,11 @@ export interface StaffUser {
   }[];
 
   base_locations: {
-    created_time?: Date,
-    last_updated_time?: Date,
-    location_id: number,
-    location: string,
-    is_primary: boolean
+    created_time?: Date;
+    last_updated_time?: Date;
+    location_id: number;
+    location: string;
+    is_primary: boolean;
   }[];
 
   region: string;

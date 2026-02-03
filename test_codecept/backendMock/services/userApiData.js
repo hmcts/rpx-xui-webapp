@@ -1,17 +1,16 @@
-
 const path = require('path');
 const fs = require('fs');
 
 const roleAssignmentsService = require('./roleAssignments/index');
 
-class UserApiData{
+class UserApiData {
   constructor() {
     this.sessionUsers = [];
 
     this.debugUserDataFile = path.resolve(__dirname, '../../../functional-output/mockUserData.json');
   }
 
-  sendResponse(req, res, apiMethod, defaultResponseCallback){
+  sendResponse(req, res, apiMethod, defaultResponseCallback) {
     const auth = req.headers.authorization ? req.headers.authorization : req.headers.serviceauthorization;
     const response = this.getUserData(auth, apiMethod);
     if (response) {
@@ -23,7 +22,7 @@ class UserApiData{
 
   setUserData(token, apiMethod, response) {
     // apiMethod = apiMethod.toUpperCase();
-    if (apiMethod === 'AddMockRoleAssignments' || apiMethod === 'OnUserRoleAssignments'){
+    if (apiMethod === 'AddMockRoleAssignments' || apiMethod === 'OnUserRoleAssignments') {
       roleAssignmentsService.addRoleAssigmemntsToSession(token, response.data);
       return;
     }
@@ -32,16 +31,16 @@ class UserApiData{
       userSession = {
         requests: [],
         token: token,
-        apiData: []
+        apiData: [],
       };
       this.sessionUsers.push(userSession);
     }
     const apiResponse = userSession.apiData.find((methodData) => methodData.method === apiMethod);
-    if (!apiResponse){
+    if (!apiResponse) {
       userSession.apiData.push({
         method: apiMethod,
         response: response,
-        request: null
+        request: null,
       });
     } else {
       apiResponse.response = response;
@@ -67,7 +66,7 @@ class UserApiData{
       userSession = {
         requests: [],
         token: token,
-        apiData: []
+        apiData: [],
       };
       this.sessionUsers.push(userSession);
     }
@@ -77,18 +76,18 @@ class UserApiData{
         method: apiMethod,
         response: null,
         request: {
-          body: requestObj.body
-        }
+          body: requestObj.body,
+        },
       });
     } else {
       apiResponse.request = {
-        body: requestObj.body
+        body: requestObj.body,
       };
     }
   }
 
   getCapturedRequestData(token, apiMethod) {
-    if (token === ''){
+    if (token === '') {
       const allSessionsRequests = this.sessionUsers.map((userSession) => {
         return userSession.apiData.find((methodData) => methodData.method === apiMethod);
       });
@@ -103,17 +102,17 @@ class UserApiData{
   }
 
   getUserSessionData(token) {
-    const userSession = this.sessionUsers.find((sess) => sess.token === token ? token.replace('Bearer ', '') : '');
+    const userSession = this.sessionUsers.find((sess) => (sess.token === token ? token.replace('Bearer ', '') : ''));
     return userSession;
   }
 
-  logSessionRequest(token, req){
+  logSessionRequest(token, req) {
     let userSession = this.sessionUsers.find((sess) => sess.token === token);
     if (!userSession) {
       userSession = {
         requests: [],
         token: token,
-        apiData: []
+        apiData: [],
       };
       this.sessionUsers.push(userSession);
     }
@@ -121,18 +120,18 @@ class UserApiData{
       method: req.method,
       url: req.url,
       body: req.body ? req.body : null,
-      time: new Date()
+      time: new Date(),
     });
   }
 
-  clearUserData(token){
+  clearUserData(token) {
     console.log('clear user data started');
     let userSession = this.sessionUsers.find((sess) => sess.token === token);
     if (userSession) {
       userSession = {
         requests: [],
         token: token,
-        apiData: []
+        apiData: [],
       };
     }
 

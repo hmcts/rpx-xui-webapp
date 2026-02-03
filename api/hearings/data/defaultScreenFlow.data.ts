@@ -5,33 +5,33 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
     screenName: 'hearing-requirements',
     navigation: [
       {
-        resultValue: 'hearing-facilities'
-      }
-    ]
+        resultValue: 'hearing-facilities',
+      },
+    ],
   },
   {
     screenName: 'hearing-facilities',
     navigation: [
       {
-        resultValue: 'hearing-stage'
-      }
-    ]
+        resultValue: 'hearing-stage',
+      },
+    ],
   },
   {
     screenName: 'hearing-stage',
     navigation: [
       {
-        resultValue: 'hearing-attendance'
-      }
-    ]
+        resultValue: 'hearing-attendance',
+      },
+    ],
   },
   {
     screenName: 'hearing-attendance',
     navigation: [
       {
-        resultValue: 'hearing-venue'
-      }
-    ]
+        resultValue: 'hearing-venue',
+      },
+    ],
   },
   {
     screenName: 'hearing-venue',
@@ -40,61 +40,61 @@ export const DEFAULT_SCREEN_FLOW: ScreenNavigationModel[] = [
       {
         conditionOperator: 'INCLUDE',
         conditionValue: '7',
-        resultValue: 'hearing-welsh'
+        resultValue: 'hearing-welsh',
       },
       {
         conditionOperator: 'NOT INCLUDE',
         conditionValue: '7',
-        resultValue: 'hearing-judge'
-      }
-    ]
+        resultValue: 'hearing-judge',
+      },
+    ],
   },
   {
     screenName: 'hearing-welsh',
     navigation: [
       {
-        resultValue: 'hearing-judge'
-      }
-    ]
+        resultValue: 'hearing-judge',
+      },
+    ],
   },
   {
     screenName: 'hearing-judge',
     navigation: [
       {
-        resultValue: 'hearing-panel'
-      }
-    ]
+        resultValue: 'hearing-panel',
+      },
+    ],
   },
   {
     screenName: 'hearing-panel',
     navigation: [
       {
-        resultValue: 'hearing-timing'
-      }
-    ]
+        resultValue: 'hearing-timing',
+      },
+    ],
   },
   {
     screenName: 'hearing-timing',
     navigation: [
       {
-        resultValue: 'hearing-link'
-      }
-    ]
+        resultValue: 'hearing-link',
+      },
+    ],
   },
   {
     screenName: 'hearing-link',
     navigation: [
       {
-        resultValue: 'hearing-additional-instructions'
-      }
-    ]
+        resultValue: 'hearing-additional-instructions',
+      },
+    ],
   },
   {
     screenName: 'hearing-additional-instructions',
     navigation: [
       {
-        resultValue: 'hearing-create-edit-summary'
-      }
-    ]
-  }
+        resultValue: 'hearing-create-edit-summary',
+      },
+    ],
+  },
 ];

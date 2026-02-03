@@ -38,8 +38,8 @@ export interface ServiceHearingValuesModel {
   hearingIsLinkedFlag: boolean;
   parties: PartyDetailsModel[];
   caseFlags: {
-    flags: PartyFlagsModel[],
-    flagAmendURL: string,
+    flags: PartyFlagsModel[];
+    flagAmendURL: string;
   };
   screenFlow: ScreenNavigationModel[];
   vocabulary: VocabularyModel[];

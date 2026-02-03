@@ -22,7 +22,7 @@ import { TaskListWrapperComponent } from './task-list-wrapper.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslationMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -33,7 +33,13 @@ class RpxTranslationMockPipe implements PipeTransform {
 describe('TaskListWrapperComponent', () => {
   let component: TaskListWrapperComponent;
   let fixture: ComponentFixture<TaskListWrapperComponent>;
-  const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }, { name: 'services', value: ['IA', 'CIVIL'] }] };
+  const SELECTED_LOCATIONS = {
+    id: 'locations',
+    fields: [
+      { name: 'locations', value: ['231596', '698118'] },
+      { name: 'services', value: ['IA', 'CIVIL'] },
+    ],
+  };
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter: MockRouter = new MockRouter();
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchTask', 'getTask']);
@@ -44,10 +50,12 @@ describe('TaskListWrapperComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
-  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
 
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromActions.State>;
   const mockFilterService: any = {
     getStream: () => of(null),
@@ -56,21 +64,16 @@ describe('TaskListWrapperComponent', () => {
     givenErrors: {
       subscribe: () => null,
       next: () => null,
-      unsubscribe: () => null
-    }
+      unsubscribe: () => null,
+    },
   };
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
 
-  beforeEach((() => {
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
+
+  beforeEach(() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
-      imports: [
-        WorkAllocationComponentsModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        CdkTableModule
-      ],
+      imports: [WorkAllocationComponentsModule, ExuiCommonLibModule, RouterTestingModule, CdkTableModule],
       declarations: [TaskListComponent, TaskListWrapperComponent, RpxTranslationMockPipe],
       providers: [
         { provide: ChangeDetectorRef, useValue: mockRef },
@@ -85,8 +88,8 @@ describe('TaskListWrapperComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: Store, useValue: storeMock },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
-      ]
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(TaskListWrapperComponent);
     component = fixture.componentInstance;
@@ -100,12 +103,12 @@ describe('TaskListWrapperComponent', () => {
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
     store = TestBed.inject(Store);
     fixture.detectChanges();
-  }));
+  });
 
-  afterEach((() => {
+  afterEach(() => {
     component.ngOnDestroy();
     mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  }));
+  });
 
   describe('onActionHandler()', () => {
     const exampleTask = getMockTasks()[0];
@@ -126,7 +129,10 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${firstAction.id}/`]);
-      const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/list', showAssigneeColumn: true } };
+      const exampleNavigateCall = {
+        queryParams: { service: 'IA' },
+        state: { returnUrl: '/mywork/list', showAssigneeColumn: true },
+      };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -142,7 +148,10 @@ describe('TaskListWrapperComponent', () => {
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
       expect(lastNavigateCall.commands).toEqual([`/work/${exampleTask.id}/${secondAction.id}/`]);
-      const exampleNavigateCall = { queryParams: { service: 'IA' }, state: { returnUrl: '/mywork/manager', showAssigneeColumn: true } };
+      const exampleNavigateCall = {
+        queryParams: { service: 'IA' },
+        state: { returnUrl: '/mywork/manager', showAssigneeColumn: true },
+      };
       expect(lastNavigateCall.extras).toEqual(exampleNavigateCall);
     });
 
@@ -158,7 +167,9 @@ describe('TaskListWrapperComponent', () => {
 
       // need to verify correct properties were called
       const lastNavigateCall = mockRouter.navigateCalls.pop();
-      expect(lastNavigateCall.commands).toEqual([`/cases/case-details/${secondTaskAction.task.jurisdiction}/${secondTaskAction.task.case_type_id}/${secondTaskAction.task.case_id}/tasks`]);
+      expect(lastNavigateCall.commands).toEqual([
+        `/cases/case-details/${secondTaskAction.task.jurisdiction}/${secondTaskAction.task.case_type_id}/${secondTaskAction.task.case_id}/tasks`,
+      ]);
     });
 
     it('User should be Judicial', () => {
@@ -180,7 +191,7 @@ describe('TaskListWrapperComponent', () => {
         surname: 'Smith',
         email: 'john.smith@email.com',
         roles: [AppTestConstants.IA_JUDGE_ROLE],
-        roleCategory: RoleCategory.JUDICIAL
+        roleCategory: RoleCategory.JUDICIAL,
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
       const roleCategory = component.getCurrentUserRoleCategory();
@@ -194,7 +205,7 @@ describe('TaskListWrapperComponent', () => {
         surname: 'Smith',
         email: 'john.smith@email.com',
         roles: [AppTestConstants.IA_JUDGE_ROLE],
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
       const roleCategory = component.getCurrentUserRoleCategory();

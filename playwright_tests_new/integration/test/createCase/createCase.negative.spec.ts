@@ -7,14 +7,14 @@ const caseType = 'xuiTestJurisdiction';
 let sessionCookies: any[] = [];
 
 test.beforeAll(() => {
-    const { cookies } = loadSessionCookies(userIdentifier);
-    sessionCookies = cookies;
+  const { cookies } = loadSessionCookies(userIdentifier);
+  sessionCookies = cookies;
 });
 
 test.beforeEach(async ({ page, config }) => {
-    if (sessionCookies.length) {
-        await page.context().addCookies(sessionCookies);
-    }
+  if (sessionCookies.length) {
+    await page.context().addCookies(sessionCookies);
+  }
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {
@@ -23,17 +23,17 @@ test.describe(`Case List as ${userIdentifier}`, () => {
             await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
         });
 
-        await test.step('Check the submit case page is not displayed', async () => {
-            await expect(createCasePage.exuiHeader.header).toBeVisible();
-            await expect(createCasePage.testSubmitButton).not.toBeInViewport();
-            await expect(createCasePage.refreshModalConfirmButton).toBeVisible()
-            await expect(createCasePage.refreshModal).toBeVisible();            
-            await createCasePage.refreshModalConfirmButton.click();
-        });
-
-        await test.step('Verify that the case is not created and the user is not taken to the case details page', async () => {
-            await expect(createCasePage.exuiCaseDetailsComponent.caseHeader).not.toBeVisible();
-            await expect(page).not.toHaveURL(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
-        });
+    await test.step('Check the submit case page is not displayed', async () => {
+      await expect(createCasePage.exuiHeader.header).toBeVisible();
+      await expect(createCasePage.testSubmitButton).not.toBeInViewport();
+      await expect(createCasePage.refreshModalConfirmButton).toBeVisible();
+      await expect(createCasePage.refreshModal).toBeVisible();
+      await createCasePage.refreshModalConfirmButton.click();
     });
+
+    await test.step('Verify that the case is not created and the user is not taken to the case details page', async () => {
+      await expect(createCasePage.exuiCaseDetailsComponent.caseHeader).not.toBeVisible();
+      await expect(page).not.toHaveURL(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
+    });
+  });
 });

@@ -69,7 +69,7 @@ describe('workAllocation.caseService', () => {
       { id: 1, role: 'Lead Judge', status: 'Open', caseType: 'A' },
       { id: 2, role: 'Hearing Judge', status: 'Closed', caseType: 'B' },
       { id: 3, role: 'Case Manager', status: 'Open', caseType: 'A' },
-      { id: 4, role: 'Other', status: 'Open', caseType: 'C' }
+      { id: 4, role: 'Other', status: 'Open', caseType: 'C' },
     ];
 
     it('should return all cases if parameters is null', () => {
@@ -90,28 +90,19 @@ describe('workAllocation.caseService', () => {
     it('should filter by value for a non-role key', () => {
       const params = [{ key: 'status', values: 'Open' }];
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
-      expect(result).to.deep.equal([
-        mockCases[0],
-        mockCases[2],
-        mockCases[3]
-      ]);
+      expect(result).to.deep.equal([mockCases[0], mockCases[2], mockCases[3]]);
     });
 
     it('should filter by role = Judicial (Lead Judge or Hearing Judge)', () => {
       const params = [{ key: 'role', values: 'Judicial' }];
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
-      expect(result).to.deep.equal([
-        mockCases[0],
-        mockCases[1]
-      ]);
+      expect(result).to.deep.equal([mockCases[0], mockCases[1]]);
     });
 
     it('should filter by role = Case Manager', () => {
       const params = [{ key: 'role', values: 'Case Manager' }];
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
-      expect(result).to.deep.equal([
-        mockCases[2]
-      ]);
+      expect(result).to.deep.equal([mockCases[2]]);
     });
 
     it('should return all cases if parameter value is falsy', () => {
@@ -123,13 +114,10 @@ describe('workAllocation.caseService', () => {
     it('should filter by multiple parameters (AND logic)', () => {
       const params = [
         { key: 'status', values: 'Open' },
-        { key: 'caseType', values: 'A' }
+        { key: 'caseType', values: 'A' },
       ];
       const result = require('./caseService').filterAllWorkCases(mockCases, params);
-      expect(result).to.deep.equal([
-        mockCases[0],
-        mockCases[2]
-      ]);
+      expect(result).to.deep.equal([mockCases[0], mockCases[2]]);
     });
 
     it('should return empty array if no cases match', () => {

@@ -24,7 +24,9 @@ describe('WorkAllocation service', () => {
     it('getForLocationAndService should make correct api call', () => {
       const service = new CaseworkerDataService(mockHttpService, mockSessionStorageService);
       service.getForLocationAndService('location123', 'service1');
-      expect(mockHttpService.get).toHaveBeenCalledWith(`${CaseworkerDataService.caseWorkerUrl}/location/location123/service/service1`);
+      expect(mockHttpService.get).toHaveBeenCalledWith(
+        `${CaseworkerDataService.caseWorkerUrl}/location/location123/service/service1`
+      );
     });
 
     it('search should make correct api call', () => {

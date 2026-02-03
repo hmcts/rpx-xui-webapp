@@ -1,4 +1,4 @@
 export enum UserType {
-  JUDICIAL= 'judicial',
+  JUDICIAL = 'judicial',
   LEGAL_OPS = 'legalOps',
 }

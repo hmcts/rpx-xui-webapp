@@ -27,8 +27,8 @@ export interface RoleAssignmentInfo {
 
 export interface UserDetails {
   sessionTimeout: {
-    idleModalDisplayTime: number,
-    totalIdleTime: number,
+    idleModalDisplayTime: number;
+    totalIdleTime: number;
   };
   canShareCases: boolean;
   userInfo: UserInfo;
@@ -40,10 +40,9 @@ export enum UserRole {
   Admin = 'admin',
   LegalOps = 'legalops',
   Judicial = 'judicial',
-  Ctsc = 'ctsc',
   Ogd = 'ogd',
   CTSC = 'ctsc',
   HearingManager = 'hearing-manager',
   HearingViewer = 'hearing-viewer',
-  ListedHearingViewer = 'listed-hearing-viewer'
+  ListedHearingViewer = 'listed-hearing-viewer',
 }

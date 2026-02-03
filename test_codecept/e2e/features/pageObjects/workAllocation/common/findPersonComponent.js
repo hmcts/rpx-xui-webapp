@@ -4,13 +4,25 @@ const BrowserWaits = require('../../../../support/customWaits');
 const CucumberReporter = require('../../../../../codeceptCommon/reportLogger');
 
 class FindPersonComponent {
-  get findPersonContainer() { return $('xuilib-find-person'); }
-  get header() { return $('xuilib-find-person h1'); }
-  get headerCaption() { return $('xuilib-find-person h1 span'); }
+  get findPersonContainer() {
+    return $('xuilib-find-person');
+  }
+  get header() {
+    return $('xuilib-find-person h1');
+  }
+  get headerCaption() {
+    return $('xuilib-find-person h1 span');
+  }
 
-  get searchInput() { return $('xuilib-find-person #inputSelectPerson'); }
-  get searchInputHintText() { return $('xuilib-find-person .govuk-hint'); }
-  get searchResultsContainer() { return $('.cdk-overlay-container .mat-autocomplete-visible'); }
+  get searchInput() {
+    return $('xuilib-find-person #inputSelectPerson');
+  }
+  get searchInputHintText() {
+    return $('xuilib-find-person .govuk-hint');
+  }
+  get searchResultsContainer() {
+    return $('.cdk-overlay-container .mat-autocomplete-visible');
+  }
 
   async amOnPage() {
     try {
@@ -73,17 +85,21 @@ class FindPersonComponent {
   }
 
   async getResultElementWithText(resulttext) {
-    const elementWithResulst = elementByXpath('//*[contains(@class,\'cdk-overlay-container\')]//*[contains(@class,\'mat-autocomplete-visible\')]');
+    const elementWithResulst = elementByXpath(
+      "//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]"
+    );
     await elementWithResulst.waitFor({ state: 'visible' });
     CucumberReporter.AddMessage(await getText(elementWithResulst), LOG_LEVELS.Debug);
-    return elementByXpath(`//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`);
+    return elementByXpath(
+      `//*[contains(@class,'cdk-overlay-container')]//*[contains(@class,'mat-autocomplete-visible')]//mat-option//*[contains(@class,'mat-option-text') and contains(text(),'${resulttext}')]`
+    );
   }
 
   async isPersonReturned(result) {
     CucumberReporter.AddMessage(`Checking is person returned "${result}"`, LOG_LEVELS.Debug);
 
     const resultElement = await this.getResultElementWithText(result);
-    return await isPresent(resultElement) && resultElement.isVisible();
+    return (await isPresent(resultElement)) && resultElement.isVisible();
   }
 
   async selectPerson(result) {

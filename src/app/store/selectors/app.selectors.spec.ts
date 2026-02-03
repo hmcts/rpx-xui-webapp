@@ -19,21 +19,21 @@ describe('App Selectors', () => {
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,
-        totalIdleTime: 0
+        totalIdleTime: 0,
       },
       canShareCases: false,
-      userInfo: null
+      userInfo: null,
     },
-    decorate16digitCaseReferenceSearchBoxInHeader: false
+    decorate16digitCaseReferenceSearchBoxInHeader: false,
   };
 
   const appPayload = {
     features: {
       ccdCaseCreate: {
         isEnabled: true,
-        label: 'CCDCaseCreate'
-      }
-    }
+        label: 'CCDCaseCreate',
+      },
+    },
   };
 
   const appConfigLoaded = {
@@ -41,12 +41,12 @@ describe('App Selectors', () => {
       features: {
         ccdCaseCreate: {
           isEnabled: true,
-          label: 'CCDCaseCreate'
-        }
-      }
+          label: 'CCDCaseCreate',
+        },
+      },
     },
     loaded: true,
-    loading: false
+    loading: false,
   };
 
   const appConfigLoadedAfter = {
@@ -54,9 +54,9 @@ describe('App Selectors', () => {
       features: {
         ccdCaseCreate: {
           isEnabled: true,
-          label: 'CCDCaseCreate'
-        }
-      }
+          label: 'CCDCaseCreate',
+        },
+      },
     },
     termsAndCondition: { isLoaded: false, hasUserAcceptedTC: false },
     loaded: true,
@@ -67,12 +67,12 @@ describe('App Selectors', () => {
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,
-        totalIdleTime: 0
+        totalIdleTime: 0,
       },
       canShareCases: false,
-      userInfo: null
+      userInfo: null,
     },
-    decorate16digitCaseReferenceSearchBoxInHeader: false
+    decorate16digitCaseReferenceSearchBoxInHeader: false,
   };
 
   beforeEach(() => {
@@ -80,9 +80,9 @@ describe('App Selectors', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          products: combineReducers(fromReducers.reducers)
-        })
-      ]
+          products: combineReducers(fromReducers.reducers),
+        }),
+      ],
     });
 
     store = TestBed.inject(Store);
@@ -94,9 +94,7 @@ describe('App Selectors', () => {
     it('should return config initial state', () => {
       let result;
 
-      store
-        .select(fromSelectors.getConfigState)
-        .subscribe((value) => (result = value));
+      store.select(fromSelectors.getConfigState).subscribe((value) => (result = value));
       expect(result).toEqual(appConfig);
 
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
@@ -106,9 +104,7 @@ describe('App Selectors', () => {
     it('should return app feature state', () => {
       let result;
 
-      store
-        .select(fromSelectors.getAppFeatures)
-        .subscribe((value) => (result = value));
+      store.select(fromSelectors.getAppFeatures).subscribe((value) => (result = value));
 
       store.dispatch(new fromActions.LoadConfigSuccess(appPayload));
       expect(result).toEqual(appConfigLoaded.config);

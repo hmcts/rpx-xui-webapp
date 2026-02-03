@@ -1,7 +1,7 @@
 const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 
-class SpecificAccessReviewPage{
-  constructor(){}
+class SpecificAccessReviewPage {
+  constructor() {}
 
   get container() {
     return $('exui-specific-access-review');
@@ -13,18 +13,22 @@ class SpecificAccessReviewPage{
 
   get fieldMapping() {
     return {
-      'Review specific access request': elementByXpath('//h1[contains(text(),\'Review specific access request\')]/../../table'),
-      'What do you want to do with this request?': elementByXpath('//h1[contains(text(),\'What do you want to do with this request?\')]/../..//exui-choose-radio-option'),
-      'Approve request': elementByXpath('//label[contains(text(),\'Approve request\')]/../input'),
-      'Reject request': elementByXpath('//label[contains(text(),\'Reject request\')]/../input'),
-      'Request more information': elementByXpath('//label[contains(text(),\'Request more information\')]/../input')
+      'Review specific access request': elementByXpath("//h1[contains(text(),'Review specific access request')]/../../table"),
+      'What do you want to do with this request?': elementByXpath(
+        "//h1[contains(text(),'What do you want to do with this request?')]/../..//exui-choose-radio-option"
+      ),
+      'Approve request': elementByXpath("//label[contains(text(),'Approve request')]/../input"),
+      'Reject request': elementByXpath("//label[contains(text(),'Reject request')]/../input"),
+      'Request more information': elementByXpath("//label[contains(text(),'Request more information')]/../input"),
     };
   }
 
-  async inputValues(field, value){
-    switch (field){
+  async inputValues(field, value) {
+    switch (field) {
       case 'What do you want to do with this request?':
-        const ele = elementByXpath(`//h1[contains(text(),'What do you want to do with this request?')]/../..//exui-choose-radio-option//label[contains(text(),'${value}')]/../input`);
+        const ele = elementByXpath(
+          `//h1[contains(text(),'What do you want to do with this request?')]/../..//exui-choose-radio-option//label[contains(text(),'${value}')]/../input`
+        );
         await ele.click();
         break;
       default:

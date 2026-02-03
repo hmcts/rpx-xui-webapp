@@ -46,15 +46,17 @@ When('I click button with label {string} in work flow  Check your answers page',
   await allocateRoleWorkFlow.workFlowContainer.clickContinue();
 });
 
-async function CheckYourAnswersValidation(datatable, isChangeLinkPresent){
+async function CheckYourAnswersValidation(datatable, isChangeLinkPresent) {
   const questionAnswersTable = datatable.parse().hashes();
   for (let i = 0; i < questionAnswersTable.length; i++) {
     const question = questionAnswersTable[i].Question;
     let expectedAnswer = questionAnswersTable[i].Answer;
 
-    if (question.toLowerCase().includes('duration of role') &&
-                !expectedAnswer.toLowerCase().includes('7 days') &&
-                !expectedAnswer.toLowerCase().includes('indefinite')) {
+    if (
+      question.toLowerCase().includes('duration of role') &&
+      !expectedAnswer.toLowerCase().includes('7 days') &&
+      !expectedAnswer.toLowerCase().includes('indefinite')
+    ) {
       const durationString = expectedAnswer.split('to');
       const startDateByDays = durationString[0];
       const endDateByDays = durationString[1];
@@ -76,7 +78,9 @@ async function CheckYourAnswersValidation(datatable, isChangeLinkPresent){
 
     const actualAnswer = await checkYourAnswersPage.getAnswerForQuestion(question);
     expect(actualAnswer, `expected answer for question ${question} does not match`).to.include(expectedAnswer);
-    expect(await checkYourAnswersPage.isChangeLinkPresentForQuestion(question), `change link for ${question} visiblity does not match `).to.equal(isChangeLinkPresent);
+    expect(
+      await checkYourAnswersPage.isChangeLinkPresentForQuestion(question),
+      `change link for ${question} visiblity does not match `
+    ).to.equal(isChangeLinkPresent);
   }
 }
-

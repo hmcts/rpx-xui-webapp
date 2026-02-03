@@ -9,13 +9,13 @@ const ArrayUtil = require('../../../utils/ArrayUtil');
 const { DataTableArgument } = require('codeceptjs');
 
 const filtersToIgnore = {
-  'Priority': 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
+  Priority: 'Is out of scope and will be removed as part of https://tools.hmcts.net/jira/browse/EUI-4809',
   'Task type': 'Is to be includes only in 2.1 till the it will be ignored in test',
-  'Person': 'Change in component, test needs update to validate new component'
+  Person: 'Change in component, test needs update to validate new component',
 };
 
-Then('I see filter {string} is displayed in all work page', async function(filterItem){
-  if (Object.keys(filtersToIgnore).includes(filterItem)){
+Then('I see filter {string} is displayed in all work page', async function (filterItem) {
+  if (Object.keys(filtersToIgnore).includes(filterItem)) {
     reportLogger.AddMessage(`${filterItem} in test ignored for reason : ${filtersToIgnore[filterItem]}`);
     return;
   }
@@ -46,24 +46,27 @@ Then('I see filter {string} is disabled in all work page', async function (filte
   expect(await allWorkPage.isFilterItemEnbled(filterItem)).to.be.false;
 });
 
-Then('I validate filter item {string} select or radio options present in all work page', async function (filterItem, datatable){
+Then('I validate filter item {string} select or radio options present in all work page', async function (filterItem, datatable) {
   reportLogger.reportDatatable(datatable);
   const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
 
   const hashes = datatable.parse().hashes();
-  for (const hash of hashes){
+  for (const hash of hashes) {
     expect(actualOption).to.includes(hash.option);
   }
 });
 
-Then('I validate filter item {string} select or radio has option {string} in all work page', async function (filterItem, filterOptions) {
-  const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
-  reportLogger.AddMessage(`${filterItem} options displayed : ${JSON.stringify(actualOption)}`);
+Then(
+  'I validate filter item {string} select or radio has option {string} in all work page',
+  async function (filterItem, filterOptions) {
+    const actualOption = await allWorkPage.getFilterSelectOrRadioOptions(filterItem);
+    reportLogger.AddMessage(`${filterItem} options displayed : ${JSON.stringify(actualOption)}`);
 
-  for (const option of filterOptions.split(',')) {
-    expect(actualOption).to.includes(option);
+    for (const option of filterOptions.split(',')) {
+      expect(actualOption).to.includes(option);
+    }
   }
-});
+);
 
 When('I select filter item {string} select or radio option {string} in all work page', async function (filterItem, option) {
   if (Object.keys(filtersToIgnore).includes(filterItem)) {
@@ -82,7 +85,7 @@ When('I input filter item {string} input text {string} in all work page', async 
   await allWorkPage.inputFilterItem(filterItem, inputText);
 });
 
-When('I click Apply filter button in all work page', async function(){
+When('I click Apply filter button in all work page', async function () {
   await allWorkPage.filterApplyBtn.click();
 });
 
@@ -120,13 +123,16 @@ Then('I see location search results in all work filter', async function (dataTab
 
   const locationsHashes = dataTable.parse().hashes();
   const expectdLocations = [];
-  for (const locationsHash of locationsHashes){
+  for (const locationsHash of locationsHashes) {
     expectdLocations.push(locationsHash.location);
   }
   await BrowserWaits.retryWithActionCallback(async () => {
     const actualResults = await allWorkPage.getSearchResults();
     for (const expectedLoc of expectdLocations) {
-      expect(await allWorkPage.isSearchResultPresent(expectedLoc), `Search result ${expectedLoc} not found in actual results "${actualResults}"`).to.be.true;
+      expect(
+        await allWorkPage.isSearchResultPresent(expectedLoc),
+        `Search result ${expectedLoc} not found in actual results "${actualResults}"`
+      ).to.be.true;
     }
   });
 });

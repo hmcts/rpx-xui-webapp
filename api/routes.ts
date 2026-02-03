@@ -28,7 +28,7 @@ router.use('/healthCheck', healthCheck);
 router.get('/monitoring-tools', (req, res) => {
   res.send({
     key: getConfigValue(APP_INSIGHTS_KEY),
-    connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING)
+    connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
   });
 });
 

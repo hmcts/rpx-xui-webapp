@@ -2,17 +2,33 @@ const { $, $$, getText } = require('../../../../helpers/globals');
 const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 
 class CaseDetailsTaskTab {
-  get container() { return $('exui-tasks-container'); }
-  get alertBanner() { return $('exui-tasks-container exui-task-alert-banner'); }
-  get alertBannerHeading() { return $('.task-alert-banner h2'); }
-  get alertBannerMessage() { return $('.task-alert-banner .govuk-warning-text'); }
+  get container() {
+    return $('exui-tasks-container');
+  }
+  get alertBanner() {
+    return $('exui-tasks-container exui-task-alert-banner');
+  }
+  get alertBannerHeading() {
+    return $('.task-alert-banner h2');
+  }
+  get alertBannerMessage() {
+    return $('.task-alert-banner .govuk-warning-text');
+  }
 
-  get activeTasksContainer() { return $('exui-tasks-container .active-tasks-container'); }
-  get activeTasksHeading() { return $('exui-tasks-container .active-tasks-container h2'); }
+  get activeTasksContainer() {
+    return $('exui-tasks-container .active-tasks-container');
+  }
+  get activeTasksHeading() {
+    return $('exui-tasks-container .active-tasks-container h2');
+  }
 
-  get tasks() { return $$('exui-tasks-container .active-tasks-container exui-case-task'); }
+  get tasks() {
+    return $$('exui-tasks-container .active-tasks-container exui-case-task');
+  }
 
-  get taskNameLocator() { return 'p strong'; }
+  get taskNameLocator() {
+    return 'p strong';
+  }
 
   async getTaskContainerAtPosition(pos) {
     const taskCount = await this.tasks.count();

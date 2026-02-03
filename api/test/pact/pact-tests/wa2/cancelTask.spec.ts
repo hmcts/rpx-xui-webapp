@@ -30,17 +30,15 @@ describe('Task management api, cancel a task', () => {
             cancellation_process: cancelProcess
           },
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
-
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 204,
-          headers: {
-          }
-        }
+          headers: {},
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -62,9 +60,9 @@ describe('Task management api, cancel a task', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           params: {
             taskId: taskId,
@@ -73,7 +71,6 @@ describe('Task management api, cancel a task', () => {
           query: {
             cancellation_process: cancelProcess
           }
-
         });
         let resStatus = null;
         const response = mockRes();
@@ -92,4 +89,3 @@ describe('Task management api, cancel a task', () => {
     });
   });
 });
-

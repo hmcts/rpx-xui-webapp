@@ -3708,9 +3708,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.4-exui-3994-g":
-  version: 4.2.4-exui-3994-g
-  resolution: "@hmcts/media-viewer@npm:4.2.4-exui-3994-g"
+"@hmcts/media-viewer@npm:4.2.9-exui-3994":
+  version: 4.2.9-exui-3994
+  resolution: "@hmcts/media-viewer@npm:4.2.9-exui-3994"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3729,7 +3729,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/cfaa68346c9cda5a16d709226b698a1d4bf893cd18f1b7969108dc5f44de5e76c3cc966580a987f0df17eaeb87a2a3898d824fff6da87dfc29279de6f9a1f133
+  checksum: 10/170e1843d84cb87fb9ce6956b1022c9241c3c6a4843419649b44760b20c84f0bdaeae7ad7883672233f0137260c20f927db6752bd7150e1099bc507dbd15157d
   languageName: node
   linkType: hard
 
@@ -24075,7 +24075,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.27/hmcts-ccd-case-ui-toolkit-7.3.27.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.4-exui-3994-g"
+    "@hmcts/media-viewer": "npm:4.2.9-exui-3994"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.1"
     "@hmcts/properties-volume": "npm:^1.2.0"

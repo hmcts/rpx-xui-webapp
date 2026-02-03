@@ -6,7 +6,7 @@ import {
   SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS,
   SERVICES_HMC_HEARINGS_COMPONENT_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID
+  SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID,
 } from '../configuration/references';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';

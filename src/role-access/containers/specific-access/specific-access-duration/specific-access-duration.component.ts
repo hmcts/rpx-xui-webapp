@@ -6,8 +6,10 @@ import { take } from 'rxjs/operators';
 
 import {
   DurationTypeDescription,
-  Period, SpecificAccessNavigation,
-  SpecificAccessNavigationEvent, SpecificAccessStateData
+  Period,
+  SpecificAccessNavigation,
+  SpecificAccessNavigationEvent,
+  SpecificAccessStateData,
 } from '../../../models';
 import { DurationType } from '../../../models/enums';
 import { DurationHelperService } from '../../../services/duration-helper.service';
@@ -17,7 +19,7 @@ import * as fromFeature from '../../../store';
   standalone: false,
   selector: 'exui-specific-access-duration',
   templateUrl: './specific-access-duration.component.html',
-  styleUrls: ['./specific-access-duration.component.scss']
+  styleUrls: ['./specific-access-duration.component.scss'],
 })
 export class SpecificAccessDurationComponent implements OnInit {
   // static properties
@@ -58,13 +60,18 @@ export class SpecificAccessDurationComponent implements OnInit {
     this.durations = [
       { id: '1', duration: DurationType.SEVEN_DAYS, description: SpecificAccessDurationComponent.sevenDaysDesc, checked: false },
       { id: '2', duration: DurationType.INDEFINITE, description: SpecificAccessDurationComponent.indefiniteDesc, checked: false },
-      { id: '3', duration: DurationType.ANOTHER_PERIOD, description: SpecificAccessDurationComponent.anotherPeriodDesc, checked: false }
+      {
+        id: '3',
+        duration: DurationType.ANOTHER_PERIOD,
+        description: SpecificAccessDurationComponent.anotherPeriodDesc,
+        checked: false,
+      },
     ];
     this.configEnd = {
       id: 'endDate',
       name: 'endDate',
       hint: 'For example, 01 05 2022',
-      label: 'Access Ends'
+      label: 'Access Ends',
     };
   }
 
@@ -73,13 +80,16 @@ export class SpecificAccessDurationComponent implements OnInit {
       dateOption: new FormControl(null, Validators.required),
       endDate_day: new FormControl(null, null),
       endDate_month: new FormControl(null, null),
-      endDate_year: new FormControl(null, null)
+      endDate_year: new FormControl(null, null),
     });
     this.setFormControlRefs();
-    this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
-      this.specificAccessStateData = specificAccessState;
-      this.selectSpecificAccessDuration(specificAccessState);
-    });
+    this.store
+      .pipe(select(fromFeature.getSpecificAccessState))
+      .pipe(take(1))
+      .subscribe((specificAccessState) => {
+        this.specificAccessStateData = specificAccessState;
+        this.selectSpecificAccessDuration(specificAccessState);
+      });
   }
 
   public setFormControlRefs(): void {
@@ -92,13 +102,22 @@ export class SpecificAccessDurationComponent implements OnInit {
     // TODO: SARD - this will be wired up correctly in another ticket ( 5505? ). Hint: see role-access/allocate-role/choose-duration
     this.selectedDuration = DurationType.SEVEN_DAYS;
 
-    if (specificAccessState.specificAccessFormData && specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption) {
+    if (
+      specificAccessState.specificAccessFormData &&
+      specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption
+    ) {
       this.selectedDuration = specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedOption;
       if (this.selectedDuration === DurationType.ANOTHER_PERIOD) {
         this.anotherPeriod = true;
-        this.endDateDayCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.day);
-        this.endDateMonthCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.month);
-        this.endDateYearCtrl.setValue(specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.year);
+        this.endDateDayCtrl.setValue(
+          specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.day
+        );
+        this.endDateMonthCtrl.setValue(
+          specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.month
+        );
+        this.endDateYearCtrl.setValue(
+          specificAccessState.specificAccessFormData.specificAccessDurationForm.selectedDuration.endDate.year
+        );
       }
     }
 
@@ -111,7 +130,9 @@ export class SpecificAccessDurationComponent implements OnInit {
     if (period) {
       switch (navEvent) {
         case SpecificAccessNavigationEvent.CONTINUE:
-          this.store.dispatch(new fromFeature.ApproveSpecificAccessRequest({ specificAccessStateData: this.specificAccessStateData, period }));
+          this.store.dispatch(
+            new fromFeature.ApproveSpecificAccessRequest({ specificAccessStateData: this.specificAccessStateData, period })
+          );
           break;
         default:
           throw new Error('Invalid option');
@@ -127,7 +148,11 @@ export class SpecificAccessDurationComponent implements OnInit {
   }
 
   public getRawData(): any {
-    const endDate = this.durationHelper.getRawFromControlsValues(this.endDateDayCtrl, this.endDateMonthCtrl, this.endDateYearCtrl);
+    const endDate = this.durationHelper.getRawFromControlsValues(
+      this.endDateDayCtrl,
+      this.endDateMonthCtrl,
+      this.endDateYearCtrl
+    );
     return { endDate };
   }
 
@@ -136,13 +161,13 @@ export class SpecificAccessDurationComponent implements OnInit {
       case DurationType.SEVEN_DAYS: {
         return {
           startDate: this.durationHelper.getTodaysDate(),
-          endDate: this.durationHelper.getDateInFuture(7)
+          endDate: this.durationHelper.getDateInFuture(7),
         };
       }
       case DurationType.INDEFINITE: {
         return {
           startDate: this.durationHelper.getTodaysDate(),
-          endDate: null
+          endDate: null,
         };
       }
       case DurationType.ANOTHER_PERIOD: {
@@ -166,7 +191,7 @@ export class SpecificAccessDurationComponent implements OnInit {
         if (datesValid && startDateBeforeEndDate) {
           return {
             startDate,
-            endDate
+            endDate,
           };
         }
 

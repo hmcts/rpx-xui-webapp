@@ -36,25 +36,33 @@ describe('WorkAllocation', () => {
     it('completeTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.completeTask('123456', true);
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/complete', { hasNoAssigneeOnComplete: true });
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/complete', {
+        hasNoAssigneeOnComplete: true,
+      });
     });
 
     it('cancelTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.cancelTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/cancel', { hasNoAssigneeOnComplete: undefined });
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/cancel', {
+        hasNoAssigneeOnComplete: undefined,
+      });
     });
 
     it('claimTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.claimTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/claim', { hasNoAssigneeOnComplete: undefined });
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/claim', {
+        hasNoAssigneeOnComplete: undefined,
+      });
     });
 
     it('unclaimTask should make correct api call', () => {
       const service = new WorkAllocationTaskService(mockHttpService);
       service.unclaimTask('123456');
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/unclaim', { hasNoAssigneeOnComplete: undefined });
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task/123456/unclaim', {
+        hasNoAssigneeOnComplete: undefined,
+      });
     });
 
     it('postTask should make correct api call', () => {
@@ -69,7 +77,12 @@ describe('WorkAllocation', () => {
       const searchRequest = {} as SearchTaskRequest;
       const view = ListConstants.View.MyTasks;
       service.searchTask({ searchRequest, view, currentUser: null, refined: true });
-      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', { searchRequest, view, currentUser: null, refined: true });
+      expect(mockHttpService.post).toHaveBeenCalledWith('/workallocation/task', {
+        searchRequest,
+        view,
+        currentUser: null,
+        refined: true,
+      });
     });
   });
 });

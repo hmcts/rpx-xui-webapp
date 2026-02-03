@@ -10,7 +10,7 @@ import * as fromCaseCreate from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-case-create-submit',
-  templateUrl: 'case-create-submit.component.html'
+  templateUrl: 'case-create-submit.component.html',
 })
 export class CaseCreateSubmitComponent implements OnInit {
   public eventTrigger: CaseEventTrigger = new CaseEventTrigger();
@@ -42,7 +42,7 @@ export class CaseCreateSubmitComponent implements OnInit {
      */
     this.caseCreateSubmitEventsBindings = [
       { type: 'cancelled', action: 'CreateCaseReset' },
-      { type: 'submitted', action: 'ApplyChange' }
+      { type: 'submitted', action: 'ApplyChange' },
     ];
   }
 
@@ -54,15 +54,14 @@ export class CaseCreateSubmitComponent implements OnInit {
   }
 
   public validate(): (sanitizedEditForm: CaseEventData, pageId: string) => Observable<object> {
-    return (sanitizedEditForm: CaseEventData, pageId: string) => this.casesService.validateCase(this.caseTypeId,
-      sanitizedEditForm, pageId) as any;
+    return (sanitizedEditForm: CaseEventData, pageId: string) =>
+      this.casesService.validateCase(this.caseTypeId, sanitizedEditForm, pageId) as any;
   }
 
   public saveDraft(): (caseEventData: CaseEventData) => Observable<Draft> {
     if (this.eventTrigger.can_save_draft) {
-      return (caseEventData: CaseEventData) => this.draftService.createOrUpdateDraft(this.caseTypeId,
-        this.eventTrigger.case_id,
-        caseEventData) as any;
+      return (caseEventData: CaseEventData) =>
+        this.draftService.createOrUpdateDraft(this.caseTypeId, this.eventTrigger.case_id, caseEventData) as any;
     }
   }
 }

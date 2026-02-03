@@ -1,14 +1,26 @@
 <xuilib-loading-spinner *ngIf="showSpinner"></xuilib-loading-spinner>
 <a class="govuk-back-link" href="#" (click)="onBack(); $event.preventDefault()">{{ 'Back' | rpxTranslate }}</a>
-<xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="error$ | async"></xuilib-hmcts-error-summary>
+<xuilib-hmcts-error-summary
+  [errorMessages]="serverErrors"
+  [header]="'There is a problem' | rpxTranslate"
+  *ngIf="error$ | async"
+></xuilib-hmcts-error-summary>
 <exui-linked-hearings-case-title [caseId]="caseId" [caseName]="caseName" mode="mode"></exui-linked-hearings-case-title>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">{{isManageLink && !isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0 ? 'Linked hearings' :'Check your answers' | rpxTranslate }}</h1>
+    <h1 class="govuk-heading-l">
+      {{
+        isManageLink && !isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0
+          ? 'Linked hearings'
+          : ('Check your answers' | rpxTranslate)
+      }}
+    </h1>
     <div *ngIf="!isManageLink">
       <h2 class="govuk-heading-m">{{ 'Linked hearings' | rpxTranslate }}</h2>
       <span class="govuk-body align-right">
-        <button type="button" class="govuk-js-link" id="hearing-link-change" (click)="onChange()">{{ 'Change' | rpxTranslate }}</button>
+        <button type="button" class="govuk-js-link" id="hearing-link-change" (click)="onChange()">
+          {{ 'Change' | rpxTranslate }}
+        </button>
       </span>
     </div>
     <table class="govuk-table" *ngIf="linkedCaseHearingsResults.length > 0">
@@ -22,29 +34,52 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row" *ngFor="let case of linkedCaseHearingsResults">
           <td class="govuk-table__cell">
-            {{case.caseName}}
-            <br>
-            {{case.caseRef | caseReference}}
+            {{ case.caseName }}
+            <br />
+            {{ case.caseRef | caseReference }}
           </td>
-          <td class="govuk-table__cell">{{case.hearingType | convertToValue : hearingStageOptions}}</td>
-          <td class="govuk-table__cell" *ngIf="showPositionColumn">{{case.position}}</td>
+          <td class="govuk-table__cell">{{ case.hearingType | convertToValue: hearingStageOptions }}</td>
+          <td class="govuk-table__cell" *ngIf="showPositionColumn">{{ case.position }}</td>
         </tr>
       </tbody>
     </table>
     <div class="no-linked-hearings" *ngIf="isManageLink && linkedCaseHearingsResults.length === 0">
       <h2 class="govuk-heading-m">{{ 'Linked hearings' | rpxTranslate }}</h2>
-      <br>
+      <br />
       {{ 'No linked hearings.' | rpxTranslate }}
     </div>
   </div>
 </div>
-<br>
+<br />
 <div class="govuk-grid-row linked-hearings-button">
   <div class="govuk-button-group">
-    <button *ngIf="!isManageLink" class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">{{ 'Link hearings' | rpxTranslate }}</button>
-    <button *ngIf="isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onManageLinkHearings()">{{ 'Link hearings' | rpxTranslate }}</button>
-    <button *ngIf="isManageLink && !isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0" class="govuk-button primary" data-module="govuk-button" (click)="onEdit()">{{ 'Edit' | rpxTranslate }}</button>
-    <button *ngIf="isManageJourneyFinalPage && linkedCaseHearingsResults.length === 0" class="govuk-button primary" data-module="govuk-button" (click)="onUnlinkHearings()">{{ 'Unlink hearings' | rpxTranslate }}</button>
-    <a href="#" class="link-cancel" (click)="onCancel(); $event.preventDefault()">{{cancelButtonText | rpxTranslate}}</a>
+    <button *ngIf="!isManageLink" class="govuk-button primary" data-module="govuk-button" (click)="onLinkHearings()">
+      {{ 'Link hearings' | rpxTranslate }}
+    </button>
+    <button
+      *ngIf="isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0"
+      class="govuk-button primary"
+      data-module="govuk-button"
+      (click)="onManageLinkHearings()"
+    >
+      {{ 'Link hearings' | rpxTranslate }}
+    </button>
+    <button
+      *ngIf="isManageLink && !isManageJourneyFinalPage && linkedCaseHearingsResults.length > 0"
+      class="govuk-button primary"
+      data-module="govuk-button"
+      (click)="onEdit()"
+    >
+      {{ 'Edit' | rpxTranslate }}
+    </button>
+    <button
+      *ngIf="isManageJourneyFinalPage && linkedCaseHearingsResults.length === 0"
+      class="govuk-button primary"
+      data-module="govuk-button"
+      (click)="onUnlinkHearings()"
+    >
+      {{ 'Unlink hearings' | rpxTranslate }}
+    </button>
+    <a href="#" class="link-cancel" (click)="onCancel(); $event.preventDefault()">{{ cancelButtonText | rpxTranslate }}</a>
   </div>
 </div>

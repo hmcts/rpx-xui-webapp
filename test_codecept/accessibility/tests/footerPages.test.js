@@ -1,4 +1,3 @@
-
 const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
@@ -43,4 +42,3 @@ describe('Pa11y Accessibility tests', function () {
     await pa11ytest(this, actions, conf.baseUrl + 'get-help');
   });
 });
-

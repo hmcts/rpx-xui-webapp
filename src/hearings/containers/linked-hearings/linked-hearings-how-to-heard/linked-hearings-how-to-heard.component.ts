@@ -10,7 +10,7 @@ import {
   HearingDetailModel,
   LinkedHearingGroupMainModel,
   LinkedHearingsDetailModel,
-  ServiceLinkedCasesWithHearingsModel
+  ServiceLinkedCasesWithHearingsModel,
 } from '../../../models/linkHearings.model';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -21,7 +21,7 @@ import { ValidatorsUtils } from '../../../utils/validators.utils';
   standalone: false,
   selector: 'exui-linked-hearings-how-to-heard',
   templateUrl: './linked-hearings-how-to-heard.component.html',
-  styleUrls: ['./linked-hearings-how-to-heard.component.scss']
+  styleUrls: ['./linked-hearings-how-to-heard.component.scss'],
 })
 export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public caseId: string;
@@ -52,29 +52,31 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     protected readonly route: ActivatedRoute,
     private readonly validators: ValidatorsUtils,
     private readonly fb: FormBuilder,
-    private readonly router: Router,
+    private readonly router: Router
   ) {
     this.mode = this.route.snapshot.data.mode || Mode.LINK_HEARINGS;
     this.form = this.fb.group({
       hearingGroup: ['', Validators.required],
-      hearingOrder: this.fb.array([])
+      hearingOrder: this.fb.array([]),
     });
-    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      (state) => {
-        this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings;
-        this.caseName = state?.hearingValues?.serviceHearingValuesModel ? state.hearingValues.serviceHearingValuesModel.hmctsInternalCaseName : '';
-        this.hearingsInGroup = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
-        this.groupDetails = state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
-        this.hearingLinks = state.hearingLinks;
-        this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
-        this.form = this.fb.group({
-          hearingGroup: [this.groupDetails && this.groupDetails.groupLinkType || '', Validators.required],
-          hearingOrder: this.fb.array([])
-        });
-        this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
-        this.caseType = state?.hearingValues?.caseInfo?.caseType;
-      }
-    );
+    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((state) => {
+      this.receivedCases = state.hearingLinks && state.hearingLinks.serviceLinkedCasesWithHearings;
+      this.caseName = state?.hearingValues?.serviceHearingValuesModel
+        ? state.hearingValues.serviceHearingValuesModel.hmctsInternalCaseName
+        : '';
+      this.hearingsInGroup =
+        state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup;
+      this.groupDetails =
+        state.hearingLinks && state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.groupDetails;
+      this.hearingLinks = state.hearingLinks;
+      this.selectedOption = this.groupDetails && this.groupDetails.groupLinkType;
+      this.form = this.fb.group({
+        hearingGroup: [(this.groupDetails && this.groupDetails.groupLinkType) || '', Validators.required],
+        hearingOrder: this.fb.array([]),
+      });
+      this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
+      this.caseType = state?.hearingValues?.caseInfo?.caseType;
+    });
     this.caseId = this.route.snapshot.params.caseId;
     this.hearingGroupRequestId = this.route.snapshot.params.hearingGroupRequestId;
     this.hearingId = this.route.snapshot.params.hearingId;
@@ -90,16 +92,19 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.hearingOrder.push(this.fb.group({
-      caseReference: [linkCase.caseRef],
-      caseName: [linkCase.caseName],
-      hearingStage: [linkCase.caseHearings[0] && linkCase.caseHearings[0].hearingType || ''],
-      position: [this.getPosition(linkCase.caseHearings[0]), this.validators.mandatory('')]
-    }));
+    this.hearingOrder.push(
+      this.fb.group({
+        caseReference: [linkCase.caseRef],
+        caseName: [linkCase.caseName],
+        hearingStage: [(linkCase.caseHearings[0] && linkCase.caseHearings[0].hearingType) || ''],
+        position: [this.getPosition(linkCase.caseHearings[0]), this.validators.mandatory('')],
+      })
+    );
   }
 
   public getPosition(hearing: HearingDetailModel): number {
-    const linkedHearings: LinkedHearingsDetailModel[] = this.hearingsInGroup && this.hearingsInGroup.filter((x) => x.hearingId === hearing.hearingID);
+    const linkedHearings: LinkedHearingsDetailModel[] =
+      this.hearingsInGroup && this.hearingsInGroup.filter((x) => x.hearingId === hearing.hearingID);
     if (linkedHearings && linkedHearings.length > 0) {
       return linkedHearings[0].hearingOrder;
     }
@@ -126,7 +131,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     if (selectedHearings && selectedHearings.length) {
       this.selectedLinkedCases.push({
         ...linkedCase,
-        caseHearings: selectedHearings
+        caseHearings: selectedHearings,
       });
     }
   }
@@ -140,8 +145,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   public onSubmit(): void {
     const linkedHearingGroupMainModel: LinkedHearingGroupMainModel = {
       groupDetails: {
-        groupLinkType: this.selectedOption
-      }, hearingsInGroup: []
+        groupLinkType: this.selectedOption,
+      },
+      hearingsInGroup: [],
     };
     if (this.isFormValid()) {
       this.hearingOrder.value.forEach((formValue) => {
@@ -150,19 +156,27 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
         if (selectedHearing) {
           if (this.form.value.hearingGroup === GroupLinkType.SAME_SLOT) {
             linkedHearingGroupMainModel.hearingsInGroup.push({
-              hearingId: selectedHearing.hearingID
+              hearingId: selectedHearing.hearingID,
             });
           } else {
             linkedHearingGroupMainModel.hearingsInGroup.push({
               hearingId: selectedHearing.hearingID,
-              hearingOrder: Number(formValue.position)
+              hearingOrder: Number(formValue.position),
             });
           }
         }
       });
       this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCasesGroupDetail(linkedHearingGroupMainModel));
       if (this.mode === Mode.MANAGE_HEARINGS) {
-        this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'check-your-answers']);
+        this.router.navigate([
+          '/',
+          'hearings',
+          'manage-links',
+          this.caseId,
+          this.hearingGroupRequestId,
+          this.hearingId,
+          'check-your-answers',
+        ]);
       } else {
         this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId, 'check-your-answers']);
       }
@@ -171,7 +185,9 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
 
   public onOrderChange(index: number) {
     const positionSelected = this.hearingOrder.controls[index].get('position').value;
-    const hasSamePosSelectedIndex = this.hearingOrder.value.map((val, rowIndex) => val.position === positionSelected && rowIndex !== index);
+    const hasSamePosSelectedIndex = this.hearingOrder.value.map(
+      (val, rowIndex) => val.position === positionSelected && rowIndex !== index
+    );
     hasSamePosSelectedIndex.forEach((val, idx: number) => val && this.hearingOrder.controls[idx].patchValue({ position: '' }));
   }
 
@@ -193,7 +209,7 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     if (!validSelection) {
       this.validationErrors.push({
         id: 'selection-error',
-        message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing'
+        message: !this.form.value.hearingGroup ? 'Please make a selection' : 'Check the position you have given to each hearing',
       });
       return false;
     }
@@ -211,7 +227,12 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
   }
 
   public hasInvalidOrderSelection() {
-    return this.validationErrors.length > 0 && this.selectedOption !== null && this.selectedLinkedCases && this.selectedLinkedCases.length;
+    return (
+      this.validationErrors.length > 0 &&
+      this.selectedOption !== null &&
+      this.selectedLinkedCases &&
+      this.selectedLinkedCases.length
+    );
   }
 
   public onOptionSelection(value: GroupLinkType): void {
@@ -221,7 +242,15 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
 
   public onBack(): void {
     if (this.mode === Mode.MANAGE_HEARINGS) {
-      this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, this.hearingGroupRequestId, this.hearingId, 'selected-hearings']);
+      this.router.navigate([
+        '/',
+        'hearings',
+        'manage-links',
+        this.caseId,
+        this.hearingGroupRequestId,
+        this.hearingId,
+        'selected-hearings',
+      ]);
     } else {
       this.router.navigate(['/', 'hearings', 'link', this.caseId, this.hearingId]);
     }
@@ -237,4 +266,3 @@ export class HowLinkedHearingsBeHeardComponent implements OnInit, OnDestroy {
     }
   }
 }
-

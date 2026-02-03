@@ -43,7 +43,9 @@ test.describe('Document upload V2', () => {
     });
 
     await test.step('Verify the document upload was successful', async () => {
-      expect(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: ${TEST_DATA.V2.ACTION}`);
+      expect(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(
+        `Case ${caseNumber} has been updated with event: ${TEST_DATA.V2.ACTION}`
+      );
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
       const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
       await caseViewerTable.waitFor({ state: 'visible' });
@@ -92,7 +94,12 @@ test.describe('Document upload V1', () => {
       await caseDetailsPage.caseActionGoButton.waitFor({ state: 'visible' });
       const table = await caseDetailsPage.getDocumentsList();
       expect(table.length, 'Documents table should contain at least 1 row').toBeGreaterThan(0);
-      expect(table[0]).toMatchObject({ 'Number': '1', 'Document': testFileName, 'Document Category': 'Misc', 'Type of Document': 'Other' });
+      expect(table[0]).toMatchObject({
+        Number: '1',
+        Document: testFileName,
+        'Document Category': 'Misc',
+        'Type of Document': 'Other',
+      });
 
       const documentsTable = caseDetailsPage.caseDocumentsTable.first();
       const parsedRows = await tableUtils.parseDataTable(documentsTable, caseDetailsPage.page);

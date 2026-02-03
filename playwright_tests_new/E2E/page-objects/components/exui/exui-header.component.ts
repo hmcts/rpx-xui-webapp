@@ -13,9 +13,9 @@ export class ExuiHeaderComponent {
   readonly languageToggle = this.header
     .locator('button.language')
     .or(this.page.getByRole('banner').getByRole('button', { name: /Cymraeg|English/ }));
-  private waitUtils = new WaitUtils();
+  private readonly waitUtils = new WaitUtils();
 
-  constructor(private page: Page) {}
+  constructor(private readonly page: Page) {}
 
   public async selectHeaderMenuItem(menuItemText: string): Promise<void> {
     const menuItem = this.headerMenuItems.filter({ hasText: menuItemText });
@@ -25,7 +25,7 @@ export class ExuiHeaderComponent {
 
   public async checkIsVisible(): Promise<void> {
     await this.waitUtils.waitForLocatorVisibility(this.results, {
-      visibility: true
+      visibility: true,
     });
     await expect(this.header).toBeVisible();
   }
@@ -40,12 +40,11 @@ export class ExuiHeaderComponent {
     await this.page.waitForLoadState('domcontentloaded');
     // Wait for the toggle to flip to the other language to confirm the switch.
     await this.page.waitForFunction(
-      (selector, expected) => {
+      ({ selector, expected }) => {
         const el = document.querySelector(selector);
         return !el?.textContent?.trim().includes(expected);
       },
-      'exui-header button.language',
-      language
+      { selector: 'exui-header button.language', expected: language }
     );
   }
 }

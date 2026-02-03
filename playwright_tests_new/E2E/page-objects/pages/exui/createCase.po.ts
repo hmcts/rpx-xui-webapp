@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 
 const logger = createLogger({
   serviceName: 'create-case',
-  format: 'pretty'
+  format: 'pretty',
 });
 
 export class CreateCasePage extends Base {
@@ -149,7 +149,7 @@ export class CreateCasePage extends Base {
     const options = await selectLocator.evaluate((el) =>
       Array.from((el as HTMLSelectElement).options).map((o) => ({
         value: o.value,
-        label: o.label
+        label: o.label,
       }))
     );
 
@@ -214,15 +214,9 @@ export class CreateCasePage extends Base {
     const expectedLocator = options.expectedLocator;
     const waitForAdvance = async () => {
       if (expectedPathIncludes) {
-        await this.page.waitForURL(
-          (url) => url.pathname.includes(expectedPathIncludes),
-          { timeout: timeoutMs }
-        );
+        await this.page.waitForURL((url) => url.pathname.includes(expectedPathIncludes), { timeout: timeoutMs });
       } else {
-        await this.page.waitForURL(
-          (url) => this.normalizePath(url.toString()) !== initialPath,
-          { timeout: timeoutMs }
-        );
+        await this.page.waitForURL((url) => this.normalizePath(url.toString()) !== initialPath, { timeout: timeoutMs });
       }
       if (expectedLocator) {
         await expectedLocator.waitFor({ state: 'visible', timeout: timeoutMs });
@@ -276,15 +270,12 @@ export class CreateCasePage extends Base {
       }
     };
 
-    const [a, b] = await Promise.all([
-      check(this.errorMessage),
-      check(this.errorSummary)
-    ]);
+    const [a, b] = await Promise.all([check(this.errorMessage), check(this.errorSummary)]);
 
     if (a || b) {
       logger.error('Error message displayed on page', {
         errorMessage: a ? await this.errorMessage.textContent() : null,
-        errorSummary: b ? await this.errorSummary.textContent() : null
+        errorSummary: b ? await this.errorSummary.textContent() : null,
       });
       return true;
     }
@@ -351,13 +342,12 @@ export class CreateCasePage extends Base {
       await this.page.setInputFiles('input[type="file"]', {
         name: fileName,
         mimeType,
-        buffer: Buffer.from(fileContent)
+        buffer: Buffer.from(fileContent),
       });
 
-      const res = await this.page.waitForResponse(
-        (r) => r.url().includes('/document') && r.request().method() === 'POST',
-        { timeout: 5000 }
-      ).catch(() => null);
+      const res = await this.page
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', { timeout: 5000 })
+        .catch(() => null);
 
       if (!res) {
         // no response within timeout — treat as failure or retry depending on policy
@@ -401,7 +391,7 @@ export class CreateCasePage extends Base {
         await this.clickContinueAndWait('after receipt details');
         await this.ensureWizardAdvanced('after receipt details', receiptUrl, {
           expectedPathIncludes: 'initiateCase2',
-          expectedLocator: this.claimantIndividualRadio
+          expectedLocator: this.claimantIndividualRadio,
         });
         await this.claimantIndividualRadio.check();
         await this.claimantIndividualFirstNameInput.fill('Test ');

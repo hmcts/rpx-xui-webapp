@@ -130,10 +130,10 @@ module.exports = function (config) {
   });
 
   /* ************** Codecept Feature Parsing *************************
-  * Parses the suite.feature object in codeceptjs and creates
-  * cucumber json repport structure.
-  * No runtime results in this initial parsing
-  ******************************************************************* */
+   * Parses the suite.feature object in codeceptjs and creates
+   * cucumber json repport structure.
+   * No runtime results in this initial parsing
+   ******************************************************************* */
 
   function buildReportFeature(codeceptSuiteObject) {
     const codeceptFeatureObject = codeceptSuiteObject.feature;
@@ -239,7 +239,9 @@ module.exports = function (config) {
         outlineScenario.name += ` ${JSON.stringify(outlineExample)}`;
 
         // example tables can have tagging associated with them
-        if (example.tags.length > 0) { outlineScenario.tags = example.tags; }
+        if (example.tags.length > 0) {
+          outlineScenario.tags = example.tags;
+        }
         splitScenarios.push(outlineScenario);
       });
     });

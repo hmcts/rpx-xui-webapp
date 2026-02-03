@@ -1,14 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
-let sessionCookies: any[] = [];
+import { ensureSessionCookies } from '../../../common/sessionCapture';
 
 test.describe('Verify the my tasks page tabs appear as expected', () => {
   test.beforeEach(async ({ page }) => {
-    const { cookies } = loadSessionCookies('STAFF_ADMIN');
-    sessionCookies = cookies;
-    if (sessionCookies.length) {
-      await page.context().addCookies(sessionCookies);
+    const { cookies } = await ensureSessionCookies('STAFF_ADMIN');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
     }
     await page.goto('/');
     await page.waitForResponse((res) => res.url().includes('/workallocation/task') && res.ok());

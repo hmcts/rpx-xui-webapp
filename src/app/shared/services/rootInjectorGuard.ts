@@ -1,11 +1,13 @@
-import { inject, InjectFlags, Type } from '@angular/core';
+import { inject, Type } from '@angular/core';
 
 export class RootInjectorGuard {
-  constructor(type: Type<any>) {
-    const parent = inject(type, InjectFlags.Optional | InjectFlags.SkipSelf);
+  private readonly _singletonGuard = true;
+
+  constructor(type: Type<unknown>) {
+    const parent = inject(type, { optional: true, skipSelf: true });
 
     if (parent) {
-      throw Error(`[${type}]: Creating multiple instances, but should be singleton.`);
+      throw new Error(`[${type}]: Creating multiple instances, but should be singleton.`);
     }
   }
 }

@@ -9,9 +9,16 @@ test.describe('Verify creating cases works as expected', () => {
     await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
   });
 
-  test('Verify creating a case in the divorce jurisdiction works as expected', async ({ page, validatorUtils, createCasePage, caseDetailsPage, caseListPage, tableUtils }) => {
+  test('Verify creating a case in the divorce jurisdiction works as expected', async ({
+    page,
+    validatorUtils,
+    createCasePage,
+    caseDetailsPage,
+    caseListPage,
+    tableUtils,
+  }) => {
     let caseNumber: string;
-    const testField = faker.lorem.word()+ new Date().toLocaleTimeString();
+    const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 
     await test.step('Create a case and validate the case details', async () => {
       await createCasePage.createDivorceCase(jurisdiction, caseType, testField);
@@ -36,9 +43,7 @@ test.describe('Verify creating cases works as expected', () => {
     });
 
     await test.step('Confirm the created case is in the search results', async () => {
-      const table = await tableUtils.mapExuiTable(
-        caseListPage.exuiCaseListComponent.caseListTable
-      );
+      const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
       const found = table.some((row) => row['Case reference'] === `${caseNumber.slice(1)}`);
       expect(found).toBeTruthy();
     });

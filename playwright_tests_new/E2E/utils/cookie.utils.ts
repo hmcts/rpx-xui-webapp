@@ -22,18 +22,11 @@ export class CookieUtils {
   //   }
   // }
 
-  public async addManageCasesAnalyticsCookie(
-    sessionPath: string
-  ): Promise<void> {
+  public async addManageCasesAnalyticsCookie(sessionPath: string): Promise<void> {
     try {
-      const domain = (config.urls.exuiDefaultUrl as string).replace(
-        'https://',
-        ''
-      );
+      const domain = (config.urls.exuiDefaultUrl as string).replace('https://', '');
       const state = JSON.parse(this.fs.readFileSync(sessionPath, 'utf-8'));
-      const userId = state.cookies.find(
-        (cookie: Cookie) => cookie.name === '__userid__'
-      )?.value;
+      const userId = state.cookies.find((cookie: Cookie) => cookie.name === '__userid__')?.value;
       state.cookies.push({
         name: `hmcts-exui-cookies-${userId}-mc-accepted`,
         value: 'true',
@@ -42,7 +35,7 @@ export class CookieUtils {
         expires: -1,
         httpOnly: false,
         secure: false,
-        sameSite: 'Lax'
+        sameSite: 'Lax',
       });
       this.fs.writeFileSync(sessionPath, JSON.stringify(state, null, 2));
     } catch (error) {
@@ -72,7 +65,7 @@ export class CookieUtils {
           expires: -1,
           httpOnly: false,
           secure: false,
-          sameSite: 'Lax'
+          sameSite: 'Lax',
         });
       }
       const state = { cookies };

@@ -1,9 +1,4 @@
-import {
-  ExuiCaseDetailsComponent,
-  ExuiCaseListComponent,
-  ExuiSpinnerComponent,
-  createLogger
-} from '@hmcts/playwright-common';
+import { ExuiCaseDetailsComponent, ExuiCaseListComponent, ExuiSpinnerComponent, createLogger } from '@hmcts/playwright-common';
 import { Page } from '@playwright/test';
 import { ExuiHeaderComponent } from './components/index.js';
 
@@ -54,7 +49,7 @@ export abstract class Base {
           method: request.method(),
           status,
           duration,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
         this.apiCalls.push(call);
@@ -72,14 +67,14 @@ export abstract class Base {
             url: call.url,
             status,
             duration: duration === -1 ? 'unknown' : `${duration}ms`,
-            method: request.method()
+            method: request.method(),
           });
         } else if (duration !== -1 && duration > 5000) {
           logger.warn('SLOW_API_RESPONSE', {
             url: call.url,
             duration: `${duration}ms`,
             status,
-            method: request.method()
+            method: request.method(),
           });
         } else if (status >= 400 && status < 500) {
           // DO NOT log response body - may contain PII or sensitive error details
@@ -87,7 +82,7 @@ export abstract class Base {
           logger.warn('CLIENT_ERROR', {
             url: call.url,
             status,
-            method: request.method()
+            method: request.method(),
           });
         }
       }
@@ -96,13 +91,16 @@ export abstract class Base {
 
   private isBackendApi(url: string): boolean {
     return (
-      url.includes('/api/') ||
-      url.includes('/data/') ||
-      url.includes('/auth/') ||
-      url.includes('/workallocation/') ||
-      url.includes('/aggregated/') ||
-      url.includes('/caseworkers/')
-    ) && !url.includes('.js') && !url.includes('.css') && !url.includes('.woff');
+      (url.includes('/api/') ||
+        url.includes('/data/') ||
+        url.includes('/auth/') ||
+        url.includes('/workallocation/') ||
+        url.includes('/aggregated/') ||
+        url.includes('/caseworkers/')) &&
+      !url.includes('.js') &&
+      !url.includes('.css') &&
+      !url.includes('.woff')
+    );
   }
 
   private sanitizeUrl(url: string): string {

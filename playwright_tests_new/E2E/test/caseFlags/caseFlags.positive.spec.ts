@@ -27,7 +27,9 @@ test.describe('Case level case flags', () => {
     });
 
     await test.step('Check the case flag creation messages are seen', async () => {
-      expect.soft(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(`Case ${caseNumber} has been updated with event: Create a case flag`);
+      expect
+        .soft(await caseDetailsPage.caseAlertSuccessMessage.innerText())
+        .toContain(`Case ${caseNumber} has been updated with event: Create a case flag`);
       expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
       expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
     });
@@ -36,10 +38,10 @@ test.describe('Case level case flags', () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const expectedFlag = {
         'Case flags': 'Welsh forms and communications',
-        'Comments': 'Welsh',
+        Comments: 'Welsh',
         'Creation date': await caseDetailsPage.todaysDateFormatted(),
         'Last modified': '',
-        'Flag status': 'ACTIVE'
+        'Flag status': 'ACTIVE',
       };
       const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName('Case level flags'));
       expect(table[0]).toMatchObject(expectedFlag);
@@ -87,10 +89,10 @@ test.describe('Party level case flags', () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const expectedFlag = {
         'Party level flags': 'I want to speak Welsh at a hearing',
-        'Comments': `Welsh ${testValue}`,
+        Comments: `Welsh ${testValue}`,
         'Creation date': await caseDetailsPage.todaysDateFormatted(),
         'Last modified': '',
-        'Flag status': 'ACTIVE'
+        'Flag status': 'ACTIVE',
       };
       const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName(testValue));
       expect(table[0]).toMatchObject(expectedFlag);

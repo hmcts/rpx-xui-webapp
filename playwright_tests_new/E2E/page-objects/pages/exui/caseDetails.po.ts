@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/prefer-string-replace-all */
+// Note: Using replace() with global regex instead of replaceAll() for ES2020 compatibility
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
@@ -130,13 +132,8 @@ export class CaseDetailsPage extends Base {
         if (!thead) {
           return false;
         }
-        const headerCells = new Set(
-          Array.from(thead.querySelectorAll('th, td'))
-            .map((el) => (el.textContent || '').trim())
-        );
-        return headerCells.has('Number')
-          && headerCells.has('Document Category')
-          && headerCells.has('Type of Document');
+        const headerCells = new Set(Array.from(thead.querySelectorAll('th, td')).map((el) => (el.textContent || '').trim()));
+        return headerCells.has('Number') && headerCells.has('Document Category') && headerCells.has('Type of Document');
       });
       if (hasHeaders) {
         targetIndex = i;
@@ -209,16 +206,22 @@ export class CaseDetailsPage extends Base {
           continue;
         }
 
-        const rawKey = findFirstText(cells[0]).replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+        const rawKey = findFirstText(cells[0])
+          .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
+          .trim();
         if (!rawKey) {
           continue;
         }
 
         const valueParts = cells
           .slice(1)
-          .map((c) => findFirstText(c).replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim())
+          .map((c) =>
+            findFirstText(c)
+              .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
+              .trim()
+          )
           .filter(Boolean);
-        const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
+        const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
 
         out[rawKey] = value;
       }
@@ -246,26 +249,28 @@ export class CaseDetailsPage extends Base {
 
       // header is first tr
       const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
       const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize(h.textContent || ''));
 
       // data rows are after header; filter hidden rows
-      const dataRows = Array.from(rows).slice(1).filter((row) => {
-        if (row instanceof HTMLTableRowElement && row.hidden) {
-          return false;
-        }
-        const style = globalThis.getComputedStyle(row);
-        if (!style) {
-          return false;
-        }
-        if (style.display === 'none' || style.visibility === 'hidden') {
-          return false;
-        }
-        if (row.getClientRects().length === 0) {
-          return false;
-        }
-        return true;
-      });
+      const dataRows = Array.from(rows)
+        .slice(1)
+        .filter((row) => {
+          if (row instanceof HTMLTableRowElement && row.hidden) {
+            return false;
+          }
+          const style = globalThis.getComputedStyle(row);
+          if (!style) {
+            return false;
+          }
+          if (style.display === 'none' || style.visibility === 'hidden') {
+            return false;
+          }
+          if (row.getClientRects().length === 0) {
+            return false;
+          }
+          return true;
+        });
 
       for (const row of dataRows) {
         const cells = Array.from(row.querySelectorAll('th, td'));
@@ -276,7 +281,7 @@ export class CaseDetailsPage extends Base {
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
           const cellText = cells[i].textContent || '';
-          const value = sanitize(cellText).replaceAll(/\s+/g, ' ');
+          const value = sanitize(cellText).replace(/\s+/g, ' ');
           obj[key] = value;
         }
         arr.push(obj);
@@ -288,11 +293,10 @@ export class CaseDetailsPage extends Base {
   }
 
   async mapHistoryTable(): Promise<Record<string, string>[]> {
-    if (await this.historyTable.count() === 0) {
+    if ((await this.historyTable.count()) === 0) {
       throw new Error('History table not found on page');
     }
-    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts())
-      .map((h) => h.replaceAll(/\t.*/g, ''));
+    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts()).map((h) => h.replace(/\t.*/g, ''));
     const rows = this.historyTable.locator('tbody tr');
     const rowCount = await rows.count();
     const data: Record<string, string>[] = [];
@@ -345,7 +349,7 @@ export class CaseDetailsPage extends Base {
     if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
       this.logger.error('Failed to extract valid case number from URL', {
         pathnameLength: pathname.length,
-        extractedLength: caseNumberMatch?.length
+        extractedLength: caseNumberMatch?.length,
       });
       throw new Error('Failed to extract valid case number from URL');
     }
@@ -368,9 +372,13 @@ export class CaseDetailsPage extends Base {
     } catch (error) {
       // Some pages keep the spinner element mounted but hidden; fall back to a hidden wait.
       this.logger.warn('Standard spinner wait failed, attempting hidden state wait', { error });
-      await this.page.locator('xuilib-loading-spinner').first().waitFor({ state: 'hidden', timeout: 30000 }).catch((err) => {
-        this.logger.warn('Spinner hidden wait also failed, proceeding anyway', { err });
-      });
+      await this.page
+        .locator('xuilib-loading-spinner')
+        .first()
+        .waitFor({ state: 'hidden', timeout: 30000 })
+        .catch((err) => {
+          this.logger.warn('Spinner hidden wait also failed, proceeding anyway', { err });
+        });
     }
     await this.page.waitForLoadState('domcontentloaded');
   }
@@ -402,7 +410,7 @@ export class CaseDetailsPage extends Base {
     }
     const exactLabel = this.page.getByLabel(`${target} (${target})`);
     // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const escapedTarget = target.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
     try {
       await exactLabel.waitFor({ state: 'visible', timeout: 15000 });

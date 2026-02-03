@@ -1,10 +1,4 @@
-import {
-  ApiClient,
-  createLogger,
-  ExuiMediaViewerPage,
-  IdamPage,
-  type ApiLogEntry
-} from '@hmcts/playwright-common';
+import { ApiClient, createLogger, ExuiMediaViewerPage, IdamPage, type ApiLogEntry } from '@hmcts/playwright-common';
 import { CaseDetailsPage } from './exui/caseDetails.po';
 import { CaseListPage } from './exui/caseList.po';
 import { CreateCasePage } from './exui/createCase.po';
@@ -61,7 +55,7 @@ export const pageFixtures = {
     }
     const logger = createLogger({
       serviceName: 'case-service-ui',
-      defaultMeta: { workerId: workerInfo.workerIndex }
+      defaultMeta: { workerId: workerInfo.workerIndex },
     });
     await use(logger);
   },
@@ -77,7 +71,7 @@ export const pageFixtures = {
       baseUrl: process.env.BACKEND_BASE_URL,
       logger,
       onResponse: (entry) => capturedCalls.push(entry),
-      captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1'
+      captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1',
     });
 
     await use(client);
@@ -86,8 +80,8 @@ export const pageFixtures = {
     if (capturedCalls.length) {
       await testInfo.attach('api-calls.json', {
         body: JSON.stringify(capturedCalls, null, 2),
-        contentType: 'application/json'
+        contentType: 'application/json',
       });
     }
-  }
+  },
 };

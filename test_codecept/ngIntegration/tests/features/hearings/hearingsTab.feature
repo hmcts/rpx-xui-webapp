@@ -54,7 +54,7 @@ Feature:  Hearings: Hearings tab
             | TEST_UPDATE_REQUESTED       | -3           | UPDATE REQUESTED         | <EditActions>              |
             | TEST_UPDATE_SUBMITTED       | -3           | UPDATE REQUESTED         | <EditActions>              |
             | TEST_CANCELLATION_REQUESTED | 2            | CANCELLATION REQUESTED   | View details               |
-            | TEST_CANCELLATION_SUBMITTED | 2            | CANCELLATION REQUESTED   | View details               |
+            | TEST_CANCELLATION_SUBMITTED | 2            | CANCELLATION SUBMITTED   | View details               |
             | TEST_AWAITING_ACTUALS       | 2            | AWAITING HEARING DETAILS | <Awaiting_hearing_Actions> |
             | TEST_EXCEPTION              | 2            | REQUEST FAILURE          | View details               |
 

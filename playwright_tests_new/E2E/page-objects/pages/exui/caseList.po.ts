@@ -15,9 +15,7 @@ export class CaseListPage extends Base {
   readonly pagination = this.page.locator('.ngx-pagination');
 
   // Some case list views use an id, others a data-test attribute for the summary
-  readonly caseListResultsAmount = this.page.locator(
-    '#search-result-summary__text, [data-test="search-result-summary__text"]'
-  );
+  readonly caseListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
 
   constructor(page: Page) {
     super(page);
@@ -44,7 +42,7 @@ export class CaseListPage extends Base {
     await this.exuiHeader.selectHeaderMenuItem('Case list');
   }
 
-  async navigateTo(){
+  async navigateTo() {
     await this.page.goto('/cases');
   }
 

@@ -42,7 +42,7 @@ describe('RD Professional API call for get organisations', () => {
         const path: string = `${mockServer.url}/refdata/external/v1/organisations/status/ACTIVE?address=true`;
 
         const resp = await getOrganisationDetails(path);
-        const responseDto = <Organisation[]>resp.data;
+        const responseDto = resp.data as Organisation[];
         assertResponse(responseDto);
       });
     });

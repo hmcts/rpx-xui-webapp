@@ -3,6 +3,7 @@
 This directory contains both **API tests** (`node-api` project) and **E2E UI tests** for the EXUI application.
 
 ## Table of Contents
+
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
 - [Session Management](#session-management)
@@ -14,6 +15,7 @@ This directory contains both **API tests** (`node-api` project) and **E2E UI tes
 API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run.
 
 ### Prerequisites
+
 - Node 20+, Yarn installed
 - Environment variables (can go into `.env`):
   - `TEST_URL` (e.g. `https://manage-case.aat.platform.hmcts.net/`)
@@ -22,6 +24,7 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
 - User credentials are read from `common/apiTestConfig.ts` for the selected `TEST_ENV`
 
 ### Running API Tests
+
 ```bash
 # Smoke the API suite
 yarn test:api:pw
@@ -31,10 +34,12 @@ yarn test:api:pw:coverage
 ```
 
 ### API Test Parallelism
+
 - In CI, Playwright runs with **8 workers** for predictable parallelism
 - Locally, worker count is auto-sized; override with `--workers` flag
 
 ### API Authentication Model
+
 - **Default behavior**: `utils/auth.ts` attempts token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken`
 - **Fallback**: If token bootstrap fails or env vars are absent, falls back to `/auth/login` form flow and caches storage state under `functional-output/tests/playwright-api/storage-states/<env>/<role>.json`
 - **Required for token bootstrap**: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `IDAM_CLIENT_ID` (or `SERVICES_IDAM_CLIENT_ID`), `IDAM_SECRET`, `S2S_URL`, `S2S_MICROSERVICE_NAME` (or `MICROSERVICE`)
@@ -42,16 +47,19 @@ yarn test:api:pw:coverage
 - **Correlation IDs**: Every API client sets `X-Correlation-Id` per request (UUID) for traceability
 
 ### API Reports
+
 - Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright.html`
 - Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
 - API call logs attached automatically per test as `node-api-calls.json`
 
 ### API Coverage
+
 - `test:api:pw:coverage` wraps Playwright run in `c8` to collect V8 coverage for test code (not the Node API service)
 - Server-side Node coverage stays in Mocha + c8 (`yarn coverage:node`)
 - Coverage output: `./reports/tests/coverage/api-playwright`
 
 ### What API Tests Cover
+
 - **Unauthenticated routes**: Assert 401 + `{ message: 'Unauthorized' }` body
 - **Node shell**: Verify auth status, user details payload, feature flags
 - **CCD/case-share**: Check jurisdictions, work-basket inputs, profiles, organizations
@@ -66,6 +74,7 @@ yarn test:api:pw:coverage
 E2E UI tests are located in `E2E/` and test the full user interface workflows.
 
 ### Running E2E Tests
+
 ```bash
 # Run all E2E tests
 yarn test:playwrightE2E
@@ -81,6 +90,7 @@ rm -rf .sessions && npx playwright test
 ```
 
 ### E2E Test Structure
+
 - **Page Objects**: `E2E/page-objects/pages/exui/` - Reusable page interaction methods
 - **Utilities**: `E2E/utils/` - Table parsing, user management, configuration
 - **Tests**: `E2E/test/` - Test specifications organized by feature
@@ -106,6 +116,7 @@ rm -rf .sessions && npx playwright test
 ```
 
 **Why unified storage matters:**
+
 - API and E2E tests often use the **same user credentials** (e.g., `solicitor`)
 - Without unified storage, both would log in the same user independently
 - **With unified storage + prefixing**, sessions are coordinated but namespaced:
@@ -116,18 +127,21 @@ rm -rf .sessions && npx playwright test
 ### How It Works
 
 #### 1. Lazy Loading
+
 - Sessions are **NOT** pre-captured during global setup
 - Each test specifies which user it needs via `ensureSession()` (E2E) or fixtures (API)
 - Sessions are captured only when first requested
 - Cached sessions are reused across tests and workers
 
 #### 2. Session Freshness (15-minute TTL)
+
 - Sessions are valid for **15 minutes** from capture time
 - `ensureSession()` checks session freshness in `test.beforeAll()` hook
 - Stale sessions are automatically refreshed
 - Fresh sessions are reused across all tests in the suite
 
 #### 3. CI Parallel Execution (8 Workers per Test Suite)
+
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
@@ -139,24 +153,24 @@ rm -rf .sessions && npx playwright test
 ```typescript
 import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture';
 
-test.describe("My Test Suite", () => {
-    test.beforeAll(async () => {
-        // Lazy capture: only log in when this test suite runs
-        await ensureSession('SOLICITOR');
-    });
-    
-    test.beforeEach(async ({ page }) => {
-        // Load cached session cookies
-        const { cookies } = loadSessionCookies('SOLICITOR');
-        if (cookies.length) {
-            await page.context().addCookies(cookies);
-        }
-        await page.goto('/');
-    });
+test.describe('My Test Suite', () => {
+  test.beforeAll(async () => {
+    // Lazy capture: only log in when this test suite runs
+    await ensureSession('SOLICITOR');
+  });
 
-    test("should do something", async ({ page }) => {
-        // Test implementation
-    });
+  test.beforeEach(async ({ page }) => {
+    // Load cached session cookies
+    const { cookies } = loadSessionCookies('SOLICITOR');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
+    }
+    await page.goto('/');
+  });
+
+  test('should do something', async ({ page }) => {
+    // Test implementation
+  });
 });
 ```
 
@@ -169,12 +183,12 @@ test.describe("My Test Suite", () => {
 
 ### File Naming Convention
 
-| Test Type | User Role | File Pattern | Example |
-|-----------|-----------|--------------|---------|
-| **E2E** | Any | `{email}.storage.json` | `xui_auto_test_user_solicitor@mailinator.com.storage.json` |
-| **API** | solicitor | `api-{env}-{role}.storage.json` | `api-aat-solicitor.storage.json` |
-| **API** | caseOfficer_r1 | `api-{env}-{role}.storage.json` | `api-aat-caseOfficer_r1.storage.json` |
-| **Lock files** | Any | `{filename}.lock` | `xui_auto_test_user_solicitor@mailinator.com.lock` |
+| Test Type      | User Role      | File Pattern                    | Example                                                    |
+| -------------- | -------------- | ------------------------------- | ---------------------------------------------------------- |
+| **E2E**        | Any            | `{email}.storage.json`          | `xui_auto_test_user_solicitor@mailinator.com.storage.json` |
+| **API**        | solicitor      | `api-{env}-{role}.storage.json` | `api-aat-solicitor.storage.json`                           |
+| **API**        | caseOfficer_r1 | `api-{env}-{role}.storage.json` | `api-aat-caseOfficer_r1.storage.json`                      |
+| **Lock files** | Any            | `{filename}.lock`               | `xui_auto_test_user_solicitor@mailinator.com.lock`         |
 
 ### Cross-Suite Coordination in CI
 
@@ -210,13 +224,13 @@ E2E Worker 1: Acquires xui_auto_test_user_solicitor@mailinator.com.lock
             → Logs in solicitor → Creates session file
 API Worker 1: Waiting on api-aat-solicitor.lock...
 
-Time: 2s  
+Time: 2s
 E2E Worker 1: Releases lock
 API Worker 1: Acquires api-aat-solicitor.lock
             → Checks if session fresh? YES (2s old < 15min)
             → Reuses existing IDAM token from E2E login
             → Creates api-aat-solicitor.storage.json ✅
-            
+
 Result: ONE login instead of two! ⚡
 ```
 
@@ -228,11 +242,12 @@ Result: ONE login instead of two! ⚡
 ✅ **Same principles** - Both use filesystem locks + 15min TTL  
 ✅ **Namespace separation** - `api-` prefix prevents E2E/API collision  
 ✅ **Cross-worker safe** - `proper-lockfile` coordinates across all processes  
-✅ **60-70% reduction** in login time for typical test runs  
+✅ **60-70% reduction** in login time for typical test runs
 
 ### Performance Comparison
 
 #### Before (Separate Storage + No Coordination)
+
 ```
 E2E Tests:  SOLICITOR login (30s) + other users...
 API Tests:  solicitor login (30s) + other users...  ← DUPLICATE!
@@ -240,6 +255,7 @@ Total:      60s+ wasted on duplicate logins
 ```
 
 #### After (Unified Storage + Lock Coordination)
+
 ```
 E2E Worker 1:  SOLICITOR login (30s) → session stored
 API Workers:   Reuse session (0s) → extract token
@@ -249,27 +265,33 @@ Total:         30s for both test suites! ⚡
 ### Example Scenarios
 
 #### Single Worker (Local Development)
+
 ```bash
 npx playwright test documentUpload.spec.ts --project chromium --workers=1
 ```
+
 - Logs in SOLICITOR once (~30s)
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
 #### 8 Workers (CI Pipeline)
+
 ```bash
 npx playwright test --project chromium --workers=8
 ```
+
 - Worker 1 logs in SOLICITOR → stores session
 - Workers 2-8 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
 #### Parallel Test Suites (CI Pipeline)
+
 ```bash
 # Running simultaneously:
 npx playwright test --project chromium --workers=8  # E2E tests
 npx playwright test --project node-api --workers=8   # API tests
 ```
+
 - E2E Worker 1 logs in solicitor → stores session
 - API workers detect fresh session → reuse IDAM token
 - **Total login time: ~30s (not 60s!)** ⚡
@@ -291,6 +313,7 @@ Sessions are stored in `.sessions/` directory with filesystem-based locking:
 ```
 
 **Lock file behavior:**
+
 - Created when a worker/test suite attempts to log in
 - Held during login process (2-5 seconds)
 - Released in `finally` block to prevent deadlocks
@@ -301,12 +324,13 @@ Sessions are stored in `.sessions/` directory with filesystem-based locking:
 ### Implementation Details
 
 #### E2E Session Capture ([common/sessionCapture.ts](common/sessionCapture.ts))
+
 ```typescript
 // Filesystem lock coordinates across all workers
 const lockFilePath = path.join(sessionsDir, `${email}.lock`);
 const release = await lockfile.lock(lockFilePath, {
   retries: { retries: 30, minTimeout: 1000, maxTimeout: 5000 },
-  stale: 60000
+  stale: 60000,
 });
 
 try {
@@ -315,7 +339,7 @@ try {
     logger.info('Another worker logged in, reusing session');
     return;
   }
-  
+
   // Login and save session
   await browser.newContext().storageState({ path: sessionPath });
 } finally {
@@ -324,17 +348,20 @@ try {
 ```
 
 #### API Session Capture ([api/utils/auth.ts](api/utils/auth.ts))
+
 ```typescript
 // Same approach: filesystem lock + freshness check
 const lockFilePath = path.join(storageRoot, `api-${cacheKey}.lock`);
-const release = await lockfile.lock(lockFilePath, { /* same config */ });
+const release = await lockfile.lock(lockFilePath, {
+  /* same config */
+});
 
 try {
   // Double-check freshness (E2E may have logged in this user)
   if (isStorageStateFresh(storagePath)) {
     return storagePath; // Reuse existing session
   }
-  
+
   // Create new session via token bootstrap or form login
   await createStorageState(role);
 } finally {
@@ -345,7 +372,9 @@ try {
 ### Troubleshooting
 
 #### Session Expired During Test
+
 If tests fail with authentication errors:
+
 1. Delete the `.sessions/` directory
 2. Re-run tests to capture fresh sessions
 
@@ -354,13 +383,17 @@ rm -rf .sessions && npx playwright test
 ```
 
 #### Concurrent Login Issues
+
 If multiple workers attempt to login simultaneously:
+
 - The lock mechanism should handle this automatically
 - Check logs for "Waiting for concurrent login to complete" messages
 - If issues persist, reduce worker count temporarily
 
 #### Session Not Refreshing
+
 If a session appears stale but isn't refreshing:
+
 1. Check session file timestamp: `ls -la .sessions/`
 2. Verify 15-minute TTL hasn't been exceeded
 3. Manually delete specific session file to force refresh
@@ -376,6 +409,7 @@ If a session appears stale but isn't refreshing:
 ### Implementation Details
 
 #### Lock Mechanism
+
 ```typescript
 const LOGIN_LOCKS = new Map<string, Promise<void>>();
 
@@ -385,20 +419,21 @@ await loginPromise;
 
 // Worker 2 (waits)
 if (LOGIN_LOCKS.has('login-SOLICITOR')) {
-    await LOGIN_LOCKS.get('login-SOLICITOR'); // Wait for Worker 1
-    // Recheck if session is fresh after wait
+  await LOGIN_LOCKS.get('login-SOLICITOR'); // Wait for Worker 1
+  // Recheck if session is fresh after wait
 }
 ```
 
 #### Freshness Check
+
 ```typescript
 export function isSessionFresh(
-    sessionPath: string,
-    maxAgeMs = 15 * 60 * 1000  // 15 minutes
+  sessionPath: string,
+  maxAgeMs = 15 * 60 * 1000 // 15 minutes
 ): boolean {
-    const stat = fs.statSync(sessionPath);
-    const ageMs = Date.now() - stat.mtimeMs;
-    return ageMs < maxAgeMs;
+  const stat = fs.statSync(sessionPath);
+  const ageMs = Date.now() - stat.mtimeMs;
+  return ageMs < maxAgeMs;
 }
 ```
 
@@ -416,6 +451,7 @@ Session operations are logged with structured metadata:
 ```
 
 Key operations logged:
+
 - `session-capture` - New session being captured
 - `ensure-session` - Session freshness check
 - `load-session` - Loading existing session
@@ -428,9 +464,9 @@ Session TTL can be adjusted in `common/sessionCapture.ts`:
 ```typescript
 // Default: 15 minutes
 export function isSessionFresh(
-    sessionPath: string,
-    maxAgeMs = 15 * 60 * 1000  // Adjust here
-)
+  sessionPath: string,
+  maxAgeMs = 15 * 60 * 1000 // Adjust here
+);
 ```
 
 ---
@@ -438,12 +474,14 @@ export function isSessionFresh(
 ## Key Files
 
 ### E2E Tests
+
 - `common/sessionCapture.ts` - Session management with filesystem-based locking
 - `E2E/fixtures.ts` - Test fixtures setup
 - `E2E/utils/table.utils.ts` - Table parsing utilities
 - `playwright.config.ts` - Playwright configuration
 
 ### API Tests
+
 - `api/utils/auth.ts` - API authentication helper
 - `api/data/testIds.ts` - Environment-driven test IDs
 - `common/apiTestConfig.ts` - User credentials and configuration

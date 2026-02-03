@@ -43,36 +43,30 @@ export const config: Config = {
     caseManager: {
       username: caseManager.email,
       password: caseManager.password,
-      sessionFile:
-        sessionPath +
-        `${caseManager.email}.json`,
-      cookieName: 'xui-webapp'
+      sessionFile: sessionPath + `${caseManager.email}.json`,
+      cookieName: 'xui-webapp',
     },
     judge: {
       username: judge.email,
       password: judge.password,
-      sessionFile:
-        sessionPath +
-        `${judge.email}.json`,
-      cookieName: 'xui-webapp'
-    }
+      sessionFile: sessionPath + `${judge.email}.json`,
+      cookieName: 'xui-webapp',
+    },
   },
   urls: {
     exuiDefaultUrl: 'https://manage-case.aat.platform.hmcts.net',
-    manageCaseBaseUrl:
-      resolveUrl(process.env.MANAGE_CASES_BASE_URL, 'https://manage-case.aat.platform.hmcts.net/cases'),
-    citizenUrl:
-      resolveUrl(process.env.CITIZEN_FRONTEND_BASE_URL, 'https://privatelaw.aat.platform.hmcts.net/'),
-    idamWebUrl:
-      resolveUrl(process.env.IDAM_WEB_URL, 'https://idam-web-public.aat.platform.hmcts.net'),
-    idamTestingSupportUrl:
-      resolveUrl(process.env.IDAM_TESTING_SUPPORT_URL, 'https://idam-testing-support-api.aat.platform.hmcts.net'),
-    serviceAuthUrl:
-      resolveUrl(
-        process.env.S2S_URL,
-        'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/testing-support/lease'
-      )
-  }
+    manageCaseBaseUrl: resolveUrl(process.env.MANAGE_CASES_BASE_URL, 'https://manage-case.aat.platform.hmcts.net/cases'),
+    citizenUrl: resolveUrl(process.env.CITIZEN_FRONTEND_BASE_URL, 'https://privatelaw.aat.platform.hmcts.net/'),
+    idamWebUrl: resolveUrl(process.env.IDAM_WEB_URL, 'https://idam-web-public.aat.platform.hmcts.net'),
+    idamTestingSupportUrl: resolveUrl(
+      process.env.IDAM_TESTING_SUPPORT_URL,
+      'https://idam-testing-support-api.aat.platform.hmcts.net'
+    ),
+    serviceAuthUrl: resolveUrl(
+      process.env.S2S_URL,
+      'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/testing-support/lease'
+    ),
+  },
 };
 
 function resolveUrl(value: string | undefined, fallback: string): string {
@@ -89,6 +83,6 @@ function getEnvVar(name: string): string {
 
 export const __test__ = {
   getEnvVar,
-  resolveUrl
+  resolveUrl,
 };
 export default config;

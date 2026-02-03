@@ -48,8 +48,8 @@ test.describe('Auth helper coverage - storage operations', () => {
         throw new Error('unlink failed');
       },
       lockfile: {
-        lock: async () => async () => {} // Mock lock that immediately returns release function
-      }
+        lock: async () => async () => {}, // Mock lock that immediately returns release function
+      },
     };
 
     const first = await authTest.ensureStorageStateWith('solicitor', deps as any);
@@ -77,8 +77,8 @@ test.describe('Auth helper coverage - storage operations', () => {
       },
       unlink: async () => {},
       lockfile: {
-        lock: async () => async () => {}
-      }
+        lock: async () => async () => {},
+      },
     };
 
     const value = await authTest.getStoredCookieWith('solicitor', 'XSRF-TOKEN', deps as any);
@@ -89,8 +89,8 @@ test.describe('Auth helper coverage - storage operations', () => {
       tryReadState: async () => undefined,
       unlink: async () => {},
       lockfile: {
-        lock: async () => async () => {}
-      }
+        lock: async () => async () => {},
+      },
     };
     await expect(authTest.getStoredCookieWith('solicitor', 'XSRF-TOKEN', emptyDeps as any)).rejects.toThrow(
       'Unable to read storage state'
@@ -109,7 +109,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       getCredentials: () => mockCredentials,
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => true,
-      createStorageStateViaForm: onForm
+      createStorageStateViaForm: onForm,
     });
     expect(tokenSuccess).toContain('api-aat-solicitor.storage.json');
     expect(formCalls).toBe(0);
@@ -120,7 +120,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       getCredentials: () => mockCredentials,
       isTokenBootstrapEnabled: () => true,
       tryTokenBootstrap: async () => false,
-      createStorageStateViaForm: onForm
+      createStorageStateViaForm: onForm,
     });
     expect(tokenFallback).toContain('api-aat-solicitor.storage.json');
     expect(formCalls).toBe(1);

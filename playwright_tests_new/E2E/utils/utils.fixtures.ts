@@ -7,7 +7,7 @@ import {
   SessionUtils,
   TableUtils,
   WaitUtils,
-  ServiceAuthUtils
+  ServiceAuthUtils,
 } from '@hmcts/playwright-common';
 import * as fs from 'fs';
 import * as os from 'os';
@@ -93,23 +93,17 @@ export const utilsFixtures = {
   localeUtils: async ({ page }, use) => {
     await use(new LocaleUtils(page));
   },
-  lighthousePage: async (
-    { lighthousePort, page, SessionUtils },
-    use,
-    testInfo
-  ) => {
+  lighthousePage: async ({ lighthousePort, page, SessionUtils }, use, testInfo) => {
     // Prevent creating performance page if not needed
     if (testInfo.tags.includes('@performance')) {
       // Lighthouse opens a new page and as playwright doesn't share context we need to
       // explicitly create a new browser with shared context
       const userDataDir = path.join(os.tmpdir(), 'pw', String(Math.random()));
       const context = await chromium.launchPersistentContext(userDataDir, {
-        args: [`--remote-debugging-port=${lighthousePort}`]
+        args: [`--remote-debugging-port=${lighthousePort}`],
       });
       // Using the cookies from global setup, inject to the new browser
-      await context.addCookies(
-        SessionUtils.getCookies(config.users.caseManager.sessionFile)
-      );
+      await context.addCookies(SessionUtils.getCookies(config.users.caseManager.sessionFile));
       // Provide the page to the test
       await use(context.pages()[0]);
       await context.close();
@@ -132,5 +126,5 @@ export const utilsFixtures = {
       // no-op: keep the destructured arg in use to satisfy lint rules
     }
     await use(new UserUtils());
-  }
+  },
 };

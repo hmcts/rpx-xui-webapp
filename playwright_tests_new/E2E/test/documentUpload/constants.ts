@@ -13,7 +13,7 @@ export const TEST_DATA = {
     FILE_TYPE: 'application/msword',
     FILE_CONTENT: 'Test Word document content',
     TEXT_FIELD_LABEL: 'Text Field',
-    DOCUMENT_FIELD_LABEL: 'Document 1'
+    DOCUMENT_FIELD_LABEL: 'Document 1',
   },
   V1: {
     JURISDICTION: 'EMPLOYMENT',
@@ -21,8 +21,8 @@ export const TEST_DATA = {
     TAB_NAME: 'Documents',
     ACTION: 'Upload Document',
     FILE_TYPE: 'application/pdf',
-    FILE_CONTENT: 'Test PDF document content'
-  }
+    FILE_CONTENT: 'Test PDF document content',
+  },
 } as const;
 
 export const TIMEOUTS = {
@@ -31,5 +31,5 @@ export const TIMEOUTS = {
   /** Maximum time to wait for success alert after case creation */
   ALERT_VISIBLE: 10000,
   /** Maximum time to wait for tab content to load */
-  TAB_LOAD: 5000
+  TAB_LOAD: 5000,
 } as const;

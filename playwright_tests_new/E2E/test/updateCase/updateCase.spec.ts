@@ -18,10 +18,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
     }
   });
 
-  test('Create, update and verify case history', async ({
-    createCasePage,
-    caseDetailsPage
-  }) => {
+  test('Create, update and verify case history', async ({ createCasePage, caseDetailsPage }) => {
     await test.step('Start Update Case event', async () => {
       await caseDetailsPage.selectCaseAction('Update case');
     });
@@ -41,12 +38,12 @@ test.describe('Verify creating and updating a case works as expected', () => {
         .toContain(`Case ${caseNumber} has been updated with event: Update case`);
     });
 
-    await test.step('Verify the \'Some more data\' tab has updated names correctly', async () => {
+    await test.step("Verify the 'Some more data' tab has updated names correctly", async () => {
       await caseDetailsPage.selectCaseDetailsTab('Some more data');
 
-      const expectedValues= {
+      const expectedValues = {
         'First Name': updatedFirstName,
-        'Last Name': updatedLastName
+        'Last Name': updatedLastName,
       };
 
       const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.someMoreDataTable);
@@ -55,8 +52,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
 
     await test.step('Verify that event details are shown on the History tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
-      const { updateRow, updateDate, updateAuthor, expectedDate } =
-        await caseDetailsPage.getUpdateCaseHistoryInfo();
+      const { updateRow, updateDate, updateAuthor, expectedDate } = await caseDetailsPage.getUpdateCaseHistoryInfo();
 
       expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
       const expectedDateNumeric = new Date().toLocaleDateString('en-GB');
@@ -80,12 +76,12 @@ test.describe('Verify creating and updating a case works as expected', () => {
       expect.soft(updateAuthor, 'Update case author should be present').not.toBe('');
 
       const expectedDetails = {
-        'Date': updateDate,
-        'Author': updateAuthor,
+        Date: updateDate,
+        Author: updateAuthor,
         'End state': 'Case created',
-        'Event': 'Update case',
-        'Summary': '-',
-        'Comment': '-'
+        Event: 'Update case',
+        Summary: '-',
+        Comment: '-',
       };
       const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
       expect(table).toMatchObject(expectedDetails);

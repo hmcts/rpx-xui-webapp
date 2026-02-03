@@ -50,7 +50,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     testMatch: [
       'playwright_tests/**/*.test.ts',
       'playwright_tests_new/E2E/**/*.spec.ts',
-      'playwright_tests_new/integration/**/*.spec.ts'
+      'playwright_tests_new/integration/**/*.spec.ts',
     ],
     /* Run tests in files in parallel */
     fullyParallel: true,

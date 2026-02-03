@@ -1,8 +1,8 @@
 const serviceHearingValuesMock = require('./hearings/serviceHearingValuesMock');
 const hearingValuesMock = require('./hearings/index');
 const ccdCaseResponseMock = require('./ccd/caseDetails_data');
-class MockAPIData{
-  setApiData(apiMethod, responseData){
+class MockAPIData {
+  setApiData(apiMethod, responseData) {
     let status = 'success';
     switch (apiMethod) {
       case 'OnServiceHearingValues':
@@ -24,4 +24,3 @@ class MockAPIData{
 }
 
 module.exports = new MockAPIData();
-

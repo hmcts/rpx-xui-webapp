@@ -6,10 +6,14 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class VenueAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
-      const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
-      return !_.isEqual(objA, objB);
-    }));
+    return hearingState$.pipe(
+      map((state) => {
+        const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingLocations.map(
+          (loc) => loc.locationId
+        );
+        const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
+        return !_.isEqual(objA, objB);
+      })
+    );
   }
 }

@@ -1,14 +1,13 @@
 const { $, elementByXpath } = require('../../../../../helpers/globals');
 
-class HearingChangeReasonsPage{
-
+class HearingChangeReasonsPage {
   get pageContainer() {
     return $('exui-hearing-change-reasons');
   }
 
   get fieldMapping() {
     return {
-      'Provide a reason for changing this hearing': $('#hearing-option-container')
+      'Provide a reason for changing this hearing': $('#hearing-option-container'),
     };
   }
 
@@ -36,4 +35,3 @@ class HearingChangeReasonsPage{
 }
 
 module.exports = HearingChangeReasonsPage;
-

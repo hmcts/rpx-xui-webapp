@@ -148,7 +148,7 @@ class TaskAssignmentPage extends TaskList {
 
   async isBannermessageWithTextDisplayed(messageText) {
     const messages = await this.getBannerMessagesDisplayed();
-    return messages.some(message => message.includes(messageText));
+    return messages.some((message) => message.includes(messageText));
   }
 
   async isTaskDisplayed() {

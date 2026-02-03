@@ -1,9 +1,7 @@
 import * as puppeteer from 'puppeteer';
 import { config } from '../config/config';
 import { reporterMsg } from './helper';
-const authCookiesForUsers = {
-
-};
+const authCookiesForUsers = {};
 
 export async function getSessionCookieString(username, password) {
   if (!authCookiesForUsers.hasOwnProperty(username)) {
@@ -19,13 +17,13 @@ export async function getSessionCookieString(username, password) {
 
 export function updateSessionCookieString(username, name, value) {
   let isNewCookie = true;
-  if (!authCookiesForUsers[username]){
+  if (!authCookiesForUsers[username]) {
     return;
   }
   for (const cookie of authCookiesForUsers[username]) {
     // console.log(`${cookie.name} : ${cookie.value}`);
-    if (cookie.name === name){
-      cookie.value=value;
+    if (cookie.name === name) {
+      cookie.value = value;
       isNewCookie = false;
     }
   }
@@ -84,7 +82,7 @@ export async function getUserId(username, password) {
 
 async function authenticateAndGetcookies(username, password) {
   let browser = null;
-  let page =null;
+  let page = null;
 
   try {
     browser = await puppeteer.launch(getPuppeteerLaunchOptions());
@@ -131,7 +129,7 @@ async function authenticateAndGetcookies(username, password) {
         let usernameInput = '';
         try {
           usernameInput = await page.$eval('#username', (element) => element.value);
-        } catch (err) { }
+        } catch (err) {}
 
         if (usernameInput === '') {
           loginAttemptsCounter++;
@@ -143,7 +141,7 @@ async function authenticateAndGetcookies(username, password) {
         }
       }
     }
-  } catch (err){
+  } catch (err) {
     console.log('Pupeeteer browser login to app error occured : ' + err);
     await page?.close();
     await browser?.close();
@@ -155,8 +153,12 @@ async function authenticateAndGetcookies(username, password) {
   return cookies;
 }
 
-function getPuppeteerLaunchOptions(){
-  const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] };
+function getPuppeteerLaunchOptions() {
+  const puppeteerOption = {
+    ignoreHTTPSErrors: true,
+    headless: true,
+    args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  };
   // if (!config.baseUrl.includes('manage-case.')) {
   //     puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
   // }

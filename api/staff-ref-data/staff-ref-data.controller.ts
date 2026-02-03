@@ -1,8 +1,7 @@
 import { NextFunction, Response } from 'express';
 // import { MockStaffRefDataAPI } from './mock-staff-ref-data-api';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
-/* tslint:disable */
-const StaffRefDataService = require('./staff-ref-data.service');
+import { StaffRefDataService } from './staff-ref-data.service';
 
 // Use below line to mock staff ref API
 // const staffRefDataService = new StaffRefDataService(new MockStaffRefDataAPI());
@@ -10,6 +9,7 @@ const StaffRefDataService = require('./staff-ref-data.service');
 const staffRefDataService = new StaffRefDataService(new RealStaffRefDataAPI());
 
 export async function getFilteredUsers(req, res: Response, next: NextFunction) {
+  console.log(2);
   staffRefDataService.getFilteredUsers(req, res, next);
 }
 

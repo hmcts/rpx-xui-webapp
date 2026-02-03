@@ -1,4 +1,3 @@
-
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const { isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
@@ -11,7 +10,7 @@ const myWorkPage = require('../../pageObjects/workAllocation/myWorkPage');
 const ArrayUtil = require('../../../utils/ArrayUtil');
 const { DataTableArgument } = require('codeceptjs');
 
-Then('I see work filter of type {string} is displayed', async function(filterType){
+Then('I see work filter of type {string} is displayed', async function (filterType) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const filterContainer = myWorkPage.getFilterContainer(filterType);
     await BrowserWaits.waitForElement(filterContainer);
@@ -42,7 +41,7 @@ When('I click work filter button to {string} filter', async function (filterStat
   await BrowserWaits.retryWithActionCallback(async () => {
     const buttonText = await myWorkPage.showHideWorkFilterBtn.textContent();
     reportLogger.AddMessage(`Button text before click "${buttonText}"`);
-    if (buttonText.toLowerCase().includes(filterStateTo.toLowerCase())){
+    if (buttonText.toLowerCase().includes(filterStateTo.toLowerCase())) {
       reportLogger.AddMessage(`Clicking button with text "${buttonText}"`);
 
       await myWorkPage.showHideWorkFilterBtn.click();
@@ -60,7 +59,7 @@ Then('I validate location filter is displayed', async function () {
     try {
       await BrowserWaits.waitForSeconds(1);
       expect(await myWorkPage.genericFilterContainer.isPresent()).to.be.true;
-    } catch (err){
+    } catch (err) {
       await myWorkPage.showHideWorkFilterBtn.click();
       throw new Error(err);
     }
@@ -75,7 +74,7 @@ Then('I validate location filter is not displayed', async function () {
 
 Then('I validate My work filter locations displayed', async function () {
   await myWorkPage.waitForWorkFilterToDisplay();
-  expect(await myWorkPage.getWorkFilterLocationsCount() > 0, 'No location inputs displayed').to.be.true;
+  expect((await myWorkPage.getWorkFilterLocationsCount()) > 0, 'No location inputs displayed').to.be.true;
 });
 
 Then('I validate work locations selected count is {int}', async function (selectedLocationsCount) {
@@ -89,7 +88,7 @@ When('I click work location filter with label {string}', async function (workLoc
   await myWorkPage.clickWorkFilterLoctionInputWithLabel(workLocationLabel);
 });
 
-async function validateLocationsSelected(locationsDatatable){
+async function validateLocationsSelected(locationsDatatable) {
   const selectedLocations = await myWorkPage.getListOfSelectedLocations();
   const locationNameHashes = locationsDatatable.parse().hashes();
   const locationNamesArr = [];
@@ -105,7 +104,7 @@ Then('I validate following work location selected', async function (locationsDat
 });
 
 Then('I validate following work location selected, if {string} equals {string}', async function (var1, var2, locationsDatatable) {
-  if (var1 === var2){
+  if (var1 === var2) {
     validateLocationsSelected(locationsDatatable);
   } else {
     reportLogger.AddMessage(`skiping step as condition not matching for scenario, ${var1} != ${var2}`);
@@ -134,7 +133,7 @@ Then('I validate work location filter batch and hint labels are not displayed', 
 
 // New work filters updated
 
-Then('I validate my work filter services container displayed', async function(){
+Then('I validate my work filter services container displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await isPresent(myWorkPage.workFilterServicesContainer)).to.be.true;
     expect(await myWorkPage.workFilterServicesContainer.isVisible()).to.be.true;
@@ -147,17 +146,17 @@ Then('I validate my work filter services container not displayed', async functio
   });
 });
 
-Then('I validate my work filter location search displayed', async function(){
+Then('I validate my work filter location search displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await isPresent(myWorkPage.workFiltersLocationsContainer)).to.be.true;
     expect(await myWorkPage.workFiltersLocationsContainer.isVisible()).to.be.true;
   });
 });
 
-Then('I validate my work filter services listed', async function(expectedServicesDatatable){
+Then('I validate my work filter services listed', async function (expectedServicesDatatable) {
   const datatableHashes = expectedServicesDatatable.parse().hashes();
-  const expectedServieNames= [];
-  for (const hash of datatableHashes){
+  const expectedServieNames = [];
+  for (const hash of datatableHashes) {
     expectedServieNames.push(hash.name);
   }
 
@@ -165,7 +164,7 @@ Then('I validate my work filter services listed', async function(expectedService
   expect(servicesListed).to.contains.members(expectedServieNames);
 });
 
-Then('I validate my work filter services listed {string}', async function(servicesListString){
+Then('I validate my work filter services listed {string}', async function (servicesListString) {
   const services = servicesListString.split(',');
   const servicesListed = await myWorkPage.getWorkFilterServicesList();
   expect(servicesListed).to.contains.members(services);
@@ -180,19 +179,19 @@ Then('I Validate my work filter services selected {string}', async function (ser
   }
 });
 
-Then('I Validate my work filter services selected', async function (expectedServicesDatatable){
+Then('I Validate my work filter services selected', async function (expectedServicesDatatable) {
   const datatableHashes = expectedServicesDatatable.parse().hashes();
   const expectedServieNames = [];
   for (const hash of datatableHashes) {
     expectedServieNames.push(hash.name);
   }
 
-  for (const selectedService of expectedServieNames){
+  for (const selectedService of expectedServieNames) {
     expect(await myWorkPage.isWorkFilterServiceSelected(selectedService)).to.be.true;
   }
 });
 
-Then('I validate my work filter locations selected', async function (expectedLocationsDatatable){
+Then('I validate my work filter locations selected', async function (expectedLocationsDatatable) {
   const datatableHashes = expectedLocationsDatatable.parse().hashes();
   const expectedLocations = [];
   for (const hash of datatableHashes) {
@@ -200,12 +199,12 @@ Then('I validate my work filter locations selected', async function (expectedLoc
   }
 
   const actualSelectedLocations = await myWorkPage.getWorkFilterSelectedLocations();
-  for (const loc of expectedLocations){
+  for (const loc of expectedLocations) {
     expect(actualSelectedLocations).to.includes(loc);
   }
 });
 
-When('I select service {string} in my work filter', async function(service){
+When('I select service {string} in my work filter', async function (service) {
   await myWorkPage.selectWorkFilterService(service);
 });
 
@@ -213,12 +212,12 @@ When('I unselect service {string} in my work filter', async function (service) {
   await myWorkPage.unselectWorkFilterService(service);
 });
 
-When('I search for location text {string} in my work filters', async function(location){
+When('I search for location text {string} in my work filters', async function (location) {
   await myWorkPage.workFilterSearchLocationInput.clear();
   await myWorkPage.workFilterSearchLocationInput.fill(location);
 });
 
-Then('I see location search results in my work filter', async function (expectedLocationsDatatable){
+Then('I see location search results in my work filter', async function (expectedLocationsDatatable) {
   reportLogger.reportDatatable(expectedLocationsDatatable);
   const datatableHashes = expectedLocationsDatatable.parse().hashes();
   const expectedLocations = [];
@@ -242,21 +241,21 @@ Then('I see location search results returned {int} results in my work filter', a
   });
 });
 
-When('I select locations search result {string} in my work filter', async function(location){
+When('I select locations search result {string} in my work filter', async function (location) {
   await myWorkPage.selectWorkFilterLocationSearchResult(location);
 });
 
-When('I click add location button in my work filter', async function(){
+When('I click add location button in my work filter', async function () {
   await myWorkPage.addLocationButton.click();
 });
 
-Then('I see location {string} selected in my work filter', async function(location){
+Then('I see location {string} selected in my work filter', async function (location) {
   let locationsSelected = await myWorkPage.getWorkFilterSelectedLocations();
   locationsSelected = locationsSelected.map((locName) => locName.trim());
   expect(locationsSelected).to.includes(location);
 });
 
-Then('I see error message {string} for service work filter in my work page', async function(message){
+Then('I see error message {string} for service work filter in my work page', async function (message) {
   expect(await myWorkPage.workFilterServiceErrorMessage.textContent()).to.includes(message);
 });
 
@@ -264,11 +263,10 @@ Then('I see error message {string} for location work filter in my work page', as
   expect(await myWorkPage.workFilterlocationErrorMessage.textContent()).to.includes(message);
 });
 
-When('I remove selected location {string} from my work filters', async function(location){
+When('I remove selected location {string} from my work filters', async function (location) {
   await myWorkPage.clickSelectedLocationFromWorkFilter(location);
 });
 
 When('I remove all selected locations from my work filters', async function () {
   await myWorkPage.clearAllSelectedLocations();
 });
-

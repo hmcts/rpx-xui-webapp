@@ -14,7 +14,7 @@ describe('GetHelpComponent', () => {
   const userDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 1
+      totalIdleTime: 1,
     },
     canShareCases: true,
     userInfo: {
@@ -23,10 +23,14 @@ describe('GetHelpComponent', () => {
       surname: 'surName',
       email: 'email@email.com',
       active: true,
-      roles: ['pui-case-manager']
-    }
+      roles: ['pui-case-manager'],
+    },
   };
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: (key: string) => key === 'Get help' ? 'Get help' : key, getTranslation$: (phrase: string) => phrase === 'Get help' ? of('Get help') : of(phrase) });
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: (key: string) => (key === 'Get help' ? 'Get help' : key),
+    getTranslation$: (phrase: string) => (phrase === 'Get help' ? of('Get help') : of(phrase)),
+  });
 
   beforeEach(waitForAsync(() => {
     mockStore = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
@@ -37,15 +41,14 @@ describe('GetHelpComponent', () => {
       providers: [
         {
           provide: Store,
-          useValue: mockStore
+          useValue: mockStore,
         },
         {
           provide: RpxTranslationService,
-          useFactory: rpxTranslationServiceStub
-        }
-      ]
-    })
-      .compileComponents();
+          useFactory: rpxTranslationServiceStub,
+        },
+      ],
+    }).compileComponents();
   }));
 
   describe('Testing using store of component', () => {
@@ -63,7 +66,7 @@ describe('GetHelpComponent', () => {
         const userDetails = {
           sessionTimeout: {
             idleModalDisplayTime: 10,
-            totalIdleTime: 1
+            totalIdleTime: 1,
           },
           canShareCases: true,
           userInfo: {
@@ -72,8 +75,8 @@ describe('GetHelpComponent', () => {
             surname: 'surName',
             email: 'email@email.com',
             active: true,
-            roles: ['pui-case-manager']
-          }
+            roles: ['pui-case-manager'],
+          },
         };
         mockStore.pipe.and.returnValue(of(userDetails));
         component.ngOnInit();
@@ -84,7 +87,7 @@ describe('GetHelpComponent', () => {
         const userDetails = {
           sessionTimeout: {
             idleModalDisplayTime: 10,
-            totalIdleTime: 1
+            totalIdleTime: 1,
           },
           canShareCases: true,
           userInfo: {
@@ -93,8 +96,8 @@ describe('GetHelpComponent', () => {
             surname: 'surName',
             email: 'email@email.com',
             active: true,
-            roles: ['somerole']
-          }
+            roles: ['somerole'],
+          },
         };
         mockStore.pipe.and.returnValue(of(userDetails));
         component.ngOnInit();
@@ -103,11 +106,14 @@ describe('GetHelpComponent', () => {
     });
 
     describe('isCaseManager()', () => {
-      it('should return true if there is a pui-case-manager user role as part of the userRoles string, so that a pui-case-manager is' +
-        'able to view the MyHMCTS contact details.', () => {
-        const userRoles = 'j:["caseworker", "pui-case-manager"]';
-        expect(component.isCaseManager(userRoles)).toBeTruthy();
-      });
+      it(
+        'should return true if there is a pui-case-manager user role as part of the userRoles string, so that a pui-case-manager is' +
+          'able to view the MyHMCTS contact details.',
+        () => {
+          const userRoles = 'j:["caseworker", "pui-case-manager"]';
+          expect(component.isCaseManager(userRoles)).toBeTruthy();
+        }
+      );
 
       it('should return false if there is not a pui-case-manager user role.', () => {
         const userRoles = 'j:["caseworker"]';

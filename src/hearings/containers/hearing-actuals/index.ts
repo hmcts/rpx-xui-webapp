@@ -13,5 +13,5 @@ export const containers: any[] = [
   HearingActualsEditSummaryComponent,
   HearingStageResultComponent,
   HearingActualsFinalConfirmationComponent,
-  HearingActualsViewEditPartiesComponent
+  HearingActualsViewEditPartiesComponent,
 ];

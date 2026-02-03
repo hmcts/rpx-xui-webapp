@@ -22,9 +22,10 @@ describe('AddExclusionCheckAnswersComponent', () => {
       declarations: [AnswersComponent, AddExclusionCheckAnswersComponent],
       providers: [
         {
-          provide: Store, useValue: mockStore
-        }
-      ]
+          provide: Store,
+          useValue: mockStore,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(AddExclusionCheckAnswersComponent);
     component = fixture.componentInstance;
@@ -59,9 +60,9 @@ describe('AddExclusionCheckAnswersComponent', () => {
       person: {
         name: 'Judge Judy',
         email: 'judge@judy.com',
-        exclusionDescription: 'the exclusion description'
+        exclusionDescription: 'the exclusion description',
       },
-      exclusionOption
+      exclusionOption,
     };
     pipeSubject.next(exclusionStateData);
   };

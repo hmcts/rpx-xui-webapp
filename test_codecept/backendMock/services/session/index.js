@@ -21,11 +21,10 @@ class MockSessionService {
     });
 
     const debug = mode && mode === 'DEBUG';
-    this.sessionsPath = path.resolve(
-      __dirname,
-      debug ? '../../../../api/.sessions' : '../../../../.sessions'
-    );
-    try { fs.mkdirSync(this.sessionsPath, { recursive: true }); } catch { }
+    this.sessionsPath = path.resolve(__dirname, debug ? '../../../../api/.sessions' : '../../../../.sessions');
+    try {
+      fs.mkdirSync(this.sessionsPath, { recursive: true });
+    } catch {}
 
     this.defaultSession = '';
     this.sessionUsers = [];
@@ -46,8 +45,11 @@ class MockSessionService {
   }
 
   getSessionFiles() {
-    try { return fs.readdirSync(this.sessionsPath); }
-    catch { return []; }
+    try {
+      return fs.readdirSync(this.sessionsPath);
+    } catch {
+      return [];
+    }
   }
 
   async updateSessionFile(_filename) {
@@ -78,9 +80,9 @@ class MockSessionService {
         passport: {
           user: {
             tokenset: { accessToken: session },
-            userinfo: { roles: ['caseworker', 'caseworker-iac-judge'] }
-          }
-        }
+            userinfo: { roles: ['caseworker', 'caseworker-iac-judge'] },
+          },
+        },
       };
       fs.writeFileSync(fp, JSON.stringify(proto, null, 2), 'utf8');
     }
@@ -88,7 +90,7 @@ class MockSessionService {
   }
 
   async getSessionFileAuth(auth) {
-    const files = this.getSessionFiles().filter(f => f.endsWith('.json'));
+    const files = this.getSessionFiles().filter((f) => f.endsWith('.json'));
     for (const file of files) {
       const fp = path.join(this.sessionsPath, file);
       try {
@@ -96,7 +98,7 @@ class MockSessionService {
         if (json?.passport?.user?.tokenset?.accessToken === auth) {
           return fp;
         }
-      } catch { }
+      } catch {}
     }
     return null;
   }
@@ -115,10 +117,10 @@ class MockSessionService {
             passport: {
               user: {
                 tokenset: { accessToken: auth },
-                userinfo: { roles: [] }
-              }
+                userinfo: { roles: [] },
+              },
             },
-            roleAssignmentResponse: []
+            roleAssignmentResponse: [],
           };
           const newPath = path.join(this.sessionsPath, `${sid}.json`);
           try {
@@ -135,7 +137,7 @@ class MockSessionService {
       try {
         const json = JSON.parse(fs.readFileSync(fp, 'utf8'));
         if (json.roleAssignmentResponse) return; // ready
-      } catch { }
+      } catch {}
       // not yet populated; keep waiting
     }
 
@@ -155,7 +157,7 @@ class MockSessionService {
       json.passport.user = json.passport.user || { userinfo: {} };
       json.passport.user.userinfo.roles = roles;
       fs.writeFileSync(fp, JSON.stringify(json, null, 2), 'utf8');
-    } catch { }
+    } catch {}
   }
 
   async updateAuthSessionWithUserInfo(auth, userInfo) {
@@ -168,7 +170,7 @@ class MockSessionService {
       json.passport.user = json.passport.user || {};
       json.passport.user.userinfo = userInfo;
       fs.writeFileSync(fp, JSON.stringify(json, null, 2), 'utf8');
-    } catch { }
+    } catch {}
   }
 
   async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
@@ -182,7 +184,10 @@ class MockSessionService {
       const out = [];
       for (const r of arr || []) {
         const k = r.id || JSON.stringify(r);
-        if (!seen.has(k)) { seen.add(k); out.push(r); }
+        if (!seen.has(k)) {
+          seen.add(k);
+          out.push(r);
+        }
       }
       return out;
     };
@@ -192,8 +197,7 @@ class MockSessionService {
 
       // push into service cache once
       roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments);
-      roleAssignmentsService.serviceUsersRoleAssignments =
-        dedup(roleAssignmentsService.serviceUsersRoleAssignments);
+      roleAssignmentsService.serviceUsersRoleAssignments = dedup(roleAssignmentsService.serviceUsersRoleAssignments);
 
       if (Array.isArray(json.roleAssignmentResponse)) {
         json.roleAssignmentResponse = dedup(json.roleAssignmentResponse.concat(roleAssignments));
@@ -214,8 +218,8 @@ class MockSessionService {
     try {
       const json = JSON.parse(fs.readFileSync(fp, 'utf8'));
       return {
-        roles: (json.passport?.user?.userinfo?.roles) || [],
-        roleAssignments: json.roleAssignmentResponse || []
+        roles: json.passport?.user?.userinfo?.roles || [],
+        roleAssignments: json.roleAssignmentResponse || [],
       };
     } catch {
       return { roles: [], roleAssignments: [] };
@@ -250,4 +254,6 @@ class MockSessionService {
 const mode = process.env.DEBUG === 'true' ? 'DEBUG' : '';
 module.exports = new MockSessionService(mode);
 
-function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}

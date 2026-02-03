@@ -18,22 +18,24 @@ describe('verifyAnswers API', () => {
     sandbox.restore();
   });
 
-  const answers: NocAnswer[] = [{
-    question_id: '1233434',
-    value: 'test@email.com'
-  }];
+  const answers: NocAnswer[] = [
+    {
+      question_id: '1233434',
+      value: 'test@email.com',
+    },
+  ];
   const mockRequest = {
     case_id: '1234567812345670',
-    answers: answers
+    answers: answers,
   };
 
   const req = mockReq({
     headers: {
-      'Authorization': 'Bearer someAuthorizationToken',
-      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-      'content-Type': 'application/json'
+      Authorization: 'Bearer someAuthorizationToken',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+      'content-Type': 'application/json',
     },
-    body: mockRequest
+    body: mockRequest,
   });
 
   function setUpMockConfigForFunction(url) {
@@ -53,7 +55,7 @@ describe('verifyAnswers API', () => {
         withRequest: {
           method: 'POST',
           path: '/noc/verify-noc-answers',
-          body: mockRequest
+          body: mockRequest,
         },
         willRespondWith: {
           status: 400,
@@ -61,16 +63,16 @@ describe('verifyAnswers API', () => {
             status: somethingLike('BAD_REQUEST'),
             message: somethingLike('The answers did not match those for any litigant'),
             code: somethingLike('answers-not-matched-any-litigant'),
-            errors: []
-          }
-        }
+            errors: [],
+          },
+        },
       });
     });
 
     it('should return an error response', async () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const validateNoCQuestions = setUpMockConfigForFunction(mockServer.url);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         let returnedResponse = null;
         const response = mockRes();
         response.send = (ret) => {
@@ -95,4 +97,3 @@ function assertError(error: any) {
   expect(error.data.message).to.be.equal('The answers did not match those for any litigant');
   expect(error.data.code).to.be.equal('answers-not-matched-any-litigant');
 }
-

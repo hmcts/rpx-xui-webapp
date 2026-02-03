@@ -5,10 +5,11 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocPhoneUkFieldComponent } from './noc-phone-uk-field.component';
+import { NocQuestion } from 'src/noc/models';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -22,7 +23,7 @@ describe('NocPhoneUkFieldComponent', () => {
     FORM_GROUP.addControl('Email', control);
     return control;
   };
-  const QUESTION_FIELD = {
+  const QUESTION_FIELD: NocQuestion = {
     case_type_id: 'AAT',
     order: '3',
     question_text: 'What is your Phone number',
@@ -34,12 +35,12 @@ describe('NocPhoneUkFieldComponent', () => {
       regular_expression: null,
       fixed_list_items: [],
       complex_fields: [],
-      collection_field_type: null
+      collection_field_type: null,
     },
     display_context_parameter: '3',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question3'
+    question_id: 'question3',
   };
   const ANSWER_VALUE = of('07777777777');
   let component: NocPhoneUkFieldComponent;
@@ -48,17 +49,9 @@ describe('NocPhoneUkFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        NocPhoneUkFieldComponent,
-        RpxTranslateMockPipe
-      ],
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule
-      ],
-      providers: [
-        provideMockStore()
-      ]
+      declarations: [NocPhoneUkFieldComponent, RpxTranslateMockPipe],
+      imports: [ReactiveFormsModule, UtilsModule],
+      providers: [provideMockStore()],
     }).compileComponents();
   }));
 
@@ -68,7 +61,6 @@ describe('NocPhoneUkFieldComponent', () => {
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
     component.answerValue$ = ANSWER_VALUE;
-    // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();
   });

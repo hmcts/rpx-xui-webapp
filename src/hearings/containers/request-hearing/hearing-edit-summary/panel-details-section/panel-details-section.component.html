@@ -1,59 +1,39 @@
 <h2 class="govuk-heading-m">Panel details</h2>
 <div class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
-    <div class="govuk-summary-list__key">
-      Do you require a panel for this hearing?
-    </div>
+    <div class="govuk-summary-list__key">Do you require a panel for this hearing?</div>
     <div class="govuk-summary-list__value">
       {{ hearingPanel }}
     </div>
     <div class="govuk-summary-list__actions">
-      <button id="hearingPanel"
-        class="govuk-js-link"
-        type="button"
-        (click)="onChange('hearingPanel')">Change</button>
+      <button id="hearingPanel" class="govuk-js-link" type="button" (click)="onChange('hearingPanel')">Change</button>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="includedPanelMembers?.length > 0">
-    <div class="govuk-summary-list__key">
-      Include specific panel members
-    </div>
+    <div class="govuk-summary-list__key">Include specific panel members</div>
     <div class="govuk-summary-list__value">
       {{ includedPanelMembers }}
     </div>
     <div class="govuk-summary-list__actions">
-      <button id="panelInclusion"
-        class="govuk-js-link"
-        type="button"
-        (click)="onChange('panelInclusion')">Change</button>
+      <button id="panelInclusion" class="govuk-js-link" type="button" (click)="onChange('panelInclusion')">Change</button>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="excludedPanelMembers?.length > 0">
-    <div class="govuk-summary-list__key">
-      Exclude specific panel members
-    </div>
+    <div class="govuk-summary-list__key">Exclude specific panel members</div>
     <div class="govuk-summary-list__value">
       {{ excludedPanelMembers }}
     </div>
     <div class="govuk-summary-list__actions">
-      <button id="panelExclusion"
-        class="govuk-js-link"
-        type="button"
-        (click)="onChange('panelExclusion')">Change</button>
+      <button id="panelExclusion" class="govuk-js-link" type="button" (click)="onChange('panelExclusion')">Change</button>
     </div>
   </div>
   <div class="govuk-summary-list__row" *ngIf="panelRoles?.length > 0">
-    <div class="govuk-summary-list__key">
-      Select any other panel roles required
-    </div>
+    <div class="govuk-summary-list__key">Select any other panel roles required</div>
     <div class="govuk-summary-list__value">
       {{ panelRoles }}
     </div>
     <div class="govuk-summary-list__actions">
-      <button id="panelRoles"
-        class="govuk-js-link"
-        type="button"
-        (click)="onChange('panelRoles')">Change</button>
+      <button id="panelRoles" class="govuk-js-link" type="button" (click)="onChange('panelRoles')">Change</button>
     </div>
   </div>
 </div>

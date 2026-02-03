@@ -9,27 +9,23 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UserRole } from '../../../../app/models';
 import { UtilsModule } from '../../../../noc/containers/noc-field/utils/utils.module';
-import {
-  Actions,
-  AllocateRoleNavigationEvent,
-  AllocateRoleState,
-  AllocateTo,
-  DurationOfRole
-} from '../../../models';
+import { Actions, AllocateRoleNavigationEvent, AllocateRoleState, AllocateTo, DurationOfRole } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromStore from '../../../store';
 import * as fromContainers from '../../allocate-role';
 import { AllocateRoleHomeComponent } from './allocate-role-home.component';
 
-const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
+const mockRoles = [
+  { roleId: '1', roleName: 'Role 1' },
   { roleId: '2', roleName: 'Role 2' },
-  { roleId: '3', roleName: 'Role 3' }];
+  { roleId: '3', roleName: 'Role 3' },
+];
 
 describe('AllocateRoleHomeComponent', () => {
   const USER = {
     sessionTimeout: {
       idleModalDisplayTime: 12,
-      totalIdleTime: 12
+      totalIdleTime: 12,
     },
     canShareCases: true,
     userInfo: {
@@ -38,8 +34,8 @@ describe('AllocateRoleHomeComponent', () => {
       surname: 'test surname',
       email: 'test@test.com',
       active: true,
-      roles: ['sscs-caseworker']
-    }
+      roles: ['sscs-caseworker'],
+    },
   };
   const STATE_DATA = {
     caseId: '111111',
@@ -50,7 +46,7 @@ describe('AllocateRoleHomeComponent', () => {
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
     period: null,
-    roleCategory: RoleCategory.ADMIN
+    roleCategory: RoleCategory.ADMIN,
   };
   const ROLE_LIST = [
     {
@@ -58,8 +54,8 @@ describe('AllocateRoleHomeComponent', () => {
       id: '999999999',
       name: 'Judge Rinder',
       notes: 'Test exclusion',
-      email: 'user@test.com'
-    }
+      email: 'user@test.com',
+    },
   ];
   let component: AllocateRoleHomeComponent;
   let fixture: ComponentFixture<AllocateRoleHomeComponent>;
@@ -70,54 +66,44 @@ describe('AllocateRoleHomeComponent', () => {
   let storeDispatchMock: any;
 
   beforeEach(() => {
-    routerMock = jasmine.createSpyObj('Router', [
-      'navigateByUrl', 'getCurrentNavigation'
-    ]);
+    routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'getCurrentNavigation']);
     routerMock.navigateByUrl.and.returnValue(new Promise(() => true));
 
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule,
-        RouterTestingModule
-      ],
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
-      declarations: [
-        ...fromContainers.containers
-      ],
+      imports: [ReactiveFormsModule, UtilsModule, RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [...fromContainers.containers],
       providers: [
         provideMockStore(),
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                validRoles: mockRoles
+                validRoles: mockRoles,
               },
               queryParams: {
                 caseId: '111111',
                 userType: 'Judicial',
                 roleCategory: 'JUDICIAL',
                 jurisdiction: 'IA',
-                caseType: 'Appeal'
+                caseType: 'Appeal',
               },
               routeConfig: {
-                path: 'allocate'
-              }
-            }
-          }
+                path: 'allocate',
+              },
+            },
+          },
         },
         {
           provide: AllocateRoleService,
-          useValue: allocateRoleServiceMock
-        }
-      ]
+          useValue: allocateRoleServiceMock,
+        },
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -132,7 +118,7 @@ describe('AllocateRoleHomeComponent', () => {
       previousNavigation: undefined,
       trigger: undefined,
       extras: { state: { backUrl: null } },
-      abort: () => {}
+      abort: () => {},
     } as any);
     fixture = TestBed.createComponent(AllocateRoleHomeComponent);
     component = fixture.componentInstance;
@@ -164,7 +150,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.userRole = UserRole.CTSC;
       component.roleCategory = RoleCategory.CTSC;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+      );
     });
 
     it('on SEARCH_PERSON page judicial user assign judicial user', () => {
@@ -172,7 +160,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.userRole = UserRole.Judicial;
       component.roleCategory = RoleCategory.JUDICIAL;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+      );
     });
 
     it('on SEARCH_PERSON page legal ops user assign legal ops user', () => {
@@ -180,7 +170,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.userRole = UserRole.LegalOps;
       component.roleCategory = RoleCategory.LEGAL_OPERATIONS;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+      );
     });
 
     it('on SEARCH_PERSON page judicial user assign legal ops user', () => {
@@ -205,7 +197,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.roleCategory = RoleCategory.JUDICIAL;
       component.allocateTo = AllocateTo.ALLOCATE_TO_ME;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+      );
     });
 
     it('on CHOOSE_DURATION page when CTSC user allocate judicial user if reserve to me', () => {
@@ -215,7 +209,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.roleCategory = RoleCategory.CTSC;
       component.allocateTo = AllocateTo.ALLOCATE_TO_ME;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+      );
     });
 
     it('on CHOOSE_DURATION page when CTSC user allocate judicial user if reserve to me', () => {
@@ -296,7 +292,9 @@ describe('AllocateRoleHomeComponent', () => {
       component.roleCategory = RoleCategory.LEGAL_OPERATIONS;
       component.allocateTo = AllocateTo.ALLOCATE_TO_ME;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+      );
     });
 
     it('on CHOOSE_DURATION page when legalops user allocate legalops user if allocate to another person', () => {
@@ -312,7 +310,9 @@ describe('AllocateRoleHomeComponent', () => {
     it('on CHECK_ANSWERS page', () => {
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
       component.navigationHandler(navEvent);
-      expect(storeDispatchMock).toHaveBeenCalledWith(new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_DURATION));
+      expect(storeDispatchMock).toHaveBeenCalledWith(
+        new fromStore.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_DURATION)
+      );
     });
 
     afterEach(() => {
@@ -337,7 +337,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on CHOOSE_ALLOCATE_TO page', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHOOSE_ALLOCATE_TO
+        state: AllocateRoleState.CHOOSE_ALLOCATE_TO,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHOOSE_ALLOCATE_TO;
@@ -350,7 +350,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on SEARCH_PERSON page', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.SEARCH_PERSON
+        state: AllocateRoleState.SEARCH_PERSON,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.SEARCH_PERSON;
@@ -363,7 +363,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on CHOOSE_DURATION page', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHOOSE_DURATION
+        state: AllocateRoleState.CHOOSE_DURATION,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHOOSE_DURATION;
@@ -376,7 +376,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on CHECK_ANSWERS page', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHECK_ANSWERS
+        state: AllocateRoleState.CHECK_ANSWERS,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
@@ -395,7 +395,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on CHECK_ANSWERS page', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHECK_ANSWERS
+        state: AllocateRoleState.CHECK_ANSWERS,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
@@ -418,7 +418,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('should be true when allocation is confirmed', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHECK_ANSWERS
+        state: AllocateRoleState.CHECK_ANSWERS,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
@@ -432,7 +432,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('should be false if navigation event is unhandled case', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHECK_ANSWERS
+        state: AllocateRoleState.CHECK_ANSWERS,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;
@@ -452,7 +452,7 @@ describe('AllocateRoleHomeComponent', () => {
     it('on cancel event', () => {
       const CURRENT_STATE = {
         ...STATE_DATA,
-        state: AllocateRoleState.CHECK_ANSWERS
+        state: AllocateRoleState.CHECK_ANSWERS,
       };
       storePipeMock.and.returnValue(of(CURRENT_STATE));
       component.navigationCurrentState = AllocateRoleState.CHECK_ANSWERS;

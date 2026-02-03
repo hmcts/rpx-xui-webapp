@@ -11,26 +11,28 @@ import { Booking } from '../../models/booking.interface';
 import { BookingService } from '../../services';
 import { BookingHomeComponent } from './booking-home.component';
 
-const DUMMY_BOOKINGS: Booking[] = [{
-  id: 'd9d4f711-1ffe-4a22-a949-7286907422f1',
-  userId: '7954b105-1014-4504-bb47-602639df24eb',
-  regionId: '5',
-  locationId: '512401',
-  created: '2022-06-14T13:25:39Z',
-  beginTime: '2022-06-14T00:00:00Z',
-  endTime: '2022-06-20T00:00:00Z',
-  locationName: 'Manchester Tribunal Hearing Centre'
-},
-{
-  id: '0457a99c-b1e3-49a1-9deb-8ab322706981',
-  userId: '7954b105-1014-4504-bb47-602639df24eb',
-  regionId: '9',
-  locationId: '366559',
-  created: '2022-06-15T13:26:27Z',
-  beginTime: '2022-06-14T00:00:00Z',
-  endTime: '2022-06-20T00:00:00Z',
-  locationName: 'Glasgow Tribunals Centre'
-}];
+const DUMMY_BOOKINGS: Booking[] = [
+  {
+    id: 'd9d4f711-1ffe-4a22-a949-7286907422f1',
+    userId: '7954b105-1014-4504-bb47-602639df24eb',
+    regionId: '5',
+    locationId: '512401',
+    created: '2022-06-14T13:25:39Z',
+    beginTime: '2022-06-14T00:00:00Z',
+    endTime: '2022-06-20T00:00:00Z',
+    locationName: 'Manchester Tribunal Hearing Centre',
+  },
+  {
+    id: '0457a99c-b1e3-49a1-9deb-8ab322706981',
+    userId: '7954b105-1014-4504-bb47-602639df24eb',
+    regionId: '9',
+    locationId: '366559',
+    created: '2022-06-15T13:26:27Z',
+    beginTime: '2022-06-14T00:00:00Z',
+    endTime: '2022-06-20T00:00:00Z',
+    locationName: 'Glasgow Tribunals Centre',
+  },
+];
 
 const bookableSuccessResponse: BookingResponseSuccess = {
   bookingResponse: {
@@ -40,53 +42,54 @@ const bookableSuccessResponse: BookingResponseSuccess = {
     beginTime: new Date(),
     endTime: new Date(),
     created: new Date(),
-    log: ''
-  }
+    log: '',
+  },
 };
 
 describe('BookingHomeComponent', () => {
   let component: BookingHomeComponent;
   let fixture: ComponentFixture<BookingHomeComponent>;
-  const bookingService = jasmine.createSpyObj<BookingService>('BookingService', ['getBookings', 'getBookingLocation', 'refreshRoleAssignments']);
+  const bookingService = jasmine.createSpyObj<BookingService>('BookingService', [
+    'getBookings',
+    'getBookingLocation',
+    'refreshRoleAssignments',
+  ]);
   const mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
   const flags = {
     enabledFlag: true,
-    disabledFlag: false
+    disabledFlag: false,
   };
   let mockRouter: any;
   const error = {
     status: 400,
-    message: 'Service down'
+    message: 'Service down',
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        RouterTestingModule.withRoutes(
-          [{ path: 'work/my-work/list', component: BookingHomeComponent }]
-        )
+        RouterTestingModule.withRoutes([{ path: 'work/my-work/list', component: BookingHomeComponent }]),
       ],
       declarations: [BookingHomeComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: BookingService,
-          useValue: bookingService
+          useValue: bookingService,
         },
         {
           provide: WindowService,
-          useValue: mockWindowService
+          useValue: mockWindowService,
         },
         {
           provide: FeatureToggleService,
           useValue: {
-            isEnabled: (flag) => of(flags[flag])
-          }
-        }
-      ]
-    })
-      .compileComponents();
+            isEnabled: (flag) => of(flags[flag]),
+          },
+        },
+      ],
+    }).compileComponents();
 
     bookingService.getBookings.and.returnValue(of(DUMMY_BOOKINGS));
     bookingService.refreshRoleAssignments.and.returnValue(of(bookableSuccessResponse));
@@ -102,7 +105,7 @@ describe('BookingHomeComponent', () => {
     bookingService.getBookings.and.returnValue(throwError({ error }));
     fixture.detectChanges();
     mockRouter = {
-      navigate: jasmine.createSpy('navigate')
+      navigate: jasmine.createSpy('navigate'),
     };
     component.NavigationErrorHandler(error, mockRouter);
     expect(mockRouter.navigate).toHaveBeenCalled();
@@ -110,7 +113,7 @@ describe('BookingHomeComponent', () => {
 
   it('should attempt to navigate to the correct error pages', () => {
     mockRouter = {
-      navigate: jasmine.createSpy('navigate')
+      navigate: jasmine.createSpy('navigate'),
     };
     // should get correct redirect for 401, 403
     error.status = 401;
@@ -150,9 +153,15 @@ describe('BookingHomeComponent', () => {
     firstRadioButton.click();
     fixture.detectChanges();
     const totalItems = fixture.debugElement.nativeElement.querySelectorAll('div.govuk-grid-column-one-third').length;
-    const firstItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[0].querySelector('p .govuk-hint');
-    const firstItemLocationMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[0].querySelector('p').childNodes[0];
-    const secondItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[0].querySelector('p .govuk-hint');
+    const firstItemDateMessage = fixture.debugElement.nativeElement
+      .querySelector('.govuk-radios__conditional .govuk-form-group')
+      .childNodes[0].querySelector('p .govuk-hint');
+    const firstItemLocationMessage = fixture.debugElement.nativeElement
+      .querySelector('.govuk-radios__conditional .govuk-form-group')
+      .childNodes[0].querySelector('p').childNodes[0];
+    const secondItemDateMessage = fixture.debugElement.nativeElement
+      .querySelector('.govuk-radios__conditional .govuk-form-group')
+      .childNodes[0].querySelector('p .govuk-hint');
     // const thirdItemDateMessage = fixture.debugElement.nativeElement.querySelector('.govuk-radios__conditional .govuk-form-group').childNodes[3].querySelector('p .govuk-hint');
     expect(totalItems).toEqual(DUMMY_BOOKINGS.length);
     expect(firstItemDateMessage.textContent).toContain('14 June 2022 to 19 June 2022');
@@ -208,7 +217,7 @@ describe('BookingHomeComponent', () => {
   describe('onExistingBookingSelected()', () => {
     it('should make a call to refreshRoleAssignments', fakeAsync(() => {
       mockRouter = {
-        navigate: jasmine.createSpy('navigate')
+        navigate: jasmine.createSpy('navigate'),
       };
       fixture.detectChanges();
       component.onExistingBookingSelected(1);

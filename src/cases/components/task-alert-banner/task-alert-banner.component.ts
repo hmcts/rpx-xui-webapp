@@ -5,13 +5,13 @@ import { Task } from '../../../work-allocation/models/tasks';
   standalone: false,
   selector: 'exui-task-alert-banner',
   templateUrl: './task-alert-banner.component.html',
-  styleUrls: ['./task-alert-banner.component.scss']
+  styleUrls: ['./task-alert-banner.component.scss'],
 })
 export class TaskAlertBannerComponent implements OnInit {
   @Input() public alertTitle;
   @Input() public alertMessage;
   @Input() public tasks: Task[] = [];
-  public warnings: { warningCode: string; warningText: string; }[] = [];
+  public warnings: { warningCode: string; warningText: string }[] = [];
 
   public ngOnInit(): void {
     // accumulate each task's warning_list, get each messages and remove dublicates then show those messages

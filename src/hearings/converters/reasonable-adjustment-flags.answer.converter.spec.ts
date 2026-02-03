@@ -19,12 +19,12 @@ describe('ReasonableAdjustmentFlagsAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData
-              }
-            }
-          }
-        }
-      ]
+                caseFlags: caseFlagsRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     reasonableAdjustmentFlagsConverter = new ReasonableAdjustmentFlagsAnswerConverter(router);
@@ -33,7 +33,8 @@ describe('ReasonableAdjustmentFlagsAnswerConverter', () => {
   it('should transform reasonable adjustment flags', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     const result$ = reasonableAdjustmentFlagsConverter.transformAnswer(of(STATE));
-    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>';
+    const caseFlags =
+      "<strong class='bold'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>";
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });

@@ -2,7 +2,6 @@ const { $, $$, getText } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
 class CheckYourChangesAnswersTable {
-
   get changesTable() {
     return $('table');
   }
@@ -112,7 +111,7 @@ class CheckYourChangesAnswersTable {
     return colheaderPos !== -1;
   }
 
-  async waitForTableRows(){
+  async waitForTableRows() {
     await BrowserWaits.waitForConditionAsync(async () => {
       return (await this.getRowsCount()) > 0;
     });

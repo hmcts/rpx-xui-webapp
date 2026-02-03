@@ -11,22 +11,18 @@ import { NocEffects } from './noc.effects';
 describe('Noc Effects', () => {
   let actions$;
   let effects: NocEffects;
-  const nocServiceMock = jasmine.createSpyObj('NocService', [
-    'getNoCQuestions',
-    'validateNoCAnswers',
-    'submitNoCEvent'
-  ]);
+  const nocServiceMock = jasmine.createSpyObj('NocService', ['getNoCQuestions', 'validateNoCAnswers', 'submitNoCEvent']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         {
           provide: NocService,
-          useValue: nocServiceMock
+          useValue: nocServiceMock,
         },
         NocEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
 
     effects = TestBed.inject(NocEffects);
@@ -35,25 +31,27 @@ describe('Noc Effects', () => {
   describe('setCaseReference$', () => {
     it('should return a response', () => {
       const dummy: any = {
-        questions: [{
-          case_type_id: 'AAT',
-          order: '1',
-          question_text: 'What is their Email?',
-          answer_field_type: {
-            id: 'Email',
-            type: 'Email',
-            min: null,
-            max: null,
-            regular_expression: null,
-            fixed_list_items: [],
-            complex_fields: [],
-            collection_field_type: null
+        questions: [
+          {
+            case_type_id: 'AAT',
+            order: '1',
+            question_text: 'What is their Email?',
+            answer_field_type: {
+              id: 'Email',
+              type: 'Email',
+              min: null,
+              max: null,
+              regular_expression: null,
+              fixed_list_items: [],
+              complex_fields: [],
+              collection_field_type: null,
+            },
+            display_context_parameter: '1',
+            challenge_question_id: 'NoC',
+            answer_field: '',
+            question_id: 'QuestionId67745',
           },
-          display_context_parameter: '1',
-          challenge_question_id: 'NoC',
-          answer_field: '',
-          question_id: 'QuestionId67745'
-        }]
+        ],
       };
       nocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
       const action = new nocActions.SetCaseReference('1223-2212-4422-3131');
@@ -82,7 +80,7 @@ describe('Noc Effects', () => {
     it('should redirect to service down', () => {
       const dummyError: NocHttpError = {
         status: 500,
-        message: 'dummy'
+        message: 'dummy',
       };
       nocServiceMock.getNoCQuestions.and.returnValue(throwError(dummyError));
       const action = new nocActions.SetCaseReference('1223-2212-4422-3131');
@@ -95,14 +93,16 @@ describe('Noc Effects', () => {
 
   describe('setAnswers$', () => {
     it('should return a response', () => {
-      const dummy: NocAnswer[] = [{
-        question_id: '0',
-        value: 'dummy'
-      }];
+      const dummy: NocAnswer[] = [
+        {
+          question_id: '0',
+          value: 'dummy',
+        },
+      ];
       nocServiceMock.validateNoCAnswers.and.returnValue(of(true));
       const action = new nocActions.SetAnswers({
         case_id: '1234567812345678',
-        answers: dummy
+        answers: dummy,
       });
       const completion = new nocActions.CheckAnswers(dummy);
       actions$ = hot('-a', { a: action });
@@ -113,7 +113,7 @@ describe('Noc Effects', () => {
     it('should return SetAnswersIncomplete', () => {
       const action = new nocActions.SetAnswers({
         case_id: '1234567812345678',
-        answers: []
+        answers: [],
       });
       const completion = new nocActions.SetAnswersIncomplete();
       actions$ = hot('-a', { a: action });
@@ -122,18 +122,20 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetAnswerSubmissionFailure', () => {
-      const dummy: NocAnswer[] = [{
-        question_id: '0',
-        value: 'dummy'
-      }];
+      const dummy: NocAnswer[] = [
+        {
+          question_id: '0',
+          value: 'dummy',
+        },
+      ];
       const dummyError: NocHttpError = {
         status: 400,
-        message: 'dummy'
+        message: 'dummy',
       };
       nocServiceMock.validateNoCAnswers.and.returnValue(throwError(dummyError));
       const action = new nocActions.SetAnswers({
         case_id: '1234567812345678',
-        answers: dummy
+        answers: dummy,
       });
       const completion = new nocActions.SetAnswerSubmissionFailure(dummyError);
       actions$ = hot('-a', { a: action });
@@ -144,16 +146,20 @@ describe('Noc Effects', () => {
 
   describe('submitNoc$', () => {
     it('should return SetSubmissionSuccessPending', () => {
-      const dummy: NocAnswer[] = [{
-        question_id: '0',
-        value: 'dummy'
-      }];
-      nocServiceMock.submitNoCEvent.and.returnValue(of({
-        approval_status: 'PENDING'
-      }));
+      const dummy: NocAnswer[] = [
+        {
+          question_id: '0',
+          value: 'dummy',
+        },
+      ];
+      nocServiceMock.submitNoCEvent.and.returnValue(
+        of({
+          approval_status: 'PENDING',
+        })
+      );
       const action = new nocActions.SubmitNoc({
         case_id: '1234567812345678',
-        answers: dummy
+        answers: dummy,
       });
       const completion = new nocActions.SetSubmissionSuccessPending();
       actions$ = hot('-a', { a: action });
@@ -162,16 +168,20 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetSubmissionSuccessApproved', () => {
-      const dummy: NocAnswer[] = [{
-        question_id: '0',
-        value: 'dummy'
-      }];
-      nocServiceMock.submitNoCEvent.and.returnValue(of({
-        approval_status: 'APPROVED'
-      }));
+      const dummy: NocAnswer[] = [
+        {
+          question_id: '0',
+          value: 'dummy',
+        },
+      ];
+      nocServiceMock.submitNoCEvent.and.returnValue(
+        of({
+          approval_status: 'APPROVED',
+        })
+      );
       const action = new nocActions.SubmitNoc({
         case_id: '1234567812345678',
-        answers: dummy
+        answers: dummy,
       });
       const completion = new nocActions.SetSubmissionSuccessApproved();
       actions$ = hot('-a', { a: action });
@@ -180,18 +190,20 @@ describe('Noc Effects', () => {
     });
 
     it('should return SetSubmissionFailure', () => {
-      const dummy: NocAnswer[] = [{
-        question_id: '0',
-        value: 'dummy'
-      }];
+      const dummy: NocAnswer[] = [
+        {
+          question_id: '0',
+          value: 'dummy',
+        },
+      ];
       const dummyError: NocHttpError = {
         status: 400,
-        message: 'dummy'
+        message: 'dummy',
       };
       nocServiceMock.submitNoCEvent.and.returnValue(throwError(dummyError));
       const action = new nocActions.SubmitNoc({
         case_id: '1234567812345678',
-        answers: dummy
+        answers: dummy,
       });
       const completion = new nocActions.SetSubmissionFailure(dummyError);
       actions$ = hot('-a', { a: action });
@@ -203,7 +215,9 @@ describe('Noc Effects', () => {
   describe('handleError', () => {
     it('should handle 400', () => {
       const action$ = NocEffects.handleError({ status: 400, message: 'error' }, nocActions.SET_CASE_REFERENCE);
-      action$.subscribe((action) => expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({ status: 400, message: 'error' })));
+      action$.subscribe((action) =>
+        expect(action).toEqual(new nocActions.SetCaseRefSubmissionFailure({ status: 400, message: 'error' }))
+      );
     });
   });
 

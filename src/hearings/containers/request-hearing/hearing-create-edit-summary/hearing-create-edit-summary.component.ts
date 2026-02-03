@@ -13,16 +13,18 @@ import { Observable } from 'rxjs';
 @Component({
   standalone: false,
   selector: 'exui-hearing-create-edit-summary',
-  templateUrl: './hearing-create-edit-summary.component.html'
+  templateUrl: './hearing-create-edit-summary.component.html',
 })
 export class HearingCreateEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_CREATE_EDIT_SUMMARY_TEMPLATE;
   public mode = Mode.CREATE_EDIT;
   public screenFlow: ScreenNavigationModel[] = [];
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
-    protected readonly featureToggleService: FeatureToggleService) {
+    protected readonly featureToggleService: FeatureToggleService
+  ) {
     super(hearingStore, hearingsService, featureToggleService);
   }
 

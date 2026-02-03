@@ -1,4 +1,3 @@
-
 const CaseManager = require('./common/CaseManager');
 
 class FPLCase {
@@ -7,8 +6,7 @@ class FPLCase {
   }
 
   async createCase(isAccessibilityTest) {
-    const caseData = {
-    };
+    const caseData = {};
 
     await this.caseManager.createCase(caseData, isAccessibilityTest);
   }

@@ -10,10 +10,8 @@ describe('AdditionalInstructionsSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        AdditionalInstructionsSectionComponent
-      ],
-      providers: [provideMockStore({ initialState })]
+      declarations: [AdditionalInstructionsSectionComponent],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdditionalInstructionsSectionComponent);
@@ -32,8 +30,8 @@ describe('AdditionalInstructionsSectionComponent', () => {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        listingComments: 'This is a test comment.'
-      }
+        listingComments: 'This is a test comment.',
+      },
     };
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
@@ -45,15 +43,15 @@ describe('AdditionalInstructionsSectionComponent', () => {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        listingComments: 'This is a test comment.'
-      }
+        listingComments: 'This is a test comment.',
+      },
     };
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-        listingComments: 'This is a test comment.'
-      }
+        listingComments: 'This is a test comment.',
+      },
     };
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
@@ -64,7 +62,8 @@ describe('AdditionalInstructionsSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('additionalInstruction');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'additionalInstruction', changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea'
+      fragmentId: 'additionalInstruction',
+      changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
     });
   });
 });

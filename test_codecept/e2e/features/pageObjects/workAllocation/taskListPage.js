@@ -52,29 +52,29 @@ class TaskListPage extends TaskList {
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.myTasksTab);
       return true;
-    } catch (err){
+    } catch (err) {
       cucumberReporter.AddMessage('Task list page not displayed: ' + err, LOG_LEVELS.Error);
       return false;
     }
   }
 
-  async clickMyTasks(){
+  async clickMyTasks() {
     expect(await this.amOnPage(), 'Not on Task lict page ').to.be.true;
     await this.myTasksTab.click();
   }
 
-  async clickAvailableTasks(){
+  async clickAvailableTasks() {
     await BrowserWaits.retryWithActionCallback(async () => {
       expect(await this.amOnPage(), 'Not on Task list page ').to.be.true;
       await this.availableTasksTab.click();
     });
   }
 
-  async amOnMyTasksTab(){
+  async amOnMyTasksTab() {
     return await this.myTasksContaine.isVisible();
   }
 
-  async isMyTasksDisplayed(){
+  async isMyTasksDisplayed() {
     expect(await this.amOnPage(), 'Not on Task list page ').to.be.true;
     await BrowserWaits.waitForSpinnerToDissappear();
     try {
@@ -86,24 +86,24 @@ class TaskListPage extends TaskList {
     }
   }
 
-  async isAvailableTasksDisplayed(){
+  async isAvailableTasksDisplayed() {
     expect(await this.amOnPage(), 'Not on Task list page ').to.be.true;
     await BrowserWaits.waitForSpinnerToDissappear();
     try {
       await BrowserWaits.waitForElement(this.availableTasksContainer);
       return true;
-    } catch (err){
+    } catch (err) {
       cucumberReporter.AddMessage('Available Tasks list page not displayed: ' + err, LOG_LEVELS.Error);
       return false;
     }
   }
 
-  async isBannerMessageDisplayed(){
+  async isBannerMessageDisplayed() {
     expect(await this.amOnPage(), 'Not on Task list page ').to.be.true;
     return this.taskInfoMessageBanner.isBannerMessageDisplayed();
   }
 
-  async getBannerMessagesDisplayed(){
+  async getBannerMessagesDisplayed() {
     expect(await this.amOnPage(), 'Not on Task list page ').to.be.true;
     return this.taskInfoMessageBanner.getBannerMessagesDisplayed();
   }
@@ -111,8 +111,8 @@ class TaskListPage extends TaskList {
   async isBannermessageWithTextDisplayed(messageText) {
     const messages = await this.getBannerMessagesDisplayed();
 
-    for (const message of messages){
-      if (message.includes(messageText)){
+    for (const message of messages) {
+      if (message.includes(messageText)) {
         return true;
       }
     }

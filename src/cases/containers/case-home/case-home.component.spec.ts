@@ -3,7 +3,11 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   AlertService,
-  ErrorNotifierService, HttpError, LoadingService as CCDLoadingService, NavigationNotifierService, NavigationOrigin
+  ErrorNotifierService,
+  HttpError,
+  LoadingService as CCDLoadingService,
+  NavigationNotifierService,
+  NavigationOrigin,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -26,20 +30,16 @@ describe('CaseHomeComponent', () => {
     navigationNotifierService = new NavigationNotifierService();
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        RouterTestingModule,
-        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromFeature.reducers) })
-      ],
+      imports: [RouterTestingModule, StoreModule.forRoot({ ...reducers, cases: combineReducers(fromFeature.reducers) })],
       declarations: [CaseHomeComponent],
       providers: [
         { provide: AlertService, useValue: mockAlertService },
         { provide: NavigationNotifierService, useValue: navigationNotifierService },
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: CommonLibLoadingService, useValue: mockCommonLibLoadingService },
-        { provide: CCDLoadingService, useValue: mockCCDLoadingService }
-      ]
-    })
-      .compileComponents();
+        { provide: CCDLoadingService, useValue: mockCCDLoadingService },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe('CaseHomeComponent', () => {
   describe('paramHandler', () => {
     it('should create params for DRAFT_DELETED', () => {
       const navigation = {
-        action: NavigationOrigin.DRAFT_DELETED
+        action: NavigationOrigin.DRAFT_DELETED,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -72,7 +72,7 @@ describe('CaseHomeComponent', () => {
 
     it('should create params for ERROR_DELETING_DRAFT', () => {
       const navigation = {
-        action: NavigationOrigin.ERROR_DELETING_DRAFT
+        action: NavigationOrigin.ERROR_DELETING_DRAFT,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -81,7 +81,7 @@ describe('CaseHomeComponent', () => {
 
     it('should create params for DRAFT_RESUMED', () => {
       const navigation = {
-        action: NavigationOrigin.DRAFT_RESUMED
+        action: NavigationOrigin.DRAFT_RESUMED,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -100,10 +100,10 @@ describe('CaseHomeComponent', () => {
         relativeTo: {
           snapshot: {
             params: {
-              cid: 'cid'
-            }
-          }
-        }
+              cid: 'cid',
+            },
+          },
+        },
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -118,7 +118,7 @@ describe('CaseHomeComponent', () => {
 
     it('should create params for NO_READ_ACCESS_REDIRECTION', () => {
       const navigation = {
-        action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION
+        action: NavigationOrigin.NO_READ_ACCESS_REDIRECTION,
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -135,10 +135,10 @@ describe('CaseHomeComponent', () => {
         relativeTo: {
           snapshot: {
             params: {
-              cid: 'cid'
-            }
-          }
-        }
+              cid: 'cid',
+            },
+          },
+        },
       };
       const result = component.paramHandler(navigation);
       const resultingKeys = Object.keys(result);
@@ -149,7 +149,7 @@ describe('CaseHomeComponent', () => {
   describe('actionDispatcher', () => {
     it('should dispatch an action', () => {
       const params = {
-        path: []
+        path: [],
       };
       component.actionDispatcher(params);
 

@@ -1,20 +1,17 @@
-
 const helper = require('codeceptjs').helper;
 
-function getActor(){
+function getActor() {
   return actor().retry({ retries: 3, minTimeout: 30 });
 }
 
-class DriverManager{
-  constructor(){
+class DriverManager {
+  constructor() {
     this.sessionCookies = null;
   }
 
-  deleteAllCookies(){
+  deleteAllCookies() {}
 
-  }
-
-  async getCookies(){
+  async getCookies() {
     const cookiesString = await getActor().executeScript(function () {
       return document.cookie;
     });
@@ -32,8 +29,8 @@ class DriverManager{
     return cookies.find((cookie) => cookie.name === name);
   }
 
-  async setCookies(cookies){
-    for (const cookie of cookies){
+  async setCookies(cookies) {
+    for (const cookie of cookies) {
       cookie.path = '/';
       cookie.domain = 'localhost';
       await getActor().setCookie(cookie);
@@ -43,27 +40,27 @@ class DriverManager{
 
 const driverManager = new DriverManager();
 
-class Browser{
-  constructor(){
+class Browser {
+  constructor() {
     this.driver = {
-      manage: () => driverManager
+      manage: () => driverManager,
     };
     this.logs = [];
   }
 
-  manage(){
+  manage() {
     return driverManager;
   }
 
-  get_I(){
+  get_I() {
     return getActor();
   }
 
-  async sleep(seconds){
+  async sleep(seconds) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(true);
-      }, seconds*1000);
+      }, seconds * 1000);
     });
   }
 
@@ -75,47 +72,45 @@ class Browser{
     });
   }
 
-  async pause(){
+  async pause() {
     await getActor().pause();
   }
 
-  async get(url){
+  async get(url) {
     await getActor().amOnPage(url);
   }
 
-  async getCurrentUrl(){
+  async getCurrentUrl() {
     return await getActor().grabCurrentUrl();
   }
 
-  async refresh(){
+  async refresh() {
     const url = await this.getCurrentUrl();
     await this.get(url);
   }
 
-  async handlePopups(){
+  async handlePopups() {
     try {
       return getActor().cancelPopup();
-    } catch (err){
-
-    }
+    } catch (err) {}
   }
 
-  async executeScript(fn, element){
+  async executeScript(fn, element) {
     if (element) {
       return getActor().executeScript(fn, element.selector);
     }
     return undefined;
   }
 
-  async getBrowserLogs(){
+  async getBrowserLogs() {
     return await getActor().grabBrowserLogs();
   }
 
-  async captureBrowserLogs(){
+  async captureBrowserLogs() {
     this.logs = await this.getBrowserLogs();
   }
 
-  async scrollToElement(elementObj){
+  async scrollToElement(elementObj) {
     const actor = getActor();
     return await actor.scrollTo(elementObj.selector);
   }
@@ -132,7 +127,7 @@ class Browser{
     }, key);
   }
 
-  async getCurrentWindowHandle(){
+  async getCurrentWindowHandle() {
     return await getActor().grabCurrentWindowHandle();
   }
 

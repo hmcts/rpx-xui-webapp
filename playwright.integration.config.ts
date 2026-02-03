@@ -24,46 +24,46 @@ module.exports = (() => {
   const workerCount = resolveWorkerCount();
 
   return defineConfig({
-  testDir: 'playwright_tests_new/integration',
-  testMatch: ['**/test/**/*.spec.ts'],
-  retries: process.env.CI ? 1 : 0,
-  timeout: 120_000,
-  expect: { timeout: 45_000 },
-  workers: workerCount,
-  reporter: [
-    [process.env.CI ? 'dot' : 'list'],
-    [
-      'odhin-reports-playwright',
+    testDir: 'playwright_tests_new/integration',
+    testMatch: ['**/test/**/*.spec.ts'],
+    retries: process.env.CI ? 1 : 0,
+    timeout: 120_000,
+    expect: { timeout: 45_000 },
+    workers: workerCount,
+    reporter: [
+      [process.env.CI ? 'dot' : 'list'],
+      [
+        'odhin-reports-playwright',
+        {
+          outputFolder: odhinOutputFolder,
+          indexFilename: 'xui-playwright.html',
+          title: 'RPX XUI Playwright Integration',
+          testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+          project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
+          startServer: false,
+          consoleLog: true,
+          consoleError: true,
+          testOutput: 'only-on-failure',
+        },
+      ],
+    ],
+    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
+    use: {
+      baseURL: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net',
+      trace: 'on-first-retry',
+      screenshot: 'only-on-failure',
+      video: 'retain-on-failure',
+      headless: headlessMode,
+    },
+    projects: [
       {
-        outputFolder: odhinOutputFolder,
-        indexFilename: 'xui-playwright.html',
-        title: 'RPX XUI Playwright Integration',
-        testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
-        project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
-        startServer: false,
-        consoleLog: true,
-        consoleError: true,
-        testOutput: 'only-on-failure',
+        name: 'chromium',
+        use: {
+          ...devices['Desktop Chrome'],
+          channel: 'chrome',
+        },
       },
     ],
-  ],
-  globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
-  use: {
-    baseURL: process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    headless: headlessMode,
-  },
-  projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        channel: 'chrome',
-      },
-    },
-  ],
   });
 })();

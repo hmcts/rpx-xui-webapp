@@ -16,8 +16,8 @@ test.describe('Case level case flags', () => {
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
     await test.step('Check there are no flags already present', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName('Case level flags'));
-      expect.soft(table[0]).toMatchObject({});
+      const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
+      expect.soft(table.length).toBe(0);
     });
 
     await test.step('Create a new case level flag', async () => {
@@ -43,7 +43,7 @@ test.describe('Case level case flags', () => {
         'Last modified': '',
         'Flag status': 'ACTIVE',
       };
-      const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName('Case level flags'));
+      const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
       expect(table[0]).toMatchObject(expectedFlag);
     });
   });
@@ -63,8 +63,8 @@ test.describe('Party level case flags', () => {
   test('Create a new party level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
     await test.step('Check there are no flags already present', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName(testValue));
-      expect.soft(table[0]).toMatchObject({});
+      const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
+      expect.soft(table.length).toBe(0);
     });
 
     await test.step('Create a new party level flag', async () => {
@@ -94,7 +94,7 @@ test.describe('Party level case flags', () => {
         'Last modified': '',
         'Flag status': 'ACTIVE',
       };
-      const table = await tableUtils.mapExuiTable(await caseDetailsPage.getTableByName(testValue));
+      const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
       expect(table[0]).toMatchObject(expectedFlag);
     });
   });

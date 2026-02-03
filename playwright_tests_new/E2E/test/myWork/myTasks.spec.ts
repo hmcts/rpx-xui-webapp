@@ -20,12 +20,13 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     });
 
     await test.step('Check my available tasks has data in the table', async () => {
-      const table = await tableUtils.mapExuiTable(taskListPage.taskListTable);
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       expect(table.length).toBeGreaterThan(0);
     });
 
     await test.step('Verify tasks actions are shown as expected', async () => {
       await taskListPage.manageCaseButtons.nth(0).click();
+      await expect(taskListPage.taskActionsRow).toBeVisible();
       expect(taskListPage.taskActionCancel).toBeVisible();
       expect(taskListPage.taskActionGoTo).toBeVisible();
       expect(taskListPage.taskActionMarkAsDone).toBeVisible();
@@ -43,12 +44,13 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     });
 
     await test.step('Check my available tasks has data in the table', async () => {
-      const table = await tableUtils.mapExuiTable(taskListPage.taskListTable);
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       expect(table.length).toBeGreaterThan(0);
     });
 
     await test.step('Verify tasks actions are shown as expected', async () => {
       await taskListPage.manageCaseButtons.nth(0).click();
+      await expect(taskListPage.taskActionsRow).toBeVisible();
       expect(taskListPage.taskActionClaim).toBeVisible();
       expect(taskListPage.taskActionClaimAndGo).toBeVisible();
     });

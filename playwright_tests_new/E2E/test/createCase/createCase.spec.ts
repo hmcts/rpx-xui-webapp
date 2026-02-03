@@ -43,7 +43,7 @@ test.describe('Verify creating cases works as expected', () => {
     });
 
     await test.step('Confirm the created case is in the search results', async () => {
-      const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
+      const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
       const found = table.some((row) => row['Case reference'] === `${caseNumber.slice(1)}`);
       expect(found).toBeTruthy();
     });

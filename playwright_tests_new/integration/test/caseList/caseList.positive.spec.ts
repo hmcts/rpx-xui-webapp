@@ -56,7 +56,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
       expect(await caseListPage.caseListResultsAmount.textContent()).toBe(
         `Showing 1 to ${Math.min(caseListMockResponse.results.length, 25)} of ${caseListMockResponse.total} results`
       );
-      const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
+      const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
       expect(table.length).toBe(caseListMockResponse.results.length);
       for (let i = 0; i < caseListMockResponse.results.length; i++) {
         const expectedFields = caseListMockResponse.results[i].case_fields;

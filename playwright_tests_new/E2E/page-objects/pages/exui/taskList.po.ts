@@ -9,14 +9,15 @@ export class TaskListPage extends Base {
   readonly taskListTable = this.page.locator('.cdk-table.govuk-table');
   readonly taskListResultsAmount = this.page.locator('[data-test="search-result-summary__text"]');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
-  // No stable test IDs on task action links; they render as <a> without href, so role=link isn't exposed.
-  readonly taskActionCancel = this.taskListTable.locator('.task-action .action', { hasText: /cancel/i });
-  readonly taskActionGoTo = this.taskListTable.locator('.task-action .action', { hasText: /go to/i });
-  readonly taskActionMarkAsDone = this.taskListTable.locator('.task-action .action', { hasText: /mark as done/i });
-  readonly taskActionReassign = this.taskListTable.locator('.task-action .action', { hasText: /reassign/i });
-  readonly taskActionUnassign = this.taskListTable.locator('.task-action .action', { hasText: /unassign/i });
-  readonly taskActionClaim = this.taskListTable.locator('.task-action .action', { hasText: /^claim$/i });
-  readonly taskActionClaimAndGo = this.taskListTable.locator('.task-action .action', { hasText: /claim and go/i });
+  readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
+  // Action links have stable IDs: action_{taskActionId}
+  readonly taskActionCancel = this.taskListTable.locator('#action_cancel');
+  readonly taskActionGoTo = this.taskListTable.locator('#action_go');
+  readonly taskActionMarkAsDone = this.taskListTable.locator('#action_complete');
+  readonly taskActionReassign = this.taskListTable.locator('#action_reassign');
+  readonly taskActionUnassign = this.taskListTable.locator('#action_unclaim');
+  readonly taskActionClaim = this.taskListTable.locator('#action_claim');
+  readonly taskActionClaimAndGo = this.taskListTable.locator('#action_claim-and-go');
 
   constructor(page: Page) {
     super(page);

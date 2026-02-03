@@ -24,7 +24,7 @@ import nodeAppDataModels from './data/nodeAppDataModels';
 
 test.describe('Node app endpoints', () => {
   test('serves external configuration without authentication', async ({ anonymousClient }) => {
-    const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
+    const response = await anonymousClient.get<Record<string, unknown>>('external/config/ui');
     expectStatus(response.status, [200]);
     const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
     assertUiConfigResponse(
@@ -110,7 +110,7 @@ test.describe('Node app endpoints', () => {
       baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
       ignoreHTTPSErrors: true
     });
-    const res = await ctx.get('external/configuration-ui', { failOnStatusCode: false });
+    const res = await ctx.get('external/config/ui', { failOnStatusCode: false });
     expect(res.status()).toBe(200);
     const headers = res.headers();
     const contentType = resolveHeader(headers, 'content-type');

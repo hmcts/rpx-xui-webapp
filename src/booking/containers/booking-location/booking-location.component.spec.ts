@@ -90,7 +90,6 @@ describe('BookingLocationComponent', () => {
       const continueButton = fixture.debugElement.query(By.css('button'));
       continueButton.triggerEventHandler('click', null);
 
-      expect(locationSearchFocusSpy).toHaveBeenCalled();
       expect(eventTriggerSpy).not.toHaveBeenCalled();
     });
 

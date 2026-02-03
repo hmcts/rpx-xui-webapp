@@ -143,8 +143,6 @@ export class AppComponent implements OnInit, OnDestroy {
          * I've changed the order of execution in order to make the cookie banner
          * visible in production.
          *
-         * TODO: The "TypeError: Cannot read properties of undefined (reading 'setIdleName')"
-         * issue will need to be fixed as part of EUI-4482. Remove comment once EUI-4482 is done.
          */
         const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
         this.setUserAndCheckCookie(uid);

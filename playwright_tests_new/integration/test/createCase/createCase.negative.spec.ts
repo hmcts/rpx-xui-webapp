@@ -18,10 +18,13 @@ test.beforeEach(async ({ page, config }) => {
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {
-    test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({ createCasePage, page }) => {
-        await test.step('Navigate to the submit case page without filling in case details', async () => {
-            await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
-        });
+  test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({
+    createCasePage,
+    page,
+  }) => {
+    await test.step('Navigate to the submit case page without filling in case details', async () => {
+      await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/submit`);
+    });
 
     await test.step('Check the submit case page is not displayed', async () => {
       await expect(createCasePage.exuiHeader.header).toBeVisible();

@@ -45,7 +45,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public onFocus(): void {
     if (this.lostFocus) {
       this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-      this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues({ jurisdictionId: this.jurisdictionId, caseReference: this.caseReference }))
+      this.hearingStore.dispatch(
+        new fromHearingStore.LoadHearingValues({ jurisdictionId: this.jurisdictionId, caseReference: this.caseReference })
+      );
       if (
         HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.CREATE_EDIT) ||
         HearingsUtils.hasPropertyAndValue(this.hearingCondition, KEY_MODE, Mode.VIEW_EDIT)
@@ -92,7 +94,9 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       this.caseTypeRefData,
       this.serviceHearingValuesModel.caseCategories
     );
-    if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel, this.caseReference)) {
+    if (
+      !HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel, this.caseReference)
+    ) {
       this.showMismatchErrorMessage = true;
       this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
     }

@@ -12,7 +12,8 @@ import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model'
 import { PartyType } from 'api/hearings/models/hearings.enum';
 
 export class HearingsUtils {
-  public static readonly DISCREPANCY_MESSAGE = 'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
+  public static readonly DISCREPANCY_MESSAGE =
+    'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
 
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
@@ -248,9 +249,14 @@ export class HearingsUtils {
     return new Date(date).setHours(0, 0, 0, 0);
   }
 
-  public static checkHearingConsistency(hearingRequestMainModel: HearingRequestMainModel, serviceHearingValuesModel: ServiceHearingValuesModel, caseReference?: string): boolean {
-    const dataMatches = this.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
-      && this.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, caseReference);
+  public static checkHearingConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel,
+    caseReference?: string
+  ): boolean {
+    const dataMatches =
+      this.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel) &&
+      this.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, caseReference);
     return dataMatches;
   }
 
@@ -301,7 +307,10 @@ export class HearingsUtils {
     return true;
   }
 
-  public static checkHearingPartiesConsistency(hearingRequestMainModel: HearingRequestMainModel, serviceHearingValuesModel: ServiceHearingValuesModel): boolean {
+  public static checkHearingPartiesConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel
+  ): boolean {
     const individualPartiesInHMC = hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     const individualHMCPartyIds = individualPartiesInHMC.map((party) => party.partyID);
     const individualPartiesInSHV = serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);

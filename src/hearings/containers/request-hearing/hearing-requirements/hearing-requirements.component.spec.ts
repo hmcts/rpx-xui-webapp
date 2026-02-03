@@ -2118,7 +2118,9 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues({ jurisdictionId: undefined, caseReference: '1111222233334444' }));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: undefined, caseReference: '1111222233334444' })
+    );
   });
 
   it('should window onblur', () => {

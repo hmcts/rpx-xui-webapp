@@ -16,7 +16,8 @@ export class ResetHearingValues implements Action {
 }
 
 export class LoadHearingValues implements Action {
-  public readonly type = LOAD_HEARING_VALUES; constructor(public payload?: HearingValuesCaseContext) {}
+  public readonly type = LOAD_HEARING_VALUES;
+  constructor(public payload?: HearingValuesCaseContext) {}
 }
 
 export class LoadHearingValuesSuccess implements Action {

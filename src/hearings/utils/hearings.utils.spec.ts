@@ -543,15 +543,15 @@ describe('HearingsUtils', () => {
           caseRef: '1234567890123456',
           hmctsServiceCode: 'ABA5',
           hmctsInternalCaseName: 'Internal Name',
-          publicCaseName: 'Public Name'
-        }
+          publicCaseName: 'Public Name',
+        },
       };
 
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
         hmctsServiceID: 'ABA5',
         hmctsInternalCaseName: 'Internal Name',
-        publicCaseName: 'Public Name'
+        publicCaseName: 'Public Name',
       };
 
       expect(
@@ -567,15 +567,15 @@ describe('HearingsUtils', () => {
           caseRef: '1111111111111111',
           hmctsServiceCode: 'ABA5',
           hmctsInternalCaseName: 'Internal Name',
-          publicCaseName: 'Public Name'
-        }
+          publicCaseName: 'Public Name',
+        },
       };
 
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
         hmctsServiceID: 'ABA5',
         hmctsInternalCaseName: 'Internal Name',
-        publicCaseName: 'Public Name'
+        publicCaseName: 'Public Name',
       };
 
       expect(
@@ -591,15 +591,15 @@ describe('HearingsUtils', () => {
           caseRef: '1234567890123456',
           hmctsServiceCode: 'ABA5',
           hmctsInternalCaseName: 'Internal Name',
-          publicCaseName: 'Public Name'
-        }
+          publicCaseName: 'Public Name',
+        },
       };
 
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
         hmctsServiceID: 'BBA3',
         hmctsInternalCaseName: 'Internal Name',
-        publicCaseName: 'Public Name'
+        publicCaseName: 'Public Name',
       };
 
       expect(
@@ -615,15 +615,15 @@ describe('HearingsUtils', () => {
           caseRef: '1234567890123456',
           hmctsServiceCode: 'ABA5',
           hmctsInternalCaseName: 'Internal Name A',
-          publicCaseName: 'Public Name'
-        }
+          publicCaseName: 'Public Name',
+        },
       };
 
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
         hmctsServiceID: 'ABA5',
         hmctsInternalCaseName: 'Internal Name B',
-        publicCaseName: 'Public Name'
+        publicCaseName: 'Public Name',
       };
 
       expect(
@@ -639,24 +639,22 @@ describe('HearingsUtils', () => {
           caseRef: '1234567890123456',
           hmctsServiceCode: 'ABA5',
           hmctsInternalCaseName: 'Internal Name',
-          publicCaseName: 'Public Name'
-        }
+          publicCaseName: 'Public Name',
+        },
       };
 
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
         hmctsServiceID: 'ABA5',
         hmctsInternalCaseName: 'Internal Name',
-        publicCaseName: 'Public Name'
+        publicCaseName: 'Public Name',
       };
 
-      expect(
-        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '')
-      ).toBeTruthy();
+      expect(HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '')).toBeTruthy();
     });
   });
 
-  describe('Update the hearing window static data to a future date\'', () => {
+  describe("Update the hearing window static data to a future date'", () => {
     const mochSHVData = {
       hmctsServiceID: 'ABA5',
       hmctsInternalCaseName: '1234567812345678 update case internal name',

@@ -1,17 +1,16 @@
 const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class UpdateFlagAddTranslationPage {
-
   get container() {
     return $('ccd-update-flag-add-translation-form');
   }
 
   get fieldMapping() {
     return {
-      'Other description': elementByXpath('//label[contains(text(),\'Other description\')]/..//textarea'),
-      'Other description (Welsh)': elementByXpath('//label[contains(text(),\'Other description (Welsh)\')]/..//textarea'),
-      'Flag comments': elementByXpath('//label[contains(text(),\'Flag comments\')]/..//textarea'),
-      'Flag comments (Welsh)': elementByXpath('//label[contains(text(),\'Flag comments (Welsh)\')]/..//textarea')
+      'Other description': elementByXpath("//label[contains(text(),'Other description')]/..//textarea"),
+      'Other description (Welsh)': elementByXpath("//label[contains(text(),'Other description (Welsh)')]/..//textarea"),
+      'Flag comments': elementByXpath("//label[contains(text(),'Flag comments')]/..//textarea"),
+      'Flag comments (Welsh)': elementByXpath("//label[contains(text(),'Flag comments (Welsh)')]/..//textarea"),
     };
   }
 

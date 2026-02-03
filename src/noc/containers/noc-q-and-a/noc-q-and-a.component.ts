@@ -10,7 +10,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-q-and-a',
   templateUrl: './noc-q-and-a.component.html',
-  styleUrls: ['./noc-q-and-a.component.scss']
+  styleUrls: ['./noc-q-and-a.component.scss'],
 })
 export class NocQAndAComponent implements OnInit, OnDestroy {
   public questions$: Observable<NocQuestion[]>;
@@ -36,10 +36,12 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     this.questions$ = this.store.pipe(select(fromFeature.questions));
     this.answers$ = this.store.pipe(select(fromFeature.answers));
     this.formGroup = new FormGroup({});
-    this.nocNavigationCurrentStateSub = this.store.pipe(select(fromFeature.currentNavigation)).subscribe(
-      (state) => this.nocNavigationCurrentState = state);
-    this.nocCaseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
-      (caseReference) => this.nocCaseReference = caseReference);
+    this.nocNavigationCurrentStateSub = this.store
+      .pipe(select(fromFeature.currentNavigation))
+      .subscribe((state) => (this.nocNavigationCurrentState = state));
+    this.nocCaseReferenceSub = this.store
+      .pipe(select(fromFeature.caseReference))
+      .subscribe((caseReference) => (this.nocCaseReference = caseReference));
   }
 
   public setPossibleIncorrectAnswerError(): void {
@@ -49,7 +51,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
         Object.keys(this.formGroup.controls).forEach((key) => {
           if (this.formGroup.controls[key].value) {
             this.formGroup.controls[key].setErrors({
-              possibleIncorrectAnswer: true
+              possibleIncorrectAnswer: true,
             });
           }
         });
@@ -60,29 +62,30 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
   public setAllAnswerEmptyError(): void {
     Object.keys(this.formGroup.controls).forEach((key) => {
       this.formGroup.controls[key].setErrors({
-        allAnswerEmpty: true
+        allAnswerEmpty: true,
       });
     });
   }
 
   public purgeAllAnswerEmptyError(): void {
     Object.keys(this.formGroup.controls).forEach((key) => {
-      if (this.formGroup.controls[key].errors
-        && this.formGroup.controls[key].errors.hasOwnProperty('allAnswerEmpty')) {
+      if (this.formGroup.controls[key].errors && this.formGroup.controls[key].errors.hasOwnProperty('allAnswerEmpty')) {
         this.formGroup.controls[key].setErrors(null);
       }
     });
   }
 
   public answerInStore(questionId: string): Observable<string> {
-    return this.answers$.pipe(map((answers) => {
-      if (answers) {
-        const foundAnswer = answers.find((answer) => answer.question_id === questionId);
-        return foundAnswer ? foundAnswer.value : '';
-      }
+    return this.answers$.pipe(
+      map((answers) => {
+        if (answers) {
+          const foundAnswer = answers.find((answer) => answer.question_id === questionId);
+          return foundAnswer ? foundAnswer.value : '';
+        }
 
-      return '';
-    }));
+        return '';
+      })
+    );
   }
 
   public navigationHandler(navEvent: NocNavigationEvent) {
@@ -93,7 +96,7 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
       });
       const nocEvent: NocEvent = {
         case_id: this.nocCaseReference,
-        answers
+        answers,
       };
       if (this.validForm()) {
         this.store.dispatch(new fromFeature.SetAnswers(nocEvent));
@@ -116,9 +119,11 @@ export class NocQAndAComponent implements OnInit, OnDestroy {
     // if an error is found but the error is not 'possibleIncorrectAnswer'(back end validation error) then the form is invalid
     const allControlKeys: string[] = Object.keys(this.formGroup.controls);
     for (const controlKey of allControlKeys) {
-      if (this.formGroup.controls[controlKey].errors
-        && !this.formGroup.controls[controlKey].errors.hasOwnProperty('possibleIncorrectAnswer')
-        && this.formGroup.controls[controlKey].invalid) {
+      if (
+        this.formGroup.controls[controlKey].errors &&
+        !this.formGroup.controls[controlKey].errors.hasOwnProperty('possibleIncorrectAnswer') &&
+        this.formGroup.controls[controlKey].invalid
+      ) {
         return false;
       }
     }

@@ -13,7 +13,7 @@ import {
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
   SERVICES_JUDICIAL_BOOKING_API_PATH,
   SERVICES_PAYMENT_RETURN_URL,
-  SERVICES_WA_WORKFLOW_API_URL
+  SERVICES_WA_WORKFLOW_API_URL,
 } from './references';
 import { setupHearingConfigs } from './hearingConfigs/configs';
 
@@ -70,7 +70,7 @@ async function uiConfigurationRouter(req, res) {
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     headerConfig: getHeaderConfig(),
-    hearingJurisdictionConfig: getHearingJurisdictions()
+    hearingJurisdictionConfig: getHearingJurisdictions(),
   });
 }
 

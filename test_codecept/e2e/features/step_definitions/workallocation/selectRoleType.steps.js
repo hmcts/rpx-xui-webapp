@@ -11,11 +11,14 @@ const workflowUtil = require('../../pageObjects/common/workflowUtil');
 const exclusionWorkFlow = require('../../pageObjects/workAllocation/exclusionRolesWorkFlow');
 const findPersonPage = require('../../pageObjects/workAllocation/common/findPersonComponent');
 
-Then('In workflow {string}, I see select role type page displayed with caption {string}', async function (workflow, selctRoleTypeCaption) {
-  const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
-  expect(await workFlowPage.selectRoleTypePage.amOnPage()).to.be.true;
-  expect(await workFlowPage.selectRoleTypePage.headerCaption.getText()).to.contains(selctRoleTypeCaption);
-});
+Then(
+  'In workflow {string}, I see select role type page displayed with caption {string}',
+  async function (workflow, selctRoleTypeCaption) {
+    const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
+    expect(await workFlowPage.selectRoleTypePage.amOnPage()).to.be.true;
+    expect(await workFlowPage.selectRoleTypePage.headerCaption.getText()).to.contains(selctRoleTypeCaption);
+  }
+);
 
 Then('In workflow {string}, I see select role type page displayed with header {string}', async function (workflow, header) {
   const workFlowPage = workflowUtil.getWorlflowPageObject(workflow);
@@ -40,4 +43,3 @@ Then('In workflow {string}, I select role type radio options {string}', async fu
   const roleTypeElement = await await workFlowPage.selectRoleTypePage.getRoleTypeElement(roleType);
   await roleTypeElement.click();
 });
-

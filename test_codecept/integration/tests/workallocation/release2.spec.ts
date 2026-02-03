@@ -26,13 +26,13 @@ describe('Work allocations Release 2', () => {
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const response = await Request.get('workallocation/location', headers, 200);
     expect(response.status).to.equal(200);
     expect(response.data).to.be.an('array');
-    if (response.data.length > 0){
+    if (response.data.length > 0) {
       const actualLocationObjKeys = Object.keys(response.data[0]);
       const expectedLocationObjKeys = Object.keys(workAllocationDataModels.getLocation());
       expect(actualLocationObjKeys).to.include.members(expectedLocationObjKeys);
@@ -47,7 +47,7 @@ describe('Work allocations Release 2', () => {
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const response = await Request.get('workallocation/caseworker', headers, 200);
@@ -71,13 +71,13 @@ describe('Work allocations Release 2', () => {
         ccdId: '1547565484535828',
         jurisdiction: 'IA',
         caseTypeId: 'Asylum',
-        eventId: 'addCaseNote'
-      }
+        eventId: 'addCaseNote',
+      },
     };
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': JSON.stringify(reqBody).length,
     };
 
     const response = await Request.post('workallocation/searchForCompletable', reqBody, headers, 200);
@@ -89,12 +89,12 @@ describe('Work allocations Release 2', () => {
     expect(actual.tasks).to.be.an('array');
   });
 
-  it('case officer,get exclusion roles categories /workallocation/exclusion/rolesCategory', async function() {
+  it('case officer,get exclusion roles categories /workallocation/exclusion/rolesCategory', async function () {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const response = await Request.get('workallocation/exclusion/rolesCategory', headers, 200);
@@ -110,11 +110,16 @@ describe('Work allocations Release 2', () => {
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
     const headers = {
-      'X-XSRF-TOKEN': xsrfToken
+      'X-XSRF-TOKEN': xsrfToken,
     };
 
     const caseId = '1547565764480315';
-    const response = await Request.post('api/role-access/roles/post', { caseId: caseId, caseType: 'Asylum', jurisdiction: 'IA' }, headers, 200);
+    const response = await Request.post(
+      'api/role-access/roles/post',
+      { caseId: caseId, caseType: 'Asylum', jurisdiction: 'IA' },
+      headers,
+      200
+    );
     expect(response.status).to.equal(200);
     const actual = response.data;
     const expected = workAllocationDataModels.getCaseRole();
@@ -124,4 +129,3 @@ describe('Work allocations Release 2', () => {
     }
   });
 });
-

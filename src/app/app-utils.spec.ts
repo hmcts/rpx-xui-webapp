@@ -14,32 +14,32 @@ describe('getEnvironment', () => {
 
   it('should return the aat environment for a aat url.', () => {
     expect(AppUtils.getEnvironment('https://xui-webapp-aat.service.core-compute-aat.internal')).toEqual(
-      AppConstants.ENVIRONMENT_NAMES.aat);
+      AppConstants.ENVIRONMENT_NAMES.aat
+    );
   });
 
   it('should return the aat environment for a localhost url.', () => {
-    expect(AppUtils.getEnvironment('https://localhost:3000')).toEqual(
-      AppConstants.ENVIRONMENT_NAMES.aat);
+    expect(AppUtils.getEnvironment('https://localhost:3000')).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
   });
 
   it('should return the aat environment for a PR url.', () => {
     expect(AppUtils.getEnvironment('https://xui-mo-webapp-pr-84.preview.platform.hmcts.net')).toEqual(
-      AppConstants.ENVIRONMENT_NAMES.aat);
+      AppConstants.ENVIRONMENT_NAMES.aat
+    );
   });
 
   it('should return the demo environment for a demo url.', () => {
     expect(AppUtils.getEnvironment('https://xui-mo-webapp-demo.service.core-compute-demo.internal')).toEqual(
-      AppConstants.ENVIRONMENT_NAMES.demo);
+      AppConstants.ENVIRONMENT_NAMES.demo
+    );
   });
 
   it('should return the ithc environment for a ithc url.', () => {
-    expect(AppUtils.getEnvironment('ithc')).toEqual(
-      AppConstants.ENVIRONMENT_NAMES.ithc);
+    expect(AppUtils.getEnvironment('ithc')).toEqual(AppConstants.ENVIRONMENT_NAMES.ithc);
   });
 
   it('should return the perftest environment for a perftest url.', () => {
-    expect(AppUtils.getEnvironment('perftest')).toEqual(
-      AppConstants.ENVIRONMENT_NAMES.perftest);
+    expect(AppUtils.getEnvironment('perftest')).toEqual(AppConstants.ENVIRONMENT_NAMES.perftest);
   });
 });
 
@@ -52,8 +52,8 @@ describe('showNavItems', () => {
 
 describe('removeJsonPrefix', () => {
   it('should take in the User Roles string from cookie and return the string without the j: prefix.', () => {
-    const userRolesString = 'j:["pui-organisation-manager","caseworker-publiclaw",' +
-      '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+    const userRolesString =
+      'j:["pui-organisation-manager","caseworker-publiclaw",' + '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
 
     const expectedUserRolesString = userRolesString.replace('j:', '');
 
@@ -63,14 +63,14 @@ describe('removeJsonPrefix', () => {
 
 describe('getCookieRolesAsArray', () => {
   it('should take in the User Roles string (which comes from the cookie), and return an Array of User Roles.', () => {
-    const userRoles = '["pui-organisation-manager","caseworker-publiclaw",' +
-      '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
+    const userRoles =
+      '["pui-organisation-manager","caseworker-publiclaw",' + '"caseworker-divorce-financialremedy-solicitor","caseworker"]';
 
     expect(AppUtils.getCookieRolesAsArray(userRoles)).toEqual([
       'pui-organisation-manager',
       'caseworker-publiclaw',
       'caseworker-divorce-financialremedy-solicitor',
-      'caseworker'
+      'caseworker',
     ]);
   });
 });
@@ -80,7 +80,7 @@ describe('setActiveLink', () => {
     const ITEMS: NavigationItem[] = [
       { href: '/a', active: false, text: 'A' },
       { href: '/b', active: false, text: 'B' },
-      { href: '/c', active: false, text: 'C' }
+      { href: '/c', active: false, text: 'C' },
     ];
     const CURRENT_URL: string = '/a';
     const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
@@ -97,7 +97,7 @@ describe('setActiveLink', () => {
     const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
-      { href: '/c', active: false, text: 'C' }
+      { href: '/c', active: false, text: 'C' },
     ];
     const CURRENT_URL: string = '/b';
     const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
@@ -115,7 +115,7 @@ describe('setActiveLink', () => {
     const ITEMS: NavigationItem[] = [
       { href: '/a', active: true, text: 'A' },
       { href: '/b', active: false, text: 'B' },
-      { href: '/c', active: false, text: 'C' }
+      { href: '/c', active: false, text: 'C' },
     ];
     const CURRENT_URL: string = '/d';
     const result = AppUtils.setActiveLink(ITEMS, CURRENT_URL);
@@ -138,7 +138,7 @@ describe('setActiveLink', () => {
     { href: '/tasks', active: false, text: 'A' },
     { href: '/tasks/task-manager', active: false, text: 'B' },
     { href: '/cases', active: false, text: 'C' },
-    { href: '/cases/case-filter', active: false, text: 'D' }
+    { href: '/cases/case-filter', active: false, text: 'D' },
   ];
 
   it('should check the tabs correctly', () => {
@@ -186,7 +186,8 @@ describe('getUserRole', () => {
   });
 
   it('should return Judicial', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker',
+    const roleCategory = AppUtils.getUserRole([
+      'caseworker',
       'caseworker-civil',
       'caseworker-civil-judge',
       'caseworker-cmc',
@@ -196,7 +197,8 @@ describe('getUserRole', () => {
       'caseworker-divorce-financialremedy-judiciary',
       'caseworker-publiclaw',
       'caseworker-publiclaw-judiciary',
-      'judiciary']);
+      'judiciary',
+    ]);
     expect(roleCategory).toBe(UserRole.Judicial);
   });
 
@@ -241,7 +243,7 @@ describe('getUserRole', () => {
   });
 
   it('should return the CTSC domain from the user list', () => {
-    const role = AppUtils.convertDomainToLabel(UserRole.Ctsc);
+    const role = AppUtils.convertDomainToLabel(UserRole.CTSC);
     expect(role).toBe('CTSC');
   });
 });
@@ -289,15 +291,17 @@ describe('getFilterPersistenceByRoleType', () => {
     it('should set true/false base on the user details', () => {
       const USER_2: UserDetails = {
         canShareCases: true,
-        roleAssignmentInfo: [{
-          bookable: true,
-          baseLocation: 'Glasgow',
-          jurisdiction: 'IA',
-          isCaseAllocator: true
-        }],
+        roleAssignmentInfo: [
+          {
+            bookable: true,
+            baseLocation: 'Glasgow',
+            jurisdiction: 'IA',
+            isCaseAllocator: true,
+          },
+        ],
         sessionTimeout: {
           idleModalDisplayTime: 10,
-          totalIdleTime: 50
+          totalIdleTime: 50,
         },
         userInfo: {
           id: 'test-user-id',
@@ -306,12 +310,8 @@ describe('getFilterPersistenceByRoleType', () => {
           email: 'lukesuperuserxui@mailnesia.com',
           roleCategory: RoleCategory.JUDICIAL,
           active: true,
-          roles: [
-            'caseworker',
-            'caseworker-sscs-judge',
-            'fee-paid-judge'
-          ]
-        }
+          roles: ['caseworker', 'caseworker-sscs-judge', 'fee-paid-judge'],
+        },
       };
 
       expect(AppUtils.isBookableAndJudicialRole(USER_2)).toBe(true);

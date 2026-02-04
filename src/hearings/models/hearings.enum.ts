@@ -46,7 +46,7 @@ export enum EXUISectionStatusEnum {
   UPCOMING = 'Current and upcoming',
   PAST_OR_CANCELLED = 'Past or cancelled',
 }
-/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
+
 export enum EXUIDisplayStatusEnum {
   AWAITING_LISTING = 'WAITING TO BE LISTED',
   UPDATE_REQUESTED = 'UPDATE REQUESTED',
@@ -61,7 +61,6 @@ export enum EXUIDisplayStatusEnum {
   AWAITING_ACTUALS = 'AWAITING HEARING DETAILS',
   ADJOURNED = 'ADJOURNED',
 }
-/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 
 export enum HMCLocationType {
   COURT = 'court',

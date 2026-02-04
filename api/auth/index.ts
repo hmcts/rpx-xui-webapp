@@ -23,7 +23,7 @@ import {
   SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
-  SYSTEM_USER_PASSWORD
+  SYSTEM_USER_PASSWORD,
 } from '../configuration/references';
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
@@ -109,7 +109,7 @@ export const getXuiNodeMiddleware = () => {
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
     useRoutes: true,
-    ssoLogoutURL: `${idamWebUrl}/o/endSession`
+    ssoLogoutURL: `${idamWebUrl}/o/endSession`,
   };
 
   const baseStoreOptions = {

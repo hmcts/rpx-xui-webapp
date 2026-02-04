@@ -3,12 +3,11 @@ import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 
 const isEmptyFlagsRow = (row: Record<string, string>): boolean => {
-  const text = Object.values(row).join(' ').replace(/\s+/g, ' ').trim();
+  const text = Object.values(row).join(' ').replaceAll(/\s+/g, ' ').trim();
   return !text || /no flags|no active flags|no case flags|\bnone\b/i.test(text);
 };
 
 test.describe('Case level case flags', () => {
-  const testValue = faker.person.firstName();
   let caseNumber: string;
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';

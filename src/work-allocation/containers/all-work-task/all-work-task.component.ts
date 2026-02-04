@@ -148,7 +148,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     person: Person;
     taskType: string;
     taskName: any;
-    workTypes: string[]
+    workTypes: string[];
   }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];

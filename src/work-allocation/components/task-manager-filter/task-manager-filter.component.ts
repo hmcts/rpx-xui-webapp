@@ -50,7 +50,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
         },
         {
           name: 'workTypes',
-          value: []
+          value: [],
         },
         {
           name: 'taskName',
@@ -214,7 +214,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       findWorkTypeField: 'services',
       displayMinSelectedError: true,
       type: 'find-work-type',
-      enableAddButton: true
+      enableAddButton: true,
     };
   }
 
@@ -317,9 +317,10 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           return f;
         }),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
-        filter((f: FilterSetting) => !f.reset),
-      ).subscribe((f: FilterSetting) => {
-        const fields = f.fields.reduce((acc, field: { name: string, value: string[] | WorkType[] }) => {
+        filter((f: FilterSetting) => !f.reset)
+      )
+      .subscribe((f: FilterSetting) => {
+        const fields = f.fields.reduce((acc, field: { name: string; value: string[] | WorkType[] }) => {
           if (field.name === 'location') {
             const value: any =
               field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';

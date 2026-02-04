@@ -21,7 +21,7 @@ import {
   showAllocateRoleLink,
   getTaskNames,
   getUsersByServiceName,
-  searchTypesOfWork
+  searchTypesOfWork,
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';

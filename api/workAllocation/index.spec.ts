@@ -27,7 +27,7 @@ import {
   getCases,
   getTaskNames,
   getNewUsersByServiceName,
-  searchTypesOfWork
+  searchTypesOfWork,
 } from '.';
 import { http } from '../lib/http';
 import { mockTasks } from './taskTestData.spec';
@@ -1333,7 +1333,7 @@ describe('workAllocation', () => {
       { id: 'upper_tribunal', label: 'Upper Tribunal' },
       { id: 'routine_work', label: 'Routine work' },
       { id: 'decision_making_work', label: 'Decision-making work' },
-      { id: 'applications', label: 'Applications' }
+      { id: 'applications', label: 'Applications' },
     ];
     const apiResponse = { work_types: typesOfWork };
     const mapped = typesOfWork.map((workType) => ({ key: workType.id, label: workType.label }));
@@ -1361,9 +1361,7 @@ describe('workAllocation', () => {
       await searchTypesOfWork(req, response, next);
 
       expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith([
-        { key: 'hearing_work', label: 'Hearing work' }
-      ]);
+      expect(response.send).to.have.been.calledWith([{ key: 'hearing_work', label: 'Hearing work' }]);
     });
 
     it('should filter by key (id) case-insensitively', async () => {
@@ -1376,9 +1374,7 @@ describe('workAllocation', () => {
       await searchTypesOfWork(req, response, next);
 
       expect(response.status).to.have.been.calledWith(200);
-      expect(response.send).to.have.been.calledWith([
-        { key: 'routine_work', label: 'Routine work' }
-      ]);
+      expect(response.send).to.have.been.calledWith([{ key: 'routine_work', label: 'Routine work' }]);
     });
 
     it('should return empty array when no matches', async () => {

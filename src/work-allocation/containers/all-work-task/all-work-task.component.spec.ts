@@ -158,16 +158,28 @@ describe('AllWorkTaskComponent', () => {
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
   it('should correctly get filter selections', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-      uid: '1233434'
-    }));
-    const selection = { findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle', workTypes: ['Type1', 'Type2'] };
+    mockSessionStorageService.getItem.and.returnValue(
+      JSON.stringify({
+        id: 'someId',
+        forename: 'fore',
+        surname: 'surName',
+        email: 'email',
+        active: true,
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+        uid: '1233434',
+      })
+    );
+    const selection = {
+      findTaskNameControl: 'Process Application',
+      location: 'exampleLocation',
+      service: 'IA',
+      selectPerson: 'All',
+      person: null,
+      taskType: 'JUDICIAL',
+      priority: 'High',
+      taskName: 'Review Hearing bundle',
+      workTypes: ['Type1', 'Type2'],
+    };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA'] });
@@ -420,7 +432,7 @@ describe('AllWorkTaskComponent', () => {
         person: { id: 'person789', name: 'Test Person' } as Person,
         taskType: 'ADMIN',
         taskName: { task_type_id: 'task456', task_type_name: 'Test Task' },
-        workTypes: ['Type1', 'Type2']
+        workTypes: ['Type1', 'Type2'],
       };
 
       component.onSelectionChanged(selection);
@@ -445,7 +457,7 @@ describe('AllWorkTaskComponent', () => {
         person: null,
         taskType: 'ADMIN',
         taskName: null,
-        workTypes: []
+        workTypes: [],
       };
 
       component.onSelectionChanged(selection);

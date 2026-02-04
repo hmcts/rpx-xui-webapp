@@ -32,8 +32,7 @@ export class CaseDetailsPage extends Base {
   // Case details - FindSearch FPL
   readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
   readonly ccdCaseReference = this.page.locator('ccd-case-header .case-field .markdown >h2 >strong');
-  readonly tabList =this.page.locator('div[role="tablist"]');
-
+  readonly tabList = this.page.locator('div[role="tablist"]');
 
   //Case flags
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
@@ -51,14 +50,12 @@ export class CaseDetailsPage extends Base {
   // Search case
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   // GlobalSearch
-  readonly tabsCount  =  this.page.locator('.mat-tab-label-container .mat-tab-list');
+  readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
   readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
   readonly addOrRemoveFlagsLink = this.page.locator('#addCaseFlagEventLink');
   readonly extend26WeekTimelineLink = this.page.locator('#extend26WeekTimelineLink');
   //Find Search
-  readonly findSearchTabsCount  =  this.page.locator('.mat-tab-list');
-
-
+  readonly findSearchTabsCount = this.page.locator('.mat-tab-list');
 
   constructor(page: Page) {
     super(page);

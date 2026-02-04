@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
-import { Base } from "../../base";
-import {expect } from "../../../fixtures";
+import { Base } from '../../base';
+import { expect } from '../../../fixtures';
 
 export class GlobalSearchPage extends Base {
   readonly CHANGE_SEARCH = 'Change search';
@@ -12,7 +12,7 @@ export class GlobalSearchPage extends Base {
   readonly searchButton = this.page.locator('button[type="submit"]:has-text("Search")');
   readonly caseIdTextBox = this.page.locator('input#caseRef');
   // Note for viewLink - 'exact' MUST be true otherwise playwright Clicks on 'View' cookies.
-  readonly viewLink =  this.page.getByRole('link', {name: ' View ', exact:true});
+  readonly viewLink = this.page.getByRole('link', { name: ' View ', exact: true });
   readonly changeSearchLink = this.page.locator('.govuk-width-container .govuk-link');
   readonly searchResultTable = this.page.locator('.govuk-width-container .govuk-main-wrapper .govuk-table');
   // readonly courtLocation = this.page.getByRole('heading', { name: 'Royal Courts of Justice'});
@@ -24,8 +24,7 @@ export class GlobalSearchPage extends Base {
   readonly paginationLinks = this.page.locator('.govuk-width-container #pagination-label .hmcts-pagination__link');
   readonly searchResultsHeader = this.page.locator('.govuk-width-container .govuk-heading-xl');
 
-
-  async performGlobalSearchWithCase(caseId: string, caseType:string ) : Promise<void> {
+  async performGlobalSearchWithCase(caseId: string, caseType: string): Promise<void> {
     await this.searchLinkOnMenuBar.click();
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);
@@ -33,10 +32,10 @@ export class GlobalSearchPage extends Base {
     await this.searchButton.click();
   }
 
-  async performPartialSearchOfCaseIdAndPartyName(caseId: string) : Promise<void> {
+  async performPartialSearchOfCaseIdAndPartyName(caseId: string): Promise<void> {
     await this.searchLinkOnMenuBar.click();
     await this.caseIdTextBox.click();
-    const first5Digits = caseId.substring(0,5);
+    const first5Digits = caseId.substring(0, 5);
     // search with first 5 digits of valid case id Ex : 15665*
     await this.caseIdTextBox.fill(`${first5Digits}*`);
     await this.applicantOrPartyName.fill('Will*');
@@ -44,10 +43,9 @@ export class GlobalSearchPage extends Base {
     await this.searchButton.click();
   }
 
-
   async verifySearchResults() {
-     expect(this.changeSearchLink.filter({ hasText: this.CHANGE_SEARCH}).isVisible());
-     expect(this.viewLink.filter({ hasText: this.VIEW}).isVisible());
+    expect(this.changeSearchLink.filter({ hasText: this.CHANGE_SEARCH }).isVisible());
+    expect(this.viewLink.filter({ hasText: this.VIEW }).isVisible());
   }
 
   async viewCaseDetails() {

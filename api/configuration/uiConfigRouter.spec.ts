@@ -101,7 +101,7 @@ describe('uiConfigRouter', () => {
       getConfigValueStub.withArgs('services.payment_return_url').returns('https://payment.return.url');
       getConfigValueStub.withArgs('services.waWorkflowApi').returns('https://wa.workflow.api');
       getConfigValueStub.withArgs('services.judicialBookingApi').returns('https://judicial.booking.api');
-      getConfigValueStub.withArgs('decentralisedCaseTypes').returns({ PCS: 'https://pcs-frontend.service.gov.uk' });
+      getConfigValueStub.withArgs('decentralisedEventBaseUrls').returns({ PCS: 'https://pcs-frontend.service.gov.uk' });
 
       showFeatureStub.withArgs('accessManagementEnabled').returns(true);
       showFeatureStub.withArgs('oidcEnabled').returns(false);
@@ -123,7 +123,7 @@ describe('uiConfigRouter', () => {
         paymentReturnUrl: 'https://payment.return.url',
         waWorkflowApi: 'https://wa.workflow.api',
         judicialBookingApi: 'https://judicial.booking.api',
-        decentralisedCaseTypes: { PCS: 'https://pcs-frontend.service.gov.uk' },
+        decentralisedEventBaseUrls: { PCS: 'https://pcs-frontend.service.gov.uk' },
         headerConfig: mockMenuConfig,
         hearingJurisdictionConfig: mockHearingConfig
       });
@@ -151,7 +151,7 @@ describe('uiConfigRouter', () => {
       expect(responseData).to.have.property('paymentReturnUrl', undefined);
       expect(responseData).to.have.property('waWorkflowApi', undefined);
       expect(responseData).to.have.property('judicialBookingApi', undefined);
-      expect(responseData).to.have.property('decentralisedCaseTypes', undefined);
+      expect(responseData).to.have.property('decentralisedEventBaseUrls', undefined);
       expect(responseData).to.have.property('headerConfig', mockMenuConfig);
       expect(responseData).to.have.property('hearingJurisdictionConfig', mockHearingConfig);
     });

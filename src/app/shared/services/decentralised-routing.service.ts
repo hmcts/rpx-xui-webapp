@@ -86,7 +86,7 @@ export class DecentralisedRoutingService {
     if (!caseTypeId) {
       return null;
     }
-    const config = this.environmentService.get('decentralisedCaseTypes');
+    const config = this.environmentService.get('decentralisedEventBaseUrls');
     const mapping = this.normaliseMapping(config);
     if (!mapping) {
       return null;

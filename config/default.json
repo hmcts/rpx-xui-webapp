@@ -132,7 +132,7 @@
     { "service": "FR", "serviceCodes": ["ABA2"] },
     { "service": "PROBATE", "serviceCodes": ["ABA6"] }
   ],
-  "decentralisedCaseTypes": {},
+  "decentralisedEventBaseUrls": {},
   "wildcardSearchFields": {
     "Benefit": [
       "generatedSurname",

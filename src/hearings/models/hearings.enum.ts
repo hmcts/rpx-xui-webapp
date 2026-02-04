@@ -56,8 +56,7 @@ export enum EXUIDisplayStatusEnum {
   LISTED = 'LISTED',
   FAILURE = 'REQUEST FAILURE',
   CANCELLATION_REQUESTED = 'CANCELLATION REQUESTED',
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
-  CANCELLATION_SUBMITTED = 'CANCELLATION REQUESTED',
+  CANCELLATION_SUBMITTED = 'CANCELLATION REQUESTED', // NOSONAR - intentional duplicate display label
   VACATED = 'VACATED',
   AWAITING_ACTUALS = 'AWAITING HEARING DETAILS',
   ADJOURNED = 'ADJOURNED',

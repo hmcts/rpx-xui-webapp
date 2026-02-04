@@ -68,9 +68,9 @@ test.describe("IDAM login for Find Search page @KSM", () => {
       //expect(caseDetailsTabsCount).toEqual(15) ;
       //TODO Check the url
       //expect(caseDetailsPage.page.url()).toContain(`/cases/case-details/PUBLICLAW/CARE_SUPERVISION_EPO/${caseNumber}/#Summary`);
-      expect(caseDetailsPage.caseActionsDropdown.isVisible());
-      expect(caseDetailsPage.caseActionGoButton.isVisible());
-      expect(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));
+      expect.soft(caseDetailsPage.caseActionsDropdown.isVisible());
+      expect.soft(caseDetailsPage.caseActionGoButton.isVisible());
+      expect.soft(caseDetailsPage.ccdCaseReference).toContainText( validatorUtils.formatCaseNumber(caseNumber));
 
     });
   });

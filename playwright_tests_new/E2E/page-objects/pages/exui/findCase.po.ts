@@ -59,12 +59,6 @@ export class FindCasePage extends Base  {
     return sanitized;
   }
 
-  async verifyCaseNumber(caseNumber:string) : Promise<void> {
-     let  caseNo = caseNumber.toString();
-     let  formattedCaseNumber =  caseNo.replace(/(\d{4})(?=\d)/g, '$1-');
-     await(this.searchResults_caseLink.isVisible());
-   }
-
   private async checkButtonVisibility() {
     await this.exuiCaseListComponent.filters.applyFilterBtn.isVisible();
     await this.resetFilterButton.isVisible();

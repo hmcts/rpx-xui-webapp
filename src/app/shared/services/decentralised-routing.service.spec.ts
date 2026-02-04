@@ -24,11 +24,16 @@ describe('DecentralisedRoutingService', () => {
     service = TestBed.inject(DecentralisedRoutingService);
   });
 
-  function buildSnapshot(paramsByLevel: Array<Record<string, string>>, queryParams: Record<string, string> = {}): ActivatedRouteSnapshot {
+  function buildSnapshot(
+    paramsByLevel: Array<Record<string, string>>,
+    queryParams: Record<string, string> = {},
+    dataByLevel: Array<Record<string, any>> = []
+  ): ActivatedRouteSnapshot {
     const build = (index: number): ActivatedRouteSnapshot => {
       return {
         params: paramsByLevel[index],
         queryParams,
+        data: dataByLevel[index] || {},
         children: index < paramsByLevel.length - 1 ? [build(index + 1)] : []
       } as ActivatedRouteSnapshot;
     };
@@ -63,6 +68,22 @@ describe('DecentralisedRoutingService', () => {
       { jurisdiction: 'CIVIL', caseType: 'PCS', cid: '123' },
       { eid: 'ext:custom' }
     ], { tid: 't1' });
+    const result = service.getRedirectUrlFromRoute(route);
+
+    expect(result).toBe('https://pcs.example/cases/123/event/ext%3Acustom?tid=t1&expected_sub=user-123');
+  });
+
+  it('should build redirect when case type is derived from resolved case data', () => {
+    environmentService.get.and.returnValue({ PCS: 'https://pcs.example/' });
+    sessionStorageService.getItem.and.returnValue(JSON.stringify({ id: 'user-123' }));
+
+    const route = buildSnapshot([
+      { cid: '123' },
+      { eid: 'ext:custom' }
+    ], { tid: 't1' }, [
+      { case: { case_id: '123', case_type: { id: 'PCS', jurisdiction: { id: 'CIVIL' } } } },
+      {}
+    ]);
     const result = service.getRedirectUrlFromRoute(route);
 
     expect(result).toBe('https://pcs.example/cases/123/event/ext%3Acustom?tid=t1&expected_sub=user-123');

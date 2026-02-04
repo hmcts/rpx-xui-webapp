@@ -28,9 +28,14 @@ export class DecentralisedRoutingService {
 
     const params = this.collectParams(route);
     const eventId = params.eid;
-    const caseTypeId = params.caseType || params.ctid;
-    const jurisdictionId = params.jurisdiction || params.jid;
-    const caseId = params.cid;
+    const resolvedCase = this.getResolvedCase(route);
+    const resolvedCaseTypeId = resolvedCase?.case_type?.id;
+    const resolvedJurisdictionId = resolvedCase?.case_type?.jurisdiction?.id;
+    const resolvedCaseId = resolvedCase?.case_id;
+
+    const caseTypeId = params.caseType || params.ctid || resolvedCaseTypeId;
+    const jurisdictionId = params.jurisdiction || params.jid || resolvedJurisdictionId;
+    const caseId = params.cid || resolvedCaseId;
 
     if (!eventId || !caseTypeId) {
       return null;
@@ -198,5 +203,37 @@ export class DecentralisedRoutingService {
     };
     visit(route);
     return params;
+  }
+
+  private getResolvedCase(route: ActivatedRouteSnapshot): any | null {
+    if (!route) {
+      return null;
+    }
+
+    if (route.pathFromRoot && route.pathFromRoot.length) {
+      for (const snapshot of route.pathFromRoot) {
+        const resolvedCase = snapshot?.data?.case;
+        if (resolvedCase) {
+          return resolvedCase;
+        }
+      }
+      return null;
+    }
+
+    let resolvedCase: any = null;
+    const visit = (snapshot: ActivatedRouteSnapshot): void => {
+      if (!snapshot || resolvedCase) {
+        return;
+      }
+      const caseData = snapshot?.data?.case;
+      if (caseData) {
+        resolvedCase = caseData;
+        return;
+      }
+      snapshot.children?.forEach((child) => visit(child));
+    };
+
+    visit(route);
+    return resolvedCase;
   }
 }

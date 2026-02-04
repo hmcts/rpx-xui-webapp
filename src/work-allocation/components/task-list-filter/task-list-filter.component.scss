@@ -18,14 +18,14 @@
   }
 }
 
-
-div[field="locations"] {
+div[field='locations'] {
   > div {
     flex-basis: calc(50% - 34px);
   }
 }
 
-div[field="types-of-work"], div[field="services"] {
+div[field='types-of-work'],
+div[field='services'] {
   > div {
     flex-basis: calc(100% - 34px);
   }

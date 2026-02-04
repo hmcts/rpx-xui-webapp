@@ -6,12 +6,4 @@ import TaskServiceConfig from './task-service-config.model';
 import Task from './task.model';
 import { WorkType } from './work-type.model';
 
-export {
-  InvokedTaskAction,
-  Task,
-  TaskAction,
-  TaskServiceConfig,
-  TaskPermission,
-  TaskRole,
-  WorkType
-};
+export { InvokedTaskAction, Task, TaskAction, TaskServiceConfig, TaskPermission, TaskRole, WorkType };

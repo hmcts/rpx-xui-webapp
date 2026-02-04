@@ -4,7 +4,11 @@ const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 const bookingsMockData = require('../../mockData/workAllocation/bookingsData');
 
-const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
+const {
+  getTestJurisdiction,
+  getMockJurisdictionWorkbaseketConfig,
+  getMockJurisdictionSearchInputConfig,
+} = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const workAllocationDateUtil = require('../../../e2e/features/pageObjects/workAllocation/common/workAllocationDateUtil');
@@ -16,13 +20,13 @@ const serviceClientMock = require('../../../backendMock/client/serviceMock');
 Given('I set mock for existing bookings', async function (bookingdatatable) {
   const bookingsTestData = bookingdatatable.parse().hashes();
   const bookings = [];
-  for (const booking of bookingsTestData){
-    if (booking.locationId === ''){
+  for (const booking of bookingsTestData) {
+    if (booking.locationId === '') {
       continue;
     }
 
     const bookingLocations = booking.locationId.split(',');
-    for (const location of bookingLocations){
+    for (const location of bookingLocations) {
       const bookingForLocation = { ...booking };
       bookingForLocation.locationId = location;
       bookings.push(bookingForLocation);

@@ -10,7 +10,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-information',
-  templateUrl: './specific-access-information.component.html'
+  templateUrl: './specific-access-information.component.html',
 })
 export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   @Input() public navEvent: SpecificAccessNavigation;
@@ -31,37 +31,45 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
   public specificAccessBody: SpecificAccessStateData;
   private readonly rejectedRole = { id: 'specific-access-denied', name: 'specific-access-denied' };
 
-  constructor(public readonly store: Store<fromFeature.State>,
-              private readonly fb: FormBuilder) {}
+  constructor(
+    public readonly store: Store<fromFeature.State>,
+    private readonly fb: FormBuilder
+  ) {}
 
   public ngOnInit(): void {
     this.submitted = false;
     this.formGroup = this.fb.group({
-      infoCtrl: new FormControl(null, Validators.required)
+      infoCtrl: new FormControl(null, Validators.required),
     });
     this.infoCtrl = this.formGroup.get('infoCtrl') as FormControl;
-    this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccessState) => {
-      if (specificAccessState) {
-        if (specificAccessState.SpecificAccessMoreInformationFormData && specificAccessState.SpecificAccessMoreInformationFormData.InfoText) {
-          this.infoCtrl.setValue(specificAccessState.SpecificAccessMoreInformationFormData.InfoText);
+    this.store
+      .pipe(select(fromFeature.getSpecificAccessState))
+      .pipe(take(1))
+      .subscribe((specificAccessState) => {
+        if (specificAccessState) {
+          if (
+            specificAccessState.SpecificAccessMoreInformationFormData &&
+            specificAccessState.SpecificAccessMoreInformationFormData.InfoText
+          ) {
+            this.infoCtrl.setValue(specificAccessState.SpecificAccessMoreInformationFormData.InfoText);
+          }
+          this.specificAccessBody = {
+            accessReason: specificAccessState.accessReason,
+            specificAccessReason: specificAccessState.specificAccessReason,
+            typeOfRole: this.rejectedRole,
+            caseId: specificAccessState.caseId,
+            requestId: specificAccessState.requestId,
+            taskId: specificAccessState.taskId,
+            jurisdiction: specificAccessState.jurisdiction,
+            assigneeId: specificAccessState.actorId,
+            caseName: specificAccessState.caseName,
+            comment: this.infoCtrl.value,
+            roleCategory: specificAccessState.roleCategory,
+            requestCreated: specificAccessState.requestCreated,
+            person: { id: specificAccessState.actorId, name: null, domain: null },
+          };
         }
-        this.specificAccessBody = {
-          accessReason: specificAccessState.accessReason,
-          specificAccessReason: specificAccessState.specificAccessReason,
-          typeOfRole: this.rejectedRole,
-          caseId: specificAccessState.caseId,
-          requestId: specificAccessState.requestId,
-          taskId: specificAccessState.taskId,
-          jurisdiction: specificAccessState.jurisdiction,
-          assigneeId: specificAccessState.actorId,
-          caseName: specificAccessState.caseName,
-          comment: this.infoCtrl.value,
-          roleCategory: specificAccessState.roleCategory,
-          requestCreated: specificAccessState.requestCreated,
-          person: { id: specificAccessState.actorId, name: null, domain: null }
-        };
-      }
-    });
+      });
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
@@ -88,7 +96,7 @@ export class SpecificAccessInformationComponent implements OnDestroy, OnInit {
     return {
       title: 'There is a problem',
       description: 'Enter Details',
-      fieldId: 'Description'
+      fieldId: 'Description',
     };
   }
 

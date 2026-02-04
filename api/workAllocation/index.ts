@@ -7,7 +7,7 @@ import {
   SERVICES_CASE_CASEWORKER_REF_PATH,
   SERVICES_CASE_JUDICIALWORKER_REF_PATH,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
-  SERVICES_WORK_ALLOCATION_TASK_API_PATH
+  SERVICES_WORK_ALLOCATION_TASK_API_PATH,
 } from '../configuration/references';
 import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
@@ -20,9 +20,15 @@ import {
   handleCaseWorkerForLocation,
   handleCaseWorkerForLocationAndService,
   handleCaseWorkerForService,
-  handlePostSearch
+  handlePostSearch,
 } from './caseWorkerService';
-import { fetchNewUserData, fetchRoleAssignments, fetchRoleAssignmentsForNewUsers, fetchUserData, timestampExists } from './caseWorkerUserDataCacheService';
+import {
+  fetchNewUserData,
+  fetchRoleAssignments,
+  fetchRoleAssignmentsForNewUsers,
+  fetchUserData,
+  timestampExists,
+} from './caseWorkerUserDataCacheService';
 import { ViewType } from './constants/actions';
 import { FullUserDetailCache } from './fullUserDetailCache';
 import { CaseList } from './interfaces/case';
@@ -57,7 +63,7 @@ import {
   prepareSearchTaskUrl,
   prepareTaskSearchForCompletable,
   searchAndReturnRefinedUsers,
-  searchCasesById
+  searchCasesById,
 } from './util';
 import { PUI_CASE_MANAGER } from '../user/utils';
 
@@ -180,7 +186,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     if (data) {
       returnData = {
         tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
-        total_records: data.total_records
+        total_records: data.total_records,
       };
     }
     res.send(returnData);
@@ -197,25 +203,20 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
       {
         key: 'caseId',
         operator: 'IN',
-        values: [
-          caseId
-        ]
+        values: [caseId],
       },
       {
         key: 'state',
         operator: 'IN',
-        values: [
-          'assigned',
-          'unassigned'
-        ]
-      }
+        values: ['assigned', 'unassigned'],
+      },
     ],
     sorting_parameters: [
       {
         sort_by: 'due_date',
-        sort_order: 'asc'
-      }
-    ]
+        sort_order: 'asc',
+      },
+    ],
   };
   try {
     const { status, data } = await handleTaskSearch(`${basePath}`, searchRequest, req);
@@ -244,7 +245,10 @@ export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Resp
       : { status: 200, data: [] };
     return res.status(status).send(data);
   } catch (e) {
-    trackTrace(`Error calling search for completable task of eventId and caseId: ${eventId} ${caseId} ${e.toString()}`, traceProps);
+    trackTrace(
+      `Error calling search for completable task of eventId and caseId: ${eventId} ${caseId} ${e.toString()}`,
+      traceProps
+    );
     next(e);
   }
 }
@@ -259,8 +263,8 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     if (req.body.hasNoAssigneeOnComplete === true) {
       req.body = {
         completion_options: {
-          assign_and_complete: true
-        }
+          assign_and_complete: true,
+        },
       };
     } else {
       delete req.body.hasNoAssigneeOnComplete;
@@ -278,7 +282,10 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     }
     if (actionByEvent === true) {
       mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task completion by ${eventName} event`, traceProps);
+      trackTrace(
+        `${req.params.action} on task Id: ${req.params.taskId} due to automated task completion by ${eventName} event`,
+        traceProps
+      );
     } else {
       mode = 'EXUI_USER_COMPLETION';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
@@ -297,19 +304,22 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
 /**
  * Post to invoke an action on a Task.
  */
-export async function postTaskCompletionForAccess(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+export async function postTaskCompletionForAccess(
+  req: EnhancedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<AxiosResponse> {
   const traceProps = { functionCall: 'postTaskCompletionForAccess' };
   const taskId = req.body.specificAccessStateData ? req.body.specificAccessStateData.taskId : req.body.taskId;
   try {
     // Additional setting to mark unassigned tasks as done - need to assign task before completing
     const newRequest = {
       completion_options: {
-        assign_and_complete: true
-      }
+        assign_and_complete: true,
+      },
     };
     // line added as requests are different for approval/rejection
-    const getTaskPath: string =
-      preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'EXUI_USER_COMPLETION');
+    const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, taskId, 'complete', 'EXUI_USER_COMPLETION');
     trackTrace(`complete on task Id: ${taskId} due to specific access processing`, traceProps);
     return await handleTaskPost(getTaskPath, newRequest, req);
   } catch (error) {
@@ -352,7 +362,11 @@ export async function getCaseWorkersForService(req: EnhancedRequest, res: Respon
  */
 export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, req.params.locationId, req.params.serviceId);
+    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(
+      baseUrl,
+      req.params.locationId,
+      req.params.serviceId
+    );
     const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
     res.status(200);
     res.send(jsonResponse);
@@ -380,10 +394,10 @@ export async function postTaskSearchForCompletable(req: EnhancedRequest, res: Re
     const jurisdictions = getWASupportedJurisdictionsList();
     const postTaskPath: string = prepareTaskSearchForCompletable(baseWorkAllocationTaskUrl);
     const reqBody = {
-      'case_id': req.body.searchRequest.ccdId,
-      'case_jurisdiction': req.body.searchRequest.jurisdiction,
-      'case_type': req.body.searchRequest.caseTypeId,
-      'event_id': req.body.searchRequest.eventId
+      case_id: req.body.searchRequest.ccdId,
+      case_jurisdiction: req.body.searchRequest.jurisdiction,
+      case_type: req.body.searchRequest.caseTypeId,
+      event_id: req.body.searchRequest.eventId,
     };
     const { status, data } = jurisdictions.includes(req.body.searchRequest.jurisdiction)
       ? await handlePostSearch(postTaskPath, reqBody, req)
@@ -401,7 +415,8 @@ export async function getRolesCategory(req: EnhancedRequest, res: Response) {
     { roleId: 'judicial', roleName: 'Judicial' },
     { roleId: 'legalOps', roleName: 'Legal Ops' },
     { roleId: 'admin', roleName: 'Admin' },
-    { roleId: 'ctsc', roleName: 'CTSC' }];
+    { roleId: 'ctsc', roleName: 'CTSC' },
+  ];
   return res.send(personRoles).status(200);
 }
 
@@ -442,7 +457,7 @@ export async function getMyAccess(req: EnhancedRequest, res: Response): Promise<
   const result = {
     cases: mappedCases,
     total_records: 0,
-    unique_cases: 0
+    unique_cases: 0,
   };
   return res.send(result).status(200);
 }
@@ -484,7 +499,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     const result = {
       cases,
       total_records: 0,
-      unique_cases: 0
+      unique_cases: 0,
     };
 
     // filter cases by locationIds
@@ -495,7 +510,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
       const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
-      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew) ? 0 : a.isNew ? -1 : 1);
+      const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));
       result.cases = assignActionsToCases(sortedCaseList, userIsCaseAllocator);
     }
     return res.send(result).status(200);
@@ -514,11 +529,13 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
   try {
     // get case allocator locations
     const locations = [];
-    searchParameters.filter((param) => param.key === 'location_id').forEach((location) => {
-      if (location.values !== '') {
-        locations.push(location.values);
-      }
-    });
+    searchParameters
+      .filter((param) => param.key === 'location_id')
+      .forEach((location) => {
+        if (location.values !== '') {
+          locations.push(location.values);
+        }
+      });
 
     // get all role assignments
     const query = constructRoleAssignmentQuery(searchParameters);
@@ -529,7 +546,7 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     const result = {
       cases,
       total_records: 0,
-      unique_cases: 0
+      unique_cases: 0,
     };
 
     const caseData = filterByLocationId(result.cases, locations);

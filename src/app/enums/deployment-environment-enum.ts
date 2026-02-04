@@ -5,5 +5,5 @@ export enum DeploymentEnvironmentEnum {
   PERFTEST = 'perftest',
   ITHC = 'ithc',
   PREVIEW = 'preview',
-  LOCAL = 'local'
+  LOCAL = 'local',
 }

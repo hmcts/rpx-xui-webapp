@@ -65,7 +65,7 @@ describe('workAllocation', () => {
       id: 'test-user-id',
       uid: 'test-user-uid',
       roles: ['caseworker-role'],
-      email: 'test@test.com'
+      email: 'test@test.com',
     };
 
     // Mock role assignments
@@ -75,9 +75,9 @@ describe('workAllocation', () => {
         roleName: 'case-allocator',
         attributes: {
           jurisdiction: 'IA',
-          caseId: '1234567890123456'
-        }
-      }
+          caseId: '1234567890123456',
+        },
+      },
     ];
   });
 
@@ -90,39 +90,46 @@ describe('workAllocation', () => {
       const req = mockReq({
         body: {
           term: null,
-          services: ['service1']
+          services: ['service1'],
         },
         session: {
           passport: {
             user: {
               userinfo: {
-                roles: ['role1']
-              }
-            }
-          }
-        }
+                roles: ['role1'],
+              },
+            },
+          },
+        },
       });
       const res = mockRes();
       const next = sandbox.spy();
 
       const mockUserData: CachedCaseworker[] = [
         {
-          idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+          idamId: 'user1',
+          firstName: 'User',
+          lastName: 'One',
+          email: 'one@one.com',
+          roleCategory: 'role1',
           services: ['service1'],
-          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }]
+          locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
         },
         {
-          idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+          idamId: 'user2',
+          firstName: 'User',
+          lastName: 'Two',
+          email: 'two@two.com',
+          roleCategory: 'role1',
           services: ['service1'],
-          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }]
-        }
+          locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
+        },
       ];
 
       FullUserDetailCache.setUserDetails(mockUserData);
       // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
       hasTTLExpired();
       await getUsersByServiceName(req, res, next);
-      // eslint-disable-next-line no-unused-expressions
       expect(res.send).to.have.been.called;
       expect(res.status).to.have.been.calledWith(200);
     });
@@ -132,39 +139,46 @@ describe('workAllocation', () => {
     const req = mockReq({
       body: {
         term: null,
-        services: ['service1']
+        services: ['service1'],
       },
       session: {
         passport: {
           user: {
             userinfo: {
-              roles: ['pui-case-manager']
-            }
-          }
-        }
-      }
+              roles: ['pui-case-manager'],
+            },
+          },
+        },
+      },
     });
     const res = mockRes();
     const next = sandbox.spy();
 
     const mockUserData: CachedCaseworker[] = [
       {
-        idamId: 'user1', firstName: 'User', lastName: 'One', email: 'one@one.com', roleCategory: 'role1',
+        idamId: 'user1',
+        firstName: 'User',
+        lastName: 'One',
+        email: 'one@one.com',
+        roleCategory: 'role1',
         services: ['service1'],
-        locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }]
+        locations: [{ id: 'location1', locationName: 'Location One', services: ['service1'] }],
       },
       {
-        idamId: 'user2', firstName: 'User', lastName: 'Two', email: 'two@two.com', roleCategory: 'role1',
+        idamId: 'user2',
+        firstName: 'User',
+        lastName: 'Two',
+        email: 'two@two.com',
+        roleCategory: 'role1',
         services: ['service1'],
-        locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }]
-      }
+        locations: [{ id: 'location2', locationName: 'Location Two', services: ['service1'] }],
+      },
     ];
 
     FullUserDetailCache.setUserDetails(mockUserData);
     // Call this to ensure the timeout is set, so the isTimestampExpired function returns true.
     hasTTLExpired();
     await getUsersByServiceName(req, res, next);
-    // eslint-disable-next-line no-unused-expressions
     expect(res.send).to.have.been.calledWith('Forbidden');
     expect(res.status).to.have.been.calledWith(403);
   });
@@ -174,8 +188,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq({
         params: {
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
       await getTask(req, response, next);
@@ -192,8 +206,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq({
         params: {
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
 
@@ -211,43 +225,43 @@ describe('workAllocation', () => {
       const typesOfWork = [
         {
           id: 'hearing_work',
-          label: 'Hearing work'
+          label: 'Hearing work',
         },
         {
           id: 'upper_tribunal',
-          label: 'Upper Tribunal'
+          label: 'Upper Tribunal',
         },
         {
           id: 'routine_work',
-          label: 'Routine work'
+          label: 'Routine work',
         },
         {
           id: 'decision_making_work',
-          label: 'Decision-making work'
+          label: 'Decision-making work',
         },
         {
           id: 'applications',
-          label: 'Applications'
+          label: 'Applications',
         },
         {
           id: 'priority',
-          label: 'Priority'
+          label: 'Priority',
         },
         {
           id: 'access_requests',
-          label: 'Access requests'
+          label: 'Access requests',
         },
         {
           id: 'error_management',
-          label: 'Error management'
-        }
+          label: 'Error management',
+        },
       ];
       const response = {
-        work_types: typesOfWork
+        work_types: typesOfWork,
       };
       const typesOfWorkResponse = typesOfWork.map((work) => ({ key: work.id, label: work.label }));
       res = mockRes({
-        data: response
+        data: response,
       });
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq();
@@ -261,8 +275,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'get').resolves(res);
       const req = mockReq({
         params: {
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
 
@@ -282,16 +296,16 @@ describe('workAllocation', () => {
         body: {
           searchRequest: {
             search_parameters: [],
-            sorting_parameters: []
+            sorting_parameters: [],
           },
-          view: 'MyTasks'
+          view: 'MyTasks',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       const response = mockRes({
-        data: mockTasks
+        data: mockTasks,
       });
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.
@@ -313,17 +327,17 @@ describe('workAllocation', () => {
             sorting_parameters: [],
             pagination_parameters: {
               page_size: 11,
-              page_number: 3
-            }
+              page_number: 3,
+            },
           },
-          view: 'MyTasks'
+          view: 'MyTasks',
         },
         session: {
-          caseworkers: null
-        }
+          caseworkers: null,
+        },
       });
       const response = mockRes({
-        data: mockTasks
+        data: mockTasks,
       });
       await searchTask(req, response, next);
       // Should have the correct URL and the appropriate payload.
@@ -331,7 +345,7 @@ describe('workAllocation', () => {
       expect(args[0]).to.equal(`${baseWorkAllocationTaskUrl}/task?first_result=22&max_results=11`);
       expect(args[1]).to.deep.equal({
         search_parameters: [],
-        sorting_parameters: []
+        sorting_parameters: [],
       });
 
       // Should have received the HTTP response. The search simply returns the data.
@@ -343,8 +357,8 @@ describe('workAllocation', () => {
       spy = sandbox.stub(http, 'post').resolves(res);
       const req = mockReq({
         body: {
-          search: 'criteria'
-        }
+          search: 'criteria',
+        },
       });
       const response = mockRes();
 
@@ -365,8 +379,8 @@ describe('workAllocation', () => {
         body,
         params: {
           action: 'assign',
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
       await postTaskAction(req, response, next);
@@ -387,8 +401,8 @@ describe('workAllocation', () => {
         body,
         params: {
           action: 'assign',
-          taskId: '123456'
-        }
+          taskId: '123456',
+        },
       });
       const response = mockRes();
 
@@ -406,13 +420,13 @@ describe('workAllocation', () => {
       const mockRoles = {
         roles: [
           { role_name: 'judge', role_category: 'JUDICIAL' },
-          { role_name: 'caseworker', role_category: 'LEGAL_OPERATIONS' }
-        ]
+          { role_name: 'caseworker', role_category: 'LEGAL_OPERATIONS' },
+        ],
       };
       spy = sandbox.stub(taskServiceModule, 'handleTaskRolesGet').resolves({ status: 200, data: mockRoles });
 
       const req = mockReq({
-        params: { taskId: '123456' }
+        params: { taskId: '123456' },
       });
       const response = mockRes();
 
@@ -428,7 +442,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(taskServiceModule, 'handleTaskRolesGet').rejects(error);
 
       const req = mockReq({
-        params: { taskId: '123456' }
+        params: { taskId: '123456' },
       });
       const response = mockRes();
 
@@ -452,10 +466,10 @@ describe('workAllocation', () => {
         session: {
           passport: {
             user: {
-              userinfo: mockUserInfo
-            }
-          }
-        }
+              userinfo: mockUserInfo,
+            },
+          },
+        },
       });
       const response = mockRes();
 
@@ -475,10 +489,10 @@ describe('workAllocation', () => {
         session: {
           passport: {
             user: {
-              userinfo: mockUserInfo
-            }
-          }
-        }
+              userinfo: mockUserInfo,
+            },
+          },
+        },
       });
       const response = mockRes();
 
@@ -502,8 +516,8 @@ describe('workAllocation', () => {
           caseId: '1234567890123456',
           eventId: 'submit',
           caseType: 'Asylum',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       });
       const response = mockRes();
 
@@ -523,8 +537,8 @@ describe('workAllocation', () => {
           caseId: '1234567890123456',
           eventId: 'submit',
           caseType: 'TestCase',
-          jurisdiction: 'UNSUPPORTED'
-        }
+          jurisdiction: 'UNSUPPORTED',
+        },
       });
       const response = mockRes();
 
@@ -547,8 +561,8 @@ describe('workAllocation', () => {
           caseId: '1234567890123456',
           eventId: 'submit',
           caseType: 'Asylum',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       });
       const response = mockRes();
 
@@ -564,7 +578,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(taskServiceModule, 'handleTaskPost').resolves({ status: 200, data: mockResponse });
 
       const req = mockReq({
-        body: { taskId: '123456' }
+        body: { taskId: '123456' },
       });
       const response = mockRes();
 
@@ -583,8 +597,8 @@ describe('workAllocation', () => {
 
       const req = mockReq({
         body: {
-          specificAccessStateData: { taskId: '123456' }
-        }
+          specificAccessStateData: { taskId: '123456' },
+        },
       });
       const response = mockRes();
 
@@ -601,7 +615,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(taskServiceModule, 'handleTaskPost').rejects(error);
 
       const req = mockReq({
-        body: { taskId: '123456' }
+        body: { taskId: '123456' },
       });
       const response = mockRes();
 
@@ -616,12 +630,12 @@ describe('workAllocation', () => {
     it('should get all case workers for a location', async () => {
       const mockCaseWorkers = [
         { id: 'worker1', firstName: 'John', lastName: 'Doe' },
-        { id: 'worker2', firstName: 'Jane', lastName: 'Smith' }
+        { id: 'worker2', firstName: 'Jane', lastName: 'Smith' },
       ];
       spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').resolves(mockCaseWorkers);
 
       const req = mockReq({
-        params: { locationId: 'loc123' }
+        params: { locationId: 'loc123' },
       });
       const response = mockRes();
 
@@ -636,7 +650,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocation').rejects(error);
 
       const req = mockReq({
-        params: { locationId: 'loc123' }
+        params: { locationId: 'loc123' },
       });
       const response = mockRes();
 
@@ -648,13 +662,11 @@ describe('workAllocation', () => {
 
   describe('getCaseWorkersForService', () => {
     it('should get case workers for a service', async () => {
-      const mockCaseWorkers = [
-        { id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA' }
-      ];
+      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA' }];
       spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').resolves(mockCaseWorkers);
 
       const req = mockReq({
-        params: { serviceId: 'IA' }
+        params: { serviceId: 'IA' },
       });
       const response = mockRes();
 
@@ -669,7 +681,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForService').rejects(error);
 
       const req = mockReq({
-        params: { serviceId: 'IA' }
+        params: { serviceId: 'IA' },
       });
       const response = mockRes();
 
@@ -681,13 +693,11 @@ describe('workAllocation', () => {
 
   describe('getCaseWorkersForLocationAndService', () => {
     it('should get case workers for location and service', async () => {
-      const mockCaseWorkers = [
-        { id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA', location: 'loc123' }
-      ];
+      const mockCaseWorkers = [{ id: 'worker1', firstName: 'John', lastName: 'Doe', service: 'IA', location: 'loc123' }];
       spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').resolves(mockCaseWorkers);
 
       const req = mockReq({
-        params: { locationId: 'loc123', serviceId: 'IA' }
+        params: { locationId: 'loc123', serviceId: 'IA' },
       });
       const response = mockRes();
 
@@ -702,7 +712,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(caseWorkerServiceModule, 'handleCaseWorkerForLocationAndService').rejects(error);
 
       const req = mockReq({
-        params: { locationId: 'loc123', serviceId: 'IA' }
+        params: { locationId: 'loc123', serviceId: 'IA' },
       });
       const response = mockRes();
 
@@ -715,9 +725,7 @@ describe('workAllocation', () => {
   describe('searchCaseWorker', () => {
     it('should search for case workers', async () => {
       const mockSearchResults = {
-        caseworkers: [
-          { id: 'worker1', firstName: 'John', lastName: 'Doe' }
-        ]
+        caseworkers: [{ id: 'worker1', firstName: 'John', lastName: 'Doe' }],
       };
       spy = sandbox.stub(caseWorkerServiceModule, 'handlePostSearch').resolves({ status: 200, data: mockSearchResults });
 
@@ -725,8 +733,8 @@ describe('workAllocation', () => {
         body: {
           searchTerm: 'John',
           services: ['IA'],
-          userType: 'caseworker'
-        }
+          userType: 'caseworker',
+        },
       });
       const response = mockRes();
 
@@ -743,8 +751,8 @@ describe('workAllocation', () => {
       const req = mockReq({
         body: {
           searchTerm: 'John',
-          services: ['IA']
-        }
+          services: ['IA'],
+        },
       });
       const response = mockRes();
 
@@ -765,9 +773,9 @@ describe('workAllocation', () => {
             ccdId: '1234567890123456',
             jurisdiction: 'IA',
             caseTypeId: 'Asylum',
-            eventId: 'submit'
-          }
-        }
+            eventId: 'submit',
+          },
+        },
       });
       const response = mockRes();
 
@@ -784,9 +792,9 @@ describe('workAllocation', () => {
             ccdId: '1234567890123456',
             jurisdiction: 'UNSUPPORTED',
             caseTypeId: 'TestCase',
-            eventId: 'submit'
-          }
-        }
+            eventId: 'submit',
+          },
+        },
       });
       const response = mockRes();
 
@@ -806,9 +814,9 @@ describe('workAllocation', () => {
             ccdId: '1234567890123456',
             jurisdiction: 'IA',
             caseTypeId: 'Asylum',
-            eventId: 'submit'
-          }
-        }
+            eventId: 'submit',
+          },
+        },
       });
       const response = mockRes();
 
@@ -829,7 +837,7 @@ describe('workAllocation', () => {
         { roleId: 'judicial', roleName: 'Judicial' },
         { roleId: 'legalOps', roleName: 'Legal Ops' },
         { roleId: 'admin', roleName: 'Admin' },
-        { roleId: 'ctsc', roleName: 'CTSC' }
+        { roleId: 'ctsc', roleName: 'CTSC' },
       ];
 
       expect(response.send).to.have.been.calledWith(expectedRoles);
@@ -857,7 +865,7 @@ describe('workAllocation', () => {
       sandbox.stub(roleService, 'checkIfCaseAllocator').returns(true);
 
       const req = mockReq({
-        params: { jurisdiction: 'IA', caseLocationId: 'loc123' }
+        params: { jurisdiction: 'IA', caseLocationId: 'loc123' },
       });
       const response = mockRes();
 
@@ -872,7 +880,7 @@ describe('workAllocation', () => {
       sandbox.stub(roleService, 'checkIfCaseAllocator').returns(false);
 
       const req = mockReq({
-        params: { jurisdiction: 'IA', caseLocationId: 'loc123' }
+        params: { jurisdiction: 'IA', caseLocationId: 'loc123' },
       });
       const response = mockRes();
 
@@ -887,7 +895,7 @@ describe('workAllocation', () => {
       sandbox.stub(roleService, 'checkIfCaseAllocator').throws(error);
 
       const req = mockReq({
-        params: { jurisdiction: 'IA', caseLocationId: 'loc123' }
+        params: { jurisdiction: 'IA', caseLocationId: 'loc123' },
       });
       const response = mockRes();
 
@@ -901,8 +909,8 @@ describe('workAllocation', () => {
     it('should return array of promises for case data', () => {
       const mockCaseData = {
         IA: {
-          Asylum: new Set(['1234567890123456', '1234567890123457'])
-        }
+          Asylum: new Set(['1234567890123456', '1234567890123457']),
+        },
       };
 
       const req = mockReq();
@@ -928,11 +936,11 @@ describe('workAllocation', () => {
       const mockCaseData = {
         IA: {
           Asylum: new Set(['1234567890123456']),
-          Appeal: new Set(['1234567890123457'])
+          Appeal: new Set(['1234567890123457']),
         },
         SSCS: {
-          Benefit: new Set(['1234567890123458'])
-        }
+          Benefit: new Set(['1234567890123458']),
+        },
       };
 
       const req = mockReq();
@@ -953,11 +961,11 @@ describe('workAllocation', () => {
         session: {
           passport: {
             user: {
-              userinfo: mockUserInfo
-            }
+              userinfo: mockUserInfo,
+            },
           },
-          roleAssignmentResponse: mockRoleAssignments
-        }
+          roleAssignmentResponse: mockRoleAssignments,
+        },
       });
       const response = mockRes();
 
@@ -975,10 +983,10 @@ describe('workAllocation', () => {
         session: {
           passport: {
             user: {
-              userinfo: mockUserInfo
-            }
-          }
-        }
+              userinfo: mockUserInfo,
+            },
+          },
+        },
       });
       const response = mockRes();
 
@@ -1000,18 +1008,18 @@ describe('workAllocation', () => {
           searchRequest: {
             search_parameters: [
               { key: 'services', values: ['IA'] },
-              { key: 'locations', values: ['loc123'] }
-            ]
-          }
+              { key: 'locations', values: ['loc123'] },
+            ],
+          },
         },
         session: {
           passport: {
             user: {
-              userinfo: mockUserInfo
-            }
+              userinfo: mockUserInfo,
+            },
           },
-          roleAssignmentResponse: mockRoleAssignments
-        }
+          roleAssignmentResponse: mockRoleAssignments,
+        },
       });
       const response = mockRes();
 
@@ -1028,16 +1036,16 @@ describe('workAllocation', () => {
       const req = mockReq({
         body: {
           searchRequest: {
-            search_parameters: []
-          }
+            search_parameters: [],
+          },
         },
         session: {
           passport: {
             user: {
-              userinfo: mockUserInfo
-            }
-          }
-        }
+              userinfo: mockUserInfo,
+            },
+          },
+        },
       });
       const response = mockRes();
 
@@ -1052,9 +1060,7 @@ describe('workAllocation', () => {
     it('should get cases with search parameters', async () => {
       // Mock the required util functions
       const mockRoleAssignmentResult = {
-        roleAssignmentResponse: [
-          { id: 'role1', caseId: 'case123', roleName: 'judge' }
-        ]
+        roleAssignmentResponse: [{ id: 'role1', caseId: 'case123', roleName: 'judge' }],
       };
 
       const mockCase = {
@@ -1082,38 +1088,38 @@ describe('workAllocation', () => {
         caseName: 'Test Case',
         caseCategory: 'Family',
         assigneeName: 'Test User',
-        name: 'Test Case'
+        name: 'Test Case',
       };
 
       sandbox.stub(utilModule, 'getRoleAssignmentsByQuery').resolves(mockRoleAssignmentResult);
       sandbox.stub(utilModule, 'getCaseIdListFromRoles').resolves([mockCase]);
       sandbox.stub(utilModule, 'filterByLocationId').returns([mockCase]);
-      sandbox.stub(utilModule, 'mapCasesFromData').returns([{
-        case_id: 'case123',
-        case_name: 'Test Case',
-        case_category: 'Family',
-        id: 'case123',
-        case_role: 'judge',
-        role_category: 'JUDICIAL',
-        jurisdiction: 'Family',
-        location_id: 'loc123',
-        startDate: '2029-01-01',
-        endDate: '2029-12-31',
-        assignee: 'user123'
-      }]);
+      sandbox.stub(utilModule, 'mapCasesFromData').returns([
+        {
+          case_id: 'case123',
+          case_name: 'Test Case',
+          case_category: 'Family',
+          id: 'case123',
+          case_role: 'judge',
+          role_category: 'JUDICIAL',
+          jurisdiction: 'Family',
+          location_id: 'loc123',
+          startDate: '2029-01-01',
+          endDate: '2029-12-31',
+          assignee: 'user123',
+        },
+      ]);
 
       const req = mockReq({
         body: {
           searchRequest: {
-            search_parameters: [
-              { key: 'location_id', values: 'loc123' }
-            ],
+            search_parameters: [{ key: 'location_id', values: 'loc123' }],
             pagination_parameters: {
               page_number: 1,
-              page_size: 10
-            }
-          }
-        }
+              page_size: 10,
+            },
+          },
+        },
       });
       const response = mockRes();
 
@@ -1131,9 +1137,9 @@ describe('workAllocation', () => {
       const req = mockReq({
         body: {
           searchRequest: {
-            search_parameters: []
-          }
-        }
+            search_parameters: [],
+          },
+        },
       });
       const response = mockRes();
 
@@ -1148,13 +1154,13 @@ describe('workAllocation', () => {
       const mockTaskTypes = {
         task_types: [
           { id: 'type1', name: 'Task Type 1' },
-          { id: 'type2', name: 'Task Type 2' }
-        ]
+          { id: 'type2', name: 'Task Type 2' },
+        ],
       };
       spy = sandbox.stub(taskServiceModule, 'handleTaskGet').resolves(mockTaskTypes);
 
       const req = mockReq({
-        body: { service: 'IA' }
+        body: { service: 'IA' },
       });
       const response = mockRes();
 
@@ -1170,7 +1176,7 @@ describe('workAllocation', () => {
       spy = sandbox.stub(taskServiceModule, 'handleTaskGet').rejects(error);
 
       const req = mockReq({
-        body: { service: 'IA' }
+        body: { service: 'IA' },
       });
       const response = mockRes();
 
@@ -1219,36 +1225,38 @@ describe('workAllocation', () => {
           task: {
             id: '123456',
             due_date: '2029-12-01T10:00:00Z',
-            name: 'Test Task'
-          }
+            name: 'Test Task',
+          },
         };
         spy = sandbox.stub(http, 'get').resolves({ data: mockTask });
 
         const req = mockReq({
-          params: { taskId: '123456' }
+          params: { taskId: '123456' },
         });
         const response = mockRes();
 
         await getTask(req, response, next);
 
-        expect(response.send).to.have.been.calledWith(sinon.match({
-          task: sinon.match({
-            dueDate: '2029-12-01T10:00:00Z'
+        expect(response.send).to.have.been.calledWith(
+          sinon.match({
+            task: sinon.match({
+              dueDate: '2029-12-01T10:00:00Z',
+            }),
           })
-        }));
+        );
       });
 
       it('should handle task without due_date', async () => {
         const mockTask = {
           task: {
             id: '123456',
-            name: 'Test Task'
-          }
+            name: 'Test Task',
+          },
         };
         spy = sandbox.stub(http, 'get').resolves({ data: mockTask });
 
         const req = mockReq({
-          params: { taskId: '123456' }
+          params: { taskId: '123456' },
         });
         const response = mockRes();
 
@@ -1264,7 +1272,7 @@ describe('workAllocation', () => {
 
         const req = mockReq({
           body: { hasNoAssigneeOnComplete: true },
-          params: { action: 'complete', taskId: '123456' }
+          params: { action: 'complete', taskId: '123456' },
         });
         const response = mockRes();
 
@@ -1272,7 +1280,7 @@ describe('workAllocation', () => {
 
         const calledArgs = spy.getCall(0).args[1];
         expect(calledArgs).to.deep.equal({
-          completion_options: { assign_and_complete: true }
+          completion_options: { assign_and_complete: true },
         });
       });
 
@@ -1283,9 +1291,9 @@ describe('workAllocation', () => {
           body: {
             actionByEvent: true,
             eventName: 'submitEvent',
-            someOtherData: 'test'
+            someOtherData: 'test',
           },
-          params: { action: 'complete', taskId: '123456' }
+          params: { action: 'complete', taskId: '123456' },
         });
         const response = mockRes();
 
@@ -1307,7 +1315,7 @@ describe('workAllocation', () => {
 
         const req = mockReq({
           body: { someData: 'test' },
-          params: { action: 'complete', taskId: '123456' } // Changed to complete action
+          params: { action: 'complete', taskId: '123456' }, // Changed to complete action
         });
         const response = mockRes();
 

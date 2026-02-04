@@ -9,10 +9,7 @@ describe('Hearing List selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        StoreModule.forFeature('hearings', reducers)
-      ]
+      imports: [StoreModule.forRoot({}), StoreModule.forFeature('hearings', reducers)],
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();

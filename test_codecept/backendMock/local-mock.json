@@ -1,135 +1,123 @@
 {
-    "now": false,
-    "protocol": "http",
-    "stub": false,
-    "health": {
-        "ccdComponentApi": "http://localhost:8080/health",
-        "ccdDataApi": "http://localhost:8080/health",
-        "documentsApi": "http://localhost:8080/health",
-        "em_anno_api": "http://localhost:8080",
-        "termsAndConditions": "http://localhost:8080/health",
-        "ccdActivityApi": "http://localhost:8080/health",
-        "locationApi": "http://localhost:8080/health"
+  "now": false,
+  "protocol": "http",
+  "stub": false,
+  "health": {
+    "ccdComponentApi": "http://localhost:8080/health",
+    "ccdDataApi": "http://localhost:8080/health",
+    "documentsApi": "http://localhost:8080/health",
+    "em_anno_api": "http://localhost:8080",
+    "termsAndConditions": "http://localhost:8080/health",
+    "ccdActivityApi": "http://localhost:8080/health",
+    "locationApi": "http://localhost:8080/health"
+  },
+  "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,CIVIL",
+  "locationsServiceCode": {
+    "IA": "BFA1"
+  },
+  "services": {
+    "ccd": {
+      "componentApi": "http://localhost:8080",
+      "dataApi": "http://localhost:8080",
+      "caseAssignmentApi": "http://localhost:8080",
+      "activityApi": "http://localhost:8080"
     },
-    "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,CIVIL",
-    "locationsServiceCode": {
-        "IA": "BFA1"
+    "documents": {
+      "api": "http://localhost:8080"
     },
-    "services": {
-        "ccd": {
-            "componentApi": "http://localhost:8080",
-            "dataApi": "http://localhost:8080",
-            "caseAssignmentApi": "http://localhost:8080",
-            "activityApi": "http://localhost:8080"
-        },
-        "documents": {
-            "api": "http://localhost:8080"
-        },
-        "waWorkflowApi": "http://localhost:8080",
-        "documentsv2": {
-            "api": "http://localhost:8080/"
-        },
-        "locationref": {
-            "api": "http://localhost:8080"
-        },
-        "prd": {
-            "api": "http://localhost:8080",
-            "commondataApi": "http://localhost:8080",
-            "locationApi": "http://localhost:8080",
-            "judicialApi": "http://localhost:8080"
-        },
-        "em_anno_api": "http://localhost:8080",
-        "idam": {
-            "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
-            "idamClientID": "xuiwebapp",
-            "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
-            "indexUrl": "/",
-            "oauthCallbackUrl": "/oauth2/callback",
-            "serviceOverride": true,
-            "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts"
-        },
-        "location_api": "http://localhost:8080",
-        "work_allocation": {
-            "taskApi": "http://localhost:8080"
-        },
-        "role_assignment": {
-            "roleApi": "http://localhost:8080",
-            "roleMappingApi": "http://localhost:8080"
-        },
-        "case": {
-            "caseworkerApi": "http://localhost:8080",
-            "judicialworkerApi": "http://localhost:8080",
-            "judicialApi": "http://localhost:8080"
-        },
-        "hearings": {
-            "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
-            "sscs": {
-                "serviceApi": "http://localhost:8080",
-                "caseTypes": "Benefit"
-            },
-            "privatelaw": {
-                "serviceApi": "http://localhost:8080",
-                "caseTypes": "PRLAPPS"
-            },
-            "civil": {
-                "serviceApi": "http://localhost:8080",
-                "caseTypes": "CIVIL"
-            },
-            "hmcApi": "http://localhost:8080"
-        },
-        "s2s": "http://localhost:8080",
-        "termsAndConditions": "http://localhost:8080",
-        "payments": "http://localhost:8080",
-        "judicialBookingApi": "http://localhost:8080"
+    "waWorkflowApi": "http://localhost:8080",
+    "documentsv2": {
+      "api": "http://localhost:8080/"
     },
-    "feature": {
-        "appInsightsEnabled": false,
-        "proxyEnabled": false,
-        "secureCookieEnabled": false,
-        "helmetEnabled": true,
-        "redisEnabled": false,
-        "oidcEnabled": true,
-        "workAllocationEnabled": true,
-        "substantiveRoleEnabled": true,
-        "accessManagementEnabled": true
+    "locationref": {
+      "api": "http://localhost:8080"
     },
-    "redis": {
-        "prefix": "MC-activity:",
-        "ttl": 86400
+    "prd": {
+      "api": "http://localhost:8080",
+      "commondataApi": "http://localhost:8080",
+      "locationApi": "http://localhost:8080",
+      "judicialApi": "http://localhost:8080"
     },
-    "staffSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
-    "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
-    "serviceRefDataMapping": [
-        {
-            "service": "IA",
-            "serviceCodes": [
-                "BFA1"
-            ]
-        },
-        {
-            "service": "CIVIL",
-            "serviceCodes": [
-                "AAA6",
-                "AAA7"
-            ]
-        },
-        {
-            "service": "PRIVATELAW",
-            "serviceCodes": [
-                "ABA5"
-            ]
-        },
-        {
-            "service": "PUBLICLAW",
-            "serviceCodes": [
-                "ABA3"
-            ]
-        },
-        {
-            "service": "SSCS",
-            "serviceCodes": [
-                "SSCS1"
-            ]
-        }
-    ]
+    "em_anno_api": "http://localhost:8080",
+    "idam": {
+      "idamApiUrl": "https://idam-api.aat.platform.hmcts.net",
+      "idamClientID": "xuiwebapp",
+      "idamLoginUrl": "https://idam-web-public.aat.platform.hmcts.net",
+      "indexUrl": "/",
+      "oauthCallbackUrl": "/oauth2/callback",
+      "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts"
+    },
+    "location_api": "http://localhost:8080",
+    "work_allocation": {
+      "taskApi": "http://localhost:8080"
+    },
+    "role_assignment": {
+      "roleApi": "http://localhost:8080",
+      "roleMappingApi": "http://localhost:8080"
+    },
+    "case": {
+      "caseworkerApi": "http://localhost:8080",
+      "judicialworkerApi": "http://localhost:8080",
+      "judicialApi": "http://localhost:8080"
+    },
+    "hearings": {
+      "hearingsJurisdictions": "SSCS,PRIVATELAW,CIVIL",
+      "sscs": {
+        "serviceApi": "http://localhost:8080",
+        "caseTypes": "Benefit"
+      },
+      "privatelaw": {
+        "serviceApi": "http://localhost:8080",
+        "caseTypes": "PRLAPPS"
+      },
+      "civil": {
+        "serviceApi": "http://localhost:8080",
+        "caseTypes": "CIVIL"
+      },
+      "hmcApi": "http://localhost:8080"
+    },
+    "s2s": "http://localhost:8080",
+    "termsAndConditions": "http://localhost:8080",
+    "payments": "http://localhost:8080",
+    "judicialBookingApi": "http://localhost:8080"
+  },
+  "feature": {
+    "appInsightsEnabled": false,
+    "proxyEnabled": false,
+    "secureCookieEnabled": false,
+    "helmetEnabled": true,
+    "redisEnabled": false,
+    "oidcEnabled": true,
+    "workAllocationEnabled": true,
+    "substantiveRoleEnabled": true,
+    "accessManagementEnabled": true
+  },
+  "redis": {
+    "prefix": "MC-activity:",
+    "ttl": 86400
+  },
+  "staffSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW",
+  "serviceRefDataMapping": [
+    {
+      "service": "IA",
+      "serviceCodes": ["BFA1"]
+    },
+    {
+      "service": "CIVIL",
+      "serviceCodes": ["AAA6", "AAA7"]
+    },
+    {
+      "service": "PRIVATELAW",
+      "serviceCodes": ["ABA5"]
+    },
+    {
+      "service": "PUBLICLAW",
+      "serviceCodes": ["ABA3"]
+    },
+    {
+      "service": "SSCS",
+      "serviceCodes": ["SSCS1"]
+    }
+  ]
 }

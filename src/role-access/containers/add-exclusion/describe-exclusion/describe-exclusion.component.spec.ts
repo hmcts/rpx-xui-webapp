@@ -32,7 +32,7 @@ describe('DescribeExclusionComponent', () => {
     expect(component.error).toEqual({
       title: 'There is a problem',
       description: 'Enter exclusion',
-      fieldId: 'exclusion-description'
+      fieldId: 'exclusion-description',
     });
   });
 

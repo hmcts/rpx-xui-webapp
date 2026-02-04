@@ -15,9 +15,7 @@ router.get('/session/default', (req, res) => {
   res.send(sessionService.setDefaultSession(req.query.session));
 });
 
-router.get('/updateroles', async (req, res) => {
-
-});
+router.get('/updateroles', async (req, res) => {});
 
 router.post('/session/user/roles', async (req, res) => {
   await sessionService.updateAuthSessionWithRoles(req.body.auth, req.body.roles);
@@ -30,7 +28,10 @@ router.post('/session/user/info', async (req, res) => {
 });
 
 router.post('/session/user/roleAssignments', async (req, res) => {
-  const newRoleAssignmentsInSession = await sessionService.updateAuthSessionWithRoleAssignments(req.body.auth, req.body.roleAssignments);
+  const newRoleAssignmentsInSession = await sessionService.updateAuthSessionWithRoleAssignments(
+    req.body.auth,
+    req.body.roleAssignments
+  );
   res.send(newRoleAssignmentsInSession);
 });
 

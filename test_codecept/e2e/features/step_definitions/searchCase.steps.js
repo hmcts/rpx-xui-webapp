@@ -2,7 +2,9 @@ const SearchPage = require('../pageObjects/searchPage.js');
 const CaseListPage = require('../pageObjects/CaseListPage');
 
 const TestData = require('../../utils/TestData.js');
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 Dropdown = require('../pageObjects/webdriver-components/dropdown.js');
 TextField = require('../pageObjects/webdriver-components/textField.js');
 CustomError = require('../../utils/errors/custom-error.js');
@@ -15,16 +17,16 @@ const config = require('../../utils/config/config.js');
 
 const RuntimeTestData = require('../../support/runtimeTestData');
 
-const searchPage= new SearchPage();
+const searchPage = new SearchPage();
 const caseListPage = new CaseListPage();
 When(/^I click on search button$/, async function () {
   await headerPage().clickFindCase();
 });
 
-When('I click on Case list', async function(){
+When('I click on Case list', async function () {
   let attemptCounter = 0;
   await BrowserWaits.retryWithActionCallback(async () => {
-    if (attemptCounter > 0){
+    if (attemptCounter > 0) {
       await headerPage().refreshBrowser();
       await browserUtil.waitForLD();
     }
@@ -38,7 +40,7 @@ Then(/^Search page should be displayed$/, async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     try {
       expect(await new SearchPage().amOnPage()).to.be.true;
-    } catch (err){
+    } catch (err) {
       await headerPage().clickFindCase();
     }
   });
@@ -59,11 +61,11 @@ When('I enter search fields jurisdiction {string} case type {string}', async fun
     try {
       await searchPage.selectJurisdiction(jurisdiction);
       await searchPage.selectCaseType(caseType);
-    } catch (err){
+    } catch (err) {
       await CucumberReporter.AddScreenshot(global.screenShotUtils);
       await CucumberReporter.AddMessage('Retrying with page refresh', LOG_LEVELS.Info);
       const currentUrl = await browser.getCurrentUrl();
-      if (currentUrl.includes('service-down')){
+      if (currentUrl.includes('service-down')) {
         await CucumberReporter.AddMessage('Service error occured, clicking find case again', LOG_LEVELS.Error);
         await headerPage().clickFindCase();
       } else {
@@ -98,7 +100,7 @@ When('I enter search fields jurisdiction {string} case type {string} and click a
   });
 });
 
-When('I reset case search fields', async function(){
+When('I reset case search fields', async function () {
   await searchPage.clickResetButton();
 });
 
@@ -111,18 +113,18 @@ When('I click apply to perform case search', async function () {
 
   await BrowserWaits.retryWithActionCallback(async () => {
     try {
-      if (isSearchCasesPage){
+      if (isSearchCasesPage) {
         await BrowserWaits.waitForSeconds(2);
         await BrowserWaits.waitForSpinnerToDissappear();
         await searchPage.clickApplyButton();
         await BrowserWaits.waitForSeconds(2);
         await BrowserWaits.waitForSpinnerToDissappear();
-      } else if (isCaseListPage){
+      } else if (isCaseListPage) {
         await caseListPage.clickApplyButton();
       } else {
         throw new Error('Not case list or search page to perform filter apply action on workbasket or search inputs.');
       }
-    } catch (err){
+    } catch (err) {
       CucumberReporter.AddMessage('Retrying steps select inputs and click apply', LOG_LEVELS.Info);
 
       if (isSearchCasesPage) {
@@ -171,10 +173,10 @@ Then('I see results returned', async function () {
       await BrowserWaits.waitForSpinnerToDissappear();
       await searchPage.waitForAtleastOneSearchResult();
       await expect(await searchPage.hasSearchReturnedResults()).to.be.true;
-    } catch (err){
+    } catch (err) {
       CucumberReporter.AddMessage('Retrying steps select inputs and click apply', LOG_LEVELS.Warn);
 
-      if (isSearchCasesPage){
+      if (isSearchCasesPage) {
         const caseTypeToSelect = RuntimeTestData.searchCasesInputs.casetype;
         for (const caseType of RuntimeTestData.searchCasesInputs.casetypes) {
           if (caseType !== caseTypeToSelect) {
@@ -186,7 +188,7 @@ Then('I see results returned', async function () {
         await searchPage.selectCaseType(caseTypeToSelect);
 
         await searchPage.clickApplyButton();
-      } else if (isCaseListPage){
+      } else if (isCaseListPage) {
         const caseTypeToSelect = RuntimeTestData.workbasketInputs.casetype;
         for (const caseType of RuntimeTestData.workbasketInputs.casetypes) {
           if (caseType !== caseTypeToSelect) {
@@ -205,23 +207,32 @@ Then('I see results returned', async function () {
   });
 });
 
-Then('I verify search filters have jurisdiction {string} and case type {string}', async function (expectedJurisdiction, expectedCaseType) {
-  await BrowserWaits.retryWithActionCallback(async () => {
-    try {
-      const jurisdictionIndex = await searchPage.jurisdiction.getAttribute('value');
-      const actualJurisdiction = await searchPage.jurisdiction.$(`option[value="${jurisdictionIndex}"]`).getText();
-      const caseTypeIndex = await searchPage.caseType.getAttribute('value');
-      const actualCaseType = await searchPage.caseType.$(`option[value="${caseTypeIndex}"]`).getText();
+Then(
+  'I verify search filters have jurisdiction {string} and case type {string}',
+  async function (expectedJurisdiction, expectedCaseType) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      try {
+        const jurisdictionIndex = await searchPage.jurisdiction.getAttribute('value');
+        const actualJurisdiction = await searchPage.jurisdiction.$(`option[value="${jurisdictionIndex}"]`).getText();
+        const caseTypeIndex = await searchPage.caseType.getAttribute('value');
+        const actualCaseType = await searchPage.caseType.$(`option[value="${caseTypeIndex}"]`).getText();
 
-      expect(actualJurisdiction).to.equal(expectedJurisdiction, `Jurisdiction is not as expected. Expected: ${expectedJurisdiction}, Actual: ${actualJurisdiction}`);
-      expect(actualCaseType).to.equal(expectedCaseType, `Case Type is not as expected. Expected: ${expectedCaseType}, Actual: ${actualCaseType}`);
-    } catch (err) {
-      await CucumberReporter.AddMessage('Retrying with page refresh', LOG_LEVELS.Info);
-      await headerPage().refreshBrowser();
-      throw new Error(err);
-    }
-  });
-});
+        expect(actualJurisdiction).to.equal(
+          expectedJurisdiction,
+          `Jurisdiction is not as expected. Expected: ${expectedJurisdiction}, Actual: ${actualJurisdiction}`
+        );
+        expect(actualCaseType).to.equal(
+          expectedCaseType,
+          `Case Type is not as expected. Expected: ${expectedCaseType}, Actual: ${actualCaseType}`
+        );
+      } catch (err) {
+        await CucumberReporter.AddMessage('Retrying with page refresh', LOG_LEVELS.Info);
+        await headerPage().refreshBrowser();
+        throw new Error(err);
+      }
+    });
+  }
+);
 
 Then(/^Case details should be displayed based on selected search criteria$/, async function () {
   const searchPage = new SearchPage();
@@ -239,4 +250,3 @@ Then(/^search criteria details should be reset$/, async function () {
   await searchPage.waitForSearchWithNoResults();
   expect(await searchPage.hasSearchReturnedResults()).to.be.false;
 });
-

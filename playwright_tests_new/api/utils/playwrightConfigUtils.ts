@@ -31,5 +31,5 @@ export async function loadConfig(): Promise<TestableConfigModule> {
 }
 
 export function resolveConfigModule(loaded: ConfigModule): ConfigModule {
-  return loaded?.__test__ ? loaded : loaded?.default ?? loaded;
+  return loaded?.__test__ ? loaded : (loaded?.default ?? loaded);
 }

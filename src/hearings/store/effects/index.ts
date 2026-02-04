@@ -9,7 +9,7 @@ export const effects: any[] = [
   HearingValuesEffects,
   HearingRequestEffects,
   HearingActualsEffects,
-  HearingLinksEffects
+  HearingLinksEffects,
 ];
 
 export * from './hearing-list.effects';

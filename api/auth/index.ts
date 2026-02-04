@@ -86,10 +86,10 @@ export const getXuiNodeMiddleware = () => {
       '/workallocation/getJudicialUsers',
       '/workallocation/caseworker/getUsersByServiceName',
       '/api/prd/judicial/searchJudicialUserByPersonalCodes',
-      '/api/prd/judicial/searchJudicialUserByIdamId'
+      '/api/prd/judicial/searchJudicialUserByIdamId',
     ],
     scope: 'openid profile roles manage-user create-user search-user',
-    userName
+    userName,
   };
 
   //TODO: we can move these out into proper config at some point to tidy up even further
@@ -115,34 +115,37 @@ export const getXuiNodeMiddleware = () => {
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
-      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
+      sameSite: 'Lax',
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
     name: 'xui-webapp',
     resave: false,
     saveUninitialized: false,
-    secret: getConfigValue(SESSION_SECRET)
+    secret: getConfigValue(SESSION_SECRET),
   } as SessionMetadata;
 
   const redisStoreOptions = {
     redisStore: {
-      ...baseStoreOptions, ...{
+      ...baseStoreOptions,
+      ...{
         redisStoreOptions: {
           redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
           redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-          redisTtl: getConfigValue(REDIS_TTL)
-        }
-      }
-    }
+          redisTtl: getConfigValue(REDIS_TTL),
+        },
+      },
+    },
   };
 
   const fileStoreOptions = {
     fileStore: {
-      ...baseStoreOptions, ...{
+      ...baseStoreOptions,
+      ...{
         fileStoreOptions: {
-          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
-        }
-      }
-    }
+          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+        },
+      },
+    },
   };
 
   const nodeLibOptions = {
@@ -150,10 +153,10 @@ export const getXuiNodeMiddleware = () => {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
         s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
-        s2sSecret: s2sSecret.trim()
-      }
+        s2sSecret: s2sSecret.trim(),
+      },
     },
-    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
+    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
   };
 
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';

@@ -253,10 +253,9 @@ exports.config = {
   },
   teardownAll: async () => {
     // ← fires after *all* workers
+    console.log('tearing down all');
     if (parallel) {
       await teardown();
-
-      exitWithStatus();
     }
     await generateCucumberReport(); // JSON is now on disk
     exitWithStatus(); // evaluate pass / fail
@@ -264,9 +263,62 @@ exports.config = {
 };
 
 function exitWithStatus() {
-  // const status = await mochawesomeGenerateReport()
-  console.log(`*************** executionResult: ${executionResult}  *************** `);
-  process.exit(executionResult === 'passed' ? 0 : 1);
+  console.log('Evaluating test results for exit status...');
+
+  // Check for failed tests by reading the generated report
+  let status = 'PASS';
+  try {
+    const cucumberReports = fs
+      .readdirSync(CUKE_OUT)
+      .filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+      .map((f) => path.join(CUKE_OUT, f));
+
+    if (cucumberReports.length === 0) {
+      console.warn('No cucumber JSON files found - failing the run');
+      process.exit(1);
+    }
+    let nonEmpty = 0;
+    let failedScenarios = 0;
+    let failedSteps = 0;
+
+    for (const cucumberFile of cucumberReports) {
+      let fileData;
+      try {
+        fileData = JSON.parse(fs.readFileSync(cucumberFile, 'utf-8'));
+      } catch (fileError) {
+        console.warn(`Skipping bad JSON: ${path.basename(cucumberFile)} (${fileError.message})`);
+        continue;
+      }
+
+      if (!Array.isArray(fileData) || fileData.length === 0) {
+        console.log(`Empty report: ${path.basename(cucumberFile)} - skipping`);
+        continue;
+      }
+
+      nonEmpty++;
+
+      for (const feature of fileData) {
+        const elements = feature.elements || [];
+        for (const scenario of elements) {
+          const steps = scenario.steps || [];
+          const scenarioFailed = steps.some((step) => step.result?.status === 'failed');
+          if (scenarioFailed) {
+            failedScenarios++;
+            failedSteps += steps.filter((step) => step.result?.status === 'failed').length;
+          }
+        }
+      }
+    }
+
+    const status = nonEmpty === 0 ? 'FAIL' : failedScenarios > 0 ? 'FAIL' : 'PASS';
+    console.log(
+      `Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`
+    );
+    process.exit(status === 'PASS' ? 0 : 1);
+  } catch (err) {
+    console.error('Error checking test results:', err);
+    status = 'FAIL';
+  }
 }
 
 async function setup() {
@@ -284,7 +336,6 @@ async function teardown() {
     await applicationServer.stop();
   }
   statsReporter.run();
-  await generateCucumberReport();
 
   // process.exit(1);
 }

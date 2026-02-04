@@ -15,7 +15,6 @@ describe('Allow Accept Terms guard', () => {
   });
 
   it('calls acceptGuard', () => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     acceptGuard.canActivate.and.returnValue({ pipe: () => {} });
     guard.canActivate();
     expect(acceptGuard.canActivate).toHaveBeenCalled();

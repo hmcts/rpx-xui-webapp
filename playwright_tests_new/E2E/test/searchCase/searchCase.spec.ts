@@ -1,7 +1,7 @@
 import { expect, test } from "../../fixtures";
 import { loadSessionCookies } from '../../../common/sessionCapture.ts';
 
-test.describe("IDAM login to trigger For 16 digit Case Search @KSM", () => {
+test.describe("IDAM login to trigger For 16 digit Case Search", () => {
   let sessionCookies: any[] = [];
   test.beforeEach(async ({ page, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);

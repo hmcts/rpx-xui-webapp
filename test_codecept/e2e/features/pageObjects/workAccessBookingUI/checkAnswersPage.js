@@ -2,12 +2,24 @@ const { $, $$, getText } = require('../../../../helpers/globals');
 const browserWaits = require('../../../support/customWaits');
 
 class CheckAnswersPage {
-  get pageContainer() { return $('exui-booking-check'); }
-  get header() { return $('exui-booking-check h1'); }
-  get headerCaption() { return $('exui-booking-check h1 span'); }
-  get confirmButton() { return $('exui-booking-check button'); }
-  get cancelLink() { return $('exui-booking-check .govuk-button-group a'); }
-  get summaryList() { return $$('exui-booking-check .govuk-summary-list .govuk-summary-list__row'); }
+  get pageContainer() {
+    return $('exui-booking-check');
+  }
+  get header() {
+    return $('exui-booking-check h1');
+  }
+  get headerCaption() {
+    return $('exui-booking-check h1 span');
+  }
+  get confirmButton() {
+    return $('exui-booking-check button');
+  }
+  get cancelLink() {
+    return $('exui-booking-check .govuk-button-group a');
+  }
+  get summaryList() {
+    return $$('exui-booking-check .govuk-summary-list .govuk-summary-list__row');
+  }
 
   async waitForPage() {
     await browserWaits.waitForElement(this.pageContainer);
@@ -47,7 +59,7 @@ class CheckAnswersPage {
       returnValues.push({
         key: key,
         value: value,
-        change: changeLink
+        change: changeLink,
       });
     }
     return returnValues;

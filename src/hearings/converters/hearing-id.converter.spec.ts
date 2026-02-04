@@ -24,17 +24,17 @@ describe('CaseNameAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialState.hearings.hearingRequestToCompare,
         hearingRequestMainModel: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           caseDetails: {
-            ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails
-          }
-        }
-      }
+            ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
+          },
+        },
+      },
     };
     const result$ = hearingIdAnswerConverter.transformAnswer(of(STATE));
     const hearingId = '1000000';

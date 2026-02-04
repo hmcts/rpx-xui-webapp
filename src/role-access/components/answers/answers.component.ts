@@ -5,9 +5,8 @@ import { Answer } from '../../models';
 @Component({
   standalone: false,
   selector: 'exui-answers',
-  templateUrl: './answers.component.html'
+  templateUrl: './answers.component.html',
 })
-
 export class AnswersComponent {
   @Input() public caption: string;
   @Input() public heading: string;

@@ -39,7 +39,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: CASE_FLAG_REFERENCE_VALUES
+        data: CASE_FLAG_REFERENCE_VALUES,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -63,7 +63,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: []
+        data: [],
       };
 
       handleGetStub.resolves(mockResponse);
@@ -80,7 +80,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: CASE_FLAG_REFERENCE_VALUES
+        data: CASE_FLAG_REFERENCE_VALUES,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -102,7 +102,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: CASE_FLAG_REFERENCE_VALUES
+        data: CASE_FLAG_REFERENCE_VALUES,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -125,7 +125,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 404,
-        data: { error: 'Service not found' }
+        data: { error: 'Service not found' },
       };
 
       handleGetStub.resolves(mockResponse);
@@ -143,7 +143,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 400,
-        data: { error: 'Bad Request', message: 'Invalid service ID format' }
+        data: { error: 'Bad Request', message: 'Invalid service ID format' },
       };
 
       handleGetStub.resolves(mockResponse);
@@ -161,7 +161,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 500,
-        data: { error: 'Internal Server Error' }
+        data: { error: 'Internal Server Error' },
       };
 
       handleGetStub.resolves(mockResponse);
@@ -193,7 +193,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: CASE_FLAG_REFERENCE_VALUES
+        data: CASE_FLAG_REFERENCE_VALUES,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -215,7 +215,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: null
+        data: null,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -233,7 +233,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: undefined
+        data: undefined,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -250,7 +250,7 @@ describe('Case Flag', () => {
 
       const mockResponse = {
         status: 200,
-        data: CASE_FLAG_REFERENCE_VALUES
+        data: CASE_FLAG_REFERENCE_VALUES,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -271,14 +271,16 @@ describe('Case Flag', () => {
       const serviceId = 'AAA7';
       req.query = { serviceId };
 
-      const partialData = [{
-        name: 'Partial Flag',
-        flagCode: 'PF001'
-      }];
+      const partialData = [
+        {
+          name: 'Partial Flag',
+          flagCode: 'PF001',
+        },
+      ];
 
       const mockResponse = {
         status: 200,
-        data: partialData
+        data: partialData,
       };
 
       handleGetStub.resolves(mockResponse);

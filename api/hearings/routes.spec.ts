@@ -23,7 +23,7 @@ describe('Hearings Routes', () => {
       post: sandbox.stub(),
       put: sandbox.stub(),
       delete: sandbox.stub(),
-      use: sandbox.stub()
+      use: sandbox.stub(),
     };
     expressStub = sandbox.stub(express, 'Router').returns(mockRouter);
     delete require.cache[require.resolve('./routes')];
@@ -51,16 +51,8 @@ describe('Hearings Routes', () => {
         hmcIndex.injectHearingsHeaders,
         servicesIndex.loadServiceHearingValues
       );
-      expect(mockRouter.get).to.have.been.calledWith(
-        '/getHearings',
-        hmcIndex.injectHearingsHeaders,
-        hmcIndex.getHearings
-      );
-      expect(mockRouter.get).to.have.been.calledWith(
-        '/getHearing',
-        hmcIndex.injectHearingsHeaders,
-        hmcIndex.getHearing
-      );
+      expect(mockRouter.get).to.have.been.calledWith('/getHearings', hmcIndex.injectHearingsHeaders, hmcIndex.getHearings);
+      expect(mockRouter.get).to.have.been.calledWith('/getHearing', hmcIndex.injectHearingsHeaders, hmcIndex.getHearing);
       expect(mockRouter.post).to.have.been.calledWith(
         '/submitHearingRequest',
         hmcIndex.injectHearingsHeaders,
@@ -91,30 +83,12 @@ describe('Hearings Routes', () => {
         hmcIndex.injectHearingsHeaders,
         hmcIndex.submitHearingActuals
       );
-      expect(mockRouter.post).to.have.been.calledWith(
-        '/loadServiceLinkedCases',
-        servicesIndex.loadServiceLinkedCases
-      );
-      expect(mockRouter.post).to.have.been.calledWith(
-        '/loadLinkedCasesWithHearings',
-        servicesIndex.loadLinkedCasesWithHearings
-      );
-      expect(mockRouter.get).to.have.been.calledWith(
-        '/getLinkedHearingGroup',
-        hmcIndex.getLinkedHearingGroup
-      );
-      expect(mockRouter.post).to.have.been.calledWith(
-        '/postLinkedHearingGroup',
-        hmcIndex.postLinkedHearingGroup
-      );
-      expect(mockRouter.put).to.have.been.calledWith(
-        '/putLinkedHearingGroup',
-        hmcIndex.putLinkedHearingGroup
-      );
-      expect(mockRouter.delete).to.have.been.calledWith(
-        '/deleteLinkedHearingGroup',
-        hmcIndex.deleteLinkedHearingGroup
-      );
+      expect(mockRouter.post).to.have.been.calledWith('/loadServiceLinkedCases', servicesIndex.loadServiceLinkedCases);
+      expect(mockRouter.post).to.have.been.calledWith('/loadLinkedCasesWithHearings', servicesIndex.loadLinkedCasesWithHearings);
+      expect(mockRouter.get).to.have.been.calledWith('/getLinkedHearingGroup', hmcIndex.getLinkedHearingGroup);
+      expect(mockRouter.post).to.have.been.calledWith('/postLinkedHearingGroup', hmcIndex.postLinkedHearingGroup);
+      expect(mockRouter.put).to.have.been.calledWith('/putLinkedHearingGroup', hmcIndex.putLinkedHearingGroup);
+      expect(mockRouter.delete).to.have.been.calledWith('/deleteLinkedHearingGroup', hmcIndex.deleteLinkedHearingGroup);
     });
 
     it('should export the router', () => {
@@ -153,29 +127,17 @@ describe('Hearings Routes', () => {
 
     it('should not register any extra routes', () => {
       require('./routes');
-      const allowedGetRoutes = [
-        '/getHearings',
-        '/getHearing',
-        '/hearingActuals/:hearingId',
-        '/getLinkedHearingGroup'
-      ];
+      const allowedGetRoutes = ['/getHearings', '/getHearing', '/hearingActuals/:hearingId', '/getLinkedHearingGroup'];
       const allowedPostRoutes = [
         '/loadServiceHearingValues',
         '/submitHearingRequest',
         '/hearingActualsCompletion/:hearingId',
         '/loadServiceLinkedCases',
         '/loadLinkedCasesWithHearings',
-        '/postLinkedHearingGroup'
+        '/postLinkedHearingGroup',
       ];
-      const allowedPutRoutes = [
-        '/updateHearingRequest',
-        '/hearingActuals',
-        '/putLinkedHearingGroup'
-      ];
-      const allowedDeleteRoutes = [
-        '/cancelHearings',
-        '/deleteLinkedHearingGroup'
-      ];
+      const allowedPutRoutes = ['/updateHearingRequest', '/hearingActuals', '/putLinkedHearingGroup'];
+      const allowedDeleteRoutes = ['/cancelHearings', '/deleteLinkedHearingGroup'];
       mockRouter.get.getCalls().forEach((call) => {
         expect(allowedGetRoutes).to.include(call.args[0]);
       });

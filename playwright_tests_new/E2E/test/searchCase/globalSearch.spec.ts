@@ -5,7 +5,7 @@ import { loadSessionCookies } from '../../../common/sessionCapture.ts';
 const caseNumber = "1766581243916831";
 
 
-test.describe("IDAM login using credentials for Global Search @KSM", () => {
+test.describe("IDAM login using credentials for Global Search", () => {
   let sessionCookies: any[] = [];
   test.beforeEach(async ({ page, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);

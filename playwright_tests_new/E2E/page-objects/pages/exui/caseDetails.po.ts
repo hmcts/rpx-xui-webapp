@@ -1,8 +1,7 @@
-
-import { Locator, Page } from "@playwright/test";
-import { Base } from "../../base";
-import { ValidatorUtils } from "../../../utils/validator.utils";
-import { TableUtils } from "@hmcts/playwright-common";
+import { Locator, Page } from '@playwright/test';
+import { Base } from '../../base';
+import { ValidatorUtils } from '../../../utils/validator.utils';
+import { TableUtils } from '@hmcts/playwright-common';
 
 const tableUtils = new TableUtils();
 const validatorUtils = new ValidatorUtils();
@@ -16,20 +15,25 @@ export interface CaseFlagItem {
 }
 
 export class CaseDetailsPage extends Base {
-
-  readonly container = this.page.locator("exui-case-details-home");
+  readonly container = this.page.locator('exui-case-details-home');
   readonly caseDetailsTabs = this.page.locator('div[role="tab"]');
   readonly caseActionsDropdown = this.page.locator('#next-step');
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
-  readonly continueButton = this.page.getByRole("button", { name: "Continue" });
-  readonly submitButton = this.page.getByRole("button", { name: "Submit" });
-  readonly eventTable = this.page.locator("EventLogTable");
+  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
+  readonly eventTable = this.page.locator('EventLogTable');
   readonly firstNameCell = this.page.locator('tr:has-text("First Name") + td');
   readonly lastNameCell = this.page.locator('tr:has-text("Last Name") + td');
   readonly updateCase = this.page.getByText('Update case', { exact: true });
   readonly historyTable = this.page.locator('table.EventLogTable');
   readonly historyDetailsTable = this.page.locator('table.EventLogDetails');
+
+  // Case details - FindSearch FPL
+  readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
+  readonly ccdCaseReference = this.page.locator('ccd-case-header .case-field .markdown >h2 >strong');
+  readonly tabList =this.page.locator('div[role="tablist"]');
+
 
   //Case flags
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
@@ -42,7 +46,7 @@ export class CaseDetailsPage extends Base {
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
-  readonly someMoreDataTable = this.page.locator('table.SomeMoreData')
+  readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
 
   // Search case
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
@@ -51,16 +55,18 @@ export class CaseDetailsPage extends Base {
   readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
   readonly addOrRemoveFlagsLink = this.page.locator('#addCaseFlagEventLink');
   readonly extend26WeekTimelineLink = this.page.locator('#extend26WeekTimelineLink');
+  //Find Search
+  readonly findSearchTabsCount  =  this.page.locator('.mat-tab-list');
+
 
 
   constructor(page: Page) {
     super(page);
-
   }
 
   // Internal helper: obtain rows either from a selector string or a Locator
   private async _runOnRows<T>(selector: string | Locator, fn: (rows: Element[]) => T): Promise<T> {
-    if (!selector) return (null as unknown) as T;
+    if (!selector) return null as unknown as T;
     if (typeof selector !== 'string') {
       // Locator: evaluate on the located rows
       return (selector as Locator).locator('tr').evaluateAll(fn as any) as unknown as T;
@@ -70,7 +76,7 @@ export class CaseDetailsPage extends Base {
   }
 
   async getTableByName(tableName: string) {
-    return this.page.getByRole('table', { name: tableName, exact: true })
+    return this.page.getByRole('table', { name: tableName, exact: true });
   }
 
   async trRowsToObjectInPage(selector: string | Locator): Promise<Record<string, string>> {
@@ -92,7 +98,7 @@ export class CaseDetailsPage extends Base {
       }
 
       const out: Record<string, string> = {};
-        const dataRows = Array.from(rows).filter(row => {
+      const dataRows = Array.from(rows).filter((row) => {
         const el = row as Element;
         if (el.hasAttribute && el.hasAttribute('hidden')) return false;
         if ('hidden' in row && (row as any).hidden) return false;
@@ -107,10 +113,19 @@ export class CaseDetailsPage extends Base {
         const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
         if (cells.length < 2) continue;
 
-        const rawKey = findFirstText(cells[0]).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+        const rawKey = findFirstText(cells[0])
+          .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
+          .trim();
         if (!rawKey) continue;
 
-        const valueParts = cells.slice(1).map(c => findFirstText(c).replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim()).filter(Boolean);
+        const valueParts = cells
+          .slice(1)
+          .map((c) =>
+            findFirstText(c)
+              .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
+              .trim()
+          )
+          .filter(Boolean);
         const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
 
         out[rawKey] = value;
@@ -136,24 +151,26 @@ export class CaseDetailsPage extends Base {
       // header is first tr
       const headerRow = rows[0];
       const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => sanitize((h as HTMLElement).innerText || ''));
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize((h as HTMLElement).innerText || ''));
 
       // data rows are after header; filter hidden rows
-      const dataRows = Array.from(rows).slice(1).filter(row => {
-        if ((row as HTMLTableRowElement).hidden) return false;
-        const style = window.getComputedStyle(row as Element);
-        if (!style) return false;
-        if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if ((row as Element).getClientRects().length === 0) return false;
-        return true;
-      });
+      const dataRows = Array.from(rows)
+        .slice(1)
+        .filter((row) => {
+          if ((row as HTMLTableRowElement).hidden) return false;
+          const style = window.getComputedStyle(row as Element);
+          if (!style) return false;
+          if (style.display === 'none' || style.visibility === 'hidden') return false;
+          if ((row as Element).getClientRects().length === 0) return false;
+          return true;
+        });
 
       for (const row of dataRows) {
         const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
         if (cells.length === 0) continue;
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
-          const key = headers[i] || `column_${i+1}`;
+          const key = headers[i] || `column_${i + 1}`;
           const value = sanitize(cells[i].innerText || '').replace(/\s+/g, ' ');
           obj[key] = value;
         }
@@ -166,11 +183,10 @@ export class CaseDetailsPage extends Base {
   }
 
   async mapHistoryTable(): Promise<Record<string, string>[]> {
-    if (await this.historyTable.count() === 0) {
+    if ((await this.historyTable.count()) === 0) {
       throw new Error('History table not found on page');
     }
-    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts())
-      .map(h => h.replace(/\t.*/, ''));
+    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts()).map((h) => h.replace(/\t.*/, ''));
     const rows = this.historyTable.locator('tbody tr');
     const rowCount = await rows.count();
     const data: Record<string, string>[] = [];
@@ -189,17 +205,17 @@ export class CaseDetailsPage extends Base {
     return data;
   }
 
-  async getUpdateCaseHistoryInfo(): Promise<{
+  async getUpdateCaseHistoryInfo(event: string): Promise<{
     updateRow: Record<string, string> | undefined;
     updateDate: string;
     updateAuthor: string;
     expectedDate: string;
   }> {
     const rows = await this.mapHistoryTable();
-    const updateRow = rows.find(r => r['Event'] === 'Update case');
+    const updateRow = rows.find((r) => r['Event'] === event);
     const updateDate = updateRow?.['Date'] || '';
     const updateAuthor = updateRow?.['Author'] || '';
-    const expectedDate = await this.todaysDateFormatted();
+    const expectedDate = (await this.todaysDateFormatted()).replace(/^0+/, '');
 
     return { updateRow, updateDate, updateAuthor, expectedDate };
   }
@@ -232,7 +248,6 @@ export class CaseDetailsPage extends Base {
     await this.commonRadioButtons.first().getByRole('radio').check();
     await this.submitCaseFlagButton.click();
     await this.exuiSpinnerComponent.wait();
-
   }
   async todaysDateFormatted(): Promise<string> {
     return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -268,6 +283,12 @@ export class CaseDetailsPage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
   async selectCaseDetailsTab(tabName: string) {
-    await this.caseDetailsTabs.filter({ hasText: tabName }).click()
+    await this.caseDetailsTabs.filter({ hasText: tabName }).click();
+  }
+
+  async getTabsCountForFindSearchPage() {
+    const tabsCount = await this.tabList.locator('div[role="tab"]').count();
+    console.log(`Number of tabs: ${tabsCount}`);
+    return tabsCount;
   }
 }

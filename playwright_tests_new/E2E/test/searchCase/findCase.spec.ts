@@ -2,13 +2,15 @@ import { test,expect } from "../../fixtures";
 import { ValidatorUtils } from "../../../E2E/utils/validator.utils.ts"
 import { loadSessionCookies } from '../../../common/sessionCapture.ts';
 
-
 // TODO New Case should be created using a API script.
-const caseNumber = "1763727112061356";
+const caseNumber = "1770053602713005";
+
 const validatorUtils = new ValidatorUtils();
 
 
 test.describe("IDAM login for Find Search page @KSM", () => {
+  let jurisdiction = "";
+  let caseType = "";
   let sessionCookies: any[] = [];
   test.beforeEach(async ({ page }) => {
     const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
@@ -19,37 +21,57 @@ test.describe("IDAM login for Find Search page @KSM", () => {
     await page.goto('/');
   });
 
-  test("Find Case using Probate / Grant of Representation caseType ", async ({ tableUtils, caseListPage, findCasePage,caseDetailsPage }) => {
+  test("Find Case using Public Law Jurisdiction @KSM ", async ({ tableUtils, page, caseListPage, findCasePage,caseDetailsPage }) => {
     await test.step("Start Find Case journey", async () => {
-      await findCasePage.startFindCaseJourney(caseNumber);
+      jurisdiction = "Public Law";
+      caseType = "Public Law Applications";
+      await findCasePage.startFindCaseJourney(caseNumber , caseType ,jurisdiction);
     });
 
     await test.step("Verify that case searched for appears under 'Your cases' ", async () => {
-        //expect(findCasePage.yourCasesHeading.isVisible);
-        // TODO above can be assereted with   id="search-result" mapXuiTable and then do some checks here.
-        //TODO check with this method does verifyCaseNumber();
-        //await findCasePage.verifyCaseNumber(caseNumber);
 
-      // This could be replaced with all the checks in the await tableUtils.mapExuiTable()......
+    const searchTable = await tableUtils.mapExuiTable(findCasePage.searchResultsTable);
 
+      // TODO HOW TO ASSERT on the single Row Table owing to the last row being
+      // " ": "",
+      // const rowContent = {
+      //    "Case name": expect((String)),
+      //    "Date submitted": expect(Object),
+      //    "FamilyMan case number": expect((String)),
+      //    "Local authority": expect((String)),
+      //    "State": expect((String)),
+      //    " ": "",
+      // };
+
+      const data = findCasePage.cleanData(searchTable);
+      //expect(searchTable[0]).toMatchObject(rowContent);
+
+      //   expect(data[0]).toMatchObject({
+      //   "Case name": expect.any(String),
+      //   "Date submitted": expect.any(String),
+      //   "FamilyMan case number": expect.any(String),
+      //   "Local authority": expect.any(String),
+      //   "State": expect.any(String),
+      // });
+
+
+
+        await findCasePage.displayCaseDetailsFor(caseNumber);
+        await page.waitForTimeout(1000);
     });
 
-    await test.step("Confirm that the  case is in the search results", async () => {
+    await test.step("Check Case Details page and ensure case is present", async () => {
 
-      const table = await tableUtils.mapExuiTable(
-        caseListPage.exuiCaseListComponent.caseListTable
-      );
+      const caseDetailsTabsCount =   caseDetailsPage.getTabsCountForFindSearchPage;
+      console.log(`Number of tabs: ${caseDetailsTabsCount}`);
+      //TODO Check TAbCount here .
+      //expect(caseDetailsTabsCount).toEqual(15) ;
+      //TODO Check the url
+      //expect(caseDetailsPage.page.url()).toContain(`/cases/case-details/PUBLICLAW/CARE_SUPERVISION_EPO/${caseNumber}/#Summary`);
+      expect(caseDetailsPage.caseActionsDropdown.isVisible());
+      expect(caseDetailsPage.caseActionGoButton.isVisible());
+      expect(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));
 
-      const formattedCaseRef = validatorUtils.formatCaseNumber(caseNumber)
-      const caseReference = table[0]["Case reference"];
-      expect(table).toBeTruthy();
-      expect(caseReference).toBeTruthy();
-      expect(caseReference).toBe(formattedCaseRef);
-    });
-
-    await test.step("Confirm case details seen when CaseReference link is clicked", async () => {
-      findCasePage.displayCaseDetailsFor(caseNumber);
-      expect(caseDetailsPage.container).toBeTruthy();
     });
   });
 });

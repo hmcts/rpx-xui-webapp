@@ -22,7 +22,7 @@ import { TaskFieldComponent } from './task-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>'
+  template: '<exui-task-field [config]="config" [task]="task"></exui-task-field>',
 })
 class WrapperComponent {
   @ViewChild(TaskFieldComponent) public appComponentRef: TaskFieldComponent;
@@ -32,7 +32,7 @@ class WrapperComponent {
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -45,7 +45,7 @@ describe('WorkAllocation', () => {
     let component: TaskFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
     function getConfig(name: string, type: FieldType): FieldConfig {
@@ -53,7 +53,7 @@ describe('WorkAllocation', () => {
         name,
         type,
         columnLabel: name,
-        views: TaskView.ALL_VIEWS
+        views: TaskView.ALL_VIEWS,
       };
     }
 
@@ -77,14 +77,11 @@ describe('WorkAllocation', () => {
           TwoDPPipe,
           YesNoPipe,
           DaysFromTodayPipe,
-          RpxTranslateMockPipe
+          RpxTranslateMockPipe,
         ],
         imports: [RouterTestingModule],
-        providers: [
-          { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
-        ]
-      })
-        .compileComponents();
+        providers: [{ provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -93,7 +90,7 @@ describe('WorkAllocation', () => {
     }));
 
     it('should show only if there is both a config and a task set', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Expect the nativeElement to be empty.
       expect(fixture.debugElement.nativeElement.innerText).toBe('');
 
@@ -111,7 +108,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         major_priority: 300,
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the config and it should still be empty (because there's no task).
@@ -131,7 +128,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a STRING type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.STRING);
       const task: Task = {
@@ -146,7 +143,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         major_priority: 2100,
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the case reference).
@@ -167,7 +164,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE_DUE type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // No DueDateComponent shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('.due-date')).toBeNull();
 
@@ -184,7 +181,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date component).
@@ -224,7 +221,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE_AGE_DAYS type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE_AGE_DAYS);
       const task: Task = {
@@ -238,7 +235,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(), // TODAY
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the days from today).
@@ -274,7 +271,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATE type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATE);
       const task: Task = {
@@ -288,7 +285,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date).
@@ -309,7 +306,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a FORMATTED_DATE type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.FORMATTED_DATE);
       const task: Task = {
@@ -323,7 +320,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date).
@@ -344,7 +341,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a DATETIME type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('dueDate', FieldType.DATETIME);
       const task: Task = {
@@ -358,7 +355,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date and time).
@@ -379,7 +376,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a BOOLEAN type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('happy', FieldType.BOOLEAN);
       const task: Task = {
@@ -394,7 +391,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         happy: true,
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the result for "happy").
@@ -457,7 +454,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an INTEGER type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('pi', FieldType.INTEGER);
       const task: Task = {
@@ -472,7 +469,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         pi: Math.PI,
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the integer value of "pi").
@@ -525,7 +522,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an DECIMAL_2 type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('pi', FieldType.DECIMAL_2);
       const task: Task = {
@@ -540,7 +537,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         pi: Math.PI,
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing "pi" rounded to 2 decimal places).
@@ -593,7 +590,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a URL type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const HMCTS_URL: string = 'http://hmcts.gov.uk';
       const GOOGLE_URL: string = 'http://google.com';
 
@@ -614,7 +611,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         actions: [],
-        link: HMCTS_URL
+        link: HMCTS_URL,
       };
 
       // Add the task and it should work (showing the due date component).
@@ -669,7 +666,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle an image type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const EXAMPLE1_IMAGE: string = '/assets/images/test.jpg';
       const EXAMPLE2_IMAGE: string = '/assets/images/govuk-crest.png';
 
@@ -690,7 +687,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         actions: [],
-        image: EXAMPLE1_IMAGE
+        image: EXAMPLE1_IMAGE,
       };
 
       // Add the task and it should work (showing the image component).
@@ -745,7 +742,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a CASE_REFERENCE type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // No anchor shown yet.
       expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
 
@@ -764,7 +761,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the link).
@@ -774,7 +771,9 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')
+      ); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -782,7 +781,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')); // Spaces allowed
+      expect(element.getAttribute('href')).toContain(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')
+      ); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -795,10 +796,15 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toContain(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
+      expect(element.getAttribute('href')).toContain(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')
+      );
       console.log('testing output £££££££££££££££££££££££');
-      console.log('element.getAttribute(\'href\') --> ', element.getAttribute('href'));
-      console.log('encodeURI - /cases/case-details/The jurisdiction/The case type ID/The case reference --> ', encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
+      console.log("element.getAttribute('href') --> ", element.getAttribute('href'));
+      console.log(
+        'encodeURI - /cases/case-details/The jurisdiction/The case type ID/The case reference --> ',
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')
+      );
       // '/cases/case-details/The jurisdiction/The case type ID/The%20case%20reference'
       // '/cases/case-details/The%20jurisdiction/The%20case%20type%20ID/The%20case%20reference'
       // Make task.link null.
@@ -808,7 +814,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should handle a CASE_REFERENCE_AS_STRING type', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       // Set up the config and the task.
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
@@ -822,7 +828,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the case reference).
@@ -843,7 +849,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately parse an ISO date string with toDate', fakeAsync(() => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const config: FieldConfig = getConfig('case_id', FieldType.CASE_REFERENCE_STRING);
       const task: Task = {
         assignee: null,
@@ -856,7 +862,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the case reference).
@@ -874,7 +880,7 @@ describe('WorkAllocation', () => {
     }));
 
     it('should appropriately parse a number with toDate', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const DATE = '2020-12-03T15:00:00';
       const EPOCH = Date.parse(DATE);
       const output = component.toDate(EPOCH);
@@ -887,7 +893,7 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately parse a date with toDate', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const DATE = new Date(2020, 11, 3, 15, 0, 0);
       const output = component.toDate(DATE);
       expect(output).toBeDefined();
@@ -899,25 +905,25 @@ describe('WorkAllocation', () => {
     });
 
     it('should appropriately handle an invalid input in toDate', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const output = component.toDate('bob');
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an null input in toDate', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const output = component.toDate(null);
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an undefined input in toDate', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const output = component.toDate(undefined);
       expect(output).toBeNull();
     });
 
     it('should appropriately handle an empty string input in toDate', () => {
-      component =wrapper.appComponentRef;
+      component = wrapper.appComponentRef;
       const output = component.toDate('');
       expect(output).toBeNull();
     });

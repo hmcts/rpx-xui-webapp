@@ -8,7 +8,7 @@ import * as fromHearingValuesReducer from './hearing-values.reducer';
 const CASE_INFO_STORE_VALUE = {
   jurisdictionId: '',
   caseReference: '',
-  hearingId: ''
+  hearingId: '',
 };
 
 const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
@@ -22,20 +22,23 @@ const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   caseCategories: [
     {
       categoryType: CategoryType.CaseType,
-      categoryValue: 'BBA3-002'
-    }, {
+      categoryValue: 'BBA3-002',
+    },
+    {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002CC',
-      categoryParent: 'BBA3-002'
-    }, {
+      categoryParent: 'BBA3-002',
+    },
+    {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002GC',
-      categoryParent: 'BBA3-002'
-    }, {
+      categoryParent: 'BBA3-002',
+    },
+    {
       categoryType: CategoryType.CaseSubType,
       categoryValue: 'BBA3-002RC',
-      categoryParent: 'BBA3-002'
-    }
+      categoryParent: 'BBA3-002',
+    },
   ],
   caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
   caserestrictedFlag: false,
@@ -45,7 +48,7 @@ const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
   hearingWindow: {
     dateRangeStart: '2021-11-23T09:00:00.000Z',
     dateRangeEnd: '2021-11-30T09:00:00.000Z',
-    firstDateTimeMustBe: '2021-12-01T09:00:00.000Z'
+    firstDateTimeMustBe: '2021-12-01T09:00:00.000Z',
   },
   duration: 45,
   hearingPriorityType: 'standard',
@@ -63,18 +66,20 @@ const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
     roleType: [''],
     authorisationTypes: [''],
     authorisationSubType: [''],
-    panelComposition: [{
-      memberType: '',
-      count: 1
-    }],
+    panelComposition: [
+      {
+        memberType: '',
+        count: 1,
+      },
+    ],
     judiciaryPreferences: [
       {
         memberID: 'p1000000',
         memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }
+        requirementType: RequirementType.EXCLUDE,
+      },
     ],
-    judiciarySpecialisms: ['']
+    judiciarySpecialisms: [''],
   },
   hearingIsLinkedFlag: false,
   parties: [
@@ -87,9 +92,9 @@ const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         {
           unavailableFromDate: '2021-12-10T09:00:00.000Z',
           unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }
-      ]
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ],
     },
     {
       partyID: 'P2',
@@ -100,10 +105,11 @@ const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         {
           unavailableFromDate: '2021-12-20T09:00:00.000Z',
           unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }
-      ]
-    }],
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ],
+    },
+  ],
   caseFlags: {
     flags: [
       {
@@ -111,25 +117,24 @@ const SERVICE_HEARING_VALUES: ServiceHearingValuesModel = {
         partyName: 'Jane and Smith',
         flagId: 'Language Interpreter',
         flagDescription: 'Spanish interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P2',
         partyName: 'DWP',
         flagId: 'case flag 1',
         flagDescription: 'case flag 1 description',
-        flagStatus: 'ACTIVE'
-      }
+        flagStatus: 'ACTIVE',
+      },
     ],
-    flagAmendURL: '/'
+    flagAmendURL: '/',
   },
-  screenFlow: [
-  ],
+  screenFlow: [],
   vocabulary: [
     {
-      word1: ''
-    }
-  ]
+      word1: '',
+    },
+  ],
 };
 
 describe('Hearing Values Reducer', () => {
@@ -147,7 +152,10 @@ describe('Hearing Values Reducer', () => {
     describe('Load service hearing values success action', () => {
       it('should set correct object', () => {
         const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(
+          fromHearingValuesReducer.initialHearingValuesState,
+          action
+        );
         expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
       });
 
@@ -158,8 +166,8 @@ describe('Hearing Values Reducer', () => {
           lastError: {
             status: 403,
             errors: null,
-            message: 'Http failure response: 403 Forbidden'
-          }
+            message: 'Http failure response: 403 Forbidden',
+          },
         };
         const action = new fromHearingValuesActions.LoadHearingValuesFailure(initialHearingValuesState.lastError);
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);
@@ -168,29 +176,30 @@ describe('Hearing Values Reducer', () => {
 
       it('should return empty state on error after success', () => {
         const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
-        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(fromHearingValuesReducer.initialHearingValuesState, action);
+        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(
+          fromHearingValuesReducer.initialHearingValuesState,
+          action
+        );
         expect(hearingsState.serviceHearingValuesModel).toEqual(SERVICE_HEARING_VALUES);
         const ERROR_403: HttpError = {
           status: 403,
           errors: null,
-          message: 'Http failure response: 403 Forbidden'
+          message: 'Http failure response: 403 Forbidden',
         };
         const currState: HearingValuesStateData = {
           serviceHearingValuesModel: SERVICE_HEARING_VALUES,
           caseInfo: CASE_INFO_STORE_VALUE,
-          lastError: null
+          lastError: null,
         };
 
         const finalState: HearingValuesStateData = {
           serviceHearingValuesModel: null,
           caseInfo: { jurisdictionId: '', caseReference: '', hearingId: '' },
-          lastError: ERROR_403
+          lastError: ERROR_403,
         };
 
         const action2 = new fromHearingValuesActions.LoadHearingValuesFailure(ERROR_403);
-        const hearingsState2 = fromHearingValuesReducer.hearingValuesReducer(
-          currState,
-          action2);
+        const hearingsState2 = fromHearingValuesReducer.hearingValuesReducer(currState, action2);
         expect(hearingsState2).toEqual(finalState);
       });
     });
@@ -202,8 +211,8 @@ describe('Hearing Values Reducer', () => {
           lastError: {
             status: 403,
             errors: null,
-            message: 'Http failure response: 403 Forbidden'
-          }
+            message: 'Http failure response: 403 Forbidden',
+          },
         };
         const action = new fromHearingValuesActions.ResetHearingValuesLastError();
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(initialHearingValuesState, action);

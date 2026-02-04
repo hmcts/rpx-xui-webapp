@@ -29,7 +29,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
       hearingUnavailabilityDatesChanged: false,
       additionalInsructionsChangesRequired: false, // Using typo from interface
       additionalInstructionsChangesRequired: false, // Also add correct spelling for component check
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -100,23 +100,26 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
       console.log('Test - hearingsService.propertiesUpdatedOnPageVisit:', hearingsService.propertiesUpdatedOnPageVisit);
-      console.log('Test - additionalInstructionsChangesRequired:', hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired);
+      console.log(
+        'Test - additionalInstructionsChangesRequired:',
+        hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired
+      );
 
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        listingComments: 'Service hearing comments'
+        listingComments: 'Service hearing comments',
       };
       component.hearingRequestMainModel = {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       // Initialize component after setting up service and models
@@ -133,20 +136,20 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        listingComments: 'Service hearing comments'
+        listingComments: 'Service hearing comments',
       };
       component.hearingRequestMainModel = {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.ngOnInit();
@@ -161,20 +164,20 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        listingComments: 'Service hearing comments'
+        listingComments: 'Service hearing comments',
       };
       component.hearingRequestMainModel = {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.ngOnInit();
@@ -189,8 +192,8 @@ describe('HearingAdditionalInstructionsComponent', () => {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.initForm();
@@ -205,7 +208,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false }),
       } as any;
 
       component.hearingCondition = { mode: 'view-edit' };
@@ -213,8 +216,8 @@ describe('HearingAdditionalInstructionsComponent', () => {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.initForm();
@@ -228,8 +231,8 @@ describe('HearingAdditionalInstructionsComponent', () => {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.initForm();
@@ -246,20 +249,20 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        listingComments: null
+        listingComments: null,
       };
       component.hearingRequestMainModel = {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.initForm();
@@ -275,8 +278,8 @@ describe('HearingAdditionalInstructionsComponent', () => {
         ...component.hearingRequestMainModel,
         hearingDetails: {
           ...component.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Main model comments'
-        }
+          listingComments: 'Main model comments',
+        },
       };
 
       component.initForm();
@@ -294,7 +297,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
       fixture.detectChanges();
@@ -302,7 +305,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        autoListFlag: false
+        autoListFlag: false,
       };
       component.instructionsForm.controls.instructions.setValue('Test instructions');
 
@@ -320,7 +323,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false }),
       } as any;
 
       fixture.detectChanges();
@@ -328,15 +331,18 @@ describe('HearingAdditionalInstructionsComponent', () => {
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        autoListFlag: false
+        autoListFlag: false,
       };
       component.instructionsForm.controls.instructions.setValue('Test instructions');
 
-      const originalConfirmedValue = hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
+      const originalConfirmedValue =
+        hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
 
       component.prepareHearingRequestData();
 
-      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(originalConfirmedValue);
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(
+        originalConfirmedValue
+      );
       expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
     });
 
@@ -346,7 +352,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true })
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
       fixture.detectChanges();
@@ -354,15 +360,18 @@ describe('HearingAdditionalInstructionsComponent', () => {
       component.hearingCondition = { mode: 'create' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
-        autoListFlag: false
+        autoListFlag: false,
       };
       component.instructionsForm.controls.instructions.setValue('Test instructions');
 
-      const originalConfirmedValue = hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
+      const originalConfirmedValue =
+        hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
 
       component.prepareHearingRequestData();
 
-      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(originalConfirmedValue);
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(
+        originalConfirmedValue
+      );
       expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
     });
   });

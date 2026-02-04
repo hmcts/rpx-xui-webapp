@@ -35,7 +35,10 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   }
 
   public initForm(): void {
-    if (this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired) {
+    if (
+      this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired
+    ) {
       this.showReviewBox = true;
       this.instructionsForm = this.formBuilder.group({
         instructions: [this.serviceHearingValuesModel?.listingComments],
@@ -62,7 +65,9 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   }
 
   public prepareHearingRequestData(): void {
-    const listingComments = this.instructionsForm.value.instructions ? this.santiseHTML(this.instructionsForm.value.instructions) : undefined;
+    const listingComments = this.instructionsForm.value.instructions
+      ? this.santiseHTML(this.instructionsForm.value.instructions)
+      : undefined;
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {

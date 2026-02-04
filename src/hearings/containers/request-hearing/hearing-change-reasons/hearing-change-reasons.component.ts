@@ -4,12 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import {
-  ACTION,
-  HearingChangeReasonMessages,
-  HearingChannelEnum,
-  HearingSummaryEnum,
-} from '../../../models/hearings.enum';
+import { ACTION, HearingChangeReasonMessages, HearingChannelEnum, HearingSummaryEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
@@ -54,9 +49,12 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
       });
     this.lastErrorSubscription = this.hearingRequestLastError$.subscribe((lastError) => {
       if (lastError) {
-        this.errors = [{
-          id: 'backendError', message: HearingSummaryEnum.BackendError
-        }];
+        this.errors = [
+          {
+            id: 'backendError',
+            message: HearingSummaryEnum.BackendError,
+          },
+        ];
       }
     });
     this.hearingChangeReasons = this.route.snapshot.data.hearingChangeReasons;

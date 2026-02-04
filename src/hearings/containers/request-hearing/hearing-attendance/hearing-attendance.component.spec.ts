@@ -641,26 +641,28 @@ describe('HearingAttendanceComponent', () => {
     const mockChannels = [
       { key: 'INTER', selected: true, showAmendedLabel: false },
       { key: 'TEL', selected: false, showAmendedLabel: false },
-      { key: 'VID', selected: true, showAmendedLabel: false }
+      { key: 'VID', selected: true, showAmendedLabel: false },
     ];
 
     // Get FormBuilder from TestBed instead of using component's private property
     const fb = TestBed.inject(FormBuilder);
 
     // Create a new FormArray with FormGroups instead of directly assigning to value
-    const formArray = new FormArray(mockChannels.map((channel) =>
-      fb.group({
-        key: channel.key,
-        selected: channel.selected,
-        showAmendedLabel: channel.showAmendedLabel,
-        value_en: '',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: 0,
-        parent_key: null
-      })
-    ));
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
 
     // Replace the hearingLevelChannels control with our new FormArray
     component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
@@ -704,23 +706,25 @@ describe('HearingAttendanceComponent', () => {
     // Create a new FormArray with mock channels
     const mockChannels = [
       { key: 'INTER', selected: true, showAmendedLabel: false },
-      { key: 'TEL', selected: false, showAmendedLabel: false }
+      { key: 'TEL', selected: false, showAmendedLabel: false },
     ];
 
     const fb = TestBed.inject(FormBuilder);
-    const formArray = new FormArray(mockChannels.map((channel) =>
-      fb.group({
-        key: channel.key,
-        selected: channel.selected,
-        showAmendedLabel: channel.showAmendedLabel,
-        value_en: '',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: 0,
-        parent_key: null
-      })
-    ));
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
 
     component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
 
@@ -750,24 +754,24 @@ describe('HearingAttendanceComponent', () => {
     component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
     component.hearingCondition = { mode: 'view-edit' };
 
-    const mockChannels = [
-      { key: 'INTER', selected: true, showAmendedLabel: false }
-    ];
+    const mockChannels = [{ key: 'INTER', selected: true, showAmendedLabel: false }];
 
     const fb = TestBed.inject(FormBuilder);
-    const formArray = new FormArray(mockChannels.map((channel) =>
-      fb.group({
-        key: channel.key,
-        selected: channel.selected,
-        showAmendedLabel: channel.showAmendedLabel,
-        value_en: '',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: 0,
-        parent_key: null
-      })
-    ));
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
 
     component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
 
@@ -797,8 +801,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -808,8 +812,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'video'
-        }
+          preferredHearingChannel: 'video',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -833,8 +837,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -844,8 +848,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -869,8 +873,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -880,8 +884,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: null
-        }
+          preferredHearingChannel: null,
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -906,8 +910,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -917,8 +921,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: undefined
-        }
+          preferredHearingChannel: undefined,
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -943,8 +947,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -954,8 +958,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: ''
-        }
+          preferredHearingChannel: '',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -980,8 +984,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -991,8 +995,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'video'
-        }
+          preferredHearingChannel: 'video',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -1019,8 +1023,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -1030,8 +1034,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -1055,8 +1059,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -1066,8 +1070,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'video'
-        }
+          preferredHearingChannel: 'video',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -1081,19 +1085,21 @@ describe('HearingAttendanceComponent', () => {
     // Helper function to create a FormArray with mock channels
     function createMockChannelFormArray(channels: Array<{ key: string; selected: boolean; showAmendedLabel: boolean }>) {
       const fb = TestBed.inject(FormBuilder);
-      return new FormArray(channels.map((channel) =>
-        fb.group({
-          key: channel.key,
-          selected: channel.selected,
-          showAmendedLabel: channel.showAmendedLabel,
-          value_en: '',
-          value_cy: '',
-          hint_text_en: '',
-          hint_text_cy: '',
-          lov_order: 0,
-          parent_key: null
-        })
-      ));
+      return new FormArray(
+        channels.map((channel) =>
+          fb.group({
+            key: channel.key,
+            selected: channel.selected,
+            showAmendedLabel: channel.showAmendedLabel,
+            value_en: '',
+            value_cy: '',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 0,
+            parent_key: null,
+          })
+        )
+      );
     }
 
     // Helper function to setup component with hearing channels
@@ -1119,7 +1125,7 @@ describe('HearingAttendanceComponent', () => {
     it('should not set showAmendedLabel when defaultHearingChannel is empty', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
-        { key: 'TEL', selected: false, showAmendedLabel: false }
+        { key: 'TEL', selected: false, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels([], ['INTER'], mockChannels);
@@ -1147,7 +1153,7 @@ describe('HearingAttendanceComponent', () => {
     it('should set showAmendedLabel to true when channel is in defaults but not selected', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
-        { key: 'TEL', selected: false, showAmendedLabel: false }
+        { key: 'TEL', selected: false, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER', 'TEL'], ['INTER'], mockChannels);
@@ -1159,7 +1165,7 @@ describe('HearingAttendanceComponent', () => {
     it('should set showAmendedLabel to true when channel is not in defaults but is selected', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
-        { key: 'VID', selected: true, showAmendedLabel: false }
+        { key: 'VID', selected: true, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER'], ['INTER', 'VID'], mockChannels);
@@ -1172,7 +1178,7 @@ describe('HearingAttendanceComponent', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
         { key: 'TEL', selected: true, showAmendedLabel: false },
-        { key: 'VID', selected: true, showAmendedLabel: false }
+        { key: 'VID', selected: true, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER', 'TEL', 'VID'], ['INTER', 'TEL'], mockChannels);
@@ -1186,7 +1192,7 @@ describe('HearingAttendanceComponent', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
         { key: 'TEL', selected: false, showAmendedLabel: false },
-        { key: 'VID', selected: false, showAmendedLabel: false }
+        { key: 'VID', selected: false, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER'], ['INTER'], mockChannels);
@@ -1200,7 +1206,7 @@ describe('HearingAttendanceComponent', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
         { key: 'TEL', selected: false, showAmendedLabel: false },
-        { key: 'VID', selected: true, showAmendedLabel: false }
+        { key: 'VID', selected: true, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER', 'TEL'], ['INTER', 'VID'], mockChannels);

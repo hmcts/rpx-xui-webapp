@@ -15,27 +15,30 @@
     </div>
     <form [formGroup]="attendanceFormGroup" class="form" *ngIf="hearingRequestMainModel">
       <div class="govuk-form-group govuk-!-margin-top-4">
-        <fieldset class="govuk-fieldset"  id="addition-security-confirmation">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                <h3 class="govuk-fieldset__heading">
-                    {{ 'Will this be a paper hearing?' | rpxTranslate }}
-                </h3>
-            </legend>
-            <div class="govuk-radios govuk-radios--inline">
-                <div class="govuk-radios__item">
-                    <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingYes" type="radio" value="Yes" />
-                    <label class="govuk-label govuk-radios__label" for="paperHearingYes">
-                        {{ 'Will this be a paper hearing?' | rpxTranslate : null : 'Yes' }}
-                    </label>
-                </div>
-                <div class="govuk-radios__item">
-                    <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingNo" type="radio" value="No" />
-                    <label class="govuk-label govuk-radios__label" for="paperHearingNo">
-                        {{ 'Will this be a paper hearing?' | rpxTranslate : null : 'No' }}
-                    </label>
-                  <exui-amendment-label *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && paperHearingChanged" [displayLabel]="amendmentLabelEnum.AMENDED"></exui-amendment-label>
-                </div>
+        <fieldset class="govuk-fieldset" id="addition-security-confirmation">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            <h3 class="govuk-fieldset__heading">
+              {{ 'Will this be a paper hearing?' | rpxTranslate }}
+            </h3>
+          </legend>
+          <div class="govuk-radios govuk-radios--inline">
+            <div class="govuk-radios__item">
+              <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingYes" type="radio" value="Yes" />
+              <label class="govuk-label govuk-radios__label" for="paperHearingYes">
+                {{ 'Will this be a paper hearing?' | rpxTranslate: null : 'Yes' }}
+              </label>
             </div>
+            <div class="govuk-radios__item">
+              <input formControlName="paperHearing" class="govuk-radios__input" id="paperHearingNo" type="radio" value="No" />
+              <label class="govuk-label govuk-radios__label" for="paperHearingNo">
+                {{ 'Will this be a paper hearing?' | rpxTranslate: null : 'No' }}
+              </label>
+              <exui-amendment-label
+                *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && paperHearingChanged"
+                [displayLabel]="amendmentLabelEnum.AMENDED"
+              ></exui-amendment-label>
+            </div>
+          </div>
         </fieldset>
       </div>
       <ng-container *ngIf="attendanceFormGroup.controls.paperHearing.value === 'No'">
@@ -73,14 +76,12 @@
                         [value]="attendance.value_en"
                       />
                       <label class="govuk-label govuk-checkboxes__label" for="{{ attendance.key }}">{{
-                          attendance.value_en
-                        }}</label>
+                        attendance.value_en
+                      }}</label>
                       <exui-amendment-label
-                        *ngIf="
-                        !partyDetailsChangesConfirmed &&
-                        partyDetailsChangesRequired &&
-                        attendance.showAmendedLabel"
-                        [displayLabel]="amendmentLabelEnum.AMENDED">
+                        *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && attendance.showAmendedLabel"
+                        [displayLabel]="amendmentLabelEnum.AMENDED"
+                      >
                       </exui-amendment-label>
                     </div>
                   </div>
@@ -97,12 +98,12 @@
               </h3>
             </legend>
             <span *ngIf="!selectionValid" id="party-selection-error" class="govuk-error-message">
-                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-                {{ 'Select how each party will attend the hearing' | rpxTranslate }}
-              </span>
+              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+              {{ 'Select how each party will attend the hearing' | rpxTranslate }}
+            </span>
             <div *ngFor="let partyControl of partiesFormArray.controls; let i = index" class="party-row" [formGroupName]="i">
               <label class="govuk-label govuk-!-font-weight-bold party-label-block" [for]="'partyChannel' + i">
-                  {{ partyControl.value.partyName }}
+                {{ partyControl.value.partyName }}
                 <exui-amendment-label
                   *ngIf="
                     !partyDetailsChangesConfirmed &&
@@ -127,8 +128,9 @@
                   *ngIf="
                     !partyDetailsChangesConfirmed &&
                     partyDetailsChangesRequired &&
-                    (partyChannelAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'"
-                    [displayLabel]="partyChannelAmendmentStatusById[partyControl.value.partyID]"
+                    (partyChannelAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'
+                  "
+                  [displayLabel]="partyChannelAmendmentStatusById[partyControl.value.partyID]"
                 >
                 </exui-amendment-label>
               </ng-container>
@@ -147,34 +149,32 @@
                 {{ 'How many people will attend the hearing in person?' | rpxTranslate }}
               </h3>
             </legend>
-              <div id="attendance-number-hint" class="govuk-hint">
-                {{
-                  'Estimate how many people will attend in person, excluding judicial members. This number will determine the room size.'
-                    | rpxTranslate
-                }}
-              </div>
-              <span
-                *ngIf="!attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty"
-                  id="attendee-number-error"
-                  class="govuk-error-message"
-                >
-                <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
-                {{ 'Enter a valid number of attendees' | rpxTranslate }}
-              </span>
-              <input
-                formControlName="estimation"
-                class="govuk-input"
-                id="attendance-number"
-                aria-labelledby="attendance-number-header"
-                aria-describedby="attendance-number-hint"
-              />
-              <exui-amendment-label
-                *ngIf="
-                !partyDetailsChangesConfirmed &&
-                partyDetailsChangesRequired &&
-                noOfPhysicalAttendeesChanged"
-                [displayLabel]="amendmentLabelEnum.AMENDED">
-              </exui-amendment-label>
+            <div id="attendance-number-hint" class="govuk-hint">
+              {{
+                'Estimate how many people will attend in person, excluding judicial members. This number will determine the room size.'
+                  | rpxTranslate
+              }}
+            </div>
+            <span
+              *ngIf="!attendanceFormGroup.controls.estimation.valid && attendanceFormGroup.controls.estimation.dirty"
+              id="attendee-number-error"
+              class="govuk-error-message"
+            >
+              <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>
+              {{ 'Enter a valid number of attendees' | rpxTranslate }}
+            </span>
+            <input
+              formControlName="estimation"
+              class="govuk-input"
+              id="attendance-number"
+              aria-labelledby="attendance-number-header"
+              aria-describedby="attendance-number-hint"
+            />
+            <exui-amendment-label
+              *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && noOfPhysicalAttendeesChanged"
+              [displayLabel]="amendmentLabelEnum.AMENDED"
+            >
+            </exui-amendment-label>
           </div>
         </fieldset>
       </ng-container>

@@ -1,7 +1,7 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
-
+import { deterministicCaseDetailsTasksMock } from '../../mocks/caseDetailsTasks.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { readTaskTable, formatUiDate } from '../../utils/tableUtils';
 
@@ -109,8 +109,9 @@ test.describe(`Tasks tab contents display on the case`, () => {
   test(`Task values and meta data is displayed as expected`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for task details', async () => {
       const userId = extractUserIdFromCookies(sessionCookies);
-      taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
-      await page.route('**/workallocation/task*', async (route) => {
+      taskListMockResponse = deterministicCaseDetailsTasksMock('1590654268738760');
+      // 1590654268738760 is the case ID after the /
+      await page.route('**workallocation/case/task/*', async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

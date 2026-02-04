@@ -10,10 +10,32 @@ import {
   PACT_CONSUMER_VERSION,
 } from '../../../configuration/references';
 
+const isBrokerReachable = async (brokerUrl: string): Promise<boolean> => {
+  try {
+    const url = new URL(brokerUrl);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      await fetch(url.toString(), { method: 'HEAD', signal: controller.signal });
+      return true;
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch {
+    return false;
+  }
+};
+
 const publish = async (): Promise<void> => {
   try {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
+    const brokerReachable = await isBrokerReachable(pactBroker);
+
+    if (!brokerReachable) {
+      console.log(`Pact broker is unreachable (${pactBroker}). Skipping publish.`);
+      return;
+    }
 
     const resolveConsumerVersion = (): string => {
       try {

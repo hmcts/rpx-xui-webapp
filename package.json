@@ -73,7 +73,7 @@
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch=true",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
-    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error dotenv_config_defaults=./api/.env.defaults NODE_OPTIONS=\"--disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=DEP0060\" mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/**/*.spec.ts",
+    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error dotenv_config_defaults=./api/.env.defaults NODE_OPTIONS=\"--disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=DEP0060\" mocha --timeout 10000 -r ts-node/register -r api/test/setup-config-env.ts -r dotenv-extended/config api/test/pact/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:setup:playwright-install-all": "npx playwright install --with-deps",
     "test:setup:playwright-install-chromium": "npx playwright install chromium",

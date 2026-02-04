@@ -166,6 +166,7 @@ describe('RemoveRoleComponent', () => {
   }));
 
   beforeEach(() => {
+    window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);
@@ -197,6 +198,7 @@ describe('RemoveRoleComponent', () => {
   });
 
   it('should navigate correctly on click', () => {
+    (component as any).backUrl = allworkUrl;
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);

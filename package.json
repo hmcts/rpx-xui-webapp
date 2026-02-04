@@ -30,6 +30,7 @@
     "lint:api:fix": "eslint --fix api",
     "lint:prettier": "prettier -c .",
     "lint:prettier:fix": "prettier -w .",
+    "prepare": "husky install",
     "ng": "ng",
     "nuke": "rm -rf dist",
     "pact-stub": "$(find . -name pact-stub-service | grep -e 'bin/pact-stub-service$' | head -n 1) ./api/test/pact/pacts/ --port 8080",

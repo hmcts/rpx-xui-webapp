@@ -1,10 +1,9 @@
-
 const reassignTaskWorkFlow = require('../workAllocation/reassignTaskWorkflow');
 const reallocateWorkflowPage = require('../workAllocation/workFlow');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
-class workFlowUtil{
-  getWorlflowPageObject(workFlowPage){
+class workFlowUtil {
+  getWorlflowPageObject(workFlowPage) {
     let workflow = workFlowPage.toLowerCase();
     workflow = workflow.split(' ').join('');
 
@@ -26,11 +25,11 @@ class workFlowUtil{
     return workflowPageObject;
   }
 
-  async waitForWorkflowPage(workflow){
+  async waitForWorkflowPage(workflow) {
     const workFlowPageObject = this.getWorlflowPageObject(workflow);
     try {
       await workFlowPageObject.workFlowContainer.waitForPage();
-    } catch (e){
+    } catch (e) {
       reportLogger.AddMessage(e);
     }
     expect(await workFlowPageObject.workFlowContainer.isVisible(), `${workflow} workflow container not displayed`).to.be.true;

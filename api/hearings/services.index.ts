@@ -9,9 +9,7 @@ import { hmcHearingsUrl } from './hmc.index';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
 import { EXUIDisplayStatusEnum } from './models/hearings.enum';
-import {
-  ServiceLinkedCasesModel
-} from './models/linkHearings.model';
+import { ServiceLinkedCasesModel } from './models/linkHearings.model';
 import { ServiceHearingValuesModel } from './models/serviceHearingValues.model';
 import { trackTrace } from '../lib/appInsights';
 
@@ -28,13 +26,13 @@ export async function loadServiceHearingValues(req: EnhancedRequest, res: Respon
   try {
     const serviceResponse = await sendPost(markupPath, reqBody, req, next);
     if (serviceResponse) {
-      const { status, data }: { status: number, data: ServiceHearingValuesModel } = serviceResponse;
+      const { status, data }: { status: number; data: ServiceHearingValuesModel } = serviceResponse;
       let dataByDefault = mapDataByDefault(data);
       // If service don't supply the screenFlow pre-set the default screen flow from ExUI
       if (!data.screenFlow) {
         dataByDefault = {
           ...data,
-          screenFlow: DEFAULT_SCREEN_FLOW
+          screenFlow: DEFAULT_SCREEN_FLOW,
         };
       }
       res.status(status).send(dataByDefault);
@@ -54,13 +52,11 @@ export function mapDataByDefault(data: ServiceHearingValuesModel): ServiceHearin
       ...data,
       caseFlags: {
         ...data.caseFlags,
-        flags: data.caseFlags.flags.map((flag) => (
-          {
-            ...flag,
-            partyId: flag.partyID ? flag.partyID : flag.partyId
-          }
-        ))
-      }
+        flags: data.caseFlags.flags.map((flag) => ({
+          ...flag,
+          partyId: flag.partyID ? flag.partyID : flag.partyId,
+        })),
+      },
     };
   }
   return data;
@@ -75,7 +71,7 @@ export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
+    const { status, data }: { status: number; data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);
@@ -85,12 +81,15 @@ export async function loadServiceLinkedCases(req: EnhancedRequest, res: Response
 export async function getHearings(caseId: string, req: EnhancedRequest) {
   const markupPath: string = `${hmcHearingsUrl}/hearings/${caseId}`;
   try {
-    const { data }: {data: HearingListMainModel } = await sendGet(markupPath, req);
+    const { data }: { data: HearingListMainModel } = await sendGet(markupPath, req);
     data.caseHearings.forEach((hearing) =>
-      hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
-        hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
-        hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
-      }));
+      hearingStatusMappings
+        .filter((mapping) => mapping.hmcStatus === hearing.hmcStatus)
+        .map((hearingStatusMapping) => {
+          hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
+          hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
+        })
+    );
     return data;
   } catch (error) {
     logger.error(error.status, error.statusText, JSON.stringify(error.data));
@@ -110,11 +109,11 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
-    const { status, data }: { status: number, data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
+    const { status, data }: { status: number; data: ServiceLinkedCasesModel[] } = await sendPost(markupPath, reqBody, req, next);
     const currentCase: ServiceLinkedCasesModel = {
       caseReference: reqBody.caseReference,
       caseName: reqBody.caseName,
-      reasonsForLink: []
+      reasonsForLink: [],
     };
     const linkedCaseIds = data.map((linkedCase) => linkedCase.caseReference);
 
@@ -126,7 +125,6 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
         const promise = getHearings(caseId, req);
         promises.push(promise);
       });
-      // @ts-ignore
       const allResults = await Promise.allSettled(promises);
       const result = aggregateAllResults(allData, allResults);
       res.status(status).send(result);
@@ -141,18 +139,20 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
 export function aggregateAllResults(data: ServiceLinkedCasesModel[], allResults: any): any {
   const aggregateResult = [];
   allResults.forEach((result) => {
-    const { status, value }: {status: string, value: any} = result;
+    const { status, value }: { status: string; value: any } = result;
     if (status === 'fulfilled') {
       const caseDetails = data.find((d) => d.caseReference === value.caseRef);
-      const caseHearings = value.caseHearings.filter((hearing) =>
-        hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING
-        || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED
-        || hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED);
+      const caseHearings = value.caseHearings.filter(
+        (hearing) =>
+          hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.AWAITING_LISTING ||
+          hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.UPDATE_REQUESTED ||
+          hearing.exuiDisplayStatus === EXUIDisplayStatusEnum.LISTED
+      );
       const caseWithHearing = {
         ...value,
         caseHearings,
         caseName: caseDetails.caseName,
-        reasonsForLink: caseDetails.reasonsForLink
+        reasonsForLink: caseDetails.reasonsForLink,
       };
       aggregateResult.push(caseWithHearing);
     }

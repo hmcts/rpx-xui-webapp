@@ -12,7 +12,7 @@ import { CaseSearchComponent } from './case-search.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslationMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -29,7 +29,7 @@ describe('CaseSearchComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
 
   const appConfigMock = {
-    getPaginationPageSize: () => 10
+    getPaginationPageSize: () => 10,
   };
 
   beforeEach(waitForAsync(() => {
@@ -38,23 +38,18 @@ describe('CaseSearchComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers)
-        })
+          feature: combineReducers(fromCaseSearchStore.reducers),
+        }),
       ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      declarations: [
-        CaseSearchComponent,
-        RpxTranslationMockPipe
-      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [CaseSearchComponent, RpxTranslationMockPipe],
       providers: [
         { provide: AppConfig, useValue: appConfigMock },
         {
           provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
-        }
-      ]
+          useValue: mockFeatureToggleService,
+        },
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -83,8 +78,8 @@ describe('CaseSearchComponent', () => {
     it('should update the components page property on page change.', () => {
       const event = {
         selected: {
-          page: 2
-        }
+          page: 2,
+        },
       };
 
       component.applyChangePage(event);
@@ -102,8 +97,8 @@ describe('CaseSearchComponent', () => {
     it('should update the components page property on apply of a filter change.', () => {
       event = {
         selected: {
-          page: 2
-        }
+          page: 2,
+        },
       };
       component.applyFilter(event);
 
@@ -148,7 +143,7 @@ describe('CaseSearchComponent', () => {
       const sortParameters = {
         column: 'dummy',
         order: 0,
-        type: 'Text'
+        type: 'Text',
       };
 
       component.sort(sortParameters);

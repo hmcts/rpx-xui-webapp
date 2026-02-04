@@ -85,7 +85,7 @@ function injectCoverageLink(reportFolder, relativeCoveragePath, totals) {
         ['Lines', totals.lines],
         ['Functions', totals.functions],
         ['Branches', totals.branches],
-        ['Statements', totals.statements]
+        ['Statements', totals.statements],
       ]
         .map(([label, data]) => {
           const pct = typeof data?.pct === 'number' ? data.pct.toFixed(2) : 'n/a';
@@ -137,7 +137,10 @@ function injectCoverageLink(reportFolder, relativeCoveragePath, totals) {
         return;
       }
       // Remove any previously injected coverage block
-      html = html.replace(/<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">Coverage[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/m, '');
+      html = html.replace(
+        /<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">Coverage[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/m,
+        ''
+      );
 
       const tabDashPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<\/div>\s*<div[^>]+id="TabTests")/m;
       if (tabDashPattern.test(html)) {
@@ -201,11 +204,7 @@ function injectCoverageTab(reportFolder, relativeCoveragePath) {
 
 function resolveNodeApiLogRoots() {
   const roots = new Set();
-  const envRoots = [
-    process.env.PW_NODE_API_LOG_ROOT,
-    process.env.PLAYWRIGHT_OUTPUT_DIR,
-    process.env.PLAYWRIGHT_TEST_OUTPUT_DIR
-  ];
+  const envRoots = [process.env.PW_NODE_API_LOG_ROOT, process.env.PLAYWRIGHT_OUTPUT_DIR, process.env.PLAYWRIGHT_TEST_OUTPUT_DIR];
   envRoots.filter(Boolean).forEach((root) => roots.add(path.resolve(root)));
   roots.add(path.resolve('test-results'));
   return Array.from(roots).filter((root) => fs.existsSync(root));

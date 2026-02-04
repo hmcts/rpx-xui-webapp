@@ -24,10 +24,9 @@ describe('PartySubChannelsResolverService', () => {
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
@@ -36,17 +35,20 @@ describe('PartySubChannelsResolverService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('resolves reference data for party channels', inject([PartySubChannelsResolverService], (service: PartySubChannelsResolverService) => {
-    spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
-    spyOn(service, 'getReferenceData$').and.callThrough();
-    const route = new ActivatedRouteSnapshot();
-    route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
-    };
-    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
-      expect(service.getReferenceData$).toHaveBeenCalled();
-      expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
-      expect(refData).toEqual([]);
-    });
-  }));
+  it('resolves reference data for party channels', inject(
+    [PartySubChannelsResolverService],
+    (service: PartySubChannelsResolverService) => {
+      spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
+      spyOn(service, 'getReferenceData$').and.callThrough();
+      const route = new ActivatedRouteSnapshot();
+      route.data = {
+        title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      };
+      service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
+        expect(service.getReferenceData$).toHaveBeenCalled();
+        expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
+        expect(refData).toEqual([]);
+      });
+    }
+  ));
 });

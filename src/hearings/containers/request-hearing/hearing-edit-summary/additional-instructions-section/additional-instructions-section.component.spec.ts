@@ -13,14 +13,9 @@ describe('AdditionalInstructionsSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [
-        AdditionalInstructionsSectionComponent
-      ],
-      providers: [
-        provideMockStore({ initialState }),
-        HearingsService
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      declarations: [AdditionalInstructionsSectionComponent],
+      providers: [provideMockStore({ initialState }), HearingsService],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdditionalInstructionsSectionComponent);
@@ -39,8 +34,8 @@ describe('AdditionalInstructionsSectionComponent', () => {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        listingComments: 'This is a test comment.'
-      }
+        listingComments: 'This is a test comment.',
+      },
     };
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
@@ -52,15 +47,15 @@ describe('AdditionalInstructionsSectionComponent', () => {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        listingComments: 'This is a test comment.'
-      }
+        listingComments: 'This is a test comment.',
+      },
     };
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-        listingComments: 'This is a test comment.'
-      }
+        listingComments: 'This is a test comment.',
+      },
     };
     component.ngOnInit();
     expect(component.additionalInstructions).toEqual('This is a test comment.');
@@ -71,7 +66,8 @@ describe('AdditionalInstructionsSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('additionalInstruction');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'additionalInstruction', changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea'
+      fragmentId: 'additionalInstruction',
+      changeLink: '/hearings/request/hearing-additional-instructions#additionalInstructionsTextarea',
     });
   });
 
@@ -92,24 +88,24 @@ describe('AdditionalInstructionsSectionComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: true,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: 'New comment'
-        }
+          listingComments: 'New comment',
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Old comment'
-        }
+          listingComments: 'Old comment',
+        },
       };
 
       component.ngOnInit();
@@ -133,24 +129,24 @@ describe('AdditionalInstructionsSectionComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: true,
-          additionalInstructionsChangesConfirmed: true
-        }
+          additionalInstructionsChangesConfirmed: true,
+        },
       } as any;
 
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: 'New comment'
-        }
+          listingComments: 'New comment',
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Old comment'
-        }
+          listingComments: 'Old comment',
+        },
       };
 
       component.ngOnInit();
@@ -174,24 +170,24 @@ describe('AdditionalInstructionsSectionComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: 'New comment'
-        }
+          listingComments: 'New comment',
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Old comment'
-        }
+          listingComments: 'Old comment',
+        },
       };
 
       component.ngOnInit();
@@ -215,24 +211,24 @@ describe('AdditionalInstructionsSectionComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Same comment'
-        }
+          listingComments: 'Same comment',
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Same comment'
-        }
+          listingComments: 'Same comment',
+        },
       };
 
       component.ngOnInit();
@@ -248,16 +244,16 @@ describe('AdditionalInstructionsSectionComponent', () => {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: 'New comment'
-        }
+          listingComments: 'New comment',
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Old comment'
-        }
+          listingComments: 'Old comment',
+        },
       };
 
       component.ngOnInit();
@@ -281,24 +277,24 @@ describe('AdditionalInstructionsSectionComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: null
-        }
+          listingComments: null,
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: 'Old comment'
-        }
+          listingComments: 'Old comment',
+        },
       };
 
       component.ngOnInit();
@@ -323,24 +319,24 @@ describe('AdditionalInstructionsSectionComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          listingComments: null
-        }
+          listingComments: null,
+        },
       };
 
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-          listingComments: null
-        }
+          listingComments: null,
+        },
       };
 
       component.ngOnInit();

@@ -19,14 +19,14 @@ describe('ExclusionsTableComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test'
+        name: 'Test',
       },
-      printEnabled: true
+      printEnabled: true,
     },
     channels: [],
     state: {
       id: 'CaseCreated',
-      name: 'Case created'
+      name: 'Case created',
     },
     tabs: [
       {
@@ -40,12 +40,12 @@ describe('ExclusionsTableComponent', () => {
             display_context: 'OPTIONAL',
             field_type: {
               id: 'Text',
-              type: 'Text'
+              type: 'Text',
             },
             order: 2,
             value: 'Janet',
             show_condition: '',
-            hint_text: ''
+            hint_text: '',
           }),
           Object.assign(new CaseField(), {
             id: 'PersonLastName',
@@ -53,12 +53,12 @@ describe('ExclusionsTableComponent', () => {
             display_context: 'OPTIONAL',
             field_type: {
               id: 'Text',
-              type: 'Text'
+              type: 'Text',
             },
             order: 1,
             value: 'Parker',
             show_condition: 'PersonFirstName="Jane*"',
-            hint_text: ''
+            hint_text: '',
           }),
           Object.assign(new CaseField(), {
             id: 'PersonComplex',
@@ -67,51 +67,52 @@ describe('ExclusionsTableComponent', () => {
             field_type: {
               id: 'Complex',
               type: 'Complex',
-              complex_fields: []
+              complex_fields: [],
             },
             order: 3,
             show_condition: 'PersonFirstName="Park"',
-            hint_text: ''
-          })
+            hint_text: '',
+          }),
         ],
-        show_condition: 'PersonFirstName="Janet"'
+        show_condition: 'PersonFirstName="Janet"',
       },
       {
         id: 'HistoryTab',
         label: 'History',
         order: 1,
-        fields: [Object.assign(new CaseField(), {
-          id: 'CaseHistory',
-          label: 'Case History',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'CaseHistoryViewer',
-            type: 'CaseHistoryViewer'
-          },
-          order: 1,
-          value: null,
-          show_condition: '',
-          hint_text: ''
-        })],
-        show_condition: ''
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'CaseHistory',
+            label: 'Case History',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'CaseHistoryViewer',
+              type: 'CaseHistoryViewer',
+            },
+            order: 1,
+            value: null,
+            show_condition: '',
+            hint_text: '',
+          }),
+        ],
+        show_condition: '',
       },
       {
         id: 'SomeTab',
         label: 'Some Tab',
         order: 3,
         fields: [],
-        show_condition: ''
-      }
-    ]
+        show_condition: '',
+      },
+    ],
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ExclusionsTableComponent],
       imports: [RouterTestingModule.withRoutes([])],
-      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-    })
-      .compileComponents();
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -137,8 +138,8 @@ describe('ExclusionsTableComponent', () => {
         notes: 'this case been remitted from Upper Tribunal and required different judge',
         type: 'Other',
         userType: 'Judicial',
-        actorId: 'actorId'
-      }
+        actorId: 'actorId',
+      },
     ];
     fixture.detectChanges();
     const tableBody: DebugElement = fixture.debugElement.query(By.css('.govuk-table__body'));

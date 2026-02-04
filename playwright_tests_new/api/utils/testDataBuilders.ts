@@ -25,7 +25,7 @@ export class TaskBuilder {
     case_name: null,
     location_name: null,
     created_date: new Date().toISOString(),
-    due_date: null
+    due_date: null,
   };
 
   /**
@@ -154,7 +154,7 @@ export class TaskBuilder {
 export class TaskListBuilder {
   private readonly taskList: Partial<TaskListResponse> = {
     tasks: [],
-    total_records: 0
+    total_records: 0,
   };
 
   /**
@@ -213,7 +213,7 @@ export class TaskListBuilder {
 export class TaskSearchBuilder {
   private readonly searchRequest: Record<string, unknown> = {
     view: 'MyTasks',
-    searchRequest: []
+    searchRequest: [],
   };
 
   /**
@@ -230,7 +230,7 @@ export class TaskSearchBuilder {
   inLocations(locationIds: string[]): this {
     this.searchRequest.searchRequest = [
       ...(this.searchRequest.searchRequest as unknown[]),
-      { key: 'location', operator: 'IN', values: locationIds }
+      { key: 'location', operator: 'IN', values: locationIds },
     ];
     return this;
   }
@@ -241,7 +241,7 @@ export class TaskSearchBuilder {
   withStates(states: string[]): this {
     this.searchRequest.searchRequest = [
       ...(this.searchRequest.searchRequest as unknown[]),
-      { key: 'state', operator: 'IN', values: states }
+      { key: 'state', operator: 'IN', values: states },
     ];
     return this;
   }
@@ -252,7 +252,7 @@ export class TaskSearchBuilder {
   forJurisdiction(jurisdiction: string): this {
     this.searchRequest.searchRequest = [
       ...(this.searchRequest.searchRequest as unknown[]),
-      { key: 'jurisdiction', operator: 'EQUAL', values: [jurisdiction] }
+      { key: 'jurisdiction', operator: 'EQUAL', values: [jurisdiction] },
     ];
     return this;
   }
@@ -304,7 +304,7 @@ export class LocationBuilder {
   private readonly location: { id: string; locationName: string; services: string[] } = {
     id: 'default-location-id',
     locationName: 'Default Location',
-    services: []
+    services: [],
   };
 
   /**
@@ -368,9 +368,9 @@ export class UserDetailsBuilder {
       id: 'default-user-id',
       uid: 'default-user-id',
       email: 'test@example.com',
-      name: 'Test User'
+      name: 'Test User',
     },
-    roleAssignmentInfo: []
+    roleAssignmentInfo: [],
   };
 
   /**
@@ -406,7 +406,7 @@ export class UserDetailsBuilder {
     this.userDetails.roleAssignmentInfo = roles.map((role) => ({
       roleName: role,
       roleType: 'CASE',
-      classification: 'PUBLIC'
+      classification: 'PUBLIC',
     }));
     return this;
   }
@@ -471,5 +471,5 @@ export const TestData = {
    */
   user: (id: string, email: string): Record<string, unknown> => {
     return new UserDetailsBuilder().withId(id).withEmail(email).build();
-  }
+  },
 };

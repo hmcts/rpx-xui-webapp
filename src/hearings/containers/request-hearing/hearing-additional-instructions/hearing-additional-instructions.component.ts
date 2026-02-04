@@ -12,7 +12,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   standalone: false,
   selector: 'exui-hearing-additional-instructions',
   templateUrl: './hearing-additional-instructions.component.html',
-  styleUrls: ['./hearing-additional-instructions.component.scss']
+  styleUrls: ['./hearing-additional-instructions.component.scss'],
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public instructionsForm: FormGroup;
@@ -20,11 +20,13 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   public instructionLength: number = HearingInstructionsEnum.InstructionLength;
   public showReviewBox: boolean = false;
 
-  constructor(private readonly formBuilder: FormBuilder,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService,
-              protected readonly route: ActivatedRoute) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute
+  ) {
     super(hearingStore, hearingsService, featureToggleService, route);
   }
 
@@ -36,14 +38,14 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
     if (this.hearingCondition.mode === Mode.VIEW_EDIT && this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired) {
       this.showReviewBox = true;
       this.instructionsForm = this.formBuilder.group({
-        instructions: [this.serviceHearingValuesModel?.listingComments]
+        instructions: [this.serviceHearingValuesModel?.listingComments],
       });
       this.instructionsFormViewOnly = this.formBuilder.group({
-        instructionsViewOnly: [this.hearingRequestMainModel.hearingDetails.listingComments]
+        instructionsViewOnly: [this.hearingRequestMainModel.hearingDetails.listingComments],
       });
     } else {
       this.instructionsForm = this.formBuilder.group({
-        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments]
+        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments],
       });
     }
   }
@@ -67,8 +69,8 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
         ...this.hearingRequestMainModel.hearingDetails,
         listingComments: listingComments,
         autolistFlag: this.getAutoListFlag(),
-        listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode()
-      }
+        listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode(),
+      },
     };
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired) {

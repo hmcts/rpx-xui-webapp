@@ -13,12 +13,8 @@ describe('HearingRequirementsSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        HearingRequirementsSectionComponent
-      ],
-      providers: [
-        { provide: HearingsService, useValue: hearingsService }
-      ]
+      declarations: [HearingRequirementsSectionComponent],
+      providers: [{ provide: HearingsService, useValue: hearingsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingRequirementsSectionComponent);
@@ -48,8 +44,8 @@ describe('HearingRequirementsSectionComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.partyIds).toEqual(['P1']);
@@ -69,8 +65,8 @@ describe('HearingRequirementsSectionComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentChangesRequired).toEqual(true);
@@ -89,8 +85,8 @@ describe('HearingRequirementsSectionComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentChangesRequired).toEqual(false);
@@ -110,8 +106,8 @@ describe('HearingRequirementsSectionComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(HearingsUtils.getPartyNameFormatted).toHaveBeenCalled();
@@ -121,7 +117,8 @@ describe('HearingRequirementsSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('caseFlags');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'caseFlags', changeLink: '/hearings/request/hearing-requirements#linkAmendFlags'
+      fragmentId: 'caseFlags',
+      changeLink: '/hearings/request/hearing-requirements#linkAmendFlags',
     });
   });
 });

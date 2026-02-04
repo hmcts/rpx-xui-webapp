@@ -8,7 +8,7 @@ import { HearingsService } from '../../../../services/hearings.service';
 @Component({
   standalone: false,
   selector: 'exui-additional-instructions-section',
-  templateUrl: './additional-instructions-section.component.html'
+  templateUrl: './additional-instructions-section.component.html',
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
@@ -24,7 +24,6 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
 
   public ngOnInit(): void {
     this.additionalInstructions = this.hearingRequestMainModel.hearingDetails.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
-
     this.setAmendmentLabels();
   }
 

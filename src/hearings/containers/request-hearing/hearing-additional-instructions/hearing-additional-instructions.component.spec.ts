@@ -43,11 +43,11 @@ describe('HearingAdditionalInstructionsComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of('point-to-me')
-          }
-        }
+            fragment: of('point-to-me'),
+          },
+        },
       ],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingAdditionalInstructionsComponent);

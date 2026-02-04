@@ -8,7 +8,7 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 @Component({
   standalone: false,
   selector: 'exui-linked-hearing-section',
-  templateUrl: './linked-hearing-section.component.html'
+  templateUrl: './linked-hearing-section.component.html',
 })
 export class LinkedHearingSectionComponent {
   @Input() public hearingIsLinkedFlag: boolean;
@@ -18,14 +18,10 @@ export class LinkedHearingSectionComponent {
   public showAmmended: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
-  }
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
-    this.showAmmended = !_.isEqual(
-      this.hearingIsLinkedFlagToCompare,
-      this.hearingIsLinkedFlag
-    );
+    this.showAmmended = !_.isEqual(this.hearingIsLinkedFlagToCompare, this.hearingIsLinkedFlag);
   }
 
   public onChange(fragmentId: string): void {

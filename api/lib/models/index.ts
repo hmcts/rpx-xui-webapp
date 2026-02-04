@@ -21,11 +21,11 @@ export function isJUILogger(object: any): object is JUILogger {
 }
 export interface EnhancedRequest extends express.Request {
   auth?: {
-    roles: string[]
-    token: string
-    userId: string
-    expires: number
-    data?: any
+    roles: string[];
+    token: string;
+    userId: string;
+    expires: number;
+    data?: any;
   };
   body;
   headers;

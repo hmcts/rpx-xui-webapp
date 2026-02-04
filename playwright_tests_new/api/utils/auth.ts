@@ -6,17 +6,11 @@ import { request } from '@playwright/test';
 
 import { config } from '../../common/apiTestConfig';
 import { AuthenticationError, ConfigurationError } from './errors';
-type UsersConfig = typeof config.users[keyof typeof config.users];
+type UsersConfig = (typeof config.users)[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
-const storageRoot = path.resolve(
-  process.cwd(),
-  'functional-output',
-  'tests',
-  'playwright-api',
-  'storage-states'
-);
+const storageRoot = path.resolve(process.cwd(), 'functional-output', 'tests', 'playwright-api', 'storage-states');
 const storagePromises = new Map<string, Promise<string>>();
 
 const logger = createLogger({ serviceName: 'node-api-auth', format: 'pretty' });
@@ -76,7 +70,7 @@ const defaultStorageDeps: StorageDeps = {
   storagePromises,
   createStorageState,
   tryReadState,
-  unlink: fs.unlink
+  unlink: fs.unlink,
 };
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
@@ -133,9 +127,7 @@ async function getStoredCookieWith(
     throw new Error(`Unable to read storage state for role "${role}".`);
   }
 
-  const cookie = Array.isArray(state.cookies)
-    ? state.cookies.find((c: { name?: string }) => c.name === cookieName)
-    : undefined;
+  const cookie = Array.isArray(state.cookies) ? state.cookies.find((c: { name?: string }) => c.name === cookieName) : undefined;
   return cookie?.value;
 }
 
@@ -154,9 +146,7 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const storagePath = path.join(root, config.testEnv, `${role}.json`);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
-  const tokenLoginSucceeded = shouldTokenBootstrap
-    ? await tryBootstrap(role, credentials, storagePath)
-    : false;
+  const tokenLoginSucceeded = shouldTokenBootstrap ? await tryBootstrap(role, credentials, storagePath) : false;
 
   if (!tokenLoginSucceeded) {
     await loginViaForm(credentials, storagePath, role);
@@ -199,7 +189,7 @@ async function tryTokenBootstrap(
       scope,
       username: credentials.username,
       password: credentials.password,
-      redirectUri: env.IDAM_RETURN_URL ?? `${baseUrl}/oauth2/callback`
+      redirectUri: env.IDAM_RETURN_URL ?? `${baseUrl}/oauth2/callback`,
     });
     const serviceToken = await serviceAuthUtils.retrieveToken({ microservice });
 
@@ -208,8 +198,8 @@ async function tryTokenBootstrap(
       ignoreHTTPSErrors: true,
       extraHTTPHeaders: {
         Authorization: `Bearer ${accessToken}`,
-        ServiceAuthorization: `Bearer ${serviceToken}`
-      }
+        ServiceAuthorization: `Bearer ${serviceToken}`,
+      },
     });
 
     // Touch auth endpoints so the gateway can create a session + xsrf cookies.
@@ -247,17 +237,16 @@ async function createStorageStateViaForm(
   const context = await requestFactory({
     baseURL: baseUrl,
     ignoreHTTPSErrors: true,
-    maxRedirects: 10
+    maxRedirects: 10,
   });
 
   try {
     const loginPage = await context.get('auth/login');
     if (loginPage.status() >= 400) {
-      throw new AuthenticationError(
-        `GET /auth/login responded with ${loginPage.status()}`,
-        role,
-        { endpoint: 'auth/login', status: loginPage.status() }
-      );
+      throw new AuthenticationError(`GET /auth/login responded with ${loginPage.status()}`, role, {
+        endpoint: 'auth/login',
+        status: loginPage.status(),
+      });
     }
 
     const loginUrl = loginPage.url();
@@ -265,7 +254,7 @@ async function createStorageStateViaForm(
     const formPayload: Record<string, string> = {
       username: credentials.username,
       password: credentials.password,
-      save: 'Sign in'
+      save: 'Sign in',
     };
     if (csrfToken) {
       formPayload._csrf = csrfToken;
@@ -273,11 +262,11 @@ async function createStorageStateViaForm(
 
     const loginResponse = await context.post(loginUrl, { form: formPayload });
     if (loginResponse.status() >= 400) {
-      throw new AuthenticationError(
-        `POST ${loginUrl} responded with ${loginResponse.status()}`,
-        role,
-        { endpoint: loginUrl, status: loginResponse.status(), method: 'POST' }
-      );
+      throw new AuthenticationError(`POST ${loginUrl} responded with ${loginResponse.status()}`, role, {
+        endpoint: loginUrl,
+        status: loginResponse.status(),
+        method: 'POST',
+      });
     }
 
     // Ensure XSRF/session cookies are refreshed on the application domain
@@ -318,7 +307,7 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
 
   return {
     username: userConfig.e,
-    password: userConfig.sec
+    password: userConfig.sec,
   };
 }
 
@@ -373,5 +362,5 @@ export const __test__ = {
   createStorageStateWith,
   tryTokenBootstrap,
   createStorageStateViaForm,
-  getCredentials
+  getCredentials,
 };

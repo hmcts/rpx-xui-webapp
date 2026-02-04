@@ -3,49 +3,71 @@
     <div class="govuk-form-group">
       <exui-hearing-parties-title></exui-hearing-parties-title>
       <h1 class="govuk-label-wrapper">
-        <label class="govuk-label govuk-label--l"
-               for="additionalInstructionsTextarea">{{ 'Enter any additional instructions for the hearing' | rpxTranslate }}</label>
+        <label class="govuk-label govuk-label--l" for="additionalInstructionsTextarea">{{
+          'Enter any additional instructions for the hearing' | rpxTranslate
+        }}</label>
       </h1>
-      <div id="event-name-hint"
-           class="govuk-hint">{{ 'Add details of any additional facilities or instructions for this hearing.' | rpxTranslate }}
+      <div id="event-name-hint" class="govuk-hint">
+        {{ 'Add details of any additional facilities or instructions for this hearing.' | rpxTranslate }}
       </div>
       <div class="govuk-inset-text">
-        {{ 'This hearing request will need to be manually reviewed before listing if you enter additional details.' | rpxTranslate }}
+        {{
+          'This hearing request will need to be manually reviewed before listing if you enter additional details.' | rpxTranslate
+        }}
       </div>
       <div>
         <div *ngIf="showReviewBox">
           <div>
-            <div id="additional-instructions-view-hint"
-                 class="govuk-hint">{{ 'These are the additional instructions that were previously requested for this hearing. This section is read-only. You can copy them into the box below if they’re still relevant to the new journey.' | rpxTranslate }}
+            <div id="additional-instructions-view-hint" class="govuk-hint">
+              {{
+                'These are the additional instructions that were previously requested for this hearing. This section is read-only. You can copy them into the box below if they’re still relevant to the new journey.'
+                  | rpxTranslate
+              }}
             </div>
             <form class="form" [formGroup]="instructionsFormViewOnly">
-            <textarea class="govuk-textarea govuk-!-margin-bottom-1" id="additionalInstructionsViewOnlyTextarea"
-                      formControlName="instructionsViewOnly" name="additional-instructions-view-only-text"
-                      rows="5" [attr.maxlength]="instructionLength" readonly>
-            </textarea>
+              <textarea
+                class="govuk-textarea govuk-!-margin-bottom-1"
+                id="additionalInstructionsViewOnlyTextarea"
+                formControlName="instructionsViewOnly"
+                name="additional-instructions-view-only-text"
+                rows="5"
+                [attr.maxlength]="instructionLength"
+                readonly
+              ></textarea>
             </form>
           </div>
 
-          <div id="additional-instructions-edit-hint"
-               class="govuk-hint">{{ 'Check the instructions above and copy them here if still relevant.'  | rpxTranslate }}
+          <div id="additional-instructions-edit-hint" class="govuk-hint">
+            {{ 'Check the instructions above and copy them here if still relevant.' | rpxTranslate }}
           </div>
           <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
               <span class="govuk-warning-text__assistive">Warning</span>
-              {{ 'Failure to include any relevant instructions from above in the box below will result in them not being considered for this hearing'}}
+              {{
+                'Failure to include any relevant instructions from above in the box below will result in them not being considered for this hearing'
+              }}
             </strong>
           </div>
-          <div class="govuk-hint">{{ 'This box may include system-generated comments. You can also edit or add additional instructions as needed.' | rpxTranslate }}
+          <div class="govuk-hint">
+            {{
+              'This box may include system-generated comments. You can also edit or add additional instructions as needed.'
+                | rpxTranslate
+            }}
           </div>
         </div>
         <form class="form" [formGroup]="instructionsForm">
-          <textarea class="govuk-textarea govuk-!-margin-bottom-1" id="additionalInstructionsTextarea"
-                    formControlName="instructions" name="additional-instructions-text" rows="10"
-                    [attr.maxlength]="instructionLength"></textarea>
-          <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-7"
-               aria-live="polite">
-            {{ 'You can enter up to ' | rpxTranslate }} {{ instructionLength | number: '' : 'en' }} {{ ' characters' | rpxTranslate }}
+          <textarea
+            class="govuk-textarea govuk-!-margin-bottom-1"
+            id="additionalInstructionsTextarea"
+            formControlName="instructions"
+            name="additional-instructions-text"
+            rows="10"
+            [attr.maxlength]="instructionLength"
+          ></textarea>
+          <div id="with-hint-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-7" aria-live="polite">
+            {{ 'You can enter up to ' | rpxTranslate }} {{ instructionLength | number: '' : 'en' }}
+            {{ ' characters' | rpxTranslate }}
           </div>
         </form>
       </div>

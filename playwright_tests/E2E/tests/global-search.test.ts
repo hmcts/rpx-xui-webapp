@@ -3,7 +3,7 @@ import { signIn } from '../steps/login-steps';
 import { clickOnMainMenu } from '../steps/steps-functions';
 import { retryAction } from '../steps/retry-steps';
 import { waitForSpinner } from '../steps/spinner-steps';
-import axeTest from "../helpers/accessibilityTestHelper";
+import axeTest from '../helpers/accessibilityTestHelper';
 import { registerCorsChecker } from '../helpers/corsSmoke';
 
 test.beforeEach(async ({ page }) => {
@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
 test('Search from menu 16-digit find control', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
   console.log('Search from menu 16-digit find control');
-  const caseId = findCaseId(page)
+  const caseId = findCaseId(page);
   await waitForSpinner(page);
   await expect(page.getByText('-digit case reference:')).toBeVisible();
   await page.getByLabel('-digit case reference:').click();
@@ -31,7 +31,6 @@ test('Search from menu 16-digit find control', async ({ page }) => {
   await expect(page.getByText('Home Office UAN or GWF reference')).toBeVisible();
   // await expect(page.getByRole('heading', { name: 'Legal representative' })).toBeVisible();
 });
-
 
 test('Search from page Search', async ({ page }) => {
   await signIn(page, 'IAC_CaseOfficer_R2');
@@ -51,10 +50,10 @@ test('Search from page Search', async ({ page }) => {
 });
 
 function findCaseId(page: any) {
-    if (page.url().includes('demo')) {
-      console.log('Use demo case id');
-      return '1662020492250902';
-    }
-    console.log('Use aat case id');
-    return '1746778909032144';
+  if (page.url().includes('demo')) {
+    console.log('Use demo case id');
+    return '1662020492250902';
+  }
+  console.log('Use aat case id');
+  return '1746778909032144';
 }

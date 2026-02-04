@@ -12,7 +12,7 @@ export class LovRefDataService {
       params: new HttpParams()
         .set('categoryId', category)
         .set('serviceId', service)
-        .set('isChildRequired', isChildRequired ? 'Y' : 'N')
+        .set('isChildRequired', isChildRequired ? 'Y' : 'N'),
     };
     return this.http.get<LovRefDataModel[]>('api/prd/lov/getLovRefData', options);
   }

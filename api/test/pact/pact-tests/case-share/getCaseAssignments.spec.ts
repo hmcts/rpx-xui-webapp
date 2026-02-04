@@ -17,21 +17,21 @@ describe('Get Cases from CaseAssignment Api', () => {
           method: 'GET',
           path: '/case-assignments',
           query: {
-            case_ids: '12345678,87654321'
+            case_ids: '12345678,87654321',
           },
           headers: {
             'Content-Type': 'application/json',
-            'ServiceAuthorization': 'ServiceAuthToken',
-            'Authorization': 'Bearer some-access-token'
-          }
+            ServiceAuthorization: 'ServiceAuthToken',
+            Authorization: 'Bearer some-access-token',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: caseAssignmentResponseDto
-        }
+          body: caseAssignmentResponseDto,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -52,21 +52,18 @@ const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
   status_message: somethingLike('Case-User-Role assignments returned successfully'),
   case_assignments: somethingLike([
     {
-      'case_id': somethingLike('1588234985453946'),
-      'shared_with': [
+      case_id: somethingLike('1588234985453946'),
+      shared_with: [
         {
-          'idam_id': somethingLike('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
-          'first_name': somethingLike('Bill'),
-          'last_name': somethingLike('Roberts'),
-          'email': somethingLike('bill.roberts@greatbrsolicitors.co.uk'),
-          'case_roles': somethingLike([
-            '[Claimant]',
-            '[Defendant]'
-          ])
-        }
-      ]
-    }
-  ])
+          idam_id: somethingLike('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
+          first_name: somethingLike('Bill'),
+          last_name: somethingLike('Roberts'),
+          email: somethingLike('bill.roberts@greatbrsolicitors.co.uk'),
+          case_roles: somethingLike(['[Claimant]', '[Defendant]']),
+        },
+      ],
+    },
+  ]),
 };
 
 function assertCaseAssignmentResponses(response: CaseAssignmentResponseDto) {

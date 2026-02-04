@@ -40,8 +40,8 @@ describe('MediaViewerWrapperComponent', () => {
     titleService = createSpyObj('titleService', ['setTitle']);
     activatedRoute = {
       snapshot: {
-        queryParamMap: convertToParamMap({})
-      }
+        queryParamMap: convertToParamMap({}),
+      },
     };
     TestBed.configureTestingModule({
       imports: [

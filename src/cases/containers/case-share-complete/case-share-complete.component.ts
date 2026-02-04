@@ -12,7 +12,7 @@ import * as fromCaseList from '../../store/reducers';
   standalone: false,
   selector: 'exui-case-share-complete',
   templateUrl: './case-share-complete.component.html',
-  styleUrls: ['case-share-complete.component.scss']
+  styleUrls: ['case-share-complete.component.scss'],
 })
 export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public shareCases$: Observable<SharedCase[]>;
@@ -23,11 +23,13 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
   public isLoading: boolean;
   public completeScreenMode: string;
   public removeUserFromCaseToggleOn$: Observable<boolean>;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
 
-  constructor(private readonly store: Store<fromCaseList.State>,
-              private readonly featureToggleService: FeatureToggleService,
-              private readonly loadingService: LoadingService) {}
+  constructor(
+    private readonly store: Store<fromCaseList.State>,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly loadingService: LoadingService
+  ) {}
 
   public ngOnInit() {
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -39,15 +41,18 @@ export class CaseShareCompleteComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromCasesFeature.AssignUsersToCase(this.shareCases));
 
     this.shareCaseState$ = this.store.pipe(select(fromCasesFeature.getCaseShareState));
-    this.shareCaseState$.subscribe((state) => this.isLoading = state.loading);
+    this.shareCaseState$.subscribe((state) => (this.isLoading = state.loading));
     this.newShareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
-    this.newShareCases$.subscribe((shareCases) => {
-      this.completeScreenMode = this.checkIfIncomplete(shareCases);
-      this.newShareCases = shareCases;
-      this.loadingService.unregister(loadingToken);
-    }, () => {
-      this.loadingService.unregister(loadingToken);
-    });
+    this.newShareCases$.subscribe(
+      (shareCases) => {
+        this.completeScreenMode = this.checkIfIncomplete(shareCases);
+        this.newShareCases = shareCases;
+        this.loadingService.unregister(loadingToken);
+      },
+      () => {
+        this.loadingService.unregister(loadingToken);
+      }
+    );
     this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);
   }
 

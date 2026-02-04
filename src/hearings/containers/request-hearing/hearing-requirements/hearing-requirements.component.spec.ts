@@ -11,10 +11,19 @@ import { HearingActualsMainModel } from '../../../models/hearingActualsMainModel
 import { HearingRequestMainModel } from '../../../models/hearingRequestMain.model';
 import {
   ACTION,
-  CategoryType, EXUIDisplayStatusEnum, EXUISectionStatusEnum, GroupLinkType, HearingListingStatusEnum, HearingResult,
-  HMCLocationType, HMCStatus, LaCaseStatus, MemberType,
-  PartyType, RequirementType,
-  UnavailabilityType
+  CategoryType,
+  EXUIDisplayStatusEnum,
+  EXUISectionStatusEnum,
+  GroupLinkType,
+  HearingListingStatusEnum,
+  HearingResult,
+  HMCLocationType,
+  HMCStatus,
+  LaCaseStatus,
+  MemberType,
+  PartyType,
+  RequirementType,
+  UnavailabilityType,
 } from '../../../models/hearings.enum';
 import { HearingWindowModel } from '../../../models/hearingWindow.model';
 import { LocationByEpimmsModel } from '../../../models/location.model';
@@ -31,7 +40,7 @@ import * as _ from 'lodash';
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
-  template: ''
+  template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -48,20 +57,23 @@ describe('HearingRequirementsComponent', () => {
     caseCategories: [
       {
         categoryType: CategoryType.CaseType,
-        categoryValue: 'BBA3-002'
-      }, {
+        categoryValue: 'BBA3-002',
+      },
+      {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002CC',
-        categoryParent: 'BBA3-002'
-      }, {
+        categoryParent: 'BBA3-002',
+      },
+      {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002GC',
-        categoryParent: 'BBA3-002'
-      }, {
+        categoryParent: 'BBA3-002',
+      },
+      {
         categoryType: CategoryType.CaseSubType,
         categoryValue: 'BBA3-002RC',
-        categoryParent: 'BBA3-002'
-      }
+        categoryParent: 'BBA3-002',
+      },
     ],
     caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
     caserestrictedFlag: false,
@@ -71,20 +83,21 @@ describe('HearingRequirementsComponent', () => {
     hearingWindow: {
       dateRangeStart: '2022-11-23T09:00:00.000Z',
       dateRangeEnd: '2022-11-30T09:00:00.000Z',
-      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+      firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
     },
     duration: 45,
     hearingPriorityType: 'standard',
     numberOfPhysicalAttendees: 2,
     hearingInWelshFlag: false,
-    hearingLocations: [{
-      locationId: '196538',
-      locationType: HMCLocationType.COURT
-    },
-    {
-      locationId: '234850',
-      locationType: HMCLocationType.COURT
-    }
+    hearingLocations: [
+      {
+        locationId: '196538',
+        locationType: HMCLocationType.COURT,
+      },
+      {
+        locationId: '234850',
+        locationType: HMCLocationType.COURT,
+      },
     ],
     caseAdditionalSecurityFlag: false,
     facilitiesRequired: [],
@@ -94,47 +107,29 @@ describe('HearingRequirementsComponent', () => {
     caseInterpreterRequiredFlag: false,
     leadJudgeContractType: '',
     judiciary: {
-      roleType: [
-        ''
-      ],
-      authorisationTypes: [
-        ''
-      ],
-      authorisationSubType: [
-        ''
-      ],
+      roleType: [''],
+      authorisationTypes: [''],
+      authorisationSubType: [''],
       panelComposition: [
         {
           memberType: '',
-          count: 1
-        }
+          count: 1,
+        },
       ],
       judiciaryPreferences: [
         {
           memberID: 'p1000000',
           memberType: MemberType.JUDGE,
-          requirementType: RequirementType.EXCLUDE
-        }
+          requirementType: RequirementType.EXCLUDE,
+        },
       ],
-      judiciarySpecialisms: [
-        ''
-      ]
+      judiciarySpecialisms: [''],
     },
     hearingIsLinkedFlag: false,
     panelRequirements: {
-      roleType: [
-        'tj',
-        'dtj',
-        'rtj'
-      ],
+      roleType: ['tj', 'dtj', 'rtj'],
       panelPreferences: [],
-      panelSpecialisms: [
-        'BBA3-DQPM',
-        'BBA3-MQPM2-003',
-        'BBA3-MQPM2-004',
-        'BBA3-FQPM',
-        'BBA3-RMM'
-      ]
+      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-003', 'BBA3-MQPM2-004', 'BBA3-FQPM', 'BBA3-RMM'],
     },
     parties: [
       {
@@ -148,22 +143,15 @@ describe('HearingRequirementsComponent', () => {
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
           interpreterLanguage: 'POR',
-          reasonableAdjustments: [
-            'RA0042',
-            'RA0053',
-            'RA0013',
-            'RA0016',
-            'RA0042',
-            'PF0015'
-          ]
+          reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042', 'PF0015'],
         },
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-10T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
+            unavailabilityType: UnavailabilityType.ALL_DAY,
+          },
+        ],
       },
       {
         partyID: 'P2',
@@ -176,23 +164,22 @@ describe('HearingRequirementsComponent', () => {
           lastName: null,
           preferredHearingChannel: 'inPerson',
           interpreterLanguage: null,
-          reasonableAdjustments: [
-            'RA0005'
-          ]
+          reasonableAdjustments: ['RA0005'],
         },
         organisationDetails: {
           name: 'DWP',
           organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
+          cftOrganisationID: 'O100000',
         },
         unavailabilityRanges: [
           {
             unavailableFromDate: '2021-12-20T09:00:00.000Z',
             unavailableToDate: '2021-12-31T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }
-        ]
-      }],
+            unavailabilityType: UnavailabilityType.ALL_DAY,
+          },
+        ],
+      },
+    ],
     caseFlags: {
       flags: [
         {
@@ -201,7 +188,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'RA0008',
           flagId: 'RA0042',
           flagDescription: 'Sign language interpreter required',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P1',
@@ -209,7 +196,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'RA0032',
           flagId: 'RA0053',
           flagDescription: 'Hearing loop required',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P1',
@@ -217,7 +204,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'RA0002',
           flagId: 'RA0013',
           flagDescription: 'Larger font size',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P1',
@@ -225,7 +212,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'RA0003',
           flagId: 'RA0016',
           flagDescription: 'Reading documents for customer',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P1',
@@ -233,7 +220,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'RA0008',
           flagId: 'RA0042',
           flagDescription: 'Sign Language Interpreter',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P1',
@@ -241,7 +228,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'PF0001',
           flagId: 'PF0015',
           flagDescription: 'Language Interpreter',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P1',
@@ -249,7 +236,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'PF0001',
           flagId: 'PF0002',
           flagDescription: 'Vulnerable user',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P2',
@@ -257,7 +244,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'RA0001',
           flagId: 'RA0005',
           flagDescription: 'Physical access and facilities',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P2',
@@ -265,7 +252,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'PF0001',
           flagId: 'PF0011',
           flagDescription: 'Banning order',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P2',
@@ -273,7 +260,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'CF0001',
           flagId: 'CF0002',
           flagDescription: 'Complex Case',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P2',
@@ -281,7 +268,7 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'CF0001',
           flagId: 'CF0006',
           flagDescription: 'Potential fraud',
-          flagStatus: 'ACTIVE'
+          flagStatus: 'ACTIVE',
         },
         {
           partyId: 'P2',
@@ -289,43 +276,43 @@ describe('HearingRequirementsComponent', () => {
           flagParentId: 'CF0001',
           flagId: 'CF0007',
           flagDescription: 'Urgent flag',
-          flagStatus: 'ACTIVE'
-        }
+          flagStatus: 'ACTIVE',
+        },
       ],
-      flagAmendURL: '/'
+      flagAmendURL: '/',
     },
     screenFlow: [
       {
         screenName: 'hearing-requirements',
         navigation: [
           {
-            resultValue: 'hearing-facilities'
-          }
-        ]
+            resultValue: 'hearing-facilities',
+          },
+        ],
       },
       {
         screenName: 'hearing-facilities',
         navigation: [
           {
-            resultValue: 'hearing-stage'
-          }
-        ]
+            resultValue: 'hearing-stage',
+          },
+        ],
       },
       {
         screenName: 'hearing-stage',
         navigation: [
           {
-            resultValue: 'hearing-attendance'
-          }
-        ]
+            resultValue: 'hearing-attendance',
+          },
+        ],
       },
       {
         screenName: 'hearing-attendance',
         navigation: [
           {
-            resultValue: 'hearing-venue'
-          }
-        ]
+            resultValue: 'hearing-venue',
+          },
+        ],
       },
       {
         screenName: 'hearing-venue',
@@ -334,61 +321,61 @@ describe('HearingRequirementsComponent', () => {
           {
             conditionOperator: 'INCLUDE',
             conditionValue: '7',
-            resultValue: 'hearing-welsh'
+            resultValue: 'hearing-welsh',
           },
           {
             conditionOperator: 'NOT INCLUDE',
             conditionValue: '7',
-            resultValue: 'hearing-judge'
-          }
-        ]
+            resultValue: 'hearing-judge',
+          },
+        ],
       },
       {
         screenName: 'hearing-welsh',
         navigation: [
           {
-            resultValue: 'hearing-judge'
-          }
-        ]
+            resultValue: 'hearing-judge',
+          },
+        ],
       },
       {
         screenName: 'hearing-judge',
         navigation: [
           {
-            resultValue: 'hearing-panel'
-          }
-        ]
+            resultValue: 'hearing-panel',
+          },
+        ],
       },
       {
         screenName: 'hearing-panel',
         navigation: [
           {
-            resultValue: 'hearing-timing'
-          }
-        ]
+            resultValue: 'hearing-timing',
+          },
+        ],
       },
       {
         screenName: 'hearing-timing',
         navigation: [
           {
-            resultValue: 'hearing-additional-instructions'
-          }
-        ]
+            resultValue: 'hearing-additional-instructions',
+          },
+        ],
       },
       {
         screenName: 'hearing-additional-instructions',
         navigation: [
           {
-            resultValue: 'hearing-create-edit-summary'
-          }
-        ]
-      }
+            resultValue: 'hearing-create-edit-summary',
+          },
+        ],
+      },
     ],
     vocabulary: [
       {
-        word1: ''
-      }
-    ]
+        word1: '',
+      },
+    ],
   };
   const hearingActualsMainModel: HearingActualsMainModel = {
     hearingActuals: {
@@ -397,7 +384,7 @@ describe('HearingRequirementsComponent', () => {
         hearingResult: HearingResult.CANCELLED,
         hearingResultDate: '2019-01-01',
         hearingResultReasonType: 'unable',
-        hearingType: 'Pre-hearing review'
+        hearingType: 'Pre-hearing review',
       },
       actualHearingDays: [
         {
@@ -411,41 +398,41 @@ describe('HearingRequirementsComponent', () => {
               actualPartyId: '1',
               individualDetails: {
                 firstName: 'Bob',
-                lastName: 'Jones'
+                lastName: 'Jones',
               },
               actualOrganisationName: 'Company A',
               didNotAttendFlag: false,
               partyChannelSubType: 'inPerson',
               partyRole: 'appellant',
-              representedParty: ''
+              representedParty: '',
             },
             {
               actualPartyId: '2',
               individualDetails: {
                 firstName: 'Mary',
-                lastName: 'Jones'
+                lastName: 'Jones',
               },
               actualOrganisationName: 'Company B',
               didNotAttendFlag: false,
               partyChannelSubType: 'inPerson',
               partyRole: 'claimant',
-              representedParty: ''
+              representedParty: '',
             },
             {
               actualPartyId: '3',
               individualDetails: {
                 firstName: 'James',
-                lastName: 'Gods'
+                lastName: 'Gods',
               },
               actualOrganisationName: 'Solicitors A',
               didNotAttendFlag: false,
               partyChannelSubType: 'inPerson',
               partyRole: 'interpreter',
-              representedParty: '1'
-            }
-          ]
-        }
-      ]
+              representedParty: '1',
+            },
+          ],
+        },
+      ],
     },
     hearingPlanned: {
       plannedHearingType: 'final',
@@ -458,33 +445,33 @@ describe('HearingRequirementsComponent', () => {
               individualDetails: {
                 title: 'Miss',
                 firstName: 'Bob',
-                lastName: 'Jones'
+                lastName: 'Jones',
               },
               organisationDetails: {
                 cftOrganisationID: '54321',
-                name: 'Company A'
+                name: 'Company A',
               },
               partyID: '1',
               partyRole: 'interpreter',
-              partyChannelSubType: 'appellant'
+              partyChannelSubType: 'appellant',
             },
             {
               individualDetails: {
                 title: '',
                 firstName: 'DWP',
-                lastName: ''
+                lastName: '',
               },
               organisationDetails: {
                 cftOrganisationID: 'ogd1',
-                name: 'DWP'
+                name: 'DWP',
               },
               partyID: '2',
               partyRole: 'interpreter',
-              partyChannelSubType: 'claimant'
-            }
-          ]
-        }
-      ]
+              partyChannelSubType: 'claimant',
+            },
+          ],
+        },
+      ],
     },
     hmcStatus: HMCStatus.UPDATE_SUBMITTED,
     caseDetails: {
@@ -501,24 +488,28 @@ describe('HearingRequirementsComponent', () => {
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002'
-        }, {
+          categoryValue: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002'
-        }],
+          categoryParent: 'BBA3-002',
+        },
+      ],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-11-23T09:00:00.000Z'
-    }
+      caseSLAStartDate: '2021-11-23T09:00:00.000Z',
+    },
   };
   const initialStateImmutable = {
     hearings: {
@@ -526,34 +517,36 @@ describe('HearingRequirementsComponent', () => {
         hearingListMainModel: {
           caseRef: '1111222233334444',
           hmctsServiceID: 'BBA3',
-          caseHearings: [{
-            hearingID: 'h00001',
-            hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-            hearingType: 'Case management hearing',
-            hmcStatus: HMCStatus.HEARING_REQUESTED,
-            lastResponseReceivedDateTime: '',
-            responseVersion: 'rv1',
-            hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-            listAssistCaseStatus: '',
-            hearingIsLinkedFlag: true,
-            hearingGroupRequestId: null,
-            hearingDaySchedule: null
-          }]
-        }
+          caseHearings: [
+            {
+              hearingID: 'h00001',
+              hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+              hearingType: 'Case management hearing',
+              hmcStatus: HMCStatus.HEARING_REQUESTED,
+              lastResponseReceivedDateTime: '',
+              responseVersion: 'rv1',
+              hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+              listAssistCaseStatus: '',
+              hearingIsLinkedFlag: true,
+              hearingGroupRequestId: null,
+              hearingDaySchedule: null,
+            },
+          ],
+        },
       },
       hearingActuals: {
         hearingActualsMainModel,
-        lastError: null
+        lastError: null,
       },
       hearingValues: {
         serviceHearingValuesModel,
-        lastError: null
+        lastError: null,
       },
       hearingRequestToCompare: {
         hearingRequestMainModel: {
           requestDetails: {
             timestamp: null,
-            versionNumber: 1
+            versionNumber: 1,
           },
           hearingDetails: {
             duration: 60,
@@ -562,18 +555,18 @@ describe('HearingRequirementsComponent', () => {
             hearingLocations: [
               {
                 locationId: '196538',
-                locationType: HMCLocationType.COURT
+                locationType: HMCLocationType.COURT,
               },
               {
                 locationId: '234850',
-                locationType: HMCLocationType.COURT
-              }
+                locationType: HMCLocationType.COURT,
+              },
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: {
               dateRangeStart: '2022-12-12T09:00:00.000Z',
               dateRangeEnd: '2022-12-12T09:00:00.000Z',
-              firstDateTimeMustBe: ''
+              firstDateTimeMustBe: '',
             },
             privateHearingRequiredFlag: false,
             panelRequirements: null,
@@ -582,15 +575,12 @@ describe('HearingRequirementsComponent', () => {
             hearingPriorityType: 'standard',
             numberOfPhysicalAttendees: 3,
             hearingInWelshFlag: true,
-            facilitiesRequired: [
-              'immigrationDetentionCentre',
-              'inCameraCourt'
-            ],
+            facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt'],
             listingComments: 'blah blah blah',
             hearingRequester: null,
             leadJudgeContractType: null,
             amendReasonCodes: null,
-            listingAutoChangeReasonCode: null
+            listingAutoChangeReasonCode: null,
           },
           caseDetails: {
             hmctsServiceCode: null,
@@ -606,23 +596,27 @@ describe('HearingRequirementsComponent', () => {
             caseCategories: [
               {
                 categoryType: CategoryType.CaseType,
-                categoryValue: 'BBA3-002'
-              }, {
+                categoryValue: 'BBA3-002',
+              },
+              {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002CC',
-                categoryParent: 'BBA3-002'
-              }, {
+                categoryParent: 'BBA3-002',
+              },
+              {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002GC',
-                categoryParent: 'BBA3-002'
-              }, {
+                categoryParent: 'BBA3-002',
+              },
+              {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002RC',
-                categoryParent: 'BBA3-002'
-              }],
+                categoryParent: 'BBA3-002',
+              },
+            ],
             caseManagementLocationCode: null,
             caserestrictedFlag: false,
-            caseSLAStartDate: null
+            caseSLAStartDate: null,
           },
           partyDetails: [
             {
@@ -634,16 +628,9 @@ describe('HearingRequirementsComponent', () => {
                 title: 'Miss',
                 firstName: 'Jane',
                 lastName: 'Smith',
-                reasonableAdjustments: [
-                  'RA0042',
-                  'RA0053',
-                  'RA0013',
-                  'RA0016',
-                  'RA0042',
-                  'RA0009'
-                ],
+                reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042', 'RA0009'],
                 interpreterLanguage: 'POR',
-                preferredHearingChannel: 'byVideo'
+                preferredHearingChannel: 'byVideo',
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -651,9 +638,9 @@ describe('HearingRequirementsComponent', () => {
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
             },
             {
               partyID: 'P2',
@@ -665,25 +652,25 @@ describe('HearingRequirementsComponent', () => {
                 lastName: null,
                 preferredHearingChannel: 'byVideo',
                 reasonableAdjustments: ['RA0005'],
-                interpreterLanguage: null
+                interpreterLanguage: null,
               },
               organisationDetails: {
                 name: 'DWP',
                 organisationType: 'GOV',
-                cftOrganisationID: 'O100000'
+                cftOrganisationID: 'O100000',
               },
               unavailabilityDOW: null,
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
-            }
-          ]
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
+            },
+          ],
         },
-        lastError: null
+        lastError: null,
       },
       hearingRequest: {
         hearingRequestMainModel: {
@@ -692,7 +679,7 @@ describe('HearingRequirementsComponent', () => {
             status: 'LISTED',
             timestamp: '2021-11-30T09:00:00.000Z',
             versionNumber: 1,
-            cancellationReasonCodes: ['withdraw', 'struck']
+            cancellationReasonCodes: ['withdraw', 'struck'],
           },
           hearingResponse: {
             listAssistTransactionID: '',
@@ -701,43 +688,45 @@ describe('HearingRequirementsComponent', () => {
             laCaseStatus: LaCaseStatus.PENDING_RELISTING,
             listingStatus: HearingListingStatusEnum.COMPLETED,
             hearingCancellationReason: '',
-            hearingDaySchedule: [{
-              hearingStartDateTime: '2022-12-12T09:00:00.000Z',
-              hearingEndDateTime: '2022-12-12T16:00:00.000Z',
-              listAssistSessionID: '',
-              hearingVenueId: '',
-              hearingRoomId: 'room 3',
-              hearingJudgeId: 'p1000002',
-              panelMemberIds: ['p1000001'],
-              attendees: [
-                {
-                  partyID: 'P1',
-                  hearingSubChannel: 'inPerson',
-                  partyName: 'Jane and Smith',
-                  partyType: PartyType.IND,
-                  partyRole: 'appellant',
-                  individualDetails: {
-                    firstName: 'Jane',
-                    lastName: 'Smith',
-                    preferredHearingChannel: 'inPerson',
-                    interpreterLanguage: 'POR'
-                  }
-                },
-                {
-                  partyID: 'P2',
-                  hearingSubChannel: 'byVideo',
-                  partyName: 'DWP',
-                  partyType: PartyType.ORG,
-                  partyRole: 'claimant',
-                  individualDetails: {
-                    firstName: 'DWP',
-                    lastName: null,
-                    preferredHearingChannel: 'byVideo',
-                    interpreterLanguage: null
-                  }
-                }
-              ]
-            }]
+            hearingDaySchedule: [
+              {
+                hearingStartDateTime: '2022-12-12T09:00:00.000Z',
+                hearingEndDateTime: '2022-12-12T16:00:00.000Z',
+                listAssistSessionID: '',
+                hearingVenueId: '',
+                hearingRoomId: 'room 3',
+                hearingJudgeId: 'p1000002',
+                panelMemberIds: ['p1000001'],
+                attendees: [
+                  {
+                    partyID: 'P1',
+                    hearingSubChannel: 'inPerson',
+                    partyName: 'Jane and Smith',
+                    partyType: PartyType.IND,
+                    partyRole: 'appellant',
+                    individualDetails: {
+                      firstName: 'Jane',
+                      lastName: 'Smith',
+                      preferredHearingChannel: 'inPerson',
+                      interpreterLanguage: 'POR',
+                    },
+                  },
+                  {
+                    partyID: 'P2',
+                    hearingSubChannel: 'byVideo',
+                    partyName: 'DWP',
+                    partyType: PartyType.ORG,
+                    partyRole: 'claimant',
+                    individualDetails: {
+                      firstName: 'DWP',
+                      lastName: null,
+                      preferredHearingChannel: 'byVideo',
+                      interpreterLanguage: null,
+                    },
+                  },
+                ],
+              },
+            ],
           },
           hearingDetails: {
             duration: 60,
@@ -746,18 +735,18 @@ describe('HearingRequirementsComponent', () => {
             hearingLocations: [
               {
                 locationId: '196538',
-                locationType: HMCLocationType.COURT
+                locationType: HMCLocationType.COURT,
               },
               {
                 locationId: '234850',
-                locationType: HMCLocationType.COURT
-              }
+                locationType: HMCLocationType.COURT,
+              },
             ],
             hearingIsLinkedFlag: false,
             hearingWindow: {
               dateRangeStart: '2022-11-23T09:00:00.000Z',
               dateRangeEnd: '2022-11-30T09:00:00.000Z',
-              firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+              firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
             },
             privateHearingRequiredFlag: false,
             panelRequirements: null,
@@ -766,15 +755,12 @@ describe('HearingRequirementsComponent', () => {
             hearingPriorityType: 'standard',
             numberOfPhysicalAttendees: 3,
             hearingInWelshFlag: true,
-            facilitiesRequired: [
-              'immigrationDetentionCentre',
-              'inCameraCourt'
-            ],
+            facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt'],
             listingComments: 'blah blah blah',
             hearingRequester: null,
             leadJudgeContractType: null,
             amendReasonCodes: null,
-            listingAutoChangeReasonCode: null
+            listingAutoChangeReasonCode: null,
           },
           caseDetails: {
             hmctsServiceCode: null,
@@ -790,23 +776,27 @@ describe('HearingRequirementsComponent', () => {
             caseCategories: [
               {
                 categoryType: CategoryType.CaseType,
-                categoryValue: 'BBA3-002'
-              }, {
+                categoryValue: 'BBA3-002',
+              },
+              {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002CC',
-                categoryParent: 'BBA3-002'
-              }, {
+                categoryParent: 'BBA3-002',
+              },
+              {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002GC',
-                categoryParent: 'BBA3-002'
-              }, {
+                categoryParent: 'BBA3-002',
+              },
+              {
                 categoryType: CategoryType.CaseSubType,
                 categoryValue: 'BBA3-002RC',
-                categoryParent: 'BBA3-002'
-              }],
+                categoryParent: 'BBA3-002',
+              },
+            ],
             caseManagementLocationCode: null,
             caserestrictedFlag: false,
-            caseSLAStartDate: null
+            caseSLAStartDate: null,
           },
           partyDetails: [
             {
@@ -819,14 +809,8 @@ describe('HearingRequirementsComponent', () => {
                 firstName: 'Jane',
                 lastName: 'Smith',
                 preferredHearingChannel: 'inPerson',
-                reasonableAdjustments: [
-                  'RA0042',
-                  'RA0053',
-                  'RA0013',
-                  'RA0016',
-                  'RA0042'
-                ],
-                interpreterLanguage: 'POR'
+                reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'],
+                interpreterLanguage: 'POR',
               },
               organisationDetails: {},
               unavailabilityDOW: null,
@@ -834,9 +818,9 @@ describe('HearingRequirementsComponent', () => {
                 {
                   unavailableFromDate: '2021-12-10T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
             },
             {
               partyID: 'P2',
@@ -846,157 +830,145 @@ describe('HearingRequirementsComponent', () => {
               individualDetails: {
                 preferredHearingChannel: 'byVideo',
                 reasonableAdjustments: ['RA0005'],
-                interpreterLanguage: null
+                interpreterLanguage: null,
               },
               organisationDetails: {
                 name: 'DWP',
                 organisationType: 'GOV',
-                cftOrganisationID: 'O100000'
+                cftOrganisationID: 'O100000',
               },
               unavailabilityDOW: null,
               unavailabilityRanges: [
                 {
                   unavailableFromDate: '2021-12-20T09:00:00.000Z',
                   unavailableToDate: '2021-12-31T09:00:00.000Z',
-                  unavailabilityType: UnavailabilityType.ALL_DAY
-                }
-              ]
-            }
-          ]
+                  unavailabilityType: UnavailabilityType.ALL_DAY,
+                },
+              ],
+            },
+          ],
         },
-        lastError: null
+        lastError: null,
       },
       hearingConditions: {
         caseId: '1111222233334444',
         mode: 'create',
         isInit: true,
-        fragmentId: 'venue'
+        fragmentId: 'venue',
       },
       hearingLinks: {
         serviceLinkedCases: [
           {
             caseReference: '4652724902696213',
             caseName: 'Smith vs Peterson',
-            reasonsForLink: [
-              'Linked for a hearing'
-            ]
+            reasonsForLink: ['Linked for a hearing'],
           },
           {
             caseReference: '5283819672542864',
             caseName: 'Smith vs Peterson',
-            reasonsForLink: [
-              'Linked for a hearing',
-              'Progressed as part of lead case'
-            ]
+            reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
           },
           {
             caseReference: '8254902572336147',
             caseName: 'Smith vs Peterson',
-            reasonsForLink: [
-              'Familial',
-              'Guardian',
-              'Linked for a hearing'
-            ]
-          }
+            reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+          },
         ],
         serviceLinkedCasesWithHearings: [
           {
             caseRef: '4652724902696213',
             caseName: 'Smith vs Peterson',
-            reasonsForLink: [
-              'Linked for a hearing'
+            reasonsForLink: ['Linked for a hearing'],
+            caseHearings: [
+              {
+                hearingID: 'h100001',
+                hearingType: 'Substantive',
+                hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+                lastResponseReceivedDateTime: '',
+                exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+                exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+                hmcStatus: HMCStatus.HEARING_REQUESTED,
+                responseVersion: 'rv1',
+                hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+                listAssistCaseStatus: '',
+                hearingIsLinkedFlag: true,
+                hearingGroupRequestId: null,
+                hearingDaySchedule: [],
+                isSelected: true,
+              },
             ],
-            caseHearings: [{
-              hearingID: 'h100001',
-              hearingType: 'Substantive',
-              hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-              lastResponseReceivedDateTime: '',
-              exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-              exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-              hmcStatus: HMCStatus.HEARING_REQUESTED,
-              responseVersion: 'rv1',
-              hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-              listAssistCaseStatus: '',
-              hearingIsLinkedFlag: true,
-              hearingGroupRequestId: null,
-              hearingDaySchedule: [],
-              isSelected: true
-            }]
           },
           {
             caseRef: '5283819672542864',
             caseName: 'Smith vs Peterson',
-            reasonsForLink: [
-              'Linked for a hearing',
-              'Progressed as part of lead case'
-            ],
-            caseHearings: []
+            reasonsForLink: ['Linked for a hearing', 'Progressed as part of lead case'],
+            caseHearings: [],
           },
           {
             caseRef: '8254902572336147',
             caseName: 'Smith vs Peterson',
-            reasonsForLink: [
-              'Familial',
-              'Guardian',
-              'Linked for a hearing'
+            reasonsForLink: ['Familial', 'Guardian', 'Linked for a hearing'],
+            caseHearings: [
+              {
+                hearingID: 'h100010',
+                hearingType: 'Direction Hearings',
+                hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+                lastResponseReceivedDateTime: '',
+                exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+                exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+                hmcStatus: HMCStatus.AWAITING_LISTING,
+                responseVersion: 'rv1',
+                hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+                listAssistCaseStatus: '',
+                hearingIsLinkedFlag: true,
+                hearingGroupRequestId: null,
+                hearingDaySchedule: [],
+                isSelected: true,
+              },
+              {
+                hearingID: 'h100012',
+                hearingType: 'Chambers Outcome',
+                hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
+                lastResponseReceivedDateTime: '',
+                exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
+                exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
+                hmcStatus: HMCStatus.AWAITING_LISTING,
+                responseVersion: 'rv1',
+                hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
+                listAssistCaseStatus: '',
+                hearingIsLinkedFlag: true,
+                hearingGroupRequestId: null,
+                hearingDaySchedule: [],
+                isSelected: true,
+              },
             ],
-            caseHearings: [{
-              hearingID: 'h100010',
-              hearingType: 'Direction Hearings',
-              hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-              lastResponseReceivedDateTime: '',
-              exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-              exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-              hmcStatus: HMCStatus.AWAITING_LISTING,
-              responseVersion: 'rv1',
-              hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-              listAssistCaseStatus: '',
-              hearingIsLinkedFlag: true,
-              hearingGroupRequestId: null,
-              hearingDaySchedule: [],
-              isSelected: true
-            }, {
-              hearingID: 'h100012',
-              hearingType: 'Chambers Outcome',
-              hearingRequestDateTime: '2021-09-01T16:00:00.000Z',
-              lastResponseReceivedDateTime: '',
-              exuiSectionStatus: EXUISectionStatusEnum.UPCOMING,
-              exuiDisplayStatus: EXUIDisplayStatusEnum.AWAITING_LISTING,
-              hmcStatus: HMCStatus.AWAITING_LISTING,
-              responseVersion: 'rv1',
-              hearingListingStatus: HearingListingStatusEnum.UPDATE_REQUESTED,
-              listAssistCaseStatus: '',
-              hearingIsLinkedFlag: true,
-              hearingGroupRequestId: null,
-              hearingDaySchedule: [],
-              isSelected: true
-            }]
-          }
+          },
         ],
         linkedHearingGroup: {
           groupDetails: {
             groupName: 'Group A',
             groupReason: 'Reason 1',
             groupLinkType: GroupLinkType.ORDERED,
-            groupComments: 'Comment 1'
+            groupComments: 'Comment 1',
           },
           hearingsInGroup: [
             {
               hearingId: 'h1000001',
-              hearingOrder: 1
+              hearingOrder: 1,
             },
             {
               hearingId: 'h1000003',
-              hearingOrder: 2
+              hearingOrder: 2,
             },
             {
               hearingId: 'h1000005',
-              hearingOrder: 3
-            }]
+              hearingOrder: 3,
+            },
+          ],
         },
-        lastError: null
-      }
-    }
+        lastError: null,
+      },
+    },
   };
   const caseTypeRefData = [
     {
@@ -1022,7 +994,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1035,7 +1007,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1048,7 +1020,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1061,7 +1033,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1074,7 +1046,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1087,7 +1059,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1100,7 +1072,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1113,7 +1085,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1126,7 +1098,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1139,7 +1111,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1152,7 +1124,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1165,7 +1137,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1178,7 +1150,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1191,7 +1163,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1204,7 +1176,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1217,7 +1189,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1230,7 +1202,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1243,7 +1215,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1256,7 +1228,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1269,7 +1241,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1282,7 +1254,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1295,7 +1267,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1308,7 +1280,7 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'caseSubType',
@@ -1321,10 +1293,10 @@ describe('HearingRequirementsComponent', () => {
           parent_category: 'caseType',
           parent_key: 'BBA3-002',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
-    }
+          child_nodes: null,
+        },
+      ],
+    },
   ];
   const caseFlagsRefData = [
     {
@@ -1341,10 +1313,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0002',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
+          Path: ['Case'],
+          childFlags: [],
         },
         {
           name: 'Potentially harmful medical evidence',
@@ -1352,10 +1322,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0003',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
+          Path: ['Case'],
+          childFlags: [],
         },
         {
           name: 'Gender recognition',
@@ -1363,10 +1331,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0004',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
+          Path: ['Case'],
+          childFlags: [],
         },
         {
           name: 'Domestic violence allegation',
@@ -1374,10 +1340,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0005',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
+          Path: ['Case'],
+          childFlags: [],
         },
         {
           name: 'Potential fraud',
@@ -1385,10 +1349,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0006',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
+          Path: ['Case'],
+          childFlags: [],
         },
         {
           name: 'Urgent flag',
@@ -1396,10 +1358,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0007',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
+          Path: ['Case'],
+          childFlags: [],
         },
         {
           name: 'Exclusion order with Police',
@@ -1407,12 +1367,10 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'CF0008',
           isParent: false,
-          Path: [
-            'Case'
-          ],
-          childFlags: []
-        }
-      ]
+          Path: ['Case'],
+          childFlags: [],
+        },
+      ],
     },
     {
       name: 'Party',
@@ -1428,10 +1386,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0002',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Potentially suicidal',
@@ -1439,10 +1395,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0003',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Confidential address',
@@ -1450,10 +1404,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0004',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Anonymous party',
@@ -1461,10 +1413,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0005',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Potentially Violent Person',
@@ -1472,10 +1422,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0006',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Unacceptable customer behaviour',
@@ -1483,10 +1431,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0007',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Vexatious litigant',
@@ -1494,10 +1440,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0008',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Civil restraint order',
@@ -1505,10 +1449,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0009',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Extended civil restraint order',
@@ -1516,10 +1458,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0010',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Banning order',
@@ -1527,10 +1467,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0011',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Foreign national offender',
@@ -1538,10 +1476,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0012',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Unaccompanied minor',
@@ -1549,10 +1485,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0013',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Audio/Video Evidence',
@@ -1560,10 +1494,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0014',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Language Interpreter',
@@ -1571,10 +1503,8 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'PF0015',
           isParent: false,
-          Path: [
-            'Party'
-          ],
-          childFlags: []
+          Path: ['Party'],
+          childFlags: [],
         },
         {
           name: 'Reasonable adjustment',
@@ -1582,9 +1512,7 @@ describe('HearingRequirementsComponent', () => {
           flagComment: true,
           flagCode: 'RA0001',
           isParent: true,
-          Path: [
-            'Party'
-          ],
+          Path: ['Party'],
           childFlags: [
             {
               name: 'Alternative formats of our information',
@@ -1592,9 +1520,7 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0002',
               isParent: true,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Audio / CD',
@@ -1602,10 +1528,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0009',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                  childFlags: [],
                 },
                 {
                   name: 'Braille',
@@ -1613,10 +1537,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0010',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                  childFlags: [],
                 },
                 {
                   name: 'Coloured paper',
@@ -1624,10 +1546,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0011',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                  childFlags: [],
                 },
                 {
                   name: 'Easy Read',
@@ -1635,10 +1555,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0012',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                  childFlags: [],
                 },
                 {
                   name: 'Larger font size',
@@ -1646,12 +1564,10 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0013',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Alternative formats of our information'
-                  ],
-                  childFlags: []
-                }
-              ]
+                  Path: ['Party', 'Reasonable adjustment', 'Alternative formats of our information'],
+                  childFlags: [],
+                },
+              ],
             },
             {
               name: 'Assistance with court and tribunal processes and forms',
@@ -1659,9 +1575,7 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0003',
               isParent: true,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Completing forms and documents dictated by customer',
@@ -1669,10 +1583,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0014',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                  childFlags: [],
                 },
                 {
                   name: 'Face to face explanations to help customer to complete forms',
@@ -1680,10 +1592,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0015',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                  childFlags: [],
                 },
                 {
                   name: 'Reading documents for customer',
@@ -1691,10 +1601,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0016',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                  childFlags: [],
                 },
                 {
                   name: 'Time and opportunity for customer to explain their needs and preferences',
@@ -1702,12 +1610,10 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0017',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'
-                  ],
-                  childFlags: []
-                }
-              ]
+                  Path: ['Party', 'Reasonable adjustment', 'Assistance with court and tribunal processes and forms'],
+                  childFlags: [],
+                },
+              ],
             },
             {
               name: 'Pre- Hearing visit',
@@ -1715,10 +1621,8 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0004',
               isParent: false,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
-              childFlags: []
+              Path: ['Party', 'Reasonable adjustment'],
+              childFlags: [],
             },
             {
               name: 'Physical access and facilities',
@@ -1726,9 +1630,7 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0005',
               isParent: true,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Accessible toilet',
@@ -1736,10 +1638,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0018',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Assistance to get to court or tribunal',
@@ -1747,10 +1647,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0019',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Assistance using lifts',
@@ -1758,10 +1656,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0020',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Lift required',
@@ -1769,10 +1665,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0021',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Parking space close to court or tribunal',
@@ -1780,10 +1674,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0022',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Personal Evacuation Emergency Plan (PEEP) arrangements',
@@ -1791,10 +1683,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0023',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Ramps',
@@ -1802,10 +1692,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0024',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Relocation to another building / hearing room / ground floor room',
@@ -1813,10 +1701,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0025',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Use of venue wheelchair',
@@ -1824,10 +1710,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0026',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
                 },
                 {
                   name: 'Wheelchair access',
@@ -1835,12 +1719,10 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0027',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Physical access and facilities'
-                  ],
-                  childFlags: []
-                }
-              ]
+                  Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+                  childFlags: [],
+                },
+              ],
             },
             {
               name: 'Within our buildings and hearing room environment',
@@ -1848,9 +1730,7 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0006',
               isParent: true,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Alterations to seating layout',
@@ -1858,10 +1738,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0028',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                  childFlags: [],
                 },
                 {
                   name: 'Chair in the witness box',
@@ -1869,10 +1747,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0030',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                  childFlags: [],
                 },
                 {
                   name: 'Chair with back support / cushion / arms / adjustable / extra leg room',
@@ -1880,10 +1756,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0031',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                  childFlags: [],
                 },
                 {
                   name: 'Hearing Enhancement System (hearing loops infra red receiver)',
@@ -1891,9 +1765,7 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0032',
                   isParent: true,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
                   childFlags: [
                     {
                       name: 'Hearing Loop',
@@ -1902,10 +1774,12 @@ describe('HearingRequirementsComponent', () => {
                       flagCode: 'RA0053',
                       isParent: false,
                       Path: [
-                        'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                        'Hearing Enhancement System (hearing loops infra red receiver)'
+                        'Party',
+                        'Reasonable adjustment',
+                        'Within our buildings and hearing room environment',
+                        'Hearing Enhancement System (hearing loops infra red receiver)',
                       ],
-                      childFlags: []
+                      childFlags: [],
                     },
                     {
                       name: 'Infra Red Receiver',
@@ -1914,10 +1788,12 @@ describe('HearingRequirementsComponent', () => {
                       flagCode: 'RA0054',
                       isParent: false,
                       Path: [
-                        'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                        'Hearing Enhancement System (hearing loops infra red receiver)'
+                        'Party',
+                        'Reasonable adjustment',
+                        'Within our buildings and hearing room environment',
+                        'Hearing Enhancement System (hearing loops infra red receiver)',
                       ],
-                      childFlags: []
+                      childFlags: [],
                     },
                     {
                       name: 'Induction Loop',
@@ -1926,12 +1802,14 @@ describe('HearingRequirementsComponent', () => {
                       flagCode: 'RA0055',
                       isParent: false,
                       Path: [
-                        'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-                        'Hearing Enhancement System (hearing loops infra red receiver)'
+                        'Party',
+                        'Reasonable adjustment',
+                        'Within our buildings and hearing room environment',
+                        'Hearing Enhancement System (hearing loops infra red receiver)',
                       ],
-                      childFlags: []
-                    }
-                  ]
+                      childFlags: [],
+                    },
+                  ],
                 },
                 {
                   name: 'Natural light',
@@ -1939,10 +1817,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0033',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                  childFlags: [],
                 },
                 {
                   name: 'Need to be close to who is speaking',
@@ -1950,10 +1826,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0034',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                  childFlags: [],
                 },
                 {
                   name: 'Separate waiting area / Private room',
@@ -1961,12 +1835,10 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0035',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'
-                  ],
-                  childFlags: []
-                }
-              ]
+                  Path: ['Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment'],
+                  childFlags: [],
+                },
+              ],
             },
             {
               name: 'The Hearing',
@@ -1974,9 +1846,7 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0007',
               isParent: true,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Domiciliary hearing',
@@ -1984,10 +1854,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0036',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'The Hearing'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                  childFlags: [],
                 },
                 {
                   name: 'Facility to be able to get up and move around',
@@ -1995,10 +1863,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0037',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'The Hearing'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                  childFlags: [],
                 },
                 {
                   name: 'On-line hearing',
@@ -2006,10 +1872,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0038',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'The Hearing'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                  childFlags: [],
                 },
                 {
                   name: 'Regular or extra breaks (eg for medication, food and drink or lavatory needs',
@@ -2017,10 +1881,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0039',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'The Hearing'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                  childFlags: [],
                 },
                 {
                   name: 'Telephone hearing',
@@ -2028,10 +1890,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0040',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'The Hearing'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                  childFlags: [],
                 },
                 {
                   name: 'Video link',
@@ -2039,12 +1899,10 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0041',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'The Hearing'
-                  ],
-                  childFlags: []
-                }
-              ]
+                  Path: ['Party', 'Reasonable adjustment', 'The Hearing'],
+                  childFlags: [],
+                },
+              ],
             },
             {
               name: 'Help or support from a third party',
@@ -2052,9 +1910,7 @@ describe('HearingRequirementsComponent', () => {
               flagComment: true,
               flagCode: 'RA0008',
               isParent: true,
-              Path: [
-                'Party', 'Reasonable adjustment'
-              ],
+              Path: ['Party', 'Reasonable adjustment'],
               childFlags: [
                 {
                   name: 'Sign Language Interpreter',
@@ -2062,10 +1918,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0042',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'CA Witness Services',
@@ -2073,10 +1927,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0043',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Clock (Community Legal Outreach Collaboration) representative',
@@ -2084,10 +1936,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0044',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Good Things foundation',
@@ -2095,10 +1945,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0045',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Intermediary',
@@ -2106,10 +1954,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0046',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Lip Speaker',
@@ -2117,10 +1963,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0047',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Mackenzie Friend',
@@ -2128,10 +1972,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0048',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Other Charity representative',
@@ -2139,10 +1981,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0049',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Personal Support Unit',
@@ -2150,10 +1990,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0050',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Speech to text reporter (Palantypist)',
@@ -2161,10 +1999,8 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0051',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
                 },
                 {
                   name: 'Support Worker / Carer',
@@ -2172,17 +2008,15 @@ describe('HearingRequirementsComponent', () => {
                   flagComment: true,
                   flagCode: 'RA0052',
                   isParent: false,
-                  Path: [
-                    'Party', 'Reasonable adjustment', 'Help or support from a third party'
-                  ],
-                  childFlags: []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+                  Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
+                  childFlags: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ];
 
   const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
@@ -2192,7 +2026,7 @@ describe('HearingRequirementsComponent', () => {
       flagParentId: 'RA0008',
       flagId: 'RA0042',
       flagDescription: 'Sign language interpreter required',
-      flagStatus: 'ACTIVE'
+      flagStatus: 'ACTIVE',
     },
     {
       partyId: 'P2',
@@ -2200,7 +2034,7 @@ describe('HearingRequirementsComponent', () => {
       flagParentId: 'CF0001',
       flagId: 'CF0006',
       flagDescription: 'Potential fraud',
-      flagStatus: 'ACTIVE'
+      flagStatus: 'ACTIVE',
     },
     {
       partyId: 'P3',
@@ -2208,33 +2042,35 @@ describe('HearingRequirementsComponent', () => {
       flagParentId: 'CF0001',
       flagId: 'CF0007',
       flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    }
+      flagStatus: 'ACTIVE',
+    },
   ];
 
-  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
-    epimms_id: '196538',
-    site_name: 'Liverpool Social Security and Child Support Tribunal',
-    court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-    open_for_public: 'YES',
-    region_id: '5',
-    region: 'North West',
-    cluster_id: '3',
-    cluster_name: 'Cheshire and Merseyside',
-    court_status: 'Open',
-    court_open_date: null,
-    closed_date: null,
-    postcode: 'L2 5UZ',
-    court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
-    phone_number: '',
-    court_location_code: '',
-    dx_address: '',
-    welsh_site_name: '',
-    welsh_court_address: '',
-    venue_name: 'Liverpool',
-    is_case_management_location: 'Y',
-    is_hearing_location: 'Y'
-  }];
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [
+    {
+      epimms_id: '196538',
+      site_name: 'Liverpool Social Security and Child Support Tribunal',
+      court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      open_for_public: 'YES',
+      region_id: '5',
+      region: 'North West',
+      cluster_id: '3',
+      cluster_name: 'Cheshire and Merseyside',
+      court_status: 'Open',
+      court_open_date: null,
+      closed_date: null,
+      postcode: 'L2 5UZ',
+      court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
+      phone_number: '',
+      court_location_code: '',
+      dx_address: '',
+      welsh_site_name: '',
+      welsh_court_address: '',
+      venue_name: 'Liverpool',
+      is_case_management_location: 'Y',
+      is_hearing_location: 'Y',
+    },
+  ];
   let component: HearingRequirementsComponent;
   let fixture: ComponentFixture<HearingRequirementsComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -2257,16 +2093,15 @@ describe('HearingRequirementsComponent', () => {
             snapshot: {
               data: {
                 caseFlags: caseFlagsRefData,
-                caseType: caseTypeRefData
-              }
+                caseType: caseTypeRefData,
+              },
             },
-            fragment: of('point-to-me')
-          }
-        }
+            fragment: of('point-to-me'),
+          },
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
     fixture = TestBed.createComponent(HearingRequirementsComponent);
     component = fixture.componentInstance;
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(FOUND_LOCATIONS));
@@ -2303,7 +2138,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
     component.hearingCondition = {
-      mode: 'create'
+      mode: 'create',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2316,8 +2151,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(2);
@@ -2325,7 +2160,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set the case flags from in-memory object when there are changes to case flags but not party name', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2338,8 +2173,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(1);
@@ -2347,7 +2182,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set the case flags from in-memory object when there are changes to case flags and party name', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2360,8 +2195,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(1);
@@ -2369,7 +2204,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set the case flags from in-memory object when there are changes to party names', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2382,8 +2217,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(1);
@@ -2391,7 +2226,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should set the case flags from in-memory object when there are changes to party names', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2404,8 +2239,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.reasonableAdjustmentFlags.length).toEqual(0);
@@ -2413,7 +2248,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should not set reasonable adjustments warning message', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2426,8 +2261,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(false);
@@ -2445,23 +2280,21 @@ describe('HearingRequirementsComponent', () => {
           firstName: 'Jane',
           lastName: 'Smith',
           preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [
-            'RA0098'
-          ],
-          interpreterLanguage: 'PF0015'
-        }
-      }
+          reasonableAdjustments: ['RA0098'],
+          interpreterLanguage: 'PF0015',
+        },
+      },
     ];
     component.hearingRequestToCompareMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      partyDetails: partyDetails
+      partyDetails: partyDetails,
     };
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      parties: partyDetails
+      parties: partyDetails,
     };
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -2474,8 +2307,8 @@ describe('HearingRequirementsComponent', () => {
         partyDetailsChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+      },
     };
     component.ngOnInit();
     expect(component.showReasonableAdjustmentFlagsWarningMessage).toEqual(true);
@@ -2490,34 +2323,24 @@ describe('HearingRequirementsComponent', () => {
         hearingLocations: [
           {
             locationId: '196538',
-            locationType: HMCLocationType.COURT
+            locationType: HMCLocationType.COURT,
           },
           {
             locationId: '234850',
-            locationType: HMCLocationType.COURT
-          }
+            locationType: HMCLocationType.COURT,
+          },
         ],
         hearingIsLinkedFlag: false,
         hearingWindow: {
           dateRangeStart: '2022-11-23T09:00:00.000Z',
           dateRangeEnd: '2022-11-30T09:00:00.000Z',
-          firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+          firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
         },
         privateHearingRequiredFlag: false,
         panelRequirements: {
-          roleType: [
-            'tj',
-            'dtj',
-            'rtj'
-          ],
+          roleType: ['tj', 'dtj', 'rtj'],
           panelPreferences: [],
-          panelSpecialisms: [
-            'BBA3-DQPM',
-            'BBA3-MQPM2-003',
-            'BBA3-MQPM2-004',
-            'BBA3-FQPM',
-            'BBA3-RMM'
-          ]
+          panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-003', 'BBA3-MQPM2-004', 'BBA3-FQPM', 'BBA3-RMM'],
         },
         autolistFlag: false,
         hearingPriorityType: 'standard',
@@ -2528,7 +2351,7 @@ describe('HearingRequirementsComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
-        listingAutoChangeReasonCode: null
+        listingAutoChangeReasonCode: null,
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',
@@ -2543,73 +2366,78 @@ describe('HearingRequirementsComponent', () => {
         caseCategories: [
           {
             categoryType: CategoryType.CaseType,
-            categoryValue: 'BBA3-002'
-          }, {
+            categoryValue: 'BBA3-002',
+          },
+          {
             categoryType: CategoryType.CaseSubType,
             categoryValue: 'BBA3-002CC',
-            categoryParent: 'BBA3-002'
-          }, {
+            categoryParent: 'BBA3-002',
+          },
+          {
             categoryType: CategoryType.CaseSubType,
             categoryValue: 'BBA3-002GC',
-            categoryParent: 'BBA3-002'
-          }, {
+            categoryParent: 'BBA3-002',
+          },
+          {
             categoryType: CategoryType.CaseSubType,
             categoryValue: 'BBA3-002RC',
-            categoryParent: 'BBA3-002'
-          }
+            categoryParent: 'BBA3-002',
+          },
         ],
         caseManagementLocationCode: '196538',
         caserestrictedFlag: false,
         caseSLAStartDate: '2021-05-05T09:00:00.000Z',
-        externalCaseReference: ''
+        externalCaseReference: '',
       },
-      partyDetails: [{
-        partyID: 'P1',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        partyName: 'Jane Smith',
-        individualDetails: {
-          title: 'Mrs',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [
-            'RA0042',
-            'RA0053',
-            'RA0013',
-            'RA0016',
-            'RA0042'],
-          interpreterLanguage: 'POR'
+      partyDetails: [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          partyName: 'Jane Smith',
+          individualDetails: {
+            title: 'Mrs',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'inPerson',
+            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'],
+            interpreterLanguage: 'POR',
+          },
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2021-12-10T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
         },
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-10T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }]
-      }, {
-        partyID: 'P2',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        partyName: 'DWP',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo',
-          reasonableAdjustments: ['RA0005'],
-          interpreterLanguage: null
+        {
+          partyID: 'P2',
+          partyType: PartyType.ORG,
+          partyRole: 'claimant',
+          partyName: 'DWP',
+          individualDetails: {
+            title: null,
+            firstName: 'DWP',
+            lastName: null,
+            preferredHearingChannel: 'byVideo',
+            reasonableAdjustments: ['RA0005'],
+            interpreterLanguage: null,
+          },
+          organisationDetails: {
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000',
+          },
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2021-12-20T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
         },
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-20T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }]
-      }]
+      ],
     };
     const storeDispatchSpy = spyOn(component.hearingStore, 'dispatch');
     component.initializeHearingRequestFromHearingValues();
@@ -2639,30 +2467,20 @@ describe('HearingRequirementsComponent', () => {
         hearingLocations: [
           {
             locationId: '196538',
-            locationType: HMCLocationType.COURT
+            locationType: HMCLocationType.COURT,
           },
           {
             locationId: '234850',
-            locationType: HMCLocationType.COURT
-          }
+            locationType: HMCLocationType.COURT,
+          },
         ],
         hearingIsLinkedFlag: false,
         hearingWindow: mockHearingWindow,
         privateHearingRequiredFlag: false,
         panelRequirements: {
-          roleType: [
-            'tj',
-            'dtj',
-            'rtj'
-          ],
+          roleType: ['tj', 'dtj', 'rtj'],
           panelPreferences: [],
-          panelSpecialisms: [
-            'BBA3-DQPM',
-            'BBA3-MQPM2-003',
-            'BBA3-MQPM2-004',
-            'BBA3-FQPM',
-            'BBA3-RMM'
-          ]
+          panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-003', 'BBA3-MQPM2-004', 'BBA3-FQPM', 'BBA3-RMM'],
         },
         autolistFlag: false,
         hearingPriorityType: 'standard',
@@ -2673,7 +2491,7 @@ describe('HearingRequirementsComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
-        listingAutoChangeReasonCode: null
+        listingAutoChangeReasonCode: null,
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',
@@ -2688,73 +2506,78 @@ describe('HearingRequirementsComponent', () => {
         caseCategories: [
           {
             categoryType: CategoryType.CaseType,
-            categoryValue: 'BBA3-002'
-          }, {
+            categoryValue: 'BBA3-002',
+          },
+          {
             categoryType: CategoryType.CaseSubType,
             categoryValue: 'BBA3-002CC',
-            categoryParent: 'BBA3-002'
-          }, {
+            categoryParent: 'BBA3-002',
+          },
+          {
             categoryType: CategoryType.CaseSubType,
             categoryValue: 'BBA3-002GC',
-            categoryParent: 'BBA3-002'
-          }, {
+            categoryParent: 'BBA3-002',
+          },
+          {
             categoryType: CategoryType.CaseSubType,
             categoryValue: 'BBA3-002RC',
-            categoryParent: 'BBA3-002'
-          }
+            categoryParent: 'BBA3-002',
+          },
         ],
         caseManagementLocationCode: '196538',
         caserestrictedFlag: false,
         caseSLAStartDate: '2021-05-05T09:00:00.000Z',
-        externalCaseReference: ''
+        externalCaseReference: '',
       },
-      partyDetails: [{
-        partyID: 'P1',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        partyName: 'Jane Smith',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-10T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }],
-        individualDetails: {
-          title: 'Mrs',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [
-            'RA0042',
-            'RA0053',
-            'RA0013',
-            'RA0016',
-            'RA0042'],
-          interpreterLanguage: 'POR'
-        }
-      }, {
-        partyID: 'P2',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        partyName: 'DWP',
-        unavailabilityRanges: [{
-          unavailableFromDate: '2021-12-20T09:00:00.000Z',
-          unavailableToDate: '2021-12-31T09:00:00.000Z',
-          unavailabilityType: UnavailabilityType.ALL_DAY
-        }],
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: ['RA0005'],
-          interpreterLanguage: null
+      partyDetails: [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          partyName: 'Jane Smith',
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2021-12-10T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
+          individualDetails: {
+            title: 'Mrs',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'inPerson',
+            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'],
+            interpreterLanguage: 'POR',
+          },
         },
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        }
-      }]
+        {
+          partyID: 'P2',
+          partyType: PartyType.ORG,
+          partyRole: 'claimant',
+          partyName: 'DWP',
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2021-12-20T09:00:00.000Z',
+              unavailableToDate: '2021-12-31T09:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
+          individualDetails: {
+            title: null,
+            firstName: 'DWP',
+            lastName: null,
+            preferredHearingChannel: 'inPerson',
+            reasonableAdjustments: ['RA0005'],
+            interpreterLanguage: null,
+          },
+          organisationDetails: {
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000',
+          },
+        },
+      ],
     };
     component.hearingRequestMainModel = expectedHearingRequestMainModel;
 
@@ -2762,7 +2585,9 @@ describe('HearingRequirementsComponent', () => {
     component.initializeHearingRequestFromHearingValues();
 
     // Assert
-    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(expectedHearingRequestMainModel.hearingDetails.hearingWindow);
+    expect(component.hearingRequestMainModel.hearingDetails.hearingWindow).toEqual(
+      expectedHearingRequestMainModel.hearingDetails.hearingWindow
+    );
   });
 
   it('should return an empty array when partyDetails is empty', () => {
@@ -2778,55 +2603,55 @@ describe('HearingRequirementsComponent', () => {
 
   it('should remove language interpreter flag from reasonable adjustments', () => {
     // Arrange
-    const partyDetails: PartyDetailsModel[] = [{
-      partyID: 'P1',
-      partyType: PartyType.IND,
-      partyRole: 'appellant',
-      partyName: 'Jane Smith',
-      unavailabilityRanges: [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }],
-      individualDetails: {
-        title: 'Mrs',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        preferredHearingChannel: 'inPerson',
-        reasonableAdjustments: [
-          'RA0042',
-          'RA0053',
-          CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID,
-          'RA0013',
-          'RA0016',
-          'RA0042'
+    const partyDetails: PartyDetailsModel[] = [
+      {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        partyName: 'Jane Smith',
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-10T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
+          },
         ],
-        interpreterLanguage: 'POR'
-      }
-    }, {
-      partyID: 'P2',
-      partyType: PartyType.ORG,
-      partyRole: 'claimant',
-      partyName: 'DWP',
-      unavailabilityRanges: [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }],
-      individualDetails: {
-        title: null,
-        firstName: 'DWP',
-        lastName: null,
-        preferredHearingChannel: 'byVideo',
-        reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
-        interpreterLanguage: null
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+          reasonableAdjustments: ['RA0042', 'RA0053', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID, 'RA0013', 'RA0016', 'RA0042'],
+          interpreterLanguage: 'POR',
+        },
       },
-      organisationDetails: {
-        name: 'DWP',
-        organisationType: 'GOV',
-        cftOrganisationID: 'O100000'
-      }
-    }];
+      {
+        partyID: 'P2',
+        partyType: PartyType.ORG,
+        partyRole: 'claimant',
+        partyName: 'DWP',
+        unavailabilityRanges: [
+          {
+            unavailableFromDate: '2021-12-20T09:00:00.000Z',
+            unavailableToDate: '2021-12-31T09:00:00.000Z',
+            unavailabilityType: UnavailabilityType.ALL_DAY,
+          },
+        ],
+        individualDetails: {
+          title: null,
+          firstName: 'DWP',
+          lastName: null,
+          preferredHearingChannel: 'byVideo',
+          reasonableAdjustments: ['RA0005', CaseFlagsUtils.LANGUAGE_INTERPRETER_FLAG_ID],
+          interpreterLanguage: null,
+        },
+        organisationDetails: {
+          name: 'DWP',
+          organisationType: 'GOV',
+          cftOrganisationID: 'O100000',
+        },
+      },
+    ];
 
     // Act
     const result = component.combinePartiesWithIndOrOrg(partyDetails);
@@ -2834,9 +2659,7 @@ describe('HearingRequirementsComponent', () => {
     // Assert
     expect(result.length).toEqual(2);
     const transformedPartyDetails = _.cloneDeep(partyDetails);
-    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
-      'RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'
-    ];
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
     transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
     expect(result).toEqual(transformedPartyDetails);
   });
@@ -2858,7 +2681,7 @@ describe('HearingRequirementsComponent', () => {
 
   it('should check data for mismatched Party Ids, and display errors if found', () => {
     component.hearingCondition = {
-      mode: 'create'
+      mode: 'create',
     };
     const serviceHearingValuesModel: ServiceHearingValuesModel = {
       hmctsServiceID: 'BBA3',
@@ -2870,20 +2693,23 @@ describe('HearingRequirementsComponent', () => {
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002'
-        }, {
+          categoryValue: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002'
-        }
+          categoryParent: 'BBA3-002',
+        },
       ],
       caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
       caserestrictedFlag: false,
@@ -2893,20 +2719,21 @@ describe('HearingRequirementsComponent', () => {
       hearingWindow: {
         dateRangeStart: '2022-11-23T09:00:00.000Z',
         dateRangeEnd: '2022-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
+        firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
       },
       duration: 45,
       hearingPriorityType: 'standard',
       numberOfPhysicalAttendees: 2,
       hearingInWelshFlag: false,
-      hearingLocations: [{
-        locationId: '196538',
-        locationType: HMCLocationType.COURT
-      },
-      {
-        locationId: '234850',
-        locationType: HMCLocationType.COURT
-      }
+      hearingLocations: [
+        {
+          locationId: '196538',
+          locationType: HMCLocationType.COURT,
+        },
+        {
+          locationId: '234850',
+          locationType: HMCLocationType.COURT,
+        },
       ],
       caseAdditionalSecurityFlag: false,
       facilitiesRequired: [],
@@ -2916,47 +2743,29 @@ describe('HearingRequirementsComponent', () => {
       caseInterpreterRequiredFlag: false,
       leadJudgeContractType: '',
       judiciary: {
-        roleType: [
-          ''
-        ],
-        authorisationTypes: [
-          ''
-        ],
-        authorisationSubType: [
-          ''
-        ],
+        roleType: [''],
+        authorisationTypes: [''],
+        authorisationSubType: [''],
         panelComposition: [
           {
             memberType: '',
-            count: 1
-          }
+            count: 1,
+          },
         ],
         judiciaryPreferences: [
           {
             memberID: 'p1000000',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.EXCLUDE
-          }
+            requirementType: RequirementType.EXCLUDE,
+          },
         ],
-        judiciarySpecialisms: [
-          ''
-        ]
+        judiciarySpecialisms: [''],
       },
       hearingIsLinkedFlag: false,
       panelRequirements: {
-        roleType: [
-          'tj',
-          'dtj',
-          'rtj'
-        ],
+        roleType: ['tj', 'dtj', 'rtj'],
         panelPreferences: [],
-        panelSpecialisms: [
-          'BBA3-DQPM',
-          'BBA3-MQPM2-003',
-          'BBA3-MQPM2-004',
-          'BBA3-FQPM',
-          'BBA3-RMM'
-        ]
+        panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-003', 'BBA3-MQPM2-004', 'BBA3-FQPM', 'BBA3-RMM'],
       },
       parties: [
         {
@@ -2970,22 +2779,15 @@ describe('HearingRequirementsComponent', () => {
             lastName: 'Smith',
             preferredHearingChannel: 'inPerson',
             interpreterLanguage: 'POR',
-            reasonableAdjustments: [
-              'RA0042',
-              'RA0053',
-              'RA0013',
-              'RA0016',
-              'RA0042',
-              'PF0015'
-            ]
+            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042', 'PF0015'],
           },
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-10T09:00:00.000Z',
               unavailableToDate: '2021-12-31T09:00:00.000Z',
-              unavailabilityType: UnavailabilityType.ALL_DAY
-            }
-          ]
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
         },
         {
           partyID: 'P2',
@@ -2998,23 +2800,22 @@ describe('HearingRequirementsComponent', () => {
             lastName: null,
             preferredHearingChannel: 'inPerson',
             interpreterLanguage: null,
-            reasonableAdjustments: [
-              'RA0005'
-            ]
+            reasonableAdjustments: ['RA0005'],
           },
           organisationDetails: {
             name: 'DWP',
             organisationType: 'GOV',
-            cftOrganisationID: 'O100000'
+            cftOrganisationID: 'O100000',
           },
           unavailabilityRanges: [
             {
               unavailableFromDate: '2021-12-20T09:00:00.000Z',
               unavailableToDate: '2021-12-31T09:00:00.000Z',
-              unavailabilityType: UnavailabilityType.ALL_DAY
-            }
-          ]
-        }],
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
+        },
+      ],
       caseFlags: {
         flags: [
           {
@@ -3023,7 +2824,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'RA0008',
             flagId: 'RA0042',
             flagDescription: 'Sign language interpreter required',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P1',
@@ -3031,7 +2832,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'RA0032',
             flagId: 'RA0053',
             flagDescription: 'Hearing loop required',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P1',
@@ -3039,7 +2840,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'RA0002',
             flagId: 'RA0013',
             flagDescription: 'Larger font size',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P1',
@@ -3047,7 +2848,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'RA0003',
             flagId: 'RA0016',
             flagDescription: 'Reading documents for customer',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P1',
@@ -3055,7 +2856,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'RA0008',
             flagId: 'RA0042',
             flagDescription: 'Sign Language Interpreter',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P1',
@@ -3063,7 +2864,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'PF0001',
             flagId: 'PF0015',
             flagDescription: 'Language Interpreter',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P1',
@@ -3071,7 +2872,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'PF0001',
             flagId: 'PF0002',
             flagDescription: 'Vulnerable user',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P2',
@@ -3079,7 +2880,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'RA0001',
             flagId: 'RA0005',
             flagDescription: 'Physical access and facilities',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P2',
@@ -3087,7 +2888,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'PF0001',
             flagId: 'PF0011',
             flagDescription: 'Banning order',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P2',
@@ -3095,7 +2896,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'CF0001',
             flagId: 'CF0002',
             flagDescription: 'Complex Case',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P2',
@@ -3103,7 +2904,7 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'CF0001',
             flagId: 'CF0006',
             flagDescription: 'Potential fraud',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P2',
@@ -3111,43 +2912,43 @@ describe('HearingRequirementsComponent', () => {
             flagParentId: 'CF0001',
             flagId: 'CF0007',
             flagDescription: 'Urgent flag',
-            flagStatus: 'ACTIVE'
-          }
+            flagStatus: 'ACTIVE',
+          },
         ],
-        flagAmendURL: '/'
+        flagAmendURL: '/',
       },
       screenFlow: [
         {
           screenName: 'hearing-requirements',
           navigation: [
             {
-              resultValue: 'hearing-facilities'
-            }
-          ]
+              resultValue: 'hearing-facilities',
+            },
+          ],
         },
         {
           screenName: 'hearing-facilities',
           navigation: [
             {
-              resultValue: 'hearing-stage'
-            }
-          ]
+              resultValue: 'hearing-stage',
+            },
+          ],
         },
         {
           screenName: 'hearing-stage',
           navigation: [
             {
-              resultValue: 'hearing-attendance'
-            }
-          ]
+              resultValue: 'hearing-attendance',
+            },
+          ],
         },
         {
           screenName: 'hearing-attendance',
           navigation: [
             {
-              resultValue: 'hearing-venue'
-            }
-          ]
+              resultValue: 'hearing-venue',
+            },
+          ],
         },
         {
           screenName: 'hearing-venue',
@@ -3156,65 +2957,68 @@ describe('HearingRequirementsComponent', () => {
             {
               conditionOperator: 'INCLUDE',
               conditionValue: '7',
-              resultValue: 'hearing-welsh'
+              resultValue: 'hearing-welsh',
             },
             {
               conditionOperator: 'NOT INCLUDE',
               conditionValue: '7',
-              resultValue: 'hearing-judge'
-            }
-          ]
+              resultValue: 'hearing-judge',
+            },
+          ],
         },
         {
           screenName: 'hearing-welsh',
           navigation: [
             {
-              resultValue: 'hearing-judge'
-            }
-          ]
+              resultValue: 'hearing-judge',
+            },
+          ],
         },
         {
           screenName: 'hearing-judge',
           navigation: [
             {
-              resultValue: 'hearing-panel'
-            }
-          ]
+              resultValue: 'hearing-panel',
+            },
+          ],
         },
         {
           screenName: 'hearing-panel',
           navigation: [
             {
-              resultValue: 'hearing-timing'
-            }
-          ]
+              resultValue: 'hearing-timing',
+            },
+          ],
         },
         {
           screenName: 'hearing-timing',
           navigation: [
             {
-              resultValue: 'hearing-additional-instructions'
-            }
-          ]
+              resultValue: 'hearing-additional-instructions',
+            },
+          ],
         },
         {
           screenName: 'hearing-additional-instructions',
           navigation: [
             {
-              resultValue: 'hearing-create-edit-summary'
-            }
-          ]
-        }
+              resultValue: 'hearing-create-edit-summary',
+            },
+          ],
+        },
       ],
       vocabulary: [
         {
-          word1: ''
-        }
-      ]
+          word1: '',
+        },
+      ],
     };
     component.serviceHearingValuesModel = serviceHearingValuesModel;
     component.ngOnInit();
     expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: 'The Party IDs for this request appear mismatched, please reload and start the request again.' });
+    expect(component.validationErrors).toEqual({
+      id: 'reload-error-message',
+      message: 'The Party IDs for this request appear mismatched, please reload and start the request again.',
+    });
   });
 });

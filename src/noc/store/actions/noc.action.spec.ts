@@ -83,7 +83,7 @@ describe('Noc Actions', () => {
     it('should create an action', () => {
       const affirmationError = {
         AFFIRMATION_DEFAULT_DISAGREE_ERROR,
-        AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+        AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR,
       };
       const action = new fromNocAction.SetAffirmationError(affirmationError);
       expect(action.type).toBe(fromNocAction.SET_AFFIRMATION_ERROR);

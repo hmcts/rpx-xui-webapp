@@ -28,9 +28,9 @@ describe('AdditionalInstructionsAmendedConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           hearingDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-            listingComments: 'some comments'
-          }
-        }
+            listingComments: 'some comments',
+          },
+        },
       },
       hearingRequest: {
         ...initialState.hearings.hearingRequestToCompare,
@@ -38,10 +38,10 @@ describe('AdditionalInstructionsAmendedConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           hearingDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-            listingComments: 'some comments'
-          }
-        }
-      }
+            listingComments: 'some comments',
+          },
+        },
+      },
     };
     const result$ = additionalInstructionsAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = false;

@@ -13,7 +13,7 @@ const MEDIA_VIEWER = 'media-viewer-info';
   selector: 'exui-media-viewer',
   templateUrl: './media-viewer-wrapper.component.html',
   styleUrls: ['./media-viewer-wrapper.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class MediaViewerWrapperComponent implements OnInit {
   public mediaURL = '';
@@ -85,12 +85,12 @@ export class MediaViewerWrapperComponent implements OnInit {
   }
 
   /**
-     * isIcpEnabled()
-     * Determines ICP visibility
-     *
-     * @param isEnabled - true
-     * @param icpJurisdictions - []
-     */
+   * isIcpEnabled()
+   * Determines ICP visibility
+   *
+   * @param isEnabled - true
+   * @param icpJurisdictions - []
+   */
   public isIcpEnabled(isEnabled: boolean, icpJurisdictions: string[]): boolean {
     return icpJurisdictions && icpJurisdictions.length > 0 ? icpJurisdictions.includes(this.caseJurisdiction) : isEnabled;
   }

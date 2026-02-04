@@ -20,14 +20,13 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
-  template: ''
+  template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
 }
 
 class NativeElement {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public focus() {}
 }
 
@@ -38,7 +37,7 @@ class MockAutoCompleteInputBox {
 @Component({
   standalone: false,
   selector: 'exui-search-location',
-  template: ''
+  template: '',
 })
 class MockLocationSearchContainerComponent {
   @Input() public serviceIds: string = '';
@@ -51,29 +50,31 @@ class MockLocationSearchContainerComponent {
 }
 
 describe('HearingVenueComponent', () => {
-  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
-    epimms_id: '196538',
-    site_name: 'Liverpool Social Security and Child Support Tribunal',
-    court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-    open_for_public: 'YES',
-    region_id: '5',
-    region: 'North West',
-    cluster_id: '3',
-    cluster_name: 'Cheshire and Merseyside',
-    court_status: 'Open',
-    court_open_date: null,
-    closed_date: null,
-    postcode: 'L2 5UZ',
-    court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
-    phone_number: '',
-    court_location_code: '',
-    dx_address: '',
-    welsh_site_name: '',
-    welsh_court_address: '',
-    venue_name: 'Liverpool',
-    is_case_management_location: 'Y',
-    is_hearing_location: 'Y'
-  }];
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [
+    {
+      epimms_id: '196538',
+      site_name: 'Liverpool Social Security and Child Support Tribunal',
+      court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      open_for_public: 'YES',
+      region_id: '5',
+      region: 'North West',
+      cluster_id: '3',
+      cluster_name: 'Cheshire and Merseyside',
+      court_status: 'Open',
+      court_open_date: null,
+      closed_date: null,
+      postcode: 'L2 5UZ',
+      court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
+      phone_number: '',
+      court_location_code: '',
+      dx_address: '',
+      welsh_site_name: '',
+      welsh_court_address: '',
+      venue_name: 'Liverpool',
+      is_case_management_location: 'Y',
+      is_hearing_location: 'Y',
+    },
+  ];
   let component: HearingVenueComponent;
   let fixture: ComponentFixture<HearingVenueComponent>;
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -82,7 +83,12 @@ describe('HearingVenueComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [HearingVenueComponent, MockLocationSearchContainerComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
+      declarations: [
+        HearingVenueComponent,
+        MockLocationSearchContainerComponent,
+        MockHearingPartiesComponent,
+        MockRpxTranslatePipe,
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
@@ -92,22 +98,23 @@ describe('HearingVenueComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         FormBuilder,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(HearingVenueComponent);
     component = fixture.componentInstance;
-    component.selectedLocations = [{
-      epimms_id: '1',
-      court_name: 'wolverhampton court',
-      region: 'welsh'
-    }] as LocationByEpimmsModel[];
+    component.selectedLocations = [
+      {
+        epimms_id: '1',
+        court_name: 'wolverhampton court',
+        region: 'welsh',
+      },
+    ] as LocationByEpimmsModel[];
 
     spyOn(component, 'removeSelection').and.callThrough();
     spyOn(component, 'appendLocation').and.callThrough();
@@ -125,9 +132,7 @@ describe('HearingVenueComponent', () => {
   it('should set hearingList.hearingListMainModel to SSCS', async () => {
     fixture.detectChanges();
     await fixture.whenStable().then(() => {
-      expect(component.selectedLocations).toEqual([
-        ...FOUND_LOCATIONS
-      ]);
+      expect(component.selectedLocations).toEqual([...FOUND_LOCATIONS]);
 
       expect(component.serviceIds).toEqual('BBA3');
     });
@@ -151,16 +156,18 @@ describe('HearingVenueComponent', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue('Hatt');
     const formValid = component.isFormValid();
     expect(formValid).toEqual(false);
-    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors)
-      .toEqual({ addLocation: 'Add a location' });
+    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors).toEqual({
+      addLocation: 'Add a location',
+    });
   });
 
   it('should return false when calling isFormValid with location selected is undefined', () => {
     component.findLocationFormGroup.controls.locationSelectedFormControl.markAsDirty();
     const formValid = component.isFormValid();
     expect(formValid).toEqual(false);
-    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors)
-      .toEqual({ addLocation: 'Enter a location' });
+    expect(component.findLocationFormGroup.controls.locationSelectedFormControl.errors).toEqual({
+      addLocation: 'Enter a location',
+    });
   });
 
   it('should return false when calling isFormValid with location not selected', () => {
@@ -175,7 +182,7 @@ describe('HearingVenueComponent', () => {
     const location: LocationByEpimmsModel = {
       epimms_id: '123',
       court_name: 'Test Caurt Name',
-      region: 'Wales'
+      region: 'Wales',
     } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
@@ -197,7 +204,7 @@ describe('HearingVenueComponent', () => {
     const location: LocationByEpimmsModel = {
       epimms_id: '123',
       court_name: 'Test Caurt Name',
-      region: 'Wales'
+      region: 'Wales',
     } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
@@ -223,7 +230,7 @@ describe('HearingVenueComponent', () => {
       court_type: 'Employment Tribunal',
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
-      postcode: 'AB11 6LT'
+      postcode: 'AB11 6LT',
     } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
@@ -250,7 +257,7 @@ describe('HearingVenueComponent', () => {
       court_type: 'Employment Tribunal',
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
-      postcode: 'AB11 6LT'
+      postcode: 'AB11 6LT',
     } as LocationByEpimmsModel;
 
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(location);
@@ -276,7 +283,7 @@ describe('HearingVenueComponent', () => {
       court_type: 'Employment Tribunal',
       open_for_public: 'Yes',
       court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN',
-      postcode: 'AB11 6LT'
+      postcode: 'AB11 6LT',
     } as LocationByEpimmsModel;
     component.findLocationFormGroup.controls.locationSelectedFormControl.setValue(undefined);
     component.addSelection();
@@ -310,9 +317,13 @@ describe('HearingVenueComponent', () => {
     const hearingHeader = fixture.debugElement.query(By.css('.govuk-heading-l'));
     expect(hearingHeader.nativeElement.innerText).toContain('What are the hearing venue details?');
     const hint = fixture.debugElement.query(By.css('.govuk-hint'));
-    expect(hint.nativeElement.innerText).toContain('If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.');
+    expect(hint.nativeElement.innerText).toContain(
+      'If this is a fully remote hearing you must still select the court or tribunal which will be managing the case.'
+    );
     const findCourtLink = fixture.debugElement.query(By.css('.govuk-inset-text'));
-    expect(findCourtLink.nativeElement.innerText).toContain('You can check the venue has the required facilities or reasonable adjustments using');
+    expect(findCourtLink.nativeElement.innerText).toContain(
+      'You can check the venue has the required facilities or reasonable adjustments using'
+    );
   });
 
   afterEach(() => {

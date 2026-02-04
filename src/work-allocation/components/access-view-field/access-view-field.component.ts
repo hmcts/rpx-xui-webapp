@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
   standalone: false,
   selector: 'exui-access-view-field',
   templateUrl: './access-view-field.component.html',
-  styleUrls: ['access-view-field.component.scss']
+  styleUrls: ['access-view-field.component.scss'],
 })
 export class AccessViewFieldComponent {
   /**
@@ -31,7 +31,7 @@ export class AccessViewFieldComponent {
       specificAccessReason: thisRole.specificAccessReason,
       reviewerRoleCategory: thisRole.reviewerRoleCategory,
       infoRequiredComment: thisRole.infoRequiredComment,
-      endDate: thisRole.endDate
+      endDate: thisRole.endDate,
     };
     this.router.navigate(['/role-access/rejected-request'], { queryParams });
   }

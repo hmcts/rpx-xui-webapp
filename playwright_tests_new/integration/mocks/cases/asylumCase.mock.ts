@@ -1,4 +1,3 @@
-
 export function asylumCase() {
   return {
     _links: { self: { href: 'http://gateway-ccd.aat.platform.hmcts.net/internal/cases/1701861283367022' } },

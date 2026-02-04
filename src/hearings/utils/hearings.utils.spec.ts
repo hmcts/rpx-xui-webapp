@@ -607,7 +607,7 @@ describe('HearingsUtils', () => {
       ).toBeFalsy();
     });
 
-    it('should return false when hmctsInternalCaseName differs between HRM and SHV', () => {
+    it('should return true even if hmctsInternalCaseName differs between HRM and SHV', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         caseDetails: {
@@ -628,7 +628,7 @@ describe('HearingsUtils', () => {
 
       expect(
         HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
-      ).toBeFalsy();
+      ).toBeTrue();
     });
 
     it('should ignore empty-string caseReference and still return true when names/service match', () => {

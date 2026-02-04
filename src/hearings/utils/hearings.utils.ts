@@ -285,24 +285,12 @@ export class HearingsUtils {
     const hrmServiceCode = hrmCaseDetails.hmctsServiceCode;
     const shvServiceCode = shv.hmctsServiceID;
 
-    const hrmInternalName = hrmCaseDetails.hmctsInternalCaseName;
-    const shvInternalName = shv.hmctsInternalCaseName;
-
-    const hrmPublicName = hrmCaseDetails.publicCaseName;
-    const shvPublicName = shv.publicCaseName;
-
     // Service code mismatch
     if (hrmServiceCode && shvServiceCode && hrmServiceCode !== shvServiceCode) {
       return false;
     }
 
-    // Name mismatch
-    if (hrmInternalName && shvInternalName && hrmInternalName !== shvInternalName) {
-      return false;
-    }
-    if (hrmPublicName && shvPublicName && hrmPublicName !== shvPublicName) {
-      return false;
-    }
+    // Note: Check for case name removed - case name can change during hearing journey
 
     return true;
   }

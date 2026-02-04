@@ -29,7 +29,6 @@ nodejs:
     FEATURE_JRD_E_LINKS_V2_ENABLED: true
     FEATURE_OIDC_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true
-    SERVICES_IDAM_CLIENT_ID: xuiwebapp_passport_0_7
   keyVaults:
     rpx:
       secrets:

@@ -6,7 +6,7 @@ import { AppConstants } from '../../../app/app.constants';
   standalone: false,
   selector: 'exui-task-name-field',
   templateUrl: './task-name-field.component.html',
-  styleUrls: ['task-name-field.component.scss']
+  styleUrls: ['task-name-field.component.scss'],
 })
 /**
  * Note: This class currently identical to case-name-field component however

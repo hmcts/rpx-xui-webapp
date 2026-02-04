@@ -17,7 +17,7 @@ describe('PaletteService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PaletteService]
+      providers: [PaletteService],
     });
     service = TestBed.inject(PaletteService);
   });
@@ -41,12 +41,12 @@ describe('PaletteService', () => {
           regular_expression: null,
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: null
+          collection_field_type: null,
         },
         display_context_parameter: 'test_context',
         challenge_question_id: 'test_challenge',
         answer_field: 'test_answer',
-        question_id: 'test_question_id'
+        question_id: 'test_question_id',
       } as NocQuestion;
     };
 
@@ -185,12 +185,12 @@ describe('PaletteService', () => {
           regular_expression: null,
           fixed_list_items: [],
           complex_fields: [],
-          collection_field_type: null
+          collection_field_type: null,
         },
         display_context_parameter: 'MANDATORY',
         challenge_question_id: 'test_challenge',
         answer_field: 'test_answer',
-        question_id: 'field123'
+        question_id: 'field123',
       };
 
       const result = service.getFieldComponentClass(mockQuestion);
@@ -200,15 +200,15 @@ describe('PaletteService', () => {
 
     it('should handle all defined field types', () => {
       const fieldTypeMappings: { [key: string]: Type<unknown> } = {
-        'Text': NocTextFieldComponent,
-        'Number': NocNumberFieldComponent,
-        'Email': NocEmailFieldComponent,
-        'PhoneUK': NocPhoneUkFieldComponent,
-        'YesOrNo': NocYesNoFieldComponent,
-        'Postcode': NocPostcodeFieldComponent,
-        'Date': NocDateFieldComponent,
-        'DateTime': NocDateTimeFieldComponent,
-        'Time': NocTimeFieldComponent
+        Text: NocTextFieldComponent,
+        Number: NocNumberFieldComponent,
+        Email: NocEmailFieldComponent,
+        PhoneUK: NocPhoneUkFieldComponent,
+        YesOrNo: NocYesNoFieldComponent,
+        Postcode: NocPostcodeFieldComponent,
+        Date: NocDateFieldComponent,
+        DateTime: NocDateTimeFieldComponent,
+        Time: NocTimeFieldComponent,
       };
 
       Object.entries(fieldTypeMappings).forEach(([type, expectedComponent]) => {

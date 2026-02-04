@@ -13,8 +13,7 @@ import { AllWorkHomeComponent } from './all-work-home.component';
 
 @Component({
   standalone: false,
-  template: `
-    <exui-all-work-home></exui-all-work-home>`
+  template: ` <exui-all-work-home></exui-all-work-home>`,
 })
 class WrapperComponent {
   @ViewChild(AllWorkHomeComponent, { static: true }) public appComponentRef: AllWorkHomeComponent;
@@ -24,7 +23,7 @@ describe('AllWorkHomeComponent', () => {
   let component: AllWorkHomeComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: Router;
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask']);
   const SELECTED_LOCATIONS = { id: 'locations', fields: [{ name: 'locations', value: ['231596', '698118'] }] };
@@ -35,8 +34,8 @@ describe('AllWorkHomeComponent', () => {
     givenErrors: {
       subscribe: () => null,
       next: () => null,
-      unsubscribe: () => null
-    }
+      unsubscribe: () => null,
+    },
   };
 
   beforeEach(() => {
@@ -50,10 +49,10 @@ describe('AllWorkHomeComponent', () => {
           baseUrl: '',
           debounceTimeMs: 300,
           validity: {
-            days: 1
+            days: 1,
           },
-          testMode: true
-        })
+          testMode: true,
+        }),
       ],
       declarations: [AllWorkHomeComponent, WrapperComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -61,9 +60,10 @@ describe('AllWorkHomeComponent', () => {
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
-          provide: FilterService, useValue: mockFilterService
-        }
-      ]
+          provide: FilterService,
+          useValue: mockFilterService,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;

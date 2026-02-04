@@ -10,7 +10,14 @@ import { of } from 'rxjs';
 import { ErrorMessage } from '../../../../app/models';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { initialState } from '../../../hearing.test.data';
-import { ACTION, HearingDatePriorityEnum, Mode, PartyType, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
+import {
+  ACTION,
+  HearingDatePriorityEnum,
+  Mode,
+  PartyType,
+  RadioOptions,
+  UnavailabilityType,
+} from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { UnavailabilityRangeModel } from '../../../models/unavailabilityRange.model';
 import { HearingsService } from '../../../services/hearings.service';
@@ -24,7 +31,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
-  template: ''
+  template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -37,7 +44,7 @@ describe('HearingTimingComponent', () => {
 
   let component: HearingTimingComponent;
   let fixture: ComponentFixture<HearingTimingComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: Router;
   let nativeElement: any;
 
@@ -53,7 +60,7 @@ describe('HearingTimingComponent', () => {
       category_key: 'HearingPriority',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'standard',
@@ -66,8 +73,8 @@ describe('HearingTimingComponent', () => {
       category_key: 'HearingPriority',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(() => {
@@ -84,17 +91,16 @@ describe('HearingTimingComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingPriorities: priorities
-              }
+                hearingPriorities: priorities,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(HearingTimingComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
@@ -127,7 +133,7 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingDateError', () => {
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(null);
-    component.priorityForm.controls.specificDate.setErrors({ 'incorrect': true });
+    component.priorityForm.controls.specificDate.setErrors({ incorrect: true });
     component.showHearingDateError();
     expect(component.hearingPriorityDateError).toBe(HearingDatePriorityEnum.PriorityDateError);
   });
@@ -135,7 +141,7 @@ describe('HearingTimingComponent', () => {
   it('should set showHearingPriorityError', () => {
     component.showHearingPriorityError();
     expect(component.hearingPriorityError).toBe(null);
-    component.priorityForm.controls.priority.setErrors({ 'incorrect': true });
+    component.priorityForm.controls.priority.setErrors({ incorrect: true });
     component.showHearingPriorityError();
     expect(component.hearingPriorityError).toBe(HearingDatePriorityEnum.PriorityError);
   });
@@ -146,13 +152,13 @@ describe('HearingTimingComponent', () => {
       {
         unavailableFromDate: '2021-12-10T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
+        unavailabilityType: UnavailabilityType.ALL_DAY,
       },
       {
         unavailableFromDate: '2021-12-10T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
     ];
     component.checkUnavailableDatesList(unavailabilityDates);
     expect(component.partiesNotAvailableDates[2]).toBe('12 December 2021');
@@ -164,7 +170,7 @@ describe('HearingTimingComponent', () => {
     const unavailabilityDate: UnavailabilityRangeModel = {
       unavailableFromDate: '2021-12-10T09:00:00.000Z',
       unavailableToDate: '2021-12-11T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
+      unavailabilityType: UnavailabilityType.ALL_DAY,
     };
     component.checkUnavailableDatesList([unavailabilityDate]);
     expect(component.partiesNotAvailableDates[0]).toBe('10 December 2021');
@@ -178,7 +184,7 @@ describe('HearingTimingComponent', () => {
     const form = new FormGroup({
       given_day: new FormControl(),
       given_month: new FormControl(),
-      given_year: new FormControl()
+      given_year: new FormControl(),
     });
     form.controls.given_day.setValue('12');
     expect((component as any).getDateFormatted(form, 'given')).toBe('12-null-null');
@@ -188,7 +194,7 @@ describe('HearingTimingComponent', () => {
     const form = new FormGroup({
       given_day: new FormControl(),
       given_month: new FormControl(),
-      given_year: new FormControl()
+      given_year: new FormControl(),
     });
     form.controls.given_day.setValue('');
     form.controls.given_month.setValue('');
@@ -243,7 +249,7 @@ describe('HearingTimingComponent', () => {
     durationLengthControls.get('minutes').setValue('3000');
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.LengthError);
-    durationLengthControls.setErrors({ 'incorrect': true });
+    durationLengthControls.setErrors({ incorrect: true });
     component.showHearingLengthError();
     expect(component.hearingLengthErrorValue).toBe(HearingDatePriorityEnum.TotalLengthError);
   });
@@ -495,7 +501,7 @@ describe('HearingTimingComponent', () => {
     component.hearingRequestMainModel.hearingDetails.hearingPriorityType = 'Urgent';
     component.checkFormData();
     expect(component.priorityForm.valid).toBe(true);
-    component.priorityForm.setErrors({ 'incorrect': true });
+    component.priorityForm.setErrors({ incorrect: true });
     spyOn(component, 'showHearingLengthError').and.callThrough();
     spyOn(component, 'showHearingDateError').and.callThrough();
     spyOn(component, 'showHearingPriorityError').and.callThrough();
@@ -521,7 +527,7 @@ describe('HearingTimingComponent', () => {
 
   it('should set the hearing window confirmation to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -536,8 +542,8 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.hearingWindowChangesRequired).toEqual(true);
@@ -548,7 +554,7 @@ describe('HearingTimingComponent', () => {
 
   it('should set hearing unavailability dates changed to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -557,7 +563,7 @@ describe('HearingTimingComponent', () => {
       hearingWindow: {
         dateRangeStart: '2022-12-12T09:00:00.000Z',
         dateRangeEnd: '2022-12-12T09:00:00.000Z',
-        firstDateTimeMustBe: ''
+        firstDateTimeMustBe: '',
       },
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
@@ -567,8 +573,8 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: true,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.hearingUnavailabilityDatesChanged).toEqual(true);
@@ -576,7 +582,7 @@ describe('HearingTimingComponent', () => {
 
   it('should set the hearing window confirmation to false', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -590,8 +596,8 @@ describe('HearingTimingComponent', () => {
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.hearingWindowChangesRequired).toEqual(false);
@@ -628,14 +634,15 @@ describe('HearingTimingComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        hearingWindowChangesRequired: true, hearingWindowChangesConfirmed: false,
+        hearingWindowChangesRequired: true,
+        hearingWindowChangesConfirmed: false,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
 
     component.setSourceOfData();
@@ -651,14 +658,15 @@ describe('HearingTimingComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        hearingWindowChangesRequired: true, hearingWindowChangesConfirmed: true,
+        hearingWindowChangesRequired: true,
+        hearingWindowChangesConfirmed: true,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
 
     component.setSourceOfData();
@@ -680,8 +688,8 @@ describe('HearingTimingComponent', () => {
         participantAttendanceChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
 
     component.setSourceOfData();
@@ -707,11 +715,19 @@ describe('HearingTimingComponent', () => {
     expect(component.duration).toBe(60);
     expect(component.hearingWindow).toEqual({ dateRangeStart: null, dateRangeEnd: '2021-01-01T00:00:00.000Z' });
     expect(component.hearingPriorityType).toBe('Urgent');
-    expect(component.unavailabilityDateList[0].unavailableFromDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[0].unavailabilityRanges[0].unavailableFromDate);
-    expect(component.unavailabilityDateList[0].unavailableToDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[0].unavailabilityRanges[0].unavailableToDate);
+    expect(component.unavailabilityDateList[0].unavailableFromDate).toEqual(
+      initialState.hearings.hearingValues.serviceHearingValuesModel.parties[0].unavailabilityRanges[0].unavailableFromDate
+    );
+    expect(component.unavailabilityDateList[0].unavailableToDate).toEqual(
+      initialState.hearings.hearingValues.serviceHearingValuesModel.parties[0].unavailabilityRanges[0].unavailableToDate
+    );
     expect(component.unavailabilityDateList[0].unavailabilityType).toEqual(UnavailabilityType.ALL_DAY);
-    expect(component.unavailabilityDateList[1].unavailableFromDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[1].unavailabilityRanges[0].unavailableFromDate);
-    expect(component.unavailabilityDateList[1].unavailableToDate).toEqual(initialState.hearings.hearingValues.serviceHearingValuesModel.parties[1].unavailabilityRanges[0].unavailableToDate);
+    expect(component.unavailabilityDateList[1].unavailableFromDate).toEqual(
+      initialState.hearings.hearingValues.serviceHearingValuesModel.parties[1].unavailabilityRanges[0].unavailableFromDate
+    );
+    expect(component.unavailabilityDateList[1].unavailableToDate).toEqual(
+      initialState.hearings.hearingValues.serviceHearingValuesModel.parties[1].unavailabilityRanges[0].unavailableToDate
+    );
     expect(component.unavailabilityDateList[1].unavailabilityType).toEqual(UnavailabilityType.ALL_DAY);
   });
 
@@ -729,18 +745,22 @@ describe('HearingTimingComponent', () => {
         autolistFlag: false,
         amendReasonCodes: [],
         hearingChannels: [],
-        listingAutoChangeReasonCode: ''
+        listingAutoChangeReasonCode: '',
       },
-      partyDetails: [{
-        unavailabilityRanges: [{
-          unavailableFromDate: '2024-02-01',
-          unavailableToDate: '2024-02-02',
-          unavailabilityType: UnavailabilityType.AM
-        }],
-        partyID: '',
-        partyType: PartyType.IND,
-        partyRole: ''
-      }]
+      partyDetails: [
+        {
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2024-02-01',
+              unavailableToDate: '2024-02-02',
+              unavailabilityType: UnavailabilityType.AM,
+            },
+          ],
+          partyID: '',
+          partyType: PartyType.IND,
+          partyRole: '',
+        },
+      ],
     };
 
     component.setDataItems();
@@ -748,7 +768,9 @@ describe('HearingTimingComponent', () => {
     expect(component.duration).toBe(180);
     expect(component.hearingWindow).toEqual({ dateRangeStart: '2024-02-01', dateRangeEnd: '2024-02-02' });
     expect(component.hearingPriorityType).toBe('Medium');
-    expect(component.unavailabilityDateList).toEqual([{ unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM }]);
+    expect(component.unavailabilityDateList).toEqual([
+      { unavailableFromDate: '2024-02-01', unavailableToDate: '2024-02-02', unavailabilityType: UnavailabilityType.AM },
+    ]);
   });
 
   it('should set hearingUnavailabilityDatesChanged to true when hearingUnavailabilityDatesChanged is true and hearingUnavailabilityDatesConfirmed is false', () => {
@@ -758,14 +780,15 @@ describe('HearingTimingComponent', () => {
       parties: null,
       hearingWindow: null,
       afterPageVisit: {
-        hearingUnavailabilityDatesChanged: true, hearingUnavailabilityDatesConfirmed: false,
+        hearingUnavailabilityDatesChanged: true,
+        hearingUnavailabilityDatesConfirmed: false,
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
         participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
 
     component.setAmendmentFlags();
@@ -808,9 +831,15 @@ describe('HearingTimingComponent', () => {
   describe('HearingTimingComponent', () => {
     describe('isDateValidFormat', () => {
       beforeEach(() => {
-        component.firstHearingFormGroup.get('firstHearingDate_day').addValidators([Validators.required, Validators.pattern('\\d*$')]);
-        component.firstHearingFormGroup.get('firstHearingDate_month').addValidators([Validators.required, Validators.pattern('\\d*$')]);
-        component.firstHearingFormGroup.get('firstHearingDate_year').addValidators([Validators.required, Validators.pattern('\\d*$')]);
+        component.firstHearingFormGroup
+          .get('firstHearingDate_day')
+          .addValidators([Validators.required, Validators.pattern('\\d*$')]);
+        component.firstHearingFormGroup
+          .get('firstHearingDate_month')
+          .addValidators([Validators.required, Validators.pattern('\\d*$')]);
+        component.firstHearingFormGroup
+          .get('firstHearingDate_year')
+          .addValidators([Validators.required, Validators.pattern('\\d*$')]);
       });
 
       it('should return true for valid date format', () => {
@@ -863,73 +892,87 @@ describe('HearingTimingComponent', () => {
     });
   });
   function createSHV() {
-    const HMCUnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2024-11-15T09:00:00.000Z',
-      unavailableToDate: '2024-11-16T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.PM
-    }];
-    const HMCUnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2024-11-17T09:00:00.000Z',
-      unavailableToDate: '2024-11-18T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.PM
-    }];
-    const HMCUnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2024-01-17T09:00:00.000Z',
-      unavailableToDate: '2024-01-18T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.PM
-    }];
-    component.hearingRequestMainModel.partyDetails = [{
-      partyID: 'party1',
-      partyType: PartyType.IND,
-      partyRole: 'partyRole',
-      unavailabilityRanges: HMCUnavailabilityDatesParty1
-    },
-    {
-      partyID: 'party2',
-      partyType: PartyType.ORG,
-      partyRole: 'partyRole',
-      unavailabilityRanges: HMCUnavailabilityDatesParty2
-    },
-    {
-      partyID: 'party3',
-      partyType: PartyType.IND,
-      partyRole: 'partyRole',
-      unavailabilityRanges: HMCUnavailabilityDatesParty3
-    }];
+    const HMCUnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2024-11-15T09:00:00.000Z',
+        unavailableToDate: '2024-11-16T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.PM,
+      },
+    ];
+    const HMCUnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2024-11-17T09:00:00.000Z',
+        unavailableToDate: '2024-11-18T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.PM,
+      },
+    ];
+    const HMCUnavailabilityDatesParty3: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2024-01-17T09:00:00.000Z',
+        unavailableToDate: '2024-01-18T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.PM,
+      },
+    ];
+    component.hearingRequestMainModel.partyDetails = [
+      {
+        partyID: 'party1',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: HMCUnavailabilityDatesParty1,
+      },
+      {
+        partyID: 'party2',
+        partyType: PartyType.ORG,
+        partyRole: 'partyRole',
+        unavailabilityRanges: HMCUnavailabilityDatesParty2,
+      },
+      {
+        partyID: 'party3',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: HMCUnavailabilityDatesParty3,
+      },
+    ];
 
-    const SHVUnavailabilityDatesInd: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2024-10-10T09:00:00.000Z',
-      unavailableToDate: '2024-10-12T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    },
-    {
-      unavailableFromDate: '2024-10-13T09:00:00.000Z',
-      unavailableToDate: '2024-10-14T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    }];
-    const SHVUnavailabilityDatesOrg: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2024-12-10T09:00:00.000Z',
-      unavailableToDate: '2024-12-12T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    },
-    {
-      unavailableFromDate: '2024-12-13T09:00:00.000Z',
-      unavailableToDate: '2024-12-14T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    }];
+    const SHVUnavailabilityDatesInd: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2024-10-10T09:00:00.000Z',
+        unavailableToDate: '2024-10-12T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+      {
+        unavailableFromDate: '2024-10-13T09:00:00.000Z',
+        unavailableToDate: '2024-10-14T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ];
+    const SHVUnavailabilityDatesOrg: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2024-12-10T09:00:00.000Z',
+        unavailableToDate: '2024-12-12T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+      {
+        unavailableFromDate: '2024-12-13T09:00:00.000Z',
+        unavailableToDate: '2024-12-14T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ];
 
-    const SHVPartyDetail: PartyDetailsModel[] = [{
-      partyID: 'party1',
-      partyType: PartyType.IND,
-      partyRole: 'partyRole',
-      unavailabilityRanges: SHVUnavailabilityDatesInd
-    },
-    {
-      partyID: 'party2',
-      partyType: PartyType.ORG,
-      partyRole: 'partyRole',
-      unavailabilityRanges: SHVUnavailabilityDatesOrg
-    }];
+    const SHVPartyDetail: PartyDetailsModel[] = [
+      {
+        partyID: 'party1',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: SHVUnavailabilityDatesInd,
+      },
+      {
+        partyID: 'party2',
+        partyType: PartyType.ORG,
+        partyRole: 'partyRole',
+        unavailabilityRanges: SHVUnavailabilityDatesOrg,
+      },
+    ];
     return { SHVUnavailabilityDatesInd, SHVUnavailabilityDatesOrg, SHVPartyDetail };
   }
 
@@ -944,7 +987,7 @@ describe('HearingTimingComponent', () => {
         ...component.serviceHearingValuesModel,
         hearingWindow,
         duration,
-        hearingPriorityType
+        hearingPriorityType,
       };
       component.hearingRequestMainModel = {
         ...component.hearingRequestMainModel,
@@ -952,8 +995,8 @@ describe('HearingTimingComponent', () => {
           ...component.hearingRequestMainModel.hearingDetails,
           hearingWindow: hearingWindow || {},
           duration: duration || 0,
-          hearingPriorityType: hearingPriorityType || ''
-        }
+          hearingPriorityType: hearingPriorityType || '',
+        },
       };
     }
 
@@ -961,14 +1004,16 @@ describe('HearingTimingComponent', () => {
       it('should set dateRangeStartChanged when hearingWindow is valid', () => {
         setupComponentWithServiceHearingValues({
           dateRangeStart: '2024-01-01T09:00:00.000Z',
-          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+          dateRangeEnd: '2024-01-10T09:00:00.000Z',
         });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
         spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
 
         component.setAmendmentFlags();
 
-        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(component.serviceHearingValuesModel.hearingWindow);
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(
+          component.serviceHearingValuesModel.hearingWindow
+        );
         expect(component.dateRangeStartChanged).toBe(true);
       });
 
@@ -1002,7 +1047,7 @@ describe('HearingTimingComponent', () => {
       it('should set dateRangeEndChanged when hearingWindow is valid', () => {
         setupComponentWithServiceHearingValues({
           dateRangeStart: '2024-01-01T09:00:00.000Z',
-          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+          dateRangeEnd: '2024-01-10T09:00:00.000Z',
         });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
         spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
@@ -1014,7 +1059,7 @@ describe('HearingTimingComponent', () => {
 
       it('should set firstDateTimeMustBeChanged when hearingWindow is valid', () => {
         setupComponentWithServiceHearingValues({
-          firstDateTimeMustBe: '2024-01-15T09:00:00.000Z'
+          firstDateTimeMustBe: '2024-01-15T09:00:00.000Z',
         });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
         spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);
@@ -1027,7 +1072,7 @@ describe('HearingTimingComponent', () => {
       it('should not set date changes when hearingWindow is valid but dates match', () => {
         setupComponentWithServiceHearingValues({
           dateRangeStart: '2024-01-01T09:00:00.000Z',
-          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+          dateRangeEnd: '2024-01-10T09:00:00.000Z',
         });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
         spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(false);
@@ -1181,11 +1226,7 @@ describe('HearingTimingComponent', () => {
       });
 
       it('should handle mixed valid and invalid fields', () => {
-        setupComponentWithServiceHearingValues(
-          { dateRangeStart: '2024-01-01T09:00:00.000Z' },
-          null,
-          'Urgent'
-        );
+        setupComponentWithServiceHearingValues({ dateRangeStart: '2024-01-01T09:00:00.000Z' }, null, 'Urgent');
 
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, false, true);
         spyOn(HearingsUtils, 'hasDateChanged').and.returnValue(true);

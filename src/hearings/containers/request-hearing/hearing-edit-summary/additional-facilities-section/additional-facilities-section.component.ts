@@ -9,7 +9,7 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-additional-facilities-section',
-  templateUrl: './additional-facilities-section.component.html'
+  templateUrl: './additional-facilities-section.component.html',
 })
 export class AdditionalFacilitiesSectionComponent implements OnInit {
   @Input() public additionalFacilitiesRefData: LovRefDataModel[];
@@ -30,13 +30,10 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
   public showAmendedForPageTitle: boolean;
   public facilitiesRequiredToCompare: string[] = [];
 
-  constructor(private readonly hearingsService: HearingsService) {
-  }
+  constructor(private readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
-    this.additionalFacilitiesRequiredText = this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag
-      ? 'Yes'
-      : 'No';
+    this.additionalFacilitiesRequiredText = this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag ? 'Yes' : 'No';
 
     this.hearingRequestMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
       const facilityFromRefData = this.additionalFacilitiesRefData.find((facilityRefData) => facilityRefData.key === facility);
@@ -45,10 +42,14 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
       }
     });
 
-    this.nonReasonableAdjustmentChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
-    this.nonReasonableAdjustmentChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
-    this.hearingFacilitiesChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
-    this.hearingFacilitiesChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+    this.nonReasonableAdjustmentChangesRequired =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesRequired;
+    this.nonReasonableAdjustmentChangesConfirmed =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed;
+    this.hearingFacilitiesChangesRequired =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
+    this.hearingFacilitiesChangesConfirmed =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
 
     this.setAmendmentLabels();
   }
@@ -69,7 +70,9 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
 
   private setFacilitiesToCompare(): void {
     this.hearingRequestToCompareMainModel.hearingDetails.facilitiesRequired?.forEach((facility) => {
-      const facilityFromRefData = this.additionalFacilitiesRefData.find((additionalFacility) => additionalFacility.key === facility);
+      const facilityFromRefData = this.additionalFacilitiesRefData.find(
+        (additionalFacility) => additionalFacility.key === facility
+      );
       if (facilityFromRefData) {
         this.facilitiesRequiredToCompare.push(facilityFromRefData.value_en);
       }
@@ -86,8 +89,10 @@ export class AdditionalFacilitiesSectionComponent implements OnInit {
     this.facilitiesChanged = facilitiesChanged;
     const additionalFacilitiesChangesMade = caseAdditionalSecurityFlagChanged || facilitiesChanged;
 
-    if ((this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
-      (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)) {
+    if (
+      (this.nonReasonableAdjustmentChangesRequired && !this.nonReasonableAdjustmentChangesConfirmed) ||
+      (this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed)
+    ) {
       this.pageTitleDisplayLabel = AmendmentLabelStatus.ACTION_NEEDED;
     } else {
       if (additionalFacilitiesChangesMade) {

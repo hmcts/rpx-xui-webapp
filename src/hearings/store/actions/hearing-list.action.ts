@@ -29,8 +29,4 @@ export class LoadAllHearingsFailure implements Action {
   constructor(public payload: HttpError) {}
 }
 
-export type HearingListAction =
-  | ResetHearingList
-  | LoadAllHearings
-  | LoadAllHearingsSuccess
-  | LoadAllHearingsFailure;
+export type HearingListAction = ResetHearingList | LoadAllHearings | LoadAllHearingsSuccess | LoadAllHearingsFailure;

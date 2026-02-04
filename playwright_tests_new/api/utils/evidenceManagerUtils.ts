@@ -10,10 +10,7 @@ export function resolveConfiguredDocId(explicit?: string, fallback?: string): st
   return explicit ?? fallback;
 }
 
-export async function resolveSharedDocId(
-  configured: string | undefined,
-  uploadFn: () => Promise<string>
-): Promise<string> {
+export async function resolveSharedDocId(configured: string | undefined, uploadFn: () => Promise<string>): Promise<string> {
   if (configured) {
     return configured;
   }
@@ -22,7 +19,7 @@ export async function resolveSharedDocId(
 
 export function assertBinaryResponse(status: number, data?: ArrayBuffer): void {
   if (status === 200) {
-    expect((data?.byteLength ?? 0)).toBeGreaterThan(0);
+    expect(data?.byteLength ?? 0).toBeGreaterThan(0);
   }
 }
 
@@ -60,15 +57,11 @@ export function resolveUploadedDocId(body: any): string | undefined {
   return first?.originalDocumentId ?? first?.documentId ?? first?.id;
 }
 
-export async function resolveAnnotationSetId(
-  apiClient: any,
-  headers: Record<string, string>,
-  docId: string
-): Promise<string> {
+export async function resolveAnnotationSetId(apiClient: any, headers: Record<string, string>, docId: string): Promise<string> {
   try {
     const res = await apiClient.get(`em-anno/annotation-sets/filter?documentId=${docId}`, {
       headers,
-      throwOnError: false
+      throwOnError: false,
     });
     const id = (res.data as any)?.id;
     return typeof id === 'string' ? id : uuid();
@@ -97,12 +90,12 @@ export async function buildAnnotation(
         x: 418.5,
         y: 761.3,
         width: 212.2,
-        height: 18
-      }
+        height: 18,
+      },
     ],
     type: 'highlight',
     documentId: docId,
-    annotationSetId: setId
+    annotationSetId: setId,
   };
 }
 
@@ -117,13 +110,13 @@ export async function buildBookmark(apiClient: any, docId: string): Promise<Book
     xCoordinate: 1,
     yCoordinate: 1,
     parent: null,
-    previous: null
+    previous: null,
   };
 }
 
 export async function fetchUserId(apiClient: any): Promise<string | undefined> {
   const res = await apiClient.get<{ userInfo?: { uid?: string; id?: string } }>('api/user/details', {
-    throwOnError: false
+    throwOnError: false,
   });
   return resolveUserInfoId(res.data);
 }
@@ -149,7 +142,7 @@ export async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string>
     const ctx = await requestFactory({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       storageState,
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
     });
 
     const res = await ctx.post('documents', {
@@ -157,10 +150,10 @@ export async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string>
         files: {
           name: 'file',
           mimeType: 'text/plain',
-          buffer: Buffer.from('synthetic evidence-manager upload')
-        }
+          buffer: Buffer.from('synthetic evidence-manager upload'),
+        },
       },
-      headers: buildXsrfHeader(xsrf)
+      headers: buildXsrfHeader(xsrf),
     });
     if (res.ok()) {
       const body = await res.json();

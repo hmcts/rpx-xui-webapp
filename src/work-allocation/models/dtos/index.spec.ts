@@ -10,11 +10,11 @@ describe('WorkAllocation', () => {
           category: 'category',
           location: { id: 'locationId', locationName: 'locationName' },
           name: 'caseDataName',
-          reference: 'referenceName'
+          reference: 'referenceName',
         },
         dueDate: new Date(2020, 11, 11),
         name: 'taskName',
-        state: undefined
+        state: undefined,
       };
       const TASK: Task = JsonConfig.fromJson(JSON);
       expect(TASK).toBeDefined();
@@ -30,16 +30,20 @@ describe('WorkAllocation', () => {
     });
 
     it('should correctly coerce a partial JSON object to a TaskSearchParameters', () => {
-      const JSON: object = { parameters: [{
-        ccdId: '123456',
-        eventId: 'eventId',
-        jurisdiction: ['DIVORCE', 'FPLA'],
-        location: ['loc1'],
-        postEventState: 'postevent',
-        preEventState: 'preevent',
-        state: ['active'],
-        user: ['user1']
-      }] };
+      const JSON: object = {
+        parameters: [
+          {
+            ccdId: '123456',
+            eventId: 'eventId',
+            jurisdiction: ['DIVORCE', 'FPLA'],
+            location: ['loc1'],
+            postEventState: 'postevent',
+            preEventState: 'preevent',
+            state: ['active'],
+            user: ['user1'],
+          },
+        ],
+      };
 
       const PARAMETERS: TaskSearchParameters = JsonConfig.fromJson(JSON);
       expect(PARAMETERS).toBeDefined();

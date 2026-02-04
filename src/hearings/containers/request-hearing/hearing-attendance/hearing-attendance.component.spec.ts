@@ -32,7 +32,7 @@ const refData: LovRefDataModel[] = [
     parent_category: '',
     active_flag: 'Y',
     child_nodes: null,
-    from: 'exui-default'
+    from: 'exui-default',
   },
   {
     key: 'TEL',
@@ -47,8 +47,8 @@ const refData: LovRefDataModel[] = [
     active_flag: 'Y',
     child_nodes: null,
     from: 'exui-default',
-    selected: true
-  }
+    selected: true,
+  },
 ];
 
 const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
@@ -61,24 +61,17 @@ const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
       title: 'Miss',
       firstName: 'Jane',
       lastName: 'Smiths',
-      reasonableAdjustments: [
-        'RA0042',
-        'RA0053',
-        'RA0013',
-        'RA0016',
-        'RA0042',
-        'RA0009'
-      ],
+      reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042', 'RA0009'],
       interpreterLanguage: 'PF0015',
-      preferredHearingChannel: 'byVideo'
+      preferredHearingChannel: 'byVideo',
     },
     unavailabilityRanges: [
       {
         unavailableFromDate: '2021-12-10T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ]
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ],
   },
   {
     partyID: 'P2',
@@ -88,16 +81,16 @@ const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
     organisationDetails: {
       name: 'DWP Org',
       organisationType: 'GOV',
-      cftOrganisationID: 'O100000'
+      cftOrganisationID: 'O100000',
     },
     unavailabilityDOW: null,
     unavailabilityRanges: [
       {
         unavailableFromDate: '2021-12-20T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ]
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ],
   },
   {
     partyID: 'P3',
@@ -108,28 +101,24 @@ const partyDetailsFromLatestSHV: PartyDetailsModel[] = [
       title: 'Mr',
       firstName: 'Mark',
       lastName: 'Boysons',
-      reasonableAdjustments: [
-        'RA0042',
-        'RA0053',
-        'RA0013'
-      ],
+      reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013'],
       interpreterLanguage: 'PF0015',
-      preferredHearingChannel: 'byVideo'
+      preferredHearingChannel: 'byVideo',
     },
     unavailabilityRanges: [
       {
         unavailableFromDate: '2021-12-10T09:00:00.000Z',
         unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }
-    ]
-  }
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ],
+  },
 ];
 
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
-  template: ''
+  template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -156,16 +145,16 @@ describe('HearingAttendanceComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingChannels: refData
-              }
+                hearingChannels: refData,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         ValidatorsUtils,
-        FormBuilder
+        FormBuilder,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingAttendanceComponent);
@@ -185,8 +174,9 @@ describe('HearingAttendanceComponent', () => {
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element) => {
       element.value.individualDetails.preferredHearingChannel = 'inperson';
     });
-    (component.attendanceFormGroup.controls.hearingLevelChannels as FormArray).controls
-      .forEach((element: AbstractControl) => element.value.selected = true);
+    (component.attendanceFormGroup.controls.hearingLevelChannels as FormArray).controls.forEach(
+      (element: AbstractControl) => (element.value.selected = true)
+    );
     component.executeAction(ACTION.CONTINUE);
     expect(component.prepareHearingRequestData).toHaveBeenCalled();
   });
@@ -211,7 +201,7 @@ describe('HearingAttendanceComponent', () => {
 
   it('should set partyDetailsChangesConfirmed when preparing hearing request data for manual amendments', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -225,8 +215,8 @@ describe('HearingAttendanceComponent', () => {
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.participantAttendanceChangesConfirmed).toEqual(true);
@@ -240,7 +230,7 @@ describe('HearingAttendanceComponent', () => {
     const organisationDetails = {
       name: 'DWP',
       organisationType: 'GOV',
-      cftOrganisationID: 'O100000'
+      cftOrganisationID: 'O100000',
     };
     const organisationParties = component.getOrganisationParties();
     expect(organisationParties[0].organisationDetails).toEqual(organisationDetails);
@@ -278,8 +268,9 @@ describe('HearingAttendanceComponent', () => {
     (component.attendanceFormGroup.controls.parties as FormArray).controls.forEach((element: AbstractControl) => {
       element.value.individualDetails.preferredHearingChannel = 'inperson';
     });
-    (component.attendanceFormGroup.controls.hearingLevelChannels as FormArray).controls
-      .forEach((element: AbstractControl) => element.value.selected = true);
+    (component.attendanceFormGroup.controls.hearingLevelChannels as FormArray).controls.forEach(
+      (element: AbstractControl) => (element.value.selected = true)
+    );
     const formValid = component.isFormValid();
     expect((component.attendanceFormGroup.controls.parties as FormArray).length).toBeGreaterThan(0);
     expect(formValid).toEqual(true);
@@ -297,7 +288,7 @@ describe('HearingAttendanceComponent', () => {
 
   it('should not consider the party details from in-memory object for create new hearing request journey', () => {
     component.hearingCondition = {
-      mode: 'create'
+      mode: 'create',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -311,8 +302,8 @@ describe('HearingAttendanceComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
@@ -321,41 +312,37 @@ describe('HearingAttendanceComponent', () => {
   it('should set the party details from in-memory object when viewing or editing existing hearing request', () => {
     component.attendanceFormGroup.controls.parties = new FormArray([]);
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     component.ngOnInit();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(1);
   });
 
   it('should set the party details from the service values hearing model', () => {
-    const newParty: PartyDetailsModel =
-    {
-      'partyID': 'P5',
-      'partyType': PartyType.IND,
-      'partyRole': 'appellant',
-      'individualDetails': {
-        'title': 'Mr',
-        'firstName': 'Brian',
-        'lastName': 'May',
-        'preferredHearingChannel': 'inPerson',
-        'reasonableAdjustments': [
-          'RA0042',
-          'SM0001'
-        ]
+    const newParty: PartyDetailsModel = {
+      partyID: 'P5',
+      partyType: PartyType.IND,
+      partyRole: 'appellant',
+      individualDetails: {
+        title: 'Mr',
+        firstName: 'Brian',
+        lastName: 'May',
+        preferredHearingChannel: 'inPerson',
+        reasonableAdjustments: ['RA0042', 'SM0001'],
       },
-      'unavailabilityRanges': [
+      unavailabilityRanges: [
         {
-          'unavailableFromDate': '2021-12-10T09:00:00.000Z',
-          'unavailableToDate': '2021-12-31T09:00:00.000Z',
-          'unavailabilityType': UnavailabilityType.ALL_DAY
-        }
-      ]
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ],
     };
     component.serviceHearingValuesModel.parties.push(newParty);
 
     component.attendanceFormGroup.controls.parties = new FormArray([]);
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -370,8 +357,8 @@ describe('HearingAttendanceComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
@@ -383,7 +370,7 @@ describe('HearingAttendanceComponent', () => {
   it('should call initialiseFromHearingValuesForAmendments for manual amendments journey with party changes', () => {
     spyOn(component, 'initialiseFromHearingValuesForAmendments');
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -397,8 +384,8 @@ describe('HearingAttendanceComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.initialiseFromHearingValuesForAmendments).toHaveBeenCalled();
@@ -407,7 +394,7 @@ describe('HearingAttendanceComponent', () => {
   it('should not call initialiseFromHearingValuesForAmendments for non-manual amendments journey', () => {
     spyOn(component, 'initialiseFromHearingValuesForAmendments');
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
@@ -417,7 +404,7 @@ describe('HearingAttendanceComponent', () => {
   it('should not call initialiseFromHearingValuesForAmendments for non-manual amendments journey with party changes', () => {
     spyOn(component, 'initialiseFromHearingValuesForAmendments');
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -431,8 +418,8 @@ describe('HearingAttendanceComponent', () => {
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.initialiseFromHearingValuesForAmendments).not.toHaveBeenCalled();
@@ -453,8 +440,8 @@ describe('HearingAttendanceComponent', () => {
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.initialiseFromHearingValuesForAmendments();
     expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
@@ -529,7 +516,10 @@ describe('HearingAttendanceComponent', () => {
 
   const updatedInitialState = _.cloneDeep(initialState);
 
-  updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels = ['byPhone', HearingChannelEnum.ONPPR];
+  updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels = [
+    'byPhone',
+    HearingChannelEnum.ONPPR,
+  ];
   updatedInitialState.hearings.hearingRequest.hearingRequestMainModel.partyDetails = [];
 
   beforeEach(() => {
@@ -545,16 +535,16 @@ describe('HearingAttendanceComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingChannels: refData
-              }
+                hearingChannels: refData,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         ValidatorsUtils,
-        FormBuilder
+        FormBuilder,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingAttendanceComponent);
@@ -651,26 +641,28 @@ describe('HearingAttendanceComponent', () => {
     const mockChannels = [
       { key: 'INTER', selected: true, showAmendedLabel: false },
       { key: 'TEL', selected: false, showAmendedLabel: false },
-      { key: 'VID', selected: true, showAmendedLabel: false }
+      { key: 'VID', selected: true, showAmendedLabel: false },
     ];
 
     // Get FormBuilder from TestBed instead of using component's private property
     const fb = TestBed.inject(FormBuilder);
 
     // Create a new FormArray with FormGroups instead of directly assigning to value
-    const formArray = new FormArray(mockChannels.map((channel) =>
-      fb.group({
-        key: channel.key,
-        selected: channel.selected,
-        showAmendedLabel: channel.showAmendedLabel,
-        value_en: '',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: 0,
-        parent_key: null
-      })
-    ));
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
 
     // Replace the hearingLevelChannels control with our new FormArray
     component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
@@ -714,23 +706,25 @@ describe('HearingAttendanceComponent', () => {
     // Create a new FormArray with mock channels
     const mockChannels = [
       { key: 'INTER', selected: true, showAmendedLabel: false },
-      { key: 'TEL', selected: false, showAmendedLabel: false }
+      { key: 'TEL', selected: false, showAmendedLabel: false },
     ];
 
     const fb = TestBed.inject(FormBuilder);
-    const formArray = new FormArray(mockChannels.map((channel) =>
-      fb.group({
-        key: channel.key,
-        selected: channel.selected,
-        showAmendedLabel: channel.showAmendedLabel,
-        value_en: '',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: 0,
-        parent_key: null
-      })
-    ));
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
 
     component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
 
@@ -760,24 +754,24 @@ describe('HearingAttendanceComponent', () => {
     component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
     component.hearingCondition = { mode: 'view-edit' };
 
-    const mockChannels = [
-      { key: 'INTER', selected: true, showAmendedLabel: false }
-    ];
+    const mockChannels = [{ key: 'INTER', selected: true, showAmendedLabel: false }];
 
     const fb = TestBed.inject(FormBuilder);
-    const formArray = new FormArray(mockChannels.map((channel) =>
-      fb.group({
-        key: channel.key,
-        selected: channel.selected,
-        showAmendedLabel: channel.showAmendedLabel,
-        value_en: '',
-        value_cy: '',
-        hint_text_en: '',
-        hint_text_cy: '',
-        lov_order: 0,
-        parent_key: null
-      })
-    ));
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
 
     component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
 
@@ -807,8 +801,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -818,8 +812,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'video'
-        }
+          preferredHearingChannel: 'video',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -843,8 +837,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -854,8 +848,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -879,8 +873,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -890,8 +884,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: null
-        }
+          preferredHearingChannel: null,
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -916,8 +910,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -927,8 +921,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: undefined
-        }
+          preferredHearingChannel: undefined,
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -953,8 +947,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -964,8 +958,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: ''
-        }
+          preferredHearingChannel: '',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -990,8 +984,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -1001,8 +995,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'video'
-        }
+          preferredHearingChannel: 'video',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -1029,8 +1023,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -1040,8 +1034,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -1065,8 +1059,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       } as any;
 
       const partyDetailsModel: PartyDetailsModel = {
@@ -1076,8 +1070,8 @@ describe('HearingAttendanceComponent', () => {
         individualDetails: {
           firstName: 'John',
           lastName: 'Doe',
-          preferredHearingChannel: 'video'
-        }
+          preferredHearingChannel: 'video',
+        },
       } as any;
 
       (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
@@ -1091,19 +1085,21 @@ describe('HearingAttendanceComponent', () => {
     // Helper function to create a FormArray with mock channels
     function createMockChannelFormArray(channels: Array<{ key: string; selected: boolean; showAmendedLabel: boolean }>) {
       const fb = TestBed.inject(FormBuilder);
-      return new FormArray(channels.map((channel) =>
-        fb.group({
-          key: channel.key,
-          selected: channel.selected,
-          showAmendedLabel: channel.showAmendedLabel,
-          value_en: '',
-          value_cy: '',
-          hint_text_en: '',
-          hint_text_cy: '',
-          lov_order: 0,
-          parent_key: null
-        })
-      ));
+      return new FormArray(
+        channels.map((channel) =>
+          fb.group({
+            key: channel.key,
+            selected: channel.selected,
+            showAmendedLabel: channel.showAmendedLabel,
+            value_en: '',
+            value_cy: '',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 0,
+            parent_key: null,
+          })
+        )
+      );
     }
 
     // Helper function to setup component with hearing channels
@@ -1129,7 +1125,7 @@ describe('HearingAttendanceComponent', () => {
     it('should not set showAmendedLabel when defaultHearingChannel is empty', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
-        { key: 'TEL', selected: false, showAmendedLabel: false }
+        { key: 'TEL', selected: false, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels([], ['INTER'], mockChannels);
@@ -1157,7 +1153,7 @@ describe('HearingAttendanceComponent', () => {
     it('should set showAmendedLabel to true when channel is in defaults but not selected', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
-        { key: 'TEL', selected: false, showAmendedLabel: false }
+        { key: 'TEL', selected: false, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER', 'TEL'], ['INTER'], mockChannels);
@@ -1169,7 +1165,7 @@ describe('HearingAttendanceComponent', () => {
     it('should set showAmendedLabel to true when channel is not in defaults but is selected', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
-        { key: 'VID', selected: true, showAmendedLabel: false }
+        { key: 'VID', selected: true, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER'], ['INTER', 'VID'], mockChannels);
@@ -1182,7 +1178,7 @@ describe('HearingAttendanceComponent', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
         { key: 'TEL', selected: true, showAmendedLabel: false },
-        { key: 'VID', selected: true, showAmendedLabel: false }
+        { key: 'VID', selected: true, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER', 'TEL', 'VID'], ['INTER', 'TEL'], mockChannels);
@@ -1196,7 +1192,7 @@ describe('HearingAttendanceComponent', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
         { key: 'TEL', selected: false, showAmendedLabel: false },
-        { key: 'VID', selected: false, showAmendedLabel: false }
+        { key: 'VID', selected: false, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER'], ['INTER'], mockChannels);
@@ -1210,7 +1206,7 @@ describe('HearingAttendanceComponent', () => {
       const mockChannels = [
         { key: 'INTER', selected: true, showAmendedLabel: false },
         { key: 'TEL', selected: false, showAmendedLabel: false },
-        { key: 'VID', selected: true, showAmendedLabel: false }
+        { key: 'VID', selected: true, showAmendedLabel: false },
       ];
 
       setupComponentWithChannels(['INTER', 'TEL'], ['INTER', 'VID'], mockChannels);

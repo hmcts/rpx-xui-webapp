@@ -3,5 +3,5 @@ export enum TaskActionType {
   Cancel = 'Cancel task',
   MarkAsDone = 'Mark as done',
   Reassign = 'Reassign',
-  Unassign = 'Unassign'
+  Unassign = 'Unassign',
 }

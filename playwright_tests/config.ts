@@ -4,25 +4,25 @@ export interface UserCredentials {
 }
 
 export type UserRole =
-  | "caseWorker"
-  | "seniorCaseworker"
-  | "hearingCentreAdmin"
-  | "hearingCentreTeamLead"
-  | "judge"
-  | "seniorJudge"
-  | "respondent"
-  | "citizen"
-  | "superUser";
+  | 'caseWorker'
+  | 'seniorCaseworker'
+  | 'hearingCentreAdmin'
+  | 'hearingCentreTeamLead'
+  | 'judge'
+  | 'seniorJudge'
+  | 'respondent'
+  | 'citizen'
+  | 'superUser';
 
 interface Config {
   [key: string]: UserCredentials | string;
 }
 
-const baseURL = process.env.TEST_URL || "https://manage-case.aat.platform.hmcts.net";
+const baseURL = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 
 const config: Config = {
   AppBaseURL: baseURL,
-  CaseBaseURL: baseURL + "/cases",
+  CaseBaseURL: baseURL + '/cases',
 };
 
 export default config as {

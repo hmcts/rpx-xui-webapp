@@ -15,6 +15,7 @@ export default defineConfig(
       'no-case-declarations': 'warn',
       'no-prototype-builtins': 'warn',
       'eslint-comments/no-use': 'warn',
+      '@typescript-eslint/no-duplicate-enum-values': 'warn',
     },
   },
   {

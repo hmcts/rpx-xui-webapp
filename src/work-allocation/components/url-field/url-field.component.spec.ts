@@ -7,7 +7,7 @@ import { UrlFieldComponent } from './url-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-url-field [href]="href" [label]="label" [target]="target"></exui-url-field>'
+  template: '<exui-url-field [href]="href" [label]="label" [target]="target"></exui-url-field>',
 })
 class WrapperComponent {
   @ViewChild(UrlFieldComponent, { static: true }) public appComponentRef: UrlFieldComponent;
@@ -25,9 +25,8 @@ describe('WorkAllocation', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

@@ -11,7 +11,6 @@ const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('errorHandler', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let next;
   let sandbox;
   let req;
@@ -27,8 +26,8 @@ describe('errorHandler', () => {
       session: {
         save: (fun) => {
           fun();
-        }
-      }
+        },
+      },
     });
   });
 
@@ -39,11 +38,11 @@ describe('errorHandler', () => {
   it('should empty headers if it exists', () => {
     const err = {
       config: {
-        headers: {}
-      }
+        headers: {},
+      },
     };
     errorHandler.default(err, req, res, next);
-    // eslint-disable-next-line no-unused-expressions
+
     expect(propsExist(err, ['config', 'headers'])).to.be.false;
   });
 
@@ -58,8 +57,8 @@ describe('errorHandler', () => {
     const err = {
       status: 404,
       data: {
-        test: 'dummy'
-      }
+        test: 'dummy',
+      },
     };
     errorHandler.default(err, req, res, next);
     expect(res.status).to.have.been.calledWith(404);
@@ -69,12 +68,11 @@ describe('errorHandler', () => {
   it('should empty _header if it exists', () => {
     const err = {
       request: {
-        _header: {
-        }
-      }
+        _header: {},
+      },
     };
     errorHandler.default(err, req, res, next);
-    // eslint-disable-next-line no-unused-expressions
+
     expect(propsExist(err, ['request', '_header'])).to.be.false;
   });
 });

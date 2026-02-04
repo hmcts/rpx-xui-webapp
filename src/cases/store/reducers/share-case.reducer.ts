@@ -13,11 +13,13 @@ export const initialSharedCasesState: ShareCasesState = {
   shareCases: [],
   loading: false,
   error: undefined,
-  users: []
+  users: [],
 };
 
-export function shareCasesReducer(state: ShareCasesState = initialSharedCasesState,
-  action: ShareCasesActions.Actions): ShareCasesState {
+export function shareCasesReducer(
+  state: ShareCasesState = initialSharedCasesState,
+  action: ShareCasesActions.Actions
+): ShareCasesState {
   switch (action.type) {
     case ShareCasesActions.NAVIGATE_TO_SHARE_CASES:
       const navigateToShareCases = state.shareCases.slice();
@@ -28,12 +30,12 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       }
       return {
         ...state,
-        shareCases: navigateToShareCases
+        shareCases: navigateToShareCases,
       };
     case ShareCasesActions.LOAD_SHARE_CASES:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
     case ShareCasesActions.LOAD_SHARE_CASES_SUCCESS:
       const casesInStore = state.shareCases.slice();
@@ -47,7 +49,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
           const newCase: SharedCase = {
             ...aCase,
             caseTypeId,
-            caseTitle
+            caseTitle,
           };
           casesWithTypes.push(newCase);
         }
@@ -55,13 +57,13 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       return {
         ...state,
         shareCases: casesWithTypes,
-        loading: false
+        loading: false,
       };
     case ShareCasesActions.LOAD_SHARE_CASES_FAILURE:
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loading: false,
       };
     case ShareCasesActions.ADD_SHARE_CASES:
       const addShareCases = state.shareCases.slice();
@@ -72,7 +74,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       }
       return {
         ...state,
-        shareCases: addShareCases
+        shareCases: addShareCases,
       };
     case ShareCasesActions.ADD_SHARE_CASE_GO:
       const addShareCasesGo = state.shareCases.slice();
@@ -83,7 +85,7 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       }
       return {
         ...state,
-        shareCases: addShareCasesGo
+        shareCases: addShareCasesGo,
       };
     case ShareCasesActions.DELETE_A_SHARE_CASE:
       const caseInStore4Delete = state.shareCases.slice();
@@ -95,29 +97,29 @@ export function shareCasesReducer(state: ShareCasesState = initialSharedCasesSta
       }
       return {
         ...state,
-        shareCases: caseInStore4Delete
+        shareCases: caseInStore4Delete,
       };
     case ShareCasesActions.LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS:
       return {
         ...state,
-        users: action.payload
+        users: action.payload,
       };
     case ShareCasesActions.SYNCHRONIZE_STATE_TO_STORE:
       return {
         ...state,
-        shareCases: action.payload
+        shareCases: action.payload,
       };
     case ShareCasesActions.ASSIGN_USERS_TO_CASE_SUCCESS:
       return {
         ...state,
         shareCases: action.payload,
-        loading: true
+        loading: true,
       };
     case ShareCasesActions.RESET_CASE_SELECTION:
       return {
         ...state,
         shareCases: [],
-        loading: false
+        loading: false,
       };
     default:
       return state;
@@ -129,11 +131,11 @@ export function sortedUserInCases(pendingSortedCases: SharedCase[]): SharedCase[
   for (const aCase of pendingSortedCases) {
     if (aCase.sharedWith) {
       const sortedUsers: UserDetails[] = aCase.sharedWith.slice().sort((user1, user2) => {
-        return user1.firstName > user2.firstName ? 1 : (user2.firstName > user1.firstName ? -1 : 0);
+        return user1.firstName > user2.firstName ? 1 : user2.firstName > user1.firstName ? -1 : 0;
       });
       const caseWithSortedUser = {
         ...aCase,
-        sharedWith: sortedUsers
+        sharedWith: sortedUsers,
       };
       cases.push(caseWithSortedUser);
     } else {

@@ -1,6 +1,6 @@
 const { $ } = require('../../../../../helpers/globals');
 
-class TaskAssignmentPersonNotAuthorised{
+class TaskAssignmentPersonNotAuthorised {
   get container() {
     return $('exui-task-assignment-person-not-authorised');
   }

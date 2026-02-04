@@ -16,10 +16,7 @@ type Jurisdiction = {
   [key: string]: unknown;
 };
 
-export async function assertJurisdictionsForUser(
-  apiClient: PlaywrightApiClient,
-  expectedNames: string[]
-): Promise<void> {
+export async function assertJurisdictionsForUser(apiClient: PlaywrightApiClient, expectedNames: string[]): Promise<void> {
   const user = await apiClient.get('api/user/details', { throwOnError: false });
   expectStatus(user.status, StatusSets.guardedExtended);
   if (user.status !== 200) {
@@ -33,7 +30,7 @@ export async function assertJurisdictionsForUser(
   const response = await withRetry(
     () =>
       apiClient.get(`aggregated/caseworkers/${uid}/jurisdictions?access=read`, {
-        throwOnError: false
+        throwOnError: false,
       }),
     { retries: 1, retryStatuses: [502, 504] }
   );
@@ -42,9 +39,7 @@ export async function assertJurisdictionsForUser(
     return;
   }
 
-  const actualNames = response.data
-    .map((entry: JurisdictionResponse) => entry?.name)
-    .filter(Boolean);
+  const actualNames = response.data.map((entry: JurisdictionResponse) => entry?.name).filter(Boolean);
   expectedNames.forEach((name) => {
     expect(actualNames).toContain(name);
   });
@@ -54,7 +49,7 @@ export async function assertJurisdictionsForUser(
       expect.objectContaining({
         id: expect.any(String),
         name: expect.any(String),
-        description: expect.any(String)
+        description: expect.any(String),
       })
     );
   });

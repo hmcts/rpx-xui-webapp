@@ -15,12 +15,12 @@ describe('HearingVenueSectionComponent', () => {
   const hearingLocations: HearingLocationModel[] = [
     {
       locationId: '196538',
-      locationType: HMCLocationType.COURT
+      locationType: HMCLocationType.COURT,
     },
     {
       locationId: '234850',
-      locationType: HMCLocationType.COURT
-    }
+      locationType: HMCLocationType.COURT,
+    },
   ];
 
   const locationsReturnedByService: LocationByEpimmsModel[] = [
@@ -45,7 +45,7 @@ describe('HearingVenueSectionComponent', () => {
       welsh_court_address: '',
       venue_name: 'Liverpool',
       is_case_management_location: 'Y',
-      is_hearing_location: 'Y'
+      is_hearing_location: 'Y',
     },
     {
       epimms_id: '234850',
@@ -68,23 +68,21 @@ describe('HearingVenueSectionComponent', () => {
       welsh_court_address: '',
       venue_name: '',
       is_case_management_location: '',
-      is_hearing_location: ''
-    }
+      is_hearing_location: '',
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        HearingVenueSectionComponent
-      ],
+      declarations: [HearingVenueSectionComponent],
       providers: [
         provideMockStore({ initialState }),
         {
           provide: LocationsDataService,
-          useValue: locationsDataServiceMock
-        }
-      ]
+          useValue: locationsDataServiceMock,
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingVenueSectionComponent);
@@ -112,7 +110,8 @@ describe('HearingVenueSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('venue');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'venue', changeLink: '/hearings/request/hearing-venue#inputLocationSearch'
+      fragmentId: 'venue',
+      changeLink: '/hearings/request/hearing-venue#inputLocationSearch',
     });
   });
 });

@@ -2,8 +2,8 @@ import { RoleAssignment } from '../../user/interfaces/roleAssignment';
 
 export interface CaseworkerPayload {
   attributes: any;
-  roleName: string [];
-  roleType: string [];
+  roleName: string[];
+  roleType: string[];
   validAt: any;
 }
 

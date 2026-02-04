@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -10,13 +9,15 @@ import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } fr
 
 test.describe.configure({ mode: 'serial' });
 
+const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+
 test.describe('Session and cookie utilities coverage', () => {
   test('isSessionFresh returns false when stat fails', () => {
     const fsStub = {
       existsSync: () => true,
       statSync: () => {
         throw new Error('boom');
-      }
+      },
     } as any;
     expect(isSessionFresh('session.json', 1000, { fs: fsStub, now: () => 1000 })).toBe(false);
   });
@@ -79,7 +80,7 @@ test.describe('Session and cookie utilities coverage', () => {
         throw new Error('write failed');
       },
       existsSync: fs.existsSync,
-      mkdirSync: fs.mkdirSync
+      mkdirSync: fs.mkdirSync,
     };
     const cookieUtilsFailing = new CookieUtils(failingFs);
     expect(() => cookieUtilsFailing.writeManageCasesSession(path.join(tmpDir, 'fail.json'), [])).toThrow(
@@ -130,32 +131,28 @@ test.describe('Session and cookie utilities coverage', () => {
     const sessionPath = path.join(tmpDir, 'session.json');
     const ctx = {
       addCookies: async () => {},
-      storageState: async () => {}
+      storageState: async () => {},
     };
     const cookieUtils = {
       writeManageCasesSession: (pathValue: string, cookies: any[]) => {
         fs.writeFileSync(pathValue, JSON.stringify({ cookies }), 'utf8');
-      }
+      },
     } as any;
 
     await sessionCaptureTest.persistSession(sessionPath, [{ name: 'a', value: 'b' }], ctx, 'user', {
       cookieUtils,
-      fs
+      fs,
     });
 
     await expect(
-      sessionCaptureTest.persistSession(
-        sessionPath,
-        [],
-        ctx,
-        'user',
-        {
-          cookieUtils: { writeManageCasesSession: () => {
+      sessionCaptureTest.persistSession(sessionPath, [], ctx, 'user', {
+        cookieUtils: {
+          writeManageCasesSession: () => {
             throw new Error('boom');
-          } } as any,
-          fs
-        }
-      )
+          },
+        } as any,
+        fs,
+      })
     ).rejects.toThrow('boom');
   });
 
@@ -165,17 +162,17 @@ test.describe('Session and cookie utilities coverage', () => {
       existsSync: () => false,
       mkdirSync: () => {
         mkdirCalls += 1;
-      }
+      },
     } as any;
 
     const userUtils = {
-      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
 
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
       userUtils,
-      isSessionFresh: () => true
+      isSessionFresh: () => true,
     });
     expect(mkdirCalls).toBe(1);
 
@@ -186,20 +183,20 @@ test.describe('Session and cookie utilities coverage', () => {
         if (selector === 'exui-header') {
           throw new Error('missing header');
         }
-      }
+      },
     } as any;
     const context = {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async () => {}
+      storageState: async () => {},
     } as any;
     const browser = {
       newContext: async () => context,
-      close: async () => {}
+      close: async () => {},
     } as any;
     const chromiumOk = {
-      launch: async () => browser
+      launch: async () => browser,
     } as any;
     const idamPageFactory = () => ({ login: async () => {} });
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
@@ -212,7 +209,7 @@ test.describe('Session and cookie utilities coverage', () => {
         persistCalls += 1;
       },
       env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
-      config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any
+      config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
     });
     expect(persistCalls).toBe(1);
   });
@@ -220,22 +217,22 @@ test.describe('Session and cookie utilities coverage', () => {
   test('sessionCaptureWith surfaces launch failures', async () => {
     const fsStub = {
       existsSync: () => true,
-      mkdirSync: () => {}
+      mkdirSync: () => {},
     } as any;
     const userUtils = {
-      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
     const chromiumLauncher = {
       launch: async () => {
         throw new Error('launch failed');
-      }
+      },
     } as any;
     await expect(
       sessionCaptureTest.sessionCaptureWith(['USER'], {
         fs: fsStub,
         userUtils,
         isSessionFresh: () => false,
-        chromiumLauncher
+        chromiumLauncher,
       })
     ).rejects.toThrow('launch failed');
   });
@@ -243,31 +240,33 @@ test.describe('Session and cookie utilities coverage', () => {
   test('sessionCaptureWith surfaces login failures', async () => {
     const fsStub = {
       existsSync: () => true,
-      mkdirSync: () => {}
+      mkdirSync: () => {},
     } as any;
     const userUtils = {
-      getUserCredentials: () => ({ email: 'user@example.com', password: 'pass' })
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
     const page = {
       goto: async () => {},
-      waitForSelector: async () => {}
+      waitForSelector: async () => {},
     } as any;
     const context = {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async () => {}
+      storageState: async () => {},
     } as any;
     const browser = {
       newContext: async () => context,
-      close: async () => {}
+      close: async () => {},
     } as any;
     const chromiumOk = {
-      launch: async () => browser
+      launch: async () => browser,
     } as any;
-    const idamPageFactory = () => ({ login: async () => {
-      throw new Error('login failed');
-    } });
+    const idamPageFactory = () => ({
+      login: async () => {
+        throw new Error('login failed');
+      },
+    });
     await expect(
       sessionCaptureTest.sessionCaptureWith(['USER'], {
         fs: fsStub,
@@ -277,7 +276,7 @@ test.describe('Session and cookie utilities coverage', () => {
         idamPageFactory,
         persistSession: async () => {},
         env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
-        config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any
+        config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
       })
     ).rejects.toThrow(/login failed/i);
   });

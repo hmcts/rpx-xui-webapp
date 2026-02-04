@@ -22,7 +22,7 @@ export class JurisdictionsService {
       try {
         const jurisdictions = JSON.parse(this.sessionStorageService.getItem('JURISDICTIONS'));
         return of(jurisdictions as Jurisdiction[]);
-      } catch (error) {
+      } catch {
         // If JSON parsing fails (invalid JSON), remove the corrupted data and fall back to HTTP request
         this.sessionStorageService.removeItem('JURISDICTIONS');
       }

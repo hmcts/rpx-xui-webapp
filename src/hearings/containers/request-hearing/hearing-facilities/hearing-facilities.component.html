@@ -26,10 +26,12 @@
               {{ 'Will additional security be required?' | rpxTranslate }}
               <exui-amendment-label
                 *ngIf="
-                this.hearingFacilitiesChangesRequired &&
-                !this.hearingFacilitiesChangesConfirmed &&
-                this.additionalSecurityRequiredChanged"
-                [displayLabel]="amendmentLabelEnum.AMENDED">
+                  this.hearingFacilitiesChangesRequired &&
+                  !this.hearingFacilitiesChangesConfirmed &&
+                  this.additionalSecurityRequiredChanged
+                "
+                [displayLabel]="amendmentLabelEnum.AMENDED"
+              >
               </exui-amendment-label>
             </h3>
           </legend>
@@ -71,7 +73,11 @@
             <h1 class="govuk-fieldset__heading">
               {{ 'Select any additional facilities required' | rpxTranslate }}
               <exui-amendment-label
-                *ngIf="this.hearingFacilitiesChangesRequired && !this.hearingFacilitiesChangesConfirmed && this.additionalFacilitiesChanged"
+                *ngIf="
+                  this.hearingFacilitiesChangesRequired &&
+                  !this.hearingFacilitiesChangesConfirmed &&
+                  this.additionalFacilitiesChanged
+                "
                 [displayLabel]="amendmentLabelEnum.ACTION_NEEDED"
               >
               </exui-amendment-label>

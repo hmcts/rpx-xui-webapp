@@ -53,9 +53,9 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       this.hearingFacilitiesChangesConfirmed =
         this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
       this.additionalSecurityRequiredChanged =
-        this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
-      this.additionalFacilitiesChanged =
-        this.checkAdditionalFacilitiesChanged();
+        this.serviceHearingValuesModel.caseAdditionalSecurityFlag !==
+        this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+      this.additionalFacilitiesChanged = this.checkAdditionalFacilitiesChanged();
     }
 
     this.setNonReasonableAdjustmentFlags();
@@ -161,10 +161,9 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
       if (
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
-        (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired)
+        propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired
       ) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed =
-          true;
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
       }
       if (propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
@@ -196,10 +195,10 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       this.hearingCondition.mode === Mode.VIEW_EDIT &&
       propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
       (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired ||
-        HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties,
-          this.hearingRequestMainModel.partyDetails))
+        HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails))
     ) {
-      const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed
+      const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit
+        ?.nonReasonableAdjustmentChangesConfirmed
         ? this.hearingRequestMainModel.partyDetails
         : this.hearingRequestToCompareMainModel.partyDetails;
       this.nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(

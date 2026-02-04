@@ -28,10 +28,7 @@
     <div class="govuk-summary-list__key">Does the hearing need to take place on a specific date?</div>
     <div class="govuk-summary-list__value">
       {{ specificDateSelection }}
-      <exui-amendment-label
-        *ngIf="specificDateOptionChanged"
-        [displayLabel]="amendmentLabelEnum.AMENDED">
-      </exui-amendment-label>
+      <exui-amendment-label *ngIf="specificDateOptionChanged" [displayLabel]="amendmentLabelEnum.AMENDED"> </exui-amendment-label>
       <div *ngIf="specificDateSelection === radioOptions.CHOOSE_DATE_RANGE">
         <div *ngIf="earliestHearingDate.length > 0">
           Earliest start date: {{ earliestHearingDate }}

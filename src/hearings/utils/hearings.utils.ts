@@ -155,7 +155,7 @@ export class HearingsUtils {
 
   public static hasPartyHearingChannelChanged(partyInHMC: PartyDetailsModel, partyInSHV: PartyDetailsModel): boolean {
     if (partyInHMC.individualDetails && partyInSHV.individualDetails) {
-      if ((partyInHMC.individualDetails.preferredHearingChannel !== partyInSHV.individualDetails.preferredHearingChannel)) {
+      if (partyInHMC.individualDetails.preferredHearingChannel !== partyInSHV.individualDetails.preferredHearingChannel) {
         return true;
       }
     }
@@ -330,8 +330,7 @@ export class HearingsUtils {
   }
 
   static isPaperHearing(hearingChannel: string[], isPaperHearing = true): boolean {
-    return (hearingChannel?.includes(HearingChannelEnum.ONPPR)
-      || !!isPaperHearing);
+    return hearingChannel?.includes(HearingChannelEnum.ONPPR) || !!isPaperHearing;
   }
 
   static hasPaperHearingChanged(hearingChannels: string[], hearingChannelToCompare: string[]) {
@@ -379,8 +378,7 @@ export class HearingsUtils {
     // and return true if there are any changes in the party name of party type
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (!party || party.partyType !== partySHV.partyType ||
-        this.hasPartyNameChanged(party, partySHV)) {
+      if (!party || party.partyType !== partySHV.partyType || this.hasPartyNameChanged(party, partySHV)) {
         return true;
       }
     }
@@ -396,8 +394,7 @@ export class HearingsUtils {
     // and return true if there are any changes in the preferred hearing channel
     for (const partySHV of partiesSHV) {
       const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
-      if (!party || party.partyType !== partySHV.partyType ||
-        this.hasPartyHearingChannelChanged(party, partySHV)) {
+      if (!party || party.partyType !== partySHV.partyType || this.hasPartyHearingChannelChanged(party, partySHV)) {
         return true;
       }
     }
@@ -406,17 +403,15 @@ export class HearingsUtils {
 
   static setHearingChannelsForPaperHearing(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
     const updatedPartyDetails = [];
-    JSON.parse(JSON.stringify(partyDetails))
-      .forEach((party) => {
-        if (party.partyType === PartyType.IND) {
-          party.individualDetails = {
-            ...party.individualDetails,
-            preferredHearingChannel: 'NA'
-          };
-        }
-        updatedPartyDetails.push(party);
+    JSON.parse(JSON.stringify(partyDetails)).forEach((party) => {
+      if (party.partyType === PartyType.IND) {
+        party.individualDetails = {
+          ...party.individualDetails,
+          preferredHearingChannel: 'NA',
+        };
       }
-      );
+      updatedPartyDetails.push(party);
+    });
     return updatedPartyDetails;
   }
 

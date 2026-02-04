@@ -200,10 +200,10 @@ export class HearingTimingSectionComponent implements OnInit {
 
     if (!this.showActionNeededLabelForPageTitle) {
       this.showAmendedLabelForPageTitle =
-          this.hearingLengthChanged ||
-          this.hearingDateChanged ||
-          this.hearingPriorityChanged ||
-          this.hearingUnavailabilityDatesConfirmed;
+        this.hearingLengthChanged ||
+        this.hearingDateChanged ||
+        this.hearingPriorityChanged ||
+        this.hearingUnavailabilityDatesConfirmed;
     } else {
       this.showAmendedLabelForPageTitle = false;
     }

@@ -126,7 +126,10 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
 
   private positionAmendmentLabel(dateComponentId: string, amendmentLabelId: string): void {
     // Find the legend element within the date component that contains the label text
-    const legendElement = document.querySelector(`#${dateComponentId}-date`)?.closest('.govuk-form-group')?.querySelector('.govuk-fieldset__legend');
+    const legendElement = document
+      .querySelector(`#${dateComponentId}-date`)
+      ?.closest('.govuk-form-group')
+      ?.querySelector('.govuk-fieldset__legend');
     const amendmentLabel = document.getElementById(amendmentLabelId);
 
     if (legendElement && amendmentLabel) {
@@ -173,17 +176,32 @@ export class HearingTimingComponent extends RequestHearingPageFlow implements On
     this.hearingUnavailabilityDatesChanged =
       this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesChanged &&
       !this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
-    if (
-      HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow)) {
-      this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart, this.serviceHearingValuesModel.hearingWindow?.dateRangeStart);
-      this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeEnd, this.serviceHearingValuesModel.hearingWindow?.dateRangeEnd);
-      this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe, this.serviceHearingValuesModel.hearingWindow?.firstDateTimeMustBe
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow)) {
+      this.dateRangeStartChanged = HearingsUtils.hasDateChanged(
+        this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart,
+        this.serviceHearingValuesModel.hearingWindow?.dateRangeStart
+      );
+      this.dateRangeEndChanged = HearingsUtils.hasDateChanged(
+        this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeEnd,
+        this.serviceHearingValuesModel.hearingWindow?.dateRangeEnd
+      );
+      this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(
+        this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe,
+        this.serviceHearingValuesModel.hearingWindow?.firstDateTimeMustBe
       );
     }
-    this.durationChanged = HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.duration) ?
-      HearingsUtils.hasHearingNumberChanged(this.hearingRequestMainModel.hearingDetails.duration, this.serviceHearingValuesModel.duration) : false;
-    this.priorityChanged = HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingPriorityType) ?
-      HearingsUtils.hasHearingStringChanged(this.hearingRequestMainModel.hearingDetails.hearingPriorityType, this.serviceHearingValuesModel.hearingPriorityType) : false;
+    this.durationChanged = HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.duration)
+      ? HearingsUtils.hasHearingNumberChanged(
+          this.hearingRequestMainModel.hearingDetails.duration,
+          this.serviceHearingValuesModel.duration
+        )
+      : false;
+    this.priorityChanged = HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingPriorityType)
+      ? HearingsUtils.hasHearingStringChanged(
+          this.hearingRequestMainModel.hearingDetails.hearingPriorityType,
+          this.serviceHearingValuesModel.hearingPriorityType
+        )
+      : false;
   }
 
   public getFormData(durationInput: number, hearingWindowInput: HearingWindowModel, priorityInput: string): void {

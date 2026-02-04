@@ -440,7 +440,7 @@ describe('HearingEditSummaryComponent', () => {
           screenName: 'hearing-additional-instructions',
           navigation: [
             {
-              resultValue: 'hearing-create-edit-summary'
+              resultValue: 'hearing-create-edit-summary',
             },
           ],
         },
@@ -461,12 +461,12 @@ describe('HearingEditSummaryComponent', () => {
           screenName: 'hearing-facilities',
           navigation: [
             {
-              resultValue: 'hearing-attendance'
-            }
-          ]
-        }
+              resultValue: 'hearing-attendance',
+            },
+          ],
+        },
       ],
-      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt'],
     };
     hearingsService.propertiesUpdatedOnPageVisit = null;
     component.ngOnInit();
@@ -1056,12 +1056,12 @@ describe('HearingEditSummaryComponent', () => {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       hearingDetails: {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['12', '23']
-      }
+        facilitiesRequired: ['12', '23'],
+      },
     };
     component.serviceHearingValuesModel = {
       ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-      facilitiesRequired: ['12', '23']
+      facilitiesRequired: ['12', '23'],
     };
     component.ngOnInit();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesRequired).toEqual(true);
@@ -1241,8 +1241,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: true,
-          additionalInstructionsChangesConfirmed: true
-        }
+          additionalInstructionsChangesConfirmed: true,
+        },
       } as any;
 
       component.hearingRequestMainModel.hearingDetails.listingComments = 'New comment';
@@ -1269,8 +1269,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel.hearingDetails.listingComments = 'New comment';
@@ -1297,8 +1297,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel.hearingDetails.listingComments = 'Same comment';
@@ -1325,8 +1325,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel.hearingDetails.listingComments = null;
@@ -1353,8 +1353,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
           additionalInstructionsChangesRequired: false,
-          additionalInstructionsChangesConfirmed: false
-        }
+          additionalInstructionsChangesConfirmed: false,
+        },
       } as any;
 
       component.hearingRequestMainModel.hearingDetails.listingComments = null;
@@ -1392,8 +1392,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false,
           additionalInsructionsChangesRequired: false,
-          additionalInstructionsChangesRequired: false
-        }
+          additionalInstructionsChangesRequired: false,
+        },
       } as any;
 
       component.hearingRequestMainModel.hearingDetails.listingComments = 'Same';
@@ -1420,8 +1420,8 @@ describe('HearingEditSummaryComponent', () => {
         individualDetails: {
           firstName,
           lastName,
-          preferredHearingChannel
-        }
+          preferredHearingChannel,
+        },
       } as any;
     }
 
@@ -1432,13 +1432,15 @@ describe('HearingEditSummaryComponent', () => {
       toCompareReturnValue: boolean | ((value: any) => boolean),
       haveChangedReturnValue?: boolean
     ) {
-      const toCompareSpy = typeof toCompareReturnValue === 'function'
-        ? spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.callFake(toCompareReturnValue)
-        : spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(toCompareReturnValue);
+      const toCompareSpy =
+        typeof toCompareReturnValue === 'function'
+          ? spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.callFake(toCompareReturnValue)
+          : spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(toCompareReturnValue);
 
-      const haveChangedSpy = haveChangedReturnValue !== undefined
-        ? spyOn(HearingsUtils, 'havePartyHearingChannelChanged').and.returnValue(haveChangedReturnValue)
-        : spyOn(HearingsUtils, 'havePartyHearingChannelChanged');
+      const haveChangedSpy =
+        haveChangedReturnValue !== undefined
+          ? spyOn(HearingsUtils, 'havePartyHearingChannelChanged').and.returnValue(haveChangedReturnValue)
+          : spyOn(HearingsUtils, 'havePartyHearingChannelChanged');
 
       component.serviceHearingValuesModel.parties = srvParties;
       if (hmcParties) {
@@ -1449,11 +1451,7 @@ describe('HearingEditSummaryComponent', () => {
     }
 
     it('should return false when no parties have preferred hearing channel', () => {
-      const { toCompareSpy, haveChangedSpy } = setupTestWithParties(
-        [createMockParty('P1', null)],
-        null,
-        false
-      );
+      const { toCompareSpy, haveChangedSpy } = setupTestWithParties([createMockParty('P1', null)], null, false);
 
       const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
 
@@ -1464,10 +1462,7 @@ describe('HearingEditSummaryComponent', () => {
 
     it('should return false when all parties have undefined preferred hearing channel', () => {
       const { haveChangedSpy } = setupTestWithParties(
-        [
-          createMockParty('P1', undefined),
-          createMockParty('P2', undefined, 'Jane', 'Smith')
-        ],
+        [createMockParty('P1', undefined), createMockParty('P2', undefined, 'Jane', 'Smith')],
         null,
         false
       );
@@ -1479,11 +1474,7 @@ describe('HearingEditSummaryComponent', () => {
     });
 
     it('should return false when all parties have empty string preferred hearing channel', () => {
-      const { toCompareSpy, haveChangedSpy } = setupTestWithParties(
-        [createMockParty('P1', '')],
-        null,
-        false
-      );
+      const { toCompareSpy, haveChangedSpy } = setupTestWithParties([createMockParty('P1', '')], null, false);
 
       const result = (component as any).pageVisitPartiesHearingChannelChangeExists();
 
@@ -1533,7 +1524,7 @@ describe('HearingEditSummaryComponent', () => {
         [
           createMockParty('P1', null),
           createMockParty('P2', 'telephone', 'Jane', 'Smith'),
-          createMockParty('P3', 'video', 'Bob', 'Jones')
+          createMockParty('P3', 'video', 'Bob', 'Jones'),
         ],
         null,
         (value) => value === 'telephone' || value === 'video',
@@ -1548,12 +1539,14 @@ describe('HearingEditSummaryComponent', () => {
 
     it('should handle parties without individualDetails', () => {
       const { haveChangedSpy } = setupTestWithParties(
-        [{
-          partyID: 'P1',
-          partyType: PartyType.ORG,
-          partyRole: 'appellant',
-          individualDetails: null
-        } as any],
+        [
+          {
+            partyID: 'P1',
+            partyType: PartyType.ORG,
+            partyRole: 'appellant',
+            individualDetails: null,
+          } as any,
+        ],
         null,
         false
       );
@@ -1579,11 +1572,7 @@ describe('HearingEditSummaryComponent', () => {
 
     it('should check all parties until finding one with valid preferred hearing channel', () => {
       const { toCompareSpy } = setupTestWithParties(
-        [
-          createMockParty('P1', null),
-          createMockParty('P2', '', 'Jane', 'Smith'),
-          createMockParty('P3', 'video', 'Bob', 'Jones')
-        ],
+        [createMockParty('P1', null), createMockParty('P2', '', 'Jane', 'Smith'), createMockParty('P3', 'video', 'Bob', 'Jones')],
         null,
         (value) => value === 'video',
         true
@@ -1606,7 +1595,11 @@ describe('HearingEditSummaryComponent', () => {
     });
 
     // Helper function to setup hearing channels and test
-    function setupAndTestChannels(srvChannels: string[] | null | undefined, hmcChannels: string[] | null | undefined, expectedResult: boolean) {
+    function setupAndTestChannels(
+      srvChannels: string[] | null | undefined,
+      hmcChannels: string[] | null | undefined,
+      expectedResult: boolean
+    ) {
       component.serviceHearingValuesModel.hearingChannels = srvChannels;
       component.hearingRequestMainModel.hearingDetails.hearingChannels = hmcChannels;
 
@@ -1991,8 +1984,12 @@ describe('HearingEditSummaryComponent', () => {
   it('should return true as as priority in SHV has been updated', () => {
     setAfterPageVisitValues();
     hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingWindowChangesConfirmed = false;
-    const shvModel: ServiceHearingValuesModel = JSON.parse(JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel));
-    const hmcModel: HearingRequestMainModel = JSON.parse(JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel));
+    const shvModel: ServiceHearingValuesModel = JSON.parse(
+      JSON.stringify(initialState.hearings.hearingValues.serviceHearingValuesModel)
+    );
+    const hmcModel: HearingRequestMainModel = JSON.parse(
+      JSON.stringify(initialState.hearings.hearingRequest.hearingRequestMainModel)
+    );
     shvModel.hearingPriorityType = 'urgent';
     hmcModel.hearingDetails.hearingPriorityType = 'standard';
 
@@ -2238,8 +2235,8 @@ describe('HearingEditSummaryComponent', () => {
         partyRole: 'CLAIMANT',
         individualDetails: {
           firstName: 'Extra',
-          lastName: 'Person'
-        }
+          lastName: 'Person',
+        },
       });
 
       setAfterPageVisitValues();
@@ -2258,8 +2255,10 @@ describe('HearingEditSummaryComponent', () => {
       component.hearingRequestMainModel = _.cloneDeep(initialState.hearings.hearingRequest.hearingRequestMainModel);
 
       // Modify a party detail in serviceHearingValuesModel
-      if (component.serviceHearingValuesModel.parties.length > 0 &&
-        component.serviceHearingValuesModel.parties[0].individualDetails) {
+      if (
+        component.serviceHearingValuesModel.parties.length > 0 &&
+        component.serviceHearingValuesModel.parties[0].individualDetails
+      ) {
         component.serviceHearingValuesModel.parties[0].individualDetails.firstName = 'ChangedName';
       }
 
@@ -2344,8 +2343,8 @@ describe('HearingEditSummaryComponent', () => {
         partyRole: 'CLAIMANT',
         individualDetails: {
           firstName: 'Extra',
-          lastName: 'Person'
-        }
+          lastName: 'Person',
+        },
       });
 
       setAfterPageVisitValues();
@@ -2474,7 +2473,7 @@ describe('HearingEditSummaryComponent', () => {
         hearingIsLinkedFlag: false,
         amendReasonCodes: null,
         listingAutoChangeReasonCode: null,
-        autolistFlag: false
+        autolistFlag: false,
       };
 
       const baseCaseDetails = {
@@ -2490,7 +2489,7 @@ describe('HearingEditSummaryComponent', () => {
         caseManagementLocationCode: '231596',
         caserestrictedFlag: false,
         externalCaseReference: '',
-        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
       };
 
       const baseRequestDetails = {
@@ -2499,7 +2498,7 @@ describe('HearingEditSummaryComponent', () => {
         timestamp: '2021-08-10T12:20:00.000Z',
         versionNumber: 1,
         hearingGroupRequestId: null,
-        partiesNotifiedDateTime: null
+        partiesNotifiedDateTime: null,
       };
 
       component.hearingRequestMainModel = {
@@ -2514,11 +2513,11 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'telephone'
-            }
-          }
+              preferredHearingChannel: 'telephone',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       component.hearingRequestToCompareMainModel = {
@@ -2533,11 +2532,11 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'NA'
-            }
-          }
+              preferredHearingChannel: 'NA',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       const result = (component as any).hasHearingRequestObjectChanged();
@@ -2566,7 +2565,7 @@ describe('HearingEditSummaryComponent', () => {
         hearingIsLinkedFlag: false,
         amendReasonCodes: null,
         listingAutoChangeReasonCode: null,
-        autolistFlag: false
+        autolistFlag: false,
       };
 
       const baseCaseDetails = {
@@ -2582,7 +2581,7 @@ describe('HearingEditSummaryComponent', () => {
         caseManagementLocationCode: '231596',
         caserestrictedFlag: false,
         externalCaseReference: '',
-        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
       };
 
       const baseRequestDetails = {
@@ -2591,7 +2590,7 @@ describe('HearingEditSummaryComponent', () => {
         timestamp: '2021-08-10T12:20:00.000Z',
         versionNumber: 1,
         hearingGroupRequestId: null,
-        partiesNotifiedDateTime: null
+        partiesNotifiedDateTime: null,
       };
 
       component.hearingRequestMainModel = {
@@ -2606,11 +2605,11 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'video'
-            }
-          }
+              preferredHearingChannel: 'video',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       component.hearingRequestToCompareMainModel = {
@@ -2625,11 +2624,11 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'NA'
-            }
-          }
+              preferredHearingChannel: 'NA',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       const result = (component as any).hasHearingRequestObjectChanged();
@@ -2658,7 +2657,7 @@ describe('HearingEditSummaryComponent', () => {
         hearingIsLinkedFlag: false,
         amendReasonCodes: null,
         listingAutoChangeReasonCode: null,
-        autolistFlag: false
+        autolistFlag: false,
       };
 
       const baseCaseDetails = {
@@ -2674,7 +2673,7 @@ describe('HearingEditSummaryComponent', () => {
         caseManagementLocationCode: '231596',
         caserestrictedFlag: false,
         externalCaseReference: '',
-        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
       };
 
       const baseRequestDetails = {
@@ -2683,7 +2682,7 @@ describe('HearingEditSummaryComponent', () => {
         timestamp: '2021-08-10T12:20:00.000Z',
         versionNumber: 1,
         hearingGroupRequestId: null,
-        partiesNotifiedDateTime: null
+        partiesNotifiedDateTime: null,
       };
 
       component.hearingRequestMainModel = {
@@ -2698,8 +2697,8 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'telephone'
-            }
+              preferredHearingChannel: 'telephone',
+            },
           },
           {
             partyID: 'P2',
@@ -2708,8 +2707,8 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'video'
-            }
+              preferredHearingChannel: 'video',
+            },
           },
           {
             partyID: 'P3',
@@ -2718,11 +2717,11 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Bob',
               lastName: 'Johnson',
-              preferredHearingChannel: 'telephone'
-            }
-          }
+              preferredHearingChannel: 'telephone',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       component.hearingRequestToCompareMainModel = {
@@ -2737,8 +2736,8 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'NA'
-            }
+              preferredHearingChannel: 'NA',
+            },
           },
           {
             partyID: 'P2',
@@ -2747,8 +2746,8 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Smith',
-              preferredHearingChannel: 'NA'
-            }
+              preferredHearingChannel: 'NA',
+            },
           },
           {
             partyID: 'P3',
@@ -2757,11 +2756,11 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Bob',
               lastName: 'Johnson',
-              preferredHearingChannel: 'NA'
-            }
-          }
+              preferredHearingChannel: 'NA',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       const result = (component as any).hasHearingRequestObjectChanged();
@@ -2779,7 +2778,7 @@ describe('HearingEditSummaryComponent', () => {
           ...component.hearingRequestMainModel.hearingDetails,
           isPaperHearing: true,
           hearingChannels: [HearingChannelEnum.ONPPR],
-          duration: 60
+          duration: 60,
         },
         partyDetails: [
           {
@@ -2789,10 +2788,10 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'telephone'
-            }
-          }
-        ]
+              preferredHearingChannel: 'telephone',
+            },
+          },
+        ],
       };
 
       component.hearingRequestToCompareMainModel = {
@@ -2801,7 +2800,7 @@ describe('HearingEditSummaryComponent', () => {
           ...component.hearingRequestToCompareMainModel.hearingDetails,
           isPaperHearing: true,
           hearingChannels: [HearingChannelEnum.ONPPR],
-          duration: 90
+          duration: 90,
         },
         partyDetails: [
           {
@@ -2811,10 +2810,10 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'NA'
-            }
-          }
-        ]
+              preferredHearingChannel: 'NA',
+            },
+          },
+        ],
       };
 
       const result = (component as any).hasHearingRequestObjectChanged();
@@ -2832,7 +2831,7 @@ describe('HearingEditSummaryComponent', () => {
           ...component.hearingRequestMainModel.hearingDetails,
           isPaperHearing: true,
           hearingChannels: [HearingChannelEnum.ONPPR],
-          duration: 60
+          duration: 60,
         },
         partyDetails: [
           {
@@ -2842,10 +2841,10 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'video'
-            }
-          }
-        ]
+              preferredHearingChannel: 'video',
+            },
+          },
+        ],
       };
 
       component.hearingRequestToCompareMainModel = {
@@ -2854,7 +2853,7 @@ describe('HearingEditSummaryComponent', () => {
           ...component.hearingRequestToCompareMainModel.hearingDetails,
           isPaperHearing: true,
           hearingChannels: [HearingChannelEnum.ONPPR],
-          duration: 60
+          duration: 60,
         },
         partyDetails: [
           {
@@ -2864,10 +2863,10 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'Jane',
               lastName: 'Doe',
-              preferredHearingChannel: 'NA'
-            }
-          }
-        ]
+              preferredHearingChannel: 'NA',
+            },
+          },
+        ],
       };
 
       const result = (component as any).hasHearingRequestObjectChanged();
@@ -2896,7 +2895,7 @@ describe('HearingEditSummaryComponent', () => {
         hearingIsLinkedFlag: false,
         amendReasonCodes: null,
         listingAutoChangeReasonCode: null,
-        autolistFlag: false
+        autolistFlag: false,
       };
 
       const baseCaseDetails = {
@@ -2912,7 +2911,7 @@ describe('HearingEditSummaryComponent', () => {
         caseManagementLocationCode: '231596',
         caserestrictedFlag: false,
         externalCaseReference: '',
-        caseSLAStartDate: '2021-05-05T09:00:00.000Z'
+        caseSLAStartDate: '2021-05-05T09:00:00.000Z',
       };
 
       const baseRequestDetails = {
@@ -2921,7 +2920,7 @@ describe('HearingEditSummaryComponent', () => {
         timestamp: '2021-08-10T12:20:00.000Z',
         versionNumber: 1,
         hearingGroupRequestId: null,
-        partiesNotifiedDateTime: null
+        partiesNotifiedDateTime: null,
       };
 
       component.hearingRequestMainModel = {
@@ -2936,8 +2935,8 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'telephone'
-            }
+              preferredHearingChannel: 'telephone',
+            },
           },
           {
             partyID: 'P2',
@@ -2946,11 +2945,11 @@ describe('HearingEditSummaryComponent', () => {
             organisationDetails: {
               name: 'Test Org',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000'
-            }
-          }
+              cftOrganisationID: 'O100000',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       component.hearingRequestToCompareMainModel = {
@@ -2965,8 +2964,8 @@ describe('HearingEditSummaryComponent', () => {
             individualDetails: {
               firstName: 'John',
               lastName: 'Doe',
-              preferredHearingChannel: 'NA'
-            }
+              preferredHearingChannel: 'NA',
+            },
           },
           {
             partyID: 'P2',
@@ -2975,11 +2974,11 @@ describe('HearingEditSummaryComponent', () => {
             organisationDetails: {
               name: 'Test Org',
               organisationType: 'GOV',
-              cftOrganisationID: 'O100000'
-            }
-          }
+              cftOrganisationID: 'O100000',
+            },
+          },
         ],
-        hearingResponse: null
+        hearingResponse: null,
       };
 
       const result = (component as any).hasHearingRequestObjectChanged();
@@ -3094,7 +3093,7 @@ describe('HearingEditSummaryComponent', () => {
         hearingWindow: serviceHearingValues.hearingWindow,
         duration: serviceHearingValues.duration,
         hearingPriorityType: serviceHearingValues.hearingPriorityType,
-        parties: serviceHearingValues.parties || []
+        parties: serviceHearingValues.parties || [],
       };
 
       component.hearingRequestMainModel = {
@@ -3103,14 +3102,14 @@ describe('HearingEditSummaryComponent', () => {
           ...component.hearingRequestMainModel.hearingDetails,
           hearingWindow: hearingRequestValues.hearingDetails?.hearingWindow,
           duration: hearingRequestValues.hearingDetails?.duration,
-          hearingPriorityType: hearingRequestValues.hearingDetails?.hearingPriorityType
+          hearingPriorityType: hearingRequestValues.hearingDetails?.hearingPriorityType,
         },
-        partyDetails: hearingRequestValues.partyDetails || []
+        partyDetails: hearingRequestValues.partyDetails || [],
       };
 
       component.hearingRequestToCompareMainModel = {
         ...component.hearingRequestToCompareMainModel,
-        partyDetails: hearingRequestValues.partyDetails || []
+        partyDetails: hearingRequestValues.partyDetails || [],
       };
 
       component.sectionsToDisplay = sectionsToDisplay;
@@ -3134,8 +3133,8 @@ describe('HearingEditSummaryComponent', () => {
           hearingFacilitiesChangesRequired: false,
           partyDetailsAnyChangesRequired: false,
           hearingUnavailabilityDatesChanged: false,
-          additionalInstructionsChangesRequired: false
-        }
+          additionalInstructionsChangesRequired: false,
+        },
       };
     });
 
@@ -3158,21 +3157,22 @@ describe('HearingEditSummaryComponent', () => {
 
     describe('party unavailability dates checks', () => {
       it('should return true when party unavailability dates have changed', () => {
-        const parties: PartyDetailsModel[] = [{
-          partyID: 'P1',
-          partyType: PartyType.IND,
-          partyRole: 'appellant',
-          unavailabilityRanges: [{
-            unavailableFromDate: '2024-01-01T09:00:00.000Z',
-            unavailableToDate: '2024-01-05T09:00:00.000Z',
-            unavailabilityType: UnavailabilityType.ALL_DAY
-          }]
-        }];
+        const parties: PartyDetailsModel[] = [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            unavailabilityRanges: [
+              {
+                unavailableFromDate: '2024-01-01T09:00:00.000Z',
+                unavailableToDate: '2024-01-05T09:00:00.000Z',
+                unavailabilityType: UnavailabilityType.ALL_DAY,
+              },
+            ],
+          },
+        ];
 
-        setupHearingWindowTest(
-          { parties },
-          { partyDetails: parties }
-        );
+        setupHearingWindowTest({ parties }, { partyDetails: parties });
         spyOn(HearingsUtils, 'hasPartyUnavailabilityDatesChanged').and.returnValue(true);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3181,17 +3181,16 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should return false when party unavailability dates have not changed', () => {
-        const parties: PartyDetailsModel[] = [{
-          partyID: 'P1',
-          partyType: PartyType.IND,
-          partyRole: 'appellant',
-          unavailabilityRanges: []
-        }];
+        const parties: PartyDetailsModel[] = [
+          {
+            partyID: 'P1',
+            partyType: PartyType.IND,
+            partyRole: 'appellant',
+            unavailabilityRanges: [],
+          },
+        ];
 
-        setupHearingWindowTest(
-          { parties },
-          { partyDetails: parties }
-        );
+        setupHearingWindowTest({ parties }, { partyDetails: parties });
         spyOn(HearingsUtils, 'hasPartyUnavailabilityDatesChanged').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3206,16 +3205,16 @@ describe('HearingEditSummaryComponent', () => {
           {
             hearingWindow: {
               dateRangeStart: '2024-01-01T09:00:00.000Z',
-              dateRangeEnd: '2024-01-10T09:00:00.000Z'
-            }
+              dateRangeEnd: '2024-01-10T09:00:00.000Z',
+            },
           },
           {
             hearingDetails: {
               hearingWindow: {
                 dateRangeStart: '2024-02-01T09:00:00.000Z',
-                dateRangeEnd: '2024-02-10T09:00:00.000Z'
-              }
-            }
+                dateRangeEnd: '2024-02-10T09:00:00.000Z',
+              },
+            },
           }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
@@ -3223,20 +3222,19 @@ describe('HearingEditSummaryComponent', () => {
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
 
-        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(component.serviceHearingValuesModel.hearingWindow);
+        expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(
+          component.serviceHearingValuesModel.hearingWindow
+        );
         expect(result).toBeTrue();
       });
 
       it('should return false when hearingWindow is valid but dates have not changed', () => {
         const hearingWindow = {
           dateRangeStart: '2024-01-01T09:00:00.000Z',
-          dateRangeEnd: '2024-01-10T09:00:00.000Z'
+          dateRangeEnd: '2024-01-10T09:00:00.000Z',
         };
 
-        setupHearingWindowTest(
-          { hearingWindow },
-          { hearingDetails: { hearingWindow } }
-        );
+        setupHearingWindowTest({ hearingWindow }, { hearingDetails: { hearingWindow } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
 
@@ -3246,10 +3244,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip hearing window check when hearingWindow is null', () => {
-        setupHearingWindowTest(
-          { hearingWindow: null },
-          { hearingDetails: { hearingWindow: null } }
-        );
+        setupHearingWindowTest({ hearingWindow: null }, { hearingDetails: { hearingWindow: null } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
 
@@ -3260,10 +3255,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip hearing window check when hearingWindow is undefined', () => {
-        setupHearingWindowTest(
-          { hearingWindow: undefined },
-          { hearingDetails: { hearingWindow: undefined } }
-        );
+        setupHearingWindowTest({ hearingWindow: undefined }, { hearingDetails: { hearingWindow: undefined } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
 
@@ -3274,10 +3266,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip hearing window check when hearingWindow is empty object', () => {
-        setupHearingWindowTest(
-          { hearingWindow: {} },
-          { hearingDetails: { hearingWindow: {} } }
-        );
+        setupHearingWindowTest({ hearingWindow: {} }, { hearingDetails: { hearingWindow: {} } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
         spyOn(HearingsUtils, 'hasHearingDatesChanged').and.returnValue(false);
 
@@ -3290,10 +3279,7 @@ describe('HearingEditSummaryComponent', () => {
 
     describe('duration checks with toCompareServiceHearingValueField', () => {
       it('should return true when duration is valid and has changed', () => {
-        setupHearingWindowTest(
-          { duration: 120 },
-          { hearingDetails: { duration: 60 } }
-        );
+        setupHearingWindowTest({ duration: 120 }, { hearingDetails: { duration: 60 } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3303,10 +3289,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should return false when duration is valid but has not changed', () => {
-        setupHearingWindowTest(
-          { duration: 120 },
-          { hearingDetails: { duration: 120 } }
-        );
+        setupHearingWindowTest({ duration: 120 }, { hearingDetails: { duration: 120 } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3315,10 +3298,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip duration check when duration is null', () => {
-        setupHearingWindowTest(
-          { duration: null },
-          { hearingDetails: { duration: null } }
-        );
+        setupHearingWindowTest({ duration: null }, { hearingDetails: { duration: null } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3327,10 +3307,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip duration check when duration is undefined', () => {
-        setupHearingWindowTest(
-          { duration: undefined },
-          { hearingDetails: { duration: undefined } }
-        );
+        setupHearingWindowTest({ duration: undefined }, { hearingDetails: { duration: undefined } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3339,10 +3316,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip duration check when duration is 0', () => {
-        setupHearingWindowTest(
-          { duration: 0 },
-          { hearingDetails: { duration: 0 } }
-        );
+        setupHearingWindowTest({ duration: 0 }, { hearingDetails: { duration: 0 } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3353,10 +3327,7 @@ describe('HearingEditSummaryComponent', () => {
 
     describe('hearingPriorityType checks with toCompareServiceHearingValueField', () => {
       it('should return true when hearingPriorityType is valid and has changed', () => {
-        setupHearingWindowTest(
-          { hearingPriorityType: 'Urgent' },
-          { hearingDetails: { hearingPriorityType: 'Standard' } }
-        );
+        setupHearingWindowTest({ hearingPriorityType: 'Urgent' }, { hearingDetails: { hearingPriorityType: 'Standard' } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3366,10 +3337,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should return false when hearingPriorityType is valid but has not changed', () => {
-        setupHearingWindowTest(
-          { hearingPriorityType: 'Urgent' },
-          { hearingDetails: { hearingPriorityType: 'Urgent' } }
-        );
+        setupHearingWindowTest({ hearingPriorityType: 'Urgent' }, { hearingDetails: { hearingPriorityType: 'Urgent' } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3378,10 +3346,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip hearingPriorityType check when hearingPriorityType is null', () => {
-        setupHearingWindowTest(
-          { hearingPriorityType: null },
-          { hearingDetails: { hearingPriorityType: null } }
-        );
+        setupHearingWindowTest({ hearingPriorityType: null }, { hearingDetails: { hearingPriorityType: null } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3390,10 +3355,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip hearingPriorityType check when hearingPriorityType is undefined', () => {
-        setupHearingWindowTest(
-          { hearingPriorityType: undefined },
-          { hearingDetails: { hearingPriorityType: undefined } }
-        );
+        setupHearingWindowTest({ hearingPriorityType: undefined }, { hearingDetails: { hearingPriorityType: undefined } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3402,10 +3364,7 @@ describe('HearingEditSummaryComponent', () => {
       });
 
       it('should skip hearingPriorityType check when hearingPriorityType is empty string', () => {
-        setupHearingWindowTest(
-          { hearingPriorityType: '' },
-          { hearingDetails: { hearingPriorityType: '' } }
-        );
+        setupHearingWindowTest({ hearingPriorityType: '' }, { hearingDetails: { hearingPriorityType: '' } });
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
 
         const result = (component as any).pageVisitHearingWindowChangeExists();
@@ -3420,14 +3379,14 @@ describe('HearingEditSummaryComponent', () => {
           {
             hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
             duration: 120,
-            hearingPriorityType: 'Urgent'
+            hearingPriorityType: 'Urgent',
           },
           {
             hearingDetails: {
               hearingWindow: { dateRangeStart: '2024-02-01T09:00:00.000Z' },
               duration: 60,
-              hearingPriorityType: 'Standard'
-            }
+              hearingPriorityType: 'Standard',
+            },
           }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
@@ -3443,14 +3402,14 @@ describe('HearingEditSummaryComponent', () => {
           {
             hearingWindow: null,
             duration: null,
-            hearingPriorityType: null
+            hearingPriorityType: null,
           },
           {
             hearingDetails: {
               hearingWindow: null,
               duration: null,
-              hearingPriorityType: null
-            }
+              hearingPriorityType: null,
+            },
           }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
@@ -3465,14 +3424,14 @@ describe('HearingEditSummaryComponent', () => {
           {
             hearingWindow: null,
             duration: 120,
-            hearingPriorityType: null
+            hearingPriorityType: null,
           },
           {
             hearingDetails: {
               hearingWindow: null,
               duration: 60,
-              hearingPriorityType: null
-            }
+              hearingPriorityType: null,
+            },
           }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(false, true, false);
@@ -3487,14 +3446,14 @@ describe('HearingEditSummaryComponent', () => {
           {
             hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
             duration: 120,
-            hearingPriorityType: 'Urgent'
+            hearingPriorityType: 'Urgent',
           },
           {
             hearingDetails: {
               hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
               duration: 120,
-              hearingPriorityType: 'Urgent'
-            }
+              hearingPriorityType: 'Urgent',
+            },
           }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);
@@ -3510,14 +3469,14 @@ describe('HearingEditSummaryComponent', () => {
           {
             hearingWindow: { dateRangeStart: '2024-01-01T09:00:00.000Z' },
             duration: 120,
-            hearingPriorityType: 'Urgent'
+            hearingPriorityType: 'Urgent',
           },
           {
             hearingDetails: {
               hearingWindow: { dateRangeStart: '2024-02-01T09:00:00.000Z' },
               duration: 120,
-              hearingPriorityType: 'Urgent'
-            }
+              hearingPriorityType: 'Urgent',
+            },
           }
         );
         spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValues(true, true, true);

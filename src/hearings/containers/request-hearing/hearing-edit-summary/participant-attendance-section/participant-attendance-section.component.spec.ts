@@ -89,9 +89,9 @@ describe('ParticipantAttendanceSectionComponent', () => {
     expect(component.isPaperHearing).toEqual('No');
     expect(component.participantChannels.length).toEqual(1);
     expect(component.participantChannels[0].hearingChannel).toContain('By phone');
-    expect(component.participantAttendanceModes).toEqual(
-      [{ partyName: 'Jane Rogers', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true }]
-    );
+    expect(component.participantAttendanceModes).toEqual([
+      { partyName: 'Jane Rogers', channel: ' - By video', partyNameChanged: true, partyChannelChanged: true },
+    ]);
     expect(component.numberOfPhysicalAttendees).toEqual(3);
   });
 
@@ -302,8 +302,8 @@ describe('ParticipantAttendanceSectionComponent', () => {
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false,
-          additionalInstructionsChangesRequired: false
-        }
+          additionalInstructionsChangesRequired: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -336,7 +336,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
             individualDetails: {
               firstName: 'New',
               lastName: 'Party',
-              preferredHearingChannel: 'byVideo'
+              preferredHearingChannel: 'byVideo',
             },
           } as any,
         ],
@@ -358,16 +358,16 @@ describe('ParticipantAttendanceSectionComponent', () => {
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false,
-          additionalInstructionsChangesRequired: false
-        }
+          additionalInstructionsChangesRequired: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        partyDetails: []
+        partyDetails: [],
       };
       component.hearingRequestToCompareMainModel = {
         ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
-        partyDetails: []
+        partyDetails: [],
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -387,17 +387,18 @@ describe('ParticipantAttendanceSectionComponent', () => {
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
           hearingUnavailabilityDatesChanged: false,
-          additionalInstructionsChangesRequired: false
-        }
+          additionalInstructionsChangesRequired: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
           hearingChannels: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels,
-          numberOfPhysicalAttendees: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees
+          numberOfPhysicalAttendees:
+            initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.numberOfPhysicalAttendees,
         },
-        partyDetails: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails
+        partyDetails: initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.partyDetails,
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.NONE);
@@ -416,15 +417,15 @@ describe('ParticipantAttendanceSectionComponent', () => {
             partyID: 'P1',
             partyType: 'IND',
             partyRole: 'appellant',
-            individualDetails: { preferredHearingChannel: 'INPERSON' }
+            individualDetails: { preferredHearingChannel: 'INPERSON' },
           },
           {
             partyID: 'P2',
             partyType: 'IND',
             partyRole: 'appellant',
-            individualDetails: { preferredHearingChannel: 'VIDEO' }
-          }
-        ]
+            individualDetails: { preferredHearingChannel: 'VIDEO' },
+          },
+        ],
       } as any;
 
       testComponent.hearingRequestToCompareMainModel = {
@@ -433,15 +434,15 @@ describe('ParticipantAttendanceSectionComponent', () => {
             partyID: 'P1',
             partyType: 'IND',
             partyRole: 'appellant',
-            individualDetails: { preferredHearingChannel: 'INPERSON' }
+            individualDetails: { preferredHearingChannel: 'INPERSON' },
           },
           {
             partyID: 'P2',
             partyType: 'IND',
             partyRole: 'appellant',
-            individualDetails: { preferredHearingChannel: 'INPERSON' }
-          }
-        ]
+            individualDetails: { preferredHearingChannel: 'INPERSON' },
+          },
+        ],
       } as any;
     });
 
@@ -450,7 +451,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyID: 'P1',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: 'INPERSON' }
+        individualDetails: { preferredHearingChannel: 'INPERSON' },
       } as any;
       // eslint-disable-next-line dot-notation
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
@@ -461,7 +462,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyID: 'P2',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: 'VIDEO' }
+        individualDetails: { preferredHearingChannel: 'VIDEO' },
       } as any;
       // eslint-disable-next-line dot-notation
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
@@ -472,7 +473,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyID: 'P3',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: 'VIDEO' }
+        individualDetails: { preferredHearingChannel: 'VIDEO' },
       } as any;
       // eslint-disable-next-line dot-notation
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
@@ -483,19 +484,19 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyID: 'P4',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: undefined }
+        individualDetails: { preferredHearingChannel: undefined },
       } as any);
       testComponent.hearingRequestToCompareMainModel.partyDetails.push({
         partyID: 'P4',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: 'VIDEO' }
+        individualDetails: { preferredHearingChannel: 'VIDEO' },
       } as any);
       const partyDetails = {
         partyID: 'P4',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: undefined }
+        individualDetails: { preferredHearingChannel: undefined },
       } as any;
       // eslint-disable-next-line dot-notation
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
@@ -506,19 +507,19 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyID: 'P5',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: undefined }
+        individualDetails: { preferredHearingChannel: undefined },
       } as any);
       testComponent.hearingRequestToCompareMainModel.partyDetails.push({
         partyID: 'P5',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: undefined }
+        individualDetails: { preferredHearingChannel: undefined },
       } as any);
       const partyDetails = {
         partyID: 'P5',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: undefined }
+        individualDetails: { preferredHearingChannel: undefined },
       } as any;
       // eslint-disable-next-line dot-notation
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
@@ -529,19 +530,19 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyID: 'P6',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: null
+        individualDetails: null,
       } as any);
       testComponent.hearingRequestToCompareMainModel.partyDetails.push({
         partyID: 'P6',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: { preferredHearingChannel: 'VIDEO' }
+        individualDetails: { preferredHearingChannel: 'VIDEO' },
       } as any);
       const partyDetails = {
         partyID: 'P6',
         partyType: 'IND',
         partyRole: 'appellant',
-        individualDetails: null
+        individualDetails: null,
       } as any;
       // eslint-disable-next-line dot-notation
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);

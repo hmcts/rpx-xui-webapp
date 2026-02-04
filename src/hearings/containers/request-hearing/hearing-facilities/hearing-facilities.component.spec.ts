@@ -344,7 +344,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should set the additionalSecurityRequiredChanged to true where differing in SHV', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -358,18 +358,18 @@ describe('HearingFacilitiesComponent', () => {
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.hearingRequestMainModel = {
       ...component.hearingRequestMainModel,
-      partyDetails: partiesInHMC
+      partyDetails: partiesInHMC,
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
       parties: partiesInSHV,
       caseAdditionalSecurityFlag: true,
-      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt']
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt'],
     };
     component.ngOnInit();
     expect(component.additionalSecurityRequiredChanged).toEqual(true);
@@ -378,7 +378,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should set the additionalFacilitiesChanged to true where differing in SHV', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -392,18 +392,18 @@ describe('HearingFacilitiesComponent', () => {
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
-        additionalInstructionsChangesRequired: false
-      }
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.hearingRequestMainModel = {
       ...component.hearingRequestMainModel,
-      partyDetails: partiesInHMC
+      partyDetails: partiesInHMC,
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
       parties: partiesInSHV,
       caseAdditionalSecurityFlag: false,
-      facilitiesRequired: ['immigrationDetentionCentre']
+      facilitiesRequired: ['immigrationDetentionCentre'],
     };
     component.ngOnInit();
     expect(component.additionalSecurityRequiredChanged).toEqual(false);
@@ -491,8 +491,7 @@ describe('HearingFacilitiesComponent', () => {
   describe('getHearingFacilitiesFormArray', () => {
     beforeEach(() => {
       // Reset state before each test
-      component.additionalFacilities = [
-        ...ADDITIONAL_FACILITIES_OPTIONS].map((facility) => ({
+      component.additionalFacilities = [...ADDITIONAL_FACILITIES_OPTIONS].map((facility) => ({
         key: facility.key,
         value_en: facility.value_en,
         value_cy: facility.value_cy,

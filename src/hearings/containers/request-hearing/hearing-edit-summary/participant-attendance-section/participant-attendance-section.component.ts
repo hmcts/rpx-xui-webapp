@@ -25,7 +25,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
   public partyChannelsRefDataCombined: LovRefDataModel[] = [];
-  public isPaperHearing : string;
+  public isPaperHearing: string;
   public participantChannels: HearingChannelMode[] = [];
   public participantAttendanceModes: ParticipantAttendanceMode[] = [];
   public numberOfPhysicalAttendees: number;
@@ -87,7 +87,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
       if (partyChannelFromRefData) {
         participantChannels.push({
           hearingChannel: partyChannelFromRefData.value_en,
-          hearingChannelChanged: this.getHearingChannelChanged(partyChannelFromRefData.key) });
+          hearingChannelChanged: this.getHearingChannelChanged(partyChannelFromRefData.key),
+        });
       }
     });
     return participantChannels;
@@ -156,7 +157,9 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
   }
 
   private getHearingChannelChanged(hearingChannel: string): boolean {
-    const hearingChannelInHMCToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels.find((hearingChannelToCompare) => hearingChannel === hearingChannelToCompare);
+    const hearingChannelInHMCToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingChannels.find(
+      (hearingChannelToCompare) => hearingChannel === hearingChannelToCompare
+    );
     return !hearingChannelInHMCToCompare;
   }
 
@@ -192,7 +195,7 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
     const numberOfAttendeesChanged = !_.isEqual(
       this.hearingRequestToCompareMainModel?.partyDetails.length || 0,
-      this.hearingRequestMainModel?.partyDetails.length || 0,
+      this.hearingRequestMainModel?.partyDetails.length || 0
     );
 
     const methodOfAttendanceChanged = !_.isEqual(
@@ -204,7 +207,8 @@ export class ParticipantAttendanceSectionComponent implements OnInit {
 
     const participantNameChanged = this.participantAttendanceModes.some((mode) => mode.partyNameChanged === true);
 
-    const changesMadeToParticipantAttendance = this.isPaperHearingChanged ||
+    const changesMadeToParticipantAttendance =
+      this.isPaperHearingChanged ||
       this.numberOfPhysicalAttendeesChanged ||
       numberOfAttendeesChanged ||
       methodOfAttendanceChanged ||

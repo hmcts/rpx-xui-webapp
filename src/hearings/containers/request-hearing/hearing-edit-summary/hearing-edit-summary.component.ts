@@ -266,14 +266,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       hmcHearingWindow = this.standardiseHearingDates(this.hearingRequestMainModel.hearingDetails?.hearingWindow);
     }
     if (this.hearingRequestToCompareMainModel?.hearingDetails?.hearingWindow) {
-      hmcToCompareHearingWindow = this.standardiseHearingDates(this.hearingRequestToCompareMainModel.hearingDetails?.hearingWindow);
+      hmcToCompareHearingWindow = this.standardiseHearingDates(
+        this.hearingRequestToCompareMainModel.hearingDetails?.hearingWindow
+      );
     }
 
     const hearingRequestMainModel = {
       requestDetails: { ...this.hearingRequestMainModel.requestDetails },
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        hearingWindow: {...hmcHearingWindow},
+        hearingWindow: { ...hmcHearingWindow },
         hearingChannels: [...this.hearingsService.getHearingChannels(this.hearingRequestMainModel)],
       },
       caseDetails: { ...this.hearingRequestMainModel.caseDetails },
@@ -286,8 +288,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       hearingDetails: {
         ...this.hearingRequestToCompareMainModel.hearingDetails,
         hearingWindow: {
-          ...hmcToCompareHearingWindow
-        }
+          ...hmcToCompareHearingWindow,
+        },
       },
       caseDetails: { ...this.hearingRequestToCompareMainModel.caseDetails },
       hearingResponse: { ...this.hearingRequestToCompareMainModel.hearingResponse },
@@ -309,7 +311,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     if (hearingWindow.firstDateTimeMustBe) {
-      standardisedHearingWindow.firstDateTimeMustBe = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DefaultFormat);
+      standardisedHearingWindow.firstDateTimeMustBe = moment(hearingWindow.firstDateTimeMustBe).format(
+        HearingDateEnum.DefaultFormat
+      );
     }
 
     for (const key of Object.keys(hearingWindow)) {
@@ -356,7 +360,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     );
   }
 
-  private replacer (key: any, value: any) {
+  private replacer(key: any, value: any) {
     // Party name is not present in HMC so ignoring it.
     // Is paper hearing flag is transient to indicate whether it is paper hearing
     // As well as, ignoring keys which are initialised with null value
@@ -580,7 +584,8 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
                 otherReasonableAdjustmentDetails: this.compareAndUpdateServiceHearingValues(
                   party.individualDetails.otherReasonableAdjustmentDetails,
                   serviceParty.individualDetails?.otherReasonableAdjustmentDetails,
-                  AutoUpdateMode.PARTY)
+                  AutoUpdateMode.PARTY
+                ),
               },
               unavailabilityDOW: this.compareAndUpdateServiceHearingValues(
                 party?.unavailabilityDOW,
@@ -659,7 +664,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     const hearingWindowChanged = this.pageVisitHearingWindowChangeExists();
     const additionalInstructionsChanged = this.pageVisitAdditionalInstructionsChangeExists();
 
-    const anyChange = reasonableAdjustmentChanged || nonReasonableAdjustmentChanged || partiesChanged || hearingWindowChanged || additionalInstructionsChanged;
+    const anyChange =
+      reasonableAdjustmentChanged ||
+      nonReasonableAdjustmentChanged ||
+      partiesChanged ||
+      hearingWindowChanged ||
+      additionalInstructionsChanged;
 
     if (!anyChange && hasHearingRequestObjectChanged) {
       return false;
@@ -729,11 +739,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     individualParties = individualParties
       .filter((party) => party.partyType === PartyType.IND)
       .sort((a, b) => {
-      return a.partyID > b.partyID ? 1 : (a.partyID === b.partyID ? 0 : -1);
-    });
-    individualParties.forEach(
-      (party) => party.individualDetails?.reasonableAdjustments?.sort(this.defaultStringSort)
-    );
+        return a.partyID > b.partyID ? 1 : a.partyID === b.partyID ? 0 : -1;
+      });
+    individualParties.forEach((party) => party.individualDetails?.reasonableAdjustments?.sort(this.defaultStringSort));
     return individualParties;
   }
 
@@ -742,7 +750,7 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Do not consider non-reasonable adjustment case flags as hearing facilities is not part of the screen flow
       return false;
     }
-    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed){
+    if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.nonReasonableAdjustmentChangesConfirmed) {
       return false;
     }
     const nonReasonableAdjustmentFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(
@@ -777,7 +785,10 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       return false;
     }
 
-    if (this.serviceHearingValuesModel.caseAdditionalSecurityFlag !== this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag) {
+    if (
+      this.serviceHearingValuesModel.caseAdditionalSecurityFlag !==
+      this.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag
+    ) {
       return true;
     }
 
@@ -798,16 +809,16 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // participant attendance changes already confirmed
       return false;
     }
-    if (this.pageVisitPartiesChangeExists()){
+    if (this.pageVisitPartiesChangeExists()) {
       return true;
     }
-    if (this.pageVisitPartiesHearingChannelChangeExists()){
+    if (this.pageVisitPartiesHearingChannelChangeExists()) {
       return true;
     }
-    if (this.methodsOfAttendanceChangeExists()){
+    if (this.methodsOfAttendanceChangeExists()) {
       return true;
     }
-    if (this.numberOfPhysicalAttendeesChangeExists()){
+    if (this.numberOfPhysicalAttendeesChangeExists()) {
       return true;
     }
 
@@ -824,24 +835,32 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private pageVisitPartiesChangeExists(): boolean {
-    return HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
+    return HearingsUtils.havePartyDetailsChanged(
+      this.serviceHearingValuesModel.parties,
+      this.hearingRequestMainModel.partyDetails
+    );
   }
 
   private pageVisitPartiesHearingChannelChangeExists(): boolean {
     // Check if any party has a preferred hearing channel that needs comparison
-    const hasAnyPreferredHearingChannel = this.serviceHearingValuesModel.parties.some(
-      (party) => HearingsUtils.toCompareServiceHearingValueField(party.individualDetails?.preferredHearingChannel)
+    const hasAnyPreferredHearingChannel = this.serviceHearingValuesModel.parties.some((party) =>
+      HearingsUtils.toCompareServiceHearingValueField(party.individualDetails?.preferredHearingChannel)
     );
     if (hasAnyPreferredHearingChannel) {
-      return HearingsUtils.havePartyHearingChannelChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails);
+      return HearingsUtils.havePartyHearingChannelChanged(
+        this.serviceHearingValuesModel.parties,
+        this.hearingRequestMainModel.partyDetails
+      );
     }
     return false;
   }
 
   private methodsOfAttendanceChangeExists(): boolean {
     const methodsOfAttendanceSHV = (this.serviceHearingValuesModel.hearingChannels ?? []).slice().sort(this.defaultStringSort);
-    const methodsOfAttendanceHMC = (this.hearingRequestMainModel.hearingDetails.hearingChannels ?? []).slice().sort(this.defaultStringSort);
-    if (methodsOfAttendanceSHV.length ===0) {
+    const methodsOfAttendanceHMC = (this.hearingRequestMainModel.hearingDetails.hearingChannels ?? [])
+      .slice()
+      .sort(this.defaultStringSort);
+    if (methodsOfAttendanceSHV.length === 0) {
       return false;
     }
     if (methodsOfAttendanceSHV.length !== methodsOfAttendanceHMC.length) {
@@ -851,8 +870,11 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
   }
 
   private numberOfPhysicalAttendeesChangeExists(): boolean {
-    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.numberOfPhysicalAttendees)){
-      return HearingsUtils.hasHearingNumberChanged(this.serviceHearingValuesModel?.numberOfPhysicalAttendees, this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees);
+    if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.numberOfPhysicalAttendees)) {
+      return HearingsUtils.hasHearingNumberChanged(
+        this.serviceHearingValuesModel?.numberOfPhysicalAttendees,
+        this.hearingRequestMainModel.hearingDetails?.numberOfPhysicalAttendees
+      );
     }
     return false;
   }
@@ -869,13 +891,19 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
 
     if (
       this.hearingRequestMainModel.partyDetails &&
-      HearingsUtils.hasPartyUnavailabilityDatesChanged(this.hearingRequestToCompareMainModel.partyDetails, this.serviceHearingValuesModel.parties)
+      HearingsUtils.hasPartyUnavailabilityDatesChanged(
+        this.hearingRequestToCompareMainModel.partyDetails,
+        this.serviceHearingValuesModel.parties
+      )
     ) {
       return true;
     }
     if (
       HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingWindow) &&
-      HearingsUtils.hasHearingDatesChanged(this.hearingRequestMainModel.hearingDetails?.hearingWindow, this.serviceHearingValuesModel?.hearingWindow)
+      HearingsUtils.hasHearingDatesChanged(
+        this.hearingRequestMainModel.hearingDetails?.hearingWindow,
+        this.serviceHearingValuesModel?.hearingWindow
+      )
     ) {
       return true;
     }
@@ -888,7 +916,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     }
 
     if (HearingsUtils.toCompareServiceHearingValueField(this.serviceHearingValuesModel.hearingPriorityType)) {
-      return this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType;
+      return (
+        this.hearingRequestMainModel.hearingDetails?.hearingPriorityType !== this.serviceHearingValuesModel?.hearingPriorityType
+      );
     }
 
     return false;
@@ -903,7 +933,12 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
       // Reasonable adjustment changes already confirmed
       return false;
     }
-    if (HearingsUtils.hasListingCommentsChange(this.hearingRequestMainModel.hearingDetails?.listingComments, this.serviceHearingValuesModel?.listingComments)) {
+    if (
+      HearingsUtils.hasListingCommentsChange(
+        this.hearingRequestMainModel.hearingDetails?.listingComments,
+        this.serviceHearingValuesModel?.listingComments
+      )
+    ) {
       return true;
     }
     if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.additionalInstructionsChangesRequired) {

@@ -5,6 +5,8 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { SessionStorageService } from '../../../app/services';
+import { EnvironmentService } from '../../../app/shared/services/environment.service';
 import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/actions';
 import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
 import { CaseCreateEffects } from './case-create.effects';
@@ -15,6 +17,9 @@ describe('CaseCreate Effects', () => {
   let effects: CaseCreateEffects;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success']);
   const mockLogger = jasmine.createSpyObj('mockLogger', ['info']);
+  const mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get']);
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
+  const mockWindow = { location: { assign: jasmine.createSpy('assign') } };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,11 +29,15 @@ describe('CaseCreate Effects', () => {
         { provide: AlertService, useValue: mockAlertService },
         provideMockActions(() => actions$),
         { provide: LoggerService, useValue: mockLogger },
+        { provide: EnvironmentService, useValue: mockEnvironmentService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: Window, useValue: mockWindow },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
 
+    mockEnvironmentService.get.and.returnValue({});
     effects = TestBed.inject(CaseCreateEffects);
   });
 
@@ -76,6 +85,26 @@ describe('CaseCreate Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.applyChangeCaseCreateFilter$).toBeObservable(expected);
+    });
+
+    it('should redirect when decentralised case-create event is configured', () => {
+      mockEnvironmentService.get.and.returnValue({
+        PCS: 'https://pcs-frontend.service.gov.uk',
+      });
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ id: 'user-123' }));
+
+      const action = new CaseCreateFilterApply({
+        jurisdictionId: 'IA',
+        caseTypeId: 'PCS',
+        eventId: 'ext:createCase',
+      });
+
+      actions$ = hot('-a', { a: action });
+      const expected = cold('---');
+      expect(effects.applyChangeCaseCreateFilter$).toBeObservable(expected);
+      expect(mockWindow.location.assign).toHaveBeenCalledWith(
+        'https://pcs-frontend.service.gov.uk/cases/case-create/IA/PCS/ext%3AcreateCase?expected_sub=user-123'
+      );
     });
   });
 });

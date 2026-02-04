@@ -16,6 +16,7 @@ export default interface Task {
   warnings?: boolean;
   derivedIcon?: string;
   jurisdiction?: string;
+  case_type_id?: string;
   isNew?: boolean;
   major_priority?: number;
 }

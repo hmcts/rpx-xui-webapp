@@ -104,6 +104,8 @@ export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';
 
+export const DECENTRALISED_EVENT_BASE_URLS = 'decentralisedEventBaseUrls';
+
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret';
 
 export const SYSTEM_USER_NAME = 'secrets.rpx.system-user-name';

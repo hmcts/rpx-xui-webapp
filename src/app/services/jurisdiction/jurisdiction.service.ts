@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class JurisdictionService {
-  public static jurisdictionUrl = '/aggregated/caseworkers/:uid/jurisdictions?access=read';
+  public static jurisdictionUrl = '/aggregated/caseworkers/:uid/jurisdictions-lite?access=read';
 
   constructor(private readonly http: HttpClient) {}
 

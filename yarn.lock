@@ -3680,12 +3680,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.27/hmcts-ccd-case-ui-toolkit-7.3.27.tgz":
-  version: 7.3.27
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.27/hmcts-ccd-case-ui-toolkit-7.3.27.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.28-exui-4101/hmcts-ccd-case-ui-toolkit-7.3.28-exui-4101.tgz":
+  version: 7.3.28-exui-4101
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.28-exui-4101/hmcts-ccd-case-ui-toolkit-7.3.28-exui-4101.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c3638aad3a2ce9612f47b9ebeed9822fe9e27c112fe8fd5b8512bd9fc77baffa21f35d0d273feb2a05feaf7ceadce3f34685b8450ebc8ddb36fff67ad2e7a625
+  checksum: 10/3ddebf6b0bb564723ae4364eb68e423d042a614c0b7a3d804a7bf5c61376e06e9c443fbb3898519571d7646c475ebfa46a73fcad6e6a3519873d6f487133961d
   languageName: node
   linkType: hard
 
@@ -3708,9 +3708,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.8/hmcts-media-viewer-4.2.8.tgz":
-  version: 4.2.8
-  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.8/hmcts-media-viewer-4.2.8.tgz"
+"@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.9-exui-4101/hmcts-media-viewer-4.2.9-exui-4101.tgz":
+  version: 4.2.9-exui-4101
+  resolution: "@hmcts/media-viewer@https://github.com/hmcts/em-media-viewer/releases/download/v4.2.9-exui-4101/hmcts-media-viewer-4.2.9-exui-4101.tgz"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3729,7 +3729,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/ea6ebea059763f44f6e7bbb6f6a7ffbd4bf9eb2e0129124fcc0ba040304785dabaeb4ed186f0cbaf2493fdc09657a23f24e079dc9f1bfc19799ab6f460dbdc09
+  checksum: 10/544e03ebbfa8de2530dbcf65f2b5e7d6139159aa8507a4c4a2d898e82a65edbc65e050328e8abac8a41a3c72d80d5cb915b192f49d9d71af572b3652a6901dc2
   languageName: node
   linkType: hard
 
@@ -24072,10 +24072,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.27/hmcts-ccd-case-ui-toolkit-7.3.27.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.28-exui-4101/hmcts-ccd-case-ui-toolkit-7.3.28-exui-4101.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.8/hmcts-media-viewer-4.2.8.tgz"
+    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.9-exui-4101/hmcts-media-viewer-4.2.9-exui-4101.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.1"
     "@hmcts/properties-volume": "npm:^1.2.0"

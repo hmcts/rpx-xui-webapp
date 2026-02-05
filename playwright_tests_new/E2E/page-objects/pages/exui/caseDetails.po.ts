@@ -29,6 +29,11 @@ export class CaseDetailsPage extends Base {
   readonly historyTable = this.page.locator('table.EventLogTable');
   readonly historyDetailsTable = this.page.locator('table.EventLogDetails');
 
+  // Case details - FindSearch FPL
+  readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
+  readonly ccdCaseReference = this.page.locator('ccd-case-header .case-field .markdown >h2 >strong');
+  readonly tabList = this.page.locator('div[role="tablist"]');
+
   //Case flags
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
@@ -41,6 +46,16 @@ export class CaseDetailsPage extends Base {
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
+
+  // Search case
+  readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
+  // GlobalSearch
+  readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
+  readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
+  readonly addOrRemoveFlagsLink = this.page.locator('#addCaseFlagEventLink');
+  readonly extend26WeekTimelineLink = this.page.locator('#extend26WeekTimelineLink');
+  //Find Search
+  readonly findSearchTabsCount = this.page.locator('.mat-tab-list');
 
   constructor(page: Page) {
     super(page);
@@ -266,5 +281,11 @@ export class CaseDetailsPage extends Base {
   }
   async selectCaseDetailsTab(tabName: string) {
     await this.caseDetailsTabs.filter({ hasText: tabName }).click();
+  }
+
+  async getTabsCountForFindSearchPage() {
+    const tabsCount = await this.tabList.locator('div[role="tab"]').count();
+    console.log(`Number of tabs: ${tabsCount}`);
+    return tabsCount;
   }
 }

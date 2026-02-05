@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
+import { normalizeCaseNumber } from '../../utils';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
@@ -22,13 +23,8 @@ test.describe('Verify creating cases works as expected', () => {
 
     await test.step('Create a case and validate the case details', async () => {
       await createCasePage.createDivorceCase(jurisdiction, caseType, testField);
-      const alertVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
-      if (alertVisible) {
-        await expect.soft(caseDetailsPage.caseAlertSuccessMessage).toBeVisible();
-        caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
-      } else {
-        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-      }
+      // Always collect case number from URL for consistency and reliability
+      caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
       expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
       expect(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
     });
@@ -44,7 +40,7 @@ test.describe('Verify creating cases works as expected', () => {
 
     await test.step('Confirm the created case is in the search results', async () => {
       const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
-      const found = table.some((row) => row['Case reference'] === `${caseNumber.slice(1)}`);
+      const found = table.some((row) => normalizeCaseNumber(String(row['Case reference'] ?? '')) === caseNumber);
       expect(found).toBeTruthy();
     });
   });

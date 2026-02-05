@@ -51,6 +51,8 @@ export class CaseDetailsPage extends Base {
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
+  readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
@@ -356,7 +358,14 @@ export class CaseDetailsPage extends Base {
     return caseNumberMatch;
   }
 
-  async selectCaseAction(action: string) {
+  async selectCaseAction(
+    action: string,
+    options: {
+      expectedLocator?: Locator;
+      timeoutMs?: number;
+      retry?: boolean;
+    } = {}
+  ) {
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
     try {
@@ -367,20 +376,51 @@ export class CaseDetailsPage extends Base {
       await this.caseActionsDropdown.selectOption(action);
     }
     await this.caseActionGoButton.click();
-    try {
-      await this.exuiSpinnerComponent.wait();
-    } catch (error) {
-      // Some pages keep the spinner element mounted but hidden; fall back to a hidden wait.
-      this.logger.warn('Standard spinner wait failed, attempting hidden state wait', { error });
-      await this.page
-        .locator('xuilib-loading-spinner')
-        .first()
-        .waitFor({ state: 'hidden', timeout: 30000 })
-        .catch((err) => {
-          this.logger.warn('Spinner hidden wait also failed, proceeding anyway', { err });
-        });
-    }
+    await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
+    if (!options.expectedLocator) {
+      return;
+    }
+    const timeoutMs = options.timeoutMs ?? 30000;
+    const waitForExpected = async () => {
+      await options.expectedLocator?.waitFor({ state: 'visible', timeout: timeoutMs });
+    };
+    try {
+      await waitForExpected();
+    } catch (error) {
+      const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+      if (eventErrorVisible) {
+        throw new Error(`Case event failed after selecting "${action}": The event could not be created.`);
+      }
+      if (options.retry === false) {
+        throw error;
+      }
+      this.logger.warn('Expected locator not visible after case action; retrying action', { action });
+      try {
+        await this.caseActionsDropdown.selectOption({ label: action });
+      } catch (retryError) {
+        this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
+        await this.caseActionsDropdown.selectOption(action);
+      }
+      await this.caseActionGoButton.click();
+      await this.waitForSpinnerToComplete('after retrying case action');
+      await this.page.waitForLoadState('domcontentloaded');
+      await waitForExpected();
+    }
+  }
+
+  private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
+    const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
+    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    try {
+      await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
+    } catch (error) {
+      const stillVisible = await spinner.isVisible().catch(() => false);
+      if (stillVisible) {
+        throw new Error(`Spinner still visible ${context}`);
+      }
+      this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
+    }
   }
 
   async selectCaseDetailsEvent(action: string) {
@@ -390,7 +430,7 @@ export class CaseDetailsPage extends Base {
   async selectFirstRadioOption() {
     await this.commonRadioButtons.first().getByRole('radio').check();
     await this.submitCaseFlagButton.click();
-    await this.exuiSpinnerComponent.wait();
+    await this.waitForSpinnerToComplete('after selecting first radio option');
   }
 
   async todaysDateFormatted(): Promise<string> {
@@ -422,25 +462,30 @@ export class CaseDetailsPage extends Base {
       await fallbackLabel.check();
     }
     await this.submitCaseFlagButton.click();
-    await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible' });
+    await this.waitForSpinnerToComplete('after selecting party flag target');
+    await this.commonRadioButtons.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
     await this.commonRadioButtons.getByLabel(flagType).check();
     await this.submitCaseFlagButton.click();
+    await this.waitForSpinnerToComplete('after selecting party flag type');
     await this.selectFirstRadioOption();
     await this.addFlagComment(`${flagType} ${target}`);
     await this.submitCaseFlagButton.click();
-    await this.exuiSpinnerComponent.wait();
+    await this.waitForSpinnerToComplete('after submitting party flag');
   }
 
   async selectCaseFlagTarget(flagType: string) {
     await this.page.getByLabel('Case level').check();
     await this.submitCaseFlagButton.click();
-    await this.page.getByLabel(flagType).waitFor({ state: 'visible' });
+    await this.waitForSpinnerToComplete('after selecting case level');
+    await this.page.getByLabel(flagType).waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
     await this.page.getByLabel(flagType).check();
     await this.submitCaseFlagButton.click();
+    await this.waitForSpinnerToComplete('after selecting case flag type');
     await this.caseFlagCommentBox.fill(`${flagType}`);
     await this.submitCaseFlagButton.click();
+    await this.waitForSpinnerToComplete('after submitting case flag comment');
     await this.submitCaseFlagButton.click();
-    await this.exuiSpinnerComponent.wait();
+    await this.waitForSpinnerToComplete('after final case flag submit');
   }
 
   async selectCaseDetailsTab(tabName: string) {

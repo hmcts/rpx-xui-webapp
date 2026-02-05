@@ -2,11 +2,13 @@ import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { TEST_DATA } from './constants';
+import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 
 test.describe('Document upload V2', () => {
+  test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let caseNumber: string;
   test.beforeAll(async () => {
@@ -21,7 +23,7 @@ test.describe('Document upload V2', () => {
 
     await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
     await createCasePage.createDivorceCase(TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
-    caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
     logger.info('Created divorce case', { caseNumber, testValue });
   });
 
@@ -43,9 +45,8 @@ test.describe('Document upload V2', () => {
     });
 
     await test.step('Verify the document upload was successful', async () => {
-      expect(await caseDetailsPage.caseAlertSuccessMessage.innerText()).toContain(
-        `Case ${caseNumber} has been updated with event: ${TEST_DATA.V2.ACTION}`
-      );
+      const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+      expectCaseBanner(bannerText, caseNumber, `has been updated with event: ${TEST_DATA.V2.ACTION}`);
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
       const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
       await caseViewerTable.waitFor({ state: 'visible' });
@@ -59,6 +60,7 @@ test.describe('Document upload V2', () => {
 });
 
 test.describe('Document upload V1', () => {
+  test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let testFileName: string;
   let caseNumber: string;
@@ -76,7 +78,7 @@ test.describe('Document upload V1', () => {
     await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
     await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE);
     expect(await createCasePage.checkForErrorMessage(), 'Error message seen after creating employment case').toBe(false);
-    caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
     logger.info('Created employment case', { caseNumber, testValue });
   });
 

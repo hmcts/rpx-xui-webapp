@@ -165,4 +165,52 @@ API CALLS SUMMARY:
 
     return summary;
   }
+
+  protected getApiTimingStats(sampleSize = 50): { count: number; avg: number; p95: number } {
+    const durations = this.apiCalls
+      .slice(-sampleSize)
+      .map((c) => c.duration)
+      .filter((d) => Number.isFinite(d) && d > 0)
+      .sort((a, b) => a - b);
+    const count = durations.length;
+    if (count === 0) {
+      return { count: 0, avg: 0, p95: 0 };
+    }
+    const avg = Math.round(durations.reduce((sum, d) => sum + d, 0) / count);
+    const p95Index = Math.floor(0.95 * (count - 1));
+    const p95 = durations[p95Index] ?? durations[count - 1];
+    return { count, avg, p95 };
+  }
+
+  protected getRecommendedTimeoutMs(
+    options: {
+      min?: number;
+      max?: number;
+      multiplier?: number;
+      fallback?: number;
+      sampleSize?: number;
+    } = {}
+  ): number {
+    const apiTimingConfig = {
+      min: 15000,
+      max: 120000,
+      multiplier: 4,
+      fallback: 120000,
+      sampleSize: 50,
+    };
+    const {
+      min = apiTimingConfig.min,
+      max = apiTimingConfig.max,
+      multiplier = apiTimingConfig.multiplier,
+      fallback = apiTimingConfig.fallback,
+      sampleSize = apiTimingConfig.sampleSize,
+    } = options;
+    const stats = this.getApiTimingStats(sampleSize);
+    if (stats.count === 0) {
+      return fallback;
+    }
+    const baseline = stats.avg;
+    const computed = Math.ceil(baseline * multiplier);
+    return Math.min(max, Math.max(min, computed));
+  }
 }

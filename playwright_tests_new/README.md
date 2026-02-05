@@ -89,6 +89,49 @@ npx playwright test --project chromium --workers=1
 rm -rf .sessions && npx playwright test
 ```
 
+---
+
+## Integration Tests
+
+Integration tests are located in `integration/` and test Angular application integration with mocked backend APIs.
+
+### Running Integration Tests
+
+```bash
+# Run all integration tests
+yarn test:playwright:integration
+
+# Run specific integration test file
+npx playwright test integration/test/caseList/caseList.positive.spec.ts --config=playwright.integration.config.ts
+
+# Run with specific browser
+npx playwright test --config=playwright.integration.config.ts --project=chromium
+```
+
+### Integration Test Structure
+
+- **Tests**: `integration/test/` - Test specifications organized by feature
+- **Mocks**: `integration/mocks/` - Mock response builders for API routes
+- **Configuration**: Frontend mocking uses Playwright's route interception to mock backend API responses
+
+### Mock Management
+
+Integration tests use route interception with mock builders:
+
+```ts
+import { buildCaseListMock } from '../../mocks/caseList.mock';
+
+// Mock API response
+await page.route('**/api/cases**', async (route) => {
+  await route.fulfill({
+    status: 200,
+    body: JSON.stringify(buildCaseListMock(124)),
+  });
+});
+```
+
+---
+
 ### E2E Test Structure
 
 - **Page Objects**: `E2E/page-objects/pages/exui/` - Reusable page interaction methods

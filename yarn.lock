@@ -3797,16 +3797,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2-find-work-type/hmcts-rpx-xui-common-lib-3.2.2-find-work-type.tgz":
-  version: 3.2.2-find-work-type
-  resolution: "@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2-find-work-type/hmcts-rpx-xui-common-lib-3.2.2-find-work-type.tgz"
+"@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-find-work-type/hmcts-rpx-xui-common-lib-3.2.3-find-work-type.tgz":
+  version: 3.2.3-find-work-type
+  resolution: "@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-find-work-type/hmcts-rpx-xui-common-lib-3.2.3-find-work-type.tgz"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/d7ae219e3809cb3acb96e2610f6f02c3adbb64ea8075d2fdcea9525a0def2c1ea9dd6623b93113f877b61aab46a5ced766297f80fab013e4f8f3ee04deedf82d
+  checksum: 10/b0d255c1f5ba3d0f51d6cc0fa8d138f8517f6023fd8c542b0611d1be6ae377d317d36bc574452cf7471b5ad5db1fd405baf2f487c080975a8b7416e7c9caa9f9
   languageName: node
   linkType: hard
 
@@ -24079,7 +24079,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.1"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.2-find-work-type/hmcts-rpx-xui-common-lib-3.2.2-find-work-type.tgz"
+    "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-find-work-type/hmcts-rpx-xui-common-lib-3.2.3-find-work-type.tgz"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

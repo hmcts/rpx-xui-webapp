@@ -108,7 +108,7 @@
     "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.27/hmcts-ccd-case-ui-toolkit-7.3.27.tgz",
     "@hmcts/ccpay-web-component": "6.5.17",
     "@hmcts/frontend": "0.0.50-alpha",
-    "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.8/hmcts-media-viewer-4.2.8.tgz",
+    "@hmcts/media-viewer": "4.2.9-exui-3994",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz",

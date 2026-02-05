@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as _ from 'lodash';
-import * as moment from 'moment';
+import moment from 'moment';
 import { EditHearingChangeConfig } from '../../../../models/editHearingChangeConfig.model';
 import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../../../../models/hearingWindow.model';
@@ -14,7 +14,7 @@ import { HearingsUtils } from '../../../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-hearing-timing-section',
-  templateUrl: './hearing-timing-section.component.html'
+  templateUrl: './hearing-timing-section.component.html',
 })
 export class HearingTimingSectionComponent implements OnInit {
   @Input() public hearingPrioritiesRefData: LovRefDataModel[];
@@ -23,8 +23,7 @@ export class HearingTimingSectionComponent implements OnInit {
   @Input() public serviceHearingValuesModel: ServiceHearingValuesModel;
   @Output() public changeEditHearing = new EventEmitter<EditHearingChangeConfig>();
 
-  constructor(private readonly hearingsService: HearingsService) {
-  }
+  constructor(private readonly hearingsService: HearingsService) {}
 
   public hearingLength: string;
   public specificDate: string;
@@ -50,10 +49,14 @@ export class HearingTimingSectionComponent implements OnInit {
   public radioOptions = RadioOptions;
 
   public ngOnInit(): void {
-    this.hearingWindowChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired;
-    this.hearingWindowChangesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
-    this.hearingUnavailabilityDatesConfirmed = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
-    this.partyDetailsAnyChangesRequired = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsAnyChangesRequired;
+    this.hearingWindowChangesRequired =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit.hearingWindowChangesRequired;
+    this.hearingWindowChangesConfirmed =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingWindowChangesConfirmed;
+    this.hearingUnavailabilityDatesConfirmed =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingUnavailabilityDatesConfirmed;
+    this.partyDetailsAnyChangesRequired =
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.partyDetailsAnyChangesRequired;
     this.hearingLength = HearingsUtils.getHearingLength(this.hearingRequestMainModel.hearingDetails.duration);
     this.specificDate = this.getSpecificDate();
     this.hearingPriority = this.getHearingPriority();
@@ -82,7 +85,7 @@ export class HearingTimingSectionComponent implements OnInit {
     this.changeEditHearing.emit({ fragmentId, changeLink });
   }
 
-  private setDateSectionForChange(): string{
+  private setDateSectionForChange(): string {
     const BASE_URL = '/hearings/request/hearing-timing#';
     if (this.earliestHearingDate.length > 0 || this.latestHearingDate.length > 0) {
       return BASE_URL + 'hearingDateRange';
@@ -103,12 +106,19 @@ export class HearingTimingSectionComponent implements OnInit {
       specificDateSelection = RadioOptions.CHOOSE_DATE_RANGE;
       earliestHearingDate = moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth);
       latestHearingDate = hearingWindow.dateRangeEnd && moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += earliestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Must list after: ${earliestHearingDate}` : '';
-      specificDateSelection += latestHearingDate && latestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Must list before: ${latestHearingDate}` : '';
+      specificDateSelection +=
+        earliestHearingDate !== HearingDateEnum.InvalidDate ? `<br>Must list after: ${earliestHearingDate}` : '';
+      specificDateSelection +=
+        latestHearingDate && latestHearingDate !== HearingDateEnum.InvalidDate
+          ? `<br>Must list before: ${latestHearingDate}`
+          : '';
     } else if (hearingWindow?.firstDateTimeMustBe) {
       specificDateSelection = RadioOptions.YES;
       const firstDate = moment(hearingWindow.firstDateTimeMustBe).format(HearingDateEnum.DisplayMonth);
-      specificDateSelection += firstDate !== HearingDateEnum.InvalidDate ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt><exui-amendment-label [displayLabel]="${AmendmentLabelStatus.ACTION_NEEDED}"></exui-amendment-label>${firstDate}` : '';
+      specificDateSelection +=
+        firstDate !== HearingDateEnum.InvalidDate
+          ? `<dt class="heading-h3 bottom-0">The first date of the hearing must be</dt><exui-amendment-label [displayLabel]="${AmendmentLabelStatus.ACTION_NEEDED}"></exui-amendment-label>${firstDate}`
+          : '';
     } else if (hearingWindow === null) {
       specificDateSelection = RadioOptions.NO;
     }
@@ -127,15 +137,11 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private getEarliestHearingDate(hearingWindow: HearingWindowModel): string {
-    return hearingWindow?.dateRangeStart
-      ? moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth)
-      : '';
+    return hearingWindow?.dateRangeStart ? moment(hearingWindow.dateRangeStart).format(HearingDateEnum.DisplayMonth) : '';
   }
 
   private getLatestHearingDate(hearingWindow: HearingWindowModel): string {
-    return hearingWindow?.dateRangeEnd
-      ? moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth)
-      : '';
+    return hearingWindow?.dateRangeEnd ? moment(hearingWindow.dateRangeEnd).format(HearingDateEnum.DisplayMonth) : '';
   }
 
   private getFirstHearingDate(hearingWindow: HearingWindowModel): string {
@@ -145,20 +151,37 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private getHearingPriority(): string {
-    const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find((priority) => priority.key === this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
-    return (hearingPriorityFromRefData?.value_en || '');
+    const hearingPriorityFromRefData = this.hearingPrioritiesRefData.find(
+      (priority) => priority.key === this.hearingRequestMainModel.hearingDetails.hearingPriorityType
+    );
+    return hearingPriorityFromRefData?.value_en || '';
   }
 
   private setAmendmentLabels(): void {
-    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChanged(this.hearingRequestToCompareMainModel.hearingDetails.duration, this.hearingRequestMainModel.hearingDetails.duration);
+    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChanged(
+      this.hearingRequestToCompareMainModel.hearingDetails.duration,
+      this.hearingRequestMainModel.hearingDetails.duration
+    );
 
-    this.dateRangeStartChanged = HearingsUtils.hasDateChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.dateRangeStart, this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart);
+    this.dateRangeStartChanged = HearingsUtils.hasDateChanged(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.dateRangeStart,
+      this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeStart
+    );
 
-    this.dateRangeEndChanged = HearingsUtils.hasDateChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.dateRangeEnd, this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeEnd);
+    this.dateRangeEndChanged = HearingsUtils.hasDateChanged(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.dateRangeEnd,
+      this.hearingRequestMainModel.hearingDetails.hearingWindow?.dateRangeEnd
+    );
 
-    this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe, this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe);
+    this.firstDateTimeMustBeChanged = HearingsUtils.hasDateChanged(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe,
+      this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe
+    );
 
-    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType, this.hearingRequestMainModel.hearingDetails.hearingPriorityType);
+    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(
+      this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType,
+      this.hearingRequestMainModel.hearingDetails.hearingPriorityType
+    );
 
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
       HearingsUtils.getPartiesNotAvailableDates(this.hearingRequestMainModel.partyDetails),
@@ -171,13 +194,12 @@ export class HearingTimingSectionComponent implements OnInit {
       (!this.hearingUnavailabilityDatesConfirmed && this.hearingUnavailabilityDatesChanged) ||
       (!this.hearingUnavailabilityDatesConfirmed && this.partyDetailsAnyChangesRequired);
 
-    this.showAmendedLabelForPageTitle = !this.showActionNeededLabelForPageTitle &&
-      (
-        (this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
+    this.showAmendedLabelForPageTitle =
+      !this.showActionNeededLabelForPageTitle &&
+      ((this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
         this.hearingLengthChanged ||
         this.hearingDateChanged ||
         this.hearingPriorityChanged ||
-        this.hearingUnavailabilityDatesConfirmed
-      );
+        this.hearingUnavailabilityDatesConfirmed);
   }
 }

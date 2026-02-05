@@ -1,14 +1,9 @@
-import { inject,
-  Inject,
-  Injectable,
-  InjectOptions,
-  InjectionToken,
-  Type } from '@angular/core';
+import { inject, Inject, Injectable, InjectOptions, InjectionToken, Type } from '@angular/core';
 import { LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 
 export const MCLAUNCHDARKLYKEY = new InjectionToken<string>('LAUNCHDARKLYKEY');
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class McLaunchDarklyService extends LaunchDarklyService {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

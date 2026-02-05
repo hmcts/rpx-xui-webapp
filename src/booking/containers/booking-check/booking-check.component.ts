@@ -13,7 +13,7 @@ import { CreateBookingHandleError, RefreshBookingHandleError } from '../utils/bo
   standalone: false,
   selector: 'exui-booking-check',
   templateUrl: './booking-check.component.html',
-  styleUrls: ['./booking-check.component.scss']
+  styleUrls: ['./booking-check.component.scss'],
 })
 export class BookingCheckComponent {
   @Input() public selectedBookingOption: number;
@@ -49,7 +49,7 @@ export class BookingCheckComponent {
         locationId: this.bookingProcess.location.epimms_id,
         regionId: this.bookingProcess.location.region_id,
         beginDate: this.bookingProcess.startDate,
-        endDate: this.bookingProcess.endDate
+        endDate: this.bookingProcess.endDate,
       };
 
       const givenDate = payload.beginDate;
@@ -57,9 +57,7 @@ export class BookingCheckComponent {
         // issue previously with API rejecting DST because time was today 00:00 but UTC was yesterday 23:00
         // only replace the time if current status is DST
         if (payload.beginDate.getHours() !== payload.beginDate.getUTCHours()) {
-          payload.beginDate = new Date(Date.UTC(
-            givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate(), 0, 0, 0, 0
-          ));
+          payload.beginDate = new Date(Date.UTC(givenDate.getFullYear(), givenDate.getMonth(), givenDate.getDate(), 0, 0, 0, 0));
         }
       }
       const endDate = payload.endDate;
@@ -67,48 +65,50 @@ export class BookingCheckComponent {
         // issue previously with API rejecting DST because time was today 00:00 but UTC was yesterday 23:00
         // only replace the time if current status is DST
         if (payload.endDate.getHours() !== payload.endDate.getUTCHours()) {
-          payload.endDate = new Date(Date.UTC(
-            endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999
-          ));
+          payload.endDate = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999));
         }
       }
 
-      this.bookingService.createBooking(payload).pipe(
-        switchMap(() => this.bookingService.refreshRoleAssignments(this.userId)),
-        catchError((err) => {
-          if (!err.case) {
-            return throwError({ ...err, case: 'createBooking' });
-          }
-          return throwError({ ...err, case: 'refreshRoleAssignments' });
-        }),
-        tap(() => {
-          this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
-          this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
-        }),
-        switchMap(() =>
-          this.router.navigate(['/work/my-work/list'], {
-            state: {
-              location: {
-                ids: [this.bookingProcess.location.epimms_id]
-              },
-              newBooking: true
+      this.bookingService
+        .createBooking(payload)
+        .pipe(
+          switchMap(() => this.bookingService.refreshRoleAssignments(this.userId)),
+          catchError((err) => {
+            if (!err.case) {
+              return throwError({ ...err, case: 'createBooking' });
             }
+            return throwError({ ...err, case: 'refreshRoleAssignments' });
+          }),
+          tap(() => {
+            this.sessionStorageService.removeItem(TaskListFilterComponent.FILTER_NAME);
+            this.windowService.removeLocalStorage(TaskListFilterComponent.FILTER_NAME);
+          }),
+          switchMap(() =>
+            this.router.navigate(['/work/my-work/list'], {
+              state: {
+                location: {
+                  ids: [this.bookingProcess.location.epimms_id],
+                },
+                newBooking: true,
+              },
+            })
+          ),
+          finalize(() => {
+            this.isBookingInProgress = false;
           })
-        ),
-        finalize(() => {
-          this.isBookingInProgress = false;
-        }),
-      ).subscribe(
-        () => {
-          // empty
-        },
-        (err) => {
-          if (err.case === 'createBooking') {
-            CreateBookingHandleError(err, this.router);
-          } else {
-            RefreshBookingHandleError(err, this.router);
+        )
+        .subscribe(
+          () => {
+            // empty
+          },
+          (err) => {
+            if (err.case === 'createBooking') {
+              CreateBookingHandleError(err, this.router);
+            } else {
+              RefreshBookingHandleError(err, this.router);
+            }
           }
-        });
+        );
     }
   }
 }

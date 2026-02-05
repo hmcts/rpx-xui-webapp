@@ -89,7 +89,9 @@ Then('In SAR workflow Review specific access page, I validate access request det
     const actualRowHeaders = Object.keys(actualRequestDetails);
     expectedRowHeaders.forEach((expectedRowKey) => {
       expect(actualRowHeaders, 'Missing request details row').to.includes(expectedRowKey);
-      expect(actualRequestDetails[expectedRowKey], `${expectedRowKey} request details missmatch `).to.includes(requestDetails[expectedRowKey]);
+      expect(actualRequestDetails[expectedRowKey], `${expectedRowKey} request details missmatch `).to.includes(
+        requestDetails[expectedRowKey]
+      );
     });
   });
 });
@@ -99,17 +101,17 @@ Then('In SAR workflow, I see error message banner with message {string}', async 
   expect(await workflow.getErrorMessageDisplayed()).to.includes(message);
 });
 
-Then('In SAR workflow, I see access approved page', async function(){
-  const ele = element(by.xpath('//exui-specific-access-approved//h1[contains(text(),\'Access approved\')]'));
+Then('In SAR workflow, I see access approved page', async function () {
+  const ele = element(by.xpath("//exui-specific-access-approved//h1[contains(text(),'Access approved')]"));
   expect(await ele.isDisplayed()).to.be.true;
 });
 
 Then('In SAR workflow, I see access Rejected page', async function () {
-  const ele = element(by.xpath('//exui-specific-access-approved//h1[contains(text(),\'Access approved\')]'));
+  const ele = element(by.xpath("//exui-specific-access-approved//h1[contains(text(),'Access approved')]"));
   expect(await ele.isDisplayed()).to.be.true;
 });
 
-Then('In SAR workflow page {string}, I validate access start and end fields fisplayed', async function(page){
+Then('In SAR workflow page {string}, I validate access start and end fields fisplayed', async function (page) {
   const pageObj = getPageObject(page);
   pageObj.validateAccessStartEndDisplayed();
 });

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup, ValidatorFn } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +10,14 @@ export class ValidatorsUtils {
     const finishTimeControl = formGroup.controls[startTimes.endTime];
 
     const pauseTimeControl = formGroup.controls[pauseTime];
-    if (!startTimeControl || !finishTimeControl || !startTimeControl.value || !finishTimeControl.value || !pauseTimeControl || !pauseTimeControl.value) {
+    if (
+      !startTimeControl ||
+      !finishTimeControl ||
+      !startTimeControl.value ||
+      !finishTimeControl.value ||
+      !pauseTimeControl ||
+      !pauseTimeControl.value
+    ) {
       return null;
     }
     const startTimeMoment = moment(startTimeControl.value, 'HH:mm');
@@ -40,7 +47,7 @@ export class ValidatorsUtils {
   public numberMultipleValidator(givenNumber: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const inputNumber = Number(control.value) || 0;
-      return !isNaN(Number(control.value)) && (inputNumber % givenNumber) === 0 ? null : { isValid: false };
+      return !isNaN(Number(control.value)) && inputNumber % givenNumber === 0 ? null : { isValid: false };
     };
   }
 
@@ -57,10 +64,13 @@ export class ValidatorsUtils {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const isValidDate = Object.values(control.value).every((value) => value !== null);
       const selectedDate = moment(Object.values(control.value).join('-'), HearingDateEnum.DefaultFormat);
-      return isValidDate && selectedDate.isValid() &&
+      return isValidDate &&
+        selectedDate.isValid() &&
         (!selectedDate.isBefore() || selectedDate.isSame(new Date(), 'd')) &&
-        ((selectedDate.weekday() !== 6) && (selectedDate.weekday() !== 0))
-        ? null : { isValid: false };
+        selectedDate.weekday() !== 6 &&
+        selectedDate.weekday() !== 0
+        ? null
+        : { isValid: false };
     };
   }
 
@@ -78,7 +88,7 @@ export class ValidatorsUtils {
   }
 
   public isWeekendDate(date: moment.Moment): boolean {
-    if (date && date.day() === 0 || date.day() === 6) {
+    if ((date && date.day() === 0) || date.day() === 6) {
       return true;
     }
     return false;
@@ -94,15 +104,21 @@ export class ValidatorsUtils {
       const secondDateNullLength = secondDateRangeList.filter((value) => value === null).length;
       const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat).add(1, 'day');
       const secondDate = moment(secondDateRangeList.join('-'), HearingDateEnum.DefaultFormat).subtract(1, 'day');
-      const isLatestDate = (isValidFirstDate && isValidSecondDate) ? secondDate >= firstDate : (isValidFirstDate || isValidSecondDate);
+      const isLatestDate =
+        isValidFirstDate && isValidSecondDate ? secondDate >= firstDate : isValidFirstDate || isValidSecondDate;
       const isEarliestDateWeekendDate = this.isWeekendDate(firstDate);
       const isLatestDateWeekendDate = this.isWeekendDate(secondDate);
-      return (isValidFirstDate || isValidSecondDate) && (firstDateNullLength === 0 || firstDateNullLength === 3) && (secondDateNullLength === 0 || secondDateNullLength === 3) &&
-        (firstDate.isValid() || secondDate.isValid()) && isLatestDate &&
-        (isValidFirstDate ? (firstDate.isAfter() || firstDate.isSame(new Date(), 'd')) : true) &&
-        (isValidSecondDate ? (secondDate.isAfter() || secondDate.isSame(new Date(), 'd')) : true) &&
-        !isEarliestDateWeekendDate && !isLatestDateWeekendDate
-        ? null : { isValid: false };
+      return (isValidFirstDate || isValidSecondDate) &&
+        (firstDateNullLength === 0 || firstDateNullLength === 3) &&
+        (secondDateNullLength === 0 || secondDateNullLength === 3) &&
+        (firstDate.isValid() || secondDate.isValid()) &&
+        isLatestDate &&
+        (isValidFirstDate ? firstDate.isAfter() || firstDate.isSame(new Date(), 'd') : true) &&
+        (isValidSecondDate ? secondDate.isAfter() || secondDate.isSame(new Date(), 'd') : true) &&
+        !isEarliestDateWeekendDate &&
+        !isLatestDateWeekendDate
+        ? null
+        : { isValid: false };
     };
   }
 
@@ -160,9 +176,7 @@ export class ValidatorsUtils {
   public validateDuplicateEntries(index: number, message: string): ValidatorFn {
     return (formGroup: FormGroup) => {
       const parent = formGroup.parent as FormArray;
-      const values: string[] = parent && parent.controls
-        .filter((control, i) => i !== index)
-        .map((c) => JSON.stringify(c.value));
+      const values: string[] = parent && parent.controls.filter((control, i) => i !== index).map((c) => JSON.stringify(c.value));
       const value: string = JSON.stringify(formGroup.value);
       const formControlKeys = Object.keys(formGroup.controls);
       if (formControlKeys.some((key) => formGroup.controls[key].invalid)) {
@@ -190,4 +204,3 @@ export class ValidatorsUtils {
     };
   }
 }
-

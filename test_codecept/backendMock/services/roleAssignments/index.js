@@ -1,4 +1,3 @@
-
 const roles = require('./roles');
 const { v4 } = require('uuid');
 
@@ -9,19 +8,19 @@ class RoleAssignments {
     this.sessiononRolesAssignments = [];
   }
 
-  addRoleAssigmemntsToSession(auth, roleAssignments){
+  addRoleAssigmemntsToSession(auth, roleAssignments) {
     const sessionObj = this.sessiononRolesAssignments.find((forSession) => forSession.auth === auth);
-    if (!sessionObj){
+    if (!sessionObj) {
       this.sessiononRolesAssignments.push({
         auth: auth,
-        roleAssignments: roleAssignments
+        roleAssignments: roleAssignments,
       });
     } else {
       sessionObj.roleAssignments.push(...roleAssignments);
     }
   }
 
-  getRolesAssignmentsForSession(auth){
+  getRolesAssignmentsForSession(auth) {
     const sessionObj = this.sessiononRolesAssignments.find((forSession) => forSession.auth === auth);
     return sessionObj ? sessionObj.roleAssignments : [];
   }
@@ -46,7 +45,7 @@ class RoleAssignments {
     return { roleAssignmentResponse: roles };
   }
 
-  getServiceUsersRolesAssignments(auth){
+  getServiceUsersRolesAssignments(auth) {
     return this.getRolesAssignmentsForSession(auth);
   }
 
@@ -78,7 +77,11 @@ class RoleAssignments {
     const attribKeys = Object.keys(attributes);
 
     for (const key of attribKeys) {
-      if (roleAssignmentAttribs === undefined || !roleAssignmentAttribs[key] || !attributes[key].includes(roleAssignmentAttribs[key])) {
+      if (
+        roleAssignmentAttribs === undefined ||
+        !roleAssignmentAttribs[key] ||
+        !attributes[key].includes(roleAssignmentAttribs[key])
+      ) {
         // console.log(`${key} : attribute no matched ${roleAssignmentAttribs[key]}`)
         return false;
       }
@@ -93,7 +96,7 @@ class RoleAssignments {
     return roleRequests.requestedRoles;
   }
 
-  getQueryResults(queryRequests){
+  getQueryResults(queryRequests) {
     const roleAssignments = [];
     const query = queryRequests[0];
     const roleType = query.roleType ? query.roleType[0] : null;
@@ -131,39 +134,39 @@ class RoleAssignments {
 
   getBookings(reqBody) {
     return {
-      'bookings': [
+      bookings: [
         {
-          'id': '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-          'userId': 'string',
-          'regionId': '20001',
-          'locationId': '20001',
-          'created': new Date(),
-          'beginTime': new Date(),
-          'endTime': new Date(),
-          'log': 'string'
-        }
-      ]
+          id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          userId: 'string',
+          regionId: '20001',
+          locationId: '20001',
+          created: new Date(),
+          beginTime: new Date(),
+          endTime: new Date(),
+          log: 'string',
+        },
+      ],
     };
   }
 
   getRoleAssignmentTemplate() {
     return {
-      'actorId': '0fb93311-47fe-4df2-b712-d541779cd565',
-      'actorIdType': 'IDAM',
-      'classification': 'PUBLIC',
-      'created': '2022-01-13T17:44:42.15304Z',
-      'grantType': 'STANDARD',
-      'id': v4(),
-      'readOnly': false,
-      'roleCategory': 'LEGAL_OPERATIONS',
-      'roleName': 'senior-tribunal-caseworker',
-      'roleType': 'ORGANISATION',
-      'attributes': {
-        'substantive': 'Y',
-        'primaryLocation': '219164',
-        'jurisdiction': 'IA',
-        'workTypes': 'hearing_work, routine_work, decision_making_work, applications'
-      }
+      actorId: '0fb93311-47fe-4df2-b712-d541779cd565',
+      actorIdType: 'IDAM',
+      classification: 'PUBLIC',
+      created: '2022-01-13T17:44:42.15304Z',
+      grantType: 'STANDARD',
+      id: v4(),
+      readOnly: false,
+      roleCategory: 'LEGAL_OPERATIONS',
+      roleName: 'senior-tribunal-caseworker',
+      roleType: 'ORGANISATION',
+      attributes: {
+        substantive: 'Y',
+        primaryLocation: '219164',
+        jurisdiction: 'IA',
+        workTypes: 'hearing_work, routine_work, decision_making_work, applications',
+      },
     };
   }
 
@@ -180,7 +183,7 @@ class RoleAssignments {
           status: 'APPROVED',
           created: '2023-04-04T15:50:14.28129674Z',
           log: 'Request has been approved',
-          byPassOrgDroolRule: true
+          byPassOrgDroolRule: true,
         },
         requestedRoles: [
           {
@@ -201,11 +204,11 @@ class RoleAssignments {
               caseId: '1547466725650882',
               jurisdiction: 'IA',
               caseType: 'Asylum',
-              substantive: 'Y'
-            }
-          }
-        ]
-      }
+              substantive: 'Y',
+            },
+          },
+        ],
+      },
     };
   }
 }

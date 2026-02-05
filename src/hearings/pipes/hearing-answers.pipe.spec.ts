@@ -9,7 +9,7 @@ import {
   hearingPriorityRefData,
   initialState,
   partyChannelsRefData,
-  partySubChannelsRefData
+  partySubChannelsRefData,
 } from '../hearing.test.data';
 import { AnswerSource, RadioOptions } from '../models/hearings.enum';
 import { LocationByEpimmsModel } from '../models/location.model';
@@ -18,51 +18,54 @@ import { State } from '../store/reducers';
 import { HearingAnswersPipe } from './hearing-answers.pipe';
 
 describe('HearingAnswersPipe', () => {
-  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
-    epimms_id: '196538',
-    site_name: 'Liverpool Social Security and Child Support Tribunal',
-    court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-    open_for_public: 'YES',
-    region_id: '5',
-    region: 'North West',
-    cluster_id: '3',
-    cluster_name: 'Cheshire and Merseyside',
-    court_status: 'Open',
-    court_open_date: null,
-    closed_date: null,
-    postcode: 'L2 5UZ',
-    court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
-    phone_number: '',
-    court_location_code: '',
-    dx_address: '',
-    welsh_site_name: '',
-    welsh_court_address: '',
-    venue_name: 'Liverpool',
-    is_case_management_location: 'Y',
-    is_hearing_location: 'Y'
-  }, {
-    epimms_id: '234850',
-    site_name: 'Cardiff Civil and Family Justice Centre',
-    court_name: 'CARDIFF CIVIL AND FAMILY JUSTICE CENTRE',
-    open_for_public: 'YES',
-    region_id: '8',
-    region: 'Wales',
-    cluster_id: null,
-    cluster_name: null,
-    court_status: 'Open',
-    court_open_date: null,
-    closed_date: null,
-    postcode: 'CF10 1ET',
-    court_address: 'PARK STREET, CARDIFF',
-    phone_number: '',
-    court_location_code: '',
-    dx_address: '99500 CARDIFF 6',
-    welsh_site_name: '',
-    welsh_court_address: '',
-    venue_name: '',
-    is_case_management_location: '',
-    is_hearing_location: ''
-  }];
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [
+    {
+      epimms_id: '196538',
+      site_name: 'Liverpool Social Security and Child Support Tribunal',
+      court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      open_for_public: 'YES',
+      region_id: '5',
+      region: 'North West',
+      cluster_id: '3',
+      cluster_name: 'Cheshire and Merseyside',
+      court_status: 'Open',
+      court_open_date: null,
+      closed_date: null,
+      postcode: 'L2 5UZ',
+      court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
+      phone_number: '',
+      court_location_code: '',
+      dx_address: '',
+      welsh_site_name: '',
+      welsh_court_address: '',
+      venue_name: 'Liverpool',
+      is_case_management_location: 'Y',
+      is_hearing_location: 'Y',
+    },
+    {
+      epimms_id: '234850',
+      site_name: 'Cardiff Civil and Family Justice Centre',
+      court_name: 'CARDIFF CIVIL AND FAMILY JUSTICE CENTRE',
+      open_for_public: 'YES',
+      region_id: '8',
+      region: 'Wales',
+      cluster_id: null,
+      cluster_name: null,
+      court_status: 'Open',
+      court_open_date: null,
+      closed_date: null,
+      postcode: 'CF10 1ET',
+      court_address: 'PARK STREET, CARDIFF',
+      phone_number: '',
+      court_location_code: '',
+      dx_address: '99500 CARDIFF 6',
+      welsh_site_name: '',
+      welsh_court_address: '',
+      venue_name: '',
+      is_case_management_location: '',
+      is_hearing_location: '',
+    },
+  ];
   initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingInWelshFlag = true;
   const STATE: State = _.cloneDeep(initialState.hearings);
   let hearingAnswersPipe: HearingAnswersPipe;
@@ -81,16 +84,16 @@ describe('HearingAnswersPipe', () => {
                 caseType: caseTypeRefData,
                 caseFlags: caseFlagsRefData,
                 partyChannels: partyChannelsRefData,
-                partySubChannels: partySubChannelsRefData
-              }
-            }
-          }
+                partySubChannels: partySubChannelsRefData,
+              },
+            },
+          },
         },
         {
           provide: LocationsDataService,
-          useValue: locationsDataService
-        }
-      ]
+          useValue: locationsDataService,
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     hearingAnswersPipe = new HearingAnswersPipe(router, locationsDataService);
@@ -120,21 +123,24 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform type', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.Type, of(STATE), 0);
-    const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
+    const type =
+      'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform case flag', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.CASE_FLAGS, of(STATE), 0);
-    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>';
+    const caseFlags =
+      "<strong class='bold'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>";
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });
 
   it('should transform reasonable adjustment flags', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.REASONABLE_ADJUSTMENT_FLAGS, of(STATE), 0);
-    const caseFlags = '<strong class=\'bold\'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>';
+    const caseFlags =
+      "<strong class='bold'>Jane Smith</strong>\n<ul><li>Sign Language Interpreter</li><li>Hearing Loop</li><li>Larger font size</li><li>Reading documents for customer</li><li>Sign Language Interpreter</li></ul><br>";
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });
@@ -167,7 +173,8 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform venue', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.VENUE, of(STATE), 0);
-    const caseFlags = '<ul><li>LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL</li><li>CARDIFF CIVIL AND FAMILY JUSTICE CENTRE</li></ul>';
+    const caseFlags =
+      '<ul><li>LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL</li><li>CARDIFF CIVIL AND FAMILY JUSTICE CENTRE</li></ul>';
     const expected = cold('(b|)', { b: caseFlags });
     expect(result$).toBeObservable(expected);
   });
@@ -191,7 +198,7 @@ describe('HearingAnswersPipe', () => {
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingWindow = {
       dateRangeStart: '2022-12-12T09:00:00.000Z',
       dateRangeEnd: '2022-12-12T09:00:00.000Z',
-      firstDateTimeMustBe: ''
+      firstDateTimeMustBe: '',
     };
     const result$ = hearingAnswersPipe.transform(AnswerSource.HEARING_SPECIFIC_DATE, of(STATE), 0);
     const hearingDateRange = `${RadioOptions.CHOOSE_DATE_RANGE}<br>Must list after: 12 December 2022<br>Must list before: 12 December 2022`;
@@ -215,7 +222,8 @@ describe('HearingAnswersPipe', () => {
 
   it('should transform type from request', () => {
     const result$ = hearingAnswersPipe.transform(AnswerSource.TYPE_FROM_REQUEST, of(STATE), 0);
-    const typeName = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
+    const typeName =
+      'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', { b: typeName });
     expect(result$).toBeObservable(expected);
   });

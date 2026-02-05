@@ -43,7 +43,7 @@ export class RetryBudget {
         failureCount: this.failureCount,
         windowMs: this.windowMs,
         endpoint,
-        operation: 'retry-budget'
+        operation: 'retry-budget',
       });
     }
   }
@@ -64,7 +64,7 @@ export class RetryBudget {
     return {
       failureCount: this.failureCount,
       remainingAttempts: Math.max(0, this.maxFailures - this.failureCount),
-      windowStart: this.windowStart
+      windowStart: this.windowStart,
     };
   }
 
@@ -78,7 +78,7 @@ export class RetryBudget {
         logger.info('Retry budget window expired, resetting counters', {
           previousFailures: this.failureCount,
           windowDurationMs: now - this.windowStart,
-          operation: 'retry-budget'
+          operation: 'retry-budget',
         });
       }
       this.failureCount = 0;

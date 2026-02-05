@@ -4,7 +4,7 @@ const BrowserWaits = require('../../../support/customWaits');
 const addUserPage = require('./adduserPage');
 const MessageBanner = require('../messageBanner');
 
-class StaffSearchPage{
+class StaffSearchPage {
   constructor() {
     this.messageBanner = new MessageBanner();
     this.advancedSearchFilter = new AdvancedSearch();
@@ -43,33 +43,34 @@ class StaffSearchPage{
     return $('input#user-partial-name');
   }
 
-  async validateSuccessMessageBanner(message){
+  async validateSuccessMessageBanner(message) {
     const isDisplayed = await this.messageBanner.isBannerMessageDisplayed();
     expect(isDisplayed, 'Success message banner not displayed').to.be.true;
 
     const messages = await this.messageBanner.getBannerMessagesDisplayed();
     const expectedMessage = messages.filter((msg) => msg.includes(message));
-    expect(expectedMessage !== undefined, `expected message ${message} not displayed, actual ${JSON.stringify(messages)}`).to.be.true;
+    expect(expectedMessage !== undefined, `expected message ${message} not displayed, actual ${JSON.stringify(messages)}`).to.be
+      .true;
   }
 
-  async amOnPage(){
+  async amOnPage() {
     await this.pageContainer.wait();
     return await this.pageContainer.isVisible();
   }
 
-  async isBasicSearchDisplayed(){
+  async isBasicSearchDisplayed() {
     return await this.basicSearch.isVisible();
   }
 
-  async clickAdvancedSearchLink(){
+  async clickAdvancedSearchLink() {
     await this.advancedSearchLink.click();
   }
 
-  async clickHideAdvancedSearchLink(){
+  async clickHideAdvancedSearchLink() {
     await this.hideAdvancedSearchLink.click();
   }
 
-  async validateBasicSearchPage(){
+  async validateBasicSearchPage() {
     expect(await this.basicSearch.isVisible()).to.be.true;
     expect(await this.partialNameField.isVisible()).to.be.true;
     expect(await this.advancedSearchLink.isVisible()).to.be.true;
@@ -89,7 +90,7 @@ class StaffSearchPage{
     return await this.advancedSearchContainer.isVisible();
   }
 
-  async performBasicSearch(searchTerm){
+  async performBasicSearch(searchTerm) {
     expect(await this.isBasicSearchDisplayed(), 'Not in basic search page').to.be.true;
     await await this.partialNameField.fill(searchTerm);
     await this.searchButton.click();
@@ -98,10 +99,10 @@ class StaffSearchPage{
   async performAdvancedSearch(searchInputs) {
     const inputKeys = Object.keys(searchInputs);
     expect(await this.isAdvancedSearchDisplayed(), 'Not in advanced search page').to.be.true;
-    for (const filterItem of inputKeys){
+    for (const filterItem of inputKeys) {
       const inputVal = searchInputs[filterItem];
       reportLogger.AddMessage(`Staff UI advanced search: select filter ${filterItem}: ${JSON.stringify(inputVal)}`);
-      switch (filterItem){
+      switch (filterItem) {
         case 'Services':
           for (const service of inputVal) {
             await this.advancedSearchFilter.selectService(service);
@@ -130,22 +131,22 @@ class StaffSearchPage{
     await this.searchButton.click();
   }
 
-  async isStaffUserListContainerDisplayed(){
+  async isStaffUserListContainerDisplayed() {
     return await this.staffUsersList.isVisible();
   }
 
-  async validateListValuesNotEmpty(){
+  async validateListValuesNotEmpty() {
     await this.staffUsersList.validateResultRowDisplaysValues();
   }
 
-  async clickAddNewUser(){
+  async clickAddNewUser() {
     await this.addUserButton.click();
     await addUserPage.container.wait();
     expect(await addUserPage.isVisible()).to.be.true;
   }
 }
 
-class AdvancedSearch{
+class AdvancedSearch {
   constructor() {}
 
   get locator() {
@@ -157,7 +158,7 @@ class AdvancedSearch{
       serviceInput: this.locator.locator('exui-search-service input'),
       addButton: this.locator.locator('xuilib-find-service #add-service'),
       selectedValues: this.locator.locator('.selection-container a'),
-      searchResults: $$('.mat-option-text')
+      searchResults: $$('.mat-option-text'),
     };
   }
 
@@ -166,7 +167,7 @@ class AdvancedSearch{
       serchInput: this.locator.locator('exui-search-location input'),
       addButton: this.locator.locator('.location-picker-custom a'),
       searchResults: $$('.mat-option-text'),
-      selectedValues: this.locator.locator('.selection-container a')
+      selectedValues: this.locator.locator('.selection-container a'),
     };
   }
 
@@ -186,7 +187,7 @@ class AdvancedSearch{
     return this.locator.locator('#user-role #checkbox_user-role .govuk-checkboxes__item');
   }
 
-  async selectService(servicename){
+  async selectService(servicename) {
     await this.searchService.serviceInput.fill(servicename);
     // await this.searchService.searchResults.wait();
     await BrowserWaits.waitForSeconds(2);
@@ -206,7 +207,7 @@ class AdvancedSearch{
     await this.searchLocation.addButton.click();
   }
 
-  async selectUserType(userType){
+  async selectUserType(userType) {
     await this.userType.selectOptionWithLabel(userType);
   }
 
@@ -221,10 +222,10 @@ class AdvancedSearch{
   async selectRoles(roles) {
     const allRolesCount = await this.roles.count();
 
-    for (let i = 0; i < allRolesCount; i++){
+    for (let i = 0; i < allRolesCount; i++) {
       const roleElement = this.roles.nth(i);
       const label = await roleElement.locator('label').getText();
-      if (roles.includes(label.trim())){
+      if (roles.includes(label.trim())) {
         const input = roleElement.locator('input');
         await input.click();
       }
@@ -259,13 +260,13 @@ class StaffUsersList {
     return this.staffUsersList.locator('td.cdk-column-status');
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     return await this.staffUsersList.isVisible();
   }
 
-  async validateResultRowDisplaysValues(){
+  async validateResultRowDisplaysValues() {
     const count = this.nameColumn.count();
-    for (let i = 0; i< count; i++){
+    for (let i = 0; i < count; i++) {
       const name = await getText(this.nameColumn.nth(i));
       const services = await getText(this.servicesColumn.nth(i));
       const locations = await getText(this.locationsColumn.nth(i));
@@ -279,7 +280,7 @@ class StaffUsersList {
     }
   }
 
-  async clickUserNameAtRow(atRow){
+  async clickUserNameAtRow(atRow) {
     const columnElement = this.nameColumn.nth(atRow);
     const link = columnElement.locator('a');
     await link.wait();
@@ -288,17 +289,11 @@ class StaffUsersList {
     return linkText;
   }
 
-  async paginationText(){
+  async paginationText() {}
 
-  }
+  async getCount() {}
 
-  async getCount(){
-
-  }
-
-  async selectUser() {
-
-  }
+  async selectUser() {}
 }
 
 module.exports = new StaffSearchPage();

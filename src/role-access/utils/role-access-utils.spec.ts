@@ -6,13 +6,13 @@ describe('WorkAllocationUtils', () => {
   let mockRouter: any;
   const error: RoleAccessHttpError = {
     status: 400,
-    message: 'Service down'
+    message: 'Service down',
   };
   const exampleUrl = '/cases';
 
   it('should send back the status if it is 400', () => {
     mockRouter = {
-      navigate: jasmine.createSpy('navigate')
+      navigate: jasmine.createSpy('navigate'),
     };
     // test can handle fatal errors for 400 and 402 errors
     handleError(error, mockRouter, exampleUrl);
@@ -21,7 +21,7 @@ describe('WorkAllocationUtils', () => {
 
   it('should send back the status if it is not 500, 401 or 403', () => {
     mockRouter = {
-      navigate: jasmine.createSpy('navigate')
+      navigate: jasmine.createSpy('navigate'),
     };
     error.status = 200;
     handleError(error, mockRouter, exampleUrl);
@@ -31,7 +31,7 @@ describe('WorkAllocationUtils', () => {
 
   it('should attempt to navigate to the correct error pages', () => {
     mockRouter = {
-      navigate: jasmine.createSpy('navigate')
+      navigate: jasmine.createSpy('navigate'),
     };
     // should get correct redirect for 500
     error.status = 500;
@@ -52,11 +52,11 @@ describe('WorkAllocationUtils', () => {
   it('should correctly set the title text', () => {
     const firstRole: SpecificRole = {
       id: 'first-role',
-      name: 'First role'
+      name: 'First role',
     };
     const caseManager: SpecificRole = {
       id: 'case-manager',
-      name: 'Case manager'
+      name: 'Case manager',
     };
     // test that title can mention specifc role
     expect(getTitleText(firstRole, 'allocate', 'JUDICIAL')).toBe('allocate a First role');
@@ -68,4 +68,3 @@ describe('WorkAllocationUtils', () => {
     expect(getTitleText(null, 'view', null)).toBe('view a role');
   });
 });
-

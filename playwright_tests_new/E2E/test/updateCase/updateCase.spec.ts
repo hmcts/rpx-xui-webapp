@@ -30,7 +30,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
       await createCasePage.clickContinueAndWaitForNext('after updating case fields');
       await createCasePage.submitButton.click();
       await caseDetailsPage.exuiSpinnerComponent.wait();
-      // Soft assertion - if banner doesn't show, poll check below will still verify
+      // Soft assertion - visibility verified by poll below, but helps with debugging if banner missing
       await expect.soft(caseDetailsPage.caseAlertSuccessMessage).toBeVisible();
     });
 

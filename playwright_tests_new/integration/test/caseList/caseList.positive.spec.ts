@@ -1,28 +1,11 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildCaseListMock } from '../../mocks/caseList.mock';
+import { buildCaseListMock, buildCaseListJurisdictionsMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
-const caseListJurisdictionsMock = [
-  {
-    id: 'DIVORCE',
-    name: 'Family Divorce',
-    caseTypes: [
-      {
-        id: 'xuiTestJurisdiction',
-        name: 'XUI Case PoC',
-        states: [
-          {
-            id: 'CaseCreated',
-            name: 'Case Created',
-          },
-        ],
-      },
-    ],
-  },
-];
+const caseListJurisdictionsMock = buildCaseListJurisdictionsMock();
 
 test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);

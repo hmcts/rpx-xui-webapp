@@ -37,6 +37,36 @@ const resolveWorkerCount = (env: EnvMap = process.env) => {
   return suggested;
 };
 
+const resolveEnvironmentFromUrl = (baseUrl: string): string => {
+  try {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'local';
+    }
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.ithc.')) {
+      return 'ithc';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    if (hostname.includes('.perftest.')) {
+      return 'perftest';
+    }
+    return hostname;
+  } catch {
+    return 'unknown';
+  }
+};
+
+const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string => {
+  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(resolveBaseUrl(env));
+  const runContext = env.CI ? 'ci' : 'local-run';
+  return `${targetEnv} | ${runContext} | workers=${workerCount}`;
+};
+
 const buildConfig = (env: EnvMap = process.env) => {
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
@@ -76,7 +106,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright.html',
           title: 'RPX XUI Playwright',
-          testEnvironment: `${env.TEST_TYPE ?? (env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+          testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
           project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
           release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
           startServer: false,

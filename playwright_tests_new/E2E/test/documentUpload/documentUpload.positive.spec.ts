@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture';
-import c from 'config';
 
 test.describe('Document upload V2', () => {
   let testValue = faker.person.firstName();

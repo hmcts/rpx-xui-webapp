@@ -24,13 +24,14 @@ export class HearingValuesEffects {
       switchMap(([action, caseInfo]) => {
         const typedAction = action as hearingValuesActions.LoadHearingValues;
         // use the hearing case info from store only if not provided in the action payload
-        const resolvedCaseInfo = { ...caseInfo, ...typedAction.payload };
-        if (!resolvedCaseInfo?.jurisdictionId || !resolvedCaseInfo?.caseReference) {
-          // if there is no case context info, dispatch failure and navigate back to case details page
-          const error: HttpError = { status: 400, message: 'Missing case context for LoadHearingValues' };
-          this.hearingStore.dispatch(new hearingValuesActions.LoadHearingValuesFailure(error));
-          return HearingValuesEffects.handleError(error, resolvedCaseInfo);
-        }
+        const payload = typedAction.payload;
+        const resolvedCaseInfo = {
+          ...caseInfo,
+          ...payload,
+          // ensure that the payload caseReference/jurisdictionId is not incorrectly set to empty value
+          jurisdictionId: payload.jurisdictionId?.trim() ? payload.jurisdictionId : caseInfo?.jurisdictionId,
+          caseReference: payload.caseReference?.trim() ? payload.caseReference : caseInfo?.caseReference,
+        };
         return this.hearingsService.loadHearingValues(resolvedCaseInfo.jurisdictionId, resolvedCaseInfo.caseReference).pipe(
           map((response) => new hearingValuesActions.LoadHearingValuesSuccess(response)),
           catchError((error) => {

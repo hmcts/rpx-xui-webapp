@@ -273,8 +273,8 @@ test.describe('Role access / AM', () => {
     const ctx = await request.newContext({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       ignoreHTTPSErrors: true,
+      storageState: { cookies: expiredCookies as any, origins: [] },
     });
-    await applyExpiredCookies(ctx, expiredCookies);
     const res = await ctx.post('api/role-access/allocate-role/confirm', {
       data: { caseId: roleAccessCaseId },
       failOnStatusCode: false,
@@ -388,12 +388,12 @@ test.describe('Search/refdata helper coverage', () => {
     };
     await applyExpiredCookies(ctx, []);
     expect(calls).toBe(0);
-    await applyExpiredCookies(ctx, [{ name: 'cookie' }]);
+    await applyExpiredCookies(ctx, [{ name: 'cookie', value: '1', expires: 0 }]);
     expect(calls).toBe(1);
   });
 
   test('buildExpiredCookies handles missing cookies', () => {
-    expect(buildExpiredCookies({ cookies: [{ name: 'c' }] })).toHaveLength(1);
+    expect(buildExpiredCookies({ cookies: [{ name: 'c', value: '1', expires: 0 }] })).toHaveLength(1);
     expect(buildExpiredCookies({})).toEqual([]);
   });
 });

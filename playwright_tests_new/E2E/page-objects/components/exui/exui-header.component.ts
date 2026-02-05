@@ -3,13 +3,19 @@ import { expect, Page } from '@playwright/test';
 
 export class ExuiHeaderComponent {
   readonly header = this.page.locator('exui-header');
+
   readonly results = this.page.locator('ccd-search-result');
   readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
-  readonly selectedPageItem = this.header.locator('.hmcts-header a.hmcts-header__link');
-  readonly languageToggle = this.header.locator('button.language');
-  private waitUtils = new WaitUtils();
+  readonly selectedPageItem = this.header
+    .locator('.hmcts-header a.hmcts-header__link')
+    .or(this.page.getByRole('banner').getByRole('link', { name: /Manage Cases|Rheoli Achosion/ }));
 
-  constructor(private page: Page) {}
+  readonly languageToggle = this.header
+    .locator('button.language')
+    .or(this.page.getByRole('banner').getByRole('button', { name: /Cymraeg|English/ }));
+  private readonly waitUtils = new WaitUtils();
+
+  constructor(private readonly page: Page) {}
 
   public async selectHeaderMenuItem(menuItemText: string): Promise<void> {
     const menuItem = this.headerMenuItems.filter({ hasText: menuItemText });
@@ -25,11 +31,20 @@ export class ExuiHeaderComponent {
   }
 
   public async switchLanguage(language: string): Promise<void> {
-    if (language === (await this.languageToggle.innerText())) {
-      await this.languageToggle.click();
-      await this.page.waitForLoadState('domcontentloaded');
-    } else {
-      console.log(`Language is already set to ${language}`);
+    const toggleText = (await this.languageToggle.innerText()).trim();
+    if (!toggleText.includes(language)) {
+      return;
     }
+
+    await this.languageToggle.click();
+    await this.page.waitForLoadState('domcontentloaded');
+    // Wait for the toggle to flip to the other language to confirm the switch.
+    await this.page.waitForFunction(
+      ({ selector, expected }) => {
+        const el = document.querySelector(selector);
+        return !el?.textContent?.trim().includes(expected);
+      },
+      { selector: 'exui-header button.language', expected: language }
+    );
   }
 }

@@ -1,10 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureSessionCookies } from '../../../common/sessionCapture';
 let sessionCookies: any[] = [];
 
 test.describe('Verify users can switch the language', () => {
   test.beforeEach(async ({ page }) => {
-    const { cookies } = loadSessionCookies('SOLICITOR');
+    const { cookies } = await ensureSessionCookies('SOLICITOR');
     sessionCookies = cookies;
     if (sessionCookies.length) {
       await page.context().addCookies(sessionCookies);

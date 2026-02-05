@@ -4,6 +4,7 @@ export interface StaffAdvancedSearchFilters {
   userType: string;
   jobTitle: string;
   skill: string[];
+  status: string[];
   role: string[];
 }
 export interface StaffSearchFilters {

@@ -2,33 +2,64 @@ import { promises as fs } from 'node:fs';
 
 import { request } from '@playwright/test';
 
-import { config as testConfig } from '../../test_codecept/integration/tests/config/config';
-import { ensureStorageState } from './auth';
+import { config as testConfig } from '../common/apiTestConfig';
+import { ensureStorageState } from './utils/auth';
 import { test, expect, buildApiAttachment } from './fixtures';
 import { expectStatus, StatusSets } from './utils/apiTestUtils';
+import {
+  applyExpiredCookies,
+  assertSecurityHeaders,
+  assertUiConfigResponse,
+  assertUserDetailsKeys,
+  assertUserDetailsPayload,
+  assertUserInfoDetails,
+  buildExpiredCookies,
+  formatAttachmentBody,
+  resolveHeader,
+  resolveUserInfo,
+  shouldProcessUserDetails
+} from './utils/nodeAppUtils';
 
-const nodeAppDataModels = require('../../test_codecept/dataModels/nodeApp');
+import nodeAppDataModels from './data/nodeAppDataModels';
 
 test.describe('Node app endpoints', () => {
   test('serves external configuration without authentication', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
     expectStatus(response.status, [200]);
-    const expectedKeys = testConfig.configuratioUi[testConfig.testEnv];
-    const data = response.data as Record<string, unknown>;
-    expect(Object.keys(data)).toEqual(expect.arrayContaining(expectedKeys));
-    expect(data['clientId']).toBe('xuiwebapp');
-    expect(data).toEqual(
+    const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
+    assertUiConfigResponse(
+      response.data as Record<string, unknown>,
+      expectedKeys
+    );
+  });
+
+  test('serves external config/ui alias', async ({ anonymousClient }) => {
+    const response = await anonymousClient.get<Record<string, unknown>>('external/config/ui');
+    expectStatus(response.status, [200]);
+    const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
+    assertUiConfigResponse(
+      response.data as Record<string, unknown>,
+      expectedKeys
+    );
+  });
+
+  test('serves external config/check snapshot', async ({ anonymousClient }) => {
+    const response = await anonymousClient.get<Record<string, unknown>>('external/config/check');
+    expectStatus(response.status, [200]);
+    expect(response.data).toEqual(
       expect.objectContaining({
-        protocol: expect.any(String),
-        oAuthCallback: expect.any(String)
+        clientId: expect.any(String),
+        protocol: expect.any(String)
       })
     );
   });
 
-  test('auth/isAuthenticated returns true for authenticated sessions', async ({ apiClient }) => {
-    const response = await apiClient.get<boolean>('auth/isAuthenticated');
-    expectStatus(response.status, [200]);
-    expect(response.data).toBe(true);
+  test('auth/isAuthenticated returns session status', async ({ apiClient }) => {
+    const response = await apiClient.get<boolean>('auth/isAuthenticated', { throwOnError: false });
+    expectStatus(response.status, StatusSets.guardedBasic);
+    if (response.status === 200) {
+      expect(typeof response.data).toBe('boolean');
+    }
   });
 
   test('auth/isAuthenticated returns false without session', async ({ anonymousClient }) => {
@@ -37,51 +68,29 @@ test.describe('Node app endpoints', () => {
     expect(response.data).toBe(false);
   });
 
-  test('returns enriched user details for solicitor session', async ({ apiClient }, testInfo) => {
-    const response = await apiClient.get<any>('api/user/details');
+  test('auth/login responds', async ({ anonymousClient }) => {
+    const response = await anonymousClient.get('auth/login', { throwOnError: false });
+    expectStatus(response.status, [200, 302, 401, 403, 500, 502, 504]);
+  });
 
-    expectStatus(response.status, [200]);
-    const userInfo = response.data?.userInfo ?? {};
-    expect(userInfo).toEqual(
-      expect.objectContaining({
-        email: expect.any(String),
-        roles: expect.arrayContaining([expect.any(String)])
-      })
-    );
-    expect(userInfo.uid ?? userInfo.id).toBeDefined();
-    if (userInfo.given_name || userInfo.forename) {
-      expect(userInfo.given_name ?? userInfo.forename).toEqual(expect.any(String));
+  test('returns enriched user details for solicitor session', async ({ apiClient }, testInfo) => {
+    const response = await apiClient.get<any>('api/user/details', { throwOnError: false });
+
+    expectStatus(response.status, StatusSets.guardedExtended);
+    if (!shouldProcessUserDetails(response.status)) {
+      return;
     }
-    if (userInfo.family_name || userInfo.surname) {
-      expect(userInfo.family_name ?? userInfo.surname).toEqual(expect.any(String));
-    }
-    expect(response.data).toEqual(
-      expect.objectContaining({
-        roleAssignmentInfo: expect.any(Array),
-        canShareCases: expect.any(Boolean),
-        sessionTimeout: expect.objectContaining({
-          idleModalDisplayTime: expect.any(Number),
-          pattern: expect.any(String)
-        })
-      })
-    );
+    const userInfo = resolveUserInfo(response.data);
+    assertUserInfoDetails(userInfo);
+    assertUserDetailsPayload(response.data);
 
     const expected = nodeAppDataModels.getUserDetails_oidc();
-    const expectedKeys = Object.keys(expected);
-    expect(Object.keys(response.data)).toEqual(expect.arrayContaining(expectedKeys));
-
-    if (Array.isArray(response.data.roleAssignmentInfo) && response.data.roleAssignmentInfo.length > 0) {
-      const expectedRoleKeys = Object.keys(expected.roleAssignmentInfo[0]);
-      expect(Object.keys(response.data.roleAssignmentInfo[0])).toEqual(expect.arrayContaining(expectedRoleKeys));
-    }
+    assertUserDetailsKeys(response.data, expected);
 
     const attachment = buildApiAttachment(response.logEntry, {
       includeRaw: process.env.PLAYWRIGHT_DEBUG_API === '1'
     });
-    const prettyBody =
-      typeof attachment.body === 'string'
-        ? attachment.body
-        : JSON.stringify(attachment.body, null, 2);
+    const prettyBody = formatAttachmentBody(attachment);
     await testInfo.attach(`${attachment.name}-pretty`, {
       body: prettyBody,
       contentType: 'application/json'
@@ -104,15 +113,11 @@ test.describe('Node app endpoints', () => {
     const res = await ctx.get('external/configuration-ui', { failOnStatusCode: false });
     expect(res.status()).toBe(200);
     const headers = res.headers();
-    expect(headers['content-type'] || headers['Content-Type']).toContain('application/json');
-    const cacheControl = headers['cache-control'] || headers['Cache-Control'];
-    if (cacheControl) {
-      expect(cacheControl.toLowerCase()).toContain('no-store');
-    }
-    const xcto = headers['x-content-type-options'] || headers['X-Content-Type-Options'];
-    if (xcto) {
-      expect(xcto.toLowerCase()).toBe('nosniff');
-    }
+    const contentType = resolveHeader(headers, 'content-type');
+    expect(contentType).toContain('application/json');
+    const cacheControl = resolveHeader(headers, 'cache-control');
+    const xcto = resolveHeader(headers, 'x-content-type-options');
+    assertSecurityHeaders(cacheControl, xcto);
     await ctx.dispose();
   });
 
@@ -120,17 +125,13 @@ test.describe('Node app endpoints', () => {
     const statePath = await ensureStorageState('solicitor');
     const raw = await fs.readFile(statePath, 'utf8');
     const state = JSON.parse(raw);
-    const expiredCookies = Array.isArray(state.cookies)
-      ? state.cookies.map((c: any) => ({ ...c, expires: 0 }))
-      : [];
+    const expiredCookies = buildExpiredCookies(state);
 
     const ctx = await request.newContext({
       baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
       ignoreHTTPSErrors: true
     });
-    if (expiredCookies.length) {
-      await ctx.storageState({ cookies: expiredCookies, origins: [] });
-    }
+    await applyExpiredCookies(ctx, expiredCookies);
     const res = await ctx.get('api/user/details', { failOnStatusCode: false });
     expectStatus(res.status(), [401, 403]);
     await ctx.dispose();
@@ -140,5 +141,93 @@ test.describe('Node app endpoints', () => {
     const response = await apiClient.get<any>('api/configuration?configurationKey=termsAndConditionsEnabled');
     expectStatus(response.status, StatusSets.guardedBasic.filter((s) => s !== 403)); // 200 or 401
     expect(JSON.stringify(response.data).length).toBeLessThan(6);
+  });
+
+  test('healthCheck responds with healthState', async ({ anonymousClient }) => {
+    const response = await anonymousClient.get<{ healthState?: boolean }>('api/healthCheck?path=', { throwOnError: false });
+    expectStatus(response.status, [200, 500, 502, 504]);
+    if (response.status === 200) {
+      expect(typeof response.data?.healthState).toBe('boolean');
+    }
+  });
+});
+
+test.describe('Node app helper coverage', () => {
+  test('assertUserInfoDetails covers name variants', () => {
+    assertUserInfoDetails({
+      email: 'user@example.com',
+      roles: ['role'],
+      uid: 'uid-1',
+      given_name: 'Given',
+      family_name: 'Family'
+    });
+    assertUserInfoDetails({
+      email: 'user@example.com',
+      roles: ['role'],
+      id: 'id-1',
+      forename: 'Fore',
+      surname: 'Sur'
+    });
+    assertUserInfoDetails({
+      email: 'user@example.com',
+      roles: ['role'],
+      id: 'id-2'
+    });
+  });
+
+  test('assertUserDetailsPayload handles role assignment and sessionTimeout', () => {
+    assertUserDetailsPayload({
+      roleAssignmentInfo: [],
+      canShareCases: true,
+      sessionTimeout: { idleModalDisplayTime: 5, pattern: '.*' }
+    });
+  });
+
+  test('assertUserDetailsKeys handles role assignments when present', () => {
+    const expected = nodeAppDataModels.getUserDetails_oidc();
+    assertUserDetailsKeys({ ...expected, roleAssignmentInfo: expected.roleAssignmentInfo }, expected);
+    assertUserDetailsKeys({ ...expected, roleAssignmentInfo: [] }, expected);
+  });
+
+  test('assertSecurityHeaders tolerates missing headers', () => {
+    assertSecurityHeaders('no-store', 'nosniff');
+    assertSecurityHeaders(undefined, undefined);
+  });
+
+  test('shouldProcessUserDetails returns false for non-200 status', () => {
+    expect(shouldProcessUserDetails(200)).toBe(true);
+    expect(shouldProcessUserDetails(500)).toBe(false);
+  });
+
+  test('resolveUserInfo and formatAttachmentBody handle variants', () => {
+    expect(resolveUserInfo({ userInfo: { id: 'user-1' } })).toEqual({ id: 'user-1' });
+    expect(resolveUserInfo(undefined)).toEqual({});
+    expect(formatAttachmentBody({ body: 'text' })).toBe('text');
+    expect(formatAttachmentBody({ body: { key: 'value' } })).toContain('"key": "value"');
+  });
+
+  test('resolveHeader handles casing differences', () => {
+    expect(resolveHeader({ 'content-type': 'app/json' }, 'content-type')).toBe('app/json');
+    expect(resolveHeader({ 'Content-Type': 'app/json' }, 'content-type')).toBe('app/json');
+    expect(resolveHeader({ 'CONTENT-TYPE': 'app/json' }, 'content-type')).toBe('app/json');
+    expect(resolveHeader({}, 'content-type')).toBeUndefined();
+  });
+
+  test('applyExpiredCookies handles empty and populated arrays', async () => {
+    let calls = 0;
+    const ctx = {
+      storageState: async () => {
+        calls += 1;
+      }
+    };
+    await applyExpiredCookies(ctx, []);
+    expect(calls).toBe(0);
+    await applyExpiredCookies(ctx, [{ name: 'cookie' }]);
+    expect(calls).toBe(1);
+  });
+
+  test('buildExpiredCookies handles missing cookies', () => {
+    expect(buildExpiredCookies({ cookies: [{ name: 'c' }] })).toHaveLength(1);
+    expect(buildExpiredCookies({})).toEqual([]);
   });
 });

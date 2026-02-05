@@ -236,7 +236,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     Then I validate edit hearing section heading labels
       | Heading                                    | Label         |
       | Hearing requirements                       | AMENDED       |
-      | Additional facilities                      | ACTION NEEDED |
+      | Additional facilities                      |               |
       | Participant attendance                     | AMENDED       |
       | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
@@ -251,7 +251,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     Then I validate edit hearing section heading labels
       | Heading                                    | Label         |
       | Hearing requirements                       | AMENDED       |
-      | Additional facilities                      | ACTION NEEDED |
+      | Additional facilities                      |               |
       | Participant attendance                     | AMENDED       |
       | Length, date and priority level of hearing | AMENDED       |
         # end of Length, date and priority level of hearing
@@ -373,7 +373,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     Then I validate edit hearing section heading labels
       | Heading                                    | Label         |
       | Hearing requirements                       | AMENDED       |
-      | Additional facilities                      | ACTION NEEDED |
+      | Additional facilities                      |               |
       | Participant attendance                     | AMENDED       |
       | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
@@ -391,7 +391,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
       Then I validate edit hearing section heading labels
           | Heading                                    | Label         |
           | Hearing requirements                       | AMENDED       |
-          | Additional facilities                      | ACTION NEEDED |
+          | Additional facilities                      |               |
           | Participant attendance                     | AMENDED       |
           | Length, date and priority level of hearing | AMENDED       |
       # end of Length, date and priority level of hearing
@@ -419,12 +419,15 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
 
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When I click continue in hearing workflow
 
         Then I validate edit hearing section heading labels
-            | Heading                                    | Label |
-            | Hearing requirements                       |       |
-            | Participant attendance                     |       |
-            | Length, date and priority level of hearing |       |
+              | Heading                                    | Label |
+              | Hearing requirements                       |       |
+              | Participant attendance                     |       |
+              | Length, date and priority level of hearing |       |
 
 
         Then I validate fields displayed in view or edit hearing page

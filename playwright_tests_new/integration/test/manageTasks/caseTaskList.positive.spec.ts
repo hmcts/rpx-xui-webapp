@@ -39,6 +39,10 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
             { name: 'Manchester', id: '512401' },
             { name: 'Taylor House', id: '765324' },
           ],
+          descriptions: [
+            'Click link to proceed to task [Task link next step](/case/case-details/${[id]})',
+            'Click link to proceed to next step [case details link next step](/case/case-details/${[CASE_REFERENCE]})',
+          ],
           assignees: assigneeId ? [assigneeId] : [],
         });
         const body = JSON.stringify(tasks);

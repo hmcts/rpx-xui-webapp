@@ -109,6 +109,7 @@ export type CaseDetailsTasksMinimalOptions = {
   taskSystems?: string[];
   locations?: Array<{ name: string; id: string }>;
   assignees?: string[];
+  descriptions?: string[];
 };
 
 const toIso = (date: Date) => date.toISOString();
@@ -237,6 +238,7 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     taskSystems = [],
     locations = [],
     assignees = [],
+    descriptions = [],
   } = options;
   return titles.map((title, index) => {
     const state = states[index] ?? states[0];
@@ -244,6 +246,7 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     const taskSystem = taskSystems[index] ?? taskSystems[0];
     const location = locations[index] ?? locations[0];
     const assignee = assignees[index] ?? assignees[0];
+    const description = descriptions[index] ?? descriptions[0];
     return buildTaskDetailsMock(caseId, {
       task_title: title,
       task_state: state,
@@ -252,6 +255,7 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
       location_name: location?.name,
       location: location?.id,
       assignee,
+      description,
     });
   });
 };

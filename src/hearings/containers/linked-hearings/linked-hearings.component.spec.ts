@@ -13,7 +13,7 @@ import { LinkedHearingsComponent } from './linked-hearings.component';
 describe('LinkedHearingsComponent', () => {
   let component: LinkedHearingsComponent;
   let fixture: ComponentFixture<LinkedHearingsComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockStore: any;
   const mockPageFlow = jasmine.createSpyObj('PageFlow', ['getCurrentPage']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -28,10 +28,9 @@ describe('LinkedHearingsComponent', () => {
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ]
-    })
-      .compileComponents();
+        { provide: HearingsService, useValue: hearingsService },
+      ],
+    }).compileComponents();
     mockStore = TestBed.inject(Store);
     fixture = TestBed.createComponent(LinkedHearingsComponent);
     component = fixture.componentInstance;

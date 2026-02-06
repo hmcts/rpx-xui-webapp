@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
@@ -12,8 +10,8 @@
     "useDefineForClassFields": false,
     "noEmit": true,
     "allowJs": true,
-    "noImplicitAny": false,
+    "noImplicitAny": false
   },
-  "include":["../E2E/**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
-  "extends": "../../tsconfig.json"
+  "include": ["../**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
+  "extends": "../tsconfig.json"
 }

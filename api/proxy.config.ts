@@ -17,7 +17,7 @@ import {
   SERVICES_PRD_COMMONDATA_API,
   SERVICES_REFUNDS_API_URL,
   SERVICES_NOTIFICATIONS_API_URL,
-  SERVICES_TRANSLATION_API_URL
+  SERVICES_TRANSLATION_API_URL,
 } from './configuration/references';
 import { applyProxy } from './lib/middleware/proxy';
 import * as searchCases from './searchCases';
@@ -27,25 +27,27 @@ export const initProxy = (app: Express) => {
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: '/activity',
-    source: [
-      '/activity'
-    ],
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
+    source: ['/activity'],
+    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
-  applyProxy(app, {
-    middlewares: [bodyParser.json()],
-    onReq: documents.handleRequest,
-    onRes: documents.handleResponse,
-    rewrite: false,
-    source: '/documents',
-    target: getConfigValue(SERVICES_DOCUMENTS_API_PATH)
-  }, false);
+  applyProxy(
+    app,
+    {
+      middlewares: [bodyParser.json()],
+      onReq: documents.handleRequest,
+      onRes: documents.handleResponse,
+      rewrite: false,
+      source: '/documents',
+      target: getConfigValue(SERVICES_DOCUMENTS_API_PATH),
+    },
+    false
+  );
 
   applyProxy(app, {
     rewrite: false,
     source: '/hearing-recordings',
-    target: getConfigValue(SERVICES_EM_HRS_API_PATH)
+    target: getConfigValue(SERVICES_EM_HRS_API_PATH),
   });
 
   applyProxy(app, {
@@ -64,26 +66,21 @@ export const initProxy = (app: Express) => {
     onRes: searchCases.handleElasticSearchResponse,
     rewrite: false,
     source: '/data/internal/searchCases',
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
+    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
   applyProxy(app, {
-    filter: [
-      '!/data/internal/searchCases'
-    ],
+    filter: ['!/data/internal/searchCases'],
     rewrite: false,
-    source: [
-      '/print',
-      '/data'
-    ],
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
+    source: ['/print', '/data'],
+    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: (path: string) => '/addresses' + (path === '/' ? '' : path),
     source: '/api/addresses',
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
+    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
   applyProxy(app, {
@@ -91,87 +88,84 @@ export const initProxy = (app: Express) => {
     onRes: amendedJurisdictions.getJurisdictions,
     rewrite: false,
     source: '/aggregated',
-    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH)
+    target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/icp',
     target: getConfigValue(SERVICES_ICP_API_URL),
-    ws: true
+    ws: true,
   });
 
   applyProxy(app, {
     rewriteUrl: (path: string) => `/api${path}`,
     source: '/em-anno',
-    target: getConfigValue(SERVICES_EM_ANNO_API_URL)
+    target: getConfigValue(SERVICES_EM_ANNO_API_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: (path: string) => `/api${path}`,
     source: '/doc-assembly',
-    target: getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL)
+    target: getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL),
   });
 
   applyProxy(app, {
     rewrite: false,
-    source: [
-      '/api/markups',
-      '/api/redaction'
-    ],
-    target: getConfigValue(SERVICES_MARKUP_API_URL)
+    source: ['/api/markups', '/api/redaction'],
+    target: getConfigValue(SERVICES_MARKUP_API_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: (path: string) => path === '/' ? '/' : path,
     source: '/payments',
-    target: getConfigValue(SERVICES_PAYMENTS_URL)
+    target: getConfigValue(SERVICES_PAYMENTS_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: (path: string) => '/refund' + (path === '/' ? '' : path.startsWith('/?') ? path.substring(1) : path),
     source: '/api/refund',
-    target: getConfigValue(SERVICES_REFUNDS_API_URL)
+    target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: (path: string) => '/notifications' + (path === '/' ? '' : path),
     source: '/api/notification',
-    target: getConfigValue(SERVICES_NOTIFICATIONS_API_URL)
+    target: getConfigValue(SERVICES_NOTIFICATIONS_API_URL),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/refdata/location',
-    target: getConfigValue(SERVICES_LOCATION_REF_API_URL)
+    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/refdata/commondata/lov/categories/CaseLinkingReasonCode',
-    target: getConfigValue(SERVICES_PRD_COMMONDATA_API)
+    target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/categoriesAndDocuments',
-    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/documentData/caseref',
-    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/getLinkedCases',
-    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH)
+    target: getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH),
   });
 
   applyProxy(app, {
@@ -188,12 +182,12 @@ export const initProxy = (app: Express) => {
     // intentional (see Line 66 of CaseFlagApiController.java in
     // https://github.com/hmcts/rd-commondata-api/blob/master/src/main/java/uk/gov/hmcts/reform/cdapi/controllers)
     source: '/refdata/commondata/caseflags/service-id=:sid',
-    target: getConfigValue(SERVICES_PRD_COMMONDATA_API)
+    target: getConfigValue(SERVICES_PRD_COMMONDATA_API),
   });
 
   applyProxy(app, {
     rewrite: false,
     source: '/icp/sessions',
-    target: getConfigValue(SERVICES_ICP_API_URL)
+    target: getConfigValue(SERVICES_ICP_API_URL),
   });
 };

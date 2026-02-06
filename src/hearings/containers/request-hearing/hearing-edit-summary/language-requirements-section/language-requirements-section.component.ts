@@ -8,7 +8,7 @@ import { EditHearingChangeConfig } from '../../../../models/editHearingChangeCon
 @Component({
   standalone: false,
   selector: 'exui-language-requirements-section',
-  templateUrl: './language-requirements-section.component.html'
+  templateUrl: './language-requirements-section.component.html',
 })
 export class LanguageRequirementsSectionComponent {
   @Input() public hearingInWelshFlag: boolean;
@@ -18,14 +18,10 @@ export class LanguageRequirementsSectionComponent {
   public showAmmended: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {
-  }
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
-    this.showAmmended = !_.isEqual(
-      this.hearingInWelshFlagToCompare,
-      this.hearingInWelshFlag
-    );
+    this.showAmmended = !_.isEqual(this.hearingInWelshFlagToCompare, this.hearingInWelshFlag);
   }
 
   public onChange(fragmentId: string): void {

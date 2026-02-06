@@ -10,7 +10,7 @@ export class HealthCheckService implements OnDestroy {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly store: Store<fromRoot.State>,
+    private readonly store: Store<fromRoot.State>
   ) {}
 
   public doHealthCheck(): Observable<any> {

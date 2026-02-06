@@ -1,40 +1,51 @@
-import { faker } from "@faker-js/faker";
-import { expect, test } from "../../fixtures.ts";
+import { faker } from '@faker-js/faker';
+import { expect, test } from '../../fixtures';
+import { loadSessionCookies } from '../../../common/sessionCapture';
+let sessionCookies: any[] = [];
+const jurisdiction = 'DIVORCE';
+const caseType = 'XUI Case PoC';
 
-test.describe("Verify creating cases works as expected", () => {
-    test.beforeEach(async ({ idamPage, page, userUtils, config }) => {
-        await page.goto(config.urls.manageCaseBaseUrl);
-        const { email, password } = userUtils.getUserCredentials("SOLICITOR");
-        await idamPage.login({
-            username: email,
-            password: password,
-        });
+test.describe('Verify creating cases works as expected', () => {
+  test.beforeEach(async ({ page }) => {
+    const { cookies } = loadSessionCookies('SOLICITOR');
+    sessionCookies = cookies;
+    if (sessionCookies.length) {
+      await page.context().addCookies(sessionCookies);
+    }
+    await page.goto('/');
+  });
+
+  test('Verify creating a case in the divorce jurisdiction works as expected', async ({
+    page,
+    validatorUtils,
+    createCasePage,
+    caseDetailsPage,
+    caseListPage,
+    tableUtils,
+  }) => {
+    let caseNumber: string;
+    let testField = faker.lorem.word() + new Date().toLocaleTimeString();
+
+    await test.step('Create a case and validate the case details', async () => {
+      await createCasePage.createDivorceCase(jurisdiction, caseType, testField);
+      caseNumber = await caseDetailsPage.getCaseNumberFromAlert();
+      expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
+      expect(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
     });
 
-    test("Verify creating a case works as expected", async ({ validatorUtils, createCasePage, caseListPage, tableUtils }) => {
-        let caseNumber: string;
-        let textField0 = faker.lorem.word();
-
-        await test.step("Create a case and validate the case number", async () => {
-            await createCasePage.createDivorceCase("DIVORCE", "XUI Case PoC", textField0);
-            expect(createCasePage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
-            caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
-            validatorUtils.validateDivorceCaseNumber(caseNumber);
-        });
-
-        await test.step("Find the created case in the case list", async () => {
-            await caseListPage.goto();
-            await caseListPage.searchByJurisdiction("Family Divorce");
-            await caseListPage.searchByCaseType("XUI Case PoC");
-            await caseListPage.searchByTextField0(textField0);
-        });
-
-        await test.step("Confirm the created case is in the search results", async () => {
-            await caseListPage.exuiCaseListComponent.searchByCaseState("Case created");
-            const table = await tableUtils.mapExuiTable(
-                caseListPage.exuiCaseListComponent.caseListTable
-            );
-            expect(table[0]["Case reference"]).toBe(`${caseNumber.slice(1)}`);
-        });
+    await test.step('Find the created case in the case list', async () => {
+      await caseListPage.goto();
+      await caseListPage.searchByJurisdiction('Family Divorce');
+      await caseListPage.searchByCaseType('XUI Case PoC');
+      await caseListPage.searchByTextField0(testField);
+      await caseListPage.exuiCaseListComponent.searchByCaseState('Case created');
+      await caseListPage.applyFilters();
     });
+
+    await test.step('Confirm the created case is in the search results', async () => {
+      const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
+      const found = table.some((row) => row['Case reference'] === `${caseNumber.slice(1)}`);
+      expect(found).toBeTruthy();
+    });
+  });
 });

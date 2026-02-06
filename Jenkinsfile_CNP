@@ -65,14 +65,17 @@ withPipeline(type, product, component) {
     ])   
 
     afterSuccess('build') {
-        yarnBuilder.yarn('build:dev')
+        yarnBuilder.yarn('build:dev')  
+    }
+
+    afterAlways('checkout'){
         stage('Playwright Install Chromium') {
-        try {
-            yarnBuilder.yarn('test:setup:playwright-install-chromium')
-        } catch (Error) {
-            error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-        }  
-    }    
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
     }
 
     afterAlways('test') {
@@ -155,21 +158,38 @@ withPipeline(type, product, component) {
                 }
             }
         }
-                stage('Integration Tests') {
-                    try {
-                        yarnBuilder.yarn('test:xuiIntegration')
-                    } finally {
-                        publishHTML([
-                            allowMissing         : true,
-                            alwaysLinkToLastBuild: true,
-                            keepAll              : true,
-                            reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                            reportFiles          : 'cucumber_report.html',
-                            reportName           : 'PREVIEW Integration Test'
-                        ])
-                        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                    }
-                }
+
+        stage('Codecept Integration Tests') {
+            try {
+                yarnBuilder.yarn('test:xuiIntegration')
+            } finally {
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'functional-output/tests/codecept-ngIntegration/',
+                    reportFiles          : 'cucumber_report.html',
+                    reportName           : 'PREVIEW Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
+
+        stage('Playwright Integration Tests') {
+                try {
+                    yarnBuilder.yarn('test:playwright:integration')
+                } finally {
+                    publishHTML([
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                        reportFiles          : 'xui-playwright.html',
+                        reportName           : 'PREVIEW Playwright Integration Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+            }
+        }
     }
 
     afterAlways('functionalTest:preview') {
@@ -197,9 +217,9 @@ withPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
 
         stage('API Tests') {
-            withEnv(["FUNCTIONAL_TESTS_WORKERS=6"]) {
+            
                 try {
-                    yarnBuilder.yarn('test:api')
+                    yarnBuilder.yarn('test:api:pw:coverage')
                 } finally {
                     publishHTML([
                       allowMissing         : true,
@@ -211,23 +231,39 @@ withPipeline(type, product, component) {
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
                 }
-            }
+         
         }
-                stage('Integration Tests') {
-                    try {
-                        yarnBuilder.yarn('test:xuiIntegration')
-                    } finally {
-                        publishHTML([
-                            allowMissing         : true,
-                            alwaysLinkToLastBuild: true,
-                            keepAll              : true,
-                            reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                            reportFiles          : 'cucumber_report.html',
-                            reportName           : 'AAT Integration Test'
-                        ])
-                        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                    }
-                }
+
+    stage('Codecept Integration Tests') {
+        try {
+            yarnBuilder.yarn('test:xuiIntegration')
+        } finally {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : 'functional-output/tests/codecept-ngIntegration/',
+                reportFiles          : 'cucumber_report.html',
+                reportName           : 'AAT Integration Test'
+            ])
+            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+        }
+    }
+
+    stage('Playwright Integration Tests') {       
+            try {
+                yarnBuilder.yarn('test:playwright:integration')
+            } finally {
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                    reportFiles          : 'xui-playwright.html',
+                    reportName           : 'AAT Playwright Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+            }       
     }
 
     afterAlways('functionalTest:aat') {
@@ -239,5 +275,6 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'AAT Playwright E2E'
         ])
+    }
     }
 }

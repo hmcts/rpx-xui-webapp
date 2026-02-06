@@ -7,15 +7,15 @@ import {
   SessionUtils,
   TableUtils,
   WaitUtils,
-  ServiceAuthUtils
-} from "@hmcts/playwright-common";
-import os from "os";
-import path from "path";
-import { chromium, Page } from "playwright/test";
-import { config, Config } from "./config.utils.js";
-import { CookieUtils } from "./cookie.utils.js";
-import { ValidatorUtils } from "./validator.utils.js";
-import { UserUtils } from "./user.utils.js";
+  ServiceAuthUtils,
+} from '@hmcts/playwright-common';
+import * as os from 'os';
+import * as path from 'path';
+import { chromium, Page } from 'playwright/test';
+import { config, Config } from './config.utils.js';
+import { CookieUtils } from './cookie.utils.js';
+import { ValidatorUtils } from './validator.utils.js';
+import { UserUtils } from './user.utils.js';
 
 export interface UtilsFixtures {
   config: Config;
@@ -74,23 +74,17 @@ export const utilsFixtures = {
   localeUtils: async ({ page }, use) => {
     await use(new LocaleUtils(page));
   },
-  lighthousePage: async (
-    { lighthousePort, page, SessionUtils },
-    use,
-    testInfo
-  ) => {
+  lighthousePage: async ({ lighthousePort, page, SessionUtils }, use, testInfo) => {
     // Prevent creating performance page if not needed
-    if (testInfo.tags.includes("@performance")) {
+    if (testInfo.tags.includes('@performance')) {
       // Lighthouse opens a new page and as playwright doesn't share context we need to
       // explicitly create a new browser with shared context
-      const userDataDir = path.join(os.tmpdir(), "pw", String(Math.random()));
+      const userDataDir = path.join(os.tmpdir(), 'pw', String(Math.random()));
       const context = await chromium.launchPersistentContext(userDataDir, {
         args: [`--remote-debugging-port=${lighthousePort}`],
       });
       // Using the cookies from global setup, inject to the new browser
-      await context.addCookies(
-        SessionUtils.getCookies(config.users.caseManager.sessionFile)
-      );
+      await context.addCookies(SessionUtils.getCookies(config.users.caseManager.sessionFile));
       // Provide the page to the test
       await use(context.pages()[0]);
       await context.close();
@@ -105,5 +99,5 @@ export const utilsFixtures = {
   },
   userUtils: async ({}, use) => {
     await use(new UserUtils());
-  }
+  },
 };

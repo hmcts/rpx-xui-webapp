@@ -25,18 +25,26 @@ export const CITIZEN_ROLE_NAME = 'citizen';
 export const CTSC_ROLE = 'ctsc';
 export const CTSC_ROLE_CATEGORY = 'CTSC';
 export const CTSC_ROLE_NAME = 'ctsc';
+export const OTHER_GOV_DEPARTMENT_ROLE = 'other_gov_department';
+export const SSCS_DWP_RESPONSE_WRITER = 'caseworker-sscs-dwpresponsewriter';
+export const SSCS_HMRC_RESPONSE_WRITER = 'caseworker-sscs-hmrcresponsewriter';
+export const SSCS_IBCA_RESPONSE_WRITER = 'caseworker-sscs-ibcaresponsewriter';
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
 // If current location is passed it checks if the RoleAssignment is for location
-export function isCurrentUserCaseAllocator(currentUserRoleAssignment: RoleAssignment,
+export function isCurrentUserCaseAllocator(
+  currentUserRoleAssignment: RoleAssignment,
   currentJurisdiction?: string,
-  currentLocation?: string): boolean {
-  return !!currentUserRoleAssignment
-    && currentUserRoleAssignment?.roleType === ORGANISATION_ROLE_TYPE
-    && currentUserRoleAssignment?.roleName === CASE_ALLOCATOR_ROLE
-    && (!currentJurisdiction || currentUserRoleAssignment?.attributes?.jurisdiction === currentJurisdiction)
-    && (!currentLocation || currentUserRoleAssignment?.attributes?.baseLocation === currentLocation);
+  currentLocation?: string
+): boolean {
+  return (
+    !!currentUserRoleAssignment &&
+    currentUserRoleAssignment?.roleType === ORGANISATION_ROLE_TYPE &&
+    currentUserRoleAssignment?.roleName === CASE_ALLOCATOR_ROLE &&
+    (!currentJurisdiction || currentUserRoleAssignment?.attributes?.jurisdiction === currentJurisdiction) &&
+    (!currentLocation || currentUserRoleAssignment?.attributes?.baseLocation === currentLocation)
+  );
 }
 
 // Returns the roles
@@ -72,9 +80,19 @@ export function getUserRoleCategory(roles: string[]): string {
     return ADMIN_ROLE_NAME;
   } else if (includesRoleCategory(roles, CTSC_ROLE_NAME)) {
     return CTSC_ROLE_NAME;
-  } else if (hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) || hasRoleCategory(roles, TASK_SUPERVISOR)
-    || hasRoleCategory(roles, PUI_CASE_MANAGER) || hasRoleCategory(roles, PUI_ORG_MANAGER)) {
+  } else if (
+    hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) ||
+    hasRoleCategory(roles, TASK_SUPERVISOR) ||
+    hasRoleCategory(roles, PUI_CASE_MANAGER) ||
+    hasRoleCategory(roles, PUI_ORG_MANAGER)
+  ) {
     return PROFESSIONAL_ROLE;
+  } else if (
+    hasRoleCategory(roles, SSCS_DWP_RESPONSE_WRITER) ||
+    hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER) ||
+    hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER)
+  ) {
+    return OTHER_GOV_DEPARTMENT_ROLE;
   }
 
   return LEGAL_OPERATIONS_ROLE_NAME;
@@ -95,8 +113,11 @@ export function userDetailsValid(userInfo: UserInfo): boolean {
   }
   // check all user details - Fortify safety check
   // if contains special characters, return false
-  if (!allContainOnlySafeCharacters(userInfoValues) || !allContainOnlySafeCharacters(userInfo.roles)
-  || containsDangerousCode(userInfo.iss)) {
+  if (
+    !allContainOnlySafeCharacters(userInfoValues) ||
+    !allContainOnlySafeCharacters(userInfo.roles) ||
+    containsDangerousCode(userInfo.iss)
+  ) {
     return false;
   }
   return true;

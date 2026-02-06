@@ -15,7 +15,7 @@ export async function createTestCaseErrorValidation(page) {
   await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.getByRole('heading', { name: 'Page 3' })).toBeVisible();
   await page.getByRole('textbox', { name: 'Email' }).click();
-  await page.getByRole('textbox', { name: 'Email' }).fill('test@mail.com');  
+  await page.getByRole('textbox', { name: 'Email' }).fill('test@mail.com');
   await page.getByRole('textbox', { name: 'Phone UK' }).click();
   await page.getByRole('textbox', { name: 'Phone UK' }).fill('07584758478');
   await page.getByRole('group', { name: 'Date', exact: true }).getByLabel('Day').click();
@@ -34,4 +34,4 @@ export async function createTestCaseErrorValidation(page) {
   await page.getByRole('textbox', { name: 'Money GBP' }).fill('1000');
   await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.getByText('Date is not valid')).toBeVisible();
-};
+}

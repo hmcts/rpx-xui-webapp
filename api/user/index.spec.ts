@@ -14,7 +14,7 @@ import {
   getUserDetails,
   getUserRoleAssignments,
   refreshRoleAssignmentForUser,
-  setUserRoles
+  setUserRoles,
 } from './index';
 import { RoleAssignment } from './interfaces/roleAssignment';
 import { http } from '../lib/http';
@@ -38,50 +38,54 @@ describe('Index', () => {
   let mockUserId: string;
 
   beforeEach(() => {
-    roleAssignments = [{
-      id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
-      actorIdType: 'IDAM',
-      actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-      roleType: 'ORGANISATION',
-      roleName: 'ROLE',
-      classification: 'PUBLIC',
-      grantType: 'STANDARD',
-      roleCategory: LEGAL_OPS_TYPE,
-      readOnly: false,
-      created: new Date(2021, 9, 8),
-      attributes: {
-        baseLocation: '231596',
-        jurisdiction: 'IA'
-      }
-    }];
+    roleAssignments = [
+      {
+        id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
+        actorIdType: 'IDAM',
+        actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+        roleType: 'ORGANISATION',
+        roleName: 'ROLE',
+        classification: 'PUBLIC',
+        grantType: 'STANDARD',
+        roleCategory: LEGAL_OPS_TYPE,
+        readOnly: false,
+        created: new Date(2021, 9, 8),
+        attributes: {
+          baseLocation: '231596',
+          jurisdiction: 'IA',
+        },
+      },
+    ];
     mockUserInfo = { roles: ['caseworker-test', 'caseworker-test2'], roleCategory: null };
-    mockRoleAssignments = [{
-      id: '1',
-      roleCategory: 'ADMIN',
-      roleName: 'test role',
-      roleType: 'ORGANISATION',
-      attributes: {
-        isCaseAllocator: false
-      }
-    },
-    {
-      id: '2',
-      roleCategory: 'ADMIN',
-      roleName: 'test role 2',
-      roleType: 'ORGANISATION',
-      attributes: {
-        isCaseAllocator: false
-      }
-    },
-    {
-      id: '3',
-      roleCategory: 'ADMIN',
-      roleName: 'test role 3',
-      roleType: 'UNIMPORTANT',
-      attributes: {
-        isCaseAllocator: true
-      }
-    }];
+    mockRoleAssignments = [
+      {
+        id: '1',
+        roleCategory: 'ADMIN',
+        roleName: 'test role',
+        roleType: 'ORGANISATION',
+        attributes: {
+          isCaseAllocator: false,
+        },
+      },
+      {
+        id: '2',
+        roleCategory: 'ADMIN',
+        roleName: 'test role 2',
+        roleType: 'ORGANISATION',
+        attributes: {
+          isCaseAllocator: false,
+        },
+      },
+      {
+        id: '3',
+        roleCategory: 'ADMIN',
+        roleName: 'test role 3',
+        roleType: 'UNIMPORTANT',
+        attributes: {
+          isCaseAllocator: true,
+        },
+      },
+    ];
     mockReqData = { session: { roleAssignmentResponse: mockRoleAssignments } };
     mockUserId = '123';
   });
@@ -150,31 +154,33 @@ describe('Index', () => {
 
   describe('setUserRoles', () => {
     it('should set user roles correctly', async () => {
-      const mockUserRoles = [{
-        roleName: 'test role',
-        roleCategory: 'ADMIN',
-        roleType: 'ORGANISATION',
-        isCaseAllocator: false,
-        beginTime: undefined,
-        endTime: undefined
-      },
-      {
-        roleName: 'test role 2',
-        roleCategory: 'ADMIN',
-        roleType: 'ORGANISATION',
-        isCaseAllocator: false,
-        beginTime: undefined,
-        endTime: undefined
-      },
-      {
-        roleName: 'test role 3',
-        roleCategory: 'ADMIN',
-        roleType: 'UNIMPORTANT',
-        // is case allocator not true because not organisation type
-        isCaseAllocator: false,
-        beginTime: undefined,
-        endTime: undefined
-      }];
+      const mockUserRoles = [
+        {
+          roleName: 'test role',
+          roleCategory: 'ADMIN',
+          roleType: 'ORGANISATION',
+          isCaseAllocator: false,
+          beginTime: undefined,
+          endTime: undefined,
+        },
+        {
+          roleName: 'test role 2',
+          roleCategory: 'ADMIN',
+          roleType: 'ORGANISATION',
+          isCaseAllocator: false,
+          beginTime: undefined,
+          endTime: undefined,
+        },
+        {
+          roleName: 'test role 3',
+          roleCategory: 'ADMIN',
+          roleType: 'UNIMPORTANT',
+          // is case allocator not true because not organisation type
+          isCaseAllocator: false,
+          beginTime: undefined,
+          endTime: undefined,
+        },
+      ];
       expect(setUserRoles(mockUserInfo, mockReqData, mockUserId)).to.deep.equal(mockUserRoles);
       expect(mockUserInfo.roleCategory).to.equal('ADMIN');
       expect(mockUserInfo.roles).to.deep.equal(['caseworker-test', 'caseworker-test2', 'test role', 'test role 2']);
@@ -231,9 +237,9 @@ describe('Index', () => {
       req.session = {
         passport: {
           user: {
-            userinfo: { id: 'test', roles: ['test'] }
-          }
-        }
+            userinfo: { id: 'test', roles: ['test'] },
+          },
+        },
       };
       sandbox.stub(userUtils, 'userDetailsValid').returns(false);
 
@@ -248,16 +254,16 @@ describe('Index', () => {
         passport: {
           user: {
             userinfo: { id: 'test', roles: ['test'] },
-            tokenset: { accessToken: '<script>alert(1)</script>' }
-          }
-        }
+            tokenset: { accessToken: '<script>alert(1)</script>' },
+          },
+        },
       };
       sandbox.stub(userUtils, 'userDetailsValid').returns(true);
       sandbox.stub(config, 'getConfigValue').returns([]);
       sandbox.stub(nodeLib, 'getUserSessionTimeout').returns({
         idleModalDisplayTime: 10,
         totalIdleTime: 20,
-        pattern: 'caseworker'
+        pattern: 'caseworker',
       });
       sandbox.stub(utils, 'containsDangerousCode').returns(true);
 
@@ -272,14 +278,16 @@ describe('Index', () => {
     });
 
     it('should successfully return user details with roles and permissions', async () => {
-      const mockRoleAssignmentInfo = [{
-        jurisdiction: 'IA',
-        baseLocation: '123456',
-        isCaseAllocator: false,
-        roleType: 'ORGANISATION',
-        roleName: 'case-worker',
-        roleCategory: 'LEGAL_OPERATIONS'
-      }];
+      const mockRoleAssignmentInfo = [
+        {
+          jurisdiction: 'IA',
+          baseLocation: '123456',
+          isCaseAllocator: false,
+          roleType: 'ORGANISATION',
+          roleName: 'case-worker',
+          roleCategory: 'LEGAL_OPERATIONS',
+        },
+      ];
 
       req.session = {
         passport: {
@@ -287,19 +295,21 @@ describe('Index', () => {
             userinfo: {
               id: 'test-user',
               roles: ['caseworker', 'pui-case-manager'],
-              roleCategory: null
+              roleCategory: null,
             },
-            tokenset: { accessToken: 'valid-token' }
-          }
+            tokenset: { accessToken: 'valid-token' },
+          },
         },
-        roleAssignmentResponse: [{
-          id: '1',
-          substantive: 'Y',
-          jurisdiction: 'IA',
-          roleName: 'case-worker',
-          roleType: 'ORGANISATION',
-          attributes: {}
-        }]
+        roleAssignmentResponse: [
+          {
+            id: '1',
+            substantive: 'Y',
+            jurisdiction: 'IA',
+            roleName: 'case-worker',
+            roleType: 'ORGANISATION',
+            attributes: {},
+          },
+        ],
       };
 
       sandbox.stub(userUtils, 'userDetailsValid').returns(true);
@@ -310,7 +320,7 @@ describe('Index', () => {
       sandbox.stub(nodeLib, 'getUserSessionTimeout').returns({
         idleModalDisplayTime: 10,
         totalIdleTime: 20,
-        pattern: 'caseworker'
+        pattern: 'caseworker',
       });
       sandbox.stub(utils, 'containsDangerousCode').returns(false);
 
@@ -328,7 +338,7 @@ describe('Index', () => {
       expect(callArgs).to.have.property('userInfo');
       expect(callArgs.userInfo).to.include({
         id: 'test-user',
-        token: 'Bearer valid-token'
+        token: 'Bearer valid-token',
       });
 
       // Verify that original roles are present
@@ -342,9 +352,9 @@ describe('Index', () => {
       req.session = {
         passport: {
           user: {
-            userinfo: { id: 'test', roles: ['test'] }
-          }
-        }
+            userinfo: { id: 'test', roles: ['test'] },
+          },
+        },
       };
 
       sandbox.stub(userUtils, 'userDetailsValid').throws(error);
@@ -369,7 +379,7 @@ describe('Index', () => {
           jurisdiction: 'IA',
           roleName: 'case-worker',
           roleType: 'ORGANISATION',
-          attributes: {}
+          attributes: {},
         },
         {
           id: '2',
@@ -377,8 +387,8 @@ describe('Index', () => {
           jurisdiction: 'IA',
           roleName: 'case-worker',
           roleType: 'CASE',
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       const result = getSyntheticRoles(roleAssignments);
@@ -393,7 +403,7 @@ describe('Index', () => {
           jurisdiction: 'IA',
           roleName: 'case-worker',
           roleType: 'ORGANISATION',
-          attributes: {}
+          attributes: {},
         },
         {
           id: '2',
@@ -401,8 +411,8 @@ describe('Index', () => {
           jurisdiction: 'CIVIL',
           roleName: 'judge',
           roleType: 'ORGANISATION',
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       const result = getSyntheticRoles(roleAssignments);
@@ -417,7 +427,7 @@ describe('Index', () => {
           jurisdiction: 'IA',
           roleName: 'case-worker',
           roleType: 'ORGANISATION',
-          attributes: {}
+          attributes: {},
         },
         {
           id: '2',
@@ -425,8 +435,8 @@ describe('Index', () => {
           jurisdiction: 'IA',
           roleName: 'case-worker',
           roleType: 'ORGANISATION',
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       const result = getSyntheticRoles(roleAssignments);
@@ -445,8 +455,8 @@ describe('Index', () => {
           roleName: 'case-worker',
           roleType: 'ORGANISATION',
           endTime: yesterday,
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       const result = getSyntheticRoles(roleAssignments);
@@ -510,11 +520,11 @@ describe('Index', () => {
               id: '1',
               roleName: 'case-worker',
               roleType: 'ORGANISATION',
-              roleCategory: 'LEGAL_OPERATIONS'
-            }
-          ]
+              roleCategory: 'LEGAL_OPERATIONS',
+            },
+          ],
         },
-        headers: { etag: 'etag123' }
+        headers: { etag: 'etag123' },
       };
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
@@ -535,7 +545,7 @@ describe('Index', () => {
       const mockUserInfo = { uid: 'user456', roles: ['caseworker'] };
       const mockResponse = {
         data: { roleAssignmentResponse: [] },
-        headers: {}
+        headers: {},
       };
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
@@ -546,9 +556,7 @@ describe('Index', () => {
 
       await refreshRoleAssignmentForUser(mockUserInfo, req);
 
-      expect(httpGetStub).to.have.been.calledWith(
-        'http://role-assignment-api/am/role-assignments/actors/user456'
-      );
+      expect(httpGetStub).to.have.been.calledWith('http://role-assignment-api/am/role-assignments/actors/user456');
     });
 
     it('should add If-None-Match header when etag exists in session', async () => {
@@ -557,7 +565,7 @@ describe('Index', () => {
 
       const mockResponse = {
         data: { roleAssignmentResponse: [] },
-        headers: {}
+        headers: {},
       };
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
@@ -569,10 +577,7 @@ describe('Index', () => {
       await refreshRoleAssignmentForUser(mockUserInfo, req);
 
       const expectedHeaders = { 'If-None-Match': 'existing-etag' };
-      expect(httpGetStub).to.have.been.calledWith(
-        sinon.match.string,
-        { headers: expectedHeaders }
-      );
+      expect(httpGetStub).to.have.been.calledWith(sinon.match.string, { headers: expectedHeaders });
     });
 
     it('should handle 304 Not Modified response', async () => {
@@ -580,12 +585,14 @@ describe('Index', () => {
       const error304 = { status: 304 };
 
       // Set up cached role assignments in session
-      req.session.roleAssignmentResponse = [{
-        id: '1',
-        roleName: 'cached-role',
-        roleType: 'ORGANISATION',
-        attributes: {}
-      }];
+      req.session.roleAssignmentResponse = [
+        {
+          id: '1',
+          roleName: 'cached-role',
+          roleType: 'ORGANISATION',
+          attributes: {},
+        },
+      ];
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
@@ -634,7 +641,7 @@ describe('Index', () => {
         { roleCategory: 'JUDICIAL' },
         { roleCategory: 'LEGAL_OPERATIONS' },
         { roleCategory: null },
-        { roleCategory: 'ADMIN' }
+        { roleCategory: 'ADMIN' },
       ];
 
       const result = extractRoleCategories(roleAssignments);
@@ -642,11 +649,7 @@ describe('Index', () => {
     });
 
     it('should handle role assignments without roleCategory property', () => {
-      const roleAssignments = [
-        { roleName: 'test' },
-        { roleCategory: 'JUDICIAL' },
-        {}
-      ];
+      const roleAssignments = [{ roleName: 'test' }, { roleCategory: 'JUDICIAL' }, {}];
 
       const result = extractRoleCategories(roleAssignments);
       expect(result).to.deep.equal(['JUDICIAL']);
@@ -685,9 +688,9 @@ describe('Index', () => {
           endTime: new Date('2023-12-31'),
           attributes: {
             jurisdiction: 'IA',
-            baseLocation: '123456'
-          }
-        }
+            baseLocation: '123456',
+          },
+        },
       ];
 
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(true);
@@ -701,7 +704,7 @@ describe('Index', () => {
         isCaseAllocator: true,
         roleType: 'ORGANISATION',
         roleName: 'case-allocator',
-        roleCategory: 'LEGAL_OPERATIONS'
+        roleCategory: 'LEGAL_OPERATIONS',
       });
       expect(result[0].beginTime).to.deep.equal(new Date('2023-01-01'));
       expect(result[0].endTime).to.deep.equal(new Date('2023-12-31'));
@@ -713,8 +716,8 @@ describe('Index', () => {
           id: '1',
           roleType: 'CASE',
           roleName: 'judge',
-          attributes: {}
-        }
+          attributes: {},
+        },
       ];
 
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
@@ -725,7 +728,7 @@ describe('Index', () => {
       expect(result[0]).to.deep.include({
         isCaseAllocator: false,
         roleType: 'CASE',
-        roleName: 'judge'
+        roleName: 'judge',
       });
     });
   });
@@ -746,9 +749,7 @@ describe('Index', () => {
     });
 
     it('should use cached role assignments when refreshRoleAssignments is false', async () => {
-      const cachedRoleAssignments = [
-        { id: '1', roleName: 'cached-role' }
-      ];
+      const cachedRoleAssignments = [{ id: '1', roleName: 'cached-role' }];
       req.session.roleAssignmentResponse = cachedRoleAssignments;
       req.query.refreshRoleAssignments = 'false';
 
@@ -763,9 +764,7 @@ describe('Index', () => {
     });
 
     it('should use cached role assignments when no refresh query param', async () => {
-      const cachedRoleAssignments = [
-        { id: '1', roleName: 'cached-role' }
-      ];
+      const cachedRoleAssignments = [{ id: '1', roleName: 'cached-role' }];
       req.session.roleAssignmentResponse = cachedRoleAssignments;
 
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
@@ -788,11 +787,11 @@ describe('Index', () => {
               id: '1',
               roleName: 'fresh-role',
               roleType: 'ORGANISATION',
-              attributes: {}
-            }
-          ]
+              attributes: {},
+            },
+          ],
         },
-        headers: { etag: 'new-etag' }
+        headers: { etag: 'new-etag' },
       };
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
@@ -814,11 +813,11 @@ describe('Index', () => {
               id: '1',
               roleName: 'fresh-role',
               roleType: 'ORGANISATION',
-              attributes: {}
-            }
-          ]
+              attributes: {},
+            },
+          ],
         },
-        headers: {}
+        headers: {},
       };
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');

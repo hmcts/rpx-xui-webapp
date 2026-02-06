@@ -19,5 +19,5 @@ export enum FieldType {
   CASE_REFERENCE_STRING, // Displays formatted case reference without link
   DERIVED_ICON, // Displays an icon if conditions satisfied
   TASK_NAME, // Displays a link to task tab for case with task name as label
-  ACCESS_VIEW // Displays a view link that sends user to a role view
+  ACCESS_VIEW, // Displays a view link that sends user to a role view
 }

@@ -15,15 +15,15 @@ describe('JudgeDetailsSectionComponent', () => {
       {
         memberID: '4917866',
         memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
+        requirementType: RequirementType.EXCLUDE,
       },
       {
         memberID: '4100728',
         memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }
+        requirementType: RequirementType.EXCLUDE,
+      },
     ],
-    roleType: ['Tribunal', 'dtj', 'rtj']
+    roleType: ['Tribunal', 'dtj', 'rtj'],
   };
 
   const panelRequirements: PanelRequirementsModel = {
@@ -31,15 +31,15 @@ describe('JudgeDetailsSectionComponent', () => {
       {
         memberID: '4917866',
         memberType: MemberType.JUDGE,
-        requirementType: RequirementType.MUSTINC
+        requirementType: RequirementType.MUSTINC,
       },
       {
         memberID: '4100728',
         memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }
+        requirementType: RequirementType.EXCLUDE,
+      },
     ],
-    roleType: ['Tribunal', 'dtj', 'rtj']
+    roleType: ['Tribunal', 'dtj', 'rtj'],
   };
 
   const judicialUsers: JudicialUserModel[] = [
@@ -55,7 +55,7 @@ describe('JudgeDetailsSectionComponent', () => {
       personalCode: '4917866',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: ''
+      isPanelMember: '',
     },
     {
       title: 'Mr',
@@ -69,8 +69,8 @@ describe('JudgeDetailsSectionComponent', () => {
       personalCode: '4100728',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: ''
-    }
+      isPanelMember: '',
+    },
   ];
 
   const judgeTypes: LovRefDataModel[] = [
@@ -86,7 +86,7 @@ describe('JudgeDetailsSectionComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'dtj',
@@ -100,7 +100,7 @@ describe('JudgeDetailsSectionComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'rtj',
@@ -114,17 +114,15 @@ describe('JudgeDetailsSectionComponent', () => {
       parent_category: '',
       active_flag: 'Y',
       child_nodes: null,
-      from: 'exui-default'
-    }
+      from: 'exui-default',
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        JudgeDetailsSectionComponent
-      ]
+      declarations: [JudgeDetailsSectionComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(JudgeDetailsSectionComponent);
@@ -151,19 +149,23 @@ describe('JudgeDetailsSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('needJudge');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'needJudge', changeLink: '/hearings/request/hearing-judge#specificJudgeName'
+      fragmentId: 'needJudge',
+      changeLink: '/hearings/request/hearing-judge#specificJudgeName',
     });
     component.onChange('judgeName');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'judgeName', changeLink: '/hearings/request/hearing-judge#inputSelectPerson'
+      fragmentId: 'judgeName',
+      changeLink: '/hearings/request/hearing-judge#inputSelectPerson',
     });
     component.onChange('judgeTypes');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'judgeTypes', changeLink: '/hearings/request/hearing-judge#judgeTypes'
+      fragmentId: 'judgeTypes',
+      changeLink: '/hearings/request/hearing-judge#judgeTypes',
     });
     component.onChange('judgeExclusion');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'judgeExclusion', changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude'
+      fragmentId: 'judgeExclusion',
+      changeLink: '/hearings/request/hearing-judge#inputSelectPersonExclude',
     });
   });
 
@@ -174,30 +176,30 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'rtj']
+        roleType: ['Tribunal', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.EXCLUDE
-          }
+            requirementType: RequirementType.EXCLUDE,
+          },
         ],
-        roleType: []
+        roleType: [],
       };
       component.ngOnInit();
       expect(component.showAmmendedForNeedJudge).toEqual(true);
@@ -209,30 +211,30 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.EXCLUDE
-          }
+            requirementType: RequirementType.EXCLUDE,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.ngOnInit();
       expect(component.showAmmendedForNeedJudge).toEqual(false);
@@ -246,30 +248,30 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.EXCLUDE
-          }
+            requirementType: RequirementType.EXCLUDE,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.ngOnInit();
       expect(component.showAmmendedForJudgeName).toEqual(true);
@@ -281,30 +283,30 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.ngOnInit();
       expect(component.showAmmendedForJudgeName).toEqual(false);
@@ -318,25 +320,25 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.ngOnInit();
       expect(component.showAmmendedForExcludedJudgeNames).toEqual(true);
@@ -348,30 +350,30 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.ngOnInit();
       expect(component.showAmmendedForExcludedJudgeNames).toEqual(false);
@@ -385,30 +387,30 @@ describe('JudgeDetailsSectionComponent', () => {
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.panelRequirements = {
         panelPreferences: [
           {
             memberID: '4917866',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
+            requirementType: RequirementType.MUSTINC,
           },
           {
             memberID: '4100728',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.MUSTINC
-          }
+            requirementType: RequirementType.MUSTINC,
+          },
         ],
-        roleType: ['Tribunal', 'dtj', 'rtj']
+        roleType: ['Tribunal', 'dtj', 'rtj'],
       };
       component.ngOnInit();
       expect(component.showAmendedLabelForPageTitle).toEqual(false);

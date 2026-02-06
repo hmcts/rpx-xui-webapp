@@ -25,13 +25,15 @@ export class LoggerService implements ILoggerService {
     // Do nothing.
   };
 
-  constructor(private readonly monitoringService: MonitoringService,
-              private readonly ngxLogger: NGXLogger,
-              private readonly sessionStorageService: SessionStorageService,
-              private readonly environmentService: EnvironmentService) {
+  constructor(
+    private readonly monitoringService: MonitoringService,
+    private readonly ngxLogger: NGXLogger,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly environmentService: EnvironmentService
+  ) {
     this.COOKIE_KEYS = {
       TOKEN: config.cookies.token,
-      USER: config.cookies.userId
+      USER: config.cookies.userId,
     };
     this.setupSwitcherForConsoleLogs();
   }
@@ -44,7 +46,7 @@ export class LoggerService implements ILoggerService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public trace(message: any, ... additional: any[]): void {
+  public trace(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.trace(formattedMessage);
     this.monitoringService.logEvent(message);
@@ -64,7 +66,6 @@ export class LoggerService implements ILoggerService {
     this.monitoringService.logEvent(message);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public log(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.log(formattedMessage, ...additional);

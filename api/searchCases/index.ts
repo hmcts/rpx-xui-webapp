@@ -32,12 +32,16 @@ export function modifyRequest(proxyReq, req) {
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
   const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES) as string[];
-  return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => allowedRoles
-    .map((allowedRole: string) => allowedRole.toLowerCase())
-    .indexOf(role.toLowerCase()) >= 0).length > 0;
+  return (
+    userInfo &&
+    userInfo.roles &&
+    userInfo.roles.filter(
+      (role: string) => allowedRoles.map((allowedRole: string) => allowedRole.toLowerCase()).indexOf(role.toLowerCase()) >= 0
+    ).length > 0
+  );
 }
 
-export function prepareElasticQuery(queryParams: { page?}, body: any, user: UserInfo): ElasticSearchQuery {
+export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {
   const metaCriteria: { [key: string]: string } = queryParams;
   let caseCriteria: object = {};
   const matchList: any[] = [];
@@ -58,7 +62,7 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
       const newKey: string = key.replace('case.', '');
       caseCriteria = {
         ...caseCriteria,
-        [newKey]: metaCriteria[key]
+        [newKey]: metaCriteria[key],
       };
       delete metaCriteria[key];
     }
@@ -67,17 +71,14 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
   if (metaCriteria) {
     for (const criterion of Object.keys(metaCriteria)) {
       if (metaCriteria[criterion]) {
-        const keyName = fieldNameMapper(
-          criterion.replace('[', '').replace(']', '').toLowerCase(),
-          caseMetaDataFiledsMapping
-        );
+        const keyName = fieldNameMapper(criterion.replace('[', '').replace(']', '').toLowerCase(), caseMetaDataFiledsMapping);
         const match: any = {
           match: {
             [keyName]: {
               operator: 'and',
-              query: metaCriteria[criterion]
-            }
-          }
+              query: metaCriteria[criterion],
+            },
+          },
         };
         matchList.push(match);
       }
@@ -95,14 +96,14 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
           if (phraseHasSpecialCharacters(searchTerm)) {
             match = {
               match_phrase: {
-                [field]: searchTerm
-              }
+                [field]: searchTerm,
+              },
             };
           } else {
             match = {
               wildcard: {
-                [field]: `*${searchTerm.toLowerCase()}*`
-              }
+                [field]: `*${searchTerm.toLowerCase()}*`,
+              },
             };
           }
         } else {
@@ -110,9 +111,9 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
             match: {
               [field]: {
                 operator: 'and',
-                query: searchTerm
-              }
-            }
+                query: searchTerm,
+              },
+            },
           };
         }
         matchList.push(match);
@@ -173,9 +174,10 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
     from,
     size,
     sort,
-    query: (boolQuery.filter || boolQuery.must || boolQuery.should || boolQuery.must_not) // This is a guard to avoid returning an empty bool query when nothing was added
-      ? { bool: boolQuery }
-      : { match_all: {} }
+    query:
+      boolQuery.filter || boolQuery.must || boolQuery.should || boolQuery.must_not // This is a guard to avoid returning an empty bool query when nothing was added
+        ? { bool: boolQuery }
+        : { match_all: {} },
   };
 
   // Attach other native parts if present
@@ -194,7 +196,7 @@ export function prepareElasticQuery(queryParams: { page?}, body: any, user: User
 
   return {
     native_es_query: nativeEsQuery,
-    supplementary_data: ['*']
+    supplementary_data: ['*'],
   };
 }
 
@@ -213,11 +215,9 @@ function prepareSort(params) {
       columnName = `${mappedName}${isKeywordSuffixNeeded(mappedName, params.type)}`;
     }
     const orderDirection: 'ASC' | 'DESC' = params.order === 0 ? 'ASC' : 'DESC';
-    sortQuery.push(
-      {
-        [columnName]: orderDirection
-      }
-    );
+    sortQuery.push({
+      [columnName]: orderDirection,
+    });
   }
   return sortQuery;
 }
@@ -249,23 +249,21 @@ export function handleElasticSearchResponse(json): object {
     });
 
     return {
-      'columns': json.headers[0].fields,
-      'results': results,
-      'total': json.total
+      columns: json.headers[0].fields,
+      results: results,
+      total: json.total,
     };
   }
   return {};
 }
 
-function canApplyWildCardSearch(
-  wildcardSearchFields: { [key: string]: string[] },
-  caseType: string,
-  criterion: string
-): boolean {
-  return wildcardSearchFields
-    && wildcardSearchFields.hasOwnProperty(caseType)
-    && Array.isArray(wildcardSearchFields[caseType])
-    && wildcardSearchFields[caseType].indexOf(criterion) >= 0;
+function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] }, caseType: string, criterion: string): boolean {
+  return (
+    wildcardSearchFields &&
+    wildcardSearchFields.hasOwnProperty(caseType) &&
+    Array.isArray(wildcardSearchFields[caseType]) &&
+    wildcardSearchFields[caseType].indexOf(criterion) >= 0
+  );
 }
 
 function phraseHasSpecialCharacters(phrase: string): boolean {
@@ -276,6 +274,7 @@ function phraseHasSpecialCharacters(phrase: string): boolean {
 function getUserInfoFromRequest(req: any): UserInfo {
   try {
     return req.session.passport.user.userinfo as UserInfo;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return null;
   }

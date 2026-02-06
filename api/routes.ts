@@ -3,7 +3,8 @@ import accessManagementRouter from './accessManagement/routes';
 import { router as caseShareRoutes } from './caseshare/routes';
 import { router as challengedAccessRouter } from './challengedAccess/routes';
 import { getConfigValue, showFeature } from './configuration';
-import { APP_INSIGHTS_CONNECTION_STRING, APP_INSIGHTS_KEY } from './configuration/references';
+import { APP_INSIGHTS_CONNECTION_STRING, APP_INSIGHTS_KEY, FEATURE_DOCS_ENABLED } from './configuration/references';
+import docsRouter from './docs/routes';
 import { router as globalSearchRoutes } from './globalSearch/routes';
 import healthCheck from './healthCheck';
 import { router as hearingsRouter } from './hearings/routes';
@@ -27,13 +28,20 @@ router.use('/healthCheck', healthCheck);
 router.get('/monitoring-tools', (req, res) => {
   res.send({
     key: getConfigValue(APP_INSIGHTS_KEY),
-    connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING)
+    connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
   });
 });
 
 router.get('/configuration', (req, res) => {
   res.send(showFeature(req.query.configurationKey as string));
 });
+
+export const isDocsEnabled = (): boolean => showFeature(FEATURE_DOCS_ENABLED);
+
+const docsEnabled = isDocsEnabled();
+if (docsEnabled) {
+  router.use('/docs', docsRouter);
+}
 
 router.use(authInterceptor);
 

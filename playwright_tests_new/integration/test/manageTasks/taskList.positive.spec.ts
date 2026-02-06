@@ -1,6 +1,8 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
+import { deterministicCaseDetailsTasksMock } from '../../mocks/caseDetailsTasks.mock';
+import { asylumCase } from '../../mocks/cases/asylumCase.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { readTaskTable, formatUiDate } from '../../utils/tableUtils';
 
@@ -16,14 +18,14 @@ test.beforeAll(() => {
 test.beforeEach(async ({ page }) => {
   if (sessionCookies.length) {
     await page.context().addCookies(sessionCookies);
-    const userId = extractUserIdFromCookies(sessionCookies);
-    taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
   }
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for task list', async () => {
+      const userId = extractUserIdFromCookies(sessionCookies);
+      taskListMockResponse = buildMyTaskListMock(160, userId?.toString());
       await page.route('**/workallocation/task*', async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -100,6 +102,30 @@ test.describe(`Task List as ${userIdentifier}`, () => {
         expect(table[i]['Due date']).toBe(formatUiDate(expected.due_date));
         expect(table[i]['Priority']).toBe(String(expected.priority_field));
       }
+    });
+  });
+});
+
+test.describe(`User ${userIdentifier} can see task tab contents on a case`, () => {
+  test(`Task values and meta data is displayed as expected`, async ({ taskListPage, caseDetailsPage, page }) => {
+    const caseMockResponse = asylumCase();
+    await test.step('Setup route mock for task details', async () => {
+      await page.route(`**data/internal/cases/${caseMockResponse.case_id}*`, async (route) => {
+        const body = JSON.stringify(caseMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+
+      await page.route(`**workallocation/case/task/${caseMockResponse.case_id}*`, async (route) => {
+        const body = JSON.stringify(deterministicCaseDetailsTasksMock(caseMockResponse.case_id));
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+    });
+
+    await test.step('Verify table shows results', async () => {
+      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}`);
+      await taskListPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.selectCaseDetailsTab('Tasks');
+      await taskListPage.exuiSpinnerComponent.wait();
     });
   });
 });

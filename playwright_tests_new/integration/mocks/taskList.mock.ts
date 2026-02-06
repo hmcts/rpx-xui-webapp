@@ -23,7 +23,7 @@ export const dateOptions = [
   { label: 'future', value: faker.date.soon({ days: faker.number.int({ min: 14, max: 180 }) }) },
 ];
 
-export function buildMyTaskListMock(rowCount: number = 3, assignee: string) {
+export function buildMyTaskListMock(rowCount: number = 3, assignee: string | null = null) {
   const maxResults = 25;
   const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
     // Created date: always in the past (up to 90 days ago)

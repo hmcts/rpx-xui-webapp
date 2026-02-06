@@ -5,7 +5,7 @@ export class ExuiHeaderComponent {
   readonly header = this.page.locator('exui-header');
   readonly results = this.page.locator('ccd-search-result');
   readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
-  readonly selectedPageItem = this.header.locator('.hmcts-header a.hmcts-header__link');
+  readonly appHeaderLink = this.header.locator('.hmcts-header a.hmcts-header__link');
   readonly languageToggle = this.header.locator('button.language');
   private waitUtils = new WaitUtils();
 

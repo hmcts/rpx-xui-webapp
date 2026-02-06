@@ -31,19 +31,19 @@ test.describe('Verify users can switch the language', () => {
       await caseListPage.exuiHeader.switchLanguage('Cymraeg');
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
-      await caseListPage.exuiHeader.selectedPageItem.waitFor({ state: 'attached' });
+      await caseListPage.exuiHeader.appHeaderLink.waitFor({ state: 'attached' });
     });
 
     await test.step('Check the translation for Manage Cases is shown and the language toggle switches to English', async () => {
       expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('English');
-      await expect(caseListPage.exuiHeader.selectedPageItem).toContainText('Rhestr achosion');
+      await expect(caseListPage.exuiHeader.appHeaderLink).toContainText('Rhestr achosion');
     });
 
     await test.step('Check the language can be switched back to English and the correct translations are shown', async () => {
       await caseListPage.exuiHeader.switchLanguage('English');
       await caseListPage.exuiSpinnerComponent.wait();
       await caseListPage.exuiHeader.checkIsVisible();
-      expect.soft(await caseListPage.exuiHeader.selectedPageItem.innerText()).toContain('Manage Cases');
+      expect.soft(await caseListPage.exuiHeader.appHeaderLink.innerText()).toContain('Manage Cases');
       expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('Cymraeg');
     });
   });

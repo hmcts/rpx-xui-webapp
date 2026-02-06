@@ -15,8 +15,8 @@ describe('Task management api,  retrieve all work types by userId', () => {
   const RESPONSE_BODY = {
     work_types: eachLike({
       id: somethingLike('5687'),
-      label: somethingLike('Upper Tribunal')
-    })
+      label: somethingLike('Upper Tribunal'),
+    }),
   };
 
   describe('get /work-types by userId', () => {
@@ -35,19 +35,19 @@ describe('Task management api,  retrieve all work types by userId', () => {
           method: 'GET',
           path: '/work-types',
           query: {
-            'filter-by-user': 'true'
+            'filter-by-user': 'true',
           },
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {},
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -71,8 +71,8 @@ describe('Task management api,  retrieve all work types by userId', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

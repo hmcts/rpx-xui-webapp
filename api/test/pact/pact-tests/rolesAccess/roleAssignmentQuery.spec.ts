@@ -12,16 +12,35 @@ const { somethingLike, term } = Matchers;
 
 const pactSetUp = new PactV3TestSetup({
   provider: 'am_roleAssignment_queryAssignment',
-  port: 8000
+  port: 8000,
 });
 
-const RAS_V2_HEADER = 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
+const RAS_V2_HEADER =
+  'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0';
 
 const caseId = '12345';
 const roles = [
-  { id: '13a234567-eb80-4681-b62c-6ae2ed069a5g', actorId: '14a21569-eb80-4681-b62c-6ae2ed069e5f', roleName: 'lead-judge', roleCategory: 'JUDICIAL', displayName: 'Lead judge' },
-  { id: '23a234567-eb80-4681-b62c-6ae2ed069a5h', actorId: '24a21569-eb80-4681-b62c-6ae2ed069e5g', roleName: 'hearing-judge', roleCategory: 'JUDICIAL', displayName: 'Hearing judge' },
-  { id: '33a234567-eb80-4681-b62c-6ae2ed069a5i', actorId: '34a21569-eb80-4681-b62c-6ae2ed069e5h', roleName: 'case-worker', roleCategory: 'LEGAL_OPERATIONS', displayName: 'Case worker' }
+  {
+    id: '13a234567-eb80-4681-b62c-6ae2ed069a5g',
+    actorId: '14a21569-eb80-4681-b62c-6ae2ed069e5f',
+    roleName: 'lead-judge',
+    roleCategory: 'JUDICIAL',
+    displayName: 'Lead judge',
+  },
+  {
+    id: '23a234567-eb80-4681-b62c-6ae2ed069a5h',
+    actorId: '24a21569-eb80-4681-b62c-6ae2ed069e5g',
+    roleName: 'hearing-judge',
+    roleCategory: 'JUDICIAL',
+    displayName: 'Hearing judge',
+  },
+  {
+    id: '33a234567-eb80-4681-b62c-6ae2ed069a5i',
+    actorId: '34a21569-eb80-4681-b62c-6ae2ed069e5h',
+    roleName: 'case-worker',
+    roleCategory: 'LEGAL_OPERATIONS',
+    displayName: 'Case worker',
+  },
 ];
 
 describe('access management service, query role assignments', () => {
@@ -31,27 +50,26 @@ describe('access management service, query role assignments', () => {
         attributes: {
           caseId: [caseId],
           caseType: ['asylum'],
-          jurisdiction: ['IAC']
+          jurisdiction: ['IAC'],
         },
-        roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN']
-      }
-    ]
+        roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
+      },
+    ],
   };
   const RESPONSE_BODY = {
-    'roleAssignmentResponse': []
+    roleAssignmentResponse: [],
   };
   for (const role of roles) {
     const roleAssignmentRole = {
-      'id': somethingLike('23a234567-eb80-4681-b62c-6ae2ed069a5g'),
-      'actorId': somethingLike('14a21569-eb80-4681-b62c-6ae2ed069e5f'),
-      'roleCategory': somethingLike('LEGAL_OPERATIONS'),
-      'roleName': somethingLike('case-worker'),
-      'beginTime': term(DateTimeMatcher('2022-01-11T00:00:00Z')),
-      'endTime': term(DateTimeMatcher('2022-01-11T00:00:00Z'))
+      id: somethingLike('23a234567-eb80-4681-b62c-6ae2ed069a5g'),
+      actorId: somethingLike('14a21569-eb80-4681-b62c-6ae2ed069e5f'),
+      roleCategory: somethingLike('LEGAL_OPERATIONS'),
+      roleName: somethingLike('case-worker'),
+      beginTime: term(DateTimeMatcher('2022-01-11T00:00:00Z')),
+      endTime: term(DateTimeMatcher('2022-01-11T00:00:00Z')),
     };
     roleAssignmentRole.roleName = somethingLike(role.roleName);
     roleAssignmentRole.roleCategory = somethingLike(role.roleCategory);
-    // @ts-ignore
     RESPONSE_BODY.roleAssignmentResponse.push(roleAssignmentRole);
   }
 
@@ -71,19 +89,19 @@ describe('access management service, query role assignments', () => {
           method: 'POST',
           path: '/am/role-assignments/query',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': RAS_V2_HEADER
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': RAS_V2_HEADER,
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': RAS_V2_HEADER
+            'content-type': RAS_V2_HEADER,
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       const rolesResponseBody = [];
@@ -102,18 +120,18 @@ describe('access management service, query role assignments', () => {
           method: 'GET',
           path: '/am/role-assignments/roles',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': RAS_V2_HEADER
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': RAS_V2_HEADER,
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': RAS_V2_HEADER
+            'Content-Type': RAS_V2_HEADER,
           },
-          body: rolesResponseBody
-        }
+          body: rolesResponseBody,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -136,16 +154,15 @@ describe('access management service, query role assignments', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': RAS_V2_HEADER
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': RAS_V2_HEADER,
           },
           body: {
             caseId: caseId,
             jurisdiction: 'IAC',
-            caseType: 'asylum'
-          }
-
+            caseType: 'asylum',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();
@@ -170,45 +187,38 @@ function assertResponses(dto: any) {
 
 function getDummyCaseRole() {
   return {
-    'name': '[PETSOLICITOR]',
-    'label': 'Petitioner\'s Solicitor',
-    'description': 'Petitioner\'s Solicitor',
-    'category': 'PROFESSIONAL',
-    'substantive': true,
-    'patterns': [
+    name: '[PETSOLICITOR]',
+    label: "Petitioner's Solicitor",
+    description: "Petitioner's Solicitor",
+    category: 'PROFESSIONAL',
+    substantive: true,
+    patterns: [
       {
-        'roleType': {
-          'mandatory': true,
-          'values': [
-            'CASE'
-          ]
+        roleType: {
+          mandatory: true,
+          values: ['CASE'],
         },
-        'grantType': {
-          'mandatory': true,
-          'values': [
-            'SPECIFIC'
-          ]
+        grantType: {
+          mandatory: true,
+          values: ['SPECIFIC'],
         },
-        'classification': {
-          'mandatory': true,
-          'values': [
-            'RESTRICTED'
-          ]
+        classification: {
+          mandatory: true,
+          values: ['RESTRICTED'],
         },
-        'attributes': {
-          'jurisdiction': {
-            'mandatory': true
+        attributes: {
+          jurisdiction: {
+            mandatory: true,
           },
-          'caseType': {
-            'mandatory': true
+          caseType: {
+            mandatory: true,
           },
-          'caseId': {
-            'mandatory': true
-          }
+          caseId: {
+            mandatory: true,
+          },
         },
-        'substantive': false
-      }
-    ]
+        substantive: false,
+      },
+    ],
   };
 }
-

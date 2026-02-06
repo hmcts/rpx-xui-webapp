@@ -27,7 +27,9 @@ class MyWorkPage extends TaskList {
   }
 
   get showHideFilterHint() {
-    return elementByXpath("//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]");
+    return elementByXpath(
+      "//button[contains(text(),'work filter')]/following-sibling::span[contains(text(),'All of your work may not be visible.')]"
+    );
   }
 
   get genericFilterContainer() {
@@ -144,7 +146,7 @@ class MyWorkPage extends TaskList {
   }
 
   async OpenWorkFilter() {
-    const isOpen = await isPresent(this.genericFilterContainer) && await this.genericFilterContainer.isVisible();
+    const isOpen = (await isPresent(this.genericFilterContainer)) && (await this.genericFilterContainer.isVisible());
 
     if (!isOpen) {
       await this.showHideWorkFilterBtn.click();
@@ -152,7 +154,7 @@ class MyWorkPage extends TaskList {
   }
 
   async CloseWorkFilter() {
-    const isOpen = await isPresent(this.genericFilterContainer) && await this.genericFilterContainer.isVisible();
+    const isOpen = (await isPresent(this.genericFilterContainer)) && (await this.genericFilterContainer.isVisible());
 
     if (isOpen) {
       await this.showHideWorkFilterBtn.click();
@@ -160,7 +162,9 @@ class MyWorkPage extends TaskList {
   }
 
   async clickWorkFilterLoctionInputWithLabel(locationLabel) {
-    await elementByXpath(`//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`).click();
+    await elementByXpath(
+      `//div[contains(@class,'xui-generic-filter')]//div[contains(@class,'govuk-checkboxes__item')]/label[contains(text(),'${locationLabel}')]/../input`
+    ).click();
   }
 
   async selectWorkFilterLocationAtPosition(locationAtPos) {
@@ -207,15 +211,11 @@ class MyWorkPage extends TaskList {
 
       await this.pageHeader.waitFor({ state: 'visible', timeout: 20_000 });
 
-      await BrowserWaits.waitForConditionAsync(
-        async () => (await getText(this.pageHeader)).includes('My work'),
-        20_000
-      );
+      await BrowserWaits.waitForConditionAsync(async () => (await getText(this.pageHeader)).includes('My work'), 20_000);
 
       return true;
     } catch (err) {
-      cucumberReporter.AddMessage('My work page not displayed ' + err.stack,
-        LOG_LEVELS.Error);
+      cucumberReporter.AddMessage('My work page not displayed ' + err.stack, LOG_LEVELS.Error);
       return false;
     }
   }
@@ -336,7 +336,9 @@ class MyWorkPage extends TaskList {
   }
 
   async selectWorkFilterLocationSearchResult(location) {
-    const locationResult = elementByXpath(`//div[contains(@class,'cdk-overlay-container')]//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`);
+    const locationResult = elementByXpath(
+      `//div[contains(@class,'cdk-overlay-container')]//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${location}')]`
+    );
     await locationResult.click();
   }
 

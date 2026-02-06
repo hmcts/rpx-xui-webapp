@@ -27,12 +27,8 @@ describe('HearingViewEditSummaryComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [HearingViewEditSummaryComponent, MockRpxTranslatePipe],
-        providers: [
-          LoadingService,
-          provideMockStore({ initialState }),
-          { provide: HearingsService, useValue: hearingsService }
-        ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        providers: [LoadingService, provideMockStore({ initialState }), { provide: HearingsService, useValue: hearingsService }],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
       }).compileComponents();
       fixture = TestBed.createComponent(HearingViewEditSummaryComponent);
       component = fixture.componentInstance;
@@ -44,34 +40,34 @@ describe('HearingViewEditSummaryComponent', () => {
           screenName: 'hearing-requirements',
           navigation: [
             {
-              resultValue: 'hearing-facilities'
-            }
-          ]
+              resultValue: 'hearing-facilities',
+            },
+          ],
         },
         {
           screenName: 'hearing-facilities',
           navigation: [
             {
-              resultValue: 'hearing-stage'
-            }
-          ]
+              resultValue: 'hearing-stage',
+            },
+          ],
         },
         {
           screenName: 'hearing-stage',
           navigation: [
             {
-              resultValue: 'hearing-attendance'
-            }
-          ]
+              resultValue: 'hearing-attendance',
+            },
+          ],
         },
         {
           screenName: 'hearing-attendance',
           navigation: [
             {
-              resultValue: 'hearing-venue'
-            }
-          ]
-        }
+              resultValue: 'hearing-venue',
+            },
+          ],
+        },
       ];
       template = [
         {
@@ -81,19 +77,19 @@ describe('HearingViewEditSummaryComponent', () => {
             {
               id: 'caseName',
               answerTitle: 'Case name',
-              answerSource: AnswerSource.CASE_NAME
+              answerSource: AnswerSource.CASE_NAME,
             },
             {
               id: 'caseNumber',
               answerTitle: 'Case number',
-              answerSource: AnswerSource.CASE_NUMBER
+              answerSource: AnswerSource.CASE_NUMBER,
             },
             {
               id: 'type',
               answerTitle: 'Type',
-              answerSource: AnswerSource.Type
-            }
-          ]
+              answerSource: AnswerSource.Type,
+            },
+          ],
         },
         {
           sectionHTMLTitle: '<h1 class="govuk-heading-l">Hearing Listing Info</h1>',
@@ -102,19 +98,19 @@ describe('HearingViewEditSummaryComponent', () => {
             {
               id: 'caseName',
               answerTitle: 'Case name',
-              answerSource: AnswerSource.CASE_NAME
+              answerSource: AnswerSource.CASE_NAME,
             },
             {
               id: 'caseNumber',
               answerTitle: 'Case number',
-              answerSource: AnswerSource.CASE_NUMBER
+              answerSource: AnswerSource.CASE_NUMBER,
             },
             {
               id: 'type',
               answerTitle: 'Type',
-              answerSource: AnswerSource.Type
-            }
-          ]
+              answerSource: AnswerSource.Type,
+            },
+          ],
         },
         {
           sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing requirements</h2>',
@@ -124,9 +120,9 @@ describe('HearingViewEditSummaryComponent', () => {
               id: 'caseFlags',
               answerTitle: 'Reasonable adjustments',
               answerSource: AnswerSource.CASE_FLAGS,
-              changeLink: '/hearings/request/hearing-requirements#linkAmendFlags'
-            }
-          ]
+              changeLink: '/hearings/request/hearing-requirements#linkAmendFlags',
+            },
+          ],
         },
         {
           sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
@@ -136,15 +132,15 @@ describe('HearingViewEditSummaryComponent', () => {
               id: 'additionalSecurityRequired',
               answerTitle: 'Will additional security be required?',
               answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
-              changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes'
+              changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
             },
             {
               id: 'additionalFacilitiesRequired',
               answerTitle: 'Select any additional facilities required',
               answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
-              changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre'
-            }
-          ]
+              changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
+            },
+          ],
         },
         {
           sectionHTMLTitle: '<h2 class="govuk-heading-m">Stage</h2>',
@@ -154,9 +150,9 @@ describe('HearingViewEditSummaryComponent', () => {
               id: 'stage',
               answerTitle: 'What stage is this hearing at?',
               answerSource: AnswerSource.STAGE,
-              changeLink: '/hearings/request/hearing-stage#initial'
-            }
-          ]
+              changeLink: '/hearings/request/hearing-stage#initial',
+            },
+          ],
         },
         {
           sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
@@ -166,31 +162,31 @@ describe('HearingViewEditSummaryComponent', () => {
               id: 'paperHearing',
               answerTitle: 'Will this be a paper hearing?',
               answerSource: AnswerSource.IS_PAPER_HEARING,
-              changeLink: '/hearings/request/hearing-attendance#paperHearingYes'
+              changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
             },
             {
               id: 'howParticipantsAttendant',
               answerTitle: 'What will be the methods of attendance for this hearing?',
               answerSource: AnswerSource.HOW_PARTICIPANTS_ATTEND,
               isHiddenSource: IsHiddenSource.PAPER_HEARING,
-              changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList'
+              changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList',
             },
             {
               id: 'howAttendant',
               answerTitle: 'How will each participant attend the hearing?',
               answerSource: AnswerSource.HOW_ATTENDANT,
               isHiddenSource: IsHiddenSource.PAPER_HEARING,
-              changeLink: '/hearings/request/hearing-attendance#partyChannel0'
+              changeLink: '/hearings/request/hearing-attendance#partyChannel0',
             },
             {
               id: 'attendantPersonAmount',
               answerTitle: 'How many people will attend the hearing in person?',
               answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
               isHiddenSource: IsHiddenSource.PAPER_HEARING,
-              changeLink: '/hearings/request/hearing-attendance#attendance-number'
-            }
-          ]
-        }
+              changeLink: '/hearings/request/hearing-attendance#attendance-number',
+            },
+          ],
+        },
       ];
     });
 
@@ -227,7 +223,11 @@ describe('HearingViewEditSummaryComponent', () => {
         const reducedSreeenFlowFlow = [screenFlow[1]];
         template = template.filter((tl: Section) => {
           return reducedSreeenFlowFlow.some((sr: ScreenNavigationModel) => {
-            return tl.screenName.includes(sr.screenName) || tl.screenName.includes('edit-hearing') || tl.screenName.includes('hearing-listing-info');
+            return (
+              tl.screenName.includes(sr.screenName) ||
+              tl.screenName.includes('edit-hearing') ||
+              tl.screenName.includes('hearing-listing-info')
+            );
           });
         });
         fixture.detectChanges();
@@ -261,7 +261,9 @@ describe('HearingViewEditSummaryComponent', () => {
       spyOn(mockStore, 'select').and.returnValue(of(error));
       component.ngOnInit();
       fixture.detectChanges();
-      expect(component.validationErrors).toEqual([{ id: 'judicialUserGetError', message: `Judicial user: ${error.errorDescription}` }]);
+      expect(component.validationErrors).toEqual([
+        { id: 'judicialUserGetError', message: `Judicial user: ${error.errorDescription}` },
+      ]);
     });
 
     it('should not set requestError when there is no error', () => {
@@ -283,9 +285,9 @@ describe('HearingViewEditSummaryComponent', () => {
         declarations: [HearingViewEditSummaryComponent, MockRpxTranslatePipe],
         providers: [
           provideMockStore({ initialState: { hearings: {} } }),
-          { provide: HearingsService, useValue: hearingsService }
+          { provide: HearingsService, useValue: hearingsService },
         ],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
       }).compileComponents();
 
       fixture = TestBed.createComponent(HearingViewEditSummaryComponent);

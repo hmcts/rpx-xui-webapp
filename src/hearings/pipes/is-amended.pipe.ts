@@ -33,7 +33,7 @@ import { ReasonableAdjustmentsAmendedConverter } from '../converters/reasonable-
 @Pipe({
   standalone: false,
 
-  name: 'isAmended'
+  name: 'isAmended',
 })
 export class IsAmendedPipe implements PipeTransform {
   constructor(protected readonly route: ActivatedRoute) {}

@@ -23,8 +23,6 @@ export interface ResponseErrorMessage {
     errorMessage?: string;
     status?: string;
     timeStamp?: string;
-  }
+  };
   headers?: any;
-
 }
-

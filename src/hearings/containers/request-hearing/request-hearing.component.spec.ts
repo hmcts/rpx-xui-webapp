@@ -31,10 +31,9 @@ describe('RequestHearingComponent', () => {
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ]
-    })
-      .compileComponents();
+        { provide: HearingsService, useValue: hearingsService },
+      ],
+    }).compileComponents();
     mockStore = TestBed.inject(Store);
     fixture = TestBed.createComponent(RequestHearingComponent);
     component = fixture.componentInstance;
@@ -147,7 +146,7 @@ describe('RequestHearingComponent', () => {
         hearingRequester: '',
         leadJudgeContractType: '',
         amendReasonCodes: null,
-        listingAutoChangeReasonCode: null
+        listingAutoChangeReasonCode: null,
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',
@@ -163,47 +162,45 @@ describe('RequestHearingComponent', () => {
         caseManagementLocationCode: '196538',
         caserestrictedFlag: false,
         caseSLAStartDate: '2021-05-05T09:00:00.000Z',
-        externalCaseReference: ''
+        externalCaseReference: '',
       },
-      partyDetails: [{
-        partyID: 'P1',
-        partyType: PartyType.IND,
-        partyRole: 'appellant',
-        partyName: 'Jane Smith',
-        individualDetails: {
-          title: 'Mrs',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          preferredHearingChannel: 'inPerson',
-          reasonableAdjustments: [
-            'RA0042',
-            'RA0053',
-            'RA0013',
-            'RA0016',
-            'RA0042'],
-          interpreterLanguage: 'POR'
+      partyDetails: [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          partyName: 'Jane Smith',
+          individualDetails: {
+            title: 'Mrs',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'inPerson',
+            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'],
+            interpreterLanguage: 'POR',
+          },
+          unavailabilityRanges: [],
         },
-        unavailabilityRanges: []
-      }, {
-        partyID: 'P2',
-        partyType: PartyType.ORG,
-        partyRole: 'claimant',
-        partyName: 'DWP',
-        individualDetails: {
-          title: null,
-          firstName: 'DWP',
-          lastName: null,
-          preferredHearingChannel: 'byVideo',
-          reasonableAdjustments: ['RA0005'],
-          interpreterLanguage: null
+        {
+          partyID: 'P2',
+          partyType: PartyType.ORG,
+          partyRole: 'claimant',
+          partyName: 'DWP',
+          individualDetails: {
+            title: null,
+            firstName: 'DWP',
+            lastName: null,
+            preferredHearingChannel: 'byVideo',
+            reasonableAdjustments: ['RA0005'],
+            interpreterLanguage: null,
+          },
+          organisationDetails: {
+            name: 'DWP',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000',
+          },
+          unavailabilityRanges: [],
         },
-        organisationDetails: {
-          name: 'DWP',
-          organisationType: 'GOV',
-          cftOrganisationID: 'O100000'
-        },
-        unavailabilityRanges: []
-      }]
+      ],
     };
     const serviceHearingValuesModel: ServiceHearingValuesModel = {
       hmctsServiceID: 'BBA3',
@@ -237,13 +234,13 @@ describe('RequestHearingComponent', () => {
         authorisationSubType: [],
         panelComposition: [{ memberType: '', count: 1 }],
         judiciaryPreferences: [],
-        judiciarySpecialisms: []
+        judiciarySpecialisms: [],
       },
       hearingIsLinkedFlag: false,
       panelRequirements: {
         roleType: [''],
         panelPreferences: [],
-        panelSpecialisms: []
+        panelSpecialisms: [],
       },
       parties: [
         {
@@ -257,16 +254,9 @@ describe('RequestHearingComponent', () => {
             lastName: 'Smith',
             preferredHearingChannel: 'inPerson',
             interpreterLanguage: 'POR',
-            reasonableAdjustments: [
-              'RA0042',
-              'RA0053',
-              'RA0013',
-              'RA0016',
-              'RA0042',
-              'PF0015'
-            ]
+            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042', 'PF0015'],
           },
-          unavailabilityRanges: []
+          unavailabilityRanges: [],
         },
         {
           partyID: 'P2',
@@ -279,53 +269,52 @@ describe('RequestHearingComponent', () => {
             lastName: null,
             preferredHearingChannel: 'inPerson',
             interpreterLanguage: null,
-            reasonableAdjustments: [
-              'RA0005'
-            ]
+            reasonableAdjustments: ['RA0005'],
           },
           organisationDetails: {
             name: 'DWP',
             organisationType: 'GOV',
-            cftOrganisationID: 'O100000'
+            cftOrganisationID: 'O100000',
           },
-          unavailabilityRanges: []
-        }],
+          unavailabilityRanges: [],
+        },
+      ],
       caseFlags: {
         flags: [],
-        flagAmendURL: ''
+        flagAmendURL: '',
       },
       screenFlow: [
         {
           screenName: 'hearing-requirements',
           navigation: [
             {
-              resultValue: 'hearing-facilities'
-            }
-          ]
+              resultValue: 'hearing-facilities',
+            },
+          ],
         },
         {
           screenName: 'hearing-facilities',
           navigation: [
             {
-              resultValue: 'hearing-stage'
-            }
-          ]
+              resultValue: 'hearing-stage',
+            },
+          ],
         },
         {
           screenName: 'hearing-stage',
           navigation: [
             {
-              resultValue: 'hearing-attendance'
-            }
-          ]
+              resultValue: 'hearing-attendance',
+            },
+          ],
         },
         {
           screenName: 'hearing-attendance',
           navigation: [
             {
-              resultValue: 'hearing-venue'
-            }
-          ]
+              resultValue: 'hearing-venue',
+            },
+          ],
         },
         {
           screenName: 'hearing-venue',
@@ -334,68 +323,71 @@ describe('RequestHearingComponent', () => {
             {
               conditionOperator: 'INCLUDE',
               conditionValue: '7',
-              resultValue: 'hearing-welsh'
+              resultValue: 'hearing-welsh',
             },
             {
               conditionOperator: 'NOT INCLUDE',
               conditionValue: '7',
-              resultValue: 'hearing-judge'
-            }
-          ]
+              resultValue: 'hearing-judge',
+            },
+          ],
         },
         {
           screenName: 'hearing-welsh',
           navigation: [
             {
-              resultValue: 'hearing-judge'
-            }
-          ]
+              resultValue: 'hearing-judge',
+            },
+          ],
         },
         {
           screenName: 'hearing-judge',
           navigation: [
             {
-              resultValue: 'hearing-panel'
-            }
-          ]
+              resultValue: 'hearing-panel',
+            },
+          ],
         },
         {
           screenName: 'hearing-panel',
           navigation: [
             {
-              resultValue: 'hearing-timing'
-            }
-          ]
+              resultValue: 'hearing-timing',
+            },
+          ],
         },
         {
           screenName: 'hearing-timing',
           navigation: [
             {
-              resultValue: 'hearing-additional-instructions'
-            }
-          ]
+              resultValue: 'hearing-additional-instructions',
+            },
+          ],
         },
         {
           screenName: 'hearing-additional-instructions',
           navigation: [
             {
-              resultValue: 'hearing-create-edit-summary'
-            }
-          ]
-        }
+              resultValue: 'hearing-create-edit-summary',
+            },
+          ],
+        },
       ],
       vocabulary: [
         {
-          word1: ''
-        }
-      ]
+          word1: '',
+        },
+      ],
     };
     component.hearingRequestMainModel = hearingRequestMainModel;
     component.serviceHearingValuesModel = serviceHearingValuesModel;
     spyOn(hearingsService, 'navigateAction');
     component.submitRequest(ACTION.SUBMIT);
     expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: 'The Party IDs for this request appear mismatched, please reload and start the request again.' });
+    expect(component.validationErrors).toEqual({
+      id: 'reload-error-message',
+      message: 'The Party IDs for this request appear mismatched, please reload and start the request again.',
+    });
   });
 
   afterEach(() => {

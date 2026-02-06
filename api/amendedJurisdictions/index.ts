@@ -1,7 +1,7 @@
 import { getConfigValue } from '../configuration';
 import { JURISDICTIONS } from '../configuration/references';
 
-const jurisdictions = /aggregated\/.+jurisdictions\?/;
+const jurisdictions = /aggregated\/.+jurisdictions(-lite)?\?/;
 
 /**
  * Manually filtering returned jurisdictions

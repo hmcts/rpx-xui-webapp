@@ -19,11 +19,16 @@ export class JurisdictionsService {
       Accept: 'application/json',
     });
     if (this.sessionStorageService.getItem('JURISDICTIONS')) {
-      const jurisdictions = JSON.parse(this.sessionStorageService.getItem('JURISDICTIONS'));
-      return of(jurisdictions as Jurisdiction[]);
+      try {
+        const jurisdictions = JSON.parse(this.sessionStorageService.getItem('JURISDICTIONS'));
+        return of(jurisdictions as Jurisdiction[]);
+      } catch {
+        // If JSON parsing fails (invalid JSON), remove the corrupted data and fall back to HTTP request
+        this.sessionStorageService.removeItem('JURISDICTIONS');
+      }
     }
     return this.http
-      .get<Jurisdiction[]>('/aggregated/caseworkers/:uid/jurisdictions?access=read', { headers })
+      .get<Jurisdiction[]>('/aggregated/caseworkers/:uid/jurisdictions-lite?access=read', { headers })
       .pipe(tap((jurisdictions) => this.sessionStorageService.setItem('JURISDICTIONS', JSON.stringify(jurisdictions))));
   }
 }

@@ -24080,7 +24080,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.1"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-cleanup-logs-exui-3994-1"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

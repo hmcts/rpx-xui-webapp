@@ -110,6 +110,9 @@ export type CaseDetailsTasksMinimalOptions = {
   locations?: Array<{ name: string; id: string }>;
   assignees?: string[];
   descriptions?: string[];
+  majorPriorities?: number[];
+  priorityDates?: string[];
+  dueDates?: string[];
 };
 
 const toIso = (date: Date) => date.toISOString();
@@ -239,6 +242,9 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     locations = [],
     assignees = [],
     descriptions = [],
+    majorPriorities = [],
+    priorityDates = [],
+    dueDates = [],
   } = options;
   return titles.map((title, index) => {
     const state = states[index] ?? states[0];
@@ -247,6 +253,9 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     const location = locations[index] ?? locations[0];
     const assignee = assignees[index] ?? assignees[0];
     const description = descriptions[index] ?? descriptions[0];
+    const majorPriority = majorPriorities[index] ?? majorPriorities[0];
+    const priorityDate = priorityDates[index] ?? priorityDates[0];
+    const dueDate = dueDates[index] ?? dueDates[0] ?? priorityDate;
     return buildTaskDetailsMock(caseId, {
       task_title: title,
       task_state: state,
@@ -256,6 +265,9 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
       location: location?.id,
       assignee,
       description,
+      major_priority: majorPriority,
+      priority_date: priorityDate,
+      dueDate,
     });
   });
 };

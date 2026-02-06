@@ -108,9 +108,8 @@ test.describe(`Task List as ${userIdentifier}`, () => {
 
 test.describe(`User ${userIdentifier} can see task tab contents on a case`, () => {
   test(`Task values and meta data is displayed as expected`, async ({ taskListPage, caseDetailsPage, page }) => {
-   const caseMockResponse = asylumCase();
+    const caseMockResponse = asylumCase();
     await test.step('Setup route mock for task details', async () => {
-      
       await page.route(`**data/internal/cases/${caseMockResponse.case_id}*`, async (route) => {
         const body = JSON.stringify(caseMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });

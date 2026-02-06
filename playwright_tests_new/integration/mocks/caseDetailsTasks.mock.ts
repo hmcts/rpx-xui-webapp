@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 
 export function deterministicCaseDetailsTasksMock(caseId: string) {
   return [

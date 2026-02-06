@@ -38,11 +38,11 @@ function buildPathRewrite(config: ProxyConfig) {
   const sources = Array.isArray(config.source) ? config.source : [config.source];
   if (config.rewrite === false) {
     return (path: string, req: any) => {
-      if (path.startsWith('/?')){
+      if (path.startsWith('/?')) {
         path = path.replace('/', '');
       }
       const prefix = req.baseUrl || sources[0] || '';
-      return (path === '/' || path === '') ? prefix : prefix + path;
+      return path === '/' || path === '' ? prefix : prefix + path;
     };
   }
   if (typeof config.rewriteUrl === 'function') {
@@ -72,8 +72,9 @@ export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = 
 
   const hasCustomHandlers = !!config.onRes || !!config.onReq;
 
-  const isDocumentsSource = (Array.isArray(config.source) ? config.source : [config.source])
-    .some((src) => src === '/documents' || src.startsWith('/documents'));
+  const isDocumentsSource = (Array.isArray(config.source) ? config.source : [config.source]).some(
+    (src) => src === '/documents' || src.startsWith('/documents')
+  );
 
   const proxyMiddleware = createProxyMiddleware({
     target: config.target,
@@ -85,7 +86,7 @@ export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = 
     ...(pathRewrite && { pathRewrite }),
     on: {
       proxyReq: (proxyReq, req, res) => {
-        if (config.onReq){
+        if (config.onReq) {
           config.onReq(proxyReq, req, res);
         }
       },
@@ -111,11 +112,10 @@ export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = 
           return result;
         })(proxyRes, req, res);
       },
-      error: (err, req, res) => onProxyError(err, req, res)
-    }
+      error: (err, req, res) => onProxyError(err, req, res),
+    },
   });
 
   const middlewares = [authInterceptor, ...(config.middlewares || [])];
   app.use(config.source, middlewares, proxyMiddleware);
 };
-

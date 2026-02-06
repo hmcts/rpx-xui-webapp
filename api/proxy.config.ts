@@ -50,15 +50,19 @@ export const initProxy = (app: Express) => {
     target: getConfigValue(SERVICES_EM_HRS_API_PATH),
   });
 
-  applyProxy(app, {
-    middlewares: [bodyParser.json()],
-    onReq: documents.handleRequest,
-    onRes: documents.handleResponse,
-    rewrite: true,
-    rewriteUrl: (path: string) => '/cases/documents' + (path === '/' ? '' : path),
-    source: '/documentsv2',
-    target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)
-  }, false);
+  applyProxy(
+    app,
+    {
+      middlewares: [bodyParser.json()],
+      onReq: documents.handleRequest,
+      onRes: documents.handleResponse,
+      rewrite: true,
+      rewriteUrl: (path: string) => '/cases/documents' + (path === '/' ? '' : path),
+      source: '/documentsv2',
+      target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
+    },
+    false
+  );
 
   applyProxy(app, {
     middlewares: [bodyParser.json()],
@@ -119,7 +123,7 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: (path: string) => path === '/' ? '/' : path,
+    rewriteUrl: (path: string) => (path === '/' ? '/' : path),
     source: '/payments',
     target: getConfigValue(SERVICES_PAYMENTS_URL),
   });
@@ -172,7 +176,7 @@ export const initProxy = (app: Express) => {
     rewrite: true,
     rewriteUrl: (path: string) => '/translation' + (path === '/' ? '' : path),
     source: '/api/translation',
-    target: getConfigValue(SERVICES_TRANSLATION_API_URL)
+    target: getConfigValue(SERVICES_TRANSLATION_API_URL),
   });
 
   applyProxy(app, {

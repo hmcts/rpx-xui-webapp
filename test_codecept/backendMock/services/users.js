@@ -1,27 +1,53 @@
-
 const { v4 } = require('uuid');
 
 const rdcaseworkers = require('./rdCaseworker/index');
 const roleAssignment = require('./roleAssignments/index');
 
 const caseworkersConf = [
-  { services: ['IA', 'CIVIL'], roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive: 'Y', count: 10 },
-  { services: ['IA', 'CIVIL'], roleCategory: 'ADMIN', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive: 'Y', count: 10 },
-  { services: ['IA', 'CIVIL'], roleCategory: 'CTSC', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive: 'Y', count: 10 }
-
+  {
+    services: ['IA', 'CIVIL'],
+    roleCategory: 'LEGAL_OPERATIONS',
+    roleType: 'ORGANISATION',
+    roleName: 'case-allocator',
+    substantive: 'Y',
+    count: 10,
+  },
+  {
+    services: ['IA', 'CIVIL'],
+    roleCategory: 'ADMIN',
+    roleType: 'ORGANISATION',
+    roleName: 'case-allocator',
+    substantive: 'Y',
+    count: 10,
+  },
+  {
+    services: ['IA', 'CIVIL'],
+    roleCategory: 'CTSC',
+    roleType: 'ORGANISATION',
+    roleName: 'case-allocator',
+    substantive: 'Y',
+    count: 10,
+  },
 ];
 
 const testUsersConf = [
   {
-    services: ['IA', 'CIVIL'], roleCategory: 'LEGAL_OPERATIONS', roleType: 'ORGANISATION', roleName: 'case-allocator', substantive: 'Y',
-    id: 'test_id', first_name: 'test_first', last_name: 'test_last', email_id: 'test_user@testing.net',
-    bookings: [{ 'id': 'test_booking_id', 'userId': 'test_id' }]
-  }
+    services: ['IA', 'CIVIL'],
+    roleCategory: 'LEGAL_OPERATIONS',
+    roleType: 'ORGANISATION',
+    roleName: 'case-allocator',
+    substantive: 'Y',
+    id: 'test_id',
+    first_name: 'test_first',
+    last_name: 'test_last',
+    email_id: 'test_user@testing.net',
+    bookings: [{ id: 'test_booking_id', userId: 'test_id' }],
+  },
 ];
 
 const users = {
   caseworkers: [],
-  judicial: []
+  judicial: [],
 };
 
 for (const conf of testUsersConf) {
@@ -44,8 +70,8 @@ for (const conf of testUsersConf) {
     roleAssignmentTemplate.roleCategory = conf.roleCategory;
     roleAssignmentTemplate.roleType = conf.roleType;
     roleAssignmentTemplate.roleName = conf.roleName;
-    roleAssignmentTemplate.attributes.substantive = conf.substantive,
-    roleAssignmentTemplate.attributes.primaryLocation = '20001';
+    ((roleAssignmentTemplate.attributes.substantive = conf.substantive),
+      (roleAssignmentTemplate.attributes.primaryLocation = '20001'));
     roleAssignmentTemplate.attributes.workTypes = [];
     roleAssignment.serviceUsersRoleAssignments.push(roleAssignmentTemplate);
   }
@@ -80,8 +106,7 @@ for (const conf of caseworkersConf) {
       roleAssignmentTemplate.roleCategory = role;
       roleAssignmentTemplate.roleType = roleType;
       roleAssignmentTemplate.roleName = roleName;
-      roleAssignmentTemplate.attributes.substantive = 'Y',
-      roleAssignmentTemplate.attributes.primaryLocation = '';
+      ((roleAssignmentTemplate.attributes.substantive = 'Y'), (roleAssignmentTemplate.attributes.primaryLocation = ''));
       roleAssignmentTemplate.attributes.workTypes = [];
 
       roleAssignment.serviceUsersRoleAssignments.push(roleAssignmentTemplate);

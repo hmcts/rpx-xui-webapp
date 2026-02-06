@@ -25,8 +25,8 @@ describe('CaseCreate Effects', () => {
         provideMockActions(() => actions$),
         { provide: LoggerService, useValue: mockLogger },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
 
     effects = TestBed.inject(CaseCreateEffects);
@@ -37,7 +37,7 @@ describe('CaseCreate Effects', () => {
       const action = new ApplyChange({});
       const completion = new CreateCaseGo({
         path: ['/cases/case-details/undefined/undefined/undefined'],
-        caseId: undefined
+        caseId: undefined,
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -49,7 +49,7 @@ describe('CaseCreate Effects', () => {
     it('should cancel case action', () => {
       const action = new CreateCaseReset();
       const completion = new Go({
-        path: ['/cases']
+        path: ['/cases'],
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -71,7 +71,7 @@ describe('CaseCreate Effects', () => {
     it('should apply load action', () => {
       const action = new CaseCreateFilterApply({});
       const completion = new Go({
-        path: ['/cases/case-create/undefined/undefined/undefined']
+        path: ['/cases/case-create/undefined/undefined/undefined'],
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });

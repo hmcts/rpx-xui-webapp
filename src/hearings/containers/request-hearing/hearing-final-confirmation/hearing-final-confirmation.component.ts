@@ -7,7 +7,7 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-final-confirmation',
-  templateUrl: './hearing-final-confirmation.component.html'
+  templateUrl: './hearing-final-confirmation.component.html',
 })
 export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public heading: string;
@@ -21,8 +21,10 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public jurisdiction: string;
   public caseType: string;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly loadingService: LoadingService,) {}
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loadingService: LoadingService
+  ) {}
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -36,9 +38,11 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
         this.additionalDescription = `If the hearing cannot be listed automatically, it will be sent to a member of staff to be processed.<br>
           A notice of hearing will be issued once the hearing is listed, you will not be notified of the listing.`;
         this.loadingService.unregister(loadingToken);
-      }, () => {
+      },
+      () => {
         this.loadingService.unregister(loadingToken);
-      });
+      }
+    );
     this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
       if (hearingValues) {
         this.jurisdiction = hearingValues.caseInfo.jurisdictionId;

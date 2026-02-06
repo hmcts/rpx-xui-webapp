@@ -2,12 +2,24 @@ const { $, $$, getText } = require('../../../../helpers/globals');
 const browserWaits = require('../../../support/customWaits');
 
 class LocationPage {
-  get pageContainer() { return $('exui-booking-location'); }
-  get pageHeader() { return $('exui-booking-location h1 span'); }
-  get pageHeaderCAption() { return $('exui-booking-location h1'); }
-  get inputTextHint() { return $('exui-booking-location .govuk-hint'); }
-  get locationSearchInput() { return $('exui-booking-location exui-search-location input'); }
-  get searchResults() { return $$('.mat-autocomplete-panel mat-option span'); }
+  get pageContainer() {
+    return $('exui-booking-location');
+  }
+  get pageHeader() {
+    return $('exui-booking-location h1 span');
+  }
+  get pageHeaderCAption() {
+    return $('exui-booking-location h1');
+  }
+  get inputTextHint() {
+    return $('exui-booking-location .govuk-hint');
+  }
+  get locationSearchInput() {
+    return $('exui-booking-location exui-search-location input');
+  }
+  get searchResults() {
+    return $$('.mat-autocomplete-panel mat-option span');
+  }
 
   async waitForPage() {
     await browserWaits.waitForElement(this.pageContainer);
@@ -33,7 +45,8 @@ class LocationPage {
       const e = await this.searchResults.nth(i);
       const eLabel = await getText(e);
       searchResultElements.push({
-        label: eLabel, element: e
+        label: eLabel,
+        element: e,
       });
     }
     return searchResultElements;

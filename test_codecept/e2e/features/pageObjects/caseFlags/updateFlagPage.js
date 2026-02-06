@@ -6,9 +6,7 @@ class UpdateFlagPage {
   }
 
   get container() {
-    return elementByXpath(
-      `//ccd-update-flag//label[contains(text(),"${this.flagType}")]`
-    );
+    return elementByXpath(`//ccd-update-flag//label[contains(text(),"${this.flagType}")]`);
   }
 
   /* ───────── static elements ───────── */
@@ -21,21 +19,15 @@ class UpdateFlagPage {
   }
 
   get translationCheckbox() {
-    return elementByXpath(
-      '//label[contains(text(),"I need to add a translation")]/..//input'
-    );
+    return elementByXpath('//label[contains(text(),"I need to add a translation")]/..//input');
   }
 
   get inactiveButton() {
-    return elementByXpath(
-      '//div[contains(@id,"flag-status-container-v1")]//button'
-    );
+    return elementByXpath('//div[contains(@id,"flag-status-container-v1")]//button');
   }
 
   get commentsLabel() {
-    return elementByXpath(
-      `//ccd-update-flag//label[contains(text(),"${this.flagType} comments")]`
-    );
+    return elementByXpath(`//ccd-update-flag//label[contains(text(),"${this.flagType} comments")]`);
   }
 
   get statusHeading() {
@@ -46,11 +38,16 @@ class UpdateFlagPage {
 
   byName(name) {
     switch (name) {
-      case 'Flag status': return this.flagStatusContainer;
-      case 'Describe reason for status change': return this.describeReasonTextarea;
-      case 'I need to add a translation': return this.translationCheckbox;
-      case `${this.flagType} comments`: return this.commentsLabel;
-      case `${this.flagType} status`: return this.statusHeading;
+      case 'Flag status':
+        return this.flagStatusContainer;
+      case 'Describe reason for status change':
+        return this.describeReasonTextarea;
+      case 'I need to add a translation':
+        return this.translationCheckbox;
+      case `${this.flagType} comments`:
+        return this.commentsLabel;
+      case `${this.flagType} status`:
+        return this.statusHeading;
       default:
         throw new Error(`Unknown field mapping: "${name}"`);
     }
@@ -63,7 +60,9 @@ class UpdateFlagPage {
         await commentsEle.fill(value);
         break;
       case `${this.updateFlagFor} status`:
-        const statusEle = elementByXpath(`//ccd-update-flag//h1[contains(@id,'update-flag-status-heading')]/../..//label[contains(text(),'${value}')]/..//input`);
+        const statusEle = elementByXpath(
+          `//ccd-update-flag//h1[contains(@id,'update-flag-status-heading')]/../..//label[contains(text(),'${value}')]/..//input`
+        );
         await statusEle.click();
         break;
       case 'Describe reason for status change':
@@ -81,4 +80,3 @@ class UpdateFlagPage {
   }
 }
 module.exports = UpdateFlagPage;
-

@@ -21,14 +21,14 @@ describe('CaseRolesTableComponent', () => {
       name: 'Test Address Book Case',
       jurisdiction: {
         id: 'TEST',
-        name: 'Test'
+        name: 'Test',
       },
-      printEnabled: true
+      printEnabled: true,
     },
     channels: [],
     state: {
       id: 'CaseCreated',
-      name: 'Case created'
+      name: 'Case created',
     },
     tabs: [
       {
@@ -42,12 +42,12 @@ describe('CaseRolesTableComponent', () => {
             display_context: 'OPTIONAL',
             field_type: {
               id: 'Text',
-              type: 'Text'
+              type: 'Text',
             },
             order: 2,
             value: 'Janet',
             show_condition: '',
-            hint_text: ''
+            hint_text: '',
           }),
           Object.assign(new CaseField(), {
             id: 'PersonLastName',
@@ -55,12 +55,12 @@ describe('CaseRolesTableComponent', () => {
             display_context: 'OPTIONAL',
             field_type: {
               id: 'Text',
-              type: 'Text'
+              type: 'Text',
             },
             order: 1,
             value: 'Parker',
             show_condition: 'PersonFirstName="Jane*"',
-            hint_text: ''
+            hint_text: '',
           }),
           Object.assign(new CaseField(), {
             id: 'PersonComplex',
@@ -69,50 +69,51 @@ describe('CaseRolesTableComponent', () => {
             field_type: {
               id: 'Complex',
               type: 'Complex',
-              complex_fields: []
+              complex_fields: [],
             },
             order: 3,
             show_condition: 'PersonFirstName="Park"',
-            hint_text: ''
-          })
+            hint_text: '',
+          }),
         ],
-        show_condition: 'PersonFirstName="Janet"'
+        show_condition: 'PersonFirstName="Janet"',
       },
       {
         id: 'HistoryTab',
         label: 'History',
         order: 1,
-        fields: [Object.assign(new CaseField(), {
-          id: 'CaseHistory',
-          label: 'Case History',
-          display_context: 'OPTIONAL',
-          field_type: {
-            id: 'CaseHistoryViewer',
-            type: 'CaseHistoryViewer'
-          },
-          order: 1,
-          value: null,
-          show_condition: '',
-          hint_text: ''
-        })],
-        show_condition: ''
+        fields: [
+          Object.assign(new CaseField(), {
+            id: 'CaseHistory',
+            label: 'Case History',
+            display_context: 'OPTIONAL',
+            field_type: {
+              id: 'CaseHistoryViewer',
+              type: 'CaseHistoryViewer',
+            },
+            order: 1,
+            value: null,
+            show_condition: '',
+            hint_text: '',
+          }),
+        ],
+        show_condition: '',
       },
       {
         id: 'SomeTab',
         label: 'Some Tab',
         order: 3,
         fields: [],
-        show_condition: ''
-      }
-    ]
+        show_condition: '',
+      },
+    ],
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
-      declarations: [CaseRolesTableComponent]
-    })
-      .compileComponents();
+      declarations: [CaseRolesTableComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -138,7 +139,7 @@ describe('CaseRolesTableComponent', () => {
   it('should display no roles for this case', () => {
     const summaryList: DebugElement = fixture.debugElement.query(By.css('.govuk-summary-list__value'));
     const element: HTMLElement = summaryList.nativeElement as HTMLElement;
-    expect(element.textContent).toBe(' There are no legal Ops roles for this case. ');
+    expect(element.textContent).toBe('There are no legal Ops roles for this case.');
   });
 
   it('should getRoleCategoryTitle', () => {

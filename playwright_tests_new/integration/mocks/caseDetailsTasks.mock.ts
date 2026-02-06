@@ -1,4 +1,3 @@
-
 export function deterministicCaseDetailsTasksMock(caseId: string) {
   return [
     {

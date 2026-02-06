@@ -1,6 +1,7 @@
 import { Params } from '@angular/router';
 
 export const DECENTRALISED_EVENT_PREFIX = 'ext:';
+const TEMPLATE_PLACEHOLDER = '%s';
 
 export const isDecentralisedEvent = (eventId?: string): boolean => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
@@ -10,6 +11,43 @@ export const normalizeCaseType = (caseType?: string): string | null => {
   return caseType ? caseType.toUpperCase() : null;
 };
 
+const resolveUrlTemplate = (params: { template: string; prefix: string; caseType: string }): string | null => {
+  const { template, prefix, caseType } = params;
+
+  const firstPlaceholder = template.indexOf(TEMPLATE_PLACEHOLDER);
+  if (firstPlaceholder !== -1 && template.indexOf(TEMPLATE_PLACEHOLDER, firstPlaceholder + TEMPLATE_PLACEHOLDER.length) !== -1) {
+    console.error(
+      `Decentralised event base URL template for prefix '${prefix}' contains multiple '${TEMPLATE_PLACEHOLDER}' placeholders`
+    );
+    return null;
+  }
+
+  if (firstPlaceholder === -1) {
+    return template;
+  }
+
+  const suffix = caseType.substring(prefix.length);
+  if (!suffix || suffix.trim().length === 0) {
+    console.error(
+      `Case type '${caseType}' matches prefix '${prefix}' but has no suffix for template substitution in '${template}'`
+    );
+    return null;
+  }
+
+  const resolved = template.replace(TEMPLATE_PLACEHOLDER, suffix);
+  try {
+    // Validate early so we don't send users to a nonsense location.
+    // (This also enforces absolute URLs, which is what we expect for cross-app redirects.)
+    // eslint-disable-next-line no-new
+    new URL(resolved);
+  } catch (e) {
+    console.error(`Invalid decentralised event base URL '${resolved}' for prefix '${prefix}' and case type '${caseType}'`, e);
+    return null;
+  }
+
+  return resolved;
+};
+
 export const getDecentralisedBaseUrl = (
   baseUrls: Record<string, string> | null | undefined,
   caseType?: string
@@ -17,11 +55,32 @@ export const getDecentralisedBaseUrl = (
   if (!baseUrls || !caseType) {
     return null;
   }
-  const key = normalizeCaseType(caseType);
-  if (!key) {
+
+  const lowerCaseType = caseType.toLowerCase();
+  const matchingPrefixes = Object.keys(baseUrls).filter((prefix) => lowerCaseType.startsWith(prefix.toLowerCase()));
+  if (matchingPrefixes.length === 0) {
     return null;
   }
-  return baseUrls[key] || null;
+
+  const maxPrefixLength = matchingPrefixes.reduce((max, prefix) => Math.max(max, prefix.length), 0);
+  const longestMatches = matchingPrefixes.filter((prefix) => prefix.length === maxPrefixLength);
+
+  if (longestMatches.length > 1) {
+    console.error(
+      `Ambiguous decentralised event base URL configuration for case type '${caseType}'. Multiple longest prefix matches found: [${longestMatches.join(
+        ', '
+      )}]`
+    );
+    return null;
+  }
+
+  const prefix = longestMatches[0];
+  const template = baseUrls[prefix];
+  if (!template) {
+    return null;
+  }
+
+  return resolveUrlTemplate({ template, prefix, caseType });
 };
 
 export const getExpectedSub = (userInfo?: { id?: string; uid?: string }): string | null => {

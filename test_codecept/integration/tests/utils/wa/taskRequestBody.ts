@@ -1,36 +1,36 @@
 import { reporterJson, reporterMsg, setTestContext } from '../../utils/helper';
 
 class TaskRequestBody {
-  requestBody:any;
+  requestBody: any;
 
-  constructor(){
+  constructor() {
     this.requestBody = {
       searchRequest: {
         search_by: '',
         sorting_parameters: [{ sort_by: 'dueDate', sort_order: 'asc' }],
         search_parameters: [],
-        pagination_parameters: { page_number: 1, page_size: 25 }
+        pagination_parameters: { page_number: 1, page_size: 25 },
       },
-      view: ''
+      view: '',
     };
   }
 
-  inView(view:string){
+  inView(view: string) {
     this.requestBody.view = view;
     return this;
   }
 
-  searchBy(userType){
+  searchBy(userType) {
     this.requestBody.searchRequest.search_by = userType;
   }
 
-  searchWithUser(idamId:string){
+  searchWithUser(idamId: string) {
     const usersConfig = this.requestBody.searchRequest.search_parameters.filter((searchField) => searchField.key === 'user');
     if (usersConfig.length === 0) {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'user',
         operator: 'IN',
-        values: idamId ? [idamId] : []
+        values: idamId ? [idamId] : [],
       });
     } else {
       idamId ? usersConfig[0].values.push(idamId) : '';
@@ -40,8 +40,8 @@ class TaskRequestBody {
 
   searchWithAllUsers() {
     const searchParamsWithAllUsers = [];
-    for (const searchParam of this.requestBody.searchRequest.search_parameters){
-      if (searchParam.key !== 'user'){
+    for (const searchParam of this.requestBody.searchRequest.search_parameters) {
+      if (searchParam.key !== 'user') {
         searchParamsWithAllUsers.push(searchParam);
       }
     }
@@ -55,10 +55,10 @@ class TaskRequestBody {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'location',
         operator: 'IN',
-        values: locationId ? [locationId]: []
+        values: locationId ? [locationId] : [],
       });
     } else {
-      if (locationId){
+      if (locationId) {
         usersConfig[0].values.push(locationId);
       }
     }
@@ -66,12 +66,14 @@ class TaskRequestBody {
   }
 
   searchWithJurisdiction(jurisdiction: string) {
-    const jurisdictionConfig = this.requestBody.searchRequest.search_parameters.filter((searchField) => searchField.key === 'jurisdiction');
+    const jurisdictionConfig = this.requestBody.searchRequest.search_parameters.filter(
+      (searchField) => searchField.key === 'jurisdiction'
+    );
     if (jurisdictionConfig.length === 0) {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'jurisdiction',
         operator: 'IN',
-        values: jurisdiction ? [jurisdiction] : []
+        values: jurisdiction ? [jurisdiction] : [],
       });
     } else {
       if (jurisdiction) {
@@ -82,12 +84,14 @@ class TaskRequestBody {
   }
 
   searchWithTaskType(taskType: string) {
-    const taskTypeConfig = this.requestBody.searchRequest.search_parameters.filter((searchField) => searchField.key === 'taskType');
+    const taskTypeConfig = this.requestBody.searchRequest.search_parameters.filter(
+      (searchField) => searchField.key === 'taskType'
+    );
     if (taskTypeConfig.length === 0) {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'taskType',
         operator: 'IN',
-        values: taskType ? [taskType] : []
+        values: taskType ? [taskType] : [],
       });
     } else {
       if (taskType) {
@@ -114,7 +118,7 @@ class TaskRequestBody {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'state',
         operator: 'IN',
-        values: state ? [state] : []
+        values: state ? [state] : [],
       });
     } else {
       state ? usersConfig[0].values.push(state) : '';
@@ -122,22 +126,22 @@ class TaskRequestBody {
     return this;
   }
 
-  sortWith(sortBy:string, sortOrder:string){
+  sortWith(sortBy: string, sortOrder: string) {
     this.requestBody.searchRequest.sorting_parameters.push({ sort_by: sortBy, sort_order: sortOrder });
     return this;
   }
 
-  withPageSize(size:number){
+  withPageSize(size: number) {
     this.requestBody.searchRequest.pagination_parameters.page_size = size;
     return this;
   }
 
-  withPageNumber(pageNum:number){
+  withPageNumber(pageNum: number) {
     this.requestBody.searchRequest.pagination_parameters.page_number = pageNum;
     return this;
   }
 
-  getRequestBody(){
+  getRequestBody() {
     // reporterJson(this.requestBody);
     return this.requestBody;
   }

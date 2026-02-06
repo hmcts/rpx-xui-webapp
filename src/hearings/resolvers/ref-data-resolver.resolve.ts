@@ -11,7 +11,7 @@ import * as fromHearingStore from '../store';
 import { ServiceIdResolverResolve } from './service-id-resolver.resolve';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RefDataResolver extends ServiceIdResolverResolve {
   public serviceId: string = '';
@@ -26,23 +26,28 @@ export class RefDataResolver extends ServiceIdResolverResolve {
   }
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<LovRefDataModel[]> {
-    return this.getServiceId$()
-      .pipe(
-        switchMap((serviceId) => {
-          this.serviceId = serviceId ? serviceId : '';
-          return this.hearingStore.pipe(select(fromHearingStore.getHearingValues));
-        }), take(1),
-        switchMap((hearingValues) => {
-          const category = route.data.category ? route.data.category as HearingCategory : HearingCategory.HearingPriority;
-          if (category === HearingCategory.PanelMemberType) {
-            const screenFlow = hearingValues && hearingValues.serviceHearingValuesModel && hearingValues.serviceHearingValuesModel.screenFlow;
-            if (screenFlow && screenFlow.findIndex((screen) => screen.screenName === 'hearing-panel') === -1) {
-              return of(null);
-            }
+    return this.getServiceId$().pipe(
+      switchMap((serviceId) => {
+        this.serviceId = serviceId ? serviceId : '';
+        return this.hearingStore.pipe(select(fromHearingStore.getHearingValues));
+      }),
+      take(1),
+      switchMap((hearingValues) => {
+        const category = route.data.category ? (route.data.category as HearingCategory) : HearingCategory.HearingPriority;
+        if (category === HearingCategory.PanelMemberType) {
+          const screenFlow =
+            hearingValues && hearingValues.serviceHearingValuesModel && hearingValues.serviceHearingValuesModel.screenFlow;
+          if (screenFlow && screenFlow.findIndex((screen) => screen.screenName === 'hearing-panel') === -1) {
+            return of(null);
           }
-          return this.getReferenceData$(this.serviceId, category, route.data.isChildRequired && route.data.isChildRequired.includes(route.data.category));
-        })
-      );
+        }
+        return this.getReferenceData$(
+          this.serviceId,
+          category,
+          route.data.isChildRequired && route.data.isChildRequired.includes(route.data.category)
+        );
+      })
+    );
   }
 
   public getReferenceData$(serviceId, category: HearingCategory, isChildRequired): Observable<LovRefDataModel[]> {
@@ -54,9 +59,11 @@ export class RefDataResolver extends ServiceIdResolverResolve {
     return this.lovRefDataService.getListOfValues(category, serviceId, isChildRequired).pipe(
       tap((lovData) => {
         // by pass EntityRoleCode/HearingChannel and not put them in session storage as it causes inconsistency between request/actual hearing
-        if (category !== HearingCategory.EntityRoleCode
-            && category !== HearingCategory.HearingChannel
-            && category !== HearingCategory.HearingSubChannel) {
+        if (
+          category !== HearingCategory.EntityRoleCode &&
+          category !== HearingCategory.HearingChannel &&
+          category !== HearingCategory.HearingSubChannel
+        ) {
           this.sessionStorageService.setItem(sessionKey, JSON.stringify(lovData));
         }
       }),

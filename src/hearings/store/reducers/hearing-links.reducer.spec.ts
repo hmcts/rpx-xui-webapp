@@ -1,7 +1,5 @@
 import { HearingLinksStateData } from '../../models/hearingLinksStateData.model';
-import {
-  ServiceLinkedCasesModel
-} from '../../models/linkHearings.model';
+import { ServiceLinkedCasesModel } from '../../models/linkHearings.model';
 import * as fromHearingLinksActions from '../actions/hearing-links.action';
 import * as fromHearingLinksReducer from './hearing-links.reducer';
 
@@ -22,11 +20,11 @@ describe('Hearing Links Reducer', () => {
         const payload = {
           linkedHearingGroup: {
             groupDetails: null,
-            hearingsInGroup: null
+            hearingsInGroup: null,
           },
           caseId: '1111222233334444',
           hearingGroupRequestId: 'g1000000',
-          hearingId: 'h100000'
+          hearingId: 'h100000',
         };
         const action = new fromHearingLinksActions.ManageLinkedHearingGroup(payload);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
@@ -37,15 +35,18 @@ describe('Hearing Links Reducer', () => {
     describe('Load all service linked case success action', () => {
       it('should set correct object', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
-        const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [{
-          caseReference: '1111222233334444',
-          caseName: 'Jane Smith',
-          reasonsForLink: ['reason1', 'reason2']
-        }, {
-          caseReference: '1111222233334445',
-          caseName: 'Pete Smith',
-          reasonsForLink: ['reason3', 'reason4']
-        }];
+        const SERVICE_LINKED_CASES: ServiceLinkedCasesModel[] = [
+          {
+            caseReference: '1111222233334444',
+            caseName: 'Jane Smith',
+            reasonsForLink: ['reason1', 'reason2'],
+          },
+          {
+            caseReference: '1111222233334445',
+            caseName: 'Pete Smith',
+            reasonsForLink: ['reason3', 'reason4'],
+          },
+        ];
         const action = new fromHearingLinksActions.LoadServiceLinkedCasesSuccess(SERVICE_LINKED_CASES);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
         expect(hearingsState.serviceLinkedCases).toEqual(SERVICE_LINKED_CASES);
@@ -57,7 +58,7 @@ describe('Hearing Links Reducer', () => {
         const initialState = fromHearingLinksReducer.initialHearingLinksState;
         const ERROR = {
           status: 500,
-          message: 'failed'
+          message: 'failed',
         };
         const action = new fromHearingLinksActions.LoadServiceLinkedCasesFailure(ERROR);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
@@ -74,8 +75,8 @@ describe('Hearing Links Reducer', () => {
           lastError: {
             status: 403,
             errors: null,
-            message: 'Http failure response: 403 Forbidden'
-          }
+            message: 'Http failure response: 403 Forbidden',
+          },
         };
         const action = new fromHearingLinksActions.SubmitLinkedHearingGroupFailure(initialState.lastError);
         const hearingsState = fromHearingLinksReducer.hearingLinksReducer(initialState, action);
@@ -86,7 +87,10 @@ describe('Hearing Links Reducer', () => {
     describe('reset linked hearing last error action', () => {
       it('should set correct object', () => {
         const action = new fromHearingLinksActions.ResetLinkedHearingLastError();
-        const hearingsState = fromHearingLinksReducer.hearingLinksReducer(fromHearingLinksReducer.initialHearingLinksState, action);
+        const hearingsState = fromHearingLinksReducer.hearingLinksReducer(
+          fromHearingLinksReducer.initialHearingLinksState,
+          action
+        );
         expect(hearingsState.lastError).toEqual(null);
       });
     });

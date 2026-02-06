@@ -1,11 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
-import {
-  ApiClient as PlaywrightApiClient,
-  type ApiLogEntry,
-  createLogger
-} from '@hmcts/playwright-common';
+import { ApiClient as PlaywrightApiClient, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
 import { test as base, request } from '@playwright/test';
 
 export { expect } from '@playwright/test';
@@ -30,7 +26,7 @@ export const test = base.extend<ApiFixtures>({
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
       defaultMeta: { workerId: workerInfo.workerIndex },
-      format: 'pretty'
+      format: 'pretty',
     });
     await use(logger);
   },
@@ -43,11 +39,11 @@ export const test = base.extend<ApiFixtures>({
       await fs.writeFile(testInfo.outputPath('node-api-calls.pretty.txt'), pretty, 'utf8');
       await testInfo.attach('node-api-calls.json', {
         body: JSON.stringify(entries, null, 2),
-        contentType: 'application/json'
+        contentType: 'application/json',
       });
       await testInfo.attach('node-api-calls.pretty.txt', {
         body: pretty,
-        contentType: 'text/plain'
+        contentType: 'text/plain',
       });
     }
   },
@@ -80,7 +76,7 @@ export const test = base.extend<ApiFixtures>({
     } finally {
       await Promise.all(clients.map((client) => client.dispose()));
     }
-  }
+  },
 });
 
 async function createNodeApiClient(
@@ -88,10 +84,7 @@ async function createNodeApiClient(
   logger: LoggerInstance,
   entries: ApiLogEntry[]
 ): Promise<PlaywrightApiClient> {
-  const storageState =
-    role === 'anonymous'
-      ? undefined
-      : await ensureStorageState(role);
+  const storageState = role === 'anonymous' ? undefined : await ensureStorageState(role);
 
   const defaultHeaders = await buildDefaultHeaders(role);
   const context = await buildRequestContext(role, storageState, defaultHeaders);
@@ -116,7 +109,7 @@ async function createNodeApiClient(
           status: entry.status,
           threshold: slowThreshold,
           role,
-          operation: 'api-monitoring'
+          operation: 'api-monitoring',
         });
       }
 
@@ -128,11 +121,11 @@ async function createNodeApiClient(
           status: entry.status,
           duration,
           role,
-          operation: 'api-call'
+          operation: 'api-call',
         });
       }
     },
-    requestFactory: async () => context
+    requestFactory: async () => context,
   });
 }
 
@@ -150,13 +143,10 @@ type HeaderDeps = {
   getStoredCookie?: typeof getStoredCookie;
 };
 
-async function buildDefaultHeaders(
-  role: ApiUserRole | 'anonymous',
-  deps: HeaderDeps = {}
-): Promise<Record<string, string>> {
+async function buildDefaultHeaders(role: ApiUserRole | 'anonymous', deps: HeaderDeps = {}): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'X-Correlation-Id': randomUUID()
+    'X-Correlation-Id': randomUUID(),
   };
   const shouldInject = (deps.shouldAutoInjectXsrf ?? shouldAutoInjectXsrf)();
   if (role !== 'anonymous' && shouldInject) {
@@ -189,7 +179,7 @@ async function buildRequestContext(
       baseURL: baseUrl,
       storageState: statePath,
       ignoreHTTPSErrors: true,
-      extraHTTPHeaders: defaultHeaders
+      extraHTTPHeaders: defaultHeaders,
     });
 
   let context;
@@ -218,5 +208,5 @@ export const __test__ = {
   buildDefaultHeaders,
   buildRequestContext,
   shouldAutoInjectXsrf,
-  stripTrailingSlash
+  stripTrailingSlash,
 };

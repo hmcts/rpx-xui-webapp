@@ -14,7 +14,7 @@ describe('Allocate Role Reducer', () => {
       person: null,
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
-      period: null
+      period: null,
     };
 
     it('should set correct object', () => {
@@ -46,7 +46,11 @@ describe('Allocate Role Reducer', () => {
     describe('AllocateRoleSetInitData action', () => {
       it('should go to choose role error if there are no roles', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.AllocateRoleSetInitData({ caseId: '111111', jurisdiction: 'IA', roleCategory: RoleCategory.JUDICIAL });
+        const action = new fromActions.AllocateRoleSetInitData({
+          caseId: '111111',
+          jurisdiction: 'IA',
+          roleCategory: RoleCategory.JUDICIAL,
+        });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.state).toEqual(AllocateRoleState.LOADING_ROLES);
       });
@@ -72,7 +76,10 @@ describe('Allocate Role Reducer', () => {
     describe('ChooseRoleAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChooseRoleAndGo({ typeOfRole: { id: 'lead-judge', name: 'Lead judge' }, allocateRoleState: AllocateRoleState.CHOOSE_ROLE });
+        const action = new fromActions.ChooseRoleAndGo({
+          typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+          allocateRoleState: AllocateRoleState.CHOOSE_ROLE,
+        });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.typeOfRole).toEqual({ id: 'lead-judge', name: 'Lead judge' });
       });
@@ -81,7 +88,10 @@ describe('Allocate Role Reducer', () => {
     describe('ChooseAllocateToAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChooseAllocateToAndGo({ allocateTo: AllocateTo.ALLOCATE_TO_ME, allocateRoleState: AllocateRoleState.SEARCH_PERSON });
+        const action = new fromActions.ChooseAllocateToAndGo({
+          allocateTo: AllocateTo.ALLOCATE_TO_ME,
+          allocateRoleState: AllocateRoleState.SEARCH_PERSON,
+        });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.allocateTo).toEqual(AllocateTo.ALLOCATE_TO_ME);
       });
@@ -93,7 +103,7 @@ describe('Allocate Role Reducer', () => {
         const action = new fromActions.ChoosePersonAndGo({
           person: { id: '111111', name: 'test', domain: 'test' },
           allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
-          allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
+          allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.person).toEqual({ id: '111111', name: 'test', domain: 'test' });
@@ -103,7 +113,11 @@ describe('Allocate Role Reducer', () => {
     describe('ChooseDurationAndGo action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.allocateRoleInitialState;
-        const action = new fromActions.ChooseDurationAndGo({ durationOfRole: DurationOfRole.SEVEN_DAYS, period: { startDate: new Date('2021-12-17T03:24:00') }, allocateRoleState: AllocateRoleState.CHECK_ANSWERS });
+        const action = new fromActions.ChooseDurationAndGo({
+          durationOfRole: DurationOfRole.SEVEN_DAYS,
+          period: { startDate: new Date('2021-12-17T03:24:00') },
+          allocateRoleState: AllocateRoleState.CHECK_ANSWERS,
+        });
         const state = fromReducer.allocateRoleReducer(initialState, action);
         expect(state.durationOfRole).toEqual(DurationOfRole.SEVEN_DAYS);
       });

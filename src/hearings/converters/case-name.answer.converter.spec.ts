@@ -24,7 +24,7 @@ describe('CaseNameAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialState.hearings.hearingRequestToCompare,
@@ -32,10 +32,10 @@ describe('CaseNameAnswerConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           caseDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
-            hmctsInternalCaseName: 'John Doe vs Jane Smith'
-          }
-        }
-      }
+            hmctsInternalCaseName: 'John Doe vs Jane Smith',
+          },
+        },
+      },
     };
     const result$ = caseNameAnswerConverter.transformAnswer(of(STATE));
     const caseName = 'John Doe vs Jane Smith';

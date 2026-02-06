@@ -1,6 +1,6 @@
 const { $, getText, isPresent } = require('../../../../../helpers/globals');
 
-class WorkFlowContainer{
+class WorkFlowContainer {
   get container() {
     return $('.govuk-main-wrapper');
   }
@@ -15,7 +15,7 @@ class WorkFlowContainer{
       '.page .govuk-button-group button.govuk-button[type="submit"]',
       'exui-task-action-container button[type = "submit"]',
       'exui-task-container-assignment button[type = "submit"]',
-      'exui-task-assignment-choose-role button[type="submit"]'
+      'exui-task-assignment-choose-role button[type="submit"]',
     ];
     return $(continueButtons.join());
   }
@@ -25,17 +25,17 @@ class WorkFlowContainer{
       '.govuk-button-group p>a',
       '#main-content p>a',
       'exui-task-action-container p a#cancel-link',
-      'exui-task-container-assignment p>a'
+      'exui-task-container-assignment p>a',
     ];
     return $(cancelLinks.join());
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     return await this.container.isVisible();
   }
 
   async isContinueButtonDisplayed() {
-    return await isPresent(this.continueButton) && await this.continueButton.isVisible();
+    return (await isPresent(this.continueButton)) && (await this.continueButton.isVisible());
   }
 
   async getContinueButtonLabel() {
@@ -47,7 +47,7 @@ class WorkFlowContainer{
   }
 
   async isCancelLinkDisplayed() {
-    return await isPresent(this.cancelLink) && await this.cancelLink.isVisible();
+    return (await isPresent(this.cancelLink)) && (await this.cancelLink.isVisible());
   }
 
   async getCancelLinkLabel() {
@@ -59,7 +59,7 @@ class WorkFlowContainer{
   }
 
   async isBackLinkDisplayed() {
-    return await this.backLink.isPresent() && await this.backLink.isDisplayed();
+    return (await this.backLink.isPresent()) && (await this.backLink.isDisplayed());
   }
 
   async clickBackLink() {

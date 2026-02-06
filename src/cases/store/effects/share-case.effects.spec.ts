@@ -15,7 +15,7 @@ import {
   LoadShareCase,
   LoadShareCaseSuccess,
   LoadUserFromOrgForCase,
-  LoadUserFromOrgForCaseSuccess
+  LoadUserFromOrgForCaseSuccess,
 } from '../actions';
 import * as fromShareCaseEffects from './share-case.effects';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -24,31 +24,32 @@ describe('Share Case Effects', () => {
   let actions$;
   let effects: fromShareCaseEffects.ShareCaseEffects;
   let store;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigate'
-  ]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+
   let spyOnDispatchToStore = jasmine.createSpy();
-  const caseShareServiceMock = jasmine.createSpyObj('CaseShareService', ['getShareCases', 'getUsersFromOrg', 'assignUsersWithCases']);
+  const caseShareServiceMock = jasmine.createSpyObj('CaseShareService', [
+    'getShareCases',
+    'getUsersFromOrg',
+    'assignUsersWithCases',
+  ]);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [StoreModule.forRoot({}),
-        RouterTestingModule],
+      imports: [StoreModule.forRoot({}), RouterTestingModule],
       providers: [
         {
           provide: CaseShareService,
-          useValue: caseShareServiceMock
+          useValue: caseShareServiceMock,
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         fromShareCaseEffects.ShareCaseEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     store = TestBed.inject(Store);
     spyOnDispatchToStore = spyOn(store, 'dispatch').and.callThrough();
@@ -60,13 +61,15 @@ describe('Share Case Effects', () => {
       const action = new AddShareCases({
         sharedCases: [
           { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
-          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }]
+          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' },
+        ],
       });
       const completion = new AddShareCaseGo({
         path: ['/cases/case-share'],
         sharedCases: [
           { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
-          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }]
+          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' },
+        ],
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -80,7 +83,8 @@ describe('Share Case Effects', () => {
         path: ['/cases/case-share'],
         sharedCases: [
           { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
-          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }]
+          { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' },
+        ],
       };
       routerMock.navigate.and.returnValue(Promise.resolve(true));
       const action = new AddShareCaseGo(payload);
@@ -95,10 +99,12 @@ describe('Share Case Effects', () => {
     it('should load share case', () => {
       const requestPayload = [
         { caseId: '1', caseTitle: 'James123' },
-        { caseId: '2', caseTitle: 'Steve321' }];
+        { caseId: '2', caseTitle: 'Steve321' },
+      ];
       const returnPayload = [
         { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
-        { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }];
+        { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' },
+      ];
       caseShareServiceMock.getShareCases.and.returnValue(of(returnPayload));
       const action = new LoadShareCase(requestPayload);
       const completion = new LoadShareCaseSuccess(returnPayload);
@@ -115,14 +121,15 @@ describe('Share Case Effects', () => {
           idamId: 'U111111',
           firstName: 'James',
           lastName: 'Priest',
-          email: 'james.priest@test.com'
+          email: 'james.priest@test.com',
         },
         {
           idamId: 'U222222',
           firstName: 'Shaun',
           lastName: 'Godard',
-          email: 'shaun.godard@test.com'
-        }];
+          email: 'shaun.godard@test.com',
+        },
+      ];
       caseShareServiceMock.getUsersFromOrg.and.returnValue(of(returnPayload));
       const action = new LoadUserFromOrgForCase();
       const completion = new LoadUserFromOrgForCaseSuccess(returnPayload);
@@ -136,26 +143,36 @@ describe('Share Case Effects', () => {
     it('should assign users with cases', () => {
       const requestPayload = [
         {
-          caseId: '1', caseTitle: 'James123', caseTypeId: 'type1', sharedWith: [
+          caseId: '1',
+          caseTitle: 'James123',
+          caseTypeId: 'type1',
+          sharedWith: [
             {
               idamId: 'U111111',
               firstName: 'James',
               lastName: 'Priest',
-              email: 'james.priest@test.com'
-            }]
+              email: 'james.priest@test.com',
+            },
+          ],
         },
         {
-          caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2', sharedWith: [
+          caseId: '2',
+          caseTitle: 'Steve321',
+          caseTypeId: 'type2',
+          sharedWith: [
             {
               idamId: 'U222222',
               firstName: 'Shaun',
               lastName: 'Godard',
-              email: 'shaun.godard@test.com'
-            }]
-        }];
+              email: 'shaun.godard@test.com',
+            },
+          ],
+        },
+      ];
       const returnPayload = [
         { caseId: '1', caseTitle: 'James123', caseTypeId: 'type1' },
-        { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' }];
+        { caseId: '2', caseTitle: 'Steve321', caseTypeId: 'type2' },
+      ];
       caseShareServiceMock.assignUsersWithCases.and.returnValue(of(returnPayload));
       const action = new AssignUsersToCase(requestPayload);
       const completion = new AssignUsersToCaseSuccess(returnPayload);

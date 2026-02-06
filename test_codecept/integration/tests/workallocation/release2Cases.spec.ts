@@ -15,12 +15,12 @@ describe('Work allocation Release 2:  Cases', () => {
   const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
   const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
-  beforeEach(function() {
+  beforeEach(function () {
     setTestContext(this);
     Request.clearSession();
   });
 
-  it('Get My cases', async function() {
+  it('Get My cases', async function () {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
@@ -68,16 +68,14 @@ describe('Work allocation Release 2:  Cases', () => {
     }
   });
 
-  async function getCases(view, users){
+  async function getCases(view, users) {
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
     const caseRequestObj = getSearchCaseReqBody(view, users, [config.workallocation[config.testEnv].locationId], 'caseworker');
-    caseRequestObj.withSearchBy('caseworker')
-      .sortWith('startDate', 'asc')
-      .withPageNumber(1);
+    caseRequestObj.withSearchBy('caseworker').sortWith('startDate', 'asc').withPageNumber(1);
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length
+      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length,
     };
 
     const response = await Request.post('workallocation/my-work/cases', caseRequestObj.getRequestBody(), headers, 200);
@@ -118,4 +116,3 @@ describe('Work allocation Release 2:  Cases', () => {
     return caseRequestBody;
   }
 });
-

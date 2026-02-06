@@ -21,11 +21,8 @@ describe('HearingCreateEditSummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingCreateEditSummaryComponent],
-      providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      providers: [provideMockStore({ initialState }), { provide: HearingsService, useValue: hearingsService }],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingCreateEditSummaryComponent);
@@ -36,34 +33,34 @@ describe('HearingCreateEditSummaryComponent', () => {
         screenName: 'hearing-requirements',
         navigation: [
           {
-            resultValue: 'hearing-facilities'
-          }
-        ]
+            resultValue: 'hearing-facilities',
+          },
+        ],
       },
       {
         screenName: 'hearing-facilities',
         navigation: [
           {
-            resultValue: 'hearing-stage'
-          }
-        ]
+            resultValue: 'hearing-stage',
+          },
+        ],
       },
       {
         screenName: 'hearing-stage',
         navigation: [
           {
-            resultValue: 'hearing-attendance'
-          }
-        ]
+            resultValue: 'hearing-attendance',
+          },
+        ],
       },
       {
         screenName: 'hearing-attendance',
         navigation: [
           {
-            resultValue: 'hearing-venue'
-          }
-        ]
-      }
+            resultValue: 'hearing-venue',
+          },
+        ],
+      },
     ];
     template = [
       {
@@ -73,19 +70,19 @@ describe('HearingCreateEditSummaryComponent', () => {
           {
             id: 'caseName',
             answerTitle: 'Case name',
-            answerSource: AnswerSource.CASE_NAME
+            answerSource: AnswerSource.CASE_NAME,
           },
           {
             id: 'caseNumber',
             answerTitle: 'Case number',
-            answerSource: AnswerSource.CASE_NUMBER
+            answerSource: AnswerSource.CASE_NUMBER,
           },
           {
             id: 'type',
             answerTitle: 'Type',
-            answerSource: AnswerSource.Type
-          }
-        ]
+            answerSource: AnswerSource.Type,
+          },
+        ],
       },
       {
         sectionHTMLTitle: '<h2 class="govuk-heading-m">Hearing venue</h2>',
@@ -95,9 +92,9 @@ describe('HearingCreateEditSummaryComponent', () => {
             id: 'venue',
             answerTitle: 'What are the hearing venue details?',
             answerSource: AnswerSource.VENUE,
-            changeLink: '/hearings/request/hearing-venue#inputLocationSearch'
-          }
-        ]
+            changeLink: '/hearings/request/hearing-venue#inputLocationSearch',
+          },
+        ],
       },
       {
         sectionHTMLTitle: '<h2 class="govuk-heading-m">Additional facilities</h2>',
@@ -107,15 +104,15 @@ describe('HearingCreateEditSummaryComponent', () => {
             id: 'additionalSecurityRequired',
             answerTitle: 'Will additional security be required?',
             answerSource: AnswerSource.ADDITIONAL_SECURITY_REQUIRED,
-            changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes'
+            changeLink: '/hearings/request/hearing-facilities#additionalSecurityYes',
           },
           {
             id: 'additionalFacilitiesRequired',
             answerTitle: 'Select any additional facilities required',
             answerSource: AnswerSource.ADDITIONAL_FACILITIES_REQUIRED,
-            changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre'
-          }
-        ]
+            changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
+          },
+        ],
       },
       {
         sectionHTMLTitle: '<h2 class="govuk-heading-m">Stage</h2>',
@@ -125,9 +122,9 @@ describe('HearingCreateEditSummaryComponent', () => {
             id: 'stage',
             answerTitle: 'What stage is this hearing at?',
             answerSource: AnswerSource.STAGE,
-            changeLink: '/hearings/request/hearing-stage#initial'
-          }
-        ]
+            changeLink: '/hearings/request/hearing-stage#initial',
+          },
+        ],
       },
       {
         sectionHTMLTitle: '<h2 class="govuk-heading-m">Participant attendance</h2>',
@@ -137,31 +134,31 @@ describe('HearingCreateEditSummaryComponent', () => {
             id: 'paperHearing',
             answerTitle: 'Will this be a paper hearing?',
             answerSource: AnswerSource.IS_PAPER_HEARING,
-            changeLink: '/hearings/request/hearing-attendance#paperHearingYes'
+            changeLink: '/hearings/request/hearing-attendance#paperHearingYes',
           },
           {
             id: 'howParticipantsAttendant',
             answerTitle: 'What will be the methods of attendance for this hearing?',
             answerSource: AnswerSource.HOW_PARTICIPANTS_ATTEND,
             isHiddenSource: IsHiddenSource.PAPER_HEARING,
-            changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList'
+            changeLink: '/hearings/request/hearing-attendance#hearingLevelChannelList',
           },
           {
             id: 'howAttendant',
             answerTitle: 'How will each participant attend the hearing?',
             answerSource: AnswerSource.HOW_ATTENDANT,
             isHiddenSource: IsHiddenSource.PAPER_HEARING,
-            changeLink: '/hearings/request/hearing-attendance#partyChannel0'
+            changeLink: '/hearings/request/hearing-attendance#partyChannel0',
           },
           {
             id: 'attendantPersonAmount',
             answerTitle: 'How many people will attend the hearing in person?',
             answerSource: AnswerSource.ATTENDANT_PERSON_AMOUNT,
             isHiddenSource: IsHiddenSource.PAPER_HEARING,
-            changeLink: '/hearings/request/hearing-attendance#attendance-number'
-          }
-        ]
-      }
+            changeLink: '/hearings/request/hearing-attendance#attendance-number',
+          },
+        ],
+      },
     ];
   });
 

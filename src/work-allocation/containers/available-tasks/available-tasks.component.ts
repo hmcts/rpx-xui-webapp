@@ -14,7 +14,7 @@ import { InfoMessageType } from '../../../role-access/models/enums';
 @Component({
   standalone: false,
   selector: 'exui-available-tasks',
-  templateUrl: 'available-tasks.component.html'
+  templateUrl: 'available-tasks.component.html',
 })
 export class AvailableTasksComponent extends TaskListWrapperComponent {
   public get fields(): FieldConfig[] {
@@ -46,9 +46,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
-      const searchParameters: SearchTaskParameter[] = [
-        { key: 'jurisdiction', operator: 'IN', values: this.selectedServices }
-      ];
+      const searchParameters: SearchTaskParameter[] = [{ key: 'jurisdiction', operator: 'IN', values: this.selectedServices }];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
 
@@ -62,7 +60,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: this.getPaginationParameter(),
       };
       searchTaskParameter.request_context = TaskContext.AVAILABLE_TASKS;
       return searchTaskParameter;
@@ -73,33 +71,39 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
    * A User 'Claims' themselves a task aka. 'Assign to me'.
    */
   public claimTask(taskId: string): void {
-    this.taskService.claimTask(taskId).subscribe(() => {
-      this.infoMessageCommService.nextMessage({
-        type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-      });
-      this.refreshTasks();
-    }, (error) => {
-      this.claimTaskErrors(error.status);
-    });
+    this.taskService.claimTask(taskId).subscribe(
+      () => {
+        this.infoMessageCommService.nextMessage({
+          type: InfoMessageType.SUCCESS,
+          message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+        });
+        this.refreshTasks();
+      },
+      (error) => {
+        this.claimTaskErrors(error.status);
+      }
+    );
   }
 
   /**
    * A User 'Claims' themselves a task and goes to the case details page for that case aka. 'Assign to me'.
    */
   public claimTaskAndGo(task: Task): void {
-    this.taskService.claimTask(task.id).subscribe(() => {
-      const goToCaseUrl = `/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${task.case_id}/tasks`;
-      // navigates to case details page for specific case id
-      this.router.navigate([goToCaseUrl], {
-        state: {
-          showMessage: true,
-          messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-        }
-      });
-    }, (error) => {
-      this.claimTaskErrors(error.status);
-    });
+    this.taskService.claimTask(task.id).subscribe(
+      () => {
+        const goToCaseUrl = `/cases/case-details/${task.jurisdiction}/${task.case_type_id}/${task.case_id}/tasks`;
+        // navigates to case details page for specific case id
+        this.router.navigate([goToCaseUrl], {
+          state: {
+            showMessage: true,
+            messageText: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+          },
+        });
+      },
+      (error) => {
+        this.claimTaskErrors(error.status);
+      }
+    );
   }
 
   /**
@@ -112,7 +116,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     if (handledStatus > 0) {
       this.infoMessageCommService.nextMessage({
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
       });
       if (handledStatus === 400) {
         this.refreshTasks();

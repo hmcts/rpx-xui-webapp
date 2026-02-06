@@ -13,13 +13,9 @@ import {
   submitHearingActuals,
   submitHearingRequest,
   updateHearingActuals,
-  updateHearingRequest
+  updateHearingRequest,
 } from './hmc.index';
-import {
-  loadLinkedCasesWithHearings,
-  loadServiceHearingValues,
-  loadServiceLinkedCases
-} from './services.index';
+import { loadLinkedCasesWithHearings, loadServiceHearingValues, loadServiceLinkedCases } from './services.index';
 
 export const router = express.Router({ mergeParams: true });
 

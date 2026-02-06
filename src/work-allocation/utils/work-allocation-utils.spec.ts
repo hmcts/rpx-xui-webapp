@@ -12,45 +12,48 @@ import {
   handleFatalErrors,
   handleTasksFatalErrors,
   locationWithinRegion,
-  treatAsFatal
+  treatAsFatal,
 } from './work-allocation-utils';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
   let sessionStorageService: any;
 
-  const taskRoles = [{
-    role_category: RoleCategory.ADMIN,
-    role_name: '',
-    permissions: [TaskPermission.OWN],
-    authorisations: []
-  },
-  {
-    role_category: RoleCategory.LEGAL_OPERATIONS,
-    role_name: '',
-    permissions: [TaskPermission.EXECUTE],
-    authorisations: []
-  },
-  {
-    role_category: RoleCategory.JUDICIAL,
-    role_name: '',
-    permissions: [TaskPermission.OWN],
-    authorisations: []
-  }
+  const taskRoles = [
+    {
+      role_category: RoleCategory.ADMIN,
+      role_name: '',
+      permissions: [TaskPermission.OWN],
+      authorisations: [],
+    },
+    {
+      role_category: RoleCategory.LEGAL_OPERATIONS,
+      role_name: '',
+      permissions: [TaskPermission.EXECUTE],
+      authorisations: [],
+    },
+    {
+      role_category: RoleCategory.JUDICIAL,
+      role_name: '',
+      permissions: [TaskPermission.OWN],
+      authorisations: [],
+    },
   ];
 
-  const taskRolesWithOneOwnPermission = [{
-    role_category: RoleCategory.LEGAL_OPERATIONS,
-    role_name: '',
-    permissions: [TaskPermission.EXECUTE],
-    authorisations: []
-  },
-  {
-    role_category: RoleCategory.JUDICIAL,
-    role_name: '',
-    permissions: [TaskPermission.OWN],
-    authorisations: []
-  }];
+  const taskRolesWithOneOwnPermission = [
+    {
+      role_category: RoleCategory.LEGAL_OPERATIONS,
+      role_name: '',
+      permissions: [TaskPermission.EXECUTE],
+      authorisations: [],
+    },
+    {
+      role_category: RoleCategory.JUDICIAL,
+      role_name: '',
+      permissions: [TaskPermission.OWN],
+      authorisations: [],
+    },
+  ];
 
   const userInfo = {
     id: 'user-123',
@@ -59,7 +62,7 @@ describe('WorkAllocationUtils', () => {
     surname: 'User',
     email: 'testuser@test.com',
     roles: null,
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
   };
 
   beforeEach(() => {
@@ -108,7 +111,10 @@ describe('WorkAllocationUtils', () => {
 
   it('should allow setting a fatal redirect', () => {
     // set fatal redirect for 404 and 415 as example
-    const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
+    const REDIRECT_TEST = [
+      { status: 404, redirectTo: REDIRECTS.ServiceDown },
+      { status: 415, redirectTo: REDIRECTS.NotAuthorised },
+    ];
     const firstStatus = treatAsFatal(404, mockRouter, REDIRECT_TEST);
 
     // ensure that a 404 has been treated as fatal and sent to service down
@@ -146,7 +152,10 @@ describe('WorkAllocationUtils', () => {
 
   it('should ensure correctly setting redirects for handling of all errors', () => {
     // set fatal redirect for 404 and 415 as example
-    const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
+    const REDIRECT_TEST = [
+      { status: 404, redirectTo: REDIRECTS.ServiceDown },
+      { status: 415, redirectTo: REDIRECTS.NotAuthorised },
+    ];
     const firstStatus = handleFatalErrors(404, mockRouter, REDIRECT_TEST);
 
     // ensure that a 404 has been treated as fatal and sent to service down
@@ -224,7 +233,7 @@ describe('WorkAllocationUtils', () => {
     const returnUrl = '/work/my-work/list';
     mockRouter = {
       navigate: jasmine.createSpy('navigate'),
-      url: `/work/${taskId}/reassign/confirm`
+      url: `/work/${taskId}/reassign/confirm`,
     };
 
     // should get correct redirect for 500
@@ -261,7 +270,10 @@ describe('WorkAllocationUtils', () => {
   });
 
   it('should verify that a location is within a region', () => {
-    const regionLocations: LocationsByRegion[] = [{ regionId: '1', locations: ['123'] }, { regionId: '2', locations: ['234'] }];
+    const regionLocations: LocationsByRegion[] = [
+      { regionId: '1', locations: ['123'] },
+      { regionId: '2', locations: ['234'] },
+    ];
     expect(locationWithinRegion(regionLocations, '1', '123')).toEqual(true);
     expect(locationWithinRegion(regionLocations, '2', '234')).toEqual(true);
     expect(locationWithinRegion(regionLocations, '1', '234')).toEqual(false);

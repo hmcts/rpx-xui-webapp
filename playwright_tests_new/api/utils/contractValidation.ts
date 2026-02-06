@@ -133,12 +133,7 @@ function validateArray(
   }
 }
 
-function validateEnum(
-  value: unknown,
-  schemaNode: Schema,
-  currentPath: string,
-  errors: ValidationIssue[]
-): void {
+function validateEnum(value: unknown, schemaNode: Schema, currentPath: string, errors: ValidationIssue[]): void {
   const allowed = schemaNode.enum;
   if (allowed && !allowed.includes(value)) {
     errors.push({ path: currentPath, message: `Value must be one of: ${formatEnumValues(allowed)}` });
@@ -195,18 +190,14 @@ export function validateSchema(data: unknown, schema: Schema, path = 'root'): Va
   return {
     valid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   };
 }
 
 /**
  * Assert that response matches contract schema
  */
-export function assertContract(
-  data: unknown,
-  schema: Schema,
-  options: ContractTestOptions = {}
-): void {
+export function assertContract(data: unknown, schema: Schema, options: ContractTestOptions = {}): void {
   const { strict = true, logDeprecations = true, context = {} } = options;
 
   const result = validateSchema(data, schema);
@@ -216,7 +207,7 @@ export function assertContract(
     logger.warn('Contract deprecation warnings detected', {
       warnings: result.warnings,
       operation: 'contract-validation',
-      ...context
+      ...context,
     });
   }
 
@@ -226,13 +217,11 @@ export function assertContract(
       errors: result.errors,
       warnings: result.warnings,
       operation: 'contract-validation',
-      ...context
+      ...context,
     });
 
     if (strict) {
-      const errorMessage = result.errors
-        .map((e) => `${e.path}: ${e.message}`)
-        .join('\n');
+      const errorMessage = result.errors.map((e) => `${e.path}: ${e.message}`).join('\n');
       throw new Error(`Contract validation failed:\n${errorMessage}`);
     }
   }
@@ -252,7 +241,7 @@ export function expectContract(data: unknown, schema: Schema, options: ContractT
     logger.warn('Contract deprecation warnings', {
       warnings: result.warnings,
       operation: 'contract-validation',
-      ...options.context
+      ...options.context,
     });
   }
 }
@@ -267,8 +256,8 @@ export const WorkAllocationSchemas = {
     properties: {
       id: { type: 'string' as const },
       locationName: { type: 'string' as const },
-      services: { type: 'array' as const, items: { type: 'string' as const }, nullable: true }
-    }
+      services: { type: 'array' as const, items: { type: 'string' as const }, nullable: true },
+    },
   },
 
   LocationList: {
@@ -279,9 +268,9 @@ export const WorkAllocationSchemas = {
       properties: {
         id: { type: 'string' as const },
         locationName: { type: 'string' as const },
-        services: { type: 'array' as const, items: { type: 'string' as const }, nullable: true }
-      }
-    }
+        services: { type: 'array' as const, items: { type: 'string' as const }, nullable: true },
+      },
+    },
   },
 
   Task: {
@@ -296,8 +285,8 @@ export const WorkAllocationSchemas = {
       case_name: { type: 'string' as const, nullable: true },
       location_name: { type: 'string' as const, nullable: true },
       created_date: { type: 'string' as const, nullable: true },
-      due_date: { type: 'string' as const, nullable: true }
-    }
+      due_date: { type: 'string' as const, nullable: true },
+    },
   },
 
   TaskList: {
@@ -313,12 +302,12 @@ export const WorkAllocationSchemas = {
             id: { type: 'string' as const },
             task_state: { type: 'string' as const },
             task_title: { type: 'string' as const, nullable: true },
-            assignee: { type: 'string' as const, nullable: true }
-          }
-        }
+            assignee: { type: 'string' as const, nullable: true },
+          },
+        },
       },
-      total_records: { type: 'number' as const, nullable: true }
-    }
+      total_records: { type: 'number' as const, nullable: true },
+    },
   },
 
   UserDetails: {
@@ -332,12 +321,12 @@ export const WorkAllocationSchemas = {
           id: { type: 'string' as const },
           uid: { type: 'string' as const, nullable: true },
           email: { type: 'string' as const, nullable: true },
-          name: { type: 'string' as const, nullable: true }
-        }
+          name: { type: 'string' as const, nullable: true },
+        },
       },
-      roleAssignmentInfo: { type: 'array' as const, nullable: true }
-    }
-  }
+      roleAssignmentInfo: { type: 'array' as const, nullable: true },
+    },
+  },
 };
 
 /**
@@ -351,15 +340,15 @@ export const SearchSchemas = {
       required: ['serviceId', 'serviceName'],
       properties: {
         serviceId: { type: 'string' as const },
-        serviceName: { type: 'string' as const }
-      }
-    }
+        serviceName: { type: 'string' as const },
+      },
+    },
   },
 
   SupportedJurisdictions: {
     type: 'array' as const,
     items: { type: 'string' as const },
-    minItems: 0
+    minItems: 0,
   },
 
   LocationsRefData: {
@@ -369,8 +358,8 @@ export const SearchSchemas = {
       properties: {
         epimms_id: { type: 'string' as const, nullable: true },
         site_name: { type: 'string' as const, nullable: true },
-        court_name: { type: 'string' as const, nullable: true }
-      }
-    }
-  }
+        court_name: { type: 'string' as const, nullable: true },
+      },
+    },
+  },
 };

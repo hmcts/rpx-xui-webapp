@@ -10,7 +10,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 @Component({
   standalone: false,
   selector: 'exui-hearing-stage-section',
-  templateUrl: './hearing-stage-section.component.html'
+  templateUrl: './hearing-stage-section.component.html',
 })
 export class HearingStageSectionComponent implements OnInit {
   @Input() public hearingStageOptionsRefData: LovRefDataModel[];
@@ -26,13 +26,8 @@ export class HearingStageSectionComponent implements OnInit {
   public ngOnInit(): void {
     const hearingType = this.hearingRequestMainModel.hearingDetails.hearingType;
     const hearingStageFromRefData = this.hearingStageOptionsRefData.find((stage) => stage.key === hearingType);
-    this.hearingStage = hearingStageFromRefData
-      ? hearingStageFromRefData.value_en
-      : '';
-    this.showAmmended = !_.isEqual(
-      this.hearingRequestToCompareMainModel.hearingDetails.hearingType,
-      hearingType
-    );
+    this.hearingStage = hearingStageFromRefData ? hearingStageFromRefData.value_en : '';
+    this.showAmmended = !_.isEqual(this.hearingRequestToCompareMainModel.hearingDetails.hearingType, hearingType);
   }
 
   public onChange(fragmentId: string): void {

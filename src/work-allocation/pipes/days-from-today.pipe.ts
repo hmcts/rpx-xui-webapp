@@ -7,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({
   standalone: false,
-  name: 'daysFromToday'
+  name: 'daysFromToday',
 })
 export class DaysFromTodayPipe implements PipeTransform {
   // The number of seconds in a day, for formatting purposes.

@@ -3,7 +3,7 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
 @Component({
   standalone: false,
-  template: ''
+  template: '',
 })
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
   @Input()

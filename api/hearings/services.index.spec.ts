@@ -25,17 +25,19 @@ describe('Hearings Services', () => {
 
     // Stub getConfigValue before importing the module to handle module-level constants
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
-    getConfigValueStub.withArgs('services.hearings.hmcApi').returns('http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal');
+    getConfigValueStub
+      .withArgs('services.hearings.hmcApi')
+      .returns('http://hmc-cft-hearing-service-prod.service.core-compute-prod.internal');
 
     req = {
       query: {},
       body: {},
-      session: {}
+      session: {},
     } as EnhancedRequest;
 
     res = {
       status: sandbox.stub().returnsThis(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     } as unknown as Response;
 
     next = sandbox.stub();
@@ -49,7 +51,7 @@ describe('Hearings Services', () => {
   const createTestData = (overrides: Partial<ServiceHearingValuesModel> = {}): ServiceHearingValuesModel => {
     return {
       ...JSON.parse(JSON.stringify(SERVICE_HEARING_VALUES)),
-      ...overrides
+      ...overrides,
     };
   };
 
@@ -65,8 +67,8 @@ describe('Hearings Services', () => {
       const data = createTestData({
         caseFlags: {
           flags: [],
-          flagAmendURL: '/flag/amend'
-        }
+          flagAmendURL: '/flag/amend',
+        },
       });
       const result = servicesIndex.mapDataByDefault(data);
 
@@ -82,11 +84,11 @@ describe('Hearings Services', () => {
               partyName: 'Jane and Smith',
               flagId: 'PF0015',
               flagDescription: 'Language Interpreter',
-              flagStatus: 'Active'
-            }
+              flagStatus: 'Active',
+            },
           ],
-          flagAmendURL: '/flag/amend'
-        }
+          flagAmendURL: '/flag/amend',
+        },
       });
 
       const result = servicesIndex.mapDataByDefault(data);
@@ -104,11 +106,11 @@ describe('Hearings Services', () => {
               partyName: 'Jane and Smith',
               flagId: 'PF0015',
               flagDescription: 'Language Interpreter',
-              flagStatus: 'Active'
-            }
+              flagStatus: 'Active',
+            },
           ],
-          flagAmendURL: '/flag/amend'
-        }
+          flagAmendURL: '/flag/amend',
+        },
       });
 
       const result = servicesIndex.mapDataByDefault(data);
@@ -126,14 +128,14 @@ describe('Hearings Services', () => {
               partyName: 'Jane and Smith',
               flagId: 'PF0015',
               flagDescription: 'Language Interpreter',
-              flagStatus: 'Active'
+              flagStatus: 'Active',
             },
             {
               partyId: 'P2',
               partyName: 'DWP',
               flagId: 'RA0012',
               flagDescription: 'Braille documents',
-              flagStatus: 'Active'
+              flagStatus: 'Active',
             },
             {
               partyID: 'P1',
@@ -141,11 +143,11 @@ describe('Hearings Services', () => {
               partyName: 'Jane and Smith',
               flagId: 'SM0001',
               flagDescription: 'Sign Language',
-              flagStatus: 'Active'
-            }
+              flagStatus: 'Active',
+            },
           ],
-          flagAmendURL: '/flag/amend'
-        }
+          flagAmendURL: '/flag/amend',
+        },
       });
 
       const result = servicesIndex.mapDataByDefault(data);
@@ -176,7 +178,7 @@ describe('Hearings Services', () => {
 
       const mockResponse = {
         status: 200,
-        data: createTestData()
+        data: createTestData(),
       };
 
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
@@ -204,7 +206,7 @@ describe('Hearings Services', () => {
       const dataWithoutScreenFlow = createTestData({ screenFlow: undefined });
       const mockResponse = {
         status: 200,
-        data: dataWithoutScreenFlow
+        data: dataWithoutScreenFlow,
       };
 
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
@@ -225,7 +227,7 @@ describe('Hearings Services', () => {
       const dataWithScreenFlow = createTestData({ screenFlow: customScreenFlow });
       const mockResponse = {
         status: 200,
-        data: dataWithScreenFlow
+        data: dataWithScreenFlow,
       };
 
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
@@ -282,7 +284,7 @@ describe('Hearings Services', () => {
 
       const mockLinkedCases = [
         { caseReference: 'LINKED1', caseName: 'Case 1' },
-        { caseReference: 'LINKED2', caseName: 'Case 2' }
+        { caseReference: 'LINKED2', caseName: 'Case 2' },
       ];
 
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
@@ -345,9 +347,7 @@ describe('Hearings Services', () => {
       req.query = { jurisdictionId: 'SSCS' };
       req.body = { caseReference: '1584618195804035', caseName: 'Jane and Smith vs DWP' };
 
-      const linkedCases = [
-        { caseReference: '1584618195804036', caseName: 'Smith vs DWP', reasonsForLink: [] }
-      ];
+      const linkedCases = [{ caseReference: '1584618195804036', caseName: 'Smith vs DWP', reasonsForLink: [] }];
 
       const mainCaseHearings: HearingListMainModel = {
         hmctsServiceID: 'BBA3',
@@ -356,9 +356,9 @@ describe('Hearings Services', () => {
           {
             hmcStatus: HMCStatus.LISTED,
             exuiSectionStatus: 'Current and upcoming',
-            exuiDisplayStatus: 'LISTED'
-          } as any
-        ]
+            exuiDisplayStatus: 'LISTED',
+          } as any,
+        ],
       };
 
       const linkedCaseHearings: HearingListMainModel = {
@@ -368,9 +368,9 @@ describe('Hearings Services', () => {
           {
             hmcStatus: HMCStatus.AWAITING_LISTING,
             exuiSectionStatus: 'Current and upcoming',
-            exuiDisplayStatus: 'WAITING TO BE LISTED'
-          } as any
-        ]
+            exuiDisplayStatus: 'WAITING TO BE LISTED',
+          } as any,
+        ],
       };
 
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
@@ -394,9 +394,7 @@ describe('Hearings Services', () => {
       req.query = { jurisdictionId: 'SSCS' };
       req.body = { caseReference: '1584618195804035', caseName: 'Jane and Smith vs DWP' };
 
-      const linkedCases = [
-        { caseReference: '1584618195804036', caseName: 'Smith vs DWP', reasonsForLink: [] }
-      ];
+      const linkedCases = [{ caseReference: '1584618195804036', caseName: 'Smith vs DWP', reasonsForLink: [] }];
 
       getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW']);
       getConfigValueStub.withArgs('services.hearings.sscs.serviceApi').returns('http://service-path');
@@ -443,18 +441,15 @@ describe('Hearings Services', () => {
         caseHearings: [
           { hmcStatus: HMCStatus.LISTED } as any,
           { hmcStatus: HMCStatus.CANCELLED } as any,
-          { hmcStatus: HMCStatus.AWAITING_LISTING } as any
-        ]
+          { hmcStatus: HMCStatus.AWAITING_LISTING } as any,
+        ],
       };
 
       sendGetStub.resolves({ data: mockHearings });
 
       const result = await servicesIndex.getHearings(caseId, req);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        sinon.match(new RegExp(`/hearings/${caseId}$`)),
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(sinon.match(new RegExp(`/hearings/${caseId}$`)), req);
 
       // Verify status mappings were applied
       expect(result.caseHearings[0].exuiSectionStatus).to.equal('Current and upcoming');
@@ -471,9 +466,7 @@ describe('Hearings Services', () => {
       const mockHearings: HearingListMainModel = {
         hmctsServiceID: 'BBA3',
         caseRef: '1584618195804035',
-        caseHearings: [
-          { hmcStatus: 'UNKNOWN_STATUS' as any } as any
-        ]
+        caseHearings: [{ hmcStatus: 'UNKNOWN_STATUS' as any } as any],
       };
 
       sendGetStub.resolves({ data: mockHearings });
@@ -489,7 +482,7 @@ describe('Hearings Services', () => {
       const mockHearings: HearingListMainModel = {
         hmctsServiceID: 'BBA3',
         caseRef: '1584618195804035',
-        caseHearings: []
+        caseHearings: [],
       };
 
       sendGetStub.resolves({ data: mockHearings });
@@ -503,7 +496,7 @@ describe('Hearings Services', () => {
       const error = {
         status: 500,
         statusText: 'Internal Server Error',
-        data: { message: 'Service unavailable' }
+        data: { message: 'Service unavailable' },
       };
 
       sendGetStub.rejects(error);
@@ -571,7 +564,9 @@ describe('Hearings Services', () => {
     });
 
     it('should handle jurisdiction names with different cases', () => {
-      getConfigValueStub.withArgs('services.hearings.hearingsJurisdictions').returns(['SSCS', 'CIVIL', 'PRIVATELAW', 'PrivateLaw']);
+      getConfigValueStub
+        .withArgs('services.hearings.hearingsJurisdictions')
+        .returns(['SSCS', 'CIVIL', 'PRIVATELAW', 'PrivateLaw']);
       getConfigValueStub.withArgs('services.hearings.privatelaw.serviceApi').returns('http://private-law-api');
 
       const result = servicesIndex.getServicePath('PrivateLaw');
@@ -585,7 +580,7 @@ describe('Hearings Services', () => {
     it('should only include fulfilled results with hearings', () => {
       const linkedCases = [
         { caseReference: '1584618195804035', caseName: 'Jane and Smith vs DWP', reasonsForLink: [] },
-        { caseReference: '1584618195804036', caseName: 'Smith vs DWP', reasonsForLink: [] }
+        { caseReference: '1584618195804036', caseName: 'Smith vs DWP', reasonsForLink: [] },
       ];
 
       const allResults = [
@@ -594,21 +589,21 @@ describe('Hearings Services', () => {
           value: {
             hmctsServiceID: 'BBA3',
             caseRef: '1584618195804035',
-            caseHearings: [{ exuiDisplayStatus: 'WAITING TO BE LISTED' } as any]
-          }
+            caseHearings: [{ exuiDisplayStatus: 'WAITING TO BE LISTED' } as any],
+          },
         },
         {
           status: 'rejected' as const,
-          reason: 'Failed to fetch'
+          reason: 'Failed to fetch',
         },
         {
           status: 'fulfilled' as const,
           value: {
             hmctsServiceID: 'BBA3',
             caseRef: '1584618195804036',
-            caseHearings: []
-          }
-        }
+            caseHearings: [],
+          },
+        },
       ];
 
       const result = servicesIndex.aggregateAllResults(linkedCases, allResults);
@@ -619,13 +614,11 @@ describe('Hearings Services', () => {
     });
 
     it('should handle all rejected results', () => {
-      const linkedCases = [
-        { caseReference: '1584618195804035', caseName: 'Jane and Smith vs DWP', reasonsForLink: [] }
-      ];
+      const linkedCases = [{ caseReference: '1584618195804035', caseName: 'Jane and Smith vs DWP', reasonsForLink: [] }];
 
       const allResults = [
         { status: 'rejected' as const, reason: 'Error 1' },
-        { status: 'rejected' as const, reason: 'Error 2' }
+        { status: 'rejected' as const, reason: 'Error 2' },
       ];
 
       const result = servicesIndex.aggregateAllResults(linkedCases, allResults);

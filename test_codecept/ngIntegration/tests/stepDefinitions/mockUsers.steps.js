@@ -7,16 +7,20 @@ const dummyCaseDetails = require('../../mockData/ccd/caseDetails_data');
 
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
-const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
+const {
+  getTestJurisdiction,
+  getMockJurisdictionWorkbaseketConfig,
+  getMockJurisdictionSearchInputConfig,
+} = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const { DataTableArgument } = require('codeceptjs');
 
-Given('I set MOCK case workers', async function(datatable){
+Given('I set MOCK case workers', async function (datatable) {
   const dtHashes = datatable.parse().hashes();
   let i = 0;
-  for (const hash of dtHashes){
-    for (const key of Object.keys(hash)){
+  for (const hash of dtHashes) {
+    for (const key of Object.keys(hash)) {
       workAlloctionMockData.caseWorkersList[i][key] = hash[key];
     }
     i++;

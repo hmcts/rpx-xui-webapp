@@ -26,33 +26,32 @@ describe('BookingCheckComponent', () => {
   beforeEach(waitForAsync(() => {
     mockBookingServiceSpy = jasmine.createSpyObj('BookingService', ['createBooking', 'refreshRoleAssignments']);
     mockWindowService = jasmine.createSpyObj('WindowService', ['removeLocalStorage']);
-    mockBookingServiceSpy.createBooking.and.returnValue(of({
-      bookingResponse: {
-        userId: '',
-        locationId: '',
-        regionId: '',
-        beginTime: new Date(),
-        endTime: new Date(),
-        created: new Date(),
-        log: 'log'
-      }
-    }));
+    mockBookingServiceSpy.createBooking.and.returnValue(
+      of({
+        bookingResponse: {
+          userId: '',
+          locationId: '',
+          regionId: '',
+          beginTime: new Date(),
+          endTime: new Date(),
+          created: new Date(),
+          log: 'log',
+        },
+      })
+    );
     TestBed.configureTestingModule({
       declarations: [BookingCheckComponent],
-      imports: [
-        RouterTestingModule,
-        ReactiveFormsModule
-      ],
+      imports: [RouterTestingModule, ReactiveFormsModule],
       providers: [
         {
           provide: BookingService,
-          useValue: mockBookingServiceSpy
+          useValue: mockBookingServiceSpy,
         },
         {
           provide: WindowService,
-          useValue: mockWindowService
-        }
-      ]
+          useValue: mockWindowService,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(BookingCheckComponent);
     component = fixture.componentInstance;
@@ -83,38 +82,39 @@ describe('BookingCheckComponent', () => {
     });
 
     it('should display the correct values on row for today only case', () => {
-      const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
+      const dateInterval =
+        fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
       component.bookingProcess = {
         startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
         endDate: new Date('Sun Dec 02 2021 23:59:59 GMT+0000'),
-        location: { court_name: 'London Court' }
+        location: { court_name: 'London Court' },
       } as BookingProcess;
 
       fixture.detectChanges();
-      expect(dateInterval.textContent).toContain(
-        '02 December 2021 to 02 December 2021'
-      );
+      expect(dateInterval.textContent).toContain('02 December 2021 to 02 December 2021');
     });
 
     it('should call and check submit booking', () => {
       component.bookingProcess = {
         startDate: new Date('Thu Dec 12 2021 00:00:00 GMT+0000'),
         endDate: new Date('Thu Dec 12 2021 00:00:00 GMT+0000'),
-        location: { court_name: 'London Court', region_id: '23090' }
+        location: { court_name: 'London Court', region_id: '23090' },
       } as BookingProcess;
       const payload = {
         userId: 'user-id',
         locationId: component.bookingProcess.location.epimms_id,
         regionId: component.bookingProcess.location.region_id,
         beginDate: component.bookingProcess.startDate,
-        endDate: component.bookingProcess.endDate
+        endDate: component.bookingProcess.endDate,
       };
-      mockBookingServiceSpy.createBooking.and.returnValue(of({
-        errorCode: '403',
-        status: '403',
-        errorMessage: 'Error is 403',
-        timeStamp: new Date()
-      }));
+      mockBookingServiceSpy.createBooking.and.returnValue(
+        of({
+          errorCode: '403',
+          status: '403',
+          errorMessage: 'Error is 403',
+          timeStamp: new Date(),
+        })
+      );
       const confirmButton = fixture.debugElement.query(By.css('button'));
       confirmButton.triggerEventHandler('click', null);
       fixture.detectChanges();
@@ -125,35 +125,32 @@ describe('BookingCheckComponent', () => {
     });
 
     it('should display the correct values on row for this week case', () => {
-      const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
+      const dateInterval =
+        fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
       component.bookingProcess = {
         startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
         endDate: new Date('Sun Dec 05 2021 23:59:59 GMT+0000'),
-        location: { court_name: 'London Court' }
+        location: { court_name: 'London Court' },
       } as BookingProcess;
 
       fixture.detectChanges();
-      expect(dateInterval.textContent).toContain(
-        '02 December 2021 to 05 December 2021'
-      );
+      expect(dateInterval.textContent).toContain('02 December 2021 to 05 December 2021');
     });
 
     it('should display the correct values on row for date range case', () => {
-      const dateInterval = fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
+      const dateInterval =
+        fixture.debugElement.nativeElement.querySelector('.govuk-summary-list__row').nextElementSibling.childNodes[1];
       component.bookingProcess = {
         startDate: new Date('Thu Dec 02 2021 09:00:00 GMT+0000'),
         endDate: new Date('Sun Dec 12 2021 23:59:59 GMT+0000'),
-        location: { court_name: 'London Court' }
+        location: { court_name: 'London Court' },
       } as BookingProcess;
 
       fixture.detectChanges();
-      expect(dateInterval.textContent).toContain(
-        '02 December 2021 to 12 December 2021'
-      );
+      expect(dateInterval.textContent).toContain('02 December 2021 to 12 December 2021');
     });
 
     describe('page link events', () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       let mockRouter: any;
       let eventTriggerSpy: jasmine.Spy;
 
@@ -163,14 +160,16 @@ describe('BookingCheckComponent', () => {
 
       it('should not call RefreshBookingHandleError when bookingService.createBooking return error', () => {
         mockRouter = {
-          navigate: jasmine.createSpy('navigate')
+          navigate: jasmine.createSpy('navigate'),
         };
-        mockBookingServiceSpy.createBooking.and.returnValue(of({
-          errorCode: '403',
-          status: '403',
-          errorMessage: 'Error is 403',
-          timeStamp: new Date()
-        }));
+        mockBookingServiceSpy.createBooking.and.returnValue(
+          of({
+            errorCode: '403',
+            status: '403',
+            errorMessage: 'Error is 403',
+            timeStamp: new Date(),
+          })
+        );
         const confirmButton = fixture.debugElement.query(By.css('button'));
         confirmButton.triggerEventHandler('click', null);
         const mockComponentHandleError = spyOn(CdkWrapper, 'RefreshBookingHandleError').and.returnValue(true);
@@ -214,7 +213,6 @@ describe('BookingCheckComponent', () => {
       describe('submitBooking', () => {
         beforeEach(() => {
           // mockBookingServiceSpy.createBooking.and.returnValue(of({ status: 403 }));
-
         });
         it('should not do an http call if isBookingInProgress is true', () => {
           // @ts-expect-error - private property
@@ -238,36 +236,38 @@ describe('BookingCheckComponent', () => {
           expect(mockBookingServiceSpy.refreshRoleAssignments).toHaveBeenCalled();
         });
 
-        it('should set isBookingInProgress is true when calling submitBooking' +
-          'and also make it back to false once it ends', fakeAsync(() => {
-          mockBookingServiceSpy.createBooking.and.returnValue(
-            of({
-              bookingResponse: {
-                userId: '',
-                locationId: '',
-                regionId: '',
-                beginTime: new Date(),
-                endTime: new Date(),
-                created: new Date(),
-                log: 'log'
-              }
-              // Adding delay to make it async
-            }).pipe(delay(0))
-          );
+        it(
+          'should set isBookingInProgress is true when calling submitBooking' + 'and also make it back to false once it ends',
+          fakeAsync(() => {
+            mockBookingServiceSpy.createBooking.and.returnValue(
+              of({
+                bookingResponse: {
+                  userId: '',
+                  locationId: '',
+                  regionId: '',
+                  beginTime: new Date(),
+                  endTime: new Date(),
+                  created: new Date(),
+                  log: 'log',
+                },
+                // Adding delay to make it async
+              }).pipe(delay(0))
+            );
 
-          // @ts-expect-error - private property
-          expect(component.isBookingInProgress).toBe(false);
+            // @ts-expect-error - private property
+            expect(component.isBookingInProgress).toBe(false);
 
-          // @ts-expect-error - private property
-          component.submitBooking();
-          // @ts-expect-error - private property
-          expect(component.isBookingInProgress).toBe(true);
+            // @ts-expect-error - private property
+            component.submitBooking();
+            // @ts-expect-error - private property
+            expect(component.isBookingInProgress).toBe(true);
 
-          tick();
+            tick();
 
-          // @ts-expect-error - private property
-          expect(component.isBookingInProgress).toBe(false);
-        }));
+            // @ts-expect-error - private property
+            expect(component.isBookingInProgress).toBe(false);
+          })
+        );
       });
     });
   });

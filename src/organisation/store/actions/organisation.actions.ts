@@ -18,7 +18,4 @@ export class LoadOrganisationFail implements Action {
   constructor(public payload: any) {}
 }
 
-export type organisationActions =
-  | LoadOrganisation
-  | LoadOrganisationSuccess
-  | LoadOrganisationFail;
+export type organisationActions = LoadOrganisation | LoadOrganisationSuccess | LoadOrganisationFail;

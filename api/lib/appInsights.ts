@@ -1,10 +1,7 @@
 import * as applicationinsights from 'applicationinsights';
 import * as express from 'express';
 import { getConfigValue, showFeature } from '../configuration/';
-import {
-  APP_INSIGHTS_CONNECTION_STRING,
-  FEATURE_APP_INSIGHTS_ENABLED
-} from '../configuration/references';
+import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
 
 export let client: applicationinsights.TelemetryClient;
 
@@ -35,7 +32,7 @@ export function appInsights(req: express.Request, res: express.Response, next) {
   next();
 }
 
-export function trackTrace(trace: string, properties?: {[key: string]: any}) {
+export function trackTrace(trace: string, properties?: { [key: string]: any }) {
   if (client) {
     client.trackTrace({ message: trace, properties });
   }

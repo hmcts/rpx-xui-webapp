@@ -7,9 +7,7 @@ import * as HealthCheck from '@hmcts/nodejs-healthcheck';
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import * as configuration from '../configuration';
 import * as log4jui from '../lib/log4jui';
-import {
-  checkServiceHealth
-} from './index';
+import { checkServiceHealth } from './index';
 import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
@@ -26,7 +24,7 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
-  SERVICE_S2S_PATH
+  SERVICE_S2S_PATH,
 } from '../configuration/references';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -57,7 +55,7 @@ describe('Health Check', (): void => {
     mockApp = {
       use: sandbox.stub(),
       get: sandbox.stub(),
-      post: sandbox.stub()
+      post: sandbox.stub(),
     };
 
     getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
@@ -79,7 +77,7 @@ describe('Health Check', (): void => {
       error: loggerErrorStub,
       info: loggerInfoStub,
       trackRequest: sandbox.stub(),
-      warn: sandbox.stub()
+      warn: sandbox.stub(),
     };
     getLoggerStub = sandbox.stub(log4jui, 'getLogger').returns(mockLogger);
 
@@ -118,7 +116,7 @@ describe('Health Check', (): void => {
       const expectedUrl = `${serviceUrl}/health`;
       const expectedOptions = {
         deadline: 6000,
-        timeout: 6000
+        timeout: 6000,
       };
 
       const result = checkServiceHealth(serviceUrl);
@@ -185,7 +183,7 @@ describe('Health Check', (): void => {
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_TERMS_AND_CONDITIONS_URL);
       expect(healthCheckWebStub).to.have.been.calledWith('http://terms-conditions/health', {
         deadline: 6000,
-        timeout: 6000
+        timeout: 6000,
       });
       expect(healthCheckAddToStub).to.have.been.calledOnceWith(mockApp, sinon.match.object);
     });

@@ -11,7 +11,7 @@ class HearingAdditionalInstructionsPage {
 
   get fieldMapping() {
     return {
-      'Enter any additional instructions for the hearing': this.instructionsInput
+      'Enter any additional instructions for the hearing': this.instructionsInput,
     };
   }
 

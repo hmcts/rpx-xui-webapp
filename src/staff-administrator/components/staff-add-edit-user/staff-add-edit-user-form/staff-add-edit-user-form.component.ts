@@ -7,24 +7,28 @@ import { map, take, tap } from 'rxjs/operators';
 import { ErrorMessage } from '../../../../app/models';
 import { StaffFilterOption } from '../../../models/staff-filter-option.model';
 import { StaffAddEditFormService } from '../../../services/staff-add-edit-form/staff-add-edit-form.service';
-import { getFormValidationErrorMessages, groupItemsByGroupSize, setLocationErrorMessages } from '../../../utils/form/staff-form.utils';
+import {
+  getFormValidationErrorMessages,
+  groupItemsByGroupSize,
+  setLocationErrorMessages,
+} from '../../../utils/form/staff-form.utils';
 import { StaffAddEditUserFormValidationMessages } from './staff-add-edit-user-form-validation-messages.enum';
 
 @Component({
   standalone: false,
   selector: 'exui-staff-add-edit-user-form',
   templateUrl: './staff-add-edit-user-form.component.html',
-  styleUrls: ['./staff-add-edit-user-form.component.scss']
+  styleUrls: ['./staff-add-edit-user-form.component.scss'],
 })
 export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   public updateMode = false;
   public form: FormGroup;
   public staffFilterOptions: {
-    userTypes: StaffFilterOption[],
-    jobTitles: StaffFilterOption[],
-    skills: GroupOptions[],
-    services: StaffFilterOption[],
-    regions: RefDataRegion[]
+    userTypes: StaffFilterOption[];
+    jobTitles: StaffFilterOption[];
+    skills: GroupOptions[];
+    services: StaffFilterOption[];
+    regions: RefDataRegion[];
   };
 
   public errors: ErrorMessage | false;
@@ -38,7 +42,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   constructor(
     public readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
-    public readonly staffAddEditFormService: StaffAddEditFormService,
+    public readonly staffAddEditFormService: StaffAddEditFormService
   ) {}
 
   public get baseLocationsFormControl() {
@@ -53,7 +57,7 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
       services: this.activatedRoute.snapshot.data.services,
-      regions: this.activatedRoute.snapshot.data.regions
+      regions: this.activatedRoute.snapshot.data.regions,
     };
 
     this.skillOptionGroups$ = this.staffAddEditFormService.selectedServiceCodes$.pipe(
@@ -88,7 +92,10 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     const serviceList = this.selectedServiceCodes;
     const incorrectLocationList = [];
     selectedLocationList.forEach((location) => {
-      const uneligibleLocation = location && location.service_codes ? location.service_codes.filter((serviceCode) => serviceList.includes(serviceCode)).length === 0 : true;
+      const uneligibleLocation =
+        location && location.service_codes
+          ? location.service_codes.filter((serviceCode) => serviceList.includes(serviceCode)).length === 0
+          : true;
       if (uneligibleLocation) {
         incorrectLocationList.push(location.location);
       }
@@ -107,13 +114,13 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     } else {
       if (incorrectLocations.length > 0) {
         this.wrongLocationError = setLocationErrorMessages(incorrectLocations);
-        this.baseLocationsFormControl.setErrors({ 'incorrect': true });
+        this.baseLocationsFormControl.setErrors({ incorrect: true });
       }
       this.errors = {
         title: 'There is a problem',
         description: 'Check the form for errors and try again.',
         multiple: true,
-        errors: getFormValidationErrorMessages(form, incorrectLocations)
+        errors: getFormValidationErrorMessages(form, incorrectLocations),
       };
       window.scrollTo(0, 0);
     }
@@ -124,14 +131,12 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
   }
 
   private fragmentFocus(): void {
-    this.activatedRoute.fragment
-      .pipe(take(1))
-      .subscribe((frag) => {
-        const element = document.getElementById(frag);
-        if (element) {
-          element.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
-          element.focus();
-        }
-      });
+    this.activatedRoute.fragment.pipe(take(1)).subscribe((frag) => {
+      const element = document.getElementById(frag);
+      if (element) {
+        element.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
+        element.focus();
+      }
+    });
   }
 }

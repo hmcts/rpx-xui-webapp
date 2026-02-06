@@ -11,7 +11,11 @@ const mockClient = require('../../../backendMock/client/index.js');
 const serviceMock = require('../../../backendMock/client/serviceMock');
 const workAlloctionMockData = require('../../mockData/workAllocation/mockData');
 
-const { getTestJurisdiction, getMockJurisdictionWorkbaseketConfig, getMockJurisdictionSearchInputConfig } = require('../../mockData/ccdCaseMock');
+const {
+  getTestJurisdiction,
+  getMockJurisdictionWorkbaseketConfig,
+  getMockJurisdictionSearchInputConfig,
+} = require('../../mockData/ccdCaseMock');
 const getEventConfig = require('../../mockData/ccdMockEventConfigs');
 
 const idamLogin = require('../../util/idamLogin');
@@ -24,16 +28,15 @@ Given('I set mock case create config {string}', async function (configReference)
   // MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
   //     res.send(caseConfig.getCase());
   // });
-
 });
 
-Given('I set MOCK event {string} props', async function(caseConfigReference, dataTable){
+Given('I set MOCK event {string} props', async function (caseConfigReference, dataTable) {
   const caseConfig = global.scenarioData[caseConfigReference];
   const eventprops = convertDatatablePropsToccdObj(dataTable);
   caseConfig.updateEventProps(eventprops);
 });
 
-Given('I set mock case workbasket config {string}', async function(workbasketRef){
+Given('I set mock case workbasket config {string}', async function (workbasketRef) {
   const workbasetConfigurator = getMockJurisdictionWorkbaseketConfig();
   global.scenarioData[workbasketRef] = workbasetConfigurator;
   MockApp.onGet('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
@@ -41,16 +44,15 @@ Given('I set mock case workbasket config {string}', async function(workbasketRef
   });
 });
 
-Given('I set mock case searchinput config {string}', async function(searchInputRef){
+Given('I set mock case searchinput config {string}', async function (searchInputRef) {
   // const searchInputConfigurator = getMockJurisdictionSearchInputConfig();
   // global.scenarioData[searchInputRef] = searchInputConfigurator;
   // MockApp.onGet('/data/internal/case-types/:jurisdiction/search-inputs', (req, res) => {
   //     res.send(searchInputConfigurator.getConfig());
   // });
-
 });
 
-Given('I set MOCK event {string} config with reference {string}', async function(eventId, eventReference){
+Given('I set MOCK event {string} config with reference {string}', async function (eventId, eventReference) {
   const caseConfig = getEventConfig(eventId);
   global.scenarioData[eventReference] = caseConfig;
   MockApp.onGet('/data/internal/case-types/:jurisdiction/event-triggers/:caseType', (req, res) => {
@@ -58,13 +60,13 @@ Given('I set MOCK event {string} config with reference {string}', async function
   });
 });
 
-Given('I set MOCK event config {string} field {string} properties', async function(eventConfigRef, fieldId, datatable){
+Given('I set MOCK event config {string} field {string} properties', async function (eventConfigRef, fieldId, datatable) {
   const eventConfig = global.scenarioData[eventConfigRef];
   const fieldProps = convertDatatablePropsToccdObj(datatable);
   eventConfig.updateFieldProps(fieldId, fieldProps);
 });
 
-Given('I set MOCK case details with reference {string}', async function(caseDetailsReference){
+Given('I set MOCK case details with reference {string}', async function (caseDetailsReference) {
   const caseDetails = JSON.parse(JSON.stringify(ccdMockData.caseDetailsResponse));
   global.scenarioData[caseDetailsReference] = caseDetails;
 
@@ -73,7 +75,7 @@ Given('I set MOCK case details with reference {string}', async function(caseDeta
 
 Given('I set MOCK case {string} details with reference {string}', async function (caseType, caseDetailsReference) {
   const caseDetails = JSON.parse(JSON.stringify(caseDetailsMock[caseType]));
-  
+
   // Defensive guard
   if (!global.scenarioData) {
     global.scenarioData = {};
@@ -88,11 +90,11 @@ Given('I set MOCK case details {string} values', async function (caseDetailsRefe
   await serviceMock.updateCaseData(caseDetails, 200);
 });
 
-Given('I set MOCK case details {string} property {string} as {string}', async function(caseDetailsRef, property, value){
+Given('I set MOCK case details {string} property {string} as {string}', async function (caseDetailsRef, property, value) {
   const caseDetails = global.scenarioData[caseDetailsRef];
   if (property.toLowerCase().includes('jurisdiction')) {
     caseDetailsMock.setCaseTypeProperties(caseDetails, {
-      'jurisdiction.id': value
+      'jurisdiction.id': value,
     });
     const field = getCaseDetailsMetadataField(caseDetails, '[JURISDICTION]');
     field.value = value;
@@ -101,7 +103,7 @@ Given('I set MOCK case details {string} property {string} as {string}', async fu
     field.value = value;
   } else if (property.toLowerCase().includes('case_type')) {
     caseDetailsMock.setCaseTypeProperties(caseDetails, {
-      'case_type.id': value
+      'case_type.id': value,
     });
     const field = getCaseDetailsMetadataField(caseDetails, '[JURISDICTION]');
     field.value = value;
@@ -130,105 +132,103 @@ Given('I set MOCK case details {string} state as {string}', async function (case
   await serviceMock.updateCaseData(caseDetails, 200);
 });
 
-Given('I set MOCK case details {string} access process {string} and access granted {string}', async function (caseDetailsRef, accessProcess, accessGranted) {
-  const caseDetails = global.scenarioData[caseDetailsRef];
+Given(
+  'I set MOCK case details {string} access process {string} and access granted {string}',
+  async function (caseDetailsRef, accessProcess, accessGranted) {
+    const caseDetails = global.scenarioData[caseDetailsRef];
 
-  caseDetails.metadataFields.push({
-    'id': '[ACCESS_PROCESS]',
-    'label': 'Access Process',
-    'hidden': null,
-    'value': accessProcess,
-    'metadata': true,
-    'hint_text': null,
-    'field_type': {
-      'id': 'Text',
-      'type': 'Text',
-      'min': null,
-      'max': null,
-      'regular_expression': null,
-      'fixed_list_items': [
+    caseDetails.metadataFields.push({
+      id: '[ACCESS_PROCESS]',
+      label: 'Access Process',
+      hidden: null,
+      value: accessProcess,
+      metadata: true,
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null,
+      },
+      validation_expr: null,
+      security_label: 'PUBLIC',
+      order: null,
+      formatted_value: null,
+      display_context: null,
+      display_context_parameter: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null,
+      retain_hidden_value: null,
+      publish: null,
+      publish_as: null,
+      acls: null,
+    });
 
-      ],
-      'complex_fields': [
+    caseDetails.metadataFields.push({
+      id: '[ACCESS_GRANTED]',
+      label: 'Access Granted',
+      hidden: null,
+      value: accessGranted,
+      metadata: true,
+      hint_text: null,
+      field_type: {
+        id: 'Text',
+        type: 'Text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: [],
+        complex_fields: [],
+        collection_field_type: null,
+      },
+      validation_expr: null,
+      security_label: 'PUBLIC',
+      order: null,
+      formatted_value: null,
+      display_context: null,
+      display_context_parameter: null,
+      show_condition: null,
+      show_summary_change_option: null,
+      show_summary_content_option: null,
+      retain_hidden_value: null,
+      publish: null,
+      publish_as: null,
+      acls: null,
+    });
+    await serviceMock.updateCaseData(caseDetails, 200);
 
-      ],
-      'collection_field_type': null
-    },
-    'validation_expr': null,
-    'security_label': 'PUBLIC',
-    'order': null,
-    'formatted_value': null,
-    'display_context': null,
-    'display_context_parameter': null,
-    'show_condition': null,
-    'show_summary_change_option': null,
-    'show_summary_content_option': null,
-    'retain_hidden_value': null,
-    'publish': null,
-    'publish_as': null,
-    'acls': null
-  });
+    await serviceMock.updateCaseData(caseDetails, 200);
+  }
+);
 
-  caseDetails.metadataFields.push({
-    'id': '[ACCESS_GRANTED]',
-    'label': 'Access Granted',
-    'hidden': null,
-    'value': accessGranted,
-    'metadata': true,
-    'hint_text': null,
-    'field_type': {
-      'id': 'Text',
-      'type': 'Text',
-      'min': null,
-      'max': null,
-      'regular_expression': null,
-      'fixed_list_items': [
+Given(
+  'I set MOCK case details {string} trigger id {string} trigger name {string}',
+  async function (caseDetailsRef, eventId, eventName) {
+    const caseDetails = global.scenarioData[caseDetailsRef];
+    const testTrigger = { ...caseDetails.triggers[0] };
+    testTrigger.id = eventId;
+    testTrigger.name = eventName;
+    caseDetails.triggers.unshift(testTrigger);
+    await serviceMock.updateCaseData(caseDetails, 200);
+  }
+);
 
-      ],
-      'complex_fields': [
-
-      ],
-      'collection_field_type': null
-    },
-    'validation_expr': null,
-    'security_label': 'PUBLIC',
-    'order': null,
-    'formatted_value': null,
-    'display_context': null,
-    'display_context_parameter': null,
-    'show_condition': null,
-    'show_summary_change_option': null,
-    'show_summary_content_option': null,
-    'retain_hidden_value': null,
-    'publish': null,
-    'publish_as': null,
-    'acls': null
-  });
-  await serviceMock.updateCaseData(caseDetails, 200);
-
-  await serviceMock.updateCaseData(caseDetails, 200);
-});
-
-Given('I set MOCK case details {string} trigger id {string} trigger name {string}', async function (caseDetailsRef, eventId, eventName) {
-  const caseDetails = global.scenarioData[caseDetailsRef];
-  const testTrigger = { ...caseDetails.triggers[0] };
-  testTrigger.id = eventId;
-  testTrigger.name = eventName;
-  caseDetails.triggers.unshift(testTrigger);
-  await serviceMock.updateCaseData(caseDetails, 200);
-});
-
-Given('I set MOCK case roles', async function(caseRolesDatatable){
+Given('I set MOCK case roles', async function (caseRolesDatatable) {
   const dateTableHashes = caseRolesDatatable.parse().hashes();
-  for (const hash of dateTableHashes){
-    for (const key of Object.keys(hash)){
-      if ((key === 'start' || key === 'end') && hash[key] !== ''){
+  for (const hash of dateTableHashes) {
+    for (const key of Object.keys(hash)) {
+      if ((key === 'start' || key === 'end') && hash[key] !== '') {
         const dateObj = new Date();
         dateObj.setDate(dateObj.getDate() + parseInt(hash[key]));
         hash[key] = dateObj.toISOString();
       }
 
-      if (key === 'role-name'){
+      if (key === 'role-name') {
         hash[key] = hash[key].toLowerCase().split(' ').join('-');
       }
     }
@@ -247,7 +247,7 @@ Given('I set MOCK case role exclusions', async function (caseRoleExclusionsDatat
       }
     }
   }
-  workAlloctionMockData.exclusions= workAlloctionMockData.getCaseExclusions(dateTableHashes);
+  workAlloctionMockData.exclusions = workAlloctionMockData.getCaseExclusions(dateTableHashes);
 });
 
 Given('I set MOCK case tasks with userDetails from reference {string}', async function (userDetailsRef, caseTasksDatatable) {
@@ -260,19 +260,17 @@ Given('I set MOCK case tasks with userDetails from reference {string}', async fu
     status: 200,
     data: {
       tasks: workAlloctionMockData.caseTasks,
-      'total_records': workAlloctionMockData.caseTasks.length
-    }
+      total_records: workAlloctionMockData.caseTasks.length,
+    },
   });
 });
 
-Given('I set MOCK case list values', async function(caseListAttributesDatatable){
+Given('I set MOCK case list values', async function (caseListAttributesDatatable) {
   // const cases = ccdMockData.caseList.results;
   // const inputDatatableHashes = caseListAttributesdatatable.parse().hashes();
-
   // for (let i = 0; i < inputDatatableHashes.length; i++){
   //     const caseItem = cases[i];
   //     const inputHash = inputDatatableHashes[i];
-
   //     const keys = Object.keys(inputHash);
   //     for(const caseAttrib of keys){
   //         if (caseAttrib.startsWith('case_fields.')){
@@ -285,16 +283,14 @@ Given('I set MOCK case list values', async function(caseListAttributesDatatable)
   //             caseItem[caseAttrib] = inputHash[caseAttrib];
   //         }
   //     }
-
   // }
-
 });
 
-function getCaseDetailsMetadataField(caseDetails, metadatFieldId){
+function getCaseDetailsMetadataField(caseDetails, metadatFieldId) {
   const fields = caseDetails.metadataFields;
   let returnField = null;
-  for (const field of fields){
-    if (field.id === metadatFieldId){
+  for (const field of fields) {
+    if (field.id === metadatFieldId) {
       returnField = field;
       break;
     }
@@ -302,12 +298,12 @@ function getCaseDetailsMetadataField(caseDetails, metadatFieldId){
   return returnField;
 }
 
-function convertDatatablePropsToccdObj(datatable){
+function convertDatatablePropsToccdObj(datatable) {
   const tableRowshash = datatable.rowsHash();
-  for (const key in tableRowshash){
-    if (tableRowshash[key].toUpperCase() === 'YES'){
+  for (const key in tableRowshash) {
+    if (tableRowshash[key].toUpperCase() === 'YES') {
       tableRowshash[key] = true;
-    } else if (tableRowshash[key].toUpperCase() === 'NO'){
+    } else if (tableRowshash[key].toUpperCase() === 'NO') {
       tableRowshash[key] = false;
     }
   }

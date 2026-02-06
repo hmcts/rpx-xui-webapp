@@ -41,7 +41,7 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
             { name: 'Taylor House', id: '765324' },
           ],
           descriptions: [
-            'You still need to submit your appeal.\n[Submit your appeal](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/submitAppeal)',
+            'You still need to submit your appeal.\n\n[Submit your appeal](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/submitAppeal)',
             'Current progress of the case ![Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage](https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg)',
           ],
           assignees: assigneeId ? [assigneeId] : [],

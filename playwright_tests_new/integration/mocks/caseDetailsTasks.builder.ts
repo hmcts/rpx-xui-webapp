@@ -225,9 +225,7 @@ const mapParamsToOverrides = (caseId: string, params: TaskDetailsParams): TaskDe
   };
 };
 
-export const buildCaseDetailsTasksFromParams = (
-  options: CaseDetailsTasksParamsOptions
-): CaseDetailsTaskMock[] => {
+export const buildCaseDetailsTasksFromParams = (options: CaseDetailsTasksParamsOptions): CaseDetailsTaskMock[] => {
   const { caseId, tasks, baseTask } = options;
   return tasks.map((params) => buildTaskDetailsMock(caseId, mapParamsToOverrides(caseId, params), baseTask));
 };

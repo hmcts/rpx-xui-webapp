@@ -55,9 +55,7 @@ const applyTabAndFieldOverrides = (
       return { ...field, ...fieldOverride };
     });
 
-    const extraFields = fieldAdds
-      .filter((item) => (item.tabId ?? 'overview') === tab.id)
-      .map(({ tabId, ...field }) => field);
+    const extraFields = fieldAdds.filter((item) => (item.tabId ?? 'overview') === tab.id).map(({ tabId, ...field }) => field);
 
     return {
       ...tab,
@@ -117,12 +115,7 @@ export function buildAsylumCaseMock(overrides: CaseMockOverrides = {}) {
     };
   }
 
-  const tabsWithOverrides = applyTabAndFieldOverrides(
-    tabs,
-    overrides.tabOverrides,
-    derivedFieldOverrides,
-    overrides.addFields
-  );
+  const tabsWithOverrides = applyTabAndFieldOverrides(tabs, overrides.tabOverrides, derivedFieldOverrides, overrides.addFields);
 
   return {
     ...base,

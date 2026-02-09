@@ -32,8 +32,21 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
       expect.soft(await caseDetailsPage.caseProgressMessage.innerText()).toContain('Do this next');
     });
 
-    // TODO
-    // Test required for a caseId that does not exist in CCD
-    // 'Check that SearchResults page not found'
+    // WIP
+    test('Search INVALID 16-digit case reference @KSM', async ({ caseDetailsPage, searchCasePage }) => {
+      await test.step('16 Digit Search ', async () => {
+        // TODO case should be created from API script.
+        const caseNumber = '98676543210123456';
+        await searchCasePage.searchWith16DigitCaseId(caseNumber);
+      });
+      const headingText = await searchCasePage.searchResultsPageHeading;
+      //expect(headingText).toContain('Current progress of the case');
+
+      await test.skip('Search Results - Not found should be seen', async () => {
+        expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
+        expect.soft(await caseDetailsPage.resultsNotFoundHeading.innerText()).toContain('No results found');
+        expect.soft(await caseDetailsPage.backLink.textContent()).toBe('Back');
+      });
+    });
   });
 });

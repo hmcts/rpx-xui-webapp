@@ -3,23 +3,17 @@ import { Base } from '../../base';
 
 export class FindCasePage extends Base {
   // Locators
-  readonly findCaseLinkOnMenu = this.page.getByRole('link', { name: ' Find case ' });
+  readonly resetFilterButton = this.page.locator('button[type="reset"]');
   readonly showHideFilterButton = this.page.locator('.hmcts-action-bar__filter > button');
-  readonly resetFilterButton = this.page.getByRole('button', { name: ' Reset filter ' });
-  readonly backToTopButton = this.page.getByRole('button', { name: 'Back to top' });
-  readonly searchResults_caseLink = this.page.getByRole('link', { name: 'go to case with Case' });
-  readonly caseReference = this.page.getByRole('textbox', { name: 'Case reference', exact: true });
   readonly container = this.page.locator('exui-case-home');
-
   readonly jurisdictionSelect = this.page.locator('#s-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#s-case-type');
-
-  readonly textField0Input = this.page.locator('#TextField0');
   readonly ccdCaseReference = this.page.locator('#dynamicFilters #\\[CASE_REFERENCE\\]');
   readonly pagination = this.page.locator('.ngx-pagination');
   readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');
   readonly firstRowOfSearchResultsTable = this.searchResultsTable.locator('.govuk-link').first();
   readonly workBasketFilterPanel = this.page.locator('.search-block .hmcts-filter-layout__filter ccd-search-filters-wrapper');
+  readonly findCaseLinkOnMenu = this.page.getByRole('link', { name: ' Find case ' });
 
   async startFindCaseJourney(caseNumber, caseType, jurisdiction): Promise<void> {
     await this.findCaseLinkOnMenu.click();
@@ -43,35 +37,24 @@ export class FindCasePage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
-  async displayCaseDetailsFor(caseNumber: string): Promise<void> {
+  async displayCaseDetails(): Promise<void> {
     await this.firstRowOfSearchResultsTable.click();
     await this.page.waitForTimeout(10000);
-  }
-
-  async cleanData(searchTableRecords: any): Promise<void> {
-    const sanitized: any = {};
-    for (const [key, value] of Object.entries(searchTableRecords)) {
-      if (key.trim() !== '' || key != ' ') {
-        sanitized[key] = value;
-      }
-    }
-    return sanitized;
   }
 
   private async checkButtonVisibility() {
     await this.exuiCaseListComponent.filters.applyFilterBtn.isVisible();
     await this.resetFilterButton.isVisible();
-    await this.backToTopButton.isVisible();
   }
 
   private async showHideButtons() {
-    // Clicking on Show/Hide button First time
+    // Clicking on the Show / Hide button First time
     await this.showHideFilterButton.click();
-    // ..and check WBFilter panel is NOT visible
+    // .now check the WBFilter panel is NOT visible
     await this.workBasketFilterPanel.isHidden();
-    // Clicking on Show/Hide button second time
+    // Clicking agin Show/Hide button
     await this.showHideFilterButton.click();
-    // ..and check WBFilter panel IS visible
+    // .and now check WBFilter panel IS visible
     await this.workBasketFilterPanel.isEnabled();
   }
 

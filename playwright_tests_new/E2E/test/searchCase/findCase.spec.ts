@@ -20,13 +20,7 @@ test.describe('IDAM login for Find Search page @KSM', () => {
     await page.goto('/');
   });
 
-  test('Find Case using Public Law Jurisdiction @KSM ', async ({
-    tableUtils,
-    page,
-    caseListPage,
-    findCasePage,
-    caseDetailsPage,
-  }) => {
+  test('Find Case using Public Law Jurisdiction @KSM ', async ({ tableUtils, page, config, findCasePage, caseDetailsPage }) => {
     await test.step('Start Find Case journey', async () => {
       jurisdiction = 'Public Law';
       caseType = 'Public Law Applications';
@@ -38,37 +32,24 @@ test.describe('IDAM login for Find Search page @KSM', () => {
 
       // TODO HOW TO ASSERT on the single Row Table owing to the last row being
       // " ": "",
-      // const rowContent = {
-      //    "Case name": expect((String)),
-      //    "Date submitted": expect(Object),
-      //    "FamilyMan case number": expect((String)),
-      //    "Local authority": expect((String)),
-      //    "State": expect((String)),
-      //    " ": "",
-      // };
+      const rowContent = {
+        'Case name': expect(String),
+        'Date submitted': expect(Object),
+        'FamilyMan case number': expect(String),
+        'Local authority': expect(String),
+        State: expect(String),
+        ' ': '',
+      };
 
-      const data = findCasePage.cleanData(searchTable);
       //expect(searchTable[0]).toMatchObject(rowContent);
 
-      //   expect(data[0]).toMatchObject({
-      //   "Case name": expect.any(String),
-      //   "Date submitted": expect.any(String),
-      //   "FamilyMan case number": expect.any(String),
-      //   "Local authority": expect.any(String),
-      //   "State": expect.any(String),
-      // });
-
-      await findCasePage.displayCaseDetailsFor(caseNumber);
+      await findCasePage.displayCaseDetails();
       await page.waitForTimeout(1000);
     });
 
     await test.step('Check Case Details page and ensure case is present', async () => {
-      const caseDetailsTabsCount = caseDetailsPage.getTabsCountForFindSearchPage;
-      console.log(`Number of tabs: ${caseDetailsTabsCount}`);
-      //TODO Check TAbCount here .
-      //expect(caseDetailsTabsCount).toEqual(15) ;
-      //TODO Check the url
-      //expect(caseDetailsPage.page.url()).toContain(`/cases/case-details/PUBLICLAW/CARE_SUPERVISION_EPO/${caseNumber}/#Summary`);
+      //const caseDetailsTabsCount = caseDetailsPage.getTabCount();
+      //expect(caseDetailsTabsCount).toBe(14);
       expect.soft(caseDetailsPage.caseActionsDropdown.isVisible());
       expect.soft(caseDetailsPage.caseActionGoButton.isVisible());
       expect.soft(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));

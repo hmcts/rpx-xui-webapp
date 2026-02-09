@@ -33,6 +33,9 @@ export class CaseDetailsPage extends Base {
   readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
   readonly ccdCaseReference = this.page.locator('ccd-case-header .case-field .markdown >h2 >strong');
   readonly tabList = this.page.locator('div[role="tablist"]');
+  readonly tablist2 = this.page.locator('.mat-tab-label-container .mat-tab-list .mat-tab-labels > div[role="tab"]');
+
+  //const tabs = page.locator('.mat-tab-label-container .mat-tab-list .mat-tab-labels div[role="tab"]');
 
   //Case flags
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
@@ -47,8 +50,13 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
 
-  // Search case
+  // Search case (16 Digit Search)
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
+  readonly resultsNotFoundHeading = this.page.locator(
+    'exui-page-wrapper .govuk-width-container .govuk-grid-row .govuk-heading-xl'
+  );
+  readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
+
   // GlobalSearch
   readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
   readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
@@ -283,8 +291,8 @@ export class CaseDetailsPage extends Base {
     await this.caseDetailsTabs.filter({ hasText: tabName }).click();
   }
 
-  async getTabsCountForFindSearchPage() {
-    const tabsCount = await this.tabList.locator('div[role="tab"]').count();
+  async getTabCount() {
+    const tabsCount = await this.tablist2.count();
     console.log(`Number of tabs: ${tabsCount}`);
     return tabsCount;
   }

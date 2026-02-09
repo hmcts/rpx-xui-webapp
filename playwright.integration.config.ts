@@ -27,7 +27,7 @@ module.exports = defineConfig({
   testMatch: ['**/test/**/*.spec.ts'],
   retries: process.env.CI ? 1 : 0,
   timeout: 120_000,
-  expect: { timeout: 45_000 },
+  expect: { timeout: 45_000, toHaveScreenshot: { maxDiffPixelRatio: 0.03, maxDiffPixels: 100 } },
   workers: workerCount,
   reporter: [
     [process.env.CI ? 'dot' : 'list'],

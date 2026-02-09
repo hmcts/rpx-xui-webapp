@@ -12,7 +12,7 @@ import { HearingsUtils } from '../../utils/hearings.utils';
   standalone: false,
   selector: 'exui-listing-information-summary',
   templateUrl: './listing-information-summary.component.html',
-  styleUrls: ['./listing-information-summary.component.scss']
+  styleUrls: ['./listing-information-summary.component.scss'],
 })
 export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   private static readonly HEARING_PANEL_SCREEN_NAME = 'hearing-panel';
@@ -29,32 +29,47 @@ export class ListingInformationSummaryComponent implements OnInit, OnDestroy {
   public displayPanelMembersSection: boolean;
   public showSpinner: boolean = true;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
     public readonly route: ActivatedRoute,
-    private readonly loadingService: LoadingService) {
+    private readonly loadingService: LoadingService
+  ) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.serviceValueSub = this.hearingState$.subscribe((state) => {
-      this.isListedCaseStatus = state.hearingRequest?.hearingRequestMainModel?.hearingResponse?.laCaseStatus === LaCaseStatus.LISTED;
-      state.hearingList?.hearingListMainModel?.caseHearings.forEach((caseHearing) => {
-        if (caseHearing.hearingID === state.hearingRequest.hearingRequestMainModel.caseDetails.hearingID) {
-          this.caseStatusName = caseHearing.exuiDisplayStatus;
-        }
-      });
-      this.hearingDaySchedule = state.hearingRequest.hearingRequestMainModel.hearingResponse
-        && state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
-        && HearingsUtils.sortHearingDaySchedule(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule);
-      this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR);
-      const screenFlow = state.hearingValues && state.hearingValues.serviceHearingValuesModel && state.hearingValues.serviceHearingValuesModel.screenFlow;
-      this.displayPanelMembersSection = screenFlow && screenFlow.findIndex((screen) => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !== -1;
-      this.loadingService.unregister(loadingToken);
-    }, () => {
-      this.loadingService.unregister(loadingToken);
-    });
+    this.serviceValueSub = this.hearingState$.subscribe(
+      (state) => {
+        this.isListedCaseStatus =
+          state.hearingRequest?.hearingRequestMainModel?.hearingResponse?.laCaseStatus === LaCaseStatus.LISTED;
+        state.hearingList?.hearingListMainModel?.caseHearings.forEach((caseHearing) => {
+          if (caseHearing.hearingID === state.hearingRequest.hearingRequestMainModel.caseDetails.hearingID) {
+            this.caseStatusName = caseHearing.exuiDisplayStatus;
+          }
+        });
+        this.hearingDaySchedule =
+          state.hearingRequest.hearingRequestMainModel.hearingResponse &&
+          state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule &&
+          HearingsUtils.sortHearingDaySchedule(state.hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule);
+        this.isPaperHearing = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(
+          HearingChannelEnum.ONPPR
+        );
+        const screenFlow =
+          state.hearingValues &&
+          state.hearingValues.serviceHearingValuesModel &&
+          state.hearingValues.serviceHearingValuesModel.screenFlow;
+        this.displayPanelMembersSection =
+          screenFlow &&
+          screenFlow.findIndex((screen) => screen.screenName === ListingInformationSummaryComponent.HEARING_PANEL_SCREEN_NAME) !==
+            -1;
+        this.loadingService.unregister(loadingToken);
+      },
+      () => {
+        this.loadingService.unregister(loadingToken);
+      }
+    );
   }
 
   public isCaseStatusListed(): boolean {

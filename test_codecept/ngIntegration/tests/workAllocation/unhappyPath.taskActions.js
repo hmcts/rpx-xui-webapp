@@ -3,7 +3,9 @@ const MockApp = require('../../../nodeMock/app');
 const BrowserUtil = require('../../util/browserUtil');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
-function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../../../e2e/features/pageObjects/headerPage')();
+}
 const taskManagerPage = require('../../../e2e/features/pageObjects/workAllocation/taskManagerPage');
 const tasklistPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const taskAssignmentPage = require('../../../e2e/features/pageObjects/workAllocation/taskAssignmentPage');
@@ -54,7 +56,7 @@ describe('Unhappy path task actions: ', function () {
       message = 'Sorry, there is a problem with the service';
     } else if (responseCode >= 400 && responseCode < 500) {
       if (responseCode === 401 || responseCode === 403) {
-        message = 'Sorry, you\'re not authorised to perform this action';
+        message = "Sorry, you're not authorised to perform this action";
       } else {
         message = 'Sorry, there is a problem with the service';
       }
@@ -91,10 +93,9 @@ describe('Unhappy path task actions: ', function () {
     const reassignEndpoints = [
       { name: 'Task details', url: '/workallocation/task/:taskId' },
       { name: 'Locations', url: '/workallocation/location' },
-      { name: 'caseworkers', url: '/workallocation/caseworker/location/:locationId' }
-
+      { name: 'caseworkers', url: '/workallocation/caseworker/location/:locationId' },
     ];
-    for (const endPoint of reassignEndpoints){
+    for (const endPoint of reassignEndpoints) {
       for (const responseCode of testErrorResponseCodes) {
         setMockResponse(() => {
           MockApp.onPost('/workallocation/task/', (req, res) => {
@@ -113,10 +114,21 @@ describe('Unhappy path task actions: ', function () {
         await tasklistPage.clickTaskAction('Reassign task');
 
         const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-        await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error page not displayed`).to.be.true);
+        await softAssertion.assert(
+          async () =>
+            expect(
+              isErrorPageDisplayed,
+              `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error page not displayed`
+            ).to.be.true
+        );
         if (isErrorPageDisplayed) {
           const errorMessageDisplayed = await errorPage.getErrorMessage();
-          await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+          await softAssertion.assert(async () =>
+            expect(
+              errorMessageDisplayed,
+              `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error message does not match`
+            ).to.contains(errorMessageForResponseCode(responseCode))
+          );
         }
       }
     }
@@ -143,7 +155,7 @@ describe('Unhappy path task actions: ', function () {
       expect(await tasklistPage.isTaskActionRowForTaskDisplayed(1), 'Task actions for selected task not displayed').to.be.true;
 
       await tasklistPage.clickTaskAction('Reassign task');
-      expect(await taskAssignmentPage.amOnPage(),'Not on task assignment page').to.be.true; 
+      expect(await taskAssignmentPage.amOnPage(), 'Not on task assignment page').to.be.true;
 
       const locations = await taskAssignmentPage.getLocationOptions();
       const caseworkers = await taskAssignmentPage.getCaseworkerOptions();
@@ -155,10 +167,21 @@ describe('Unhappy path task actions: ', function () {
       await taskAssignmentPage.clickReassignBtn();
 
       const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-      await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
+      await softAssertion.assert(
+        async () =>
+          expect(
+            isErrorPageDisplayed,
+            `For action Reassign on submit status code ${responseCode} status response, error page not displayed`
+          ).to.be.true
+      );
       if (isErrorPageDisplayed) {
         const errorMessageDisplayed = await errorPage.getErrorMessage();
-        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+        await softAssertion.assert(async () =>
+          expect(
+            errorMessageDisplayed,
+            `For action Reassign on submit status code ${responseCode} status response, error message does not match`
+          ).to.contains(errorMessageForResponseCode(responseCode))
+        );
       }
     }
 
@@ -193,10 +216,21 @@ describe('Unhappy path task actions: ', function () {
         await tasklistPage.clickTaskAction(action);
 
         const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-        await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+        await softAssertion.assert(
+          async () =>
+            expect(
+              isErrorPageDisplayed,
+              `For action ${action} on task details ${responseCode} status response, error page not displayed`
+            ).to.be.true
+        );
         if (isErrorPageDisplayed) {
           const errorMessageDisplayed = await errorPage.getErrorMessage();
-          await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+          await softAssertion.assert(async () =>
+            expect(
+              errorMessageDisplayed,
+              `For action ${action} on task details ${responseCode} status response, error message does not match`
+            ).to.contains(errorMessageForResponseCode(responseCode))
+          );
         }
       }
     }
@@ -232,10 +266,21 @@ describe('Unhappy path task actions: ', function () {
         await tasklistPage.clickTaskAction(action);
 
         const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-        await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+        await softAssertion.assert(
+          async () =>
+            expect(
+              isErrorPageDisplayed,
+              `For action ${action} on task details ${responseCode} status response, error page not displayed`
+            ).to.be.true
+        );
         if (isErrorPageDisplayed) {
           const errorMessageDisplayed = await errorPage.getErrorMessage();
-          await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+          await softAssertion.assert(async () =>
+            expect(
+              errorMessageDisplayed,
+              `For action ${action} on task details ${responseCode} status response, error message does not match`
+            ).to.contains(errorMessageForResponseCode(responseCode))
+          );
         }
       }
     }
@@ -243,4 +288,3 @@ describe('Unhappy path task actions: ', function () {
     softAssertion.finally();
   });
 });
-

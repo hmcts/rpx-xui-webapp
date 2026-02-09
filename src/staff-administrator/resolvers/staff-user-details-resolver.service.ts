@@ -8,7 +8,7 @@ import { StaffDataAccessService } from '../services/staff-data-access/staff-data
 import { SetError, ResetStaffSelect } from '../store/actions/staff-select.action';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StaffUserDetailsResolverService {
   constructor(

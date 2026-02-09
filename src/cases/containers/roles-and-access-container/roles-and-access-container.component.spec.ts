@@ -2,7 +2,16 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, AlertService, AuthService, CaseField, CaseNotifier, CaseView, CasesService, HttpErrorService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  AbstractAppConfig,
+  AlertService,
+  AuthService,
+  CaseField,
+  CaseNotifier,
+  CaseView,
+  CasesService,
+  HttpErrorService,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -23,7 +32,7 @@ metadataField.id = '[JURISDICTION]';
 metadataField.value = 'JUDICIAL';
 const flags = {
   enabledFlag: true,
-  disabledFlag: false
+  disabledFlag: false,
 };
 const CASE_VIEW: CaseView = {
   metadataFields: [metadataField],
@@ -35,14 +44,14 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'TEST',
-      name: 'Test'
+      name: 'Test',
     },
-    printEnabled: true
+    printEnabled: true,
   },
   channels: [],
   state: {
     id: 'CaseCreated',
-    name: 'Case created'
+    name: 'Case created',
   },
   tabs: [
     {
@@ -56,12 +65,12 @@ const CASE_VIEW: CaseView = {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Text',
-            type: 'Text'
+            type: 'Text',
           },
           order: 2,
           value: 'Janet',
           show_condition: '',
-          hint_text: ''
+          hint_text: '',
         }),
         Object.assign(new CaseField(), {
           id: 'PersonLastName',
@@ -69,12 +78,12 @@ const CASE_VIEW: CaseView = {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Text',
-            type: 'Text'
+            type: 'Text',
           },
           order: 1,
           value: 'Parker',
           show_condition: 'PersonFirstName="Jane*"',
-          hint_text: ''
+          hint_text: '',
         }),
         Object.assign(new CaseField(), {
           id: 'PersonComplex',
@@ -83,42 +92,44 @@ const CASE_VIEW: CaseView = {
           field_type: {
             id: 'Complex',
             type: 'Complex',
-            complex_fields: []
+            complex_fields: [],
           },
           order: 3,
           show_condition: 'PersonFirstName="Park"',
-          hint_text: ''
-        })
+          hint_text: '',
+        }),
       ],
-      show_condition: 'PersonFirstName="Janet"'
+      show_condition: 'PersonFirstName="Janet"',
     },
     {
       id: 'HistoryTab',
       label: 'History',
       order: 1,
-      fields: [Object.assign(new CaseField(), {
-        id: 'CaseHistory',
-        label: 'Case History',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'CaseHistoryViewer',
-          type: 'CaseHistoryViewer'
-        },
-        order: 1,
-        value: null,
-        show_condition: '',
-        hint_text: ''
-      })],
-      show_condition: ''
+      fields: [
+        Object.assign(new CaseField(), {
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer',
+          },
+          order: 1,
+          value: null,
+          show_condition: '',
+          hint_text: '',
+        }),
+      ],
+      show_condition: '',
     },
     {
       id: 'SomeTab',
       label: 'Some Tab',
       order: 3,
       fields: [],
-      show_condition: ''
-    }
-  ]
+      show_condition: '',
+    },
+  ],
 };
 
 describe('RolesContainerComponent', () => {
@@ -127,7 +138,7 @@ describe('RolesContainerComponent', () => {
 
   const route = {
     navigate: jasmine.createSpy(),
-    snapshot: { data: { case: CASE_VIEW } }
+    snapshot: { data: { case: CASE_VIEW } },
   } as unknown as ActivatedRoute;
   const store = jasmine.createSpyObj('store', ['pipe', 'select']);
   const roleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['getCurrentUserRoleExclusions']);
@@ -147,22 +158,27 @@ describe('RolesContainerComponent', () => {
         ShowAllocateLinkDirective,
         ExclusionsTableComponent,
         RoleAccessSectionComponent,
-        AllocateARoleLinkComponent
+        AllocateARoleLinkComponent,
       ],
       imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule],
       providers: [
-        CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
+        CasesService,
+        HttpErrorService,
+        HttpErrorService,
+        AuthService,
+        AbstractAppConfig,
+        AlertService,
         { provide: CaseNotifier, useValue: mockNotifierService },
         {
           provide: RoleExclusionsService,
-          useClass: RoleExclusionsMockService
+          useClass: RoleExclusionsMockService,
         },
         {
           provide: FeatureToggleService,
           useValue: {
             isEnabled: (flag) => of(flags[flag]),
-            getValue: (flag) => of(flags[flag])
-          }
+            getValue: (flag) => of(flags[flag]),
+          },
         },
         provideMockStore({ initialState: initialMockState }),
         {
@@ -172,16 +188,15 @@ describe('RolesContainerComponent', () => {
               data: {
                 roles: CASEROLES,
                 showAllocateRoleLink: true,
-                case: CASE_VIEW
-              }
-            }
-          }
+                case: CASE_VIEW,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   // beforeEach(async(() => {
@@ -235,14 +250,30 @@ describe('RolesContainerComponent', () => {
   // });
 
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
 
     expect(component.showAllocateRoleLink).toBeTruthy();
   });
 
   it('ngOnit', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
 
     spyOn(component, 'applyJurisdiction');
     spyOn(component, 'loadExclusions');
@@ -258,7 +289,15 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
@@ -268,9 +307,9 @@ describe('RolesContainerComponent', () => {
       jurisdiction: {
         id: '',
         name: '',
-        description: ''
+        description: '',
       },
-      printEnabled: false
+      printEnabled: false,
     };
     component.caseDetails = caseDetails;
     const caseRoles = [{ roleCategory: 'JUDICIAL', actorId: '234' }];
@@ -288,7 +327,15 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadRoles should update with caseRoles', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
     caseDetails.case_type = {
@@ -298,9 +345,9 @@ describe('RolesContainerComponent', () => {
       jurisdiction: {
         id: '',
         name: '',
-        description: ''
+        description: '',
       },
-      printEnabled: false
+      printEnabled: false,
     };
     component.caseDetails = caseDetails;
     const caseRoles = [];
@@ -315,7 +362,15 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadExclusions', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [
@@ -327,8 +382,8 @@ describe('RolesContainerComponent', () => {
         userType: 'JUDICIAL',
         notes: '',
         added: new Date(),
-        email: ''
-      }
+        email: '',
+      },
     ];
     const caseDetails = { case_id: '12344', case_type: { id: '345' } } as CaseView;
     component.caseDetails = caseDetails;
@@ -340,7 +395,15 @@ describe('RolesContainerComponent', () => {
   });
 
   it('loadExclusions should update exclusions with empty array', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
 
     const jurisdiction = { value: 'ia' };
     const exclusions = [];
@@ -354,7 +417,15 @@ describe('RolesContainerComponent', () => {
   });
 
   it('applyJurisdiction', () => {
-    component = new RolesAndAccessContainerComponent(route, store, roleExclusionsService, allocateService, caseworkerDataService, sessionStorageService, featureToggleService);
+    component = new RolesAndAccessContainerComponent(
+      route,
+      store,
+      roleExclusionsService,
+      allocateService,
+      caseworkerDataService,
+      sessionStorageService,
+      featureToggleService
+    );
     spyOn(component, 'setDisplayAllocateLink');
 
     store.select.and.returnValue(of({}));

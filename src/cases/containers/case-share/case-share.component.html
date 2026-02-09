@@ -1,9 +1,6 @@
-<exui-page-wrapper
-  [backLink]="'/cases'"
-  [fnTitle]="'Share a case' | rpxTranslate"
-  [title]="'Add recipient' | rpxTranslate">
+<exui-page-wrapper [backLink]="'/cases'" [fnTitle]="'Share a case' | rpxTranslate" [title]="'Add recipient' | rpxTranslate">
   <xuilib-share-case
-    [shareCases$] = "shareCases$"
+    [shareCases$]="shareCases$"
     [users]="orgUsers$ | async"
     [removeUserFromCaseToggleOn]="removeUserFromCaseToggleOn$ | async"
     (unselect)="deselect($event)"

@@ -48,8 +48,8 @@ describe('Auth Module', () => {
       warn: sandbox.stub(),
       error: sandbox.stub(),
       _logger: {
-        info: sandbox.stub()
-      }
+        info: sandbox.stub(),
+      },
     };
     getLoggerStub = sandbox.stub(log4jui, 'getLogger').returns(loggerStub);
 
@@ -61,7 +61,7 @@ describe('Auth Module', () => {
     axiosGetStub = sandbox.stub(axios, 'get');
 
     clientStub = {
-      trackEvent: sandbox.stub()
+      trackEvent: sandbox.stub(),
     };
     sandbox.stub(require('../lib/appInsights'), 'client').value(clientStub);
 
@@ -82,13 +82,13 @@ describe('Auth Module', () => {
         passport: {
           user: {
             userinfo: {
-              uid: 'test-user-id'
+              uid: 'test-user-id',
             },
             tokenset: {
-              accessToken: 'test-access-token'
-            }
-          }
-        }
+              accessToken: 'test-access-token',
+            },
+          },
+        },
       };
       getConfigValueStub.withArgs('cookies.token').returns('xui-mo-webapp-token');
       getConfigValueStub.withArgs('cookies.userId').returns('xui-mo-webapp-userId');
@@ -135,7 +135,7 @@ describe('Auth Module', () => {
   describe('failureCallback', () => {
     beforeEach(() => {
       res.locals = {
-        message: 'Authentication failed'
+        message: 'Authentication failed',
       };
     });
 
@@ -186,7 +186,7 @@ describe('Auth Module', () => {
       s2sPath: 'https://s2s.test.com',
       oauthCallbackUrl: 'https://xui.test.com/oauth2/callback',
       loginRoleMatcher: 'caseworker|judiciary',
-      idamServiceOverride: 'override-service'
+      idamServiceOverride: 'override-service',
     };
 
     // Helper functions to reduce duplication
@@ -350,10 +350,10 @@ describe('Auth Module', () => {
       const mockServiceOverride = 'dynamic-override';
 
       axiosPostStub.resolves({
-        data: { access_token: mockToken }
+        data: { access_token: mockToken },
       });
       axiosGetStub.resolves({
-        data: { oauth2: { issuerOverride: mockServiceOverride } }
+        data: { oauth2: { issuerOverride: mockServiceOverride } },
       });
 
       await getXuiNodeMiddleware();
@@ -370,7 +370,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('queryIdamServiceOverride').returns(true);
 
       axiosPostStub.resolves({
-        data: { access_token: 'test-token' }
+        data: { access_token: 'test-token' },
       });
       axiosGetStub.rejects(new Error('API Error'));
 
@@ -403,7 +403,7 @@ describe('Auth Module', () => {
       showFeatureStub.withArgs('queryIdamServiceOverride').returns(true);
 
       axiosPostStub.resolves({
-        data: {} // No access_token
+        data: {}, // No access_token
       });
 
       await getXuiNodeMiddleware();
@@ -460,10 +460,10 @@ describe('Auth Module', () => {
 
       it('should make correct token request', async () => {
         axiosPostStub.resolves({
-          data: { access_token: 'test-token' }
+          data: { access_token: 'test-token' },
         });
         axiosGetStub.resolves({
-          data: { oauth2: { issuerOverride: 'override' } }
+          data: { oauth2: { issuerOverride: 'override' } },
         });
 
         await getXuiNodeMiddleware();
@@ -473,8 +473,8 @@ describe('Auth Module', () => {
           'grant_type=client_credentials&client_id=test-client-id&client_secret=test-secret&scope=profile%20roles%20view-service-provider',
           {
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            }
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
           }
         );
       });
@@ -482,30 +482,27 @@ describe('Auth Module', () => {
       it('should make correct service details request', async () => {
         const mockToken = 'test-token';
         axiosPostStub.resolves({
-          data: { access_token: mockToken }
+          data: { access_token: mockToken },
         });
         axiosGetStub.resolves({
-          data: { oauth2: { issuerOverride: 'override' } }
+          data: { oauth2: { issuerOverride: 'override' } },
         });
 
         await getXuiNodeMiddleware();
 
-        expect(axiosGetStub).to.have.been.calledWith(
-          `${mockConfig.idamApiPath}/api/v2/services/${mockConfig.idamClient}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${mockToken}`
-            }
-          }
-        );
+        expect(axiosGetStub).to.have.been.calledWith(`${mockConfig.idamApiPath}/api/v2/services/${mockConfig.idamClient}`, {
+          headers: {
+            Authorization: `Bearer ${mockToken}`,
+          },
+        });
       });
 
       it('should log successful service override retrieval', async () => {
         axiosPostStub.resolves({
-          data: { access_token: 'test-token' }
+          data: { access_token: 'test-token' },
         });
         axiosGetStub.resolves({
-          data: { oauth2: { issuerOverride: 'override' } }
+          data: { oauth2: { issuerOverride: 'override' } },
         });
 
         await getXuiNodeMiddleware();

@@ -70,5 +70,17 @@ export const authenticatedRoutes = [
   { endpoint: 'api/staff-ref-data/getJobTitles' },
   { endpoint: 'api/staff-ref-data/getSkills' },
   { endpoint: 'api/staff-ref-data/addNewUser' },
-  { endpoint: 'api/staff-ref-data/updateUser' }
+  { endpoint: 'api/staff-ref-data/updateUser' },
+  { endpoint: 'workallocation/caseworker/getUsersByServiceName' },
+  { endpoint: 'workallocation/caseworker/location/:locationId/service/:serviceId' },
+  { endpoint: 'workallocation/caseworker/service/:serviceId' },
+  { endpoint: 'workallocation/caseworker/search' },
+  { endpoint: 'workallocation/full-location' },
+  { endpoint: 'workallocation/searchForCompletable' },
+  { endpoint: 'workallocation/task/:taskId/roles' },
+  { endpoint: 'workallocation/case/task/:caseId' },
+  { endpoint: 'workallocation/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:jurisdiction' },
+  { endpoint: 'workallocation/roles/:caseId/show-allocate-role-link' },
+  { endpoint: 'workallocation/all-work/cases' },
+  { endpoint: 'workallocation/getJudicialUsers' },
 ];

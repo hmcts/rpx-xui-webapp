@@ -13,7 +13,7 @@ describe('TaskRoleResolverService', () => {
     route.paramMap = {
       get: () => {
         return 'somevalue';
-      }
+      },
     };
 
     const taskRoles$ = taskResolver.resolve(route);

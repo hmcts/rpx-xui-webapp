@@ -13,9 +13,7 @@ describe('Idam Get user by email', async () => {
     surname: somethingLike('Bloggs'),
     email: somethingLike('joe.bloggs@hmcts.net'),
     active: somethingLike(true),
-    roles: somethingLike([
-      somethingLike('solicitor'), somethingLike('caseworker')
-    ])
+    roles: somethingLike([somethingLike('solicitor'), somethingLike('caseworker')]),
   };
 
   describe('get /users?email', () => {
@@ -27,19 +25,19 @@ describe('Idam Get user by email', async () => {
           method: 'GET',
           path: '/users',
           query: {
-            email: 'joe@bloggs.net'
+            email: 'joe@bloggs.net',
           },
           headers: {
-            Authorization: 'Bearer some-access-token'
-          }
+            Authorization: 'Bearer some-access-token',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -66,10 +64,10 @@ function assertResponses(dto: IdamGetDetailsResponseDto) {
 }
 
 export interface IdamGetDetailsResponseDto {
-  id: string,
-  forename: string,
-  surname: string,
-  email: string,
-  active: boolean,
-  roles: string[]
+  id: string;
+  forename: string;
+  surname: string;
+  email: string;
+  active: boolean;
+  roles: string[];
 }

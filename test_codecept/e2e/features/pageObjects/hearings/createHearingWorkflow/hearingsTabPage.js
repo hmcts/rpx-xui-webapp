@@ -1,22 +1,21 @@
 const { $, elementByXpath } = require('../../../../../helpers/globals');
 
-class HearingsTab{
+class HearingsTab {
   get tabContainer() {
     return $('exui-case-hearings');
   }
 
   get requesthearingBtn() {
-    return elementByXpath('//exui-case-hearings//a[contains(text(),\'Request a hearing\')]');
+    return elementByXpath("//exui-case-hearings//a[contains(text(),'Request a hearing')]");
   }
 
-  async isHearingsTabDisplayed(){
+  async isHearingsTabDisplayed() {
     return await this.tabContainer.isVisible();
   }
 
-  async clickRequestHearingButton(){
+  async clickRequestHearingButton() {
     await this.requesthearingBtn.click();
   }
 }
 
 module.exports = new HearingsTab();
-

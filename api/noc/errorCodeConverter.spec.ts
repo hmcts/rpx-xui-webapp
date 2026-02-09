@@ -7,8 +7,8 @@ describe('Error Code Converter', () => {
     it('should add error code for case-id-empty message', () => {
       const error = {
         data: {
-          message: 'Case ID can not be empty'
-        }
+          message: 'Case ID can not be empty',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -20,8 +20,8 @@ describe('Error Code Converter', () => {
     it('should add error code for case-id-invalid message', () => {
       const error = {
         data: {
-          message: 'Case ID has to be a valid 16-digit'
-        }
+          message: 'Case ID has to be a valid 16-digit',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -33,8 +33,8 @@ describe('Error Code Converter', () => {
     it('should add error code for case-id-invalid-length message', () => {
       const error = {
         data: {
-          message: 'Case ID has to be 16-digits long'
-        }
+          message: 'Case ID has to be 16-digits long',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -46,8 +46,8 @@ describe('Error Code Converter', () => {
     it('should add error code for case-not-found message', () => {
       const error = {
         data: {
-          message: 'Case could not be found'
-        }
+          message: 'Case could not be found',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -59,8 +59,8 @@ describe('Error Code Converter', () => {
     it('should add error code for multiple-noc-requests-on-user message', () => {
       const error = {
         data: {
-          message: 'Multiple NoC Request events found for the user'
-        }
+          message: 'Multiple NoC Request events found for the user',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -72,8 +72,8 @@ describe('Error Code Converter', () => {
     it('should add error code for multiple-noc-requests-on-case message', () => {
       const error = {
         data: {
-          message: 'More than one change request found on the case'
-        }
+          message: 'More than one change request found on the case',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -85,8 +85,8 @@ describe('Error Code Converter', () => {
     it('should add error code for insufficient-privileges message', () => {
       const error = {
         data: {
-          message: 'Insufficient privileges for notice of change request'
-        }
+          message: 'Insufficient privileges for notice of change request',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -98,8 +98,8 @@ describe('Error Code Converter', () => {
     it('should add error code for no-org-policy message with first variant', () => {
       const error = {
         data: {
-          message: 'No Organisation Policy'
-        }
+          message: 'No Organisation Policy',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -111,8 +111,8 @@ describe('Error Code Converter', () => {
     it('should add error code for no-org-policy message with second variant', () => {
       const error = {
         data: {
-          message: 'No OrganisationPolicy exists on the case for the case role'
-        }
+          message: 'No OrganisationPolicy exists on the case for the case role',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -124,8 +124,8 @@ describe('Error Code Converter', () => {
     it('should add error code for noc-event-unavailable message', () => {
       const error = {
         data: {
-          message: 'No NoC events available'
-        }
+          message: 'No NoC events available',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -137,8 +137,8 @@ describe('Error Code Converter', () => {
     it('should add error code for noc-in-progress message', () => {
       const error = {
         data: {
-          message: 'Ongoing NoC request in progress'
-        }
+          message: 'Ongoing NoC request in progress',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -150,8 +150,8 @@ describe('Error Code Converter', () => {
     it('should add error code for answers-empty message', () => {
       const error = {
         data: {
-          message: 'Challenge question answers can not be empty'
-        }
+          message: 'Challenge question answers can not be empty',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -163,8 +163,8 @@ describe('Error Code Converter', () => {
     it('should add error code for answers-mismatch-questions message', () => {
       const error = {
         data: {
-          message: 'The number of provided answers must match the number of questions'
-        }
+          message: 'The number of provided answers must match the number of questions',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -176,8 +176,8 @@ describe('Error Code Converter', () => {
     it('should add error code for answers-not-matched-any-litigant message', () => {
       const error = {
         data: {
-          message: 'The answers did not match those for any litigant'
-        }
+          message: 'The answers did not match those for any litigant',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -189,8 +189,8 @@ describe('Error Code Converter', () => {
     it('should add error code for answers-not-identify-litigant message', () => {
       const error = {
         data: {
-          message: 'The answers did not uniquely identify a litigant'
-        }
+          message: 'The answers did not uniquely identify a litigant',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -202,8 +202,8 @@ describe('Error Code Converter', () => {
     it('should add error code for no-answer-provided-for-question message', () => {
       const error = {
         data: {
-          message: 'No answer has been provided for question ID'
-        }
+          message: 'No answer has been provided for question ID',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -215,8 +215,8 @@ describe('Error Code Converter', () => {
     it('should add error code for has-represented message', () => {
       const error = {
         data: {
-          message: 'they are already representing'
-        }
+          message: 'they are already representing',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -228,8 +228,8 @@ describe('Error Code Converter', () => {
     it('should add error code for missing-cor-case-role-id message', () => {
       const error = {
         data: {
-          message: 'Missing ChangeOrganisationRequest.CaseRoleID'
-        }
+          message: 'Missing ChangeOrganisationRequest.CaseRoleID',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -241,8 +241,8 @@ describe('Error Code Converter', () => {
     it('should add generic error code for unknown message', () => {
       const error = {
         data: {
-          message: 'Some unknown error occurred'
-        }
+          message: 'Some unknown error occurred',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -255,8 +255,8 @@ describe('Error Code Converter', () => {
       const error = {
         data: {
           message: 'Case ID can not be empty',
-          code: 'existing-code'
-        }
+          code: 'existing-code',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -267,7 +267,7 @@ describe('Error Code Converter', () => {
 
     it('should handle error without data property', () => {
       const error: any = {
-        message: 'Some error without data property'
+        message: 'Some error without data property',
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -277,7 +277,7 @@ describe('Error Code Converter', () => {
 
     it('should handle error with null data', () => {
       const error = {
-        data: null
+        data: null,
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -287,7 +287,7 @@ describe('Error Code Converter', () => {
 
     it('should handle error with undefined data', () => {
       const error = {
-        data: undefined
+        data: undefined,
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -298,8 +298,8 @@ describe('Error Code Converter', () => {
     it('should handle error with data but no message', () => {
       const error = {
         data: {
-          status: 500
-        }
+          status: 500,
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -311,8 +311,8 @@ describe('Error Code Converter', () => {
     it('should handle error with empty message', () => {
       const error = {
         data: {
-          message: ''
-        }
+          message: '',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -325,8 +325,8 @@ describe('Error Code Converter', () => {
     it('should handle partial message matches for case-id-empty', () => {
       const error = {
         data: {
-          message: 'Error: Case ID can not be empty for this operation'
-        }
+          message: 'Error: Case ID can not be empty for this operation',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -337,8 +337,8 @@ describe('Error Code Converter', () => {
     it('should handle partial message matches for answers-not-matched-any-litigant', () => {
       const error = {
         data: {
-          message: 'Validation failed: The answers did not match those for any litigant in the system'
-        }
+          message: 'Validation failed: The answers did not match those for any litigant in the system',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -353,8 +353,8 @@ describe('Error Code Converter', () => {
         data: {
           message: 'Case ID can not be empty',
           timestamp: '2023-01-01T00:00:00Z',
-          path: '/api/noc/questions'
-        }
+          path: '/api/noc/questions',
+        },
       };
 
       const result = generateErrorMessageWithCode(error);
@@ -373,10 +373,10 @@ describe('Error Code Converter', () => {
           message: 'No Organisation Policy',
           details: {
             caseId: '1234567890123456',
-            userId: 'user123'
+            userId: 'user123',
           },
-          errors: ['Policy not found', 'Invalid case role']
-        }
+          errors: ['Policy not found', 'Invalid case role'],
+        },
       };
 
       const result = generateErrorMessageWithCode(error);

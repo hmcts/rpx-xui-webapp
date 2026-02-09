@@ -12,37 +12,36 @@ class WorkAllocationModels {
 
   getRelease2Case() {
     return {
-      'id': v4(),
-      'assignee': '',
-      'case_id': '1620409659381330',
-      'case_category': 'Protection',
-      'case_type': '',
-      'jurisdiction': 'IA',
-      'jurisdictionId': 'IA',
-      'location_id': '',
-      'case_name': 'Jo Fly ' + Math.floor((Math.random() * 100) + 1),
-      'actions': [],
-      'assignee': v4(),
-      'startDate': '2021-02-16T18:58:48.987+0000',
-      'hearing_date': '2021-02-16T18:58:48.987+0000',
-      'endDate': '2021-02-16T18:58:48.987+0000',
-      'jurisdiction': 'Test jurisdiction',
-      'case_role': 'Mock Test case role',
-      'role': 'case role',
-      'role_category': 'role-categpry',
-      'hasAccess': true
-
+      id: v4(),
+      assignee: '',
+      case_id: '1620409659381330',
+      case_category: 'Protection',
+      case_type: '',
+      jurisdiction: 'IA',
+      jurisdictionId: 'IA',
+      location_id: '',
+      case_name: 'Jo Fly ' + Math.floor(Math.random() * 100 + 1),
+      actions: [],
+      assignee: v4(),
+      startDate: '2021-02-16T18:58:48.987+0000',
+      hearing_date: '2021-02-16T18:58:48.987+0000',
+      endDate: '2021-02-16T18:58:48.987+0000',
+      jurisdiction: 'Test jurisdiction',
+      case_role: 'Mock Test case role',
+      role: 'case role',
+      role_category: 'role-categpry',
+      hasAccess: true,
     };
   }
 
-  getRelease2Tasks(){
+  getRelease2Tasks() {
     const tasks = [];
-    for (let i =0; i <25; i++){
+    for (let i = 0; i < 25; i++) {
       tasks.push(this.getRelease2Task());
     }
     return {
       tasks: tasks,
-      total_records: 100
+      total_records: 100,
     };
   }
 
@@ -56,14 +55,14 @@ class WorkAllocationModels {
       cases: cases,
       total_records: 100,
       total: 13,
-      unique_cases: 5
+      unique_cases: 5,
     };
   }
 
   getLocation() {
     return {
       id: '12345',
-      locationName: 'test location'
+      locationName: 'test location',
     };
   }
 
@@ -74,7 +73,7 @@ class WorkAllocationModels {
       lastName: 'testln',
       idamId: '004b7164-0943-41b5-95fc-39794af4a9fe',
       roleCategory: 'case-worker',
-      location: this.getLocation()
+      location: this.getLocation(),
     };
   }
 
@@ -89,7 +88,7 @@ class WorkAllocationModels {
       fullName: 'Judge Robin',
       personalCode: '',
       surname: 'test',
-      title: 'Mr'
+      title: 'Mr',
     };
   }
 
@@ -144,7 +143,7 @@ class WorkAllocationModels {
 
     const allowedActions = {};
     for (let i = 0; i < roles.length; i++) {
-      if (roles[i] === ''){
+      if (roles[i] === '') {
         continue;
       } else if (actionsView[roles[i]] === undefined) {
         throw new Error(`Role ${roles[i]} is not modeled in Mock data model. test requires update`);
@@ -159,13 +158,16 @@ class WorkAllocationModels {
     return Object.values(allowedActions);
   }
 
-  getRoleCategory(){
-    return { 'roleId': 'judicial', 'roleName': 'Judicial' };
+  getRoleCategory() {
+    return { roleId: 'judicial', roleName: 'Judicial' };
   }
 
-  getCaseRole(roleCategory){
+  getCaseRole(roleCategory) {
     return {
-      actions: [{ id: 'reallocate', title: 'Reallocate' }, { id: 'remove', title: 'Remove Allocation' }],
+      actions: [
+        { id: 'reallocate', title: 'Reallocate' },
+        { id: 'remove', title: 'Remove Allocation' },
+      ],
       end: '2021-02-16T18:58:48.987+0000',
       id: v4(),
       location: 'test location',
@@ -173,37 +175,37 @@ class WorkAllocationModels {
       roleName: '',
       start: '2020-09-16T18:58:48.987+0000',
       end: '',
-      actorId: v4()
+      actorId: v4(),
     };
   }
 
   getCaseExclusion() {
     return {
-      'actorId': '',
-      'added': 1627776000000,
-      'id': '',
-      'notes': 'this case been remitted from Upper Tribunal and required different judge',
-      'type': 'Other',
-      'userType': 'Judicial'
+      actorId: '',
+      added: 1627776000000,
+      id: '',
+      notes: 'this case been remitted from Upper Tribunal and required different judge',
+      type: 'Other',
+      userType: 'Judicial',
     };
   }
 
-  getCompletableTasks(){
+  getCompletableTasks() {
     return {
       task_required_for_event: true,
-      tasks: []
+      tasks: [],
     };
   }
 
-  getRole(){
+  getRole() {
     return {
       roleId: '',
       roleName: '',
-      roleType: ''
+      roleType: '',
     };
   }
 
-  getValidRoles(){
+  getValidRoles() {
     const roles = [];
     const leadJudge = this.getRole();
     const hearingJudge = this.getRole();
@@ -227,61 +229,61 @@ class WorkAllocationModels {
     return roles;
   }
 
-  getRefDataJudge(firstName, surname, email){
+  getRefDataJudge(firstName, surname, email) {
     const fn = firstName ? `${firstName} ${surname}` : 'fntest';
     const ln = surname ? surname : 'snjudge';
     return {
-      'sidam_id': v4(),
-      'object_id': '018a0310-f122-4377-9504-f635301f39ed-test2',
-      'known_as': `${fn} ${ln}`,
-      'surname': ln,
-      'full_name': fn,
-      'personal_code': '330127',
-      'post_nominals': 'Ms',
-      'email_id': email ? email : 'test@judicial.com',
-      'appointments': [
+      sidam_id: v4(),
+      object_id: '018a0310-f122-4377-9504-f635301f39ed-test2',
+      known_as: `${fn} ${ln}`,
+      surname: ln,
+      full_name: fn,
+      personal_code: '330127',
+      post_nominals: 'Ms',
+      email_id: email ? email : 'test@judicial.com',
+      appointments: [
         {
-          'base_location_id': '1032',
-          'epimms_id': null,
-          'court_name': 'Social Entitlement',
-          'cft_region_id': '2',
-          'cft_region': 'London',
-          'location_id': '14',
-          'location': 'London',
-          'is_principal_appointment': 'true',
-          'appointment': 'Tribunal Member Disability',
-          'appointment_type': 'Fee Paid',
-          'service_code': 'BFA1',
-          'roles': [],
-          'start_date': '2018-12-05',
-          'end_date': null
-        }
+          base_location_id: '1032',
+          epimms_id: null,
+          court_name: 'Social Entitlement',
+          cft_region_id: '2',
+          cft_region: 'London',
+          location_id: '14',
+          location: 'London',
+          is_principal_appointment: 'true',
+          appointment: 'Tribunal Member Disability',
+          appointment_type: 'Fee Paid',
+          service_code: 'BFA1',
+          roles: [],
+          start_date: '2018-12-05',
+          end_date: null,
+        },
       ],
-      'authorisations': [
+      authorisations: [
         {
-          'jurisdiction': 'Authorisation Tribunals',
-          'ticket_description': 'Social Security and Child Support',
-          'ticket_code': '357',
-          'service_code': 'BBA3',
-          'start_date': '2013-12-05T00:00',
-          'end_date': null
+          jurisdiction: 'Authorisation Tribunals',
+          ticket_description: 'Social Security and Child Support',
+          ticket_code: '357',
+          service_code: 'BBA3',
+          start_date: '2013-12-05T00:00',
+          end_date: null,
         },
         {
-          'jurisdiction': 'Authorisation Tribunals',
-          'ticket_description': '03 - Disability Living Allowance',
-          'ticket_code': '365',
-          'service_code': 'BBA3',
-          'start_date': '1901-01-01T00:00',
-          'end_date': null
-        }
-      ]
+          jurisdiction: 'Authorisation Tribunals',
+          ticket_description: '03 - Disability Living Allowance',
+          ticket_code: '365',
+          service_code: 'BBA3',
+          start_date: '1901-01-01T00:00',
+          end_date: null,
+        },
+      ],
     };
   }
 
-  getCaseEventTasksCompletable(){
+  getCaseEventTasksCompletable() {
     return {
       task_required_for_event: false,
-      tasks: []
+      tasks: [],
     };
   }
 }
@@ -294,35 +296,39 @@ const ACTIONS = {
   AssignToMeAndGoToTasks: { id: 'claim-and-go', title: 'Assign to me and go to case' },
   Assign: { id: 'assign', title: 'Assign task' },
   MarkAsDone: { id: 'complete', title: 'Mark as done' },
-  Cancel: { id: 'cancel', title: 'Cancel task' }
+  Cancel: { id: 'cancel', title: 'Cancel task' },
 };
 
 const CASE_ACTIONS = {
   ReAllocate: { id: 'reallocate', title: 'Reallocate' },
-  RemoveAllocation: { id: 'remove', title: 'Remove' }
+  RemoveAllocation: { id: 'remove', title: 'Remove' },
 };
 const taskActionsMatrix = {
   ActiveTasksAssignedCurrentUser: {
-    Read: [], Refer: [], Manage: [],
+    Read: [],
+    Refer: [],
+    Manage: [],
     Cancel: [ACTIONS.Cancel],
     Own: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.MarkAsDone],
-    Execute: [ACTIONS.MarkAsDone]
-
+    Execute: [ACTIONS.MarkAsDone],
   },
   ActiveTasksAssignedOtherUser: {
-    Read: [], Refer: [], Manage: [],
+    Read: [],
+    Refer: [],
+    Manage: [],
     Cancel: [ACTIONS.Cancel],
     Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.MarkAsDone],
     Own: [ACTIONS.AssignToMe],
-    Execute: []
-
+    Execute: [],
   },
   ActiveTasksUnassigned: {
-    Read: [], Refer: [], Manage: [],
+    Read: [],
+    Refer: [],
+    Manage: [],
     Cancel: [ACTIONS.Cancel],
     Execute: [ACTIONS.AssignToMe],
     Manage: [ACTIONS.Assign],
-    Own: [ACTIONS.AssignToMe, ACTIONS.MarkAsDone]
+    Own: [ACTIONS.AssignToMe, ACTIONS.MarkAsDone],
   },
   mytasks: {
     Read: [],
@@ -330,8 +336,7 @@ const taskActionsMatrix = {
     Own: [ACTIONS.Unassign, ACTIONS.GoToTasks],
     Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
     Execute: [ACTIONS.Unassign, ACTIONS.GoToTasks],
-    Cancel: [ACTIONS.Cancel]
-
+    Cancel: [ACTIONS.Cancel],
   },
   availabletasks: {
     Read: [],
@@ -339,7 +344,7 @@ const taskActionsMatrix = {
     Own: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
     Manage: [],
     Execute: [ACTIONS.AssignToMe, ACTIONS.AssignToMeAndGoToTasks],
-    Cancel: []
+    Cancel: [],
   },
   allwork: {
     unassigned: {
@@ -348,7 +353,7 @@ const taskActionsMatrix = {
       Own: [ACTIONS.MarkAsDone],
       Manage: [ACTIONS.Assign, ACTIONS.GoToTasks],
       Execute: [ACTIONS.MarkAsDone],
-      Cancel: [ACTIONS.Cancel]
+      Cancel: [ACTIONS.Cancel],
     },
     assigned: {
       Read: [],
@@ -356,20 +361,20 @@ const taskActionsMatrix = {
       Own: [ACTIONS.MarkAsDone],
       Manage: [ACTIONS.Reassign, ACTIONS.Unassign, ACTIONS.GoToTasks],
       Execute: [ACTIONS.MarkAsDone],
-      Cancel: [ACTIONS.Cancel]
-    }
-  }
+      Cancel: [ACTIONS.Cancel],
+    },
+  },
 };
 
 const caseActionsMatrix = {
   mycases: {
     'case-allocator': [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
-    'task-supervisor': []
+    'task-supervisor': [],
   },
   allworkcases: {
     'case-allocator': [CASE_ACTIONS.ReAllocate, CASE_ACTIONS.RemoveAllocation],
-    'task-supervisor': []
-  }
+    'task-supervisor': [],
+  },
 };
 
 module.exports = new WorkAllocationModels();

@@ -80,7 +80,6 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
  * getHearing from hearing ID
  */
 export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
   const hearingId: string = req.query.hearingId as string;
   const caseRef = req.query.caseRef as string;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;

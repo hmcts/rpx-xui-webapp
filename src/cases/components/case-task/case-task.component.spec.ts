@@ -13,7 +13,6 @@ describe('CaseTaskComponent', () => {
   let mockRouter: any;
   let mockTaskService: any;
   let mockFeatureToggleService: any;
-  let mockEnvironmentService: any;
   let mockWindow: any;
   let component: CaseTaskComponent;
 
@@ -23,25 +22,11 @@ describe('CaseTaskComponent', () => {
     mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
     mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
     mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-    mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get']);
     mockRouter.url = '/case-details/IA/Asylum/123243430403904/tasks';
 
     mockRouter.navigate.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
-    mockWindow = {
-      location: {
-        origin: 'https://manage-case.hmcts.platform.net',
-        assign: jasmine.createSpy('assign'),
-      },
-    };
-    mockEnvironmentService.get.and.returnValue({});
-    component = new CaseTaskComponent(
-      mockAlertService,
-      mockRouter,
-      mockSessionStorage,
-      mockEnvironmentService,
-      mockTaskService,
-      mockWindow
-    );
+    mockWindow = { location: new URL('https://manage-case.hmcts.platform.net') };
+    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockWindow);
     mockFeatureToggleService.getValue.and.returnValue(
       of({
         configurations: [
@@ -240,14 +225,7 @@ describe('CaseTaskComponent', () => {
   it('should get the correct returnUrl', () => {
     expect(component.returnUrl).toEqual(mockRouter.url);
     mockRouter = null;
-    component = new CaseTaskComponent(
-      mockAlertService,
-      mockRouter,
-      mockSessionStorage,
-      mockEnvironmentService,
-      mockTaskService,
-      mockWindow
-    );
+    component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockWindow);
     component.task = {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Some Name',
@@ -389,41 +367,6 @@ describe('CaseTaskComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['https://manage-case.hmcts.platform.net/firsturlpart/'], {
         queryParams: { tid: '1234' },
       });
-    });
-  });
-
-  describe('onClick() with decentralised event', () => {
-    it('should redirect to external app when event is decentralised', () => {
-      mockEnvironmentService.get.and.returnValue({
-        ASYLUM: 'https://asylum-frontend.service.gov.uk',
-      });
-      mockSessionStorage.getItem.and.returnValue(JSON.stringify({ id: 'user-1' }));
-
-      component.onClick('exampleUrl(/cases/case-details/IA/Asylum/1547652071308205/trigger/ext:fooEvent?tid=1234)end');
-
-      expect(mockWindow.location.assign).toHaveBeenCalledWith(
-        'https://asylum-frontend.service.gov.uk/cases/1547652071308205/event/ext%3AfooEvent?tid=1234&expected_sub=user-1'
-      );
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
-    });
-
-    it('should use task metadata when case type is not present in the URL', () => {
-      mockEnvironmentService.get.and.returnValue({
-        ASYLUM: 'https://asylum-frontend.service.gov.uk',
-      });
-      mockSessionStorage.getItem.and.returnValue(JSON.stringify({ id: 'user-1' }));
-      component.task = {
-        case_id: '1547652071308205',
-        case_type_id: 'Asylum',
-        jurisdiction: 'IA',
-      } as Task;
-
-      component.onClick('exampleUrl(/cases/case-details/1547652071308205/trigger/ext:fooEvent?tid=1234)end');
-
-      expect(mockWindow.location.assign).toHaveBeenCalledWith(
-        'https://asylum-frontend.service.gov.uk/cases/1547652071308205/event/ext%3AfooEvent?tid=1234&expected_sub=user-1'
-      );
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
   });
 });

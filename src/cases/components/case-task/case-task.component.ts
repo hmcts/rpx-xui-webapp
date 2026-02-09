@@ -4,7 +4,6 @@ import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
-import { EnvironmentService } from '../../../app/shared/services/environment.service';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { Utils } from '../../../cases/utils/utils';
 import { PriorityLimits } from '../../../work-allocation/enums';
@@ -13,7 +12,6 @@ import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
-import { buildDecentralisedEventUrl, getExpectedSub } from '../../utils/decentralised-event-redirect.util';
 
 @Component({
   standalone: false,
@@ -41,7 +39,6 @@ export class CaseTaskComponent implements OnInit {
     private readonly alertService: AlertService,
     private readonly router: Router,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly environmentService: EnvironmentService,
     protected taskService: WorkAllocationTaskService,
     private readonly window: Window
   ) {}
@@ -167,11 +164,6 @@ export class CaseTaskComponent implements OnInit {
     }
     try {
       const u = base ? new URL(url, base) : new URL(url);
-      const redirectUrl = this.getDecentralisedRedirectUrl(u);
-      if (redirectUrl) {
-        this.window.location.assign(redirectUrl);
-        return;
-      }
       const tid = u.searchParams.get('tid');
       if (tid) {
         qp = { tid: tid };
@@ -183,80 +175,5 @@ export class CaseTaskComponent implements OnInit {
     } catch (e) {
       console.log('Invalid url found in task onClick', e);
     }
-  }
-
-  private getDecentralisedRedirectUrl(url: URL): string | null {
-    const triggerInfo = this.extractTriggerInfo(url.pathname);
-    if (!triggerInfo) {
-      return null;
-    }
-
-    const expectedSub = getExpectedSub(this.getUserInfoFromSession());
-    const caseType = triggerInfo.caseType || this.task?.case_type_id;
-    const jurisdiction = triggerInfo.jurisdiction || this.task?.jurisdiction;
-    return buildDecentralisedEventUrl({
-      baseUrls: this.environmentService.get('decentralisedEventBaseUrls'),
-      caseType,
-      jurisdiction,
-      caseId: triggerInfo.caseId,
-      eventId: triggerInfo.eventId,
-      queryParams: this.searchParamsToObject(url.searchParams),
-      expectedSub,
-      isCaseCreate: false,
-    });
-  }
-
-  private extractTriggerInfo(pathname: string): {
-    jurisdiction?: string;
-    caseType?: string;
-    caseId?: string;
-    eventId?: string;
-  } | null {
-    const parts = pathname.split('/').filter(Boolean);
-    const caseDetailsIndex = parts.indexOf('case-details');
-    if (caseDetailsIndex === -1) {
-      return null;
-    }
-    const triggerIndex = parts.indexOf('trigger', caseDetailsIndex + 1);
-    if (triggerIndex === -1) {
-      return null;
-    }
-
-    const caseParts = parts.slice(caseDetailsIndex + 1, triggerIndex);
-    let jurisdiction: string;
-    let caseType: string;
-    let caseId: string;
-    if (caseParts.length === 1) {
-      caseId = caseParts[0];
-    } else if (caseParts.length >= 3) {
-      [jurisdiction, caseType, caseId] = caseParts;
-    } else {
-      return null;
-    }
-
-    const rawEventId = parts[triggerIndex + 1];
-    let eventId = rawEventId;
-    try {
-      eventId = decodeURIComponent(rawEventId);
-    } catch (error) {
-      console.log('Failed to decode event id in task link', error);
-    }
-    return { jurisdiction, caseType, caseId, eventId };
-  }
-
-  private searchParamsToObject(searchParams: URLSearchParams): { [key: string]: string } {
-    const params: { [key: string]: string } = {};
-    searchParams.forEach((value, key) => {
-      params[key] = value;
-    });
-    return params;
-  }
-
-  private getUserInfoFromSession(): UserInfo | null {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      return JSON.parse(userInfoStr);
-    }
-    return null;
   }
 }

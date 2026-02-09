@@ -18,7 +18,7 @@ nodejs:
     HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
     HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
     SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
-    SERVICES_CCD_COMPONENT_API_PATH: https://ccd-definition-store-ccd-data-store-api-pr-2783.preview.platform.hmcts.net
+    SERVICES_CCD_COMPONENT_API_PATH: https://ccd-api-gateway-web-pr-659.service.core-compute-preview.internal
     STUB: false
     DEBUG: xuiNode:*,-xuiNode:auth:s2s
     FEATURE_WORKALLOCATION_ENABLED: true

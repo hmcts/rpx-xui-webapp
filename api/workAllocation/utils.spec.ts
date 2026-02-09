@@ -390,6 +390,14 @@ describe('workAllocation.utils', () => {
       const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
       expect(url).to.equal('base/task/123456/complete?completion_process=EXUI_USER_COMPLETION');
     });
+    it('should correctly format cancellation action with cancellation_process', () => {
+      const BASE_URL: string = 'base';
+      const TASK_ID: string = '123456';
+      const ACTION: string = 'cancel';
+      const MODE: string = 'EXUI_USER_CANCELLATION';
+      const url = preparePostTaskUrlAction(BASE_URL, TASK_ID, ACTION, MODE);
+      expect(url).to.equal('base/task/123456/cancel?cancellation_process=EXUI_USER_CANCELLATION');
+    });
   });
 
   describe('prepareSearchCaseUrl', () => {

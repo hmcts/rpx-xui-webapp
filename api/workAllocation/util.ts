@@ -49,6 +49,9 @@ export function preparePostTaskUrlAction(baseUrl: string, taskId: string, action
   if (action === 'complete') {
     return `${baseUrl}/task/${taskId}/${action}?completion_process=${mode}`;
   }
+  if (action === 'cancel') {
+    return `${baseUrl}/task/${taskId}/${action}?cancellation_process=${mode}`;
+  }
   return `${baseUrl}/task/${taskId}/${action}`;
 }
 

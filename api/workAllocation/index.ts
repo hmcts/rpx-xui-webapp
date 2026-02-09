@@ -246,7 +246,9 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.hasNoAssigneeOnComplete;
     }
     let actionByEvent;
-    let mode;
+    let mode = '';
+    const isCompletionAction = req.params.action === 'complete';
+    const isCancellationAction = req.params.action === 'cancel';
     if (req.body.actionByEvent) {
       actionByEvent = req.body.actionByEvent;
       delete req.body.actionByEvent;
@@ -257,13 +259,18 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       delete req.body.eventName;
     }
     if (actionByEvent === true) {
-      mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(
-        `${req.params.action} on task Id: ${req.params.taskId} due to automated task completion by ${eventName} event`,
-        traceProps
-      );
+      if (isCompletionAction) {
+        mode = 'EXUI_CASE-EVENT_COMPLETION';
+      } else if (isCancellationAction) {
+        mode = 'EXUI_CASE_EVENT_CANCELLATION';
+      }
+      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task action by ${eventName} event`, traceProps);
     } else {
-      mode = 'EXUI_USER_COMPLETION';
+      if (isCompletionAction) {
+        mode = 'EXUI_USER_COMPLETION';
+      } else if (isCancellationAction) {
+        mode = 'EXUI_USER_CANCELLATION';
+      }
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action, mode);

@@ -40,8 +40,8 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const userInfo = { ...rawUserInfo, token: `Bearer ${bearerToken}` };
     const syntheticRoles = getSyntheticRoles(roleAssignmentInfo);
     const allRoles = [...new Set([...userInfo.roles, ...syntheticRoles])];
-    trackTrace(`User ${userInfo?.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
-    trackTrace(`User ${userInfo?.id} has ${userInfo?.roleCategory} roleCategory`, { functionCall: 'getUserDetails' });
+    userInfo?.id && trackTrace(`User ${userInfo.id} roles: ${JSON.stringify(allRoles)}`, { functionCall: 'getUserDetails' });
+    userInfo?.id && trackTrace(`User ${userInfo.id} has ${userInfo.roleCategory} roleCategory`, { functionCall: 'getUserDetails' });
     userInfo.roles = allRoles;
     res.send({
       canShareCases,

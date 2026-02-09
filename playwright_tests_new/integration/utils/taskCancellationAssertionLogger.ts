@@ -46,10 +46,7 @@ function highlightExpectedPairsInActual(
   for (const [key, value] of Object.entries(expectedPayload)) {
     const valueAsJson = JSON.stringify(value);
     const pairRegex = new RegExp(`"${escapeRegExp(key)}"\\s*:\\s*${escapeRegExp(valueAsJson)}`, 'g');
-    highlighted = highlighted.replace(
-      pairRegex,
-      `${ansi.yellowBg}${ansi.black}${ansi.bold}$&${ansi.reset}`
-    );
+    highlighted = highlighted.replace(pairRegex, `${ansi.yellowBg}${ansi.black}${ansi.bold}$&${ansi.reset}`);
   }
   return highlighted;
 }

@@ -3,6 +3,7 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { logTaskCancellationAssertion } from '../../utils/taskCancellationAssertionLogger';
+import { routeMyTaskCancellationFlow } from '../../utils/taskCancellationRoutes';
 
 const userIdentifier = 'STAFF_ADMIN';
 const taskId = '22222222-2222-2222-2222-222222222222';
@@ -42,45 +43,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
         assignee: userId,
       };
 
-      const taskSearchPath = /\/workallocation\/task(?:\?.*)?$/;
-      let cancelRequestUrl = '';
-      let cancelRequestBody: Record<string, unknown> | null = null;
-
-      await page.route(taskSearchPath, async (route) => {
-        if (route.request().method() !== 'POST') {
-          await route.fallback();
-          return;
-        }
-
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ ...taskListMockResponse, tasks: [task], total_records: 1 }),
-        });
-      });
-
-      await page.route(`**/workallocation/task/${taskId}/roles`, async (route) => {
-        await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-      });
-
-      await page.route(`**/workallocation/task/${taskId}`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ task }),
-        });
-      });
-
-      await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route) => {
-        await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-      });
-
-      await page.route(`**/workallocation/task/${taskId}/cancel*`, async (route) => {
-        cancelRequestUrl = route.request().url();
-        cancelRequestBody = route.request().postDataJSON();
-
-        await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
-      });
+      const { getCancelRequestUrl, getCancelRequestBody } = await routeMyTaskCancellationFlow(page, taskId, task);
 
       await test.step('Navigate to My Work and open cancel action', async () => {
         await taskListPage.goto();
@@ -98,12 +61,12 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
         await page.getByRole('button', { name: 'Cancel task' }).click();
 
         await expect
-          .poll(() => cancelRequestUrl, { timeout: 30000, message: 'Cancel request was not captured' })
+          .poll(() => getCancelRequestUrl(), { message: 'Cancel request was not captured' })
           .toContain(`/workallocation/task/${taskId}/cancel`);
 
-        await expect.poll(() => cancelRequestBody).not.toBeNull();
+        await expect.poll(() => getCancelRequestBody()).not.toBeNull();
 
-        const parsedUrl = new URL(cancelRequestUrl);
+        const parsedUrl = new URL(getCancelRequestUrl());
         const expectedPayload = { hasNoAssigneeOnComplete: false };
         const expectedBrowserRequestPath = `/workallocation/task/${taskId}/cancel`;
         const actualBrowserRequestPath = `${parsedUrl.pathname}${parsedUrl.search}`;
@@ -114,7 +77,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
           hasCancellationProcessQuery: parsedUrl.searchParams.has('cancellation_process'),
           hasCompletionProcessQuery: parsedUrl.searchParams.has('completion_process'),
           expectedPayload,
-          actualPayload: cancelRequestBody,
+          actualPayload: getCancelRequestBody(),
         });
 
         await testInfo.attach('EXUI-3662-browser-request-expected-vs-actual.json', {
@@ -131,7 +94,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
                 path: actualBrowserRequestPath,
                 hasCancellationProcessQuery: parsedUrl.searchParams.has('cancellation_process'),
                 hasCompletionProcessQuery: parsedUrl.searchParams.has('completion_process'),
-                payload: cancelRequestBody,
+                payload: getCancelRequestBody(),
               },
               assertions: assertionSummary,
             },
@@ -150,8 +113,8 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
           `Expected browser cancel request ${expectedBrowserRequestPath} to omit "completion_process"; actual path=${actualBrowserRequestPath}`
         ).toBeFalsy();
         expect(
-          cancelRequestBody,
-          `Expected browser cancel payload ${JSON.stringify(expectedPayload)}; actual=${JSON.stringify(cancelRequestBody)}`
+          getCancelRequestBody(),
+          `Expected browser cancel payload ${JSON.stringify(expectedPayload)}; actual=${JSON.stringify(getCancelRequestBody())}`
         ).toEqual(expectedPayload);
       });
     });

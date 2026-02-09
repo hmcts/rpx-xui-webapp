@@ -3,6 +3,12 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock } from '../../../integration/mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../../integration/utils/extractUserIdFromCookies';
 import { logTaskCancellationAssertion } from '../../../integration/utils/taskCancellationAssertionLogger';
+import {
+  routeCaseDetailsTaskCancellationFlow,
+  routeMyTaskCancellationFlow,
+  type CancellationScenario,
+  type CaseDetailsTemplate,
+} from '../../../integration/utils/taskCancellationRoutes';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -12,9 +18,9 @@ const cancelledTaskMessage = "You've cancelled a task. It has been removed from 
 const taskNoLongerAvailableMessage = 'The task is no longer available.';
 const caseDetailsTemplate = JSON.parse(
   readFileSync(resolve(process.cwd(), 'src/assets/getCase.json'), 'utf8')
-) as Record<string, unknown>;
+) as CaseDetailsTemplate;
 
-const cancellationMatrix = [
+const cancellationMatrix: readonly CancellationScenario[] = [
   {
     scenario: 'PRIVATELAW / PRLAPPS',
     jurisdiction: 'PRIVATELAW',
@@ -29,140 +35,7 @@ const cancellationMatrix = [
     caseId: '1770133055796879',
     caseName: 'Public Law Manual Cancellation Test Case',
   },
-] as const;
-
-type CancellationScenario = (typeof cancellationMatrix)[number];
-
-type MyTaskRouteOptions = {
-  includeCancelAction?: boolean;
-  cancelResponseStatus?: number;
-};
-
-function buildCasePayload(scenario: CancellationScenario): Record<string, unknown> {
-  const typedTemplate = caseDetailsTemplate as Record<string, any>;
-  return {
-    ...typedTemplate,
-    case_id: scenario.caseId,
-    id: scenario.caseId,
-    case_type: {
-      ...typedTemplate.case_type,
-      id: scenario.caseTypeId,
-      jurisdiction: {
-        ...typedTemplate.case_type?.jurisdiction,
-        id: scenario.jurisdiction,
-      },
-    },
-  };
-}
-
-async function routeMyTaskCancellationFlow(
-  page: any,
-  task: Record<string, unknown>,
-  options: MyTaskRouteOptions = {}
-): Promise<{
-  getCancelRequestUrl: () => string;
-  getCancelRequestBody: () => Record<string, unknown> | null;
-}> {
-  const includeCancelAction = options.includeCancelAction ?? true;
-  const cancelResponseStatus = options.cancelResponseStatus ?? 200;
-
-  let cancelRequestUrl = '';
-  let cancelRequestBody: Record<string, unknown> | null = null;
-  let cancelInvoked = false;
-
-  const taskWithActions = includeCancelAction
-    ? task
-    : {
-        ...task,
-        actions: (Array.isArray(task.actions) ? task.actions : []).filter((action: { id?: string }) => action.id !== 'cancel'),
-      };
-
-  await page.route(/\/workallocation\/task(?:\?.*)?$/, async (route: any) => {
-    if (route.request().method() !== 'POST') {
-      await route.fallback();
-      return;
-    }
-
-    const tasks = cancelInvoked ? [] : [taskWithActions];
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ tasks, total_records: tasks.length }),
-    });
-  });
-
-  await page.route(`**/workallocation/task/${taskId}/roles`, async (route: any) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-  });
-
-  await page.route(`**/workallocation/task/${taskId}`, async (route: any) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ task: taskWithActions }) });
-  });
-
-  await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route: any) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-  });
-
-  await page.route(`**/workallocation/task/${taskId}/cancel*`, async (route: any) => {
-    cancelInvoked = true;
-    cancelRequestUrl = route.request().url();
-    cancelRequestBody = route.request().postDataJSON();
-    await route.fulfill({ status: cancelResponseStatus, contentType: 'application/json', body: '{}' });
-  });
-
-  return {
-    getCancelRequestUrl: () => cancelRequestUrl,
-    getCancelRequestBody: () => cancelRequestBody,
-  };
-}
-
-async function routeCaseDetailsTaskCancellationFlow(page: any, scenario: CancellationScenario, task: Record<string, unknown>) {
-  let cancelInvoked = false;
-
-  await page.route('**/data/internal/cases/**', async (route: any) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(buildCasePayload(scenario)),
-    });
-  });
-
-  await page.route(`**/workallocation/case/task/${scenario.caseId}`, async (route: any) => {
-    const tasks = cancelInvoked ? [] : [task];
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(tasks) });
-  });
-
-  await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route: any) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify([
-        {
-          idamId: task.assignee,
-          firstName: 'Test',
-          lastName: 'User',
-          email: 'test.user@justice.gov.uk',
-          roleCategory: 'LEGAL_OPERATIONS',
-          services: [scenario.jurisdiction],
-          locations: [],
-        },
-      ]),
-    });
-  });
-
-  await page.route(`**/workallocation/task/${taskId}/roles`, async (route: any) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-  });
-
-  await page.route(`**/workallocation/task/${taskId}`, async (route: any) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ task }) });
-  });
-
-  await page.route(`**/workallocation/task/${taskId}/cancel*`, async (route: any) => {
-    cancelInvoked = true;
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
-  });
-}
+];
 
 test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
   for (const matrixItem of cancellationMatrix) {
@@ -182,7 +55,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
         assignee: userId,
       };
 
-      const { getCancelRequestUrl, getCancelRequestBody } = await routeMyTaskCancellationFlow(page, task);
+      const { getCancelRequestUrl, getCancelRequestBody } = await routeMyTaskCancellationFlow(page, taskId, task);
 
       await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
@@ -194,7 +67,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
       await taskListPage.taskActionCancel.first().click();
       await page.getByRole('button', { name: 'Cancel task' }).click();
 
-      await expect.poll(() => getCancelRequestUrl(), { timeout: 30000 }).toContain(`/workallocation/task/${taskId}/cancel`);
+      await expect.poll(() => getCancelRequestUrl()).toContain(`/workallocation/task/${taskId}/cancel`);
       await expect.poll(() => getCancelRequestBody()).not.toBeNull();
 
       const parsedUrl = new URL(getCancelRequestUrl());
@@ -270,7 +143,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
       assignee: userId,
     };
 
-    await routeCaseDetailsTaskCancellationFlow(page, scenario, task);
+    await routeCaseDetailsTaskCancellationFlow(page, taskId, scenario, task, caseDetailsTemplate);
 
     await page.goto(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`);
     await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
@@ -282,7 +155,9 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
 
     // Case-details tasks flow may keep the same route instance and skip banner re-render.
     // The key behaviour here is successful cancel + task removed from the tasks tab.
-    await expect(page).toHaveURL(new RegExp(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`));
+    await expect(page).toHaveURL(
+      new RegExp(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`)
+    );
     await expect(page.locator('#action_cancel')).toHaveCount(0);
   });
 
@@ -301,7 +176,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
       assignee: userId,
     };
 
-    await routeMyTaskCancellationFlow(page, task, { includeCancelAction: false });
+    await routeMyTaskCancellationFlow(page, taskId, task, { includeCancelAction: false });
 
     await taskListPage.goto();
     await expect(taskListPage.taskListTable).toBeVisible();
@@ -327,7 +202,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
       assignee: userId,
     };
 
-    await routeMyTaskCancellationFlow(page, task, { cancelResponseStatus: 409 });
+    await routeMyTaskCancellationFlow(page, taskId, task, { cancelResponseStatus: 409 });
 
     await taskListPage.goto();
     await expect(taskListPage.taskListTable).toBeVisible();
@@ -354,7 +229,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
       assignee: userId,
     };
 
-    await routeMyTaskCancellationFlow(page, task, { cancelResponseStatus: 400 });
+    await routeMyTaskCancellationFlow(page, taskId, task, { cancelResponseStatus: 400 });
 
     await taskListPage.goto();
     await expect(taskListPage.taskListTable).toBeVisible();

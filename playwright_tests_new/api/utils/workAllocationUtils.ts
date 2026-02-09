@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import type { ApiClient } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
@@ -138,10 +139,7 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
   }
 }
 
-type WorkAllocationApiClient = {
-  post: (path: string, options?: unknown) => Promise<{ status: number; data?: unknown }>;
-  get?: (path: string, options?: unknown) => Promise<{ status: number; data?: unknown }>;
-};
+type WorkAllocationApiClient = Pick<ApiClient, 'post' | 'get'>;
 
 export async function fetchFirstTask(
   apiClient: WorkAllocationApiClient,

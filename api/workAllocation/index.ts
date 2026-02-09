@@ -264,7 +264,10 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
       } else if (isCancellationAction) {
         mode = 'EXUI_CASE_EVENT_CANCELLATION';
       }
-      trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to automated task action by ${eventName} event`, traceProps);
+      trackTrace(
+        `${req.params.action} on task Id: ${req.params.taskId} due to automated task action by ${eventName} event`,
+        traceProps
+      );
     } else {
       if (isCompletionAction) {
         mode = 'EXUI_USER_COMPLETION';

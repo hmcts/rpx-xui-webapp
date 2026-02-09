@@ -4,6 +4,7 @@ import { fetchFirstTask } from './utils/workAllocationUtils';
 
 const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
 let taskId = fallbackTaskId;
+let hasTask = false;
 
 const cancellationProcessMatrix = [
   {
@@ -19,10 +20,21 @@ const cancellationProcessMatrix = [
 test.describe('Work allocation cancellation API coverage', () => {
   test.beforeAll(async ({ apiClient }) => {
     const firstTask = await fetchFirstTask(apiClient, undefined, ['assigned', 'unassigned'], 'AllWork');
+    hasTask = Boolean(firstTask?.id);
     taskId = firstTask?.id ?? fallbackTaskId;
   });
 
-  test('POST /workallocation/task/:id/cancel accepts the UI manual cancellation payload', async ({ apiClient, apiLogs }, testInfo) => {
+  test('POST /workallocation/task/:id/cancel accepts the UI manual cancellation payload', async ({
+    apiClient,
+    apiLogs,
+  }, testInfo) => {
+    if (!hasTask) {
+      testInfo.annotations.push({
+        type: 'notice',
+        description: 'No tasks returned from AllWork search; cancellation endpoint checks skipped.',
+      });
+      test.skip(true, 'No tasks available for cancellation coverage.');
+    }
     const endpoint = `workallocation/task/${taskId}/cancel`;
     const startLogIndex = apiLogs.length;
 
@@ -41,7 +53,11 @@ test.describe('Work allocation cancellation API coverage', () => {
     });
 
     expect(cancelRequestLogs.length).toBeGreaterThan(0);
-    const latestCancelCall = cancelRequestLogs[cancelRequestLogs.length - 1];
+    const latestCancelCall = cancelRequestLogs.at(-1);
+    expect(latestCancelCall, 'Expected at least one cancel request log entry').toBeTruthy();
+    if (!latestCancelCall) {
+      throw new Error('No cancel request logs captured for cancellation coverage.');
+    }
     const actualUrl = latestCancelCall.url;
     const expectedPath = `/workallocation/task/${taskId}/cancel`;
 
@@ -70,7 +86,17 @@ test.describe('Work allocation cancellation API coverage', () => {
   });
 
   for (const processCase of cancellationProcessMatrix) {
-    test(`POST /workallocation/task/:id/cancel tolerates optional ${processCase.label} query`, async ({ apiClient, apiLogs }, testInfo) => {
+    test(`POST /workallocation/task/:id/cancel tolerates optional ${processCase.label} query`, async ({
+      apiClient,
+      apiLogs,
+    }, testInfo) => {
+      if (!hasTask) {
+        testInfo.annotations.push({
+          type: 'notice',
+          description: 'No tasks returned from AllWork search; cancellation endpoint checks skipped.',
+        });
+        test.skip(true, 'No tasks available for cancellation coverage.');
+      }
       const endpoint = `workallocation/task/${taskId}/cancel?cancellation_process=${processCase.value}`;
       const startLogIndex = apiLogs.length;
 
@@ -89,7 +115,11 @@ test.describe('Work allocation cancellation API coverage', () => {
       });
 
       expect(cancelRequestLogs.length).toBeGreaterThan(0);
-      const latestCancelCall = cancelRequestLogs[cancelRequestLogs.length - 1];
+      const latestCancelCall = cancelRequestLogs.at(-1);
+      expect(latestCancelCall, 'Expected at least one cancel request log entry').toBeTruthy();
+      if (!latestCancelCall) {
+        throw new Error('No cancel request logs captured for cancellation coverage.');
+      }
       const actualUrl = latestCancelCall.url;
       const expectedQueryPart = `cancellation_process=${processCase.value}`;
 

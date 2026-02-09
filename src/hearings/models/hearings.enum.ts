@@ -200,7 +200,7 @@ export enum HearingDatePriorityEnum {
   InvalidHearingDateError = 'Enter a valid hearing date',
   DatePastError = 'The hearing dates cannot be in the past',
   LatestEndDatePastError = 'Must list before cannot be in the past',
-  EarliestHearingDateError = '\'Must list after\' date must be earlier than the \'Must list before\' date',
+  EarliestHearingDateError = "'Must list after' date must be earlier than the 'Must list before' date",
 }
 
 export enum HearingStageResultEnum {

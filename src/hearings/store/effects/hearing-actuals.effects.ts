@@ -52,7 +52,7 @@ export class HearingActualsEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly router: Router,
-    private readonly hearingsService: HearingsService,
+    private readonly hearingsService: HearingsService
   ) {}
 
   public static handleError(error: HttpError): Observable<Action> {

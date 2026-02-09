@@ -15,12 +15,12 @@ import { LoggerService } from '../../../app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-cancel-hearing',
   templateUrl: './cancel-hearing.component.html',
-  styleUrls: ['./cancel-hearing.component.scss']
+  styleUrls: ['./cancel-hearing.component.scss'],
 })
 export class CancelHearingComponent implements OnInit {
   public hearingCancelOptions: LovRefDataModel[];
   public hearingCancelForm: FormGroup;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   public selectionValid: boolean = true;
   public hearingId: string;
   public caseId: string;
@@ -37,7 +37,8 @@ export class CancelHearingComponent implements OnInit {
     protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly hearingsService: HearingsService,
     private readonly loadingService: LoadingService,
-    private readonly loggerService: LoggerService) {
+    private readonly loggerService: LoggerService
+  ) {
     this.route.params.subscribe((params) => {
       this.hearingId = params.hearingId;
     });
@@ -54,13 +55,17 @@ export class CancelHearingComponent implements OnInit {
       (hearingList) => {
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         if (hearingList.hearingListMainModel) {
-          const caseHearings = hearingList.hearingListMainModel.caseHearings.filter((caseHearing) => caseHearing.hearingID === this.hearingId);
+          const caseHearings = hearingList.hearingListMainModel.caseHearings.filter(
+            (caseHearing) => caseHearing.hearingID === this.hearingId
+          );
           this.caseHearing = caseHearings.length ? caseHearings[0] : undefined;
         }
         this.loadingService.unregister(loadingToken);
-      }, () => {
+      },
+      () => {
         this.loadingService.unregister(loadingToken);
-      });
+      }
+    );
     this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
       if (hearingValues) {
         this.jurisdiction = hearingValues.caseInfo.jurisdictionId;
@@ -72,32 +77,40 @@ export class CancelHearingComponent implements OnInit {
   }
 
   public get getReasonsTypeFormArray(): FormArray {
-    return this.formBuilder.array(this.hearingCancelOptions.map((val) => this.formBuilder.group({
-      key: [val.key],
-      value_en: [val.value_en],
-      value_cy: [val.value_cy],
-      hint_text_en: [val.hint_text_en],
-      hint_text_cy: [val.hint_text_cy],
-      lov_order: [val.lov_order],
-      parent_key: [val.parent_key],
-      selected: [!!val.selected]
-    })));
+    return this.formBuilder.array(
+      this.hearingCancelOptions.map((val) =>
+        this.formBuilder.group({
+          key: [val.key],
+          value_en: [val.value_en],
+          value_cy: [val.value_cy],
+          hint_text_en: [val.hint_text_en],
+          hint_text_cy: [val.hint_text_cy],
+          lov_order: [val.lov_order],
+          parent_key: [val.parent_key],
+          selected: [!!val.selected],
+        })
+      )
+    );
   }
 
   public initForm(): void {
     this.hearingCancelForm = this.formBuilder.group({
-      reasons: this.getReasonsTypeFormArray
+      reasons: this.getReasonsTypeFormArray,
     });
   }
 
   public isFormValid(): boolean {
     this.selectionValid = true;
-    const isReasons = (this.hearingCancelForm.controls.reasons as FormArray).controls
-      .filter((reason) => reason.value.selected === true).length > 0;
+    const isReasons =
+      (this.hearingCancelForm.controls.reasons as FormArray).controls.filter((reason) => reason.value.selected === true).length >
+      0;
     if (!isReasons) {
-      this.validationErrors = [{
-        id: 'hearing-option-container', message: CancelHearingMessages.NOT_SELECTED_A_REASON
-      }];
+      this.validationErrors = [
+        {
+          id: 'hearing-option-container',
+          message: CancelHearingMessages.NOT_SELECTED_A_REASON,
+        },
+      ];
       this.selectionValid = false;
     }
     return this.selectionValid;
@@ -109,8 +122,11 @@ export class CancelHearingComponent implements OnInit {
       this.hearingsService.cancelHearingRequest(this.hearingId, this.caseId, this.getChosenReasons()).subscribe(
         () => {
           this.validationErrors = null;
-          this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
-            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err));
+          this.router
+            .navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
+            .catch((err) =>
+              this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err)
+            );
         },
         () => {
           this.cancelActioned = false;
@@ -129,8 +145,9 @@ export class CancelHearingComponent implements OnInit {
 
   public getChosenReasons(): LovRefDataModel[] {
     const mappedReason: LovRefDataModel[] = [];
-    const reasonChosen = (this.hearingCancelForm.controls.reasons as FormArray).controls
-      .filter((reason) => reason.value.selected === true);
+    const reasonChosen = (this.hearingCancelForm.controls.reasons as FormArray).controls.filter(
+      (reason) => reason.value.selected === true
+    );
     reasonChosen.forEach((element) => {
       mappedReason.push({
         key: element.value.key,
@@ -139,7 +156,7 @@ export class CancelHearingComponent implements OnInit {
         hint_text_en: element.value.hint_text_en,
         hint_text_cy: element.value.hint_text_cy,
         lov_order: element.value.lov_order,
-        parent_key: element.value.parent_key
+        parent_key: element.value.parent_key,
       } as LovRefDataModel);
     });
     return mappedReason;

@@ -1,21 +1,25 @@
 <h1 class="govuk-heading-l">
-  <span class="govuk-caption-l">{{caption}}</span>
-  {{title}}
+  <span class="govuk-caption-l">{{ caption }}</span>
+  {{ title }}
 </h1>
 <div class="govuk-form-group" [formGroup]="formGroup">
-  <span id="error-message" class="govuk-error-message"
-        *ngIf="formGroup.get(radioControlName).errors && submitted">
-        {{errorText}}
+  <span id="error-message" class="govuk-error-message" *ngIf="formGroup.get(radioControlName).errors && submitted">
+    {{ errorText }}
   </span>
-  <p *ngIf="description">{{description}}</p>
+  <p *ngIf="description">{{ description }}</p>
   <fieldset class="govuk-fieldset" [attr.aria-label]="title">
-    <legend class="hidden-legend">{{title}}</legend>
+    <legend class="hidden-legend">{{ title }}</legend>
     <div class="govuk-radios">
       <div *ngFor="let option of optionsList" class="govuk-radios__item">
-        <input class="govuk-radios__input" formControlName="{{radioControlName}}" [id]="option.optionId" type="radio"
-               [value]="option.optionValue">
+        <input
+          class="govuk-radios__input"
+          formControlName="{{ radioControlName }}"
+          [id]="option.optionId"
+          type="radio"
+          [value]="option.optionValue"
+        />
         <label class="govuk-label govuk-radios__label" [for]="option.optionId">
-          {{option.label || option.optionValue}}
+          {{ option.label || option.optionValue }}
         </label>
       </div>
     </div>

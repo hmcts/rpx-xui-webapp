@@ -8,7 +8,7 @@ import { AbstractFormFieldComponent } from './abstract-form-field.component';
 // Define a test-specific implementation of the abstract component
 @Component({
   standalone: false,
-  template: ''
+  template: '',
 })
 class TestFormFieldComponent extends AbstractFormFieldComponent {
   public addValidators(questionField: NocQuestion, control: FormControl): void {
@@ -24,7 +24,7 @@ describe('AbstractFormFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TestFormFieldComponent]
+      declarations: [TestFormFieldComponent],
     }).compileComponents();
   }));
 
@@ -46,12 +46,12 @@ describe('AbstractFormFieldComponent', () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: 'test-context',
       challenge_question_id: 'challenge-id',
       answer_field: 'test-answer-field',
-      question_id: 'test-question-id'
+      question_id: 'test-question-id',
     } as NocQuestion;
 
     component.questionField = mockQuestionField;
@@ -195,8 +195,8 @@ describe('AbstractFormFieldComponent', () => {
         ...mockQuestionField,
         answer_field_type: {
           ...mockQuestionField.answer_field_type,
-          min: 5
-        }
+          min: 5,
+        },
       };
       testComponent.questionField = questionWithMin;
 
@@ -326,7 +326,7 @@ describe('AbstractFormFieldComponent', () => {
     it('should handle questionField with special characters in question_id', () => {
       component.questionField = {
         ...mockQuestionField,
-        question_id: 'question-id-with-special-chars!@#$%'
+        question_id: 'question-id-with-special-chars!@#$%',
       };
 
       const control = new FormControl('');
@@ -341,7 +341,7 @@ describe('AbstractFormFieldComponent', () => {
       const longId = 'a'.repeat(1000);
       component.questionField = {
         ...mockQuestionField,
-        question_id: longId
+        question_id: longId,
       };
 
       const control = new FormControl('');
@@ -355,7 +355,7 @@ describe('AbstractFormFieldComponent', () => {
     it('should handle empty question_id', () => {
       component.questionField = {
         ...mockQuestionField,
-        question_id: ''
+        question_id: '',
       };
 
       const control = new FormControl('');

@@ -3,7 +3,7 @@ import { HttpError } from '../../../models/httpError.model';
 import {
   LinkedHearingGroupMainModel,
   ServiceLinkedCasesModel,
-  ServiceLinkedCasesWithHearingsModel
+  ServiceLinkedCasesWithHearingsModel,
 } from '../../models/linkHearings.model';
 
 export const RESET_HEARING_LINKS = '[HEARING LINKS] Reset Hearing Links';
@@ -27,12 +27,16 @@ export class ResetHearingLinks implements Action {
   public readonly type = RESET_HEARING_LINKS;
 }
 export class LoadServiceLinkedCasesPayload {
-  constructor(public jurisdictionId: string, public caseReference: string, public hearingId: string) {}
+  constructor(
+    public jurisdictionId: string,
+    public caseReference: string,
+    public hearingId: string
+  ) {}
 }
 
 export class LoadServiceLinkedCases implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES;
-  constructor(public payload: { jurisdictionId: string, caseReference: string, hearingId: string }) {}
+  constructor(public payload: { jurisdictionId: string; caseReference: string; hearingId: string }) {}
 }
 
 export class LoadServiceLinkedCasesSuccess implements Action {
@@ -46,12 +50,17 @@ export class LoadServiceLinkedCasesFailure implements Action {
 }
 
 export class LoadServiceLinkedCasesWithHearingsPayload {
-  constructor(public jurisdictionId: string, public caseReference: string, public caseName: string, public hearingId?: string) {}
+  constructor(
+    public jurisdictionId: string,
+    public caseReference: string,
+    public caseName: string,
+    public hearingId?: string
+  ) {}
 }
 
 export class LoadServiceLinkedCasesWithHearings implements Action {
   public readonly type = LOAD_SERVICE_LINKED_CASES_WITH_HEARINGS;
-  constructor(public payload: { jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string }) {}
+  constructor(public payload: { jurisdictionId: string; caseReference: string; caseName: string; hearingId?: string }) {}
 }
 
 export class LoadServiceLinkedCasesWithHearingsSuccess implements Action {
@@ -86,7 +95,15 @@ export class LoadLinkedHearingGroupFailure implements Action {
 
 export class SubmitLinkedHearingGroup implements Action {
   public readonly type = SUBMIT_LINKED_HEARING_GROUP;
-  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingId: string, hearingGroupRequestId: string, isManageLink: boolean }) {}
+  constructor(
+    public payload: {
+      linkedHearingGroup: LinkedHearingGroupMainModel;
+      caseId: string;
+      hearingId: string;
+      hearingGroupRequestId: string;
+      isManageLink: boolean;
+    }
+  ) {}
 }
 
 export class SubmitLinkedHearingGroupFailure implements Action {
@@ -96,7 +113,14 @@ export class SubmitLinkedHearingGroupFailure implements Action {
 
 export class ManageLinkedHearingGroup implements Action {
   public readonly type = MANAGE_LINKED_HEARING_GROUP;
-  constructor(public payload: { linkedHearingGroup: LinkedHearingGroupMainModel, caseId: string, hearingGroupRequestId: string, hearingId: string }) {}
+  constructor(
+    public payload: {
+      linkedHearingGroup: LinkedHearingGroupMainModel;
+      caseId: string;
+      hearingGroupRequestId: string;
+      hearingId: string;
+    }
+  ) {}
 }
 
 export class ManageLinkedHearingGroupFailure implements Action {

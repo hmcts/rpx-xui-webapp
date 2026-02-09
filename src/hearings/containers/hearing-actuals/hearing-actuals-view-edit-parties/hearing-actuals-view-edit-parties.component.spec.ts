@@ -25,7 +25,7 @@ const hearingRole = [
     hintText_EN: 'Appellant',
     hintTextCY: '',
     order: 1,
-    parentKey: null
+    parentKey: null,
   },
   {
     key: 'claimant',
@@ -34,7 +34,7 @@ const hearingRole = [
     hintText_EN: 'Claimant',
     hintTextCY: '',
     order: 2,
-    parentKey: null
+    parentKey: null,
   },
   {
     key: 'interpreter',
@@ -43,7 +43,7 @@ const hearingRole = [
     hintText_EN: 'Interpreter',
     hintTextCY: '',
     order: 3,
-    parentKey: null
+    parentKey: null,
   },
   {
     key: 'solicitor',
@@ -52,7 +52,7 @@ const hearingRole = [
     hintText_EN: 'Solicitor',
     hintTextCY: '',
     order: 4,
-    parentKey: null
+    parentKey: null,
   },
   {
     key: 'barrister',
@@ -61,8 +61,8 @@ const hearingRole = [
     hintText_EN: 'Barrister',
     hintTextCY: '',
     order: 5,
-    parentKey: null
-  }
+    parentKey: null,
+  },
 ];
 const partyChannels = [
   {
@@ -72,7 +72,7 @@ const partyChannels = [
     hintText_EN: 'in person',
     hintTextCY: 'Wyneb yn wyneb',
     order: 1,
-    parentKey: null
+    parentKey: null,
   },
   {
     key: 'byPhone',
@@ -90,7 +90,7 @@ const partyChannels = [
         hintText_EN: 'By Phone bTMeetme',
         hintTextCY: '',
         order: 1,
-        parentKey: null
+        parentKey: null,
       },
       {
         key: 'telephone-CVP',
@@ -99,7 +99,7 @@ const partyChannels = [
         hintText_EN: 'By Phone CVP',
         hintTextCY: '',
         order: 2,
-        parentKey: null
+        parentKey: null,
       },
       {
         key: 'telephone-other',
@@ -108,7 +108,7 @@ const partyChannels = [
         hintText_EN: 'By Phone Other',
         hintTextCY: '',
         order: 3,
-        parentKey: null
+        parentKey: null,
       },
       {
         key: 'telephone-skype',
@@ -117,9 +117,9 @@ const partyChannels = [
         hintText_EN: 'By Phone Skype',
         hintTextCY: '',
         order: 4,
-        parentKey: null
-      }
-    ]
+        parentKey: null,
+      },
+    ],
   },
   {
     key: 'byVideo',
@@ -137,7 +137,7 @@ const partyChannels = [
         hintText_EN: 'By video conference',
         hintTextCY: '',
         order: 4,
-        parentKey: null
+        parentKey: null,
       },
       {
         key: 'video-other',
@@ -146,7 +146,7 @@ const partyChannels = [
         hintText_EN: 'By video other',
         hintTextCY: '',
         order: 4,
-        parentKey: null
+        parentKey: null,
       },
       {
         key: 'video-skype',
@@ -155,7 +155,7 @@ const partyChannels = [
         hintText_EN: 'By video skype',
         hintTextCY: '',
         order: 4,
-        parentKey: null
+        parentKey: null,
       },
       {
         key: 'video-teams',
@@ -164,9 +164,9 @@ const partyChannels = [
         hintText_EN: 'By video teams',
         hintTextCY: '',
         order: 4,
-        parentKey: null
-      }
-    ]
+        parentKey: null,
+      },
+    ],
   },
   {
     key: 'notAttending',
@@ -175,8 +175,8 @@ const partyChannels = [
     hintText_EN: 'not attending',
     hintTextCY: '',
     order: 5,
-    parentKey: null
-  }
+    parentKey: null,
+  },
 ];
 
 describe('HearingActualsViewEditPartiesComponent', () => {
@@ -189,10 +189,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
-      imports: [
-        RouterTestingModule,
-        ReactiveFormsModule
-      ],
+      imports: [RouterTestingModule, ReactiveFormsModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState }),
@@ -200,10 +197,12 @@ describe('HearingActualsViewEditPartiesComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1',
-              hearingDate: '2021-03-12'
-            })),
+            paramMap: of(
+              convertToParamMap({
+                id: '1',
+                hearingDate: '2021-03-12',
+              })
+            ),
             snapshot: {
               data: {
                 partyChannels,
@@ -216,7 +215,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
           }
         }
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
@@ -240,22 +239,22 @@ describe('HearingActualsViewEditPartiesComponent', () => {
   it('should add a new FormGroup to the FormArray', () => {
     const addBtn = fixture.debugElement.query(By.css('.btn-add'));
 
-    expect(component.parties.get([component.parties.length - 1]).value)
-      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false }));
+    expect(component.parties.get([component.parties.length - 1]).value).not.toEqual(
+      jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false })
+    );
 
     addBtn.nativeElement.click();
     fixture.detectChanges();
-    expect(component.parties.get([component.parties.length - 1]).value)
-      .toEqual(jasmine.objectContaining(
-        {
-          firstName: null,
-          lastName: null,
-          isPlannedParty: false,
-          role: null,
-          attendanceType:
-            null,
-          organisation: null
-        }));
+    expect(component.parties.get([component.parties.length - 1]).value).toEqual(
+      jasmine.objectContaining({
+        firstName: null,
+        lastName: null,
+        isPlannedParty: false,
+        role: null,
+        attendanceType: null,
+        organisation: null,
+      })
+    );
   });
 
   it('should add a FormGroup from the FormArray', () => {
@@ -270,8 +269,9 @@ describe('HearingActualsViewEditPartiesComponent', () => {
 
   it('should remove a FormGroup from the FormArray', () => {
     expect(component.parties.length).toEqual(3);
-    expect(component.parties.get([component.parties.length - 1]).value)
-      .not.toEqual(jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false }));
+    expect(component.parties.get([component.parties.length - 1]).value).not.toEqual(
+      jasmine.objectContaining({ firstName: '', lastName: '', isPlannedParty: false })
+    );
 
     const removeBtn = fixture.debugElement.query(By.css('.btn-remove:last-child'));
     removeBtn.nativeElement.click();
@@ -284,10 +284,10 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     addBtn.nativeElement.click();
     fixture.detectChanges();
     component.parties.get([0]).patchValue({
-      attendeeRepresenting: 'Mary'
+      attendeeRepresenting: 'Mary',
     });
     component.parties.get([1]).patchValue({
-      attendeeRepresenting: 'Mary'
+      attendeeRepresenting: 'Mary',
     });
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: 'Peter',
@@ -296,7 +296,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
       role: 'Claimant',
       attendanceType: 'inPerson',
       attendeeRepresenting: 'Mary',
-      organisation: null
+      organisation: null,
     });
     fixture.detectChanges();
     spyOn(store, 'dispatch');
@@ -311,7 +311,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: '',
       lastName: '',
-      isPlannedParty: false
+      isPlannedParty: false,
     });
     component.submitForm(component.form.value, component.form.valid);
     expect(component.parties.get([component.parties.length - 1]).valid).toBeFalsy();
@@ -330,7 +330,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
       role: 'Claimant',
       attendanceType: 'inPerson',
       attendeeRepresenting: 'Mary',
-      organisation: null
+      organisation: null,
     });
     component.parties.get([component.parties.length - 1]).patchValue({
       firstName: 'Peter',
@@ -339,7 +339,7 @@ describe('HearingActualsViewEditPartiesComponent', () => {
       role: 'Claimant',
       attendanceType: 'inPerson',
       attendeeRepresenting: 'Mary',
-      organisation: null
+      organisation: null,
     });
     fixture.detectChanges();
     component.submitForm(component.form.value, component.form.valid);
@@ -362,29 +362,30 @@ describe('HearingViewEditSummaryComponent add actual participants', () => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule,
-        ReactiveFormsModule],
+      imports: [RouterTestingModule, ReactiveFormsModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState: newState }),
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1',
-              hearingDate: '2021-03-12'
-            })),
+            paramMap: of(
+              convertToParamMap({
+                id: '1',
+                hearingDate: '2021-03-12',
+              })
+            ),
             snapshot: {
               data: {
                 partyChannels,
-                hearingRole
-              }
-            }
-          }
+                hearingRole,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);
@@ -421,10 +422,10 @@ describe('HearingViewEditSummaryComponent participants check', () => {
               individualDetails: {
                 title: null,
                 firstName: 'Ted',
-                lastName: 'Jacob'
+                lastName: 'Jacob',
               },
               organisationDetails: null,
-              partyChannelSubType: 'INTER'
+              partyChannelSubType: 'INTER',
             },
             {
               partyID: '3bb0fa2a-a31c-43a9-bc6f-8595814dcb26',
@@ -432,13 +433,13 @@ describe('HearingViewEditSummaryComponent participants check', () => {
               individualDetails: null,
               organisationDetails: {
                 name: 'Kapil71HjOWjo5SaTT7u3w1y9 JainhuRYbAs5i0lxPCPiUnro',
-                cftOrganisationID: 'HQRZHN4'
+                cftOrganisationID: 'HQRZHN4',
               },
-              partyChannelSubType: null
-            }
-          ]
-        }
-      ]
+              partyChannelSubType: null,
+            },
+          ],
+        },
+      ],
     },
     hmcStatus: HMCStatus.UPDATE_SUBMITTED,
     caseDetails: {
@@ -455,24 +456,28 @@ describe('HearingViewEditSummaryComponent participants check', () => {
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002'
-        }, {
+          categoryValue: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002'
-        }],
+          categoryParent: 'BBA3-002',
+        },
+      ],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: '2021-03-12T09:00:00.000Z'
-    }
+      caseSLAStartDate: '2021-03-12T09:00:00.000Z',
+    },
   };
 
   const newState: any = JSON.parse(JSON.stringify(initialState));
@@ -482,29 +487,30 @@ describe('HearingViewEditSummaryComponent participants check', () => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsViewEditPartiesComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule,
-        ReactiveFormsModule],
+      imports: [RouterTestingModule, ReactiveFormsModule],
       providers: [
         LoadingService,
         provideMockStore({ initialState: newState }),
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1',
-              hearingDate: '2021-03-12'
-            })),
+            paramMap: of(
+              convertToParamMap({
+                id: '1',
+                hearingDate: '2021-03-12',
+              })
+            ),
             snapshot: {
               data: {
                 partyChannels,
-                hearingRole
-              }
-            }
-          }
+                hearingRole,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualsViewEditPartiesComponent);

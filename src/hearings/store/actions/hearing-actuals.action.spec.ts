@@ -8,7 +8,7 @@ describe('Hearing Actuals Actions', () => {
     hearingActuals: null,
     hearingPlanned: null,
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
-    caseDetails: null
+    caseDetails: null,
   };
 
   describe('Reset', () => {
@@ -43,7 +43,7 @@ describe('Hearing Actuals Actions', () => {
         status: 400,
         statusText: 'Bad Request',
         message: 'Bad Request',
-        errors: []
+        errors: [],
       };
       const action = new fromHearingActualsAction.SubmitHearingActualsFailure(error);
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS_FAILURE);

@@ -2,14 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
-import {
-  HearingActualsMainModel,
-  HearingActualsModel,
-  PlannedHearingDayModel
-} from '../../../models/hearingActualsMainModel';
+import { HearingActualsMainModel, HearingActualsModel, PlannedHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { HearingActualsStateData } from '../../../models/hearingActualsStateData.model';
 import { HearingResult, HearingStageResultEnum } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
@@ -19,11 +15,11 @@ import * as fromHearingStore from '../../../store';
   standalone: false,
   selector: 'exui-hearing-stage-result',
   templateUrl: './hearing-stage-result.component.html',
-  styleUrls: ['./hearing-stage-result.component.scss']
+  styleUrls: ['./hearing-stage-result.component.scss'],
 })
 export class HearingStageResultComponent implements OnInit, OnDestroy {
   public hearingStageResultForm: FormGroup;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   public hearingResult: HearingResult;
   public caseTitle: string;
   public hearingTypes: LovRefDataModel[];
@@ -37,9 +33,11 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
   private id: string;
   public hearingDate: string;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly formBuilder: FormBuilder,
-              private readonly route: ActivatedRoute) {
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly formBuilder: FormBuilder,
+    private readonly route: ActivatedRoute
+  ) {
     this.route.params.subscribe((params) => {
       this.id = params.id;
     });
@@ -66,34 +64,43 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       hearingStage: [''],
       hearingResult: ['', Validators.required],
       adjournedReason: [''],
-      cancelledReason: ['']
+      cancelledReason: [''],
     });
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingActuals).pipe(
-      filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
-      first()
-    ).subscribe((state: HearingActualsStateData) => {
-      this.hearingActualsMainModel = state.hearingActualsMainModel;
-      this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
-      this.hearingResult = this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals
-          && this.hearingActualsMainModel.hearingActuals.hearingOutcome
-          && this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult;
-      const hearingResultReasonType = this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals
-          && this.hearingActualsMainModel.hearingActuals.hearingOutcome
-          && this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType;
-      const hearingType = (this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals
-          && this.hearingActualsMainModel.hearingActuals.hearingOutcome
-          && this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingType)
-          || (this.hearingActualsMainModel.hearingPlanned.plannedHearingType);
-      this.hearingStageResultForm.controls.hearingStage.setValue(hearingType);
-      this.hearingStageResultForm.controls.hearingResult.setValue(this.hearingResult);
-      if (this.hearingResult === HearingResult.ADJOURNED) {
-        this.hearingStageResultForm.controls.adjournedReason.setValue(hearingResultReasonType);
-      }
-      if (this.hearingResult === HearingResult.CANCELLED) {
-        this.hearingStageResultForm.controls.cancelledReason.setValue(hearingResultReasonType);
-      }
-      this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
-    });
+    this.sub = this.hearingStore
+      .select(fromHearingStore.getHearingActuals)
+      .pipe(
+        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
+        first()
+      )
+      .subscribe((state: HearingActualsStateData) => {
+        this.hearingActualsMainModel = state.hearingActualsMainModel;
+        this.caseTitle = this.hearingActualsMainModel.caseDetails.hmctsInternalCaseName;
+        this.hearingResult =
+          this.hearingActualsMainModel &&
+          this.hearingActualsMainModel.hearingActuals &&
+          this.hearingActualsMainModel.hearingActuals.hearingOutcome &&
+          this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult;
+        const hearingResultReasonType =
+          this.hearingActualsMainModel &&
+          this.hearingActualsMainModel.hearingActuals &&
+          this.hearingActualsMainModel.hearingActuals.hearingOutcome &&
+          this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType;
+        const hearingType =
+          (this.hearingActualsMainModel &&
+            this.hearingActualsMainModel.hearingActuals &&
+            this.hearingActualsMainModel.hearingActuals.hearingOutcome &&
+            this.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingType) ||
+          this.hearingActualsMainModel.hearingPlanned.plannedHearingType;
+        this.hearingStageResultForm.controls.hearingStage.setValue(hearingType);
+        this.hearingStageResultForm.controls.hearingResult.setValue(this.hearingResult);
+        if (this.hearingResult === HearingResult.ADJOURNED) {
+          this.hearingStageResultForm.controls.adjournedReason.setValue(hearingResultReasonType);
+        }
+        if (this.hearingResult === HearingResult.CANCELLED) {
+          this.hearingStageResultForm.controls.cancelledReason.setValue(hearingResultReasonType);
+        }
+        this.hearingDate = this.calculateEarliestHearingDate(this.hearingActualsMainModel.hearingPlanned.plannedHearingDays);
+      });
   }
 
   public ngOnDestroy(): void {
@@ -108,8 +115,10 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       this.hearingStageResultForm.get('hearingResult').setValue(this.hearingResult);
     }
     if (this.isFormValid()) {
-      const hearingOutcome = this.hearingActualsMainModel && this.hearingActualsMainModel.hearingActuals
-        && this.hearingActualsMainModel.hearingActuals.hearingOutcome;
+      const hearingOutcome =
+        this.hearingActualsMainModel &&
+        this.hearingActualsMainModel.hearingActuals &&
+        this.hearingActualsMainModel.hearingActuals.hearingOutcome;
       const hearingActuals: HearingActualsModel = {
         ...this.hearingActualsMainModel.hearingActuals,
         hearingOutcome: {
@@ -118,8 +127,8 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
           hearingResult: this.hearingResult as HearingResult,
           hearingResultDate: this.hearingDate,
           hearingResultReasonType: this.getHearingResultReasonType(),
-          hearingType: this.hearingStageResultForm.get('hearingStage').value
-        }
+          hearingType: this.hearingStageResultForm.get('hearingStage').value,
+        },
       };
       this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActualsStage({
         hearingId: this.id,
@@ -146,7 +155,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
     if (!this.formControls.hearingResult.valid) {
       this.validationErrors.push({
         id: 'completed',
-        message: HearingStageResultEnum.HearingResultError
+        message: HearingStageResultEnum.HearingResultError,
       });
       return false;
     }
@@ -167,7 +176,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
       }
       this.validationErrors.push({
         id: this.hearingResult === this.hearingResultEnum.ADJOURNED ? 'adjourned-reason' : 'cancelled-reason',
-        message: this.hearingStageResultEnum.HearingResultReasonError
+        message: this.hearingStageResultEnum.HearingResultReasonError,
       });
       return false;
     }

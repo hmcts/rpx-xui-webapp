@@ -17,21 +17,21 @@ describe('RD Professional API call for get organisations', () => {
           method: 'GET',
           path: '/refdata/external/v1/organisations/status/ACTIVE',
           query: {
-            address: 'true'
+            address: 'true',
           },
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer some-access-token',
-            'ServiceAuthorization': 'serviceAuthToken'
-          }
+            Authorization: 'Bearer some-access-token',
+            ServiceAuthorization: 'serviceAuthToken',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: getOrganisationResponse
-        }
+          body: getOrganisationResponse,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -50,7 +50,6 @@ describe('RD Professional API call for get organisations', () => {
 });
 
 function assertResponse(dto: Organisation[]): void {
-  // eslint-disable-next-line no-unused-expressions
   expect(dto).to.be.not.null;
   for (const element of dto) {
     expect(element.name).to.equal('TheOrganisation');
@@ -66,7 +65,7 @@ const getOrganisationResponse: Organisation[] = [
       addressLine1: 'addressLine1',
       addressLine2: 'addressLine2',
       country: 'country',
-      postCode: 'Ha5 1BJ'
-    })
-  }
+      postCode: 'Ha5 1BJ',
+    }),
+  },
 ];

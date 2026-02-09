@@ -11,19 +11,21 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-adjourned-summary',
-  templateUrl: './hearing-adjourned-summary.component.html'
+  templateUrl: './hearing-adjourned-summary.component.html',
 })
 export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public hearingState$: Observable<fromHearingStore.State>;
   public hearingActualsMainModel: HearingActualsMainModel;
   public adjournReasons: LovRefDataModel[];
   public subscription: Subscription;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
   public hearingStageOptions: LovRefDataModel[];
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly route: ActivatedRoute,
-              private readonly loadingService: LoadingService) {
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly route: ActivatedRoute,
+    private readonly loadingService: LoadingService
+  ) {
     this.adjournReasons = this.route.snapshot.data.adjournReasons;
     this.hearingStageOptions = this.route.snapshot.data.hearingStageOptions;
   }
@@ -31,16 +33,15 @@ export class HearingAdjournedSummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.hearingState$ = this.hearingStore.select(fromHearingStore.getHearingsFeatureState)
-      .pipe(
-        filter((state) => !!state.hearingActuals.hearingActualsMainModel),
-      );
+    this.hearingState$ = this.hearingStore
+      .select(fromHearingStore.getHearingsFeatureState)
+      .pipe(filter((state) => !!state.hearingActuals.hearingActualsMainModel));
 
     this.subscription = this.hearingState$.subscribe({
       next: (state: fromHearingStore.State) => {
         this.hearingActualsMainModel = state.hearingActuals.hearingActualsMainModel;
         this.loadingService.unregister(loadingToken);
-      }
+      },
     });
   }
 

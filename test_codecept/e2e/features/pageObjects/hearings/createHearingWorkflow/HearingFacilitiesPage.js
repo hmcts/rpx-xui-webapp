@@ -8,10 +8,10 @@ class HearingFacilitiesPage {
 
   get fieldMapping() {
     return {
-      'Will additional security be required?':        $('#addition-security-confirmation'),
-      'Will additional security be required?-Yes':    $('#additionalSecurityYes'),
-      'Will additional security be required?-No':     $('#additionalSecurityNo'),
-      'Select any additional facilities required':    $('#facilitiesList')
+      'Will additional security be required?': $('#addition-security-confirmation'),
+      'Will additional security be required?-Yes': $('#additionalSecurityYes'),
+      'Will additional security be required?-No': $('#additionalSecurityNo'),
+      'Select any additional facilities required': $('#facilitiesList'),
     };
   }
 
@@ -26,7 +26,7 @@ class HearingFacilitiesPage {
         break;
       case 'Select any additional facilities required':
         const facilities = value.split(',');
-        for (const val of facilities){
+        for (const val of facilities) {
           await this.clickAdditionalFacilityCheckbox(val.trim());
         }
         break;

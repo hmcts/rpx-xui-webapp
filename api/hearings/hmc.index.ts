@@ -1,16 +1,18 @@
 import { NextFunction, Response } from 'express';
 import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS, SERVICES_HMC_HEARINGS_COMPONENT_API, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import {
+  SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS,
+  SERVICES_HMC_HEARINGS_COMPONENT_API,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+} from '../configuration/references';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
-import {
-  LinkedHearingGroupMainModel,
-  LinkedHearingGroupResponseModel
-} from './models/linkHearings.model';
+import { LinkedHearingGroupMainModel, LinkedHearingGroupResponseModel } from './models/linkHearings.model';
 import { trackTrace } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 
@@ -20,7 +22,14 @@ const logger: JUILogger = log4jui.getLogger('hmc-index');
 /**
  * handleHearingError - reusable error handler for hearing requests
  */
-function handleHearingError(error: any, caseId: string, operationName: string, req: EnhancedRequest, markupPath: string, next: NextFunction): void {
+function handleHearingError(
+  error: any,
+  caseId: string,
+  operationName: string,
+  req: EnhancedRequest,
+  markupPath: string,
+  next: NextFunction
+): void {
   const hearingId = req.query.hearingId;
   const deepLink: string | undefined = req.body?.caseDetails?.caseDeepLink;
   let inferredCaseId: string | undefined;
@@ -39,9 +48,7 @@ function handleHearingError(error: any, caseId: string, operationName: string, r
     JSON.stringify(errorData)
   );
   if (error.status >= 400 && error.status < 600) {
-    trackTrace(
-      `HMC-Index | ${operationName} error${idInfo} : (${error.status}) : ${JSON.stringify(errorData)}`
-    );
+    trackTrace(`HMC-Index | ${operationName} error${idInfo} : (${error.status}) : ${JSON.stringify(errorData)}`);
   }
   next(error);
 }
@@ -54,12 +61,15 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   const markupPath: string = `${hmcHearingsUrl}/hearings/${caseId}`;
 
   try {
-    const { status, data }: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req);
+    const { status, data }: { status: number; data: HearingListMainModel } = await handleGet(markupPath, req);
     data.caseHearings.forEach((hearing) =>
-      hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
-        hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
-        hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
-      }));
+      hearingStatusMappings
+        .filter((mapping) => mapping.hmcStatus === hearing.hmcStatus)
+        .map((hearingStatusMapping) => {
+          hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
+          hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
+        })
+    );
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, null, 'getHearings', req, markupPath, next);
@@ -71,13 +81,13 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
  */
 export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
   // @ts-ignore
-  const hearingId: string = req.query.hearingId;
+  const hearingId: string = req.query.hearingId as string;
   const caseRef = req.query.caseRef as string;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   // const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   console.log(req.query);
   try {
-    const { status, data }: { status: number, data: HearingRequestMainModel } = await handleGet(markupPath, req);
+    const { status, data }: { status: number; data: HearingRequestMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseRef, 'getHearing', req, markupPath, next);
@@ -93,7 +103,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   // req.body.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   try {
     trackTrace('submitting hearing request');
-    const { status, data }: { status: number, data: any } = await handlePost(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, null, 'SubmitHearingRequest', req, markupPath, next);
@@ -110,7 +120,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
   // req.body.cancellationReasonCodes = null; // TESTING PURPOSES ONLY - to be removed when front end is sending reason codes
   try {
     const reqBody = req.body;
-    const { status, data }: { status: number, data: any } = await handleDelete(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: any } = await handleDelete(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'cancelHearingRequest', req, markupPath, next);
@@ -126,7 +136,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
   // reqBody.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
-    const { status, data }: { status: number, data: any } = await handlePut(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: any } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, null, 'updateHearingRequest', req, markupPath, next);
@@ -141,9 +151,11 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const caseId = req.query.caseRef as string;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const { status, data }: { status: number, data: HearingActualsMainModel } =
-      await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}`, req);
-      // await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, req, next); // TESTING PURPOSES ONLY - to be removed when backend is fixed
+    const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(
+      `${hmcHearingsUrl}/hearingActuals/${hearingId}`,
+      req
+    );
+    // await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, req, next); // TESTING PURPOSES ONLY - to be removed when backend is fixed
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getHearingActuals', req, markupPath, next);
@@ -160,7 +172,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   // reqBody.actualHearingDays[0].hearingDate = null; // Testing purposes only - to be removed when front end is sending hearing date
   try {
-    const { status, data }: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'updateHearingActuals', req, markupPath, next);
@@ -192,7 +204,7 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   // const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req);
+    const { status, data }: { status: number; data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getLinkedHearingGroup', req, markupPath, next);
@@ -207,7 +219,11 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
   const caseId = req.query.caseId as string;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePost(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await handlePost(
+      markupPath,
+      reqBody,
+      req
+    );
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'postLinkedHearingGroup', req, markupPath, next);
@@ -223,7 +239,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'putLinkedHearingGroup', req, markupPath, next);
@@ -240,7 +256,11 @@ export async function deleteLinkedHearingGroup(req: EnhancedRequest, res: Respon
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}`;
   // const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${hearingGroupId}1234`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupResponseModel } = await handleDelete(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await handleDelete(
+      markupPath,
+      reqBody,
+      req
+    );
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'deleteLinkedHearingGroup', req, markupPath, next);

@@ -10,7 +10,7 @@ import {
   LinkedHearingGroupMainModel,
   LinkedHearingGroupResponseModel,
   ServiceLinkedCasesModel,
-  ServiceLinkedCasesWithHearingsModel
+  ServiceLinkedCasesWithHearingsModel,
 } from '../models/linkHearings.model';
 import { LovRefDataByServiceModel, LovRefDataModel } from '../models/lovRefData.model';
 import { ResponseDetailsModel } from '../models/requestDetails.model';
@@ -28,7 +28,7 @@ export class HearingsService {
   public submitUpdatedRequestClicked: boolean = false;
   public hearingRequestForSubmitValid: boolean = false;
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   public navigateAction(action: ACTION): void {
     this.actionSubject.next(action);
@@ -39,23 +39,36 @@ export class HearingsService {
   }
 
   public loadHearingValues(jurisdictionId: string, caseId: string): Observable<ServiceHearingValuesModel> {
-    return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`,
-      { caseReference: caseId });
+    return this.http.post<ServiceHearingValuesModel>(`api/hearings/loadServiceHearingValues?jurisdictionId=${jurisdictionId}`, {
+      caseReference: caseId,
+    });
   }
 
-  public loadServiceLinkedCases(jurisdictionId: string, caseReference: string, hearingId?: string): Observable<ServiceLinkedCasesModel[]> {
+  public loadServiceLinkedCases(
+    jurisdictionId: string,
+    caseReference: string,
+    hearingId?: string
+  ): Observable<ServiceLinkedCasesModel[]> {
     return this.http.post<ServiceLinkedCasesModel[]>(`api/hearings/loadServiceLinkedCases?jurisdictionId=${jurisdictionId}`, {
       caseReference,
-      hearingId // could be null, empty string or missing
+      hearingId, // could be null, empty string or missing
     });
   }
 
-  public loadLinkedCasesWithHearings(jurisdictionId: string, caseReference: string, caseName: string, hearingId?: string): Observable<ServiceLinkedCasesWithHearingsModel[]> {
-    return this.http.post<ServiceLinkedCasesWithHearingsModel[]>(`api/hearings/loadLinkedCasesWithHearings?jurisdictionId=${jurisdictionId}`, {
-      caseReference,
-      caseName,
-      hearingId // could be null, empty string or missing
-    });
+  public loadLinkedCasesWithHearings(
+    jurisdictionId: string,
+    caseReference: string,
+    caseName: string,
+    hearingId?: string
+  ): Observable<ServiceLinkedCasesWithHearingsModel[]> {
+    return this.http.post<ServiceLinkedCasesWithHearingsModel[]>(
+      `api/hearings/loadLinkedCasesWithHearings?jurisdictionId=${jurisdictionId}`,
+      {
+        caseReference,
+        caseName,
+        hearingId, // could be null, empty string or missing
+      }
+    );
   }
 
   public loadCaseLinkingReasonCodes(): Observable<LovRefDataByServiceModel> {
@@ -79,15 +92,21 @@ export class HearingsService {
   }
 
   public submitHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
-    return this.http.post<ResponseDetailsModel>('api/hearings/submitHearingRequest', this.prepareHearingRequestModel(hearingRequestMainModel));
+    return this.http.post<ResponseDetailsModel>(
+      'api/hearings/submitHearingRequest',
+      this.prepareHearingRequestModel(hearingRequestMainModel)
+    );
   }
 
   public updateHearingRequest(hearingRequestMainModel: HearingRequestMainModel): Observable<ResponseDetailsModel> {
     const options = {
-      params: new HttpParams()
-        .set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID)
+      params: new HttpParams().set('hearingId', hearingRequestMainModel.requestDetails.hearingRequestID),
     };
-    return this.http.put<ResponseDetailsModel>('api/hearings/updateHearingRequest', this.prepareHearingRequestModel(hearingRequestMainModel), options);
+    return this.http.put<ResponseDetailsModel>(
+      'api/hearings/updateHearingRequest',
+      this.prepareHearingRequestModel(hearingRequestMainModel),
+      options
+    );
   }
 
   public getHearingActuals(hearingId: string, caseRef: string): Observable<HearingActualsMainModel> {
@@ -130,17 +149,21 @@ export class HearingsService {
       ...hearingRequestMainModel,
       hearingDetails: {
         ...hearingRequestMainModel.hearingDetails,
-        hearingWindow: null
-      }
+        hearingWindow: null,
+      },
     };
-    if (hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0) {
+    if (
+      hearingRequestMainModel.hearingDetails.hearingWindow &&
+      Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
+    ) {
       model = newModel;
     }
     return model;
   }
 
-  public getHearingChannels(hearingRequestMainModel: HearingRequestMainModel) : string[]{
-    return !!hearingRequestMainModel.hearingDetails?.isPaperHearing ?
-      [HearingChannelEnum.ONPPR] : hearingRequestMainModel.hearingDetails.hearingChannels;
+  public getHearingChannels(hearingRequestMainModel: HearingRequestMainModel): string[] {
+    return hearingRequestMainModel.hearingDetails?.isPaperHearing
+      ? [HearingChannelEnum.ONPPR]
+      : hearingRequestMainModel.hearingDetails.hearingChannels;
   }
 }

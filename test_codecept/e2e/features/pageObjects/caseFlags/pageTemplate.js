@@ -7,7 +7,7 @@ class TemplatePage {
 
   get fieldMapping() {
     return {
-      'Enter the name of the organisation': $('#company-name')
+      'Enter the name of the organisation': $('#company-name'),
     };
   }
 

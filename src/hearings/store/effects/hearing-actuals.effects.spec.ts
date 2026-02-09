@@ -15,7 +15,10 @@ describe('Hearing Actuals Effects', () => {
   let actions$;
   let effects: HearingActualsEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getHearingActuals', 'updateHearingActuals', 'updateHearingActualsStage', 'submitHearingActuals'
+    'getHearingActuals',
+    'updateHearingActuals',
+    'updateHearingActualsStage',
+    'submitHearingActuals',
   ]);
   const routerMock = jasmine.createSpyObj('Router', ['navigate']);
 
@@ -25,15 +28,15 @@ describe('Hearing Actuals Effects', () => {
       providers: [
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock
+          useValue: hearingsServiceMock,
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         HearingActualsEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
     effects = TestBed.inject(HearingActualsEffects);
   });
@@ -94,7 +97,7 @@ describe('Hearing Actuals Effects', () => {
         status: 400,
         statusText: 'Bad Request',
         message: 'Bad Request',
-        errors: []
+        errors: [],
       };
       hearingsServiceMock.submitHearingActuals.and.returnValue(throwError(error));
       const action = new hearingActualsActions.SubmitHearingActuals({ id: '1111222233334444', caseRef: '5555666677778888' });
@@ -109,7 +112,7 @@ describe('Hearing Actuals Effects', () => {
     it('should handle 500', () => {
       const action$ = HearingActualsEffects.handleError({
         status: 500,
-        message: 'error'
+        message: 'error',
       });
       action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
@@ -117,7 +120,7 @@ describe('Hearing Actuals Effects', () => {
     it('should handle 4xx related errors', () => {
       const action$ = HearingActualsEffects.handleError({
         status: 403,
-        message: 'error'
+        message: 'error',
       });
       action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });

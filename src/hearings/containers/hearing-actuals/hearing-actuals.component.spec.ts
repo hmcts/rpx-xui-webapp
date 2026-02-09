@@ -14,7 +14,7 @@ import { HearingActualsComponent } from './hearing-actuals.component';
 describe('RequestHearingComponent', () => {
   let component: HearingActualsComponent;
   let fixture: ComponentFixture<HearingActualsComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockStore: any;
   const mockPageFlow = jasmine.createSpyObj('PageFlow', ['getCurrentPage']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
@@ -29,10 +29,9 @@ describe('RequestHearingComponent', () => {
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
         provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ]
-    })
-      .compileComponents();
+        { provide: HearingsService, useValue: hearingsService },
+      ],
+    }).compileComponents();
     mockStore = TestBed.inject(Store);
     fixture = TestBed.createComponent(HearingActualsComponent);
     component = fixture.componentInstance;

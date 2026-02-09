@@ -8,7 +8,7 @@ import { ListedHearingViewerHiddenConverter } from './listed-hearing-viewer.hidd
 const userDetails = {
   sessionTimeout: {
     idleModalDisplayTime: 10,
-    totalIdleTime: 1
+    totalIdleTime: 1,
   },
   canShareCases: true,
   userInfo: {
@@ -17,34 +17,31 @@ const userDetails = {
     surname: 'surName',
     email: 'email@email.com',
     active: true,
-    roles: ['pui-case-manager']
-  }
+    roles: ['pui-case-manager'],
+  },
 };
 
 describe('ListedHearingViewerHiddenConverter', () => {
   let listedHiddenConverter: ListedHearingViewerHiddenConverter;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch', 'pipe'
-  ]);
+  const storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({})
-      ],
+      imports: [StoreModule.forRoot({})],
       providers: [
         { provide: Store, useValue: storeMock },
         {
           provide: UserService,
           useValue: {
-            getUserDetails: () => of({
-              userInfo: {
-                roles: ['roleA', 'roleB']
-              }
-            })
-          }
-        }
-      ]
+            getUserDetails: () =>
+              of({
+                userInfo: {
+                  roles: ['roleA', 'roleB'],
+                },
+              }),
+          },
+        },
+      ],
     });
     storeMock.pipe.and.returnValue(of(userDetails));
     listedHiddenConverter = new ListedHearingViewerHiddenConverter(storeMock);

@@ -25,7 +25,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
   try {
-    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
+    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
       result = data.filter((location) => location.is_hearing_location === 'Y');
@@ -46,12 +46,12 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
-  const serviceCode = !!req.query.serviceCode ? req.query.serviceCode as string : null;
+  const serviceCode = req.query.serviceCode ? (req.query.serviceCode as string) : null;
   delete req.query.serviceCode;
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
-    const { status, data }: { status: number, data: LocationModel[] } = await handleGet(markupPath, req);
+    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     const courtLocations = serviceCode && courtTypeIdsArray?.length > 0 ? getLocationsByCourtType(data, courtTypeIdsArray) : data;
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);
@@ -61,9 +61,12 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
 }
 
 function getIdenticalLocationByEpimmsId(data: LocationModel[]): LocationByEpimmsModel[] {
-  return data.map((locationModel) => toEpimmsLocation(locationModel))
-    .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-      locationByEPIMSModelArray.findIndex((location) => (location.epimms_id === locationByEPIMSModel.epimms_id)) === index);
+  return data
+    .map((locationModel) => toEpimmsLocation(locationModel))
+    .filter(
+      (locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+        locationByEPIMSModelArray.findIndex((location) => location.epimms_id === locationByEPIMSModel.epimms_id) === index
+    );
 }
 
 function getLocationsByCourtType(locations: LocationModel[], courtTypeIdsArray: string[]): LocationModel[] {

@@ -258,7 +258,7 @@
     "npm-run-all2": "^7.0.0",
     "odhin-reports-playwright": "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch",
     "pa11y": "^8.0.0",
-    "playwright": "^1.52.0",
+    "playwright": "^1.58.2",
     "puppeteer": "^24.0.0",
     "sass": "^1.97.3",
     "sinon": "^7.3.2",
@@ -299,7 +299,8 @@
     "semver": "^7.6.3",
     "superagent": "^10.2.2",
     "cookie": "^0.7.2",
-    "min-document": "^2.19.1"
+    "min-document": "^2.19.1",
+    "jws": "^4.0.1"
   },
   "packageManager": "yarn@4.7.0"
 }

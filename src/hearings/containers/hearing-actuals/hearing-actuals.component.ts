@@ -14,7 +14,11 @@ import * as hearingRequestActions from '../../store/actions/hearing-request.acti
 export class HearingActualsComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
-  public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute, public readonly router: Router) {}
+  public constructor(
+    private readonly store: Store<any>,
+    private readonly route: ActivatedRoute,
+    public readonly router: Router
+  ) {}
 
   public ngOnInit(): void {
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;

@@ -21,7 +21,9 @@ describe('Hearing Actuals Actions', () => {
   describe('UpdateHearingActuals', () => {
     it('should update hearing actuals action', () => {
       const action = new fromHearingActualsAction.UpdateHearingActuals({
-        hearingId: '1', hearingActuals: payload.hearingActuals, caseId: '1234'
+        hearingId: '1',
+        hearingActuals: payload.hearingActuals,
+        caseId: '1234',
       });
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_HEARING_ACTUALS);
     });

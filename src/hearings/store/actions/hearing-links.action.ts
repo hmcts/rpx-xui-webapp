@@ -80,7 +80,7 @@ export class LoadServiceLinkedCasesGroupDetail implements Action {
 
 export class LoadLinkedHearingGroup implements Action {
   public readonly type = LOAD_LINKED_HEARING_GROUP;
-  constructor(public payload: { groupId: string, hearingId: string, caseId: string }) {}
+  constructor(public payload: { groupId: string; hearingId: string; caseId: string }) {}
 }
 
 export class LoadLinkedHearingGroupSuccess implements Action {

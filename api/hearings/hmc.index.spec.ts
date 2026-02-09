@@ -107,8 +107,8 @@ xdescribe('HMC Hearings API', () => {
       req.query = { caseId: '1584618195804035' };
       req.body = {
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/1234567890'
-        }
+          caseDeepLink: 'https://example.com/case-details/1234567890',
+        },
       };
       const error = { status: 500, statusText: 'Internal Server Error', data: { message: 'API failure' } };
 
@@ -149,8 +149,8 @@ xdescribe('HMC Hearings API', () => {
       req.query = { hearingId: 'h100001' };
       req.body = {
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/9876543210'
-        }
+          caseDeepLink: 'https://example.com/case-details/9876543210',
+        },
       };
       const error = { status: 404, statusText: 'Not Found', data: { message: 'Hearing not found' } };
 
@@ -187,8 +187,8 @@ xdescribe('HMC Hearings API', () => {
       req.body = {
         invalid: 'data',
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/1111111111'
-        }
+          caseDeepLink: 'https://example.com/case-details/1111111111',
+        },
       };
       const error = { status: 400, statusText: 'Bad Request', message: 'Invalid request', data: { error: 'validation failed' } };
 
@@ -197,7 +197,9 @@ xdescribe('HMC Hearings API', () => {
       await hmcIndex.submitHearingRequest(req, res, next);
 
       expect(trackTraceStub).to.have.been.calledTwice; // Once for 'submitting hearing request', once for error
-      expect(trackTraceStub.secondCall.args[0]).to.match(/SubmitHearingRequest error for caseID: 1111111111 hearingID: undefined/);
+      expect(trackTraceStub.secondCall.args[0]).to.match(
+        /SubmitHearingRequest error for caseID: 1111111111 hearingID: undefined/
+      );
       expect(next).to.have.been.calledWith(error);
     });
 
@@ -205,17 +207,24 @@ xdescribe('HMC Hearings API', () => {
       req.body = {
         ...HEARING_REQUEST_RESULTS[0],
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/2222222222'
-        }
+          caseDeepLink: 'https://example.com/case-details/2222222222',
+        },
       };
-      const error = { status: 500, statusText: 'Internal Server Error', message: 'Server error', data: { error: 'server failure' } };
+      const error = {
+        status: 500,
+        statusText: 'Internal Server Error',
+        message: 'Server error',
+        data: { error: 'server failure' },
+      };
 
       handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
       expect(trackTraceStub).to.have.been.calledTwice; // Once for 'submitting hearing request', once for error
-      expect(trackTraceStub.secondCall.args[0]).to.match(/SubmitHearingRequest error for caseID: 2222222222 hearingID: undefined/);
+      expect(trackTraceStub.secondCall.args[0]).to.match(
+        /SubmitHearingRequest error for caseID: 2222222222 hearingID: undefined/
+      );
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -244,10 +253,15 @@ xdescribe('HMC Hearings API', () => {
       req.body = {
         cancellationReason: 'No longer required',
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/3333333333'
-        }
+          caseDeepLink: 'https://example.com/case-details/3333333333',
+        },
       };
-      const error = { status: 400, statusText: 'Bad Request', message: 'Cannot cancel hearing', data: { error: 'cancellation not allowed' } };
+      const error = {
+        status: 400,
+        statusText: 'Bad Request',
+        message: 'Cannot cancel hearing',
+        data: { error: 'cancellation not allowed' },
+      };
 
       handleDeleteStub.rejects(error);
 
@@ -283,10 +297,15 @@ xdescribe('HMC Hearings API', () => {
       req.body = {
         duration: 60,
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/4444444444'
-        }
+          caseDeepLink: 'https://example.com/case-details/4444444444',
+        },
       };
-      const error = { status: 422, statusText: 'Unprocessable Entity', message: 'Update failed', data: { error: 'invalid update' } };
+      const error = {
+        status: 422,
+        statusText: 'Unprocessable Entity',
+        message: 'Update failed',
+        data: { error: 'invalid update' },
+      };
 
       handlePutStub.rejects(error);
 
@@ -563,8 +582,8 @@ xdescribe('HMC Hearings API', () => {
       req.query = { hearingId: 'h999999' };
       req.body = {
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/5555555555'
-        }
+          caseDeepLink: 'https://example.com/case-details/5555555555',
+        },
       };
       const error = { status: 500, statusText: 'Server Error', data: { message: 'test error' } };
 
@@ -599,8 +618,8 @@ xdescribe('HMC Hearings API', () => {
       req.query = {};
       req.body = {
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/6666666666'
-        }
+          caseDeepLink: 'https://example.com/case-details/6666666666',
+        },
       };
       const error = { status: 404, statusText: 'Not Found', data: { message: 'hearing not found' } };
 
@@ -619,8 +638,8 @@ xdescribe('HMC Hearings API', () => {
       req.query = { hearingId: 'h777777' };
       req.body = {
         caseDetails: {
-          caseDeepLink: 'https://example.com/some-other-path/7777777777'
-        }
+          caseDeepLink: 'https://example.com/some-other-path/7777777777',
+        },
       };
       const error = { status: 403, statusText: 'Forbidden', data: { message: 'access denied' } };
 
@@ -639,8 +658,8 @@ xdescribe('HMC Hearings API', () => {
       req.query = { hearingId: 'h111111' };
       req.body = {
         caseDetails: {
-          caseDeepLink: 'https://example.com/case-details/8888888888'
-        }
+          caseDeepLink: 'https://example.com/case-details/8888888888',
+        },
       };
       const error = { status: 302, statusText: 'Found', data: { message: 'redirect' } };
 

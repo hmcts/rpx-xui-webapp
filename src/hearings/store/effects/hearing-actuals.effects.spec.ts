@@ -58,7 +58,7 @@ describe('Hearing Actuals Effects', () => {
       const action = new hearingActualsActions.UpdateHearingActuals({
         hearingId: '1111222233334444',
         hearingActuals: hearingActualsMainModel.hearingActuals,
-        caseId: '5555666677778888'
+        caseId: '5555666677778888',
       });
       const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
       actions$ = hot('-a', { a: action });
@@ -73,7 +73,7 @@ describe('Hearing Actuals Effects', () => {
       const action = new hearingActualsActions.UpdateHearingActualsStage({
         hearingId: '1111222233334444',
         hearingActuals: hearingActualsMainModel.hearingActuals,
-        caseId: '5555666677778888'
+        caseId: '5555666677778888',
       });
       const completion = new hearingActualsActions.UpdateHearingActualsSuccess(hearingActualsMainModel.hearingActuals);
       actions$ = hot('-a', { a: action });

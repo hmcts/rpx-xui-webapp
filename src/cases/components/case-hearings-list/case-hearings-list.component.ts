@@ -95,10 +95,9 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public addAndEdit(hearingID: string): void {
-    this.router.navigate(
-      ['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary'],
-      { state: { caseId: this.caseId } }
-    );
+    this.router.navigate(['/', 'hearings', 'actuals', hearingID, 'hearing-actual-add-edit-summary'], {
+      state: { caseId: this.caseId },
+    });
   }
 
   public cancelHearing(hearingID: string): void {
@@ -110,12 +109,20 @@ export class CaseHearingsListComponent implements OnInit {
   }
 
   public manageLinks(hearing: HearingListViewModel): void {
-    this.hearingStore.dispatch(new fromHearingStore.LoadServiceLinkedCases({
-      jurisdictionId: this.jurisdictionId,
-      caseReference: this.caseId,
-      hearingId: hearing.hearingID
-    }));
-    this.hearingStore.dispatch(new fromHearingStore.LoadLinkedHearingGroup({ groupId: hearing.hearingGroupRequestId, hearingId: hearing.hearingID, caseId: this.caseId }));
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadServiceLinkedCases({
+        jurisdictionId: this.jurisdictionId,
+        caseReference: this.caseId,
+        hearingId: hearing.hearingID,
+      })
+    );
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadLinkedHearingGroup({
+        groupId: hearing.hearingGroupRequestId,
+        hearingId: hearing.hearingID,
+        caseId: this.caseId,
+      })
+    );
     this.router.navigate(['/', 'hearings', 'manage-links', this.caseId, hearing.hearingGroupRequestId, hearing.hearingID]);
   }
 
@@ -169,10 +176,18 @@ export class CaseHearingsListComponent implements OnInit {
         );
         break;
       case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-view-actuals-summary/${hearing.hearingID}`, this.caseId);
+        this.loadHearingRequestAndRedirect(
+          hearing.hearingID,
+          `/hearings/view/hearing-view-actuals-summary/${hearing.hearingID}`,
+          this.caseId
+        );
         break;
       case EXUIDisplayStatusEnum.FAILURE:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`, this.caseId);
+        this.loadHearingRequestAndRedirect(
+          hearing.hearingID,
+          `/hearings/view/hearing-request-failed-summary/${hearing.hearingID}`,
+          this.caseId
+        );
         break;
       default:
         this.router.navigate(['/', 'hearings', 'view']);

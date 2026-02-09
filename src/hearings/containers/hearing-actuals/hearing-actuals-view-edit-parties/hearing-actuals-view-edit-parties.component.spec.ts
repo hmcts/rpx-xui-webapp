@@ -206,14 +206,14 @@ describe('HearingActualsViewEditPartiesComponent', () => {
             snapshot: {
               data: {
                 partyChannels,
-                hearingRole
+                hearingRole,
               },
               queryParams: {
-                caseId: '1234'
-              }
-            }
-          }
-        }
+                caseId: '1234',
+              },
+            },
+          },
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();

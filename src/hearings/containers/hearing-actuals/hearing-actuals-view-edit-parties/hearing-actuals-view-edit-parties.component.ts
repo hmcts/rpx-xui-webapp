@@ -317,11 +317,13 @@ export class HearingActualsViewEditPartiesComponent implements OnInit, OnDestroy
         actualDayParties,
       } as ActualHearingDayModel);
 
-      this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-        hearingId: this.id,
-        hearingActuals,
-        caseId: this.route.snapshot.queryParams.caseId
-      }));
+      this.hearingStore.dispatch(
+        new fromHearingStore.UpdateHearingActuals({
+          hearingId: this.id,
+          hearingActuals,
+          caseId: this.route.snapshot.queryParams.caseId,
+        })
+      );
 
       if (this.id) {
         this.ngZone.run(() => {

@@ -35,8 +35,9 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   public onSubmitHearingDetails(): void {
     if (this.hearingResult === HearingResult.CANCELLED || this.isValid()) {
       const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
-      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary'],
-        { state: { caseId: navState?.caseId } });
+      this.router.navigate(['/', 'hearings', 'actuals', this.hearingRequestID, 'hearing-actual-edit-summary'], {
+        state: { caseId: navState?.caseId },
+      });
     }
   }
 
@@ -46,12 +47,12 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     const dayRequired = !hearingDay.notRequired;
     const updatedActuals = !dayRequired
       ? ({
-        hearingStartTime: '',
-        hearingEndTime: '',
-        pauseDateTimes: [],
-        notRequired: dayRequired,
-        actualDayParties: []
-      } as ActualHearingDayModel)
+          hearingStartTime: '',
+          hearingEndTime: '',
+          pauseDateTimes: [],
+          notRequired: dayRequired,
+          actualDayParties: [],
+        } as ActualHearingDayModel)
       : ({ notRequired: dayRequired } as ActualHearingDayModel);
 
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
@@ -63,11 +64,13 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
     // Retrieve data from Router NavigationExtras.state (or fallback to history.state after navigation)
     const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     console.log('navState in changeWasThisHearingDayRequired:', navState);
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
-      caseId: navState?.caseId
-    }));
+    this.hearingStore.dispatch(
+      new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals: patchedHearingActuals,
+        caseId: navState?.caseId,
+      })
+    );
   }
 
   public confirmActualHearingTimeForDay(hearingDay: ActualHearingDayModel) {
@@ -84,11 +87,13 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
       hearingDay.hearingDate,
       updatedActuals
     );
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
-      caseId: navState?.caseId
-    }));
+    this.hearingStore.dispatch(
+      new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals: patchedHearingActuals,
+        caseId: navState?.caseId,
+      })
+    );
     this.showSuccessBannerMessage();
   }
 
@@ -107,11 +112,13 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
       hearingDay.hearingDate,
       updatedActuals
     );
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
-      caseId: navState?.caseId
-    }));
+    this.hearingStore.dispatch(
+      new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals: patchedHearingActuals,
+        caseId: navState?.caseId,
+      })
+    );
     this.showSuccessBannerMessage();
   }
 

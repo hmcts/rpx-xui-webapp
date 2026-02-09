@@ -173,13 +173,15 @@ describe('HearingActualSummaryComponent', () => {
     spyOn(TestBed.inject(Router), 'getCurrentNavigation').and.returnValue({
       extras: {
         state: {
-          caseId: '1234'
-        }
-      }
+          caseId: '1234',
+        },
+      },
     } as any);
 
     component.onSubmitHearingDetails();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals({ id: component.id, caseRef: '1234' }));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.SubmitHearingActuals({ id: component.id, caseRef: '1234' })
+    );
   });
 
   it('should return only one date if only one hearing date', () => {

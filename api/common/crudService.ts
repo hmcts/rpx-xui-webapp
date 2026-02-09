@@ -125,7 +125,7 @@ export async function handleDelete<T>(path: string, body: T, req: EnhancedReques
   const headers = setHeaders(req);
   return await http.delete(path, {
     data: body,
-    headers
+    headers,
   });
 }
 

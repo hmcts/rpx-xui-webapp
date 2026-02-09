@@ -190,11 +190,13 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
       ...updatedTimings,
     } as ActualHearingDayModel);
 
-    this.hearingStore.dispatch(new fromHearingStore.UpdateHearingActuals({
-      hearingId: this.id,
-      hearingActuals: patchedHearingActuals,
-      caseId: this.hearingActuals.caseDetails.caseRef
-    }));
+    this.hearingStore.dispatch(
+      new fromHearingStore.UpdateHearingActuals({
+        hearingId: this.id,
+        hearingActuals: patchedHearingActuals,
+        caseId: this.hearingActuals.caseDetails.caseRef,
+      })
+    );
 
     if (this.id) {
       this.ngZone.run(() => {

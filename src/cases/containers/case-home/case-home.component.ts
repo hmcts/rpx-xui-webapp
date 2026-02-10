@@ -153,8 +153,6 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     }
 
     const caseType = navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id;
-    const jurisdiction =
-      navigation.relativeTo.snapshot.params.jurisdiction ?? navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id;
     const caseId = navigation.relativeTo.snapshot.params.cid;
     const eventId = navigation.etid;
 
@@ -166,7 +164,6 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       caseType,
       eventId,
       caseId,
-      jurisdiction,
       queryParams: navigation.queryParams,
       expectedSub,
       isCaseCreate: false,

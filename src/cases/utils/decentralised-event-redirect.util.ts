@@ -1,14 +1,10 @@
 import { Params } from '@angular/router';
 
-export const DECENTRALISED_EVENT_PREFIX = 'ext:';
+const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
 
-export const isDecentralisedEvent = (eventId?: string): boolean => {
+const isDecentralisedEvent = (eventId?: string): boolean => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
-};
-
-export const normalizeCaseType = (caseType?: string): string | null => {
-  return caseType ? caseType.toUpperCase() : null;
 };
 
 const resolveUrlTemplate = (params: { template: string; prefix: string; caseType: string }): string | null => {
@@ -38,7 +34,7 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return resolved;
 };
 
-export const getDecentralisedBaseUrl = (
+const getDecentralisedBaseUrl = (
   baseUrls: Record<string, string> | null | undefined,
   caseType?: string
 ): string | null => {

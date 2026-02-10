@@ -279,6 +279,7 @@ withPipeline(type, product, component) {
                 }
             )
         }
+    }
 
     afterAlways('functionalTest:aat') {
         publishHTML([
@@ -290,5 +291,5 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Playwright E2E'
         ])
     }
-    }
 }
+

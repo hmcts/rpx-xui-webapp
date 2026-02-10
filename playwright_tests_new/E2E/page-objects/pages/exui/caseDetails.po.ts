@@ -302,9 +302,26 @@ export class CaseDetailsPage extends Base {
       for (let j = 0; j < rowCount; j++) {
         const row = rows.nth(j);
         const key = (await row.locator('.govuk-summary-list__key .row-padding').innerText()).trim();
-        const value = (await row.locator('.govuk-summary-list__value').innerText()).replace(/\s+/g, ' ').trim();
+        const valueEl = row.locator('.govuk-summary-list__value');
+        const rawText = (await valueEl.innerText()).replace(/\s+/g, ' ').trim();
+        // Also capture the rendered HTML so tests can assert on links and markdown output
+        const rawHtml = (await valueEl.evaluate((el: HTMLElement) => el.innerHTML || '')).trim();
+        // If markdown rendered as headings, prefer returning value starting with the first heading
+        let value = rawText;
+        // Prefer a rendered heading if present; use evaluate to avoid locator timeouts
+        const heading = await valueEl.evaluate((el: HTMLElement) => {
+          const h = el.querySelector('h1,h2,h3') as HTMLElement | null;
+          return h ? (h.textContent || '').trim() : '';
+        });
+        if (heading) {
+          if (!value.startsWith(heading)) {
+            value = `${heading}${value ? ' ' + value : ''}`.trim();
+          }
+        }
         if (key) {
           taskData[key] = value;
+          // expose HTML for assertions (e.g. verify anchor hrefs rendered from markdown)
+          taskData[`${key} HTML`] = rawHtml;
         }
       }
 

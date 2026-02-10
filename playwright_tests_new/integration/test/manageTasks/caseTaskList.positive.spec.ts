@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
 
@@ -11,17 +11,11 @@ const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
 let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 
-test.beforeAll(() => {
-  faker.seed(260209);
-  const { cookies } = loadSessionCookies(userIdentifier);
+test.beforeEach(async ({ page }) => {
+  const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
   assigneeId = extractUserIdFromCookies(sessionCookies);
-});
-
-test.beforeEach(async ({ page }) => {
-  if (sessionCookies.length) {
-    await page.context().addCookies(sessionCookies);
-  }
+  await page.goto('/');
 });
 
 test.describe(`User ${userIdentifier} can see task tab contents on a case`, () => {

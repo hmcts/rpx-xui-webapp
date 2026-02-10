@@ -35,16 +35,6 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   }
 
   const resolved = template.replace(TEMPLATE_PLACEHOLDER, suffix);
-  try {
-    // Validate early so we don't send users to a nonsense location.
-    // (This also enforces absolute URLs, which is what we expect for cross-app redirects.)
-    // eslint-disable-next-line no-new
-    new URL(resolved);
-  } catch (e) {
-    console.error(`Invalid decentralised event base URL '${resolved}' for prefix '${prefix}' and case type '${caseType}'`, e);
-    return null;
-  }
-
   return resolved;
 };
 

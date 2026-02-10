@@ -37,7 +37,7 @@ export const containers: any[] = [
   AllWorkCaseComponent,
   WorkCaseListComponent,
   WorkCaseListWrapperComponent,
-  TaskAssignmentPersonNotAuthorisedComponent
+  TaskAssignmentPersonNotAuthorisedComponent,
 ];
 
 export * from './all-work-case/all-work-case.component';
@@ -56,4 +56,3 @@ export * from './task-manager/task-manager.component';
 export * from './work-allocation-home/work-allocation-home.component';
 export * from './work-case-list-wrapper/work-case-list-wrapper.component';
 export * from './work-case-list/work-case-list.component';
-

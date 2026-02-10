@@ -1,4 +1,4 @@
 export interface NocOptions {
-    askForReason: boolean;
-    showRequestType: boolean;
+  askForReason: boolean;
+  showRequestType: boolean;
 }

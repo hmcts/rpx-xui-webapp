@@ -11,23 +11,26 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 @Component({
   standalone: false,
   selector: 'exui-hearing-welsh',
-  templateUrl: './hearing-welsh.component.html'
+  templateUrl: './hearing-welsh.component.html',
 })
 export class HearingWelshComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public error: ErrorMessage = null;
   public welshForm: FormGroup;
   public hearingInWelshFlag: boolean = false;
 
-  constructor(private readonly formBuilder: FormBuilder,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService
+  ) {
     super(hearingStore, hearingsService, featureToggleService);
   }
 
   public ngOnInit(): void {
-    this.hearingInWelshFlag = this.hearingRequestMainModel.hearingDetails ?
-      this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag : false;
+    this.hearingInWelshFlag = this.hearingRequestMainModel.hearingDetails
+      ? this.hearingRequestMainModel.hearingDetails.hearingInWelshFlag
+      : false;
     this.initForm();
   }
 
@@ -37,7 +40,7 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
 
   public initForm(): void {
     this.welshForm = this.formBuilder.group({
-      hearingInWelshFlag: [false, Validators.required]
+      hearingInWelshFlag: [false, Validators.required],
     });
   }
 
@@ -53,8 +56,8 @@ export class HearingWelshComponent extends RequestHearingPageFlow implements OnI
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        hearingInWelshFlag: this.welshForm.value.hearingInWelshFlag
-      }
+        hearingInWelshFlag: this.welshForm.value.hearingInWelshFlag,
+      },
     };
   }
 

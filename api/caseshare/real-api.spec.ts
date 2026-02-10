@@ -40,7 +40,7 @@ const convertUserToPRDFormat = (user: any): PRDRawUserModel => ({
   email: user.email,
   firstName: user.firstName,
   lastName: user.lastName,
-  idamStatus: 'active'
+  idamStatus: 'active',
 });
 
 // Convert stub user data to CCD format
@@ -49,14 +49,14 @@ const convertUserToCCDFormat = (user: any): CCDRawUserModel => ({
   email: user.email,
   first_name: user.firstName,
   last_name: user.lastName,
-  case_roles: user.caseRoles || ['[CLAIMANT]']
+  case_roles: user.caseRoles || ['[CLAIMANT]'],
 });
 
 // Convert stub case data to CCD format
 const convertCaseToCCDFormat = (sharedCase: any): CCDRawCaseUserModel => ({
   case_id: sharedCase.caseId,
   case_title: sharedCase.caseTitle,
-  shared_with: sharedCase.sharedWith.map((user: any) => convertUserToCCDFormat(user))
+  shared_with: sharedCase.sharedWith.map((user: any) => convertUserToCCDFormat(user)),
 });
 
 describe('Case Share Real API', () => {
@@ -111,7 +111,7 @@ describe('Case Share Real API', () => {
       // Use real test data from stubs
       const woodfordUsers = testOrgs[0].users; // Woodford solicitors users
       const mockPrdUsers: { users: PRDRawUserModel[] } = {
-        users: woodfordUsers.map((user) => convertUserToPRDFormat(user))
+        users: woodfordUsers.map((user) => convertUserToPRDFormat(user)),
       };
 
       req = mockReq({});
@@ -127,7 +127,7 @@ describe('Case Share Real API', () => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        idamId: user.idamId
+        idamId: user.idamId,
       }));
 
       expect(res.status).to.have.been.calledWith(200);
@@ -140,7 +140,7 @@ describe('Case Share Real API', () => {
         email: 'joe.elliott@woodford.com',
         firstName: 'Joe',
         lastName: 'Elliott',
-        idamId: 'u111111'
+        idamId: 'u111111',
       });
       expect(next).to.not.have.been.called;
     });
@@ -185,7 +185,7 @@ describe('Case Share Real API', () => {
       // Use all users from both organisations in stubs
       const allUsers = testUsers;
       const mockPrdUsers: { users: PRDRawUserModel[] } = {
-        users: allUsers.map((user) => convertUserToPRDFormat(user))
+        users: allUsers.map((user) => convertUserToPRDFormat(user)),
       };
 
       req = mockReq({});
@@ -226,13 +226,13 @@ describe('Case Share Real API', () => {
     it('should successfully fetch and transform case assignments from stub data', async () => {
       // Use real test cases from stubs
       const mockCaseAssignments: { case_assignments: CCDRawCaseUserModel[] } = {
-        case_assignments: testSharedCases.map(convertCaseToCCDFormat)
+        case_assignments: testSharedCases.map(convertCaseToCCDFormat),
       };
 
       // Use actual case IDs from stub data
       const caseIds = testSharedCases.map((c) => c.caseId).join(',');
       req = mockReq({
-        query: { case_ids: caseIds }
+        query: { case_ids: caseIds },
       });
       handleGetStub.resolves({ status: 200, data: mockCaseAssignments });
 
@@ -257,16 +257,16 @@ describe('Case Share Real API', () => {
             firstName: 'Joe',
             lastName: 'Elliott',
             email: 'joe.elliott@woodford.com',
-            caseRoles: ['[CLAIMANT]']
+            caseRoles: ['[CLAIMANT]'],
           },
           {
             idamId: 'u222222',
             firstName: 'Steve',
             lastName: 'Harrison',
             email: 'steve.harrison@woodford.com',
-            caseRoles: ['[CLAIMANT]']
-          }
-        ]
+            caseRoles: ['[CLAIMANT]'],
+          },
+        ],
       });
 
       // Verify third case has users from different organisation
@@ -279,7 +279,7 @@ describe('Case Share Real API', () => {
     it('should handle empty case assignments', async () => {
       const mockCaseAssignments = { case_assignments: [] };
       req = mockReq({
-        query: { case_ids: 'case-999' }
+        query: { case_ids: 'case-999' },
       });
       handleGetStub.resolves({ status: 200, data: mockCaseAssignments });
 
@@ -296,13 +296,13 @@ describe('Case Share Real API', () => {
           {
             case_id: 'case-123',
             case_title: 'Test Case',
-            shared_with: []
-          }
-        ]
+            shared_with: [],
+          },
+        ],
       };
 
       req = mockReq({
-        query: { case_ids: 'case-123' }
+        query: { case_ids: 'case-123' },
       });
       handleGetStub.resolves({ status: 200, data: mockCaseAssignments });
 
@@ -313,15 +313,15 @@ describe('Case Share Real API', () => {
         {
           caseId: 'case-123',
           caseTitle: 'Test Case',
-          sharedWith: []
-        }
+          sharedWith: [],
+        },
       ]);
     });
 
     it('should handle errors and call next', async () => {
       const error = new Error('API Error');
       req = mockReq({
-        query: { case_ids: 'case-123' }
+        query: { case_ids: 'case-123' },
       });
       handleGetStub.rejects(error);
 
@@ -337,8 +337,8 @@ describe('Case Share Real API', () => {
     beforeEach(() => {
       req = mockReq({
         body: {
-          sharedCases: []
-        }
+          sharedCases: [],
+        },
       });
     });
 
@@ -353,8 +353,8 @@ describe('Case Share Real API', () => {
           caseTypeId: 'Asylum',
           caseTitle: testSharedCases[0].caseTitle,
           sharedWith: [],
-          pendingShares: [joeElliott, anneDellar] // Share with users from different orgs
-        }
+          pendingShares: [joeElliott, anneDellar], // Share with users from different orgs
+        },
       ];
 
       sendPostStub.resolves({ status: 201 });
@@ -369,7 +369,7 @@ describe('Case Share Real API', () => {
       expect(firstCall.args[1]).to.deep.equal({
         assignee_id: 'u111111',
         case_id: '1573922332670942',
-        case_type_id: 'Asylum'
+        case_type_id: 'Asylum',
       });
 
       // Verify second call for Anne Dellar
@@ -377,7 +377,7 @@ describe('Case Share Real API', () => {
       expect(secondCall.args[1]).to.deep.equal({
         assignee_id: 'u555555',
         case_id: '1573922332670942',
-        case_type_id: 'Asylum'
+        case_type_id: 'Asylum',
       });
 
       expect(res.status).to.have.been.calledWith(201);
@@ -397,11 +397,13 @@ describe('Case Share Real API', () => {
           caseId: existingCase.caseId,
           caseTitle: existingCase.caseTitle,
           sharedWith: existingCase.sharedWith,
-          pendingUnshares: [{
-            ...jamesPriest,
-            caseRoles: ['[CLAIMANT]', '[SOLICITOR]']
-          }]
-        }
+          pendingUnshares: [
+            {
+              ...jamesPriest,
+              caseRoles: ['[CLAIMANT]', '[SOLICITOR]'],
+            },
+          ],
+        },
       ];
 
       sendDeleteStub.resolves({ status: 204 });
@@ -415,10 +417,10 @@ describe('Case Share Real API', () => {
       const expectedUnassignment: UnassignedCaseModel = {
         assignee_id: 'u333333',
         case_id: '1573925439311211',
-        case_roles: ['[CLAIMANT]', '[SOLICITOR]']
+        case_roles: ['[CLAIMANT]', '[SOLICITOR]'],
       };
       expect(sendDeleteStub.firstCall.args[1]).to.deep.equal({
-        unassignments: [expectedUnassignment]
+        unassignments: [expectedUnassignment],
       });
 
       expect(res.status).to.have.been.calledWith(201);
@@ -443,11 +445,13 @@ describe('Case Share Real API', () => {
           caseTitle: samGreenCase.caseTitle,
           sharedWith: samGreenCase.sharedWith,
           pendingShares: [newUser], // Add Joe Elliott
-          pendingUnshares: [{
-            ...kateGrant,
-            caseRoles: ['[CASEWORKER]']
-          }] // Remove Kate Grant
-        }
+          pendingUnshares: [
+            {
+              ...kateGrant,
+              caseRoles: ['[CASEWORKER]'],
+            },
+          ], // Remove Kate Grant
+        },
       ];
 
       sendPostStub.resolves({ status: 201 });
@@ -462,16 +466,18 @@ describe('Case Share Real API', () => {
       expect(sendPostStub.firstCall.args[1]).to.deep.equal({
         assignee_id: 'u111111',
         case_id: '1574006431043307',
-        case_type_id: 'FT_MultipleAppellantComplex'
+        case_type_id: 'FT_MultipleAppellantComplex',
       });
 
       // Verify unshare operation
       expect(sendDeleteStub.firstCall.args[1]).to.deep.equal({
-        unassignments: [{
-          assignee_id: 'u666666',
-          case_id: '1574006431043307',
-          case_roles: ['[CASEWORKER]']
-        }]
+        unassignments: [
+          {
+            assignee_id: 'u666666',
+            case_id: '1574006431043307',
+            case_roles: ['[CASEWORKER]'],
+          },
+        ],
       });
 
       expect(res.status).to.have.been.calledWith(201);
@@ -497,15 +503,15 @@ describe('Case Share Real API', () => {
           caseTypeId: 'Asylum',
           caseTitle: case1.caseTitle,
           pendingShares: lambbrooksUsers,
-          sharedWith: case1.sharedWith
+          sharedWith: case1.sharedWith,
         },
         {
           caseId: case2.caseId,
           caseTypeId: 'Asylum',
           caseTitle: case2.caseTitle,
           pendingShares: [testUsers.find((u) => u.idamId === 'u888888')], // Joel
-          sharedWith: case2.sharedWith
-        }
+          sharedWith: case2.sharedWith,
+        },
       ];
 
       sendPostStub.resolves({ status: 201 });
@@ -535,8 +541,8 @@ describe('Case Share Real API', () => {
           caseTypeId: 'Asylum',
           caseTitle: testSharedCases[0].caseTitle,
           sharedWith: testSharedCases[0].sharedWith,
-          pendingShares: [steveHarrison, jamesPriest]
-        }
+          pendingShares: [steveHarrison, jamesPriest],
+        },
       ];
 
       // Steve succeeds, James fails (simulating he's already assigned)
@@ -547,13 +553,13 @@ describe('Case Share Real API', () => {
           data: JSON.stringify({
             assignee_id: 'u333333',
             case_id: '1573922332670942',
-            case_type_id: 'Asylum'
-          })
+            case_type_id: 'Asylum',
+          }),
         },
         data: {
           status: 409,
-          message: 'User already assigned to case'
-        }
+          message: 'User already assigned to case',
+        },
       });
 
       await assignCases(req, res);
@@ -582,16 +588,16 @@ describe('Case Share Real API', () => {
           sharedWith: [
             {
               idamId: 'user-123',
-              caseRoles: ['[CLAIMANT]']
-            }
+              caseRoles: ['[CLAIMANT]'],
+            },
           ],
           pendingUnshares: [
             {
               idamId: 'user-123',
-              caseRoles: ['[CLAIMANT]']
-            }
-          ]
-        }
+              caseRoles: ['[CLAIMANT]'],
+            },
+          ],
+        },
       ];
 
       sendDeleteStub.rejects({
@@ -602,15 +608,15 @@ describe('Case Share Real API', () => {
               {
                 assignee_id: 'user-123',
                 case_id: 'case-123',
-                case_roles: ['[CLAIMANT]']
-              }
-            ]
-          })
+                case_roles: ['[CLAIMANT]'],
+              },
+            ],
+          }),
         },
         data: {
           status: 400,
-          message: 'Bad Request'
-        }
+          message: 'Bad Request',
+        },
       });
 
       await assignCases(req, res);
@@ -618,7 +624,7 @@ describe('Case Share Real API', () => {
       expect(res.status).to.have.been.calledWith(422);
       // When all operations fail, it returns error messages
       expect(res.send).to.have.been.calledWith([
-        'request: {"unassignments":[{"assignee_id":"user-123","case_id":"case-123","case_roles":["[CLAIMANT]"]}]}, response: 400 Bad Request'
+        'request: {"unassignments":[{"assignee_id":"user-123","case_id":"case-123","case_roles":["[CLAIMANT]"]}]}, response: 400 Bad Request',
       ]);
     });
 
@@ -627,10 +633,8 @@ describe('Case Share Real API', () => {
         {
           caseId: 'case-123',
           caseTypeId: 'type-1',
-          pendingShares: [
-            { idamId: 'user-123' }
-          ]
-        }
+          pendingShares: [{ idamId: 'user-123' }],
+        },
       ];
 
       sendPostStub.rejects({
@@ -639,20 +643,20 @@ describe('Case Share Real API', () => {
           data: JSON.stringify({
             assignee_id: 'user-123',
             case_id: 'case-123',
-            case_type_id: 'type-1'
-          })
+            case_type_id: 'type-1',
+          }),
         },
         data: {
           status: 400,
-          message: 'Bad Request'
-        }
+          message: 'Bad Request',
+        },
       });
 
       await assignCases(req, res);
 
       expect(res.status).to.have.been.calledWith(422);
       expect(res.send).to.have.been.calledWith([
-        'request: {"assignee_id":"user-123","case_id":"case-123","case_type_id":"type-1"}, response: 400 Bad Request'
+        'request: {"assignee_id":"user-123","case_id":"case-123","case_type_id":"type-1"}, response: 400 Bad Request',
       ]);
     });
 
@@ -665,10 +669,10 @@ describe('Case Share Real API', () => {
             {
               idamId: 'user-123',
               firstName: 'John',
-              lastName: 'Doe'
-            }
-          ]
-        }
+              lastName: 'Doe',
+            },
+          ],
+        },
       ];
 
       await assignCases(req, res);
@@ -696,8 +700,8 @@ describe('Case Share Real API', () => {
           caseId: 'case-123',
           sharedWith: null,
           pendingShares: undefined,
-          pendingUnshares: null
-        }
+          pendingUnshares: null,
+        },
       ];
 
       await assignCases(req, res);
@@ -714,10 +718,8 @@ describe('Case Share Real API', () => {
           caseTitle: 'Test Case',
           customProperty: 'custom value',
           sharedWith: [],
-          pendingShares: [
-            { idamId: 'user-123' }
-          ]
-        }
+          pendingShares: [{ idamId: 'user-123' }],
+        },
       ];
 
       sendPostStub.resolves({ status: 201 });
@@ -740,9 +742,9 @@ describe('Case Share Real API', () => {
             idamId: 'user-123',
             firstName: 'John',
             lastName: 'Doe',
-            email: 'john@example.com'
-          }
-        ]
+            email: 'john@example.com',
+          },
+        ],
       };
 
       req.body.sharedCases = [inputCase];
@@ -768,8 +770,8 @@ describe('Case Share Real API', () => {
           caseTypeId: 'Asylum',
           caseTitle: woodfordCase.caseTitle,
           pendingShares: lambbrooksUsers, // Share with all 4 Lambbrooks users
-          sharedWith: woodfordCase.sharedWith
-        }
+          sharedWith: woodfordCase.sharedWith,
+        },
       ];
 
       // All 4 Lambbrooks users succeed
@@ -797,15 +799,17 @@ describe('Case Share Real API', () => {
         'anne.deller@lambbrooks.com',
         'kate.grant@lambbrooks.com',
         'nick.rodrigues@lambbrooks.com',
-        'joel.molloy@lambbrooks.com'
+        'joel.molloy@lambbrooks.com',
       ]);
     });
 
     it('should use correct configuration value for CCD URL', async () => {
-      req.body.sharedCases = [{
-        caseId: 'case-123',
-        pendingShares: [{ idamId: 'user-123' }]
-      }];
+      req.body.sharedCases = [
+        {
+          caseId: 'case-123',
+          pendingShares: [{ idamId: 'user-123' }],
+        },
+      ];
 
       sendPostStub.resolves({ status: 201 });
 

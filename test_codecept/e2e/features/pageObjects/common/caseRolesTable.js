@@ -9,11 +9,21 @@ class CaseRolesTable {
     this.parentXpath = parentXpath;
   }
 
-  get container() { return elementByXpath(`${this.parentXpath}`); }
-  get table() { return elementByXpath(`${this.parentXpath}//table`); }
-  get headers() { return elementsByXpath(`${this.parentXpath}//table//thead//tr//th`); }
-  get rows() { return elementsByXpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')]`); }
-  get summaryMessage() { return elementByXpath(`${this.parentXpath}//dd`); }
+  get container() {
+    return elementByXpath(`${this.parentXpath}`);
+  }
+  get table() {
+    return elementByXpath(`${this.parentXpath}//table`);
+  }
+  get headers() {
+    return elementsByXpath(`${this.parentXpath}//table//thead//tr//th`);
+  }
+  get rows() {
+    return elementsByXpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')]`);
+  }
+  get summaryMessage() {
+    return elementByXpath(`${this.parentXpath}//dd`);
+  }
 
   async getHeaderTexts() {
     return await this.headers.allTextContents();
@@ -24,10 +34,7 @@ class CaseRolesTable {
   }
 
   async isTableDisplayed() {
-    reportLogger.AddMessage(
-      `Table locator: ${this.table.locator().toString()}`,
-      LOG_LEVELS.Debug
-    );
+    reportLogger.AddMessage(`Table locator: ${this.table.locator().toString()}`, LOG_LEVELS.Debug);
     return isPresent(this.table);
   }
 
@@ -84,7 +91,9 @@ class CaseRolesTable {
   }
 
   async getLinkElementWithTextAtRow(rowIndex, linkText) {
-    const linkElement = elementByXpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${rowIndex}]//td//span[not(contains(@class,'hidden'))]//a[contains(text(),'${linkText}')]`);
+    const linkElement = elementByXpath(
+      `${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${rowIndex}]//td//span[not(contains(@class,'hidden'))]//a[contains(text(),'${linkText}')]`
+    );
 
     reportLogger.AddMessage(`Case role table link with text element at row : ${linkElement.selector.xpath}`, LOG_LEVELS.Debug);
     return linkElement;
@@ -115,15 +124,15 @@ class CaseRolesTable {
   }
 
   async isActionRowDisplayed(atRow) {
-    const actionRowDatas = elementsByXpath(`${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${atRow}]/following-sibling::tr[position()=1]//td`);
+    const actionRowDatas = elementsByXpath(
+      `${this.parentXpath}//table//tbody//tr[contains(@class,'govuk-table__row')][${atRow}]/following-sibling::tr[position()=1]//td`
+    );
     const tdCountOfRow = await actionRowDatas.count();
     return tdCountOfRow === 1;
   }
 
   async isManageActionLinkDisplayed(actionLinkLabel) {
-    const actionLink = elementByXpath(
-      `${this.parentXpath}//table//tbody//tr//td//a[contains(text(),'${actionLinkLabel}')]`
-    );
+    const actionLink = elementByXpath(`${this.parentXpath}//table//tbody//tr//td//a[contains(text(),'${actionLinkLabel}')]`);
     return isPresent(actionLink);
   }
 

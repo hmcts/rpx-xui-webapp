@@ -21,12 +21,12 @@ describe('HearingLengthAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingStageOptions: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     converter = new HearingLengthAnswerConverter();
   });

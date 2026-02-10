@@ -1,42 +1,26 @@
 export const prodEnableHearingAmendment = {
   '.+': [
     {
-      includeCaseTypes: [
-        'CIVIL'
-      ],
-      jurisdiction: 'CIVIL'
-    }
-  ]
+      includeCaseTypes: ['CIVIL'],
+      jurisdiction: 'CIVIL',
+    },
+  ],
 };
 
 export const prodHearingJurisdictions = {
   '.+': [
     {
-      includeCaseTypes: [
-        'Benefit',
-        'Benefit_SCSS',
-        'Benefit-sscs-pr-3575'
-      ],
+      includeCaseTypes: ['Benefit', 'Benefit_SCSS', 'Benefit-sscs-pr-3575'],
       jurisdiction: 'SSCS',
-      roles: [
-        'caseworker-sscs',
-        'caseworker-sscs-judge'
-      ]
+      roles: ['caseworker-sscs', 'caseworker-sscs-judge'],
     },
     {
       caseType: 'PRLAPPS',
       jurisdiction: 'PRIVATELAW',
-      roles: [
-        'caseworker-privatelaw',
-        'caseworker-privatelaw-courtadmin',
-        'caseworker-privatelaw-judge'
-      ]
+      roles: ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'caseworker-privatelaw-judge'],
     },
     {
-      includeCaseTypes: [
-        'Bail',
-        'Asylum'
-      ],
+      includeCaseTypes: ['Bail', 'Asylum'],
       jurisdiction: 'IA',
       roles: [
         'caseworker-ia-caseofficer',
@@ -46,14 +30,12 @@ export const prodHearingJurisdictions = {
         'hmcts-legal-operations',
         'hmcts-judiciary',
         'caseworker-ia-admofficer',
-        'caseworker-ia-iacjudge'
-      ]
+        'caseworker-ia-iacjudge',
+      ],
     },
     {
-      includeCaseTypes: [
-        'CIVIL'
-      ],
-      jurisdiction: 'CIVIL'
-    }
-  ]
+      includeCaseTypes: ['CIVIL'],
+      jurisdiction: 'CIVIL',
+    },
+  ],
 };

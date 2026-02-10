@@ -4,17 +4,33 @@ const { LOG_LEVELS } = require('../../../support/constants');
 const BrowserWaits = require('../../../support/customWaits');
 
 class CaseAllocationCheckYourChangesPage {
-  get pageContainer()            { return $('exui-allocate-role-check-answers'); }
-  get header()                   { return $('exui-allocate-role-check-answers h1'); }
-  get headerCaption()            { return $('exui-allocate-role-check-answers h1 span'); }
+  get pageContainer() {
+    return $('exui-allocate-role-check-answers');
+  }
+  get header() {
+    return $('exui-allocate-role-check-answers h1');
+  }
+  get headerCaption() {
+    return $('exui-allocate-role-check-answers h1 span');
+  }
 
-  get checkYourChangesHintText() { return $('exui-allocate-role-check-answers #reassign-confirm-hint, exui-allocate-role-check-answers #assign-confirm-hint'); }
+  get checkYourChangesHintText() {
+    return $('exui-allocate-role-check-answers #reassign-confirm-hint, exui-allocate-role-check-answers #assign-confirm-hint');
+  }
 
-  get submitButton()             { return $('exui-allocate-role-navigation button'); }
-  get cancelLink()               { return elementByXpath(`//exui-allocate-role-check-answers//p/a[contains(text(),'Cancel')]`); }
+  get submitButton() {
+    return $('exui-allocate-role-navigation button');
+  }
+  get cancelLink() {
+    return elementByXpath(`//exui-allocate-role-check-answers//p/a[contains(text(),'Cancel')]`);
+  }
 
-  get checkYourChangesTable()    { return $('.govuk-summary-list'); }
-  get answerRows()               { return $$('.govuk-summary-list .govuk-summary-list__row'); }
+  get checkYourChangesTable() {
+    return $('.govuk-summary-list');
+  }
+  get answerRows() {
+    return $$('.govuk-summary-list .govuk-summary-list__row');
+  }
 
   async amOnPage() {
     try {
@@ -38,17 +54,17 @@ class CaseAllocationCheckYourChangesPage {
   async getColumnValue(header) {
     const rowsCount = await this.answerRows.count();
     let colvalue = null;
-    for (let i = 0; i< rowsCount; i++){
+    for (let i = 0; i < rowsCount; i++) {
       const row = await this.answerRows.nth(i);
       const headerName = row.locator('.govuk-summary-list__key');
       const thisHeadername = await getText(headerName);
 
-      if (thisHeadername === header){
+      if (thisHeadername === header) {
         const headerValue = row.locator('.govuk-summary-list__value');
         colvalue = await getText(headerValue);
       }
     }
-    if (colvalue === null){
+    if (colvalue === null) {
       throw new Error(`${header} is not found`);
     }
     return colvalue;

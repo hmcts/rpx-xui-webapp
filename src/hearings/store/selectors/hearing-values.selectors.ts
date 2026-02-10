@@ -6,12 +6,6 @@ export const getHearingValues = createSelector(
   (state: fromFeature.State) => state.hearingValues
 );
 
-export const getHearingValuesModel = createSelector(
-  getHearingValues,
-  fromFeature.hearingValuesModel
-);
+export const getHearingValuesModel = createSelector(getHearingValues, fromFeature.hearingValuesModel);
 
-export const getHearingValuesLastError = createSelector(
-  getHearingValues,
-  fromFeature.hearingRequestLastError
-);
+export const getHearingValuesLastError = createSelector(getHearingValues, fromFeature.hearingRequestLastError);

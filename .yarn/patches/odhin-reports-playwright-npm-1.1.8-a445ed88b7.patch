@@ -20,3 +20,31 @@ index e36b904dbedea1a34a9aa2367a3636aacc46f16e..a4679f3122e76eb27f18b7019666cf12
              result.retry === testCase.retries) {
              // Update Files
              let fileUpdate = false;
+diff --git a/lib/html/content.html b/lib/html/content.html
+index 6db0ad6e2c3d9f78b6dd6a8f178a3b0c31a0c7f9..25a2f86d6a2f82bfb9f0f5b2585a1c9a0a7a2c1a 100644
+--- a/lib/html/content.html
++++ b/lib/html/content.html
+@@ -1,4 +1,16 @@
+ <div>
++    <div class="d-flex align-items-center mb-2" id="status-filter-row">
++        <label for="status-filter" class="me-2 mb-0">Status</label>
++        <select id="status-filter" class="form-select form-select-sm" style="width: 180px;">
++            <option value="">All</option>
++            <option value="failed">Failed</option>
++            <option value="timedOut">Timed Out</option>
++            <option value="skipped">Skipped</option>
++            <option value="passed">Passed</option>
++            <option value="flaky">Flaky</option>
++            <option value="interrupted">Interrupted</option>
++        </select>
++    </div>
+     <div class="table-responsive">
+         <table id="test-list-table" class="table table-sm table-hover">
+             <thead>
+diff --git a/lib/html/assets/js/dataTables.min.js b/lib/html/assets/js/dataTables.min.js
+index 3d971e6dbb7f8f7b9c736a85c7cfe2b8b6b6e3a1..4b7e5c5f6e4c3d2f1a0b9c8d7e6f5a4b3c2d1e0f 100644
+--- a/lib/html/assets/js/dataTables.min.js
++++ b/lib/html/assets/js/dataTables.min.js
+@@ -1 +1 @@
+-$(document).ready(function(){$("#test-list-table").DataTable({})});
++$(document).ready(function(){var t=$("#test-list-table").DataTable({}),e=$("#status-filter");e.length&&e.on("change",function(){var e=$(this).val();if(!e)return t.column(1).search("").draw();var a=$.fn.dataTable.util.escapeRegex(e);return t.column(1).search("^"+a+"$",!0,!1).draw()})});

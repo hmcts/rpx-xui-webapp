@@ -177,10 +177,49 @@ describe('CaseTaskComponent', () => {
       warnings: true,
       permissions: ['Own', 'Execute', 'Manage'],
     };
-    const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
+    const result = CaseTaskComponent.replaceVariablesWithRealValues(task, null);
     expect(result).toBe(
       `[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`
     );
+  });
+
+  it('should replace __EXPECTED_SUB__ placeholder when userDetails.id is present', () => {
+    mockSessionStorage.getItem.and.returnValue(JSON.stringify({ id: 'user-123' }));
+    const task: Task = {
+      actions: [],
+      id: 'task-1',
+      case_id: '1620409659381330',
+      description: '[Next step](https://service.example/cases/123/event/ext%3Afoo?expected_sub=__EXPECTED_SUB__)',
+    } as any;
+
+    component.task = task;
+    expect(component.task.description).toContain('expected_sub=user-123');
+  });
+
+  it('should replace __EXPECTED_SUB__ placeholder when userDetails.uid is present', () => {
+    mockSessionStorage.getItem.and.returnValue(JSON.stringify({ uid: 'user-456' }));
+    const task: Task = {
+      actions: [],
+      id: 'task-2',
+      case_id: '1620409659381330',
+      description: '[Next step](https://service.example/cases/123/event/ext%3Afoo?expected_sub=__EXPECTED_SUB__)',
+    } as any;
+
+    component.task = task;
+    expect(component.task.description).toContain('expected_sub=user-456');
+  });
+
+  it('should leave __EXPECTED_SUB__ placeholder unchanged when userDetails missing', () => {
+    mockSessionStorage.getItem.and.returnValue(null);
+    const task: Task = {
+      actions: [],
+      id: 'task-3',
+      case_id: '1620409659381330',
+      description: '[Next step](https://service.example/cases/123/event/ext%3Afoo?expected_sub=__EXPECTED_SUB__)',
+    } as any;
+
+    component.task = task;
+    expect(component.task.description).toContain('expected_sub=__EXPECTED_SUB__');
   });
 
   it('should set isTaskUrgent based on the task priority', () => {

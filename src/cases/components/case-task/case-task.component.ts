@@ -11,6 +11,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
+import { getExpectedSub } from '../../utils/decentralised-event-redirect.util';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
@@ -23,6 +24,7 @@ export class CaseTaskComponent implements OnInit {
   private static readonly CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
   private static readonly CASE_ID_VARIABLE = '${[case_id]}';
   private static readonly TASK_ID_VARIABLE = '${[id]}';
+  private static readonly EXPECTED_SUB_PLACEHOLDER = '__EXPECTED_SUB__';
   private static readonly VARIABLES: string[] = [
     CaseTaskComponent?.CASE_REFERENCE_VARIABLE,
     CaseTaskComponent?.CASE_ID_VARIABLE,
@@ -55,7 +57,8 @@ export class CaseTaskComponent implements OnInit {
 
   @Input()
   public set task(value: Task) {
-    value.description = CaseTaskComponent.replaceVariablesWithRealValues(value);
+    const expectedSub = this.getExpectedSubFromSession();
+    value.description = CaseTaskComponent.replaceVariablesWithRealValues(value, expectedSub);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
   }
@@ -68,9 +71,19 @@ export class CaseTaskComponent implements OnInit {
    */
   @Output() public taskRefreshRequired: EventEmitter<void> = new EventEmitter();
 
-  public static replaceVariablesWithRealValues(task: Task): string {
+  public static replaceVariablesWithRealValues(task: Task, expectedSub?: string | null): string {
     if (!task.description) {
       return '';
+    }
+
+    // Allow decentralised services to request the current user subject be injected into URLs.
+    // We substitute the placeholder once at render-time rather than parsing URLs on click.
+    if (expectedSub) {
+      task.description = Utils.replaceAll(
+        task.description,
+        CaseTaskComponent.EXPECTED_SUB_PLACEHOLDER,
+        encodeURIComponent(expectedSub)
+      );
     }
 
     // Append task id as querystring to task description markdown
@@ -82,6 +95,20 @@ export class CaseTaskComponent implements OnInit {
       }
       return Utils.replaceAll(description, variable, task.case_id);
     }, task.description);
+  }
+
+  private getExpectedSubFromSession(): string | null {
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (!userInfoStr) {
+      return null;
+    }
+    try {
+      const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
+      return getExpectedSub(userInfo);
+    } catch {
+      // Ignore session parsing errors; leave placeholders untouched.
+      return null;
+    }
   }
 
   public ngOnInit(): void {

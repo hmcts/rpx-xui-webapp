@@ -34,10 +34,7 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return resolved;
 };
 
-const getDecentralisedBaseUrl = (
-  baseUrls: Record<string, string> | null | undefined,
-  caseType?: string
-): string | null => {
+const getDecentralisedBaseUrl = (baseUrls: Record<string, string> | null | undefined, caseType?: string): string | null => {
   if (!baseUrls || !caseType) {
     return null;
   }
@@ -122,6 +119,7 @@ export const buildDecentralisedEventUrl = (params: {
     return null;
   }
 
+  // Remove any trailing slashes from our base url
   const base = baseUrl.replace(/\/+$/, '');
   const eventPath = isCaseCreate
     ? `/cases/case-create/${encodeURIComponent(jurisdiction)}/${encodeURIComponent(caseType)}/${encodeURIComponent(eventId)}`

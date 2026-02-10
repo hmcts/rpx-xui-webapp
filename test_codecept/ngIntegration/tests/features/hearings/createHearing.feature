@@ -568,8 +568,8 @@ Feature: Create hearings workflow
             | field                                                   | value               |
             | Length of hearing                                       | 1,2,5               |
             | Does the hearing need to take place on a specific date? | Choose a date range |
-            | Must list after                                         | 1,8,2026            |
-            | Must list before                                        | 1,9,2026            |
+            | Must list after                                         | 1,9,2026            |
+            | Must list before                                        | 1,8,2026            |
 
             | What is the priority of this hearing? | Hearing priority 1 |
         When I click continue in create hearing workflow

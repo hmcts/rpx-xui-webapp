@@ -103,6 +103,7 @@ describe('uiConfigRouter', () => {
       showFeatureStub.withArgs('accessManagementEnabled').returns(true);
       showFeatureStub.withArgs('oidcEnabled').returns(false);
       showFeatureStub.withArgs('substantiveRoleEnabled').returns(true);
+      showFeatureStub.withArgs('termsAndConditionsEnabled').returns(true);
 
       await routeHandler(req, res, next);
 
@@ -117,6 +118,7 @@ describe('uiConfigRouter', () => {
         oidcEnabled: false,
         protocol: 'https',
         substantiveEnabled: true,
+        termsAndConditionsEnabled: true,
         paymentReturnUrl: 'https://payment.return.url',
         waWorkflowApi: 'https://wa.workflow.api',
         judicialBookingApi: 'https://judicial.booking.api',
@@ -144,6 +146,7 @@ describe('uiConfigRouter', () => {
       expect(responseData).to.have.property('oidcEnabled', undefined);
       expect(responseData).to.have.property('protocol', undefined);
       expect(responseData).to.have.property('substantiveEnabled', undefined);
+      expect(responseData).to.have.property('termsAndConditionsEnabled', undefined);
       expect(responseData).to.have.property('paymentReturnUrl', undefined);
       expect(responseData).to.have.property('waWorkflowApi', undefined);
       expect(responseData).to.have.property('judicialBookingApi', undefined);

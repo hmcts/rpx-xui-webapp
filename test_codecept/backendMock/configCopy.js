@@ -182,7 +182,12 @@ async function healthOK() {
 
 /* ── tiny stub on :3000 that serves /external/configuration-ui/ ── */
 function startStub3000() {
-  const cfg = { launchDarklyClientId: 'local-test', appInsightsKey: '', buildVersion: 'test-run' };
+  const cfg = {
+    launchDarklyClientId: 'local-test',
+    appInsightsKey: '',
+    buildVersion: 'test-run',
+    termsAndConditionsEnabled: false,
+  };
   const handler = (req, res) => {
     if (req.url && req.url.startsWith(HEALTH_PATH)) {
       res.setHeader('content-type', 'application/json');

@@ -169,6 +169,7 @@ class MockApp {
         launchDarklyClientId: 'local-test',
         appInsightsKey: '',
         buildVersion: 'test-run',
+        termsAndConditionsEnabled: false,
       });
     });
 

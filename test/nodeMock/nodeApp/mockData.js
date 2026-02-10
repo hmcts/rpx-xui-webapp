@@ -84,6 +84,7 @@ class NodeAppMockData {
       manageOrgLink: 'https://xui-mo-webapp-aat.service.core-compute-aat.internal',
       protocol: 'http',
       ccdGatewayUrl: 'http://localhost:3001',
+      termsAndConditionsEnabled: configurations['feature.termsAndConditionsEnabled'],
     };
   }
 

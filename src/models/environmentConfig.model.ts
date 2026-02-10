@@ -12,6 +12,7 @@ export interface EnvironmentConfig {
   oidcEnabled: string;
   launchDarklyClientId?: string;
   accessManagementEnabled?: boolean;
+  termsAndConditionsEnabled?: boolean;
   paymentReturnUrl: string;
   waSupportedServices?: WAFeatureConfig;
   headerConfig: object;

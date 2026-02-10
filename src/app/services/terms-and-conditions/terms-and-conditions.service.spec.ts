@@ -2,17 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { of, throwError } from 'rxjs';
+import { EnvironmentService } from '../../shared/services/environment.service';
 import { TermsConditionsService } from './terms-and-conditions.service';
 
 describe('TermsConditionsService', () => {
   let service: TermsConditionsService;
   let mockHttpClient: jasmine.SpyObj<HttpClient>;
+  let mockEnvironmentService: jasmine.SpyObj<EnvironmentService>;
 
   beforeEach(() => {
     mockHttpClient = jasmine.createSpyObj('HttpClient', ['get']);
+    mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get']);
 
     TestBed.configureTestingModule({
-      providers: [TermsConditionsService, { provide: HttpClient, useValue: mockHttpClient }],
+      providers: [
+        TermsConditionsService,
+        { provide: HttpClient, useValue: mockHttpClient },
+        { provide: EnvironmentService, useValue: mockEnvironmentService },
+      ],
     });
 
     service = TestBed.inject(TermsConditionsService);
@@ -83,80 +90,36 @@ describe('TermsConditionsService', () => {
   });
 
   describe('isTermsConditionsFeatureEnabled', () => {
-    it('should return true when feature is enabled', (done) => {
-      mockHttpClient.get.and.returnValue(of(true));
+    it('should return true when enabled in runtime UI configuration', (done) => {
+      mockEnvironmentService.get.and.returnValue(true);
 
       service.isTermsConditionsFeatureEnabled().subscribe((result) => {
         expect(result).toBe(true);
-        expect(mockHttpClient.get).toHaveBeenCalledWith('api/configuration?configurationKey=termsAndConditionsEnabled');
-        expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
+        expect(mockEnvironmentService.get).toHaveBeenCalledWith('termsAndConditionsEnabled');
+        expect(mockHttpClient.get).not.toHaveBeenCalled();
         done();
       });
     });
 
-    it('should return false when feature is disabled', (done) => {
-      mockHttpClient.get.and.returnValue(of(false));
+    it('should return false when disabled in runtime UI configuration', (done) => {
+      mockEnvironmentService.get.and.returnValue(false);
 
       service.isTermsConditionsFeatureEnabled().subscribe((result) => {
         expect(result).toBe(false);
-        expect(mockHttpClient.get).toHaveBeenCalledWith('api/configuration?configurationKey=termsAndConditionsEnabled');
+        expect(mockEnvironmentService.get).toHaveBeenCalledWith('termsAndConditionsEnabled');
+        expect(mockHttpClient.get).not.toHaveBeenCalled();
         done();
       });
     });
 
-    it('should handle error when checking feature flag fails', (done) => {
-      const errorResponse = { status: 500, message: 'Internal Server Error' };
-      mockHttpClient.get.and.returnValue(throwError(errorResponse));
+    it('should default to false when runtime UI configuration is missing', (done) => {
+      mockEnvironmentService.get.and.returnValue(undefined);
 
-      service.isTermsConditionsFeatureEnabled().subscribe(
-        () => fail('should have failed'),
-        (error) => {
-          expect(error).toEqual(errorResponse);
-          expect(mockHttpClient.get).toHaveBeenCalledWith('api/configuration?configurationKey=termsAndConditionsEnabled');
-          done();
-        }
-      );
-    });
-
-    it('should handle 404 error when configuration endpoint not found', (done) => {
-      const errorResponse = { status: 404, message: 'Configuration not found' };
-      mockHttpClient.get.and.returnValue(throwError(errorResponse));
-
-      service.isTermsConditionsFeatureEnabled().subscribe(
-        () => fail('should have failed'),
-        (error) => {
-          expect(error.status).toBe(404);
-          expect(error.message).toBe('Configuration not found');
-          done();
-        }
-      );
-    });
-
-    it('should handle unauthorized error when checking feature flag', (done) => {
-      const errorResponse = { status: 401, message: 'Unauthorized' };
-      mockHttpClient.get.and.returnValue(throwError(errorResponse));
-
-      service.isTermsConditionsFeatureEnabled().subscribe(
-        () => fail('should have failed'),
-        (error) => {
-          expect(error.status).toBe(401);
-          done();
-        }
-      );
-    });
-
-    it('should handle timeout error when checking feature flag', (done) => {
-      const timeoutError = { name: 'TimeoutError', message: 'Request timeout' };
-      mockHttpClient.get.and.returnValue(throwError(timeoutError));
-
-      service.isTermsConditionsFeatureEnabled().subscribe(
-        () => fail('should have failed'),
-        (error) => {
-          expect(error.name).toBe('TimeoutError');
-          expect(error.message).toBe('Request timeout');
-          done();
-        }
-      );
+      service.isTermsConditionsFeatureEnabled().subscribe((result) => {
+        expect(result).toBe(false);
+        expect(mockEnvironmentService.get).toHaveBeenCalledWith('termsAndConditionsEnabled');
+        done();
+      });
     });
   });
 
@@ -251,10 +214,10 @@ describe('TermsConditionsService', () => {
     });
 
     it('should handle undefined response from feature flag endpoint', (done) => {
-      mockHttpClient.get.and.returnValue(of(undefined));
+      mockEnvironmentService.get.and.returnValue(undefined);
 
       service.isTermsConditionsFeatureEnabled().subscribe((result) => {
-        expect(result).toBeUndefined();
+        expect(result).toBe(false);
         done();
       });
     });
@@ -287,9 +250,12 @@ describe('TermsConditionsService', () => {
       expect(mockHttpClient.get).toHaveBeenCalled();
     });
 
-    it('should have the correct configuration key', () => {
-      // Access the private field through bracket notation for testing
-      expect((service as any).configuration).toBe('termsAndConditionsEnabled');
+    it('should use injected EnvironmentService instance', (done) => {
+      mockEnvironmentService.get.and.returnValue(false);
+      service.isTermsConditionsFeatureEnabled().subscribe(() => {
+        expect(mockEnvironmentService.get).toHaveBeenCalledWith('termsAndConditionsEnabled');
+        done();
+      });
     });
 
     it('should maintain the same HttpClient instance across multiple method calls', () => {
@@ -301,7 +267,8 @@ describe('TermsConditionsService', () => {
       const secondHttpClient = (service as any).http;
 
       expect(firstHttpClient).toBe(secondHttpClient);
-      expect(mockHttpClient.get).toHaveBeenCalledTimes(2);
+      expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
+      expect(mockEnvironmentService.get).toHaveBeenCalledTimes(1);
     });
   });
 });

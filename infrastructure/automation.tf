@@ -53,7 +53,7 @@ requests
 | where url has "/api/translation/cy"
 | extend day = startofday(timestamp)
 | where isnotnull(day)
-| summarize UniqueCount = dcountif(session_Id, isnotempty(session_Id)), 
+| summarize UniqueCount = dcountif(session_Id, isnotempty(session_Id)),
             NoSessionCount = countif(isempty(session_Id))
             by day
 | extend Sessions = UniqueCount + iff(NoSessionCount > 0, 1, 0)
@@ -69,13 +69,13 @@ try {
         "Authorization" = "Bearer $token"
         "Content-Type" = "application/json"
     }
-    
+
     $apiUrl = "https://api.applicationinsights.io/v1/apps/$appinsightsappid/query"
     $body = @{ query = $query } | ConvertTo-Json
-    
+
     Write-Output "App ID: $appinsightsappid"
     $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
-    
+
     # Convert response to same format as Log Analytics for compatibility
     $result = @{
         Results = $response.tables[0].rows | ForEach-Object {
@@ -87,7 +87,7 @@ try {
             $obj
         }
     }
-    
+
     Write-Output "Query executed successfully. Found $($result.Results.Count) rows."
 }
 catch {
@@ -115,7 +115,7 @@ else {
     $htmlTable = "<table>"
     $htmlTable += "<thead><tr><th>Date</th><th>Unique Sessions</th></tr></thead>"
     $htmlTable += "<tbody>"
-    
+
     $totalSessions = 0
     $maxSessions = 0
     foreach ($row in $dataRows) {
@@ -127,11 +127,11 @@ else {
             if ([int]$sessionValue -gt $maxSessions) { $maxSessions = [int]$sessionValue }
         }
     }
-    
+
     $htmlTable += "</tbody>"
     $htmlTable += "<tfoot><tr><th>Total</th><th>$totalSessions</th></tr></tfoot>"
     $htmlTable += "</table>"
-    
+
     # Build bar chart (vertical)
     $htmlChart = "<div class='chart-container'>"
     $htmlChart += "<h3>Visual Trend:</h3>"
@@ -144,7 +144,7 @@ else {
             $barHeight = ([int]$sessionValue * 10)
             # Show at least 5px for zero values so they're visible
             if ($barHeight -eq 0) { $barHeight = 5 }
-            
+
             $htmlChart += "<div class='bar-column'>"
             $htmlChart += "<div class='bar-value-top'>$sessionValue</div>"
             $htmlChart += "<div class='bar-wrapper'>"
@@ -156,7 +156,7 @@ else {
     }
     $htmlChart += "</div>"
     $htmlChart += "</div>"
-    
+
     Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
 }
 
@@ -213,7 +213,7 @@ try {
     $endpoint = "https://$acsresourcename.communication.azure.com"
     $apiVersion = "2023-03-31"
     $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
-    
+
     # Split and ensure array format even with single recipient
     $recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
         @{ address = $_.Trim() }
@@ -237,7 +237,7 @@ try {
 
     Write-Output "Sending email to: $recipientaddress"
     Write-Output "From: $senderaddress"
-    
+
     $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $emailPayload
     Write-Output "Email sent successfully. Message ID: $($response.id)"
 }
@@ -267,7 +267,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Month"
   interval                = 1
-  start_time              = "2026-02-01T09:00:00Z"
+  start_time              = "2026-02-10T15:00:00Z"
   timezone                = "UTC"
 }
 

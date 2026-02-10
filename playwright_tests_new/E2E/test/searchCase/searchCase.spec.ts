@@ -2,51 +2,50 @@ import { expect, test } from '../../fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture.ts';
 
 test.describe('IDAM login to trigger For 16 digit Case Search', () => {
+  let availableCaseReference = '';
   let sessionCookies: any[] = [];
-  test.beforeEach(async ({ page, config }) => {
+  test.beforeEach(async ({ page, config, caseListPage }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
     const { cookies } = loadSessionCookies('STAFF_ADMIN');
     sessionCookies = cookies;
     if (sessionCookies.length) {
       await page.context().addCookies(sessionCookies);
     }
+
+    await caseListPage.goto();
+    availableCaseReference = await caseListPage.getRandomCaseReferenceFromResults();
     await page.goto('/');
   });
 
-  test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage }) => {
-    await test.step('16 Digit Search ', async () => {
-      // TODO case should be created from API script.
-      const caseNumber = '1767862749263830';
+  test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, validatorUtils }) => {
+    const caseNumber = availableCaseReference;
+
+    await test.step('Search using 16-digit case reference', async () => {
       await searchCasePage.searchWith16DigitCaseId(caseNumber);
     });
-    const headingText = await searchCasePage.searchResultsPageHeading;
-    expect(headingText).toContain('Current progress of the case');
+    await expect(searchCasePage.caseProgressHeading).toBeVisible();
 
     await test.step('On successful search - Check case details messages are seen', async () => {
-      expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
-      // TODO check that the URL contains the caseId and the Jurisdiction
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain(' active flags on this case.');
-      expect.soft(await caseDetailsPage.caseProgressMessage.innerText()).toContain('Current progress of the case');
-      expect.soft(await caseDetailsPage.caseProgressMessage.innerText()).toContain('The case has been decided');
-      expect.soft(await caseDetailsPage.caseProgressMessage.innerText()).toContain('Do this next');
+      await expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
+      await expect.soft(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));
+      await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
+      await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('active flags on this case');
+      await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Current progress of the case');
+      await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('The case has been decided');
+      await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Do this next');
+    });
+  });
+
+  test('Search invalid 16-digit case reference shows no results', async ({ searchCasePage, validatorUtils }) => {
+    const invalidCaseReference = validatorUtils.mutateCaseNumber(availableCaseReference);
+
+    await test.step('Submit a non-existent 16 digit case reference', async () => {
+      await searchCasePage.searchWith16DigitCaseId(invalidCaseReference);
     });
 
-    // WIP
-    test('Search INVALID 16-digit case reference @KSM', async ({ caseDetailsPage, searchCasePage }) => {
-      await test.step('16 Digit Search ', async () => {
-        // TODO case should be created from API script.
-        const caseNumber = '98676543210123456';
-        await searchCasePage.searchWith16DigitCaseId(caseNumber);
-      });
-      const headingText = await searchCasePage.searchResultsPageHeading;
-      //expect(headingText).toContain('Current progress of the case');
-
-      await test.skip('Search Results - Not found should be seen', async () => {
-        expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
-        expect.soft(await caseDetailsPage.resultsNotFoundHeading.innerText()).toContain('No results found');
-        expect.soft(await caseDetailsPage.backLink.textContent()).toBe('Back');
-      });
+    await test.step('Search results not found content is shown', async () => {
+      await expect(searchCasePage.noResultsHeading).toBeVisible();
+      await expect(searchCasePage.backLink).toBeVisible();
     });
   });
 });

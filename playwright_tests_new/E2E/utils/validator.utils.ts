@@ -11,4 +11,11 @@ export class ValidatorUtils {
     }
     return caseNumber.replace(/(\d{4})(\d{4})(\d{4})(\d{4})/, '$1-$2-$3-$4');
   }
+
+  public mutateCaseNumber(caseNumber: string): string {
+    if (!/^\d{16}$/.test(caseNumber)) {
+      throw new Error('Case number must be 16 digits');
+    }
+    return caseNumber.slice(0, -1) + (caseNumber.endsWith('9') ? '8' : '9');
+  }
 }

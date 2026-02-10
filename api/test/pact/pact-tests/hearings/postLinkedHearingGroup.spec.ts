@@ -54,7 +54,6 @@ describe('Hearings, create single hearing linked group', () => {
     });
 
     before(async () => {
-      await pactSetUp.provider.setup();
       const interaction: V3Interaction = {
         states: [{ description: 'create single hearing linked group for' }],
         uponReceiving: 'create single hearing linked group',

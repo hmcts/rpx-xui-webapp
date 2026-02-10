@@ -8,16 +8,20 @@ export class CaseListPage extends Base {
   readonly applyFilterButton = this.page.locator('.search-block button[type="submit"]');
   readonly resetFilterButton = this.page.locator('.search-block button[type="reset"]');
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
+
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
+
   readonly textField0Input = this.page.locator('#TextField0');
   readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
   readonly quickSearchFindButton = this.page.locator('button.govuk-button--secondary');
-  readonly caseListResultsAmount = this.page.locator('#search-result .pagination-top');
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
   readonly caseResultsTable = this.page.locator('#search-result table');
   readonly caseResultLinks = this.page.locator('#search-result a.govuk-link');
   readonly caseDetailsLinks = this.page.locator('a[href*="/cases/case-details/"]');
   readonly pagination = this.page.locator('.ngx-pagination');
+
+  // Some case list views use an id, others a data-test attribute for the summary
+  readonly caseListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
 
   constructor(page: Page) {
     super(page);
@@ -46,7 +50,7 @@ export class CaseListPage extends Base {
   }
 
   async navigateTo() {
-    await this.page.goto(`/cases`);
+    await this.page.goto('/cases');
   }
 
   async getPaginationFinalItem(): Promise<string | undefined> {

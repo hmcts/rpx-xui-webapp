@@ -59,6 +59,8 @@ api/.nyc_output
 /.agent
 execplan-api-pw-coverage.md
 /.ssr.lock
+/.sonar
+/.scannerwork
 
 # System Files
 .DS_Store
@@ -120,5 +122,6 @@ test-results/
 /playwright_tests_new/api/auth.ts
 /playwright_tests_new/api/auth-coverage.api.ts
 
+*.zip
 # Fortify scan artifacts
 Fortify Scan/

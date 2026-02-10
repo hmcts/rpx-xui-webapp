@@ -1,17 +1,9 @@
 import { FullConfig } from '@playwright/test';
-import { sessionCapture } from './sessionCapture.js';
 
-// Global setup captures storageState for multiple users so tests can reuse sessions.
+// Global setup is now a no-op.
+// Sessions are captured lazily via test.beforeAll() in each test file.
 async function globalSetup(_full: FullConfig) {
-  const identifiers = [
-    'SOLICITOR',
-    'STAFF_ADMIN',
-    'USER_WITH_FLAGS',
-    'SEARCH_EMPLOYMENT_CASE',
-    'PROBATE_CW',
-    'FPL_GLOBAL_SEARCH',
-  ];
-  await sessionCapture(identifiers);
+  // Sessions will be captured on-demand
 }
 
 export default globalSetup;

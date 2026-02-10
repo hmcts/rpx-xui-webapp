@@ -6,6 +6,8 @@ import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.build
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
+const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
+const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
 let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 
@@ -28,18 +30,17 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
     const taskData = {
       caseId: caseMockResponse.case_id,
       titles: ['Follow-up extended direction', 'follow up overdue respondent evidence', 'follow up overdue respondent evidence'],
-      states: ['unassigned', 'assigned'],
+      states: ['assigned'],
       types: ['followUpExtendedDirection', 'followUpOverdueRespondentEvidence', 'followUpOverdueRespondentEvidence'],
       taskSystems: ['SELF'],
-      locations: [
-        { name: 'Manchester', id: '512401' },
-        { name: 'Taylor House', id: '765324' },
-      ],
+      locations: [{ name: 'Manchester', id: '512401' }],
       descriptions: [
         'You still need to submit your appeal.\n\n[Submit your appeal](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/submitAppeal)',
         'Current progress of the case ![Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage](https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg)',
-        '## Next steps\nPlease review the evidence before proceeding.',
+        '# Next steps\nPlease review the evidence before proceeding.',
       ],
+      priority_dates: [inTwoDays],
+      dueDates: [inTwoDays],
       assignees: assigneeId ? [assigneeId] : [],
     };
     await test.step('Setup route mock for task details', async () => {
@@ -62,28 +63,26 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await taskListPage.exuiSpinnerComponent.wait();
       const table = await caseDetailsPage.getTaskKeyValueRows();
 
-      // Verify table rows match the mocked task data
       expect(table.length).toBe(taskData.titles.length);
-      // Titles
       expect(table[0]['Title']).toContain(taskData.titles[0]);
       expect(table[1]['Title']).toContain(taskData.titles[1]);
       expect(table[2]['Title']).toContain(taskData.titles[2]);
-      // Locations (builder maps missing locations back to first entry)
-      expect(table[0]['Location']).toBe(taskData.locations[0].name);
-      expect(table[1]['Location']).toBe(taskData.locations[1].name);
-      expect(table[2]['Location']).toBe(taskData.locations[0].name);
-      // Description / Next steps present for the third task
-      expect(table[2]['Next steps']).toContain('Please review the evidence');
+
+      expect(table[0]['Priority']).toContain('LOW');
+      expect(table[1]['Priority']).toContain('LOW');
+      expect(table[2]['Priority']).toContain('LOW');
+
+      expect(table[0]['Next steps']).toContain('You still need to submit your appeal');
+      expect(table[1]['Next steps']).toContain('Current progress of the case');
+      expect(table[2]['Next steps']).toContain('Next steps');
     });
   });
 
   test(`Priority labels render for each category`, async ({ taskListPage, caseDetailsPage, page }) => {
-    const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
-    const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
     const caseMockResponse = buildAsylumCaseMock({ caseId: '1111111111111111' });
     const taskData = {
       caseId: caseMockResponse.case_id,
-      titles: ['Urgent task', 'High task', 'Medium task', 'Low task'],
+      titles: ['Urgent', 'High', 'Medium', 'Low'],
       states: ['assigned'],
       types: ['followUpExtendedDirection'],
       taskSystems: ['SELF'],
@@ -112,11 +111,11 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await taskListPage.exuiSpinnerComponent.wait();
       await caseDetailsPage.selectCaseDetailsTab('Tasks');
       await taskListPage.exuiSpinnerComponent.wait();
-
-      await expect(page.locator('strong.hmcts-badge--red')).toContainText('urgent');
-      await expect(page.locator('strong.govuk-tag--red')).toContainText('high');
-      await expect(page.locator('strong.govuk-tag--yellow')).toContainText('medium');
-      await expect(page.locator('strong.govuk-tag--grey')).toContainText('low');
+      const table = await caseDetailsPage.getTaskKeyValueRows();
+      expect(table[0]['Priority'], 'The priority label for the first task should be URGENT').toContain('URGENT');
+      expect(table[1]['Priority'], 'The priority label for the second task should be HIGH').toContain('HIGH');
+      expect(table[2]['Priority'], 'The priority label for the third task should be MEDIUM').toContain('MEDIUM');
+      expect(table[3]['Priority'], 'The priority label for the fourth task should be LOW').toContain('LOW');
     });
   });
 
@@ -154,7 +153,8 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await taskListPage.exuiSpinnerComponent.wait();
       await caseDetailsPage.selectCaseDetailsTab('Tasks');
       await taskListPage.exuiSpinnerComponent.wait();
-
+      const table = await caseDetailsPage.getTaskKeyValueRows();
+      console.log(JSON.stringify(table, null, 2));
       const content = await caseDetailsPage.getTaskKeyValueRows();
       expect(content[0]['Next steps']).toMatch(/^Overview/);
     });

@@ -266,6 +266,7 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
       major_priority: majorPriority,
       priority_date: priorityDate,
       dueDate,
+      due_date: dueDate,
     });
   });
 };

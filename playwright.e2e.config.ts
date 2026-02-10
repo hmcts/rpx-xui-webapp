@@ -4,7 +4,7 @@ module.exports = (() => {
   const { cpus } = require('node:os');
 
   const headlessMode = process.env.HEAD !== 'true';
-  const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
+  const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
   const resolveEnvironmentFromUrl = (url) => {
     try {
@@ -29,6 +29,7 @@ module.exports = (() => {
       return 'unknown';
     }
   };
+
   const resolveWorkerCount = () => {
     const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
     if (process.env.CI) {
@@ -51,11 +52,15 @@ module.exports = (() => {
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
 
   return defineConfig({
-    testDir: 'playwright_tests_new/integration',
+    testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    retries: process.env.CI ? 1 : 0,
-    timeout: 120_000,
-    expect: { timeout: 45_000 },
+    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    fullyParallel: true,
+    retries: process.env.CI ? 2 : 0,
+    timeout: 3 * 60 * 1000,
+    expect: {
+      timeout: 1 * 60 * 1000,
+    },
     workers: workerCount,
     reporter: [
       [process.env.CI ? 'dot' : 'list'],
@@ -64,9 +69,9 @@ module.exports = (() => {
         {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright.html',
-          title: 'RPX XUI Playwright Integration',
+          title: 'RPX XUI Playwright E2E',
           testEnvironment,
-          project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+          project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
           release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
           startServer: false,
           consoleLog: true,
@@ -75,11 +80,13 @@ module.exports = (() => {
         },
       ],
     ],
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
-      trace: 'on-first-retry',
-      screenshot: 'only-on-failure',
+      trace: 'retain-on-failure',
+      screenshot: {
+        mode: 'only-on-failure',
+        fullPage: true,
+      },
       video: 'retain-on-failure',
       headless: headlessMode,
     },

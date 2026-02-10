@@ -33,8 +33,6 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
         'Current progress of the case ![Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage](https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg)',
         '# Next steps\nPlease review the evidence before proceeding.',
       ],
-      priority_dates: [inTwoDays],
-      dueDates: [inTwoDays],
       assignees: assigneeId ? [assigneeId] : [],
     };
     await test.step('Setup route mock for task details', async () => {
@@ -66,9 +64,9 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       expect(table[1]['Priority']).toContain('LOW');
       expect(table[2]['Priority']).toContain('LOW');
 
-      expect(table[0]['Next steps']).toContain('You still need to submit your appeal');
+      expect(table[0]['Next steps']).toContain('You still need to submit your appeal. Submit your appeal');
       expect(table[1]['Next steps']).toContain('Current progress of the case');
-      expect(table[2]['Next steps']).toContain('Next steps');
+      expect(table[2]['Next steps']).toContain('Next steps Please review the evidence before proceeding.');
     });
   });
 

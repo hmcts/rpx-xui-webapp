@@ -1,5 +1,6 @@
 import { WaitUtils } from '@hmcts/playwright-common';
 import { expect, Page } from '@playwright/test';
+import { logger } from '../../../utils/logger.utils';
 
 export class ExuiHeaderComponent {
   readonly header = this.page.locator('exui-header');
@@ -29,7 +30,7 @@ export class ExuiHeaderComponent {
       await this.languageToggle.click();
       await this.page.waitForLoadState('domcontentloaded');
     } else {
-      console.log(`Language is already set to ${language}`);
+      logger.debug(`Language is already set to ${language}`, { language });
     }
   }
 }

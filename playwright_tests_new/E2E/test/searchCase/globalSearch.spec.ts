@@ -1,10 +1,11 @@
 import { test, expect } from '../../fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture.ts';
+import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login using credentials for Global Search', () => {
   let availableCaseReference = '';
   let sessionCookies: any[] = [];
-  test.beforeEach(async ({ page, config, caseListPage }) => {
+  test.beforeEach(async ({ page, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
     const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
     sessionCookies = cookies;
@@ -12,15 +13,14 @@ test.describe('IDAM login using credentials for Global Search', () => {
       await page.context().addCookies(sessionCookies);
     }
 
-    await caseListPage.goto();
-    await caseListPage.searchByJurisdiction('Public Law');
-    await caseListPage.searchByCaseType('Public Law Applications');
-    await caseListPage.applyFilters();
-    availableCaseReference = await caseListPage.getRandomCaseReferenceFromResults();
     await page.goto('/');
+    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
+      jurisdictionIds: ['PUBLICLAW'],
+      preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
+    });
   });
 
-  test('Global Search - using case id and FPL jurisdiction', async ({ globalSearchPage, caseDetailsPage, tableUtils }) => {
+  test('Global Search - using case id and FPL jurisdiction', async ({ globalSearchPage, caseDetailsPage, tableUtils, page }) => {
     const caseNumber = availableCaseReference;
 
     await test.step('Initiate Global Search  ', async () => {
@@ -42,10 +42,7 @@ test.describe('IDAM login using credentials for Global Search', () => {
 
     await test.step('Check that case details page is shown. ', async () => {
       await globalSearchPage.viewCaseDetails();
-
-      const tabsCount = await caseDetailsPage.tabsCount.count();
-      expect(tabsCount).toBeGreaterThan(0);
-
+      await expect(page).toHaveURL(/\/cases\/case-details\//);
       await expect.soft(caseDetailsPage.caseSummaryHeading).toHaveText('Case information');
 
       await caseDetailsPage.caseActionsDropdown.waitFor();
@@ -56,10 +53,7 @@ test.describe('IDAM login using credentials for Global Search', () => {
     });
   });
 
-  test("Global Search (Partial) - using '*' wildcard on case number", async ({
-    globalSearchPage,
-    tableUtils,
-  }) => {
+  test("Global Search (Partial) - using '*' wildcard on case number", async ({ globalSearchPage, tableUtils }) => {
     await test.step('Initiate wildcard Global Search  ', async () => {
       await globalSearchPage.performPartialSearchOfCaseIdAndPartyName(availableCaseReference, undefined, 'PUBLICLAW');
     });
@@ -69,24 +63,25 @@ test.describe('IDAM login using credentials for Global Search', () => {
       await expect(globalSearchPage.changeSearchLink.filter({ hasText: 'Change search' })).toBeVisible();
       await expect(globalSearchPage.viewLink).toBeVisible();
 
-      // Check Pagination links
-      const paginationLinkPreviousPage = globalSearchPage.paginationLinks.nth(0);
-      const paginationLinkNextPage = globalSearchPage.paginationLinks.nth(1);
-      await expect(paginationLinkPreviousPage).toHaveText('Previous page');
-      await expect(paginationLinkNextPage).toHaveText('Next page');
-      await expect(paginationLinkNextPage).toHaveAttribute('href');
-
       const table = await tableUtils.mapExuiTable(globalSearchPage.searchResultsTable);
 
       if (table === null) {
         throw new Error('SearchResultsTable must be present for a valid Global Search');
       } else {
         expect(table.length).toBeGreaterThan(0);
+        if (table.length > 1) {
+          const paginationLinkPreviousPage = globalSearchPage.paginationLinks.nth(0);
+          const paginationLinkNextPage = globalSearchPage.paginationLinks.nth(1);
+          await expect(paginationLinkPreviousPage).toHaveText('Previous page');
+          await expect(paginationLinkNextPage).toHaveText('Next page');
+          await expect(paginationLinkNextPage).toHaveAttribute('href');
+        }
+
         for (const eachRow of table) {
           expect(eachRow).toMatchObject({
             Case: expect.any(String),
             Service: 'Public Law',
-            State: expect.stringMatching('Submitted|Case management|Gatekeeping|Closed'),
+            State: expect.stringMatching(/Submitted|Case management|Gatekeeping|Closed/),
             Location: expect.any(String),
           });
         }

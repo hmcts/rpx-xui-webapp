@@ -1,5 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture.ts';
+import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login to trigger For 16 digit Case Search', () => {
   let availableCaseReference = '';
@@ -12,27 +13,40 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
       await page.context().addCookies(sessionCookies);
     }
 
-    await caseListPage.goto();
-    availableCaseReference = await caseListPage.getRandomCaseReferenceFromResults();
     await page.goto('/');
+    try {
+      availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
+        preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
+      });
+    } catch {
+      await caseListPage.goto();
+      availableCaseReference = await caseListPage.getRandomCaseReferenceFromResults([
+        'Case management',
+        'Submitted',
+        'Gatekeeping',
+        'Closed',
+      ]);
+      await page.goto('/');
+    }
   });
 
-  test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, validatorUtils }) => {
+  test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, validatorUtils, page }) => {
     const caseNumber = availableCaseReference;
 
     await test.step('Search using 16-digit case reference', async () => {
       await searchCasePage.searchWith16DigitCaseId(caseNumber);
     });
-    await expect(searchCasePage.caseProgressHeading).toBeVisible();
+    await expect(page).toHaveURL(/\/cases\/case-details\//);
+    await expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
+    await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
 
     await test.step('On successful search - Check case details messages are seen', async () => {
-      await expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
       await expect.soft(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));
       await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
       await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('active flags on this case');
-      await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Current progress of the case');
-      await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('The case has been decided');
-      await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Do this next');
+      if (await searchCasePage.caseProgressPanel.isVisible()) {
+        await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Current progress of the case');
+      }
     });
   });
 

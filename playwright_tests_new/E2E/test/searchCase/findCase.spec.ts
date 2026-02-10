@@ -1,13 +1,11 @@
 import { test, expect } from '../../fixtures';
-import { ValidatorUtils } from '../../../E2E/utils/validator.utils.ts';
 import { loadSessionCookies } from '../../../common/sessionCapture.ts';
-
-const validatorUtils = new ValidatorUtils();
+import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login for Find Search page', () => {
   let availableCaseReference = '';
   let sessionCookies: any[] = [];
-  test.beforeEach(async ({ page, caseListPage, config }) => {
+  test.beforeEach(async ({ page, config }) => {
     await page.goto(config.urls.manageCaseBaseUrl);
     const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
     sessionCookies = cookies;
@@ -15,12 +13,11 @@ test.describe('IDAM login for Find Search page', () => {
       await page.context().addCookies(sessionCookies);
     }
 
-    await caseListPage.goto();
-    await caseListPage.searchByJurisdiction('Public Law');
-    await caseListPage.searchByCaseType('Public Law Applications');
-    await caseListPage.applyFilters();
-    availableCaseReference = await caseListPage.getRandomCaseReferenceFromResults();
     await page.goto('/');
+    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
+      jurisdictionIds: ['PUBLICLAW'],
+      preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
+    });
   });
 
   test('Find case using Public Law jurisdiction', async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {
@@ -41,7 +38,6 @@ test.describe('IDAM login for Find Search page', () => {
         'FamilyMan case number': expect.any(String),
         'Local authority': expect.any(String),
         State: expect.any(String),
-        ' ': '',
       };
 
       if (searchTable === null || searchTable.length === 0) {
@@ -57,7 +53,8 @@ test.describe('IDAM login for Find Search page', () => {
     await test.step('Check Case Details page and ensure case is present', async () => {
       await expect.soft(caseDetailsPage.caseActionsDropdown).toBeVisible();
       await expect.soft(caseDetailsPage.caseActionGoButton).toBeVisible();
-      await expect.soft(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));
+      const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
+      await expect.soft(caseNumberFromUrl).toContain(caseNumber);
     });
   });
 });

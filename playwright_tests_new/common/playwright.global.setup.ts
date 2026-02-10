@@ -9,7 +9,6 @@ async function globalSetup(_full: FullConfig) {
     'USER_WITH_FLAGS',
     'SEARCH_EMPLOYMENT_CASE',
     'PROBATE_CW',
-    'STAFF_ADMIN',
     'FPL_GLOBAL_SEARCH',
   ];
   await sessionCapture(identifiers);

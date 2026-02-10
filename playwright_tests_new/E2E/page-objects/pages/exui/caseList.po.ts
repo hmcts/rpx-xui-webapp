@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class CaseListPage extends Base {
@@ -16,6 +16,7 @@ export class CaseListPage extends Base {
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
   readonly caseResultsTable = this.page.locator('#search-result table');
   readonly caseResultLinks = this.page.locator('#search-result a.govuk-link');
+  readonly caseDetailsLinks = this.page.locator('a[href*="/cases/case-details/"]');
   readonly pagination = this.page.locator('.ngx-pagination');
 
   constructor(page: Page) {
@@ -40,7 +41,8 @@ export class CaseListPage extends Base {
   }
 
   async goto() {
-    await this.exuiHeader.selectHeaderMenuItem('Case list');
+    await this.page.goto('/cases');
+    await this.exuiSpinnerComponent.wait();
   }
 
   async navigateTo() {
@@ -49,7 +51,7 @@ export class CaseListPage extends Base {
 
   async getPaginationFinalItem(): Promise<string | undefined> {
     const items = (await this.pagination.locator('li').allTextContents()).map((i) => i.trim());
-    return items.length > 0 ? items[items.length - 1] : undefined;
+    return items.at(-1);
   }
 
   async openCaseByReference(cleanedCaseNumber: string) {
@@ -58,38 +60,66 @@ export class CaseListPage extends Base {
     await caseLink.first().click();
   }
 
-  async getRandomCaseReferenceFromResults(): Promise<string> {
+  async getRandomCaseReferenceFromResults(
+    preferredStates: string[] = [],
+    selection: 'first' | 'random' = 'first'
+  ): Promise<string> {
     await this.exuiSpinnerComponent.wait();
-    const count = await this.caseResultLinks.count();
+    let candidates = await this.collectLinkCandidates(this.caseResultLinks);
 
-    if (count === 0) {
-      throw new Error('No case links found in case list results');
+    if (candidates.length === 0 && !this.page.url().includes('/cases')) {
+      await this.page.goto('/cases');
+      await this.exuiSpinnerComponent.wait();
+      candidates = await this.collectLinkCandidates(this.caseResultLinks);
     }
 
-    const caseReferences = new Set<string>();
-    for (let i = 0; i < count; i++) {
-      const href = await this.caseResultLinks.nth(i).getAttribute('href');
-      const text = (await this.caseResultLinks.nth(i).textContent()) ?? '';
-
-      if (href) {
-        const hrefMatch = href.match(/(\d{16})/);
-        if (hrefMatch?.[1]) {
-          caseReferences.add(hrefMatch[1]);
-        }
-      }
-
-      const textDigits = text.replace(/\D/g, '');
-      if (textDigits.length === 16) {
-        caseReferences.add(textDigits);
-      }
+    if (candidates.length === 0) {
+      candidates = await this.collectLinkCandidates(this.caseDetailsLinks);
     }
 
-    if (caseReferences.size === 0) {
+    if (candidates.length === 0) {
+      throw new Error(`No case links found in case list or page context: ${this.page.url()}`);
+    }
+
+    const caseEntries = candidates
+      .map((candidate) => {
+        const hrefPattern = /(\d{16})/;
+        const hrefMatch = hrefPattern.exec(candidate.href);
+        const textDigits = candidate.text.replaceAll(/\D/g, '');
+        const caseReference = hrefMatch?.[1] || (textDigits.length === 16 ? textDigits : '');
+        return {
+          caseReference,
+          rowText: candidate.rowText,
+        };
+      })
+      .filter((entry) => entry.caseReference.length === 16);
+
+    if (caseEntries.length === 0) {
       throw new Error('No 16-digit case references found in case list links');
     }
 
-    const refs = Array.from(caseReferences);
-    const randomIndex = Math.floor(Math.random() * refs.length);
-    return refs[randomIndex];
+    const preferredEntries =
+      preferredStates.length > 0
+        ? caseEntries.filter((entry) => preferredStates.some((state) => entry.rowText.includes(state)))
+        : caseEntries;
+
+    const pickFrom = preferredEntries.length > 0 ? preferredEntries : caseEntries;
+    const uniqueReferences = Array.from(new Set(pickFrom.map((entry) => entry.caseReference)));
+    if (selection === 'random') {
+      const randomIndex = Math.floor(Math.random() * uniqueReferences.length);
+      return uniqueReferences[randomIndex];
+    }
+    return uniqueReferences[0];
+  }
+
+  private async collectLinkCandidates(linkLocator: Locator) {
+    return linkLocator.evaluateAll((links) =>
+      links.map((link) => {
+        const href = link.getAttribute('href') || '';
+        const text = (link.textContent || '').trim();
+        const rowText = (link.closest('tr')?.textContent || '').trim();
+        return { href, text, rowText };
+      })
+    );
   }
 }

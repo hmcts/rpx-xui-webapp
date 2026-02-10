@@ -5,13 +5,13 @@ export class FindCasePage extends Base {
   // Locators
   readonly pageHeading = this.page.locator('main h1');
   readonly resetFilterButton = this.page.locator('button[type="reset"]');
-  readonly showHideFilterButton = this.page.locator('.hmcts-action-bar__filter > button');
+  readonly showHideFilterButton = this.page.getByRole('button', { name: /Show Filter|Hide Filter/i });
   readonly container = this.page.locator('exui-case-home');
   readonly filtersContainer = this.page.locator('.search-block .hmcts-filter-layout__filter');
   readonly applyFilterButton = this.page.locator('.search-block button[type="submit"]');
-  readonly jurisdictionSelect = this.page.locator('#s-jurisdiction');
-  readonly caseTypeSelect = this.page.locator('#s-case-type');
-  readonly ccdCaseReference = this.page.locator('#dynamicFilters #\\[CASE_REFERENCE\\]');
+  readonly jurisdictionSelect = this.page.locator('#s-jurisdiction, #wb-jurisdiction, #cc-jurisdiction').first();
+  readonly caseTypeSelect = this.page.locator('#s-case-type, #wb-case-type, #cc-case-type').first();
+  readonly ccdCaseReference = this.page.locator('#dynamicFilters #\\[CASE_REFERENCE\\], input[id*=\"CASE_REFERENCE\"]').first();
   readonly pagination = this.page.locator('.ngx-pagination');
   readonly searchResultsSummary = this.page.locator('#search-result .pagination-top');
   readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');
@@ -20,17 +20,13 @@ export class FindCasePage extends Base {
   readonly findCaseLinkOnMenu = this.page.locator('.hmcts-primary-navigation__link[href*="case-search"]');
 
   async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
-    await this.findCaseLinkOnMenu.click();
-    await this.showHideButtons();
-    await this.checkButtonVisibility();
+    await this.page.goto('/cases/case-search');
+    await this.ensureFiltersVisible();
 
-    await this.jurisdictionSelect.waitFor({ state: 'visible' });
     await this.jurisdictionSelect.selectOption(jurisdiction);
 
-    await this.caseTypeSelect.waitFor({ state: 'visible' });
     await this.caseTypeSelect.selectOption(caseType);
 
-    await this.ccdCaseReference.waitFor({ state: 'visible' });
     await this.ccdCaseReference.fill(caseNumber);
 
     await this.applyFilters();
@@ -46,20 +42,16 @@ export class FindCasePage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
-  private async checkButtonVisibility() {
-    await this.exuiCaseListComponent.filters.applyFilterBtn.waitFor({ state: 'visible' });
-    await this.resetFilterButton.waitFor({ state: 'visible' });
-  }
+  private async ensureFiltersVisible() {
+    const needsOpenFilterPanel = !(await this.jurisdictionSelect.isVisible().catch(() => false));
+    if (needsOpenFilterPanel && (await this.showHideFilterButton.isVisible().catch(() => false))) {
+      await this.showHideFilterButton.click();
+    }
 
-  private async showHideButtons() {
-    // Clicking on the Show / Hide button First time
-    await this.showHideFilterButton.click();
-    // .now check the WBFilter panel is NOT visible
-    await this.workBasketFilterPanel.waitFor({ state: 'hidden' });
-    // Clicking agin Show/Hide button
-    await this.showHideFilterButton.click();
-    // .and now check WBFilter panel IS visible
-    await this.workBasketFilterPanel.waitFor({ state: 'visible' });
+    await this.jurisdictionSelect.waitFor({ state: 'visible', timeout: 60000 });
+    await this.caseTypeSelect.waitFor({ state: 'visible', timeout: 60000 });
+    await this.ccdCaseReference.waitFor({ state: 'visible', timeout: 60000 });
+    await this.exuiCaseListComponent.filters.applyFilterBtn.waitFor({ state: 'visible' });
   }
 
   constructor(page: Page) {

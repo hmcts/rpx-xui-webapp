@@ -35,8 +35,6 @@ export class CaseDetailsPage extends Base {
   readonly tabList = this.page.locator('div[role="tablist"]');
   readonly tablist2 = this.page.locator('.mat-tab-label-container .mat-tab-list .mat-tab-labels > div[role="tab"]');
 
-  //const tabs = page.locator('.mat-tab-label-container .mat-tab-list .mat-tab-labels div[role="tab"]');
-
   //Case flags
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
   readonly caseFlagApplicantFlagTable = this.page.locator('table.govuk-table.ng-star-inserted');
@@ -74,10 +72,10 @@ export class CaseDetailsPage extends Base {
     if (!selector) return null as unknown as T;
     if (typeof selector !== 'string') {
       // Locator: evaluate on the located rows
-      return (selector as Locator).locator('tr').evaluateAll(fn as any) as unknown as T;
+      return selector.locator('tr').evaluateAll(fn);
     }
     // Selector string: use page.$$eval to run fn in page context
-    return this.page.$$eval(`${selector} tr`, fn as any) as unknown as T;
+    return this.page.$$eval(`${selector} tr`, fn);
   }
 
   async getTableByName(tableName: string) {
@@ -104,22 +102,21 @@ export class CaseDetailsPage extends Base {
 
       const out: Record<string, string> = {};
       const dataRows = Array.from(rows).filter((row) => {
-        const el = row as Element;
-        if (el.hasAttribute && el.hasAttribute('hidden')) return false;
+        if (!row.hasAttribute?.('hidden')) return true;
         if ('hidden' in row && (row as any).hidden) return false;
-        const style = window.getComputedStyle(el);
+        const style = globalThis.getComputedStyle(row);
         if (!style) return false;
         if (style.display === 'none' || style.visibility === 'hidden') return false;
-        if (el.getClientRects().length === 0) return false;
+        if (row.getClientRects().length === 0) return false;
         return true;
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
+        const cells = Array.from(row.querySelectorAll('th, td'));
         if (cells.length < 2) continue;
 
         const rawKey = findFirstText(cells[0])
-          .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
+          .replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
           .trim();
         if (!rawKey) continue;
 
@@ -127,18 +124,18 @@ export class CaseDetailsPage extends Base {
           .slice(1)
           .map((c) =>
             findFirstText(c)
-              .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
+              .replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
               .trim()
           )
           .filter(Boolean);
-        const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
+        const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
 
         out[rawKey] = value;
       }
       return out;
     };
 
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>>;
+    return this._runOnRows(selector, fn);
   }
 
   /**
@@ -155,7 +152,7 @@ export class CaseDetailsPage extends Base {
 
       // header is first tr
       const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
+      const sanitize = (s: string) => (s || '').replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
       const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize((h as HTMLElement).innerText || ''));
 
       // data rows are after header; filter hidden rows
@@ -163,20 +160,20 @@ export class CaseDetailsPage extends Base {
         .slice(1)
         .filter((row) => {
           if ((row as HTMLTableRowElement).hidden) return false;
-          const style = window.getComputedStyle(row as Element);
+          const style = globalThis.getComputedStyle(row);
           if (!style) return false;
           if (style.display === 'none' || style.visibility === 'hidden') return false;
-          if ((row as Element).getClientRects().length === 0) return false;
+          if (row.getClientRects().length === 0) return false;
           return true;
         });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td')) as HTMLElement[];
+        const cells = Array.from(row.querySelectorAll('th, td'));
         if (cells.length === 0) continue;
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const value = sanitize(cells[i].innerText || '').replace(/\s+/g, ' ');
+          const value = sanitize((cells[i] as HTMLElement).innerText || '').replaceAll(/\s+/g, ' ');
           obj[key] = value;
         }
         arr.push(obj);
@@ -184,7 +181,7 @@ export class CaseDetailsPage extends Base {
       return arr;
     };
 
-    return this._runOnRows(selector, fn as any) as Promise<Record<string, string>[]>;
+    return this._runOnRows(selector, fn);
   }
 
   async mapHistoryTable(): Promise<Record<string, string>[]> {
@@ -227,11 +224,12 @@ export class CaseDetailsPage extends Base {
 
   async getCaseNumberFromAlert(): Promise<string> {
     const alertText = await this.caseAlertSuccessMessage.innerText();
-    const caseNumberMatch = alertText.match(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
+    const caseNumberPattern = validatorUtils.DIVORCE_CASE_NUMBER_REGEX;
+    const caseNumberMatch = caseNumberPattern.exec(alertText);
     if (!caseNumberMatch) {
       throw new Error(`Failed to extract case number from alert: "${alertText}"`);
     }
-    return caseNumberMatch ? caseNumberMatch[0] : '';
+    return caseNumberMatch[0];
   }
 
   async getCaseNumberFromUrl(): Promise<string> {
@@ -240,7 +238,7 @@ export class CaseDetailsPage extends Base {
     if (!caseNumberMatch) {
       throw new Error(`Failed to extract case number from URL: "${url}"`);
     }
-    return caseNumberMatch ? caseNumberMatch : '';
+    return caseNumberMatch;
   }
 
   async selectCaseAction(action: string) {
@@ -293,7 +291,6 @@ export class CaseDetailsPage extends Base {
 
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
-    console.log(`Number of tabs: ${tabsCount}`);
     return tabsCount;
   }
 }

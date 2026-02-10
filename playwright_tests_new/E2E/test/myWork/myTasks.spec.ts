@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { loadSessionCookies } from '../../../common/sessionCapture';
 let sessionCookies: any[] = [];

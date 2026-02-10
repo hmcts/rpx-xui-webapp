@@ -154,10 +154,10 @@ export async function fetchFirstTask(
     { retries: 1, retryStatuses: [502, 504] }
   )) as { data: TaskListResponse; status: number };
   const data = response.data;
-  if (response.status !== 200 || !Array.isArray(data?.tasks) || data.tasks!.length === 0) {
+  if (response.status !== 200 || !Array.isArray(data?.tasks) || data.tasks.length === 0) {
     return undefined;
   }
-  return data.tasks![0];
+  return data.tasks[0];
 }
 
 type TaskDetails = {

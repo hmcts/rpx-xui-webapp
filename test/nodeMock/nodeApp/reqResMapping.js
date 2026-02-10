@@ -16,9 +16,6 @@ module.exports = {
     '/external/configuration-ui': (req, res) => {
       res.send(nodeAppMockData.getUIConfiguration());
     },
-    '/external/config/ui': (req, res) => {
-      res.send(nodeAppMockData.getUIConfiguration());
-    },
     '/external/configuration': (req, res) => {
       res.send('' + nodeAppMockData.getConfigurationValue(req.query.configurationKey));
     },

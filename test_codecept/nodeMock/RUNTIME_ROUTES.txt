@@ -1,6 +1,5 @@
 /external/configuration-ui/
 /api/configuration
-/external/config/ui
 /api/user/details
 /auth/isAuthenticated
 /api/healthCheck

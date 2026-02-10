@@ -30,13 +30,6 @@ test.describe('Node app endpoints', () => {
     assertUiConfigResponse(response.data, expectedKeys);
   });
 
-  test('serves external config/ui alias', async ({ anonymousClient }) => {
-    const response = await anonymousClient.get<Record<string, unknown>>('external/config/ui');
-    expectStatus(response.status, [200]);
-    const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
-    assertUiConfigResponse(response.data, expectedKeys);
-  });
-
   test('serves external config/check snapshot', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/config/check');
     expectStatus(response.status, [200]);

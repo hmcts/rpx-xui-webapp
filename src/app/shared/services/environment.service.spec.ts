@@ -1,8 +1,7 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { EnvironmentService } from './environment.service';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ENVIRONMENT_CONFIG, EnvironmentConfig } from '../../../models/environmentConfig.model';
 
 /*
   PROD = 'prod',
@@ -21,15 +20,28 @@ const dummyWindowIthc = { location: new URL('https://manage-case.ithc.platform.h
 const dummyWindowPreview = { location: new URL('https://pr-666.preview.platform.hmcts.net') };
 const dummyWindowLocalhost = { location: new URL('http://localhost:3000') };
 
+const mockEnvironmentConfig: EnvironmentConfig = {
+  idamWeb: 'https://idam.example.com',
+  clientId: 'some-client-id',
+  oAuthCallback: 'https://callback.example.com',
+  protocol: 'http',
+  oidcEnabled: 'false',
+  paymentReturnUrl: 'https://payment-return.example.com',
+  headerConfig: {},
+  hearingJurisdictionConfig: {
+    hearingJurisdictions: {},
+    hearingAmendment: {},
+  },
+};
+
 describe('EnvironmentService', () => {
   it('should be created', () => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowAat },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -41,9 +53,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowProd },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -55,9 +66,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowAat },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -69,9 +79,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowDemo },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -83,9 +92,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowPerftest },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -97,9 +105,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowIthc },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -111,9 +118,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowPreview },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);
@@ -125,9 +131,8 @@ describe('EnvironmentService', () => {
       imports: [],
       providers: [
         { provide: Window, useValue: dummyWindowLocalhost },
+        { provide: ENVIRONMENT_CONFIG, useValue: mockEnvironmentConfig },
         EnvironmentService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
       ],
     });
     const service = TestBed.inject(EnvironmentService);

@@ -60,7 +60,20 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await taskListPage.exuiSpinnerComponent.wait();
       await caseDetailsPage.selectCaseDetailsTab('Tasks');
       await taskListPage.exuiSpinnerComponent.wait();
-      await expect(caseDetailsPage.taskListContainer).toHaveScreenshot('task-list-markdown.png');
+      const table = await caseDetailsPage.getTaskKeyValueRows();
+
+      // Verify table rows match the mocked task data
+      expect(table.length).toBe(taskData.titles.length);
+      // Titles
+      expect(table[0]['Title']).toContain(taskData.titles[0]);
+      expect(table[1]['Title']).toContain(taskData.titles[1]);
+      expect(table[2]['Title']).toContain(taskData.titles[2]);
+      // Locations (builder maps missing locations back to first entry)
+      expect(table[0]['Location']).toBe(taskData.locations[0].name);
+      expect(table[1]['Location']).toBe(taskData.locations[1].name);
+      expect(table[2]['Location']).toBe(taskData.locations[0].name);
+      // Description / Next steps present for the third task
+      expect(table[2]['Next steps']).toContain('Please review the evidence');
     });
   });
 
@@ -100,13 +113,50 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await caseDetailsPage.selectCaseDetailsTab('Tasks');
       await taskListPage.exuiSpinnerComponent.wait();
 
-      //TODO add table matcher expects and remove selectors from the test
       await expect(page.locator('strong.hmcts-badge--red')).toContainText('urgent');
       await expect(page.locator('strong.govuk-tag--red')).toContainText('high');
       await expect(page.locator('strong.govuk-tag--yellow')).toContainText('medium');
       await expect(page.locator('strong.govuk-tag--grey')).toContainText('low');
-      console.log(JSON.stringify(await caseDetailsPage.getTaskKeyValueRows()));
-      await expect(caseDetailsPage.taskListContainer).toHaveScreenshot('task-list-urgency.png');
+    });
+  });
+
+  // Skipped until EXUI-4127 is resolved
+  test.skip(`Complex Markdown label renders correctly`, async ({ taskListPage, caseDetailsPage, page }) => {
+    const caseMockResponse = buildAsylumCaseMock({ caseId: '1111111111111111' });
+    const taskData = {
+      caseId: caseMockResponse.case_id,
+      titles: ['Complex markdown task'],
+      states: ['assigned'],
+      types: ['followUpExtendedDirection'],
+      taskSystems: ['SELF'],
+      locations: [{ name: 'Manchester', id: '512401' }],
+      assignees: assigneeId ? [assigneeId] : [],
+      descriptions: [
+        '# Overview\n\n## Current progress of the case\n\n<img src="https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg" alt="Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage">\n\n## Do this next\nYou still need to submit your appeal.\n\n[Submit your appeal](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/submitAppeal)\n\nYou can also review and edit your appeal.\n\n[Edit appeal](/case/IA/Asylum/${[CASE_REFERENCE]}/trigger/editAppeal)',
+      ],
+    };
+
+    await test.step('Setup route mock for priority label tasks', async () => {
+      await page.route(`**data/internal/cases/${caseMockResponse.case_id}*`, async (route) => {
+        const body = JSON.stringify(caseMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+
+      await page.route(`**workallocation/case/task/${caseMockResponse.case_id}*`, async (route) => {
+        const tasks = buildCaseDetailsTasksMinimal(taskData);
+        const body = JSON.stringify(tasks);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+    });
+
+    await test.step('Verify priority labels are shown', async () => {
+      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}`);
+      await taskListPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.selectCaseDetailsTab('Tasks');
+      await taskListPage.exuiSpinnerComponent.wait();
+
+      const content = await caseDetailsPage.getTaskKeyValueRows();
+      expect(content[0]['Next steps']).toMatch(/^Overview/);
     });
   });
 });

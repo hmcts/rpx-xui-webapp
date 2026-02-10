@@ -1,5 +1,4 @@
 'use strict';
-
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const { $, elementByXpath, getXUITestPage } = require('../../../helpers/globals');
 const { LONG_DELAY } = require('../../support/constants');
@@ -39,7 +38,7 @@ class LoginLogout {
   }
 
   async reuseLoginSession(email) {
-    const { users, reuseCounter } = inject();
+    const { users = [], reuseCounter = 0 } = inject();
     const matchingSession = users.filter((user) => user.email === email);
     CucumberReportLogger.AddMessage(`Users sessions available ${users.length}`);
     CucumberReportLogger.AddMessage(`User ${email} session ${matchingSession.length > 0 ? 'exists' : 'does not exist'}`);
@@ -101,12 +100,13 @@ class LoginLogout {
 
     try {
       await BrowserWaits.waitForElement($('exui-app-header'));
-      const { users } = inject();
+      const { users = [] } = inject();
       const cookies = await getXUITestPage().context().cookies();
       users.push({ email: username, cookies });
       share({ users });
     } catch (err) {
-      // Silent catch for login redirect failures
+      // Log login redirect failure without re-throwing to allow test continuation
+      CucumberReportLogger.AddMessage(`Login redirect failure: ${err.message}`);
     }
   }
 }

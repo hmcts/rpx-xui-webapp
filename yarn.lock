@@ -22836,7 +22836,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.58.2":
+"playwright@npm:^1.52.0":
   version: 1.58.2
   resolution: "playwright@npm:1.58.2"
   dependencies:
@@ -24422,7 +24422,7 @@ __metadata:
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
     pegjs: "npm:^0.10.0"
-    playwright: "npm:^1.58.2"
+    playwright: "npm:^1.52.0"
     portfinder: "npm:^1.0.28"
     prettier: "npm:^3.8.0"
     puppeteer: "npm:^24.0.0"

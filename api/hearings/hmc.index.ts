@@ -236,7 +236,6 @@ export function injectHearingsHeaders(req: EnhancedRequest, res: Response, next:
   if (getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true') {
     req.headers['Role-Assignment-Url'] = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     req.headers['Data-Store-Url'] = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
-    logger.info('Setting preview Hmcts-Deployment-Id ', getConfigValue(SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID));
     req.headers['Hmcts-Deployment-Id'] = getConfigValue(SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID);
   }
 

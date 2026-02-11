@@ -2,7 +2,19 @@ import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 import * as log4jui from '../lib/log4jui';
 import { getConfigValue } from '../configuration';
-import { CASEWORKER_PAGE_SIZE, IDAM_SECRET, MICROSERVICE, ROLE_ASSIGNMENT_PAGE_SIZE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
+import {
+  CASEWORKER_PAGE_SIZE,
+  IDAM_SECRET,
+  MICROSERVICE,
+  ROLE_ASSIGNMENT_PAGE_SIZE,
+  S2S_SECRET,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID,
+  SERVICE_S2S_PATH,
+  STAFF_SUPPORTED_JURISDICTIONS,
+  SYSTEM_USER_NAME,
+  SYSTEM_USER_PASSWORD,
+} from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -39,12 +51,12 @@ const state: CacheState = {
   timestamp: null,
   refreshRoles: false,
   cachedUsers: null,
-  cachedUsersWithRoles: null
+  cachedUsersWithRoles: null,
 };
 
 let authTokens: AuthTokens = {
   serviceAuthToken: null,
-  userAuthToken: null
+  userAuthToken: null,
 };
 
 /**
@@ -52,7 +64,7 @@ let authTokens: AuthTokens = {
  */
 export async function fetchUserData(req?: EnhancedRequest, next?: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (hasTTLExpired() || (!state.cachedUsers || state.cachedUsers.length === 0)) {
+    if (hasTTLExpired() || !state.cachedUsers || state.cachedUsers.length === 0) {
       // Need to refresh cache
       state.refreshRoles = true;
       state.cachedUsers = [];
@@ -112,9 +124,7 @@ async function fetchAllUserPages(
     const getUsersPath = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions, pageNumber);
 
     // Use appropriate method based on context
-    const userResponse = req
-      ? await handleUsersGet(getUsersPath, req)
-      : await handleNewUsersGet(getUsersPath, headers);
+    const userResponse = req ? await handleUsersGet(getUsersPath, req) : await handleNewUsersGet(getUsersPath, headers);
 
     // Stop if no results or less than pageSize (last page)
     if (!userResponse || userResponse.length === 0) {
@@ -136,9 +146,7 @@ async function fetchAllUserPages(
 }
 
 // Helper function to fetch all pages of role assignments
-async function fetchAllRoleAssignmentPages(
-  req?: EnhancedRequest
-): Promise<RoleAssignment[]> {
+async function fetchAllRoleAssignmentPages(req?: EnhancedRequest): Promise<RoleAssignment[]> {
   let pageNumber = 0;
   let hasMoreData = true;
   let allRoles: RoleAssignment[] = [];
@@ -154,7 +162,7 @@ async function fetchAllRoleAssignmentPages(
     const roleAssignmentHeaders = {
       ...(req ? setHeaders(req) : getRequestHeaders()),
       pageNumber,
-      size: pageSize
+      size: pageSize,
     };
     // Use headers (instead of req) to support both contexts
     const roleResponse = await handlePostRoleAssignments(roleApiPath, payload, roleAssignmentHeaders);
@@ -210,9 +218,7 @@ export async function fetchRoleAssignments(
   }
 }
 
-export async function fetchRoleAssignmentsForNewUsers(
-  cachedUserData: StaffUserDetails[]
-): Promise<CachedCaseworker[]> {
+export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   return fetchRoleAssignments(cachedUserData);
 }
 
@@ -245,7 +251,7 @@ export async function getAuthTokens(): Promise<AuthTokens> {
     // Update the module's auth tokens
     authTokens = {
       serviceAuthToken: serviceAuthResponse.data,
-      userAuthToken: authResponse.data.access_token
+      userAuthToken: authResponse.data.access_token,
     };
 
     return authTokens;
@@ -261,7 +267,7 @@ export function hasTTLExpired(): boolean {
     return true;
   }
 
-  const hasExpired = Date.now() > state.timestamp.getTime() + (TTL_IN_SECONDS * 1);
+  const hasExpired = Date.now() > state.timestamp.getTime() + TTL_IN_SECONDS * 1;
 
   if (hasExpired) {
     state.timestamp = new Date();
@@ -298,8 +304,8 @@ export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): St
     // Find and merge duplicate user entries with different services
     for (let matchIndex = userIndex + 1; matchIndex < userResponse.length; matchIndex++) {
       const matchingUser = userResponse[matchIndex];
-      const isOfSameUser = matchingUser.staff_profile.id === memberProfile.id &&
-        !userServices.includes(matchingUser.ccd_service_name.toUpperCase());
+      const isOfSameUser =
+        matchingUser.staff_profile.id === memberProfile.id && !userServices.includes(matchingUser.ccd_service_name.toUpperCase());
 
       if (isOfSameUser) {
         // Add base location if this is the first match
@@ -387,8 +393,8 @@ export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser
 export function getRequestHeaders(): Record<string, string> {
   return {
     'content-type': 'application/json',
-    'serviceAuthorization': `Bearer ${authTokens.serviceAuthToken}`,
-    'authorization': `Bearer ${authTokens.userAuthToken}`
+    serviceAuthorization: `Bearer ${authTokens.serviceAuthToken}`,
+    authorization: `Bearer ${authTokens.userAuthToken}`,
   };
 }
 

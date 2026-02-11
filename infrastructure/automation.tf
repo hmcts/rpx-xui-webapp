@@ -267,7 +267,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Month"
   interval                = 1
-  start_time              = "2026-02-11T15:00:00Z"
+  start_time              = "2026-02-12T15:00:00Z"
   timezone                = "UTC"
 }
 

@@ -155,7 +155,11 @@ Then('In create support request workflow, I validate Review details displayed', 
   const datatableHash = datatable.parse().hashes();
   for (const row of datatableHash) {
     reportLogger.AddMessage(`Validating ${row.field}=${row.value}`);
-    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(row.field, row.value, row.isChangeLinkDisplayed.includes('true'));
+    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(
+      row.field,
+      row.value,
+      row.isChangeLinkDisplayed.includes('true')
+    );
   }
 });
 
@@ -163,16 +167,20 @@ Then('In manage support request workflow, I validate Review details displayed', 
   const datatableHash = datatable.parse().hashes();
   for (const row of datatableHash) {
     reportLogger.AddMessage(`Validating ${row.field}=${row.value}`);
-    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(row.field, row.value, row.isChangeLinkDisplayed.includes('true'));
+    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(
+      row.field,
+      row.value,
+      row.isChangeLinkDisplayed.includes('true')
+    );
   }
 });
 
 When('In create support request workflow, I click submit', async function () {
-  await element(by.xpath('//button[contains(text(),\'Submit\')]')).click();
+  await element(by.xpath("//button[contains(text(),'Submit')]")).click();
 });
 
 When('In manage support request workflow, I click submit', async function () {
-  await element(by.xpath('//button[contains(text(),\'Submit\')]')).click();
+  await element(by.xpath("//button[contains(text(),'Submit')]")).click();
 });
 
 Then('I am on manage case update flag page {string}', async function (page) {
@@ -181,4 +189,3 @@ Then('I am on manage case update flag page {string}', async function (page) {
   await browserWaits.waitForElement(pageObj.container);
   expect(await pageObj.container.isDisplayed(), `${page} not displayed`).to.be.true;
 });
-

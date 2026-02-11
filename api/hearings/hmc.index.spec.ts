@@ -41,12 +41,12 @@ describe('HMC Hearings API', () => {
       params: {},
       body: {},
       headers: {},
-      session: {}
+      session: {},
     } as EnhancedRequest;
 
     res = {
       status: sandbox.stub().returnsThis(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
     } as unknown as Response;
 
     next = sandbox.stub();
@@ -70,17 +70,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { ...HEARINGS_LIST }
+        data: { ...HEARINGS_LIST },
       };
 
       handleGetStub.resolves(mockResponse);
 
       await hmcIndex.getHearings(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearings/1584618195804035`,
-        req
-      );
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearings/1584618195804035`, req);
 
       // Verify that the status mapping was applied
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
@@ -97,7 +94,7 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { ...EMPTY_HEARINGS_LIST }
+        data: { ...EMPTY_HEARINGS_LIST },
       };
 
       handleGetStub.resolves(mockResponse);
@@ -128,17 +125,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { ...HEARING_REQUEST_RESULTS[0] }
+        data: { ...HEARING_REQUEST_RESULTS[0] },
       };
 
       handleGetStub.resolves(mockResponse);
 
       await hmcIndex.getHearing(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
-        req
-      );
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -161,7 +155,7 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 201,
-        data: { hearingRequestId: 'h100001', status: 'HEARING_REQUESTED' }
+        data: { hearingRequestId: 'h100001', status: 'HEARING_REQUESTED' },
       };
 
       sendPostStub.resolves(mockResponse);
@@ -169,11 +163,7 @@ describe('HMC Hearings API', () => {
       await hmcIndex.submitHearingRequest(req, res, next);
 
       expect(trackTraceStub).to.have.been.calledWith('submitting hearing request');
-      expect(sendPostStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearing`,
-        req.body,
-        req
-      );
+      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing`, req.body, req);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -210,18 +200,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { message: 'Hearing cancelled' }
+        data: { message: 'Hearing cancelled' },
       };
 
       handleDeleteStub.resolves(mockResponse);
 
       await hmcIndex.cancelHearingRequest(req, res, next);
 
-      expect(handleDeleteStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
-        req.body,
-        req
-      );
+      expect(handleDeleteStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req.body, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -245,18 +231,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { message: 'Hearing updated' }
+        data: { message: 'Hearing updated' },
       };
 
       sendPutStub.resolves(mockResponse);
 
       await hmcIndex.updateHearingRequest(req, res, next);
 
-      expect(sendPutStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearing/h100001`,
-        req.body,
-        req
-      );
+      expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req.body, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -279,17 +261,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { ...HEARING_ACTUAL_COMPLETED }
+        data: { ...HEARING_ACTUAL_COMPLETED },
       };
 
       handleGetStub.resolves(mockResponse);
 
       await hmcIndex.getHearingActuals(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`,
-        req
-      );
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -313,18 +292,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { message: 'Actuals updated' }
+        data: { message: 'Actuals updated' },
       };
 
       sendPutStub.resolves(mockResponse);
 
       await hmcIndex.updateHearingActuals(req, res, next);
 
-      expect(sendPutStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`,
-        req.body,
-        req
-      );
+      expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`, req.body, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -351,11 +326,7 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.submitHearingActuals(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearingActualsCompletion/h100001`,
-        null,
-        req
-      );
+      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActualsCompletion/h100001`, null, req);
       expect(res.status).to.have.been.calledWith(204);
       expect(res.send).to.have.been.calledWith(null);
     });
@@ -378,18 +349,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: { ...LINKED_HEARING_GROUP }
+        data: { ...LINKED_HEARING_GROUP },
       };
 
       handleGetStub.resolves(mockResponse);
 
       await hmcIndex.getLinkedHearingGroup(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`,
-        req,
-        next
-      );
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`, req, next);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -412,18 +379,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse: { status: number; data: LinkedHearingGroupResponseModel } = {
         status: 201,
-        data: { hearingGroupRequestId: 'g1000001' }
+        data: { hearingGroupRequestId: 'g1000001' },
       };
 
       sendPostStub.resolves(mockResponse);
 
       await hmcIndex.postLinkedHearingGroup(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup`,
-        req.body,
-        req
-      );
+      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup`, req.body, req);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -447,7 +410,7 @@ describe('HMC Hearings API', () => {
 
       const mockResponse: { status: number; data: LinkedHearingGroupResponseModel } = {
         status: 200,
-        data: { hearingGroupRequestId: 'g1000000' }
+        data: { hearingGroupRequestId: 'g1000000' },
       };
 
       sendPutStub.resolves(mockResponse);
@@ -482,7 +445,7 @@ describe('HMC Hearings API', () => {
 
       const mockResponse: { status: number; data: LinkedHearingGroupResponseModel } = {
         status: 200,
-        data: { hearingGroupRequestId: 'g1000000' }
+        data: { hearingGroupRequestId: 'g1000000' },
       };
 
       handleDeleteStub.resolves(mockResponse);
@@ -556,10 +519,7 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.getHearings(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearings/undefined`,
-        req
-      );
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearings/undefined`, req);
     });
 
     it('should handle null response data gracefully', async () => {
@@ -567,7 +527,7 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 200,
-        data: null
+        data: null,
       };
 
       handleGetStub.resolves(mockResponse);
@@ -585,18 +545,14 @@ describe('HMC Hearings API', () => {
 
       const mockResponse = {
         status: 201,
-        data: { hearingRequestId: 'h100001' }
+        data: { hearingRequestId: 'h100001' },
       };
 
       sendPostStub.resolves(mockResponse);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/hearing`,
-        {},
-        req
-      );
+      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing`, {}, req);
     });
   });
 });

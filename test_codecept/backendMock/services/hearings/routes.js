@@ -1,6 +1,5 @@
-
 const express = require('express');
-const bodyParser = require('body-parser');  
+const bodyParser = require('body-parser');
 
 const router = express.Router({ mergeParams: true });
 const service = require('./index');
@@ -17,12 +16,12 @@ const hearingActualsData = require('./mockData/hearingActuals');
 
 router.use(
   bodyParser.json({
-    strict : false,                  // let "null", 123, "" through
-    type   : ['application/json'],   // only when Content-Type is JSON
-    verify : (req, res, buf) => {
+    strict: false, // let "null", 123, "" through
+    type: ['application/json'], // only when Content-Type is JSON
+    verify: (req, res, buf) => {
       // turn completely empty bodies into {}
       if (!buf.length) req.body = {};
-    }
+    },
   })
 );
 
@@ -47,20 +46,20 @@ router.post('/serviceLinkedCases', (req, res) => {
 router.post('/hearing', (req, res) => {
   userApiData.captureRequestDetails('OnPostHearing', req);
   res.send({
-    'hearingRequestID': 2000006340,
-    'status': 'HEARING_REQUESTED',
-    'timeStamp': '2023-08-07T09:30:52.213698',
-    'versionNumber': 1
+    hearingRequestID: 2000006340,
+    status: 'HEARING_REQUESTED',
+    timeStamp: '2023-08-07T09:30:52.213698',
+    versionNumber: 1,
   });
 });
 
 router.put('/hearing/:hearingId', (req, res) => {
   userApiData.captureRequestDetails('OnPutHearing', req);
   res.send({
-    'hearingRequestID': 2000006340,
-    'status': 'HEARING_REQUESTED',
-    'timeStamp': '2023-08-07T09:30:52.213698',
-    'versionNumber': 1
+    hearingRequestID: 2000006340,
+    status: 'HEARING_REQUESTED',
+    timeStamp: '2023-08-07T09:30:52.213698',
+    versionNumber: 1,
   });
 });
 
@@ -81,4 +80,3 @@ router.post('/linkedHearingGroup', (req, res) => {
 });
 
 module.exports = router;
-

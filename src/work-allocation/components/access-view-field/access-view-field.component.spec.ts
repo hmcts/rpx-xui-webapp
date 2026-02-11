@@ -8,7 +8,7 @@ import { AccessViewFieldComponent } from './access-view-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-access-view-field [workField]="workField"></exui-access-view-field>'
+  template: '<exui-access-view-field [workField]="workField"></exui-access-view-field>',
 })
 class WrapperComponent {
   @ViewChild(AccessViewFieldComponent) public appComponentRef: AccessViewFieldComponent;
@@ -19,7 +19,6 @@ describe('WorkAllocation', () => {
   describe('AccessViewFieldComponent', () => {
     const REJECTED_REQUEST_URL: string = '/role-access/rejected-request';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: AccessViewFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -28,12 +27,11 @@ describe('WorkAllocation', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule,
-          RouterTestingModule.withRoutes(
-            [{ path: 'role-access/rejected-request', component: WrapperComponent }]
-          )]
-      })
-        .compileComponents();
+        imports: [
+          WorkAllocationComponentsModule,
+          RouterTestingModule.withRoutes([{ path: 'role-access/rejected-request', component: WrapperComponent }]),
+        ],
+      }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -87,25 +85,27 @@ describe('WorkAllocation', () => {
         specificAccessReason: 'I want to test',
         reviewerRoleCategory: 'Judicial',
         infoRequiredComment: 'Need more Infomation',
-        endDate: '15-01-2022'
+        endDate: '15-01-2022',
       };
       fixture.detectChanges();
       wrapper.appComponentRef.viewRejection();
 
-      expect(router.navigate).toHaveBeenCalledWith([REJECTED_REQUEST_URL], { queryParams: {
-        caseName: 'Example name',
-        caseReference: '123456789',
-        roleCategory: 'specific',
-        jurisdiction: 'IA',
-        dateRejected: '01-01-2022',
-        infoRequired: true,
-        reviewer: 'Mr Test',
-        dateSubmitted: '01-01-2021',
-        specificAccessReason: 'I want to test',
-        reviewerRoleCategory: 'Judicial',
-        infoRequiredComment: 'Need more Infomation',
-        endDate: '15-01-2022'
-      } });
+      expect(router.navigate).toHaveBeenCalledWith([REJECTED_REQUEST_URL], {
+        queryParams: {
+          caseName: 'Example name',
+          caseReference: '123456789',
+          roleCategory: 'specific',
+          jurisdiction: 'IA',
+          dateRejected: '01-01-2022',
+          infoRequired: true,
+          reviewer: 'Mr Test',
+          dateSubmitted: '01-01-2021',
+          specificAccessReason: 'I want to test',
+          reviewerRoleCategory: 'Judicial',
+          infoRequiredComment: 'Need more Infomation',
+          endDate: '15-01-2022',
+        },
+      });
     });
   });
 });

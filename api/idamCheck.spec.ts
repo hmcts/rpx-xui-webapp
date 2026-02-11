@@ -45,7 +45,7 @@ describe('idamCheck', () => {
       const mockResponse = {
         issuer: 'https://idam-api.test.hmcts.net/o',
         authorization_endpoint: 'https://idam-api.test.hmcts.net/o/authorize',
-        token_endpoint: 'https://idam-api.test.hmcts.net/o/token'
+        token_endpoint: 'https://idam-api.test.hmcts.net/o/token',
       };
       httpGetStub.resolves(mockResponse);
 

@@ -48,12 +48,14 @@ export class LoadShareCaseFailure implements Action {
 
 export class AddShareCases implements Action {
   public readonly type = ADD_SHARE_CASES;
-  constructor(public payload: {
-    path?: any[];
-    query?: object;
-    extras?: NavigationExtras;
-    sharedCases: SharedCase[]
-  }) {}
+  constructor(
+    public payload: {
+      path?: any[];
+      query?: object;
+      extras?: NavigationExtras;
+      sharedCases: SharedCase[];
+    }
+  ) {}
 }
 
 export class AddShareCaseGo implements Action {
@@ -63,7 +65,7 @@ export class AddShareCaseGo implements Action {
       path: any[];
       query?: object;
       extras?: NavigationExtras;
-      sharedCases: SharedCase[]
+      sharedCases: SharedCase[];
     }
   ) {}
 }
@@ -96,6 +98,17 @@ export class ResetCaseSelection implements Action {
   public readonly type = RESET_CASE_SELECTION;
 }
 
-export type Actions = NavigateToShareCase | LoadShareCase | LoadShareCaseSuccess | LoadShareCaseFailure
-  | AddShareCases | AddShareCaseGo | DeleteAShareCase | LoadUserFromOrgForCase | LoadUserFromOrgForCaseSuccess
-  | SynchronizeStateToStore | AssignUsersToCase | AssignUsersToCaseSuccess | ResetCaseSelection;
+export type Actions =
+  | NavigateToShareCase
+  | LoadShareCase
+  | LoadShareCaseSuccess
+  | LoadShareCaseFailure
+  | AddShareCases
+  | AddShareCaseGo
+  | DeleteAShareCase
+  | LoadUserFromOrgForCase
+  | LoadUserFromOrgForCaseSuccess
+  | SynchronizeStateToStore
+  | AssignUsersToCase
+  | AssignUsersToCaseSuccess
+  | ResetCaseSelection;

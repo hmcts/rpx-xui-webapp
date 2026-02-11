@@ -6,5 +6,5 @@ export enum AllocateRoleState {
   CHECK_ANSWERS,
   CONFIRM_ALLOCATION,
   LOADING_ROLES,
-  NO_ROLES_FOUND
+  NO_ROLES_FOUND,
 }

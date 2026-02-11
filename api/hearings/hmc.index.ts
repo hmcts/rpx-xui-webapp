@@ -1,18 +1,20 @@
 import { NextFunction, Response } from 'express';
 import { handleDelete, handleGet, sendPost, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_DATA_STORE_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS, SERVICES_HMC_HEARINGS_COMPONENT_API, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
-import { trackTrace } from '../lib/appInsights';
-import * as log4jui from '../lib/log4jui';
+import {
+  SERVICES_CCD_DATA_STORE_API_PATH,
+  SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS,
+  SERVICES_HMC_HEARINGS_COMPONENT_API,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+} from '../configuration/references';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
 import { HearingListMainModel } from './models/hearingListMain.model';
 import { HearingRequestMainModel } from './models/hearingRequestMain.model';
 import { hearingStatusMappings } from './models/hearingStatusMappings';
-import {
-  LinkedHearingGroupMainModel,
-  LinkedHearingGroupResponseModel
-} from './models/linkHearings.model';
+import { LinkedHearingGroupMainModel, LinkedHearingGroupResponseModel } from './models/linkHearings.model';
+import { trackTrace } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
 
 export const hmcHearingsUrl: string = getConfigValue(SERVICES_HMC_HEARINGS_COMPONENT_API);
 const logger: JUILogger = log4jui.getLogger('hmc-index');
@@ -55,10 +57,13 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
   try {
     const { status, data }: { status: number, data: HearingListMainModel } = await handleGet(markupPath, req);
     data.caseHearings.forEach((hearing) =>
-      hearingStatusMappings.filter((mapping) => mapping.hmcStatus === hearing.hmcStatus).map((hearingStatusMapping) => {
-        hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
-        hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
-      }));
+      hearingStatusMappings
+        .filter((mapping) => mapping.hmcStatus === hearing.hmcStatus)
+        .map((hearingStatusMapping) => {
+          hearing.exuiSectionStatus = hearingStatusMapping.exuiSectionStatus;
+          hearing.exuiDisplayStatus = hearingStatusMapping.exuiDisplayStatus;
+        })
+    );
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, 'getHearings', req, markupPath, next);
@@ -69,8 +74,7 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
  * getHearing from hearing ID
  */
 export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
-  // @ts-ignore
-  const hearingId: string = req.query.hearingId;
+  const hearingId: string = req.query.hearingId as string;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
 
   try {
@@ -148,7 +152,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const { status, data }: { status: number, data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, 'updateHearingActuals', req, markupPath, next);
@@ -176,7 +180,7 @@ export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const groupId: string = req.query.groupId as string;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
   try {
-    const { status, data }: { status: number, data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number; data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, 'getLinkedHearingGroup', req, markupPath, next);

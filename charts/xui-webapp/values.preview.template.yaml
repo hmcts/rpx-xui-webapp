@@ -2,32 +2,32 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-     NODE_TLS_REJECT_UNAUTHORIZED: 0
-     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
-     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
-     REDISCLOUD_URL: redis://${SERVICE_NAME}-redis-master:6379
-     HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
-     HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
-     HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
-     HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
-     HEALTH_EM_DOCASSEMBLY_API: http://dg-docassembly-aat.service.core-compute-aat.internal/health
-     HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health
-     HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
-     HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
-     HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
-     HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
-     SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
-     STUB: false
-     DEBUG: xuiNode:*,-xuiNode:auth:s2s
-     FEATURE_WORKALLOCATION_ENABLED: true
-     SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
-     SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
-     FEATURE_ACCESS_MANAGEMENT_ENABLED: true
-     JURISDICTIONS: DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,CIVIL,CMC,HRS,PRIVATELAW,WA,PRL,BEFTA_JURISDICTION_1,BEFTA_JURISDICTION_2,BEFTA_JURISDICTION_3,ADOPTION,BEFTA_MASTER,DISPOSER_MASTER,ST_CIC,PCS
-     PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${CHANGE_ID}
-     FEATURE_JRD_E_LINKS_V2_ENABLED: true
-     FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
-     SERVICES_IDAM_SERVICE_OVERRIDE: false
+    NODE_TLS_REJECT_UNAUTHORIZED: 0
+    SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+    SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
+    REDISCLOUD_URL: redis://${SERVICE_NAME}-redis-master:6379
+    HEALTH_CCD_COMPONENT_API: https://gateway-ccd.aat.platform.hmcts.net/health
+    HEALTH_CCD_DATA_API: http://ccd-data-store-api-aat.service.core-compute-aat.internal/health
+    HEALTH_DOCUMENTS_API: http://dm-store-aat.service.core-compute-aat.internal/health
+    HEALTH_EM_ANNO_API: http://em-anno-aat.service.core-compute-aat.internal/health
+    HEALTH_EM_DOCASSEMBLY_API: http://dg-docassembly-aat.service.core-compute-aat.internal/health
+    HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health
+    HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-aat.service.core-compute-aat.internal/health
+    HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-aat.service.core-compute-aat.internal/health
+    HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-aat.service.core-compute-aat.internal/health
+    HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-aat.service.core-compute-aat.internal/health
+    SERVICES_TRANSLATION_API_URL: http://ts-translation-service-aat.service.core-compute-aat.internal
+    STUB: false
+    DEBUG: xuiNode:*,-xuiNode:auth:s2s
+    FEATURE_WORKALLOCATION_ENABLED: true
+    SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-aat.service.core-compute-aat.internal
+    SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-aat.service.core-compute-aat.internal
+    FEATURE_ACCESS_MANAGEMENT_ENABLED: true
+    JURISDICTIONS: DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,CIVIL,CMC,HRS,PRIVATELAW,WA,PRL,BEFTA_JURISDICTION_1,BEFTA_JURISDICTION_2,BEFTA_JURISDICTION_3,ADOPTION,BEFTA_MASTER,DISPOSER_MASTER,ST_CIC,PCS
+    PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${CHANGE_ID}
+    FEATURE_JRD_E_LINKS_V2_ENABLED: true
+    FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
+    SERVICES_IDAM_SERVICE_OVERRIDE: false
   keyVaults:
     rpx:
       secrets:

@@ -13,9 +13,9 @@ const pactSetUp = new PactV3TestSetup({ provider: 'hmc_hearingActuals', port: 80
 const hearingId = '1234567890123456';
 
 const RESPONSE_BODY = {
-  'body': somethingLike({}),
-  'statusCode': somethingLike('string'),
-  'statusCodeValue': somethingLike(0)
+  body: somethingLike({}),
+  statusCode: somethingLike('string'),
+  statusCodeValue: somethingLike(0),
 };
 
 describe('Hearings, submit single hearing actuals completion for given hearingId', () => {
@@ -35,18 +35,18 @@ describe('Hearings, submit single hearing actuals completion for given hearingId
           method: 'POST',
           path: `/hearingActualsCompletion/${hearingId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -68,13 +68,13 @@ describe('Hearings, submit single hearing actuals completion for given hearingId
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           params: {
-            hearingId
-          }
+            hearingId,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

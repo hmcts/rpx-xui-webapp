@@ -18,7 +18,9 @@ export class FindCasePage extends Base {
   readonly searchResultsDataTable = this.searchResultsTable.locator('table').first();
   readonly firstRowOfSearchResultsTable = this.searchResultsTable.locator('.govuk-link').first();
   readonly workBasketFilterPanel = this.page.locator('.search-block .hmcts-filter-layout__filter ccd-search-filters-wrapper');
-  readonly findCaseLinkOnMenu = this.page.locator('.hmcts-primary-navigation__nav .hmcts-primary-navigation__link[href*="case-search"]').first();
+  readonly findCaseLinkOnMenu = this.page
+    .locator('.hmcts-primary-navigation__nav .hmcts-primary-navigation__link[href*="case-search"]')
+    .first();
   readonly findCaseLinkOnTopRight = this.page
     .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
     .first();

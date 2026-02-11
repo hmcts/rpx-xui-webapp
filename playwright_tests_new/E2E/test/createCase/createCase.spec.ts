@@ -45,7 +45,9 @@ test.describe('Verify creating cases works as expected', () => {
       const hasResultTable = await caseListPage.caseResultsTable.isVisible().catch(() => false);
       if (hasResultTable) {
         const filteredTable = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
-        filteredResultsFound = filteredTable.some((row) => normalizeCaseNumber(String(row['Case reference'] ?? '')) === caseNumber);
+        filteredResultsFound = filteredTable.some(
+          (row) => normalizeCaseNumber(String(row['Case reference'] ?? '')) === caseNumber
+        );
       }
 
       if (!filteredResultsFound || !hasTextFieldFilter) {

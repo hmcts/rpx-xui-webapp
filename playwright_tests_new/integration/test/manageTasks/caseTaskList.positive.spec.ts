@@ -5,9 +5,10 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
 
-const userIdentifier = 'SOLICITOR';
+const userIdentifier = 'STAFF_ADMIN';
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
 const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
+const inTenDays = faker.date.soon({ days: 10 }).toISOString();
 let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 
@@ -15,7 +16,6 @@ test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
   assigneeId = extractUserIdFromCookies(sessionCookies);
-  await page.goto('/');
 });
 
 test.describe(`User ${userIdentifier} can see task tab contents on a case`, () => {
@@ -33,6 +33,8 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
         'Current progress of the case ![Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage](https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg)',
         '# Next steps\nPlease review the evidence before proceeding.',
       ],
+      priorityDates: [inTenDays],
+      dueDates: [inTenDays],
       assignees: assigneeId ? [assigneeId] : [],
     };
     await test.step('Setup route mock for task details', async () => {
@@ -49,10 +51,8 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
     });
 
     await test.step('Verify table shows results', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}`);
-      await taskListPage.exuiSpinnerComponent.wait();
-      await caseDetailsPage.selectCaseDetailsTab('Tasks');
-      await taskListPage.exuiSpinnerComponent.wait();
+      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}/tasks`);
+      await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
 
       expect(table.length).toBe(taskData.titles.length);
@@ -99,10 +99,8 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
     });
 
     await test.step('Verify priority labels are shown', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}`);
-      await taskListPage.exuiSpinnerComponent.wait();
-      await caseDetailsPage.selectCaseDetailsTab('Tasks');
-      await taskListPage.exuiSpinnerComponent.wait();
+      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}/tasks`);
+      await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
       expect(table[0]['Priority'], 'The priority label for the first task should be URGENT').toContain('URGENT');
       expect(table[1]['Priority'], 'The priority label for the second task should be HIGH').toContain('HIGH');
@@ -141,10 +139,8 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
     });
 
     await test.step('Verify priority labels are shown', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}`);
-      await taskListPage.exuiSpinnerComponent.wait();
-      await caseDetailsPage.selectCaseDetailsTab('Tasks');
-      await taskListPage.exuiSpinnerComponent.wait();
+      await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}/tasks`);
+      await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
       console.log(JSON.stringify(table, null, 2));
       const content = await caseDetailsPage.getTaskKeyValueRows();

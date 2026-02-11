@@ -23,7 +23,7 @@ export class DecentralisedEventRedirectService {
     const redirectUrl = buildDecentralisedEventUrl({
       ...params,
       baseUrls: this.environmentService.get('decentralisedEventBaseUrls'),
-      expectedSub: this.getExpectedSubFromSession(),
+      expectedSub: getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails')),
     });
 
     if (redirectUrl) {
@@ -32,9 +32,5 @@ export class DecentralisedEventRedirectService {
     }
 
     return false;
-  }
-
-  private getExpectedSubFromSession(): string | null {
-    return getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'));
   }
 }

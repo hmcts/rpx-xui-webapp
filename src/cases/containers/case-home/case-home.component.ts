@@ -50,10 +50,22 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe((navigation) => {
-      if (navigation.action) {
-        if (!this.tryDecentralisedEventRedirect(navigation)) {
-          this.actionDispatcher(this.paramHandler(navigation));
-        }
+      if (!navigation.action) {
+        return;
+      }
+
+      const isRedirected =
+        navigation.action === NavigationOrigin.EVENT_TRIGGERED &&
+        this.decentralisedEventRedirectService.tryRedirect({
+          caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
+          eventId: navigation.etid,
+          caseId: navigation.relativeTo.snapshot.params.cid,
+          queryParams: navigation.queryParams,
+          isCaseCreate: false,
+        });
+
+      if (!isRedirected) {
+        this.actionDispatcher(this.paramHandler(navigation));
       }
     }) as any;
 
@@ -140,20 +152,6 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
   public actionDispatcher(params: GoActionParams): void {
     return this.store.dispatch(new fromRoot.Go(params));
-  }
-
-  private tryDecentralisedEventRedirect(navigation: any): boolean {
-    if (navigation.action !== NavigationOrigin.EVENT_TRIGGERED) {
-      return false;
-    }
-
-    return this.decentralisedEventRedirectService.tryRedirect({
-      caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
-      eventId: navigation.etid,
-      caseId: navigation.relativeTo.snapshot.params.cid,
-      queryParams: navigation.queryParams,
-      isCaseCreate: false,
-    });
   }
 
   public handleErrorWithTriggerId(error: HttpError, triggerId: string): void {

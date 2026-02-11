@@ -30,8 +30,7 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
     return null;
   }
 
-  const resolved = template.replace(TEMPLATE_PLACEHOLDER, suffix);
-  return resolved;
+  return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
 const getDecentralisedBaseUrl = (baseUrls: Record<string, string> | null | undefined, caseType?: string): string | null => {
@@ -66,13 +65,6 @@ const getDecentralisedBaseUrl = (baseUrls: Record<string, string> | null | undef
   return resolveUrlTemplate({ template, prefix, caseType });
 };
 
-export const getExpectedSub = (userInfo?: { id?: string; uid?: string }): string | null => {
-  if (!userInfo) {
-    return null;
-  }
-  return userInfo.id || userInfo.uid || null;
-};
-
 export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
   if (!userInfoStr) {
     return null;
@@ -80,7 +72,7 @@ export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): stri
 
   try {
     const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
-    return getExpectedSub(userInfo);
+    return userInfo.id || userInfo.uid || null;
   } catch {
     return null;
   }

@@ -22,14 +22,14 @@ export class CaseCreateEffects {
       ofType(fromActions.CREATE_CASE_FILTER_APPLY),
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
       mergeMap((param) => {
-        const isRedirected = this.decentralisedEventRedirectService.tryRedirect({
-          caseType: param.caseTypeId,
-          jurisdiction: param.jurisdictionId,
-          eventId: param.eventId,
-          isCaseCreate: true,
-        });
-
-        if (isRedirected) {
+        if (
+          this.decentralisedEventRedirectService.tryRedirect({
+            caseType: param.caseTypeId,
+            jurisdiction: param.jurisdictionId,
+            eventId: param.eventId,
+            isCaseCreate: true,
+          })
+        ) {
           return EMPTY;
         }
 

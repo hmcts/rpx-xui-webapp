@@ -83,6 +83,7 @@ module.exports = (() => {
         fullPage: true,
       },
       video: 'retain-on-failure',
+      timezoneId: 'Europe/London',
       headless: headlessMode,
     },
     projects: [

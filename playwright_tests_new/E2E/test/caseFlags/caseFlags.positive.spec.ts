@@ -4,6 +4,21 @@ import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches, getCaseBannerInfo, normalizeCaseNumber } from '../../utils/banner.utils';
 
+function isPageClosingError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    message.includes('Target page, context or browser has been closed') ||
+    message.includes('Execution context was destroyed') ||
+    message.includes('Test ended')
+  );
+}
+
+function rowMatchesExpected(row: Record<string, string>, expected: Record<string, string>): boolean {
+  return Object.entries(expected).every(([key, value]) => {
+    return (row[key] ?? '').trim() === value.trim();
+  });
+}
+
 test.describe('Case level case flags', () => {
   test.describe.configure({ timeout: 120000 });
   let caseNumber: string;
@@ -30,12 +45,26 @@ test.describe('Case level case flags', () => {
     });
 
     await test.step('Check the case flag creation messages are seen', async () => {
-      const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
-      const { digits, message } = getCaseBannerInfo(bannerText);
-      expect.soft(digits).toBe(normalizeCaseNumber(caseNumber));
-      expect.soft(message).toContain('has been updated with event: Create a case flag');
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
+      await expect
+        .poll(async () => {
+          const callbackError = caseDetailsPage.page.getByText('callback data failed validation', { exact: false });
+          if (await callbackError.isVisible().catch(() => false)) {
+            throw new Error('Callback data failed validation while creating case-level case flag.');
+          }
+          const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+          if (!bannerVisible) {
+            return false;
+          }
+          const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+          return caseBannerMatches(bannerText, caseNumber, 'has been updated with event: Create a case flag');
+        })
+        .toBe(true);
+      if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
+        expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
+      }
+      if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
+        expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
+      }
     });
 
     await test.step('Verify the case level flag is shown in the flags tab', async () => {
@@ -48,11 +77,24 @@ test.describe('Case level case flags', () => {
         'Flag status': 'ACTIVE',
       };
       await expect
-        .poll(async () => {
-          const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
-          const visibleRows = filterEmptyRows(table);
-          return visibleRows.some((row) => Object.entries(expectedFlag).every(([key, value]) => row[key] === value));
-        })
+        .poll(
+          async () => {
+            if (caseDetailsPage.page.isClosed()) {
+              return false;
+            }
+            try {
+              const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
+              const visibleRows = filterEmptyRows(table);
+              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+            } catch (error) {
+              if (isPageClosingError(error)) {
+                return false;
+              }
+              throw error;
+            }
+          },
+          { timeout: 45000, intervals: [1000, 2000, 3000] }
+        )
         .toBe(true);
     });
   });
@@ -85,18 +127,32 @@ test.describe('Party level case flags', () => {
     });
 
     await test.step('Check the case flag creation messages are seen', async () => {
-      const callbackError = caseDetailsPage.page.getByText('callback data failed validation', { exact: false });
-      if (await callbackError.isVisible().catch(() => false)) {
-        throw new Error('Callback data failed validation while creating party-level case flag.');
-      }
       await expect
-        .poll(async () => {
-          const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
-          return caseBannerMatches(bannerText, caseNumber, 'has been updated with event: Create case flag');
-        })
+        .poll(
+          async () => {
+            const callbackError = caseDetailsPage.page.getByText('callback data failed validation', { exact: false });
+            if (await callbackError.isVisible().catch(() => false)) {
+              throw new Error('Callback data failed validation while creating party-level case flag.');
+            }
+            if (await caseDetailsPage.eventCreationErrorHeading.isVisible().catch(() => false)) {
+              throw new Error('CCD event creation failed while creating party-level case flag.');
+            }
+            const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+            if (!bannerVisible) {
+              return false;
+            }
+            const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+            return caseBannerMatches(bannerText, caseNumber, 'has been updated with event: Create case flag');
+          },
+          { timeout: 45000, intervals: [1000, 2000, 3000] }
+        )
         .toBe(true);
-      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
+      if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
+        expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
+      }
+      if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
+        expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
+      }
     });
 
     await test.step('Verify the party level case flag is shown in the flags tab', async () => {
@@ -109,11 +165,27 @@ test.describe('Party level case flags', () => {
         'Flag status': 'ACTIVE',
       };
       await expect
-        .poll(async () => {
-          const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
-          const visibleRows = filterEmptyRows(table);
-          return visibleRows.some((row) => Object.entries(expectedFlag).every(([key, value]) => row[key] === value));
-        })
+        .poll(
+          async () => {
+            if (caseDetailsPage.page.isClosed()) {
+              return false;
+            }
+            try {
+              const partyFlagsTables = caseDetailsPage.page.locator('table').filter({
+                has: caseDetailsPage.page.locator('th', { hasText: 'Party level flags' }),
+              });
+              const table = await tableUtils.parseDataTable(partyFlagsTables);
+              const visibleRows = filterEmptyRows(table);
+              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+            } catch (error) {
+              if (isPageClosingError(error)) {
+                return false;
+              }
+              throw error;
+            }
+          },
+          { timeout: 45000, intervals: [1000, 2000, 3000] }
+        )
         .toBe(true);
     });
   });

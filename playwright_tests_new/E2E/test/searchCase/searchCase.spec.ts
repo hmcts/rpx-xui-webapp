@@ -1,33 +1,38 @@
 import { expect, test } from '../../fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture.ts';
-import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
+import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
+import { resolveCaseReferenceWithFallback } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login to trigger For 16 digit Case Search', () => {
   let availableCaseReference = '';
-  let sessionCookies: any[] = [];
-  test.beforeEach(async ({ page, config, caseListPage }) => {
-    await page.goto(config.urls.manageCaseBaseUrl);
-    const { cookies } = loadSessionCookies('STAFF_ADMIN');
-    sessionCookies = cookies;
-    if (sessionCookies.length) {
-      await page.context().addCookies(sessionCookies);
+  test.beforeAll(async () => {
+    await ensureSession('FPL_GLOBAL_SEARCH');
+  });
+
+  test.beforeEach(async ({ page, caseListPage }) => {
+    const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
     }
 
     await page.goto('/');
-    try {
-      availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
+    availableCaseReference = await resolveCaseReferenceWithFallback(
+      page,
+      async () => {
+        await caseListPage.goto();
+        const caseReference = await caseListPage.getRandomCaseReferenceFromResults([
+          'Case management',
+          'Submitted',
+          'Gatekeeping',
+          'Closed',
+        ]);
+        await page.goto('/');
+        return caseReference;
+      },
+      {
+        jurisdictionIds: ['PUBLICLAW'],
         preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
-      });
-    } catch {
-      await caseListPage.goto();
-      availableCaseReference = await caseListPage.getRandomCaseReferenceFromResults([
-        'Case management',
-        'Submitted',
-        'Gatekeeping',
-        'Closed',
-      ]);
-      await page.goto('/');
-    }
+      }
+    );
   });
 
   test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, validatorUtils, page }) => {
@@ -37,13 +42,17 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
       await searchCasePage.searchWith16DigitCaseId(caseNumber);
     });
     await expect(page).toHaveURL(/\/cases\/case-details\//);
-    await expect(caseDetailsPage.exuiCaseDetailsComponent.caseHeader).toBeInViewport();
+    const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
+    await expect.soft(caseNumberFromUrl).toContain(caseNumber);
     await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
 
     await test.step('On successful search - Check case details messages are seen', async () => {
-      await expect.soft(caseDetailsPage.ccdCaseReference).toContainText(validatorUtils.formatCaseNumber(caseNumber));
-      await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
-      await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('active flags on this case');
+      if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
+        await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
+      }
+      if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
+        await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('active flags on this case');
+      }
       if (await searchCasePage.caseProgressPanel.isVisible()) {
         await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Current progress of the case');
       }

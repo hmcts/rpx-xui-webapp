@@ -40,8 +40,7 @@ test.describe('Document upload V2', () => {
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
       await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
       await createCasePage.uploadFile(TEST_DATA.V2.FILE_NAME, TEST_DATA.V2.FILE_TYPE, TEST_DATA.V2.FILE_CONTENT);
-      await createCasePage.clickContinueMultipleTimes(4);
-      await createCasePage.submitButton.click();
+      await createCasePage.clickSubmitAndWait('after uploading document (V2)', { timeoutMs: 60000 });
     });
 
     await test.step('Verify the document upload was successful', async () => {

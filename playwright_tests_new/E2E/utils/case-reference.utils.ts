@@ -81,6 +81,18 @@ export async function resolveCaseReferenceFromGlobalSearch(
   throw new Error('No 16-digit case references returned by global search API');
 }
 
+export async function resolveCaseReferenceWithFallback(
+  page: Page,
+  fallbackResolver: () => Promise<string>,
+  options: ResolveCaseReferenceOptions = {}
+): Promise<string> {
+  try {
+    return await resolveCaseReferenceFromGlobalSearch(page, options);
+  } catch {
+    return fallbackResolver();
+  }
+}
+
 async function resolveCaseReferenceFromHtmlPages(page: Page): Promise<string | null> {
   const candidatePaths = ['/work/my-work/list', '/work/all-work/tasks', '/cases'];
   const references = new Set<string>();

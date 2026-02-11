@@ -1,23 +1,38 @@
 import { test, expect } from '../../fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture.ts';
-import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
+import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
+import { resolveCaseReferenceWithFallback } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login for Find Search page', () => {
   let availableCaseReference = '';
-  let sessionCookies: any[] = [];
-  test.beforeEach(async ({ page, config }) => {
-    await page.goto(config.urls.manageCaseBaseUrl);
+  test.beforeAll(async () => {
+    await ensureSession('FPL_GLOBAL_SEARCH');
+  });
+
+  test.beforeEach(async ({ page, caseListPage }) => {
     const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
-    sessionCookies = cookies;
-    if (sessionCookies.length) {
-      await page.context().addCookies(sessionCookies);
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
     }
 
     await page.goto('/');
-    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
-      jurisdictionIds: ['PUBLICLAW'],
-      preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
-    });
+    availableCaseReference = await resolveCaseReferenceWithFallback(
+      page,
+      async () => {
+        await caseListPage.goto();
+        const caseReference = await caseListPage.getRandomCaseReferenceFromResults([
+          'Case management',
+          'Submitted',
+          'Gatekeeping',
+          'Closed',
+        ]);
+        await page.goto('/');
+        return caseReference;
+      },
+      {
+        jurisdictionIds: ['PUBLICLAW'],
+        preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
+      }
+    );
   });
 
   test('Find case using Public Law jurisdiction', async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {
@@ -30,7 +45,8 @@ test.describe('IDAM login for Find Search page', () => {
     });
 
     await test.step("Verify that case searched for appears under 'Your cases' ", async () => {
-      const searchTable = await tableUtils.mapExuiTable(findCasePage.searchResultsTable);
+      await findCasePage.searchResultsDataTable.waitFor({ state: 'visible' });
+      const searchTable = await tableUtils.parseDataTable(findCasePage.searchResultsDataTable);
 
       const rowContent = {
         'Case name': expect.any(String),
@@ -40,21 +56,48 @@ test.describe('IDAM login for Find Search page', () => {
         State: expect.any(String),
       };
 
-      if (searchTable === null || searchTable.length === 0) {
-        throw new Error('Find case search results table must be present for a valid search');
-      }
-
+      expect(searchTable.length).toBeGreaterThan(0);
       expect(searchTable[0]).toMatchObject(rowContent);
 
-      await findCasePage.displayCaseDetails();
-      await expect(page).toHaveURL(/\/cases\/case-details\//);
+      await findCasePage.displayCaseDetailsFor(caseNumber);
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/${caseNumber}`));
     });
 
     await test.step('Check Case Details page and ensure case is present', async () => {
       await expect.soft(caseDetailsPage.caseActionsDropdown).toBeVisible();
       await expect.soft(caseDetailsPage.caseActionGoButton).toBeVisible();
       const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
-      await expect.soft(caseNumberFromUrl).toContain(caseNumber);
+      expect.soft(caseNumberFromUrl).toContain(caseNumber);
+    });
+  });
+
+  test('Find case is accessible from main menu navigation', async ({ findCasePage, page }) => {
+    await test.step('Open Find case from main navigation', async () => {
+      await findCasePage.openFromMainMenu();
+      await expect(page).toHaveURL(/\/cases\/case-search/);
+      await expect(findCasePage.pageHeading).toHaveText('Search');
+    });
+  });
+});
+
+test.describe('Solicitor navigation to Find case (top-right)', () => {
+  test.beforeAll(async () => {
+    await ensureSession('SOLICITOR');
+  });
+
+  test.beforeEach(async ({ page }) => {
+    const { cookies } = loadSessionCookies('SOLICITOR');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
+    }
+    await page.goto('/');
+  });
+
+  test('Find case link appears on top-right and opens Find case page', async ({ findCasePage, page }) => {
+    await test.step('Open Find case from top-right link', async () => {
+      await findCasePage.openFromTopRight();
+      await expect(page).toHaveURL(/\/cases\/case-search/);
+      await expect(findCasePage.pageHeading).toHaveText('Search');
     });
   });
 });

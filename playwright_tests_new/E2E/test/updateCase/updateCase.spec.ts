@@ -27,8 +27,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
     await test.step('Update case fields', async () => {
       await createCasePage.person2FirstNameInput.fill(updatedFirstName);
       await createCasePage.person2LastNameInput.fill(updatedLastName);
-      await createCasePage.clickContinueAndWaitForNext('after updating case fields');
-      await createCasePage.submitButton.click();
+      await createCasePage.clickSubmitAndWait('after updating case fields', { timeoutMs: 45000 });
       await caseDetailsPage.exuiSpinnerComponent.wait();
       // Soft assertion - visibility verified by poll below, but helps with debugging if banner missing
       await expect.soft(caseDetailsPage.caseAlertSuccessMessage).toBeVisible();

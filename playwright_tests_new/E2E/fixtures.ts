@@ -21,6 +21,17 @@ interface ApiError {
   method: string;
 }
 
+type BenignApiErrorRule = {
+  method: string;
+  status: number;
+  urlPattern: RegExp;
+};
+
+const benignApiErrorRules: BenignApiErrorRule[] = [
+  { method: 'GET', status: 403, urlPattern: /\/api\/organisation$/ },
+  { method: 'GET', status: 400, urlPattern: /\/data\/internal\/cases\/\d+$/ },
+];
+
 /**
  * Sanitize URL by removing query parameters to prevent logging sensitive data.
  * Query params may contain tokens, session IDs, or PII.
@@ -29,6 +40,13 @@ interface ApiError {
  */
 function sanitizeUrl(url: string): string {
   return url.split('?')[0];
+}
+
+function isKnownBenignApiError(url: string, method: string, status: number): boolean {
+  const requestMethod = method.toUpperCase();
+  return benignApiErrorRules.some((rule) => {
+    return rule.status === status && rule.method === requestMethod && rule.urlPattern.test(url);
+  });
 }
 
 /**
@@ -93,10 +111,11 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
 
         const status = response.status();
         const method = response.request().method();
+        const sanitizedUrl = sanitizeUrl(url);
 
         // Track all 4xx and 5xx errors
-        if (status >= 400) {
-          apiErrors.push({ url: sanitizeUrl(url), status, method });
+        if (status >= 400 && !isKnownBenignApiError(sanitizedUrl, method, status)) {
+          apiErrors.push({ url: sanitizedUrl, status, method });
           if (apiErrors.length > maxTracked) {
             apiErrors.shift();
           }

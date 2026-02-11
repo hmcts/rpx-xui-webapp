@@ -16,8 +16,8 @@ export class CreateCasePage extends Base {
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
   readonly startButton = this.page.locator('button[type="submit"]');
-  readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
-  readonly continueButton = this.page.locator('button:has-text("Continue"):visible');
+  readonly submitButton = this.page.getByRole('button', { name: /^submit$/i }).first();
+  readonly continueButton = this.page.getByRole('button', { name: /continue/i }).first();
 
   // Locators for the Divorce - XUI Case flags V2
   readonly legalRepParty1Block = this.page.locator('#LegalRepParty1Flags_LegalRepParty1Flags');
@@ -128,6 +128,7 @@ export class CreateCasePage extends Base {
   readonly errorMessage = this.page.locator('.error-message, .govuk-error-message');
   readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly somethingWentWrongHeading = this.page.getByRole('heading', { name: /something went wrong/i });
 
   constructor(page: Page) {
     super(page);
@@ -314,6 +315,67 @@ export class CreateCasePage extends Base {
     await this.clickContinueAndWait(context, options);
   }
 
+  async clickSubmitAndWait(context: string, options: { timeoutMs?: number } = {}) {
+    const timeoutMs = options.timeoutMs ?? this.getRecommendedTimeoutMs();
+    const deadline = Date.now() + timeoutMs;
+    let autoAdvanceCount = 0;
+
+    while (Date.now() < deadline) {
+      if (this.page.isClosed()) {
+        throw new Error(`Page closed while waiting for submit button ${context}`);
+      }
+
+      await this.assertNoEventCreationError(`while waiting for submit ${context}`);
+      const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
+      if (onSomethingWentWrongPage) {
+        throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
+      }
+
+      const submitVisible = await this.submitButton.isVisible().catch(() => false);
+      if (submitVisible) {
+        await this.submitButton.scrollIntoViewIfNeeded();
+        await expect(this.submitButton).toBeEnabled();
+        try {
+          await this.submitButton.click({ timeout: 10000 });
+        } catch (error) {
+          const message = String(error);
+          if (!message.includes('intercepts pointer events')) {
+            throw error;
+          }
+          this.logger.warn('Submit click intercepted; retrying with force', { context });
+          await this.submitButton.click({ force: true, timeout: 10000 });
+        }
+        await this.waitForSpinnerToComplete(`after submit ${context}`);
+        return;
+      }
+
+      const continueVisible = await this.continueButton.isVisible().catch(() => false);
+      if (continueVisible) {
+        autoAdvanceCount += 1;
+        await this.clickContinueAndWait(`auto-advance ${autoAdvanceCount} before submit ${context}`, { timeoutMs: 12000 });
+        continue;
+      }
+
+      await this.page.waitForTimeout(500);
+    }
+
+    const visibleActionButtons = await this.page
+      .getByRole('button')
+      .allInnerTexts()
+      .then((texts) =>
+        texts
+          .map((text) => text.trim())
+          .filter((text) => text.length > 0)
+          .filter((text) => /(continue|submit|save)/i.test(text))
+          .slice(0, 10)
+      )
+      .catch(() => []);
+
+    throw new Error(
+      `Submit button did not become available ${context}. URL=${this.page.url()} visibleActionButtons=${visibleActionButtons.join(' | ') || 'none'}`
+    );
+  }
+
   private async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
     const spinner = this.page.locator('xuilib-loading-spinner').first();
@@ -383,9 +445,15 @@ export class CreateCasePage extends Base {
       await waitForAdvance();
       return;
     } catch {
+      if (this.page.isClosed()) {
+        throw new Error(`Page closed while waiting for wizard to advance after ${context}`);
+      }
       const hasValidationError = await this.checkForErrorMessage();
       if (hasValidationError) {
         throw new Error(`Validation error after ${context}`);
+      }
+      if (this.page.isClosed()) {
+        throw new Error(`Page closed before retrying wizard advance after ${context}`);
       }
       await this.continueButton.scrollIntoViewIfNeeded();
       await this.continueButton.click();
@@ -442,7 +510,7 @@ export class CreateCasePage extends Base {
           return !!txt && txt.includes(message);
         }
         return true;
-      } catch (error: unknown) {
+      } catch {
         // Element not found or timeout - expected when no error present
         return false;
       }
@@ -450,10 +518,32 @@ export class CreateCasePage extends Base {
 
     const [a, b] = await Promise.all([check(this.errorMessage), check(this.errorSummary)]);
 
+    const safeErrorMeta = async (
+      sel: Locator
+    ): Promise<{ present: boolean; length: number; containsCaseReference: boolean; containsEmail: boolean } | null> => {
+      const visible = await sel.isVisible().catch(() => false);
+      if (!visible) {
+        return null;
+      }
+      return sel
+        .first()
+        .innerText({ timeout: 1000 })
+        .then((text) => {
+          const trimmed = text.trim();
+          return {
+            present: true,
+            length: trimmed.length,
+            containsCaseReference: /\b\d{16}\b/.test(trimmed),
+            containsEmail: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(trimmed),
+          };
+        })
+        .catch(() => null);
+    };
+
     if (a || b) {
       logger.error('Error message displayed on page', {
-        errorMessage: a ? await this.errorMessage.textContent() : null,
-        errorSummary: b ? await this.errorSummary.textContent() : null,
+        errorMessageMeta: a ? await safeErrorMeta(this.errorMessage) : null,
+        errorSummaryMeta: b ? await safeErrorMeta(this.errorSummary) : null,
       });
       return true;
     }
@@ -492,10 +582,29 @@ export class CreateCasePage extends Base {
         await this.startButton.click();
         return;
       } catch (error) {
+        const jurisdictionBootstrapFailed = this.getApiCalls().some(
+          (call) =>
+            call.method === 'GET' &&
+            call.status >= 400 &&
+            call.url.includes('/aggregated/caseworkers/') &&
+            call.url.includes('/jurisdictions')
+        );
+        const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
+
         if (attempt === maxAttempts) {
           throw error;
         }
-        logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
+        if (jurisdictionBootstrapFailed || onSomethingWentWrongPage) {
+          logger.warn('Jurisdiction bootstrap failed; retrying case filter', {
+            attempt,
+            maxAttempts,
+            jurisdictionBootstrapFailed,
+            onSomethingWentWrongPage,
+          });
+          await this.page.waitForTimeout(1500);
+        } else {
+          logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
+        }
         await this.page.goto('/cases/case-filter');
       }
     }
@@ -518,8 +627,17 @@ export class CreateCasePage extends Base {
   async uploadFile(fileName: string, mimeType: string, fileContent: string) {
     const maxRetries = 3;
     const baseDelayMs = 3000; // initial backoff
+    const safeBackoff = async (attempt: number) => {
+      if (this.page.isClosed()) {
+        throw new Error('Page closed during upload retry backoff');
+      }
+      await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+    };
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      if (this.page.isClosed()) {
+        throw new Error('Page closed before upload retry attempt');
+      }
       // set the file directly on the input element (no filechooser needed)
       await this.page.setInputFiles('input[type="file"]', {
         name: fileName,
@@ -534,7 +652,7 @@ export class CreateCasePage extends Base {
       if (!res) {
         // no response within timeout — treat as failure or retry depending on policy
         if (attempt < maxRetries) {
-          await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+          await safeBackoff(attempt);
           continue;
         } else {
           throw new Error('Upload timed out after retries');
@@ -544,7 +662,7 @@ export class CreateCasePage extends Base {
       if (res.status() !== 200) {
         if (attempt < maxRetries) {
           // exponential backoff before retrying
-          await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
+          await safeBackoff(attempt);
           continue;
         } else {
           throw new Error(`Upload failed: server returned status ${res.status()} after ${maxRetries} retries`);
@@ -732,26 +850,54 @@ export class CreateCasePage extends Base {
   }
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
-    const gender = faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
-    await this.createCase(jurisdiction, caseType, '');
-    await this.page.getByLabel(gender, { exact: true }).check();
-    await this.person1Title.click();
-    await this.person1Title.fill(faker.person.prefix());
-    await this.person1FirstNameInput.fill(faker.person.firstName());
-    await this.person1LastNameInput.fill(faker.person.lastName());
-    await this.person1GenderSelect.selectOption(gender);
-    await this.person1JobTitleInput.fill(faker.person.jobTitle());
-    await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
-    await this.clickContinueAndWait('after PoC personal details');
-    await this.textField0Input.waitFor({ state: 'visible', timeout: 30000 });
-    await this.textField0Input.fill(textField0);
-    await this.textField3Input.fill(faker.lorem.word());
-    await this.textField1Input.fill(faker.lorem.word());
-    await this.textField2Input.fill(faker.lorem.word());
-    await this.clickContinueAndWait('after PoC text fields');
-    await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: 30000 });
-    await this.testSubmitButton.click();
-    await this.waitForSpinnerToComplete('after submitting divorce PoC case');
-    await this.waitForCaseDetails('after submitting divorce PoC case');
+    const maxAttempts = 2;
+    const preferredGenders = ['Male', 'Female', 'Not given', 'Not Known', 'Unknown'];
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await this.createCase(jurisdiction, caseType, '');
+        const availableGender = await this.person1GenderSelect.evaluate((select) => {
+          const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
+          return options;
+        });
+        const gender = preferredGenders.find((candidate) => availableGender.some((option) => option === candidate)) ?? 'Male';
+        const genderRadio = this.page.getByLabel(gender, { exact: true });
+        if (await genderRadio.isVisible().catch(() => false)) {
+          await genderRadio.check();
+        }
+        await this.person1Title.click();
+        await this.person1Title.fill(faker.person.prefix());
+        await this.person1FirstNameInput.fill(faker.person.firstName());
+        await this.person1LastNameInput.fill(faker.person.lastName());
+        await this.person1GenderSelect.selectOption(gender);
+        await this.person1JobTitleInput.fill(faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
+        await this.clickContinueAndWait('after PoC personal details');
+        await this.textField0Input.waitFor({ state: 'visible', timeout: 30000 });
+        await this.textField0Input.fill(textField0);
+        await this.textField3Input.fill(faker.lorem.word());
+        await this.textField1Input.fill(faker.lorem.word());
+        await this.textField2Input.fill(faker.lorem.word());
+        await this.clickContinueAndWait('after PoC text fields');
+        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: 30000 });
+        await this.testSubmitButton.click();
+        await this.waitForSpinnerToComplete('after submitting divorce PoC case');
+        await this.waitForCaseDetails('after submitting divorce PoC case');
+        return;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const isTransientCreationFailure =
+          message.includes('Validation error after after PoC text fields') ||
+          message.includes('The event could not be created') ||
+          (await this.eventCreationErrorHeading.isVisible().catch(() => false));
+        if (isTransientCreationFailure && attempt < maxAttempts) {
+          logger.warn('Divorce PoC case creation failed; retrying', { attempt, maxAttempts });
+          if (!this.page.isClosed()) {
+            await this.page.goto('/cases/case-filter');
+          }
+          continue;
+        }
+        throw error;
+      }
+    }
   }
 }

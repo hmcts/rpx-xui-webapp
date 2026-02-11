@@ -1,19 +1,36 @@
-const { setDefaultResultOrder } = require('dns');
-
+import { setDefaultResultOrder } from 'node:dns';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { container } from 'codeceptjs';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const report = require('cucumber-html-reporter');
-const { merge } = require('mochawesome-merge');
-const marge = require('mochawesome-report-generator');
-const fs = require('fs');
-const path = require('path');
-
-const global = require('./globals');
-import applicationServer from '../localServer';
-
-const spawn = require('child_process').spawn;
-const backendMockApp = require('../backendMock/app');
+import backendMockApp from '../backendMock/app';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const statsReporter = require('./statsReporter');
+import './globals';
 
 setDefaultResultOrder('ipv4first');
+
+if (process.platform === 'darwin' && process.arch === 'arm64' && !process.env.PLAYWRIGHT_HOST_PLATFORM_OVERRIDE) {
+  const major = Number.parseInt(os.release().split('.')[0] ?? '', 10);
+  const lastStable = 15;
+  let macVersion: string;
+  if (Number.isFinite(major)) {
+    if (major < 18) {
+      macVersion = 'mac10.13';
+    } else if (major === 18) {
+      macVersion = 'mac10.14';
+    } else if (major > 19) {
+      macVersion = `mac${Math.min(major - 9, lastStable)}`;
+    } else {
+      macVersion = 'mac10.15';
+    }
+  } else {
+    macVersion = 'mac10.15';
+  }
+  process.env.PLAYWRIGHT_HOST_PLATFORM_OVERRIDE = `${macVersion}-arm64`;
+}
 
 const externalServers = process.env.EXTERNAL_SERVERS === 'true';
 function findStepFiles(basePath) {
@@ -43,7 +60,6 @@ console.log('Loaded step files:', [...e2eStepFiles, ...ngIntegrationStepFiles]);
 
 let executionResult = 'passed';
 
-const appWithMockBackend = null;
 const testType = process.env.TEST_TYPE;
 
 const CODECEPT_OUT = path.resolve(
@@ -54,20 +70,16 @@ const CODECEPT_OUT = path.resolve(
 const CUKE_OUT = path.resolve(__dirname, '../../functional-output/tests/codecept-' + testType);
 fs.mkdirSync(CUKE_OUT, { recursive: true });
 
-const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
+const debugMode = process.env.DEBUG?.includes('true') ?? false;
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === 'true' : false;
-const head = process.env.HEAD === 'true';
+const head = process.env.HEAD === 'true' || (process.platform === 'darwin' && process.arch === 'arm64' && !process.env.CI);
 console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
 console.log(`headless : ${head}`);
 
 const TEST_URL = process.env.TEST_URL || '';
-const pipelineBranch = externalServers //   running against localhost
-  ? 'local' //   value won’t be used later
-  : TEST_URL.includes('pr-') || TEST_URL.includes('manage-case.aat.platform.hmcts.net')
-    ? 'preview'
-    : 'master';
+const pipelineBranch = resolvePipelineBranch(externalServers, TEST_URL);
 let features = '';
 if (testType === 'e2e' || testType === 'smoke') {
   features = '../e2e/features/app/**/*.feature';
@@ -77,11 +89,10 @@ if (testType === 'e2e' || testType === 'smoke') {
   throw new Error(`Unrecognized test type ${testType}`);
 }
 
-const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 fs.mkdirSync(cucumber_functional_output_dir, { recursive: true });
 
-let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
+let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullfunctional';
 
 if (pipelineBranch === 'master' && testType === 'ngIntegration') {
   bddTags = 'AAT_only';
@@ -114,37 +125,6 @@ exports.config = {
     Mochawesome: {
       uniqueScreenshotNames: 'true',
     },
-    // Puppeteer: {
-    //   url: 'https://manage-case.aat.platform.hmcts.net/',
-    //   show: true,
-    //   waitForNavigation: ['domcontentloaded'],
-    //   restart: true,
-    //   keepCookies: false,
-    //   keepBrowserState: false,
-    //   smartWait: 50000,
-    //   waitForTimeout: 90000,
-    //   chrome: {
-    //     ignoreHTTPSErrors: true,
-    //     defaultViewport: {
-    //       width: 1280,
-    //       height: 960
-    //     },
-    //     args: [
-    //       `${head ? '' : '--headless'}`,
-    //       '—disable-notifications',
-    //       '--smartwait',
-    //       '--disable-gpu',
-    //       '--no-sandbox',
-    //       '--allow-running-insecure-content',
-    //       '--ignore-certificate-errors',
-    //       '--window-size=1440,1400',
-    //       '--viewport-size=1440,1400',
-
-    //        '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
-    //     ]
-    //   }
-
-    // },
     Playwright: {
       url: externalServers ? process.env.WEB_BASE_URL || 'http://localhost:8080' : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
@@ -160,48 +140,7 @@ exports.config = {
       windowSize: '1600x900',
     },
   },
-  mocha: {
-    // reporter: 'mochawesome',
-    // "reporterOptions": {
-    //   "reportDir": functional_output_dir,
-    //   reportName:'XUI_MC',
-    //   "overwrite": false,
-    //   "html": false,
-    //   "json": true,
-    //   "codeceptjs-cli-reporter": {
-    //     "stdout": "-",
-    //     "options": {
-    //       "verbose": false,
-    //       "steps": true,
-    //     }
-    //   },
-    //   "mocha-junit-reporter": {
-    //     "stdout": `${functional_output_dir}/console.log`,
-    //     "options": {
-    //       "mochaFile": "./output/result.xml"
-    //     }
-    //   }
-    //   // inlineAssets: true,
-    // },
-    //   "mochawesome": {
-    //     "stdout": `${functional_output_dir}/`,
-    //     "options": {
-    //       "reportDir": `${functional_output_dir}/output`,
-    //       "reportFilename": `${functional_output_dir}/output/report`,
-    //       "overwrite": false,
-    //       "html":false,
-    //       "json":true
-    //     }
-    //   },
-    //   "mocha-junit-reporter": {
-    //     "stdout": "./output/console.log",
-    //     "options": {
-    //       "mochaFile": "./output/result.xml",
-    //       "attachments": true //add screenshot for a failed test
-    //     }
-    //   }
-    // }
-  },
+  mocha: {},
   plugins: {
     screenshotOnFail: {
       enabled: true,
@@ -231,16 +170,18 @@ exports.config = {
     Feature: 3,
   },
   bootstrap: async () => {
-    share({ users: [], reuseCounter: 0 });
+    container.append({
+      users: [],
+      reuseCounter: 0,
+    });
     if (!parallel && testType !== 'smoke') {
       // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },
   bootstrapAll: async () => {
-    global.scenarioData = {};
-    const path = require('path');
-    require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
+    globalThis.scenarioData = {};
+    await import(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 
     if (parallel && testType !== 'smoke') {
       // smoke tests are run in serial even with PARALLEL=true
@@ -253,10 +194,9 @@ exports.config = {
   },
   teardownAll: async () => {
     // ← fires after *all* workers
+    console.log('tearing down all');
     if (parallel) {
       await teardown();
-
-      exitWithStatus();
     }
     await generateCucumberReport(); // JSON is now on disk
     exitWithStatus(); // evaluate pass / fail
@@ -264,16 +204,70 @@ exports.config = {
 };
 
 function exitWithStatus() {
-  // const status = await mochawesomeGenerateReport()
-  console.log(`*************** executionResult: ${executionResult}  *************** `);
-  process.exit(executionResult === 'passed' ? 0 : 1);
+  console.log('Evaluating test results for exit status...');
+
+  // Check for failed tests by reading the generated report
+  let status = 'PASS';
+  try {
+    const cucumberReports = fs
+      .readdirSync(CUKE_OUT)
+      .filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'))
+      .map((f) => path.join(CUKE_OUT, f));
+
+    if (cucumberReports.length === 0) {
+      console.warn('No cucumber JSON files found - failing the run');
+      process.exit(1);
+    }
+    let nonEmpty = 0;
+    let failedScenarios = 0;
+    let failedSteps = 0;
+
+    for (const cucumberFile of cucumberReports) {
+      let fileData;
+      try {
+        fileData = JSON.parse(fs.readFileSync(cucumberFile, 'utf-8'));
+      } catch (fileError) {
+        console.warn(`Skipping bad JSON: ${path.basename(cucumberFile)} (${fileError.message})`);
+        continue;
+      }
+
+      if (!Array.isArray(fileData) || fileData.length === 0) {
+        console.log(`Empty report: ${path.basename(cucumberFile)} - skipping`);
+        continue;
+      }
+
+      nonEmpty++;
+
+      for (const feature of fileData) {
+        const elements = feature.elements || [];
+        for (const scenario of elements) {
+          const steps = scenario.steps || [];
+          const scenarioFailed = steps.some((step) => step.result?.status === 'failed');
+          if (scenarioFailed) {
+            failedScenarios++;
+            failedSteps += steps.filter((step) => step.result?.status === 'failed').length;
+          }
+        }
+      }
+    }
+
+    const status = nonEmpty === 0 ? 'FAIL' : failedScenarios > 0 ? 'FAIL' : 'PASS';
+    console.log(
+      `Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`
+    );
+    process.exit(status === 'PASS' ? 0 : 1);
+  } catch (err) {
+    console.error('Error checking test results:', err);
+    status = 'FAIL';
+  }
 }
 
 async function setup() {
   if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.startServer(debugMode);
-    await applicationServer.initialize();
-    await applicationServer.start();
+    const appServer = await getApplicationServer();
+    await appServer.initialize();
+    await appServer.start();
   }
 }
 
@@ -281,26 +275,28 @@ async function teardown() {
   console.log('Tests execution completed');
   if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
-    await applicationServer.stop();
+    const appServer = await getApplicationServer();
+    await appServer.stop();
   }
   statsReporter.run();
-  await generateCucumberReport();
 
   // process.exit(1);
 }
 
-async function mochawesomeGenerateReport() {
-  const report = await merge({
-    files: [`${functional_output_dir}/*.json`],
-  });
-  await marge.create(report, {
-    reportDir: `${functional_output_dir}/`,
-    reportFilename: `${functional_output_dir}/report`,
-  });
+type ApplicationServer = {
+  initialize: () => Promise<void>;
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+};
 
-  console.log(`FAILED: ${report.stats.failures}, PASSED: ${report.stats.passes}, TOTAL: ${report.stats.tests}`);
+let applicationServer: ApplicationServer | undefined;
 
-  return report.stats.failures > 0 ? 'FAIL' : 'PASS';
+async function getApplicationServer(): Promise<ApplicationServer> {
+  if (!applicationServer) {
+    const mod = await import('../localServer');
+    applicationServer = (mod as { default: ApplicationServer }).default;
+  }
+  return applicationServer;
 }
 
 async function generateCucumberReport() {
@@ -325,6 +321,19 @@ async function generateCucumberReport() {
     return; // nothing to show, so don’t throw
   }
 
+  for (const file of jsonFiles) {
+    try {
+      const features = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (Array.isArray(features)) {
+        for (const feature of features) {
+          updateExecutionOutcomes(feature);
+        }
+      }
+    } catch {
+      // ignore parse issues for execution status aggregation
+    }
+  }
+
   const reportFile = path.join(CUKE_OUT, 'cucumber_report.html');
 
   await new Promise((r) => setTimeout(r, 2000)); // let reporters flush
@@ -332,42 +341,70 @@ async function generateCucumberReport() {
     theme: 'bootstrap',
     jsonDir: CUKE_OUT, // folder that holds all accepted files
     output: reportFile,
-    files: jsonFiles, // ← tell reporter which files to read
-    displayDuration: true,
+    reportSuiteAsScenarios: true,
+    launchReport: false,
     ignoreBadJsonFile: true,
     metadata: {
-      browser: { name: 'chrome', version: '60' },
+      browser: 'chrome 60',
       device: 'Local test machine',
-      platform: { name: 'ubuntu', version: '16.04' },
+      platform: 'ubuntu 16.04',
     },
   });
   console.log('completed cucumber report');
 }
 
-function processCucumberJsonReports() {
-  const executionOutcomes: Record<string, string> = {};
-  const goodFiles = fs.readdirSync(CUKE_OUT).filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'));
-  for (const f of goodFiles) {
-    const full = path.join(CUKE_OUT, f);
-    const json = JSON.parse(fs.readFileSync(full, 'utf8'));
-    if (!Array.isArray(json) || json.length === 0) continue; // skip empties
+function resolvePipelineBranch(isExternal: boolean, testUrl: string) {
+  if (isExternal) {
+    return 'local';
+  }
+  if (testUrl.includes('pr-') || testUrl.includes('manage-case.aat.platform.hmcts.net')) {
+    return 'preview';
+  }
+  return 'master';
+}
 
-    for (const feature of json) {
-      for (const element of feature.elements) {
-        for (const step of element.steps) {
-          executionOutcomes[step.result.status] = step.result.status;
-          if (executionResult === 'passed') executionResult = step.result.status;
+function updateExecutionOutcomes(feature: unknown) {
+  if (!feature || typeof feature !== 'object' || !Array.isArray((feature as { elements?: unknown }).elements)) {
+    return;
+  }
 
-          for (const embedd of step.embeddings ?? []) {
-            if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')) {
-              embedd.data = Buffer.from(embedd.data, 'base64').toString('ascii');
-            }
-          }
-        }
+  const elements = (feature as { elements: unknown[] }).elements;
+  for (const element of elements) {
+    updateStepOutcomes(element);
+  }
+}
+
+function updateStepOutcomes(element: unknown) {
+  if (!element || typeof element !== 'object' || !Array.isArray((element as { steps?: unknown }).steps)) {
+    return;
+  }
+
+  const steps = (element as { steps: unknown[] }).steps;
+  for (const step of steps) {
+    const status = step && typeof step === 'object' ? (step as { result?: { status?: unknown } }).result?.status : undefined;
+    if (typeof status === 'string') {
+      if (executionResult === 'passed') {
+        executionResult = status;
       }
     }
-    fs.writeFileSync(full, JSON.stringify(json, null, 2));
+    decodeTextEmbeddings(step);
   }
-  console.log(executionOutcomes);
-  return executionResult;
+}
+
+function decodeTextEmbeddings(step: unknown) {
+  const embeddings = step && typeof step === 'object' ? (step as { embeddings?: unknown }).embeddings : undefined;
+  if (!Array.isArray(embeddings)) {
+    return;
+  }
+  for (const embedd of embeddings) {
+    if (
+      embedd &&
+      typeof embedd === 'object' &&
+      (embedd as { mime_type?: unknown }).mime_type === 'text/plain' &&
+      typeof (embedd as { data?: unknown }).data === 'string' &&
+      !(embedd as { data: string }).data.startsWith('=>')
+    ) {
+      embedd.data = Buffer.from(embedd.data, 'base64').toString('ascii');
+    }
+  }
 }

@@ -223,9 +223,6 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     this.waSupportedJurisdictions$
       .pipe(switchMap((jurisdictions) => this.rolesService.getValidRoles(jurisdictions)))
       .subscribe((roles) => (this.allRoles = roles));
-    // currently get caseworkers for all supported services
-    // in future change, could get caseworkers by specific service from filter changes
-    // however regrdless would likely need this initialisation
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);

@@ -2262,7 +2262,7 @@ describe('workAllocation.utils', () => {
         { id: 'task1', assignee: null },
         { id: 'task2' }, // no assignee field
         { id: 'task3', assignee: undefined },
-        { id: 'task4', assignee: 'user-1' }
+        { id: 'task4', assignee: 'user-1' },
       ] as any[];
       expect(util.getAssigneeIdsFromTasks(tasks)).to.deep.equal(['user-1']);
     });
@@ -2273,7 +2273,7 @@ describe('workAllocation.utils', () => {
         { id: 'task2', assignee: 'user-2' },
         { id: 'task3', assignee: 'user-1' },
         { id: 'task4', assignee: 'user-3' },
-        { id: 'task5', assignee: 'user-2' }
+        { id: 'task5', assignee: 'user-2' },
       ] as any[];
       expect(util.getAssigneeIdsFromTasks(tasks)).to.deep.equal(['user-1', 'user-2', 'user-3']);
     });

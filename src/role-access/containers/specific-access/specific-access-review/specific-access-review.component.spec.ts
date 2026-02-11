@@ -164,14 +164,13 @@ describe('SpecificAccessReviewComponent', () => {
         period: { startDate: new Date('01-01-2001'), endDate: null },
         person: null,
         requestId: 'requestId',
-        specificAccessReason: null
+        specificAccessReason: null,
       };
 
       (store.pipe as jasmine.Spy).and.returnValue(of(nonJudicialState));
 
       // Mock caseworker lookup
-      spyOn(caseworkerDataService, 'getUserByIdamId')
-        .and.returnValue(of({ firstName: 'Test', lastName: 'Beta' }));
+      spyOn(caseworkerDataService, 'getUserByIdamId').and.returnValue(of({ firstName: 'Test', lastName: 'Beta' }));
 
       fixture = TestBed.createComponent(SpecificAccessReviewComponent);
       component = fixture.componentInstance;

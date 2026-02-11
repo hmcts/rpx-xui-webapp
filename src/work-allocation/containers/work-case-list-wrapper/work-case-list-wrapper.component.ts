@@ -220,9 +220,9 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public setupCaseWorkers(): void {
-    this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.rolesService.getValidRoles(jurisdictions)
-    )).subscribe((roles) => this.allRoles = roles);
+    this.waSupportedJurisdictions$
+      .pipe(switchMap((jurisdictions) => this.rolesService.getValidRoles(jurisdictions)))
+      .subscribe((roles) => (this.allRoles = roles));
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation
@@ -230,11 +230,14 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
-      this.caseworkerService.getUserByIdamId(userId).pipe(first()).subscribe((caseworker) => {
-        if (caseworker && caseworker.location && caseworker.location.id) {
-          this.defaultLocation = caseworker.location.id;
-        }
-      });
+      this.caseworkerService
+        .getUserByIdamId(userId)
+        .pipe(first())
+        .subscribe((caseworker) => {
+          if (caseworker && caseworker.location && caseworker.location.id) {
+            this.defaultLocation = caseworker.location.id;
+          }
+        });
     }
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);

@@ -80,11 +80,14 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           this.requesterName = caseRoleUserDetails[0].full_name;
         });
     } else {
-      this.caseworkerDataService.getUserByIdamId(this.specificAccessStateData.actorId).pipe(first()).subscribe((caseworker) => {
-        if (caseworker) {
-          this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
-        }
-      });
+      this.caseworkerDataService
+        .getUserByIdamId(this.specificAccessStateData.actorId)
+        .pipe(first())
+        .subscribe((caseworker) => {
+          if (caseworker) {
+            this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
+          }
+        });
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({

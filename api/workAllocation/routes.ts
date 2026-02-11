@@ -22,7 +22,7 @@ import {
   getTaskNames,
   getUsersByServiceName,
   getUsersByIdamIds,
-  getUserByIdamId
+  getUserByIdamId,
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
 import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';

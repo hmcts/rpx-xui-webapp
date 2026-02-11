@@ -15,9 +15,7 @@ export class FullUserDetailCache {
     const instance = this.getInstance();
     instance.userDetails = userDetails;
     instance.userDetailsByIdamId = new Map(
-      instance.userDetails
-        .filter((user) => !!user.idamId)
-        .map((user) => [user.idamId, user] as [string, CachedCaseworker])
+      instance.userDetails.filter((user) => !!user.idamId).map((user) => [user.idamId, user] as [string, CachedCaseworker])
     );
   }
 
@@ -39,8 +37,6 @@ export class FullUserDetailCache {
     }
     const instance = this.getInstance();
     const idamIdSet = new Set(idamIds);
-    return [...idamIdSet]
-      .map((idamId) => instance.userDetailsByIdamId.get(idamId))
-      .filter((user) => !!user);
+    return [...idamIdSet].map((idamId) => instance.userDetailsByIdamId.get(idamId)).filter((user) => !!user);
   }
 }

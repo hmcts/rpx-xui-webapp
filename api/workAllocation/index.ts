@@ -170,7 +170,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
       }
       returnData = {
         tasks: tasksWithActions,
-        total_records: data.total_records
+        total_records: data.total_records,
       };
     }
     res.send(returnData);
@@ -181,7 +181,12 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 
 // This will put assignee names in tasks based on cached user details
 // Note: Judges will not have their names populated until refresh within the Angular layer
-export async function setAssigneeNamesInTasks(tasks: Task[], assigneeIds: string[], req: EnhancedRequest, next: NextFunction): Promise<Task[]> {
+export async function setAssigneeNamesInTasks(
+  tasks: Task[],
+  assigneeIds: string[],
+  req: EnhancedRequest,
+  next: NextFunction
+): Promise<Task[]> {
   let assigneeDetails = [];
   if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
     assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
@@ -198,9 +203,7 @@ export async function setAssigneeNamesInTasks(tasks: Task[], assigneeIds: string
     }
   }
   if (assigneeDetails.length > 0) {
-    const nameMap = new Map(
-      assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`])
-    );
+    const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
     tasks.forEach((taskWithAssignee) => {
       const userId = taskWithAssignee.assignee;
       if (userId && nameMap.has(userId)) {
@@ -610,9 +613,7 @@ export async function setAssigneeNamesInCases(cases: Case[], assigneeIds: string
     } */
   }
   if (assigneeDetails.length > 0) {
-    const nameMap = new Map(
-      assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`])
-    );
+    const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
     cases.forEach((caseWithAssignee) => {
       const userId = caseWithAssignee.assignee;
       if (userId && nameMap.has(userId)) {

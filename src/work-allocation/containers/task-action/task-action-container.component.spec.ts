@@ -87,7 +87,8 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworker: {
-                    task: { task: mockTasks[0] }, caseworker: {}
+                    task: { task: mockTasks[0] },
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -314,7 +315,8 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworker: {
-                    task: { task: mockTask[0] }, caseworker: {}
+                    task: { task: mockTask[0] },
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -401,7 +403,8 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworker: {
-                    task: { task: mockTask[0] }, caseworker: {}
+                    task: { task: mockTask[0] },
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -483,7 +486,8 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworker: {
-                    task: { task: mockTask[0] }, caseworker: {}
+                    task: { task: mockTask[0] },
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -564,7 +568,8 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworker: {
-                    task: { task: mockTask[0] }, caseworker: {}
+                    task: { task: mockTask[0] },
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },

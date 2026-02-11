@@ -307,7 +307,7 @@ describe('DeleteExclusionComponent names and answers', () => {
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockRoleExclusionService = jasmine.createSpyObj('RoleExclusionsService', [
     'getCurrentUserRoleExclusions',
-    'deleteExclusion'
+    'deleteExclusion',
   ]);
   const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getUserByIdamId']);
@@ -327,7 +327,7 @@ describe('DeleteExclusionComponent names and answers', () => {
     caseType,
     type: 'test',
     userType: 'LEGAL_OPERATIONS',
-    name: 'Initial Name'
+    name: 'Initial Name',
   };
 
   beforeEach(waitForAsync(() => {
@@ -340,24 +340,26 @@ describe('DeleteExclusionComponent names and answers', () => {
           useValue: {
             snapshot: {
               data: {
-                roleExclusions: [{ ...baseExclusion }]
-              }
+                roleExclusions: [{ ...baseExclusion }],
+              },
             },
-            queryParamMap: of(convertToParamMap({
-              exclusionId,
-              caseId,
-              jurisdiction,
-              caseType
-            }))
-          }
+            queryParamMap: of(
+              convertToParamMap({
+                exclusionId,
+                caseId,
+                jurisdiction,
+                caseType,
+              })
+            ),
+          },
         },
         { provide: Router, useValue: routerMock },
         { provide: RoleExclusionsService, useValue: mockRoleExclusionService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
   }));
 
@@ -374,7 +376,7 @@ describe('DeleteExclusionComponent names and answers', () => {
       exclusionId,
       caseId,
       jurisdiction,
-      caseType
+      caseType,
     });
     mockRoleExclusionService.getCurrentUserRoleExclusions.calls.reset();
     mockRoleExclusionService.getCurrentUserRoleExclusions.and.returnValue(of([{ ...baseExclusion }]));
@@ -392,10 +394,12 @@ describe('DeleteExclusionComponent names and answers', () => {
     const noNameExclusion = { ...baseExclusion, name: undefined };
     component.roleExclusion = noNameExclusion;
     component.answers = [];
-    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of({
-      firstName: 'Case',
-      lastName: 'Worker'
-    }));
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(
+      of({
+        firstName: 'Case',
+        lastName: 'Worker',
+      })
+    );
     // invoke private via bracket access
     (component as any).getNamesIfNeeded();
     expect(mockCaseworkerDataService.getUserByIdamId).toHaveBeenCalledWith(noNameExclusion.actorId);
@@ -424,10 +428,12 @@ describe('DeleteExclusionComponent names and answers', () => {
     component.roleExclusion = noNameExclusion as any;
     component.populateAnswers(noNameExclusion as any);
     const initialAnswersRef = component.answers;
-    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of({
-      firstName: 'Late',
-      lastName: 'Name'
-    }));
+    mockCaseworkerDataService.getUserByIdamId.and.returnValue(
+      of({
+        firstName: 'Late',
+        lastName: 'Name',
+      })
+    );
     (component as any).getNamesIfNeeded();
     expect(component.answers).not.toBe(initialAnswersRef); // replaced
     expect(component.answers[0].value).toBe('Late Name');

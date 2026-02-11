@@ -14,7 +14,7 @@ describe('workAllocation.fullUserDetailCache', () => {
     { idamId: 'user1', email: 'user1@test.com', firstName: 'A', lastName: 'One' } as any,
     { idamId: 'user2', email: 'user2@test.com', firstName: 'B', lastName: 'Two' } as any,
     { idamId: 'user3', email: 'user3@test.com', firstName: 'C', lastName: 'Three' } as any,
-    { idamId: null, email: 'unknown@test.com', firstName: 'Unknown', lastName: 'User' } as any
+    { idamId: null, email: 'unknown@test.com', firstName: 'Unknown', lastName: 'User' } as any,
   ];
 
   beforeEach(() => {

@@ -106,7 +106,8 @@ describe('TaskAssignmentContainerComponent2', () => {
             snapshot: {
               data: {
                 taskAndCaseworker: {
-                  task: { task: mockTasks[0] }, caseworker: {}
+                  task: { task: mockTasks[0] },
+                  caseworker: {},
                 },
                 ...TaskActionConstants.Reassign,
               },
@@ -215,7 +216,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworker: {}
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -252,7 +253,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworker: {}
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -281,7 +282,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworker: {}
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -310,7 +311,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworker: {}
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -339,7 +340,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworker: {}
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },

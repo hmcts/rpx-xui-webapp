@@ -100,8 +100,7 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   }
 }
 
-export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
-  assignmentId: string): RoleExclusion[] {
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId: string): RoleExclusion[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter((roleAssignment) => roleAssignment.id === assignmentId);
   }

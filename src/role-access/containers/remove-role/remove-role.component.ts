@@ -127,14 +127,17 @@ export class RemoveRoleComponent implements OnInit {
 
   private getNamesIfNeeded(): void {
     if (!this.role.name) {
-      this.caseworkerDataService.getUserByIdamId(this.role.actorId).pipe(first()).subscribe((caseworker) => {
-        if (caseworker) {
-          this.role.name = `${caseworker.firstName} ${caseworker.lastName}`;
-          this.role.email = caseworker.email;
-          this.answers = [];
-          this.populateAnswers(this.role);
-        }
-      });
+      this.caseworkerDataService
+        .getUserByIdamId(this.role.actorId)
+        .pipe(first())
+        .subscribe((caseworker) => {
+          if (caseworker) {
+            this.role.name = `${caseworker.firstName} ${caseworker.lastName}`;
+            this.role.email = caseworker.email;
+            this.answers = [];
+            this.populateAnswers(this.role);
+          }
+        });
     }
   }
 }

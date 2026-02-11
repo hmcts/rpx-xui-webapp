@@ -41,9 +41,7 @@ describe('RemoveRoleComponent', () => {
   let fixture: ComponentFixture<WrapperComponent>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
-  const locationMock = jasmine.createSpyObj('Location', [
-    'back'
-  ]);
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUserByIdamId']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
@@ -247,17 +245,19 @@ describe('RemoveRoleComponent', () => {
         roleCategory: RoleCategory.LEGAL_OPERATIONS,
         name: undefined,
         email: undefined,
-        notes: ''
+        notes: '',
       } as any;
 
       component.answers = [];
       mockCaseworkerService.getUserByIdamId.calls.reset();
-      mockCaseworkerService.getUserByIdamId.and.returnValue(of({
-        idamId: '999999999',
-        firstName: 'Fetch',
-        lastName: 'Target',
-        email: 'fetch.target@test.com'
-      } as Caseworker));
+      mockCaseworkerService.getUserByIdamId.and.returnValue(
+        of({
+          idamId: '999999999',
+          firstName: 'Fetch',
+          lastName: 'Target',
+          email: 'fetch.target@test.com',
+        } as Caseworker)
+      );
 
       fixture.detectChanges();
 

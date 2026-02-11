@@ -41,24 +41,29 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.caseId = this.route.snapshot.params.cid;
-    this.allocateServiceSubscription = this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
-      switchMap((usersWithAccess) => {
-        this.usersWithAccess = usersWithAccess;
-        return of(this.getUniqueIdamIds());
-      }), take(1),
-      switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
-      take(1),
-      switchMap((jurisdictions) => this.caseworkerDataService.getUsersByIdamIds(this.idamIds, jurisdictions)),
-      take(1),
-      switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
-    ).subscribe(
-      (restrictedCases) => {
-        this.restrictedCases = restrictedCases;
-        this.loadingService.unregister(loadingToken);
-      }, () => {
-        this.loadingService.unregister(loadingToken);
-      }
-    );
+    this.allocateServiceSubscription = this.allocateService
+      .getCaseAccessRolesByCaseId(this.caseId)
+      .pipe(
+        switchMap((usersWithAccess) => {
+          this.usersWithAccess = usersWithAccess;
+          return of(this.getUniqueIdamIds());
+        }),
+        take(1),
+        switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
+        take(1),
+        switchMap((jurisdictions) => this.caseworkerDataService.getUsersByIdamIds(this.idamIds, jurisdictions)),
+        take(1),
+        switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
+      )
+      .subscribe(
+        (restrictedCases) => {
+          this.restrictedCases = restrictedCases;
+          this.loadingService.unregister(loadingToken);
+        },
+        () => {
+          this.loadingService.unregister(loadingToken);
+        }
+      );
   }
 
   public ngOnDestroy(): void {

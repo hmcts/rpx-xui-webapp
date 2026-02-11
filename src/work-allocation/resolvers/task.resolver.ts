@@ -16,19 +16,18 @@ export class TaskResolver {
     private readonly caseworkerService: CaseworkerDataService
   ) {}
 
-  public resolve(route: ActivatedRouteSnapshot): Observable< { task: Task; caseworker: Caseworker; } > {
+  public resolve(route: ActivatedRouteSnapshot): Observable<{ task: Task; caseworker: Caseworker }> {
     const task$ = this.service.getTask(route.paramMap.get('taskId')).pipe(
       catchError((error) => {
         handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         return EMPTY;
       })
     );
-    const caseworker$ = task$
-      .pipe(
-        mergeMap((task) => {
-          return this.caseworkerService.getUserByIdamId(task.task.assignee);
-        })
-      );
+    const caseworker$ = task$.pipe(
+      mergeMap((task) => {
+        return this.caseworkerService.getUserByIdamId(task.task.assignee);
+      })
+    );
     return forkJoin({ task: task$, caseworker: caseworker$ });
   }
 }

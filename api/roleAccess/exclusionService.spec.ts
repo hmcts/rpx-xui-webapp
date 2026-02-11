@@ -86,18 +86,14 @@ describe('exclusions.exclusionService', () => {
           roleType: 'roleType',
         },
       ];
-      const req = {
-        session: {
-          caseworkers: [
-            {
-              firstName: 'John',
-              idamId: 'actorId',
-              lastName: 'Priest',
-            },
-          ],
-          roleAssignments: [],
-        },
-      } as unknown as EnhancedRequest;
+      const caseworker = {
+        firstName: 'John',
+        idamId: 'actorId',
+        lastName: 'Priest'
+      };
+      sandbox.stub(FullUserDetailCache, 'getUserByIdamId')
+        .withArgs('actorId')
+        .returns(caseworker as any);
       const result = mapResponseToExclusions(exclusions, null);
       expect(result.length).to.equal(1);
       expect(result[0].id).to.equal('123');
@@ -150,11 +146,12 @@ describe('exclusions.exclusionService', () => {
       firstName: 'John',
       idamId: 'actorId',
       lastName: 'Priest',
-      email: 'test@test.com'
+      email: 'test@test.com',
     };
 
     beforeEach(() => {
-      sandbox.stub(FullUserDetailCache, 'getUserByIdamId')
+      sandbox
+        .stub(FullUserDetailCache, 'getUserByIdamId')
         .withArgs('actorId')
         .returns(caseworker as any);
     });
@@ -173,11 +170,12 @@ describe('exclusions.exclusionService', () => {
       firstName: 'John',
       idamId: 'actorId',
       lastName: 'Priest',
-      email: 'test@test.com'
+      email: 'test@test.com',
     };
 
     beforeEach(() => {
-      sandbox.stub(FullUserDetailCache, 'getUserByIdamId')
+      sandbox
+        .stub(FullUserDetailCache, 'getUserByIdamId')
         .withArgs('actorId')
         .returns(caseworker as any);
     });

@@ -1105,9 +1105,7 @@ export function getAssigneeIdsFromTasks(tasks: Task[]): string[] {
   if (!tasks?.length) {
     return [];
   }
-  const assignees = tasks
-    .map((task) => task.assignee)
-    .filter((id) => !!id);
+  const assignees = tasks.map((task) => task.assignee).filter((id) => !!id);
   return [...new Set(assignees)];
 }
 
@@ -1115,8 +1113,6 @@ export function getAssigneeIdsFromCases(cases: Case[]): string[] {
   if (!cases?.length) {
     return [];
   }
-  const assignees = cases
-    .map((caseItem) => caseItem.assignee)
-    .filter((id) => !!id);
+  const assignees = cases.map((caseItem) => caseItem.assignee).filter((id) => !!id);
   return [...new Set(assignees)];
 }

@@ -27,7 +27,9 @@ describe('RestrictedCaseAccessContainerComponent', () => {
   let component: RestrictedCaseAccessContainerComponent;
   let fixture: ComponentFixture<RestrictedCaseAccessContainerComponent>;
   const mockAllocateService = jasmine.createSpyObj('AllocateRoleService', ['getCaseAccessRolesByCaseId']);
-  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
   const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getUsersByIdamIds']);
   const mockLoadingService = jasmine.createSpyObj('LoadingService', ['register', 'unregister']);
   const mockJudicialRefDataService = jasmine.createSpyObj('JudicialRefDataService', ['searchJudicialUserByIdamID']);

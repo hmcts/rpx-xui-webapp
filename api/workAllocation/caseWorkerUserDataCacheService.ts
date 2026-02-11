@@ -229,13 +229,13 @@ export async function getAuthTokens(): Promise<AuthTokens> {
     const idamPath = getConfigValue(SERVICES_IDAM_API_URL);
     const authURL = `${idamPath}/o/token`;
     const axiosConfig = {
-      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
     };
 
     // Get auth token for service-to-service call
     const serviceAuthResponse = await http.post(`${s2sEndpointUrl}`, {
       microservice,
-      oneTimePassword
+      oneTimePassword,
     });
 
     // Get user auth token
@@ -341,7 +341,7 @@ export function getFirstBaseLocation(memberProfile: StaffProfile, matchingUser: 
         location_id: location.location_id,
         location: location.location,
         is_primary: true,
-        services: [matchingUser.ccd_service_name]
+        services: [matchingUser.ccd_service_name],
       };
     }
   }
@@ -357,7 +357,7 @@ export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser
         location_id: location.location_id,
         location: location.location,
         is_primary: true,
-        services: [matchingUser.ccd_service_name]
+        services: [matchingUser.ccd_service_name],
       };
       break;
     }

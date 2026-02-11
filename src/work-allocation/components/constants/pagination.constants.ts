@@ -2,9 +2,9 @@ const SESSION = {
   AvailableTasks: 'availableTasksPage',
   MyTasks: 'myTasksPage',
   AllWork: 'allWorkTaskPage',
-  AllWorkCases: 'allWorkCasesPage'
+  AllWorkCases: 'allWorkCasesPage',
 };
 
 export const PAGE_CONSTANTS = {
-  Session: SESSION
+  Session: SESSION,
 };

@@ -9,7 +9,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({
   standalone: false,
-  name: 'integer'
+  name: 'integer',
 })
 export class IntegerPipe implements PipeTransform {
   private readonly DIGITS_INFO: string = '1.0-0';

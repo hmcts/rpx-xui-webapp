@@ -16,7 +16,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   standalone: false,
   selector: 'exui-hearing-venue',
   templateUrl: './hearing-venue.component.html',
-  styleUrls: ['./hearing-venue.component.scss']
+  styleUrls: ['./hearing-venue.component.scss'],
 })
 export class HearingVenueComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public locationType: string;
@@ -27,17 +27,19 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
 
   @ViewChild(SearchLocationComponent, { static: false }) public searchLocationComponent: SearchLocationComponent;
   public selectedLocations: LocationByEpimmsModel[];
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
 
-  constructor(private readonly fb: FormBuilder,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly locationsDataService: LocationsDataService,
-              protected readonly featureToggleService: FeatureToggleService,
-              protected readonly route: ActivatedRoute) {
+  constructor(
+    private readonly fb: FormBuilder,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly locationsDataService: LocationsDataService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute
+  ) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.findLocationFormGroup = this.fb.group({
-      locationSelectedFormControl: [null, Validators.required]
+      locationSelectedFormControl: [null, Validators.required],
     });
 
     this.selectedLocations = [];
@@ -49,10 +51,14 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public reInitiateState() {
-    if (this.hearingRequestMainModel.hearingDetails &&
+    if (
+      this.hearingRequestMainModel.hearingDetails &&
       this.hearingRequestMainModel.hearingDetails.hearingLocations &&
-      this.hearingRequestMainModel.hearingDetails.hearingLocations.length) {
-      const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations.map((location) => location.locationId).join(',');
+      this.hearingRequestMainModel.hearingDetails.hearingLocations.length
+    ) {
+      const locationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations
+        .map((location) => location.locationId)
+        .join(',');
       const serviceCode = this.hearingRequestMainModel.caseDetails?.hmctsServiceCode;
       this.locationSub = this.locationsDataService.getLocationById(locationIds, serviceCode).subscribe((locations) => {
         this.selectedLocations = locations;
@@ -94,9 +100,11 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
   }
 
   public isLocationValid() {
-    if (!this.findLocationFormGroup.controls.locationSelectedFormControl.valid &&
+    if (
+      !this.findLocationFormGroup.controls.locationSelectedFormControl.valid &&
       this.findLocationFormGroup.controls.locationSelectedFormControl.errors.required &&
-      this.findLocationFormGroup.controls.locationSelectedFormControl.dirty) {
+      this.findLocationFormGroup.controls.locationSelectedFormControl.dirty
+    ) {
       return false;
     }
 
@@ -119,21 +127,24 @@ export class HearingVenueComponent extends RequestHearingPageFlow implements OnI
     const locations: HearingLocationModel[] = this.selectedLocations.map((LocationByEpimmsModel) => {
       return {
         locationType: HMCLocationType.COURT,
-        locationId: LocationByEpimmsModel.epimms_id
+        locationId: LocationByEpimmsModel.epimms_id,
       } as HearingLocationModel;
     });
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        hearingLocations: locations
-      }
+        hearingLocations: locations,
+      },
     };
   }
 
   public isFormValid(): boolean {
     let returnValue: boolean = true;
-    if (this.findLocationFormGroup.controls.locationSelectedFormControl.dirty || this.findLocationFormGroup.controls.locationSelectedFormControl.value) {
+    if (
+      this.findLocationFormGroup.controls.locationSelectedFormControl.dirty ||
+      this.findLocationFormGroup.controls.locationSelectedFormControl.value
+    ) {
       returnValue = false;
       const isLocationSelected = !!this.findLocationFormGroup.controls.locationSelectedFormControl.value;
       const message = isLocationSelected ? HearingErrorMessage.ADD_A_LOCATION : HearingErrorMessage.ENTER_A_LOCATION;

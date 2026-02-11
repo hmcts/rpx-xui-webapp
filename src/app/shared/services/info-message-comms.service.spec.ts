@@ -1,4 +1,3 @@
-
 import { InfoMessage } from '../enums/info-message';
 import { InfoMessageType } from '../enums/info-message-type';
 import { InformationMessage } from '../models';
@@ -16,7 +15,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       const message = {
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
       service.nextMessage(message);
@@ -31,7 +30,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       const message = {
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
       service.nextMessage(message);
@@ -46,7 +45,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       const message: InformationMessage = {
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
       service.addMessage(message);
@@ -65,7 +64,7 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       const message: InformationMessage = {
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
+        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
       };
 
       service.addMessage(message);
@@ -78,12 +77,12 @@ describe('WorkAllocation: InfoMessageCommService', () => {
 
       const warningMessage: InformationMessage = {
         type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
       };
 
       const refreshMessage: InformationMessage = {
         type: InfoMessageType.INFO,
-        message: InfoMessage.LIST_OF_TASKS_REFRESHED
+        message: InfoMessage.LIST_OF_TASKS_REFRESHED,
       };
 
       service.addMessage(warningMessage);
@@ -94,20 +93,25 @@ describe('WorkAllocation: InfoMessageCommService', () => {
   });
 
   describe('emitMessages()', () => {
-    it('should pass messages to the Subjects next() function, so that any subscribers' +
-      'to infoMessageChangeEmitted$ can be updated with the correct information messages.', () => {
-      const service = new InfoMessageCommService();
+    it(
+      'should pass messages to the Subjects next() function, so that any subscribers' +
+        'to infoMessageChangeEmitted$ can be updated with the correct information messages.',
+      () => {
+        const service = new InfoMessageCommService();
 
-      const mockInfoMessageSource = spyOn(service.infoMessageSource, 'next');
+        const mockInfoMessageSource = spyOn(service.infoMessageSource, 'next');
 
-      const messages: InformationMessage[] = [{
-        type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS
-      }];
+        const messages: InformationMessage[] = [
+          {
+            type: InfoMessageType.SUCCESS,
+            message: InfoMessage.ASSIGNED_TASK_AVAILABLE_IN_MY_TASKS,
+          },
+        ];
 
-      service.emitMessages(messages);
+        service.emitMessages(messages);
 
-      expect(mockInfoMessageSource).toHaveBeenCalledWith(messages);
-    });
+        expect(mockInfoMessageSource).toHaveBeenCalledWith(messages);
+      }
+    );
   });
 });

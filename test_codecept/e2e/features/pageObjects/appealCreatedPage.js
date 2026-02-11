@@ -3,17 +3,29 @@ Button = require('./webdriver-components/button.js');
 TextField = require('./webdriver-components/textField.js');
 
 class AppealCreatedPage {
-  get header() { return elementByCss('.page .heading-h1'); }
+  get header() {
+    return elementByCss('.page .heading-h1');
+  }
 
-  get submitButton() { return new Button('button[type=submit]'); }
+  get submitButton() {
+    return new Button('button[type=submit]');
+  }
 
-  get previousButton() { return new Button('button[type=button]'); }
+  get previousButton() {
+    return new Button('button[type=button]');
+  }
 
-  get cancelButton() { return new Button('.cancel a'); }
+  get cancelButton() {
+    return new Button('.cancel a');
+  }
 
-  get eventSummary() { return elementByCss('#field-trigger-summary'); }
+  get eventSummary() {
+    return elementByCss('#field-trigger-summary');
+  }
 
-  get eventDescription() { return elementByCss('#field-trigger-description'); }
+  get eventDescription() {
+    return elementByCss('#field-trigger-description');
+  }
 
   /**
    * Enter random text into the Text field

@@ -13,18 +13,18 @@ const pactSetUp = new PactV3TestSetup({ provider: 'hmcHearingServiceProvider', p
 const hearingId = '1234567890123456';
 
 const REQUEST_BODY = {
-  cancellationReasonCodes: [somethingLike('string')]
+  cancellationReasonCodes: [somethingLike('string')],
 };
 
 const RESPONSE_BODY = {
-  'hearingRequestID': somethingLike(0),
-  'partiesNotified': somethingLike('2023-07-04T11:47:39.004Z'),
-  'requestVersion': somethingLike(0),
-  'responseVersion': somethingLike(0),
-  'serviceData': somethingLike({}),
-  'status': somethingLike('string'),
-  'timeStamp': somethingLike('2023-07-04T11:47:39.004Z'),
-  'versionNumber': somethingLike(0)
+  hearingRequestID: somethingLike(0),
+  partiesNotified: somethingLike('2023-07-04T11:47:39.004Z'),
+  requestVersion: somethingLike(0),
+  responseVersion: somethingLike(0),
+  serviceData: somethingLike({}),
+  status: somethingLike('string'),
+  timeStamp: somethingLike('2023-07-04T11:47:39.004Z'),
+  versionNumber: somethingLike(0),
 };
 
 describe('Hearings, delete a single hearing request', () => {
@@ -44,19 +44,19 @@ describe('Hearings, delete a single hearing request', () => {
           method: 'DELETE',
           path: `/hearing/${hearingId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -78,16 +78,16 @@ describe('Hearings, delete a single hearing request', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           query: {
-            hearingId
+            hearingId,
           },
           body: {
-            cancellationReasonCodes: ['string']
-          }
+            cancellationReasonCodes: ['string'],
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

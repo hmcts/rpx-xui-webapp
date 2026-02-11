@@ -1,4 +1,4 @@
-  {
+{
   "environment": "production",
   "cookies": {
     "token": "__auth__",
@@ -134,20 +134,11 @@
     { "service": "PROBATE", "serviceCodes": ["ABA6"] }
   ],
   "wildcardSearchFields": {
-    "Benefit": [
-      "generatedSurname",
-      "appeal.appellant.name.lastName"
-    ],
-    "HearingRecordings": [
-      "recordingReference"
-    ],
-    "xuiTestCaseType": [
-      "TextField"
-    ]
+    "Benefit": ["generatedSurname", "appeal.appellant.name.lastName"],
+    "HearingRecordings": ["recordingReference"],
+    "xuiTestCaseType": ["TextField"]
   },
-  "wildcardSearchRoles": [
-    "caseworker"
-  ],
+  "wildcardSearchRoles": ["caseworker"],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {

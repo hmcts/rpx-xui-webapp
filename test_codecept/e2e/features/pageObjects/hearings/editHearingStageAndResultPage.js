@@ -1,6 +1,6 @@
 const { $, elementByXpath, selectOption } = require('../../../../helpers/globals');
 
-class EditHearingStageAndResultPage{
+class EditHearingStageAndResultPage {
   get container() {
     return $('exui-hearing-stage-result');
   }
@@ -14,14 +14,14 @@ class EditHearingStageAndResultPage{
   }
 
   get saveAndContinueButton() {
-    return elementByXpath('//button[contains(text(),\'Save and continue\')]');
+    return elementByXpath("//button[contains(text(),'Save and continue')]");
   }
 
-  async selectHearingStage(stage){
+  async selectHearingStage(stage) {
     await selectOption(this.hearingStageSelect, { label: stage });
   }
 
-  async selectHearingResult(result){
+  async selectHearingResult(result) {
     const e = elementByXpath(`//h1[contains(text(),'Hearing result')]/../..//label[contains(text(),'${result}')]/../input`);
     await e.click();
   }

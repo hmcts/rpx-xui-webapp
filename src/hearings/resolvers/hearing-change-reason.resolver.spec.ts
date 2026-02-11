@@ -24,10 +24,9 @@ describe('HearingChangeReasonResolver', () => {
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
@@ -36,17 +35,20 @@ describe('HearingChangeReasonResolver', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should resolve the reference data for reason options', inject([HearingChangeReasonResolver], (service: HearingChangeReasonResolver) => {
-    spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
-    spyOn(service, 'getReferenceData$').and.callThrough();
-    const route = new ActivatedRouteSnapshot();
-    route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
-    };
-    service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
-      expect(service.getReferenceData$).toHaveBeenCalled();
-      expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
-      expect(refData).toEqual([]);
-    });
-  }));
+  it('should resolve the reference data for reason options', inject(
+    [HearingChangeReasonResolver],
+    (service: HearingChangeReasonResolver) => {
+      spyOn(lovRefDataService, 'getListOfValues').and.returnValue(of(dataRef));
+      spyOn(service, 'getReferenceData$').and.callThrough();
+      const route = new ActivatedRouteSnapshot();
+      route.data = {
+        title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
+      };
+      service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
+        expect(service.getReferenceData$).toHaveBeenCalled();
+        expect(lovRefDataService.getListOfValues).toHaveBeenCalled();
+        expect(refData).toEqual([]);
+      });
+    }
+  ));
 });

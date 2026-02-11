@@ -70,7 +70,7 @@ export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisd
   for (const userIdList of userIdsByJurisdiction) {
     if (userIdList.userIds && userIdList.userIds.length > 0) {
       const payload = {
-        userIds: userIdList.userIds
+        userIds: userIdList.userIds,
       };
       const headers = setHeaders(req);
       const response: AxiosResponse = await http.post(path, payload, { headers });
@@ -85,13 +85,13 @@ export async function handlePostCaseWorkersRefData(path: string, userIdsByJurisd
 
 export async function handlePostJudicialWorkersRefData(path: string, userIds: any, req: EnhancedRequest): Promise<any> {
   const payload = {
-    userIds
+    userIds,
   };
   const headers = setHeaders(req);
   return await http.post(path, payload, { headers });
 }
 
-export function getUserIdsFromRoleApiResponse(response: any): string [] {
+export function getUserIdsFromRoleApiResponse(response: any): string[] {
   let userIds = new Array<string>();
   if (response && response.roleAssignmentResponse) {
     response.roleAssignmentResponse.forEach((roleAssignment) => {
@@ -101,7 +101,7 @@ export function getUserIdsFromRoleApiResponse(response: any): string [] {
   return userIds;
 }
 
-export function getUserIdsFromJurisdictionRoleResponse(response: any): any [] {
+export function getUserIdsFromJurisdictionRoleResponse(response: any): any[] {
   let userIdsByJurisdiction = [];
   response.forEach((jurisdictionRoleResponse) => {
     let userIds = [];

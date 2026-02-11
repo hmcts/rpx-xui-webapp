@@ -3,8 +3,8 @@ const BrowserWaits = require('../../../support/customWaits');
 const TaskMessageBanner = require('../messageBanner');
 const TaskList = require('./taskListTable');
 
-class TaskManagerPage extends TaskList{
-  constructor(){
+class TaskManagerPage extends TaskList {
+  constructor() {
     super();
     this.taskInfoMessageBanner = new TaskMessageBanner();
   }
@@ -25,18 +25,18 @@ class TaskManagerPage extends TaskList{
     return $('exui-task-manager-filter select#task_assignment_location');
   }
 
-  async amOnPage(){
+  async amOnPage() {
     try {
       await BrowserWaits.waitForSpinnerToDissappear();
       await BrowserWaits.waitForElement(this.taskManagerlist);
       return true;
-    } catch (err){
-      console.log('Task manager page not displayed : '+err);
+    } catch (err) {
+      console.log('Task manager page not displayed : ' + err);
       return false;
     }
   }
 
-  async getCaseworkerFilterOptions(){
+  async getCaseworkerFilterOptions() {
     expect(await this.amOnPage(), 'Not on Task manager page ').to.be.true;
     return this.getFilterOptionsFromSelect(this.caseWorkerFilter);
   }
@@ -46,7 +46,7 @@ class TaskManagerPage extends TaskList{
     return this.getFilterOptionsFromSelect(this.locationFilter);
   }
 
-  async getFilterOptionsFromSelect(selectElement){
+  async getFilterOptionsFromSelect(selectElement) {
     expect(await this.amOnPage(), 'Not on Task manager page ').to.be.true;
     const optionValues = [];
     const optionsCount = await selectElement.locator('option').count();
@@ -56,7 +56,7 @@ class TaskManagerPage extends TaskList{
     return optionValues;
   }
 
-  async selectCaseworkerFilter(optionDisplayText){
+  async selectCaseworkerFilter(optionDisplayText) {
     expect(await this.amOnPage(), 'Not on Task manager page ').to.be.true;
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForSpinnerToDissappear();

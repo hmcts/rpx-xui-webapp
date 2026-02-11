@@ -6,44 +6,62 @@ import { ensureStorageState, getStoredCookie } from './auth';
 import { expectAnnotationShape, expectBookmarkShape } from './assertions';
 import { AnnotationPayload, BookmarkPayload } from './types';
 
+type ApiClient = {
+  get: (path: string, options?: { headers?: Record<string, string>; throwOnError?: boolean }) => Promise<{ data?: unknown }>;
+};
+
 export function resolveConfiguredDocId(explicit?: string, fallback?: string): string | undefined {
   return explicit ?? fallback;
 }
 
-export async function resolveSharedDocId(
-  configured: string | undefined,
-  uploadFn: () => Promise<string>
-): Promise<string> {
+export async function resolveSharedDocId(configured: string | undefined, uploadFn: () => Promise<string>): Promise<string> {
   if (configured) {
     return configured;
   }
   return uploadFn();
 }
 
-export function assertBinaryResponse(status: number, data?: ArrayBuffer): void {
+export function assertBinaryResponse(status: number, data?: ArrayBuffer | string): void {
   if (status === 200) {
-    expect((data?.byteLength ?? 0)).toBeGreaterThan(0);
+    if (typeof data === 'string') {
+      expect(data.length).toBeGreaterThan(0);
+      return;
+    }
+    expect(data?.byteLength ?? 0).toBeGreaterThan(0);
   }
 }
 
-export function assertAnnotationResponse(status: number, data: any): void {
-  if (status === 200 && Array.isArray(data?.annotations) && data.annotations.length > 0) {
-    expectAnnotationShape(data.annotations[0] as any);
+export function assertAnnotationResponse(status: number, data: unknown): void {
+  const annotations = getAnnotations(data);
+  if (status === 200 && annotations.length > 0) {
+    expectAnnotationShape(annotations[0]);
   }
 }
 
-export function resolveCreatedAnnotationId(data: any, fallback: string): string {
-  const id = data?.annotations?.[0]?.id;
-  return typeof id === 'string' ? id : fallback;
+export function resolveCreatedAnnotationId(data: unknown, fallback: string): string {
+  const annotations = getAnnotations(data);
+  if (annotations.length === 0) {
+    return fallback;
+  }
+  const first = annotations[0];
+  if (typeof first === 'object' && first !== null && 'id' in first) {
+    const id = (first as { id?: unknown }).id;
+    return typeof id === 'string' ? id : fallback;
+  }
+  return fallback;
 }
 
-export function resolveCreatedBookmarkId(data: any, fallback: string): string {
-  return typeof data?.id === 'string' ? data.id : fallback;
+export function resolveCreatedBookmarkId(data: unknown, fallback: string): string {
+  if (typeof data === 'object' && data !== null && 'id' in data) {
+    const id = (data as { id?: unknown }).id;
+    return typeof id === 'string' ? id : fallback;
+  }
+  return fallback;
 }
 
-export function assertBookmarkResponse(status: number, data: any): void {
+export function assertBookmarkResponse(status: number, data: unknown): void {
   if (status === 200 && data) {
-    expectBookmarkShape(data as any);
+    expectBookmarkShape(data);
   }
 }
 
@@ -55,22 +73,35 @@ export function buildXsrfHeader(xsrf?: string): Record<string, string> {
   return xsrf ? { 'X-XSRF-TOKEN': xsrf } : {};
 }
 
-export function resolveUploadedDocId(body: any): string | undefined {
-  const first = body?.documents?.[0];
-  return first?.originalDocumentId ?? first?.documentId ?? first?.id;
+export function resolveUploadedDocId(body: unknown): string | undefined {
+  if (typeof body !== 'object' || body === null || !('documents' in body)) {
+    return undefined;
+  }
+  const documents = (body as { documents?: unknown }).documents;
+  if (!Array.isArray(documents) || documents.length === 0) {
+    return undefined;
+  }
+  const first = documents[0];
+  if (typeof first !== 'object' || first === null) {
+    return undefined;
+  }
+  const doc = first as { originalDocumentId?: unknown; documentId?: unknown; id?: unknown };
+  const candidate = doc.originalDocumentId ?? doc.documentId ?? doc.id;
+  return typeof candidate === 'string' ? candidate : undefined;
 }
 
 export async function resolveAnnotationSetId(
-  apiClient: any,
+  apiClient: ApiClient,
   headers: Record<string, string>,
   docId: string
 ): Promise<string> {
   try {
     const res = await apiClient.get(`em-anno/annotation-sets/filter?documentId=${docId}`, {
       headers,
-      throwOnError: false
+      throwOnError: false,
     });
-    const id = (res.data as any)?.id;
+    const payload = res.data;
+    const id = typeof payload === 'object' && payload !== null && 'id' in payload ? (payload as { id?: unknown }).id : undefined;
     return typeof id === 'string' ? id : uuid();
   } catch {
     return uuid();
@@ -78,7 +109,7 @@ export async function resolveAnnotationSetId(
 }
 
 export async function buildAnnotation(
-  apiClient: any,
+  apiClient: ApiClient,
   headers: Record<string, string>,
   docId: string
 ): Promise<AnnotationPayload> {
@@ -97,16 +128,16 @@ export async function buildAnnotation(
         x: 418.5,
         y: 761.3,
         width: 212.2,
-        height: 18
-      }
+        height: 18,
+      },
     ],
     type: 'highlight',
     documentId: docId,
-    annotationSetId: setId
+    annotationSetId: setId,
   };
 }
 
-export async function buildBookmark(apiClient: any, docId: string): Promise<BookmarkPayload> {
+export async function buildBookmark(apiClient: ApiClient, docId: string): Promise<BookmarkPayload> {
   const userId = await fetchUserId(apiClient);
   return {
     id: uuid(),
@@ -117,15 +148,15 @@ export async function buildBookmark(apiClient: any, docId: string): Promise<Book
     xCoordinate: 1,
     yCoordinate: 1,
     parent: null,
-    previous: null
+    previous: null,
   };
 }
 
-export async function fetchUserId(apiClient: any): Promise<string | undefined> {
-  const res = await apiClient.get<{ userInfo?: { uid?: string; id?: string } }>('api/user/details', {
-    throwOnError: false
+export async function fetchUserId(apiClient: ApiClient): Promise<string | undefined> {
+  const res = await apiClient.get('api/user/details', {
+    throwOnError: false,
   });
-  return resolveUserInfoId(res.data);
+  return resolveUserInfoId(res.data as { userInfo?: { uid?: string; id?: string } });
 }
 
 type UploadDeps = {
@@ -149,7 +180,7 @@ export async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string>
     const ctx = await requestFactory({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       storageState,
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
     });
 
     const res = await ctx.post('documents', {
@@ -157,10 +188,10 @@ export async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string>
         files: {
           name: 'file',
           mimeType: 'text/plain',
-          buffer: Buffer.from('synthetic evidence-manager upload')
-        }
+          buffer: Buffer.from('synthetic evidence-manager upload'),
+        },
       },
-      headers: buildXsrfHeader(xsrf)
+      headers: buildXsrfHeader(xsrf),
     });
     if (res.ok()) {
       const body = await res.json();
@@ -175,4 +206,12 @@ export async function uploadSyntheticDoc(deps: UploadDeps = {}): Promise<string>
     // best-effort; fall through
   }
   return uuidFn();
+}
+
+function getAnnotations(data: unknown): unknown[] {
+  if (typeof data !== 'object' || data === null || !('annotations' in data)) {
+    return [];
+  }
+  const annotations = (data as { annotations?: unknown }).annotations;
+  return Array.isArray(annotations) ? annotations : [];
 }

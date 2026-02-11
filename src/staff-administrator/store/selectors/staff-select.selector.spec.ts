@@ -8,10 +8,7 @@ describe('Staff Selectors', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        StoreModule.forFeature('staffUI', staffSelectReducer)
-      ]
+      imports: [StoreModule.forRoot({}), StoreModule.forFeature('staffUI', staffSelectReducer)],
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();

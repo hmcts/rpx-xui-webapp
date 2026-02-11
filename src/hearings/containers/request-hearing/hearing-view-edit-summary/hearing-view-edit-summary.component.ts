@@ -17,12 +17,12 @@ import { HearingResponseError } from '../../../../hearings/models/hearingRespons
 @Component({
   standalone: false,
   selector: 'exui-hearing-view-edit-summary',
-  templateUrl: './hearing-view-edit-summary.component.html'
+  templateUrl: './hearing-view-edit-summary.component.html',
 })
 export class HearingViewEditSummaryComponent extends RequestHearingPageFlow implements OnDestroy, OnInit {
   public template = HEARING_VIEW_EDIT_SUMMARY_TEMPLATE;
   public mode = Mode.VIEW_EDIT;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   private initialAndCurrentStates$: Observable<[HearingRequestStateData, HearingRequestStateData]>;
   private initialAndCurrentStatesSubscription: Subscription;
   private readonly notUpdatedMessage = 'The request has not been updated';
@@ -30,11 +30,13 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
 
   public getError$: Observable<HearingResponseError>;
   private unsubscribe$: Subject<void> = new Subject<void>();
-  public requestError: null | { title: string, description: string } = null;
+  public requestError: null | { title: string; description: string } = null;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService) {
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService
+  ) {
     super(hearingStore, hearingsService, featureToggleService);
   }
 
@@ -86,7 +88,11 @@ export class HearingViewEditSummaryComponent extends RequestHearingPageFlow impl
         this.screenFlow = storeData?.hearings?.hearingValues?.serviceHearingValuesModel?.screenFlow;
         this.template = this.template.filter((tp: Section) => {
           return this.screenFlow?.some((sr: ScreenNavigationModel) => {
-            return tp.screenName.includes(sr.screenName) || tp.screenName.includes('edit-hearing') || tp.screenName.includes('hearing-listing-info');
+            return (
+              tp.screenName.includes(sr.screenName) ||
+              tp.screenName.includes('edit-hearing') ||
+              tp.screenName.includes('hearing-listing-info')
+            );
           });
         });
       }

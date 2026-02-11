@@ -9,25 +9,9 @@ import { SearchResultsComponent } from './containers/search-results/search-resul
 import { SearchRoutingModule } from './search-routing.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SearchRoutingModule,
-    ExuiCommonLibModule,
-    SharedModule,
-    ReactiveFormsModule
-  ],
-  declarations: [
-    SearchFormComponent,
-    SearchResultsComponent,
-    NoResultsComponent
-  ],
-  exports: [
-    SearchFormComponent,
-    SearchResultsComponent,
-    NoResultsComponent
-  ],
-  providers: [
-
-  ]
+  imports: [CommonModule, SearchRoutingModule, ExuiCommonLibModule, SharedModule, ReactiveFormsModule],
+  declarations: [SearchFormComponent, SearchResultsComponent, NoResultsComponent],
+  exports: [SearchFormComponent, SearchResultsComponent, NoResultsComponent],
+  providers: [],
 })
 export class SearchModule {}

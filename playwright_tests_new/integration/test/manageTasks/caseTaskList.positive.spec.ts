@@ -5,7 +5,7 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
 
-const userIdentifier = 'STAFF_ADMIN';
+const userIdentifier = 'SOLICITOR';
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
 const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
 let sessionCookies: any[] = [];

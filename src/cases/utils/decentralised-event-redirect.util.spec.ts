@@ -1,4 +1,4 @@
-import { buildDecentralisedEventUrl } from './decentralised-event-redirect.util';
+import { buildDecentralisedEventUrl, getExpectedSubFromUserDetails } from './decentralised-event-redirect.util';
 
 describe('decentralised-event-redirect.util', () => {
   let consoleErrorSpy: jasmine.Spy;
@@ -125,5 +125,16 @@ describe('decentralised-event-redirect.util', () => {
 
     expect(url).toBeNull();
     expect(consoleErrorSpy).toHaveBeenCalled();
+  });
+
+  [
+    { input: JSON.stringify({ id: 'user-123', uid: 'user-uid' }), expected: 'user-123', name: 'prefer id when present' },
+    { input: JSON.stringify({ uid: 'user-uid' }), expected: 'user-uid', name: 'fallback to uid' },
+    { input: null, expected: null, name: 'return null when userDetails missing' },
+    { input: '{bad json', expected: null, name: 'return null for malformed JSON' },
+  ].forEach(({ input, expected, name }) => {
+    it(`should ${name} when reading expected sub from userDetails`, () => {
+      expect(getExpectedSubFromUserDetails(input)).toBe(expected);
+    });
   });
 });

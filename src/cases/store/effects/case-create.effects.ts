@@ -1,15 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, mergeMap } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
-import { SessionStorageService } from '../../../app/services';
-import { EnvironmentService } from '../../../app/shared/services/environment.service';
-import { UserInfo } from '../../../app/models';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
-import { buildDecentralisedEventUrl, getExpectedSub } from '../../utils/decentralised-event-redirect.util';
 import { EMPTY, of } from 'rxjs';
+import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
 
 @Injectable()
 export class CaseCreateEffects {
@@ -17,9 +14,7 @@ export class CaseCreateEffects {
     private readonly actions$: Actions,
     private readonly alertService: AlertService,
     private readonly loggerService: LoggerService,
-    private readonly environmentService: EnvironmentService,
-    private readonly sessionStorageService: SessionStorageService,
-    @Inject(Window) private readonly window: Window
+    private readonly decentralisedEventRedirectService: DecentralisedEventRedirectService
   ) {}
 
   public applyChangeCaseCreateFilter$ = createEffect(() =>
@@ -27,17 +22,14 @@ export class CaseCreateEffects {
       ofType(fromActions.CREATE_CASE_FILTER_APPLY),
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
       mergeMap((param) => {
-        const redirectUrl = buildDecentralisedEventUrl({
-          baseUrls: this.environmentService.get('decentralisedEventBaseUrls'),
+        const isRedirected = this.decentralisedEventRedirectService.tryRedirect({
           caseType: param.caseTypeId,
           jurisdiction: param.jurisdictionId,
           eventId: param.eventId,
-          expectedSub: getExpectedSub(this.getUserInfoFromSession()),
           isCaseCreate: true,
         });
 
-        if (redirectUrl) {
-          this.window.location.assign(redirectUrl);
+        if (isRedirected) {
           return EMPTY;
         }
 
@@ -49,14 +41,6 @@ export class CaseCreateEffects {
       })
     )
   );
-
-  private getUserInfoFromSession(): UserInfo | null {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      return JSON.parse(userInfoStr);
-    }
-    return null;
-  }
 
   public applyCreateCase$ = createEffect(() =>
     this.actions$.pipe(

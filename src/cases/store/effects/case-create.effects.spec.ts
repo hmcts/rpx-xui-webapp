@@ -11,6 +11,7 @@ import { CreateCaseGo, Go, NewCaseLoadedSuccessfully } from '../../../app/store/
 import { ApplyChange, CaseCreateFilterApply, CreateCaseLoaded, CreateCaseReset } from '../actions/create-case.action';
 import { CaseCreateEffects } from './case-create.effects';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
 
 describe('CaseCreate Effects', () => {
   let actions$;
@@ -29,6 +30,7 @@ describe('CaseCreate Effects', () => {
         { provide: AlertService, useValue: mockAlertService },
         provideMockActions(() => actions$),
         { provide: LoggerService, useValue: mockLogger },
+        DecentralisedEventRedirectService,
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: Window, useValue: mockWindow },

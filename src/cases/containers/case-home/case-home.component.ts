@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AlertService,
   ErrorNotifierService,
@@ -11,14 +11,11 @@ import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { SessionStorageService } from '../../../app/services';
-import { EnvironmentService } from '../../../app/shared/services/environment.service';
-import { UserInfo } from '../../../app/models';
 import { GoActionParams } from '../../../cases/models/go-action-params.model';
 
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
-import { buildDecentralisedEventUrl, getExpectedSub } from '../../utils/decentralised-event-redirect.util';
+import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
 
 @Component({
   standalone: false,
@@ -41,9 +38,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromFeature.State>,
     private readonly commonLibLoadingService: CommonLibLoadingService,
     private readonly ccdLibLoadingService: CCDLoadingService,
-    private readonly environmentService: EnvironmentService,
-    private readonly sessionStorageService: SessionStorageService,
-    @Inject(Window) private readonly window: Window
+    private readonly decentralisedEventRedirectService: DecentralisedEventRedirectService
   ) {}
 
   /**
@@ -152,37 +147,13 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const caseType = navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id;
-    const caseId = navigation.relativeTo.snapshot.params.cid;
-    const eventId = navigation.etid;
-
-    const baseUrls = this.environmentService.get('decentralisedEventBaseUrls');
-    const expectedSub = getExpectedSub(this.getUserInfoFromSession());
-
-    const redirectUrl = buildDecentralisedEventUrl({
-      baseUrls,
-      caseType,
-      eventId,
-      caseId,
+    return this.decentralisedEventRedirectService.tryRedirect({
+      caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
+      eventId: navigation.etid,
+      caseId: navigation.relativeTo.snapshot.params.cid,
       queryParams: navigation.queryParams,
-      expectedSub,
       isCaseCreate: false,
     });
-
-    if (redirectUrl) {
-      this.window.location.assign(redirectUrl);
-      return true;
-    }
-
-    return false;
-  }
-
-  private getUserInfoFromSession(): UserInfo | null {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (userInfoStr) {
-      return JSON.parse(userInfoStr);
-    }
-    return null;
   }
 
   public handleErrorWithTriggerId(error: HttpError, triggerId: string): void {

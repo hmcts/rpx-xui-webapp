@@ -11,7 +11,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
-import { getExpectedSub } from '../../utils/decentralised-event-redirect.util';
+import { getExpectedSubFromUserDetails } from '../../utils/decentralised-event-redirect.util';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
@@ -57,7 +57,7 @@ export class CaseTaskComponent implements OnInit {
 
   @Input()
   public set task(value: Task) {
-    const expectedSub = this.getExpectedSubFromSession();
+    const expectedSub = getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'));
     value.description = CaseTaskComponent.replaceVariablesWithRealValues(value, expectedSub);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
@@ -95,20 +95,6 @@ export class CaseTaskComponent implements OnInit {
       }
       return Utils.replaceAll(description, variable, task.case_id);
     }, task.description);
-  }
-
-  private getExpectedSubFromSession(): string | null {
-    const userInfoStr = this.sessionStorageService.getItem('userDetails');
-    if (!userInfoStr) {
-      return null;
-    }
-    try {
-      const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
-      return getExpectedSub(userInfo);
-    } catch {
-      // Ignore session parsing errors; leave placeholders untouched.
-      return null;
-    }
   }
 
   public ngOnInit(): void {

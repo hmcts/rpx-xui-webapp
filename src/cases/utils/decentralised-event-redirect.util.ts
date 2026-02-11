@@ -73,6 +73,19 @@ export const getExpectedSub = (userInfo?: { id?: string; uid?: string }): string
   return userInfo.id || userInfo.uid || null;
 };
 
+export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
+  if (!userInfoStr) {
+    return null;
+  }
+
+  try {
+    const userInfo = JSON.parse(userInfoStr) as { id?: string; uid?: string };
+    return getExpectedSub(userInfo);
+  } catch {
+    return null;
+  }
+};
+
 const appendQueryParams = (params: URLSearchParams, queryParams?: Params): void => {
   if (!queryParams) {
     return;
@@ -90,7 +103,7 @@ const appendQueryParams = (params: URLSearchParams, queryParams?: Params): void 
   });
 };
 
-export const buildDecentralisedEventUrl = (params: {
+export interface BuildDecentralisedEventUrlParams {
   baseUrls: Record<string, string> | null | undefined;
   caseType?: string;
   eventId?: string;
@@ -99,7 +112,9 @@ export const buildDecentralisedEventUrl = (params: {
   queryParams?: Params;
   expectedSub?: string;
   isCaseCreate?: boolean;
-}): string | null => {
+}
+
+export const buildDecentralisedEventUrl = (params: BuildDecentralisedEventUrlParams): string | null => {
   const { baseUrls, caseType, eventId, caseId, jurisdiction, queryParams, expectedSub, isCaseCreate } = params;
 
   if (!isDecentralisedEvent(eventId)) {

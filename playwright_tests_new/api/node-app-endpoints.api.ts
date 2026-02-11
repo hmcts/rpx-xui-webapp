@@ -27,14 +27,14 @@ test.describe('Node app endpoints', () => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
     expectStatus(response.status, [200]);
     const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
-    assertUiConfigResponse(response.data as Record<string, unknown>, expectedKeys);
+    assertUiConfigResponse(response.data, expectedKeys);
   });
 
   test('serves external config/ui alias', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/config/ui');
     expectStatus(response.status, [200]);
     const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
-    assertUiConfigResponse(response.data as Record<string, unknown>, expectedKeys);
+    assertUiConfigResponse(response.data, expectedKeys);
   });
 
   test('serves external config/check snapshot', async ({ anonymousClient }) => {
@@ -124,8 +124,8 @@ test.describe('Node app endpoints', () => {
     const ctx = await request.newContext({
       baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
       ignoreHTTPSErrors: true,
+      storageState: { cookies: expiredCookies, origins: [] },
     });
-    await applyExpiredCookies(ctx, expiredCookies);
     const res = await ctx.get('api/user/details', { failOnStatusCode: false });
     expectStatus(res.status(), [401, 403]);
     await ctx.dispose();
@@ -188,7 +188,7 @@ test.describe('Node app helper coverage', () => {
 
   test('assertSecurityHeaders tolerates missing headers', () => {
     assertSecurityHeaders('no-store', 'nosniff');
-    assertSecurityHeaders(undefined, undefined);
+    assertSecurityHeaders();
   });
 
   test('shouldProcessUserDetails returns false for non-200 status', () => {
@@ -219,12 +219,12 @@ test.describe('Node app helper coverage', () => {
     };
     await applyExpiredCookies(ctx, []);
     expect(calls).toBe(0);
-    await applyExpiredCookies(ctx, [{ name: 'cookie' }]);
+    await applyExpiredCookies(ctx, [{ name: 'cookie', value: '1', expires: 0 }]);
     expect(calls).toBe(1);
   });
 
   test('buildExpiredCookies handles missing cookies', () => {
-    expect(buildExpiredCookies({ cookies: [{ name: 'c' }] })).toHaveLength(1);
+    expect(buildExpiredCookies({ cookies: [{ name: 'c', value: '1', expires: 0 }] })).toHaveLength(1);
     expect(buildExpiredCookies({})).toEqual([]);
   });
 });

@@ -89,9 +89,10 @@ describe('exclusions.exclusionService', () => {
       const caseworker = {
         firstName: 'John',
         idamId: 'actorId',
-        lastName: 'Priest'
+        lastName: 'Priest',
       };
-      sandbox.stub(FullUserDetailCache, 'getUserByIdamId')
+      sandbox
+        .stub(FullUserDetailCache, 'getUserByIdamId')
         .withArgs('actorId')
         .returns(caseworker as any);
       const result = mapResponseToExclusions(exclusions, null);

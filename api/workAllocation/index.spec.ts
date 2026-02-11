@@ -1252,7 +1252,7 @@ describe('workAllocation', () => {
         expect(response.send).to.have.been.calledWith(
           sinon.match({
             task: sinon.match({
-              dueDate: '2029-12-01test10:00:00Z'
+              dueDate: '2029-12-01test10:00:00Z',
             }),
           })
         );

@@ -55,18 +55,18 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
 
-      expect(table.length).toBe(taskData.titles.length);
-      expect(table[0]['Title']).toContain(taskData.titles[0]);
-      expect(table[1]['Title']).toContain(taskData.titles[1]);
-      expect(table[2]['Title']).toContain(taskData.titles[2]);
+      expect.soft(table.length).toBe(taskData.titles.length);
+      expect.soft(table[0]['Title']).toContain(taskData.titles[0]);
+      expect.soft(table[1]['Title']).toContain(taskData.titles[1]);
+      expect.soft(table[2]['Title']).toContain(taskData.titles[2]);
 
-      expect(table[0]['Priority']).toContain('LOW');
-      expect(table[1]['Priority']).toContain('LOW');
-      expect(table[2]['Priority']).toContain('LOW');
+      expect.soft(table[0]['Priority']).toContain('LOW');
+      expect.soft(table[1]['Priority']).toContain('LOW');
+      expect.soft(table[2]['Priority']).toContain('LOW');
 
-      expect(table[0]['Next steps']).toContain('You still need to submit your appeal. Submit your appeal');
-      expect(table[1]['Next steps']).toContain('Current progress of the case');
-      expect(table[2]['Next steps']).toContain('Next steps Please review the evidence before proceeding.');
+      expect.soft(table[0]['Next steps']).toContain('You still need to submit your appeal. Submit your appeal');
+      expect.soft(table[1]['Next steps']).toContain('Current progress of the case');
+      expect.soft(table[2]['Next steps']).toContain('Next steps Please review the evidence before proceeding.');
     });
   });
 
@@ -102,10 +102,10 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}/tasks`);
       await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
-      expect(table[0]['Priority'], 'The priority label for the first task should be URGENT').toContain('URGENT');
-      expect(table[1]['Priority'], 'The priority label for the second task should be HIGH').toContain('HIGH');
-      expect(table[2]['Priority'], 'The priority label for the third task should be MEDIUM').toContain('MEDIUM');
-      expect(table[3]['Priority'], 'The priority label for the fourth task should be LOW').toContain('LOW');
+      expect.soft(table[0]['Priority'], 'The priority label for the first task should be URGENT').toContain('URGENT');
+      expect.soft(table[1]['Priority'], 'The priority label for the second task should be HIGH').toContain('HIGH');
+      expect.soft(table[2]['Priority'], 'The priority label for the third task should be MEDIUM').toContain('MEDIUM');
+      expect.soft(table[3]['Priority'], 'The priority label for the fourth task should be LOW').toContain('LOW');
     });
   });
 

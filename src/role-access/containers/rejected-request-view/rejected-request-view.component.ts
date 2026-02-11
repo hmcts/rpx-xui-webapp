@@ -10,7 +10,7 @@ import { AllocateRoleService } from '../../services';
 @Component({
   standalone: false,
   selector: 'exui-rejected-request',
-  templateUrl: './rejected-request-view.component.html'
+  templateUrl: './rejected-request-view.component.html',
 })
 export class RejectedRequestViewComponent implements OnInit {
   public caseName: string;
@@ -45,17 +45,23 @@ export class RejectedRequestViewComponent implements OnInit {
     this.accessReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.specificAccessReason ?
       this.route.snapshot.queryParams.specificAccessReason : '';
 
-    this.dateRejected = this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateRejected ?
-      this.route.snapshot.queryParams.dateRejected : '';
-    this.reviewer = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewer ?
-      this.route.snapshot.queryParams.reviewer : '';
-    this.reviewReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired ?
-      this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired), this.route.snapshot.queryParams.infoRequiredComment)
-      : 'No reason for rejection found';
-    this.endDate = this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ?
-      this.route.snapshot.queryParams.endDate : '';
-    this.caseType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseType ?
-      this.route.snapshot.queryParams.caseType : '';
+    this.dateRejected =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateRejected
+        ? this.route.snapshot.queryParams.dateRejected
+        : '';
+    this.reviewer =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewer ? this.route.snapshot.queryParams.reviewer : '';
+    this.reviewReason =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired
+        ? this.getRejectReason(
+            JSON.parse(this.route.snapshot.queryParams.infoRequired),
+            this.route.snapshot.queryParams.infoRequiredComment
+          )
+        : 'No reason for rejection found';
+    this.endDate =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ? this.route.snapshot.queryParams.endDate : '';
+    this.caseType =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseType ? this.route.snapshot.queryParams.caseType : '';
   }
 
   public ngOnInit(): void {
@@ -63,11 +69,9 @@ export class RejectedRequestViewComponent implements OnInit {
       return;
     }
     if (this.roleCategory === RoleCategory.JUDICIAL) {
-      this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => {
-          this.reviewerName = caseRoleUserDetails[0].full_name;
-        }
-      );
+      this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe((caseRoleUserDetails) => {
+        this.reviewerName = caseRoleUserDetails[0].full_name;
+      });
     } else {
       this.caseworkerDataService.getUserByIdamId(this.reviewer).pipe(first()).subscribe((caseworker) => {
         if (caseworker) {
@@ -87,8 +91,10 @@ export class RejectedRequestViewComponent implements OnInit {
   }
 
   public getRejectReason(infoRequired: boolean, infoRequiredComment: string): string {
-    return infoRequired ?
-      infoRequiredComment ? infoRequiredComment : RejectionReasonText.MoreInformation :
-      RejectionReasonText.Rejected;
+    return infoRequired
+      ? infoRequiredComment
+        ? infoRequiredComment
+        : RejectionReasonText.MoreInformation
+      : RejectionReasonText.Rejected;
   }
 }

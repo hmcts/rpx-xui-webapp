@@ -55,8 +55,8 @@ describe('Challenged Access', (): void => {
           endTime: '2024-12-31T23:59:59Z',
           attributes: {
             caseId: 'case-123',
-            accessReason: 'urgent review required'
-          }
+            accessReason: 'urgent review required',
+          },
         },
         session: {
           passport: {
@@ -64,18 +64,18 @@ describe('Challenged Access', (): void => {
               userinfo: {
                 id: 'user-123',
                 uid: 'user-123',
-                email: 'test@example.com'
-              }
-            }
-          }
-        }
+                email: 'test@example.com',
+              },
+            },
+          },
+        },
       });
       res = mockRes();
       getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_API_PATH).returns('http://role-assignment-api');
       setHeadersStub.returns({
         'content-type': 'application/json',
-        'accept': 'application/json',
-        'authorization': 'Bearer token'
+        accept: 'application/json',
+        authorization: 'Bearer token',
       });
     });
 
@@ -84,25 +84,27 @@ describe('Challenged Access', (): void => {
         status: 201,
         data: {
           roleAssignmentResponse: {
-            requestedRoles: [{
-              id: 'role-123',
-              actorIdType: 'IDAM',
-              actorId: 'user-123',
-              roleType: 'CASE',
-              roleName: 'case-manager',
-              classification: 'PUBLIC',
-              grantType: 'SPECIFIC',
-              roleCategory: 'LEGAL_OPERATIONS',
-              readOnly: false,
-              beginTime: '2024-01-01T00:00:00Z',
-              endTime: '2024-12-31T23:59:59Z',
-              attributes: {
-                caseId: 'case-123',
-                accessReason: 'urgent review required'
-              }
-            }]
-          }
-        }
+            requestedRoles: [
+              {
+                id: 'role-123',
+                actorIdType: 'IDAM',
+                actorId: 'user-123',
+                roleType: 'CASE',
+                roleName: 'case-manager',
+                classification: 'PUBLIC',
+                grantType: 'SPECIFIC',
+                roleCategory: 'LEGAL_OPERATIONS',
+                readOnly: false,
+                beginTime: '2024-01-01T00:00:00Z',
+                endTime: '2024-12-31T23:59:59Z',
+                attributes: {
+                  caseId: 'case-123',
+                  accessReason: 'urgent review required',
+                },
+              },
+            ],
+          },
+        },
       };
 
       httpPostStub.resolves(mockResponse);
@@ -122,10 +124,7 @@ describe('Challenged Access', (): void => {
       expect(headers).to.have.property('content-type', 'application/json');
       expect(headers).to.have.property('authorization', 'Bearer token');
 
-      expect(refreshRoleAssignmentForUserStub).to.have.been.calledWith(
-        req.session.passport.user.userinfo,
-        req
-      );
+      expect(refreshRoleAssignmentForUserStub).to.have.been.calledWith(req.session.passport.user.userinfo, req);
       expect(logAccessRequestStub).to.have.been.calledWith(req, true);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -137,9 +136,9 @@ describe('Challenged Access', (): void => {
         status: 200,
         data: {
           roleAssignmentResponse: {
-            requestedRoles: []
-          }
-        }
+            requestedRoles: [],
+          },
+        },
       };
 
       httpPostStub.resolves(mockResponse);
@@ -168,7 +167,7 @@ describe('Challenged Access', (): void => {
     it('should handle errors from refreshRoleAssignmentForUser and call next', async () => {
       const mockResponse = {
         status: 201,
-        data: { roleAssignmentResponse: {} }
+        data: { roleAssignmentResponse: {} },
       };
       const refreshError = new Error('Failed to refresh role assignments');
 
@@ -187,8 +186,8 @@ describe('Challenged Access', (): void => {
     it('should remove accept header from request headers', async () => {
       const headersWithAccept = {
         'content-type': 'application/json',
-        'accept': 'application/json',
-        'authorization': 'Bearer token'
+        accept: 'application/json',
+        authorization: 'Bearer token',
       };
       setHeadersStub.returns(headersWithAccept);
       httpPostStub.resolves({ status: 201, data: {} });
@@ -241,8 +240,8 @@ describe('Challenged Access', (): void => {
         attributes: {
           caseId: 'case-123',
           jurisdiction: 'IA',
-          caseType: 'Asylum'
-        }
+          caseType: 'Asylum',
+        },
       };
 
       req = mockReq({
@@ -250,8 +249,8 @@ describe('Challenged Access', (): void => {
           caseId: 'case-123',
           attributesToUpdate: {
             accessReason: 'urgent review required',
-            requestedRole: 'case-manager'
-          }
+            requestedRole: 'case-manager',
+          },
         },
         session: {
           passport: {
@@ -259,18 +258,18 @@ describe('Challenged Access', (): void => {
               userinfo: {
                 id: 'user-123',
                 uid: 'user-123',
-                email: 'test@example.com'
-              }
-            }
-          }
-        }
+                email: 'test@example.com',
+              },
+            },
+          },
+        },
       });
       res = mockRes();
       getConfigValueStub.withArgs(SERVICES_ROLE_ASSIGNMENT_API_PATH).returns('http://role-assignment-api');
       setHeadersStub.returns({
         'content-type': 'application/json',
-        'accept': 'application/json',
-        'authorization': 'Bearer token'
+        accept: 'application/json',
+        authorization: 'Bearer token',
       });
     });
 
@@ -278,17 +277,17 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
 
       const updateResponse = {
         status: 200,
         data: {
           roleAssignmentResponse: {
-            requestedRoles: [mockRoleAssignment]
-          }
-        }
+            requestedRoles: [mockRoleAssignment],
+          },
+        },
       };
 
       httpPostStub.onFirstCall().resolves(queryResponse);
@@ -302,8 +301,8 @@ describe('Challenged Access', (): void => {
       expect(httpPostStub.firstCall.args[1]).to.deep.equal({
         actorId: ['user-123'],
         attributes: {
-          caseId: ['case-123']
-        }
+          caseId: ['case-123'],
+        },
       });
 
       // Verify update call
@@ -322,17 +321,14 @@ describe('Challenged Access', (): void => {
         jurisdiction: 'IA',
         caseType: 'Asylum',
         accessReason: 'urgent review required',
-        requestedRole: 'case-manager'
+        requestedRole: 'case-manager',
       });
       expect(updatedRole.notes).to.have.length(1);
       expect(updatedRole.notes[0].userId).to.equal('user-123');
       expect(updatedRole.notes[0].comment).to.equal('urgent review required');
       expect(updatedRole.notes[0].time).to.be.instanceOf(Date);
 
-      expect(refreshRoleAssignmentForUserStub).to.have.been.calledWith(
-        req.session.passport.user.userinfo,
-        req
-      );
+      expect(refreshRoleAssignmentForUserStub).to.have.been.calledWith(req.session.passport.user.userinfo, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(updateResponse.data);
       expect(next).to.not.have.been.called;
@@ -341,19 +337,19 @@ describe('Challenged Access', (): void => {
     it('should successfully update role assignment attributes using user uid when id is not available', async () => {
       req.session.passport.user.userinfo = {
         uid: 'user-uid-456',
-        email: 'test@example.com'
+        email: 'test@example.com',
       };
 
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment, actorId: 'user-uid-456' }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment, actorId: 'user-uid-456' }],
+        },
       };
 
       const updateResponse = {
         status: 200,
-        data: { roleAssignmentResponse: {} }
+        data: { roleAssignmentResponse: {} },
       };
 
       httpPostStub.onFirstCall().resolves(queryResponse);
@@ -388,8 +384,8 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
       const updateError = new Error('Update failed');
 
@@ -409,12 +405,12 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
       const updateResponse = {
         status: 200,
-        data: { roleAssignmentResponse: {} }
+        data: { roleAssignmentResponse: {} },
       };
       const refreshError = new Error('Refresh failed');
 
@@ -434,16 +430,16 @@ describe('Challenged Access', (): void => {
     it('should remove accept header from request headers', async () => {
       const headersWithAccept = {
         'content-type': 'application/json',
-        'accept': 'application/json',
-        'authorization': 'Bearer token'
+        accept: 'application/json',
+        authorization: 'Bearer token',
       };
       setHeadersStub.returns(headersWithAccept);
 
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
       const updateResponse = { status: 200, data: {} };
 
@@ -462,16 +458,16 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
       const updateResponse = {
         status: 201,
         data: {
           roleAssignmentResponse: {
-            requestedRoles: [mockRoleAssignment]
-          }
-        }
+            requestedRoles: [mockRoleAssignment],
+          },
+        },
       };
 
       httpPostStub.onFirstCall().resolves(queryResponse);
@@ -491,15 +487,15 @@ describe('Challenged Access', (): void => {
           caseId: 'case-123',
           jurisdiction: 'IA',
           caseType: 'Asylum',
-          existingAttribute: 'should-remain'
-        }
+          existingAttribute: 'should-remain',
+        },
       };
 
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [roleWithExistingAttrs]
-        }
+          roleAssignmentResponse: [roleWithExistingAttrs],
+        },
       };
       const updateResponse = { status: 200, data: {} };
 
@@ -518,7 +514,7 @@ describe('Challenged Access', (): void => {
         caseType: 'Asylum',
         existingAttribute: 'should-remain',
         accessReason: 'urgent review required',
-        requestedRole: 'case-manager'
+        requestedRole: 'case-manager',
       });
     });
 
@@ -528,8 +524,8 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
 
       httpPostStub.onFirstCall().resolves(queryResponse);
@@ -543,8 +539,8 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: []
-        }
+          roleAssignmentResponse: [],
+        },
       };
 
       httpPostStub.onFirstCall().resolves(queryResponse);
@@ -561,8 +557,8 @@ describe('Challenged Access', (): void => {
       const queryResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ ...mockRoleAssignment }]
-        }
+          roleAssignmentResponse: [{ ...mockRoleAssignment }],
+        },
       };
       const updateResponse = { status: 200, data: {} };
 

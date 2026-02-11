@@ -12,9 +12,9 @@ describe('LinkedHearingsCaseTitleComponent', () => {
   const mockRoute = {
     snapshot: {
       data: {
-        mode: Mode.MANAGE_HEARINGS
-      }
-    }
+        mode: Mode.MANAGE_HEARINGS,
+      },
+    },
   };
 
   beforeEach(waitForAsync(() => {
@@ -22,9 +22,8 @@ describe('LinkedHearingsCaseTitleComponent', () => {
       imports: [HearingsPipesModule],
       declarations: [LinkedHearingsCaseTitleComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: ActivatedRoute, useValue: mockRoute }]
-    })
-      .compileComponents();
+      providers: [{ provide: ActivatedRoute, useValue: mockRoute }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

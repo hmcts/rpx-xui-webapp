@@ -16,7 +16,7 @@ import { Utils } from '../../utils/utils';
 @Component({
   standalone: false,
   selector: 'exui-roles-and-access-container',
-  templateUrl: './roles-and-access-container.component.html'
+  templateUrl: './roles-and-access-container.component.html',
 })
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
@@ -44,18 +44,23 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public loadExclusions(jurisdiction: any): void {
-    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((exclusions: RoleExclusion[]) => {
-        const userIds = Utils.getJudicialUserIdsFromExclusions(exclusions);
-        if (userIds && userIds.length > 0) {
-          return this.allocateService.getCaseRolesUserDetails(userIds, [jurisdiction.value]).pipe(
-            map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails)
-            )
-          );
-        }
-        return of(exclusions);
-      })
-    );
+    this.exclusions$ = this.roleExclusionsService
+      .getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id)
+      .pipe(
+        mergeMap((exclusions: RoleExclusion[]) => {
+          const userIds = Utils.getJudicialUserIdsFromExclusions(exclusions);
+          if (userIds && userIds.length > 0) {
+            return this.allocateService
+              .getCaseRolesUserDetails(userIds, [jurisdiction.value])
+              .pipe(
+                map((caseRolesWithUserDetails: CaseRoleDetails[]) =>
+                  Utils.mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails)
+                )
+              );
+          }
+          return of(exclusions);
+        })
+      );
   }
 
   public loadRoles(jurisdiction: any): void {
@@ -93,7 +98,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
     /* istanbul ignore else*/
     if (user && user.roleAssignmentInfo) {
-      this.showAllocateRoleLink = user.roleAssignmentInfo.some((roleAssignmentInfo) => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
+      this.showAllocateRoleLink = user.roleAssignmentInfo.some(
+        (roleAssignmentInfo) => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction
+      );
     }
   }
 

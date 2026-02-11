@@ -15,7 +15,7 @@ import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -34,9 +34,9 @@ describe('RestrictedCaseAccessContainerComponent', () => {
   const mockActivatedRoute = {
     snapshot: {
       params: {
-        cid: '1234123412341234'
-      }
-    }
+        cid: '1234123412341234',
+      },
+    },
   };
   const firstJudgeResponse = [
     {
@@ -48,8 +48,8 @@ describe('RestrictedCaseAccessContainerComponent', () => {
       idamId: '6343',
       initials: 'JD',
       postNominals: null,
-      personalCode: '1234568'
-    }
+      personalCode: '1234568',
+    },
   ];
   const secondJudgeResponse = [
     {
@@ -61,25 +61,21 @@ describe('RestrictedCaseAccessContainerComponent', () => {
       idamId: '12343',
       initials: 'BS',
       postNominals: null,
-      personalCode: '1234568'
-    }
+      personalCode: '1234568',
+    },
   ];
   const mockRouter = {
     navigate: jasmine.createSpy(),
-    navigateByUrl: jasmine.createSpy('navigateByUrl')
+    navigateByUrl: jasmine.createSpy('navigateByUrl'),
   };
   const mockLocation = {
-    back: jasmine.createSpy('back')
+    back: jasmine.createSpy('back'),
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        RestrictedCaseAccessContainerComponent,
-        CaseReferencePipe,
-        RpxTranslateMockPipe
-      ],
+      declarations: [RestrictedCaseAccessContainerComponent, CaseReferencePipe, RpxTranslateMockPipe],
       providers: [
         { provide: AllocateRoleService, useValue: mockAllocateService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
@@ -90,10 +86,9 @@ describe('RestrictedCaseAccessContainerComponent', () => {
         { provide: Location, useValue: mockLocation },
         { provide: JudicialRefDataService, useValue: mockJudicialRefDataService },
         HttpClient,
-        HttpHandler
-      ]
-    })
-      .compileComponents();
+        HttpHandler,
+      ],
+    }).compileComponents();
     mockAllocateService.getCaseAccessRolesByCaseId.and.returnValue(of(CASEROLES));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     mockCaseworkerDataService.getUsersByIdamIds.and.returnValue(of([CASEWORKERS.JANE_DOE, CASEWORKERS.JOHN_SMITH]));
@@ -124,7 +119,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     expect(component.restrictedCases).toEqual([
       { user: 'Ms Jane Doe', email: 'jane.doe@imajudge.net', role: 'Lead judge' },
       { user: 'Mr Bob Smith', email: 'bob.smith@imajudge.net', role: 'Lead judge' },
-      { user: 'John Smith', email: 'john.smith@caseworkers.gov.uk', role: 'Case manager' }
+      { user: 'John Smith', email: 'john.smith@caseworkers.gov.uk', role: 'Case manager' },
     ]);
   });
 
@@ -136,8 +131,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
   });
 
   describe('onBack()', () => {
-    const resetReferrer = () =>
-      Object.defineProperty(document, 'referrer', { value: '', configurable: true });
+    const resetReferrer = () => Object.defineProperty(document, 'referrer', { value: '', configurable: true });
 
     afterEach(() => {
       // clean up spies and global mutations between tests
@@ -150,7 +144,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
       // same-origin referrer
       Object.defineProperty(document, 'referrer', {
         value: window.location.origin + '/previous',
-        configurable: true
+        configurable: true,
       });
 
       // force history.length > 1 without navigating away
@@ -165,7 +159,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     it('navigates to /cases/case-search when referrer is cross-origin', () => {
       Object.defineProperty(document, 'referrer', {
         value: 'https://external.example/somewhere',
-        configurable: true
+        configurable: true,
       });
 
       // even if history > 1, cross-origin should trigger navigate fallback
@@ -180,7 +174,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     it('navigates to /cases/case-search when history length <= 1 (no useful history)', () => {
       Object.defineProperty(document, 'referrer', {
         value: window.location.origin + '/previous',
-        configurable: true
+        configurable: true,
       });
 
       // simulate first page / new tab (no meaningful back)

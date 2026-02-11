@@ -51,7 +51,6 @@ Feature: WA Release 2: My work - Work filters, Services and locations for user r
         Examples:
             | onBoardedServices   | selectedServices             | bookableServices | nonBookableServices |
             | IA,CIVIL,PRIVATELAW | Immigration and Asylum       | IA               |                     |
-            | IA,CIVIL,PRIVATELAW | Immigration and Asylum       | IA               |                     |
             | IA,CIVIL,PRIVATELAW | Immigration and Asylum,CIVIL | CIVIL            | IA                  |
             | IA,CIVIL,PRIVATELAW | Immigration and Asylum,CIVIL | CIVIL,SSCS       | IA                  |
 

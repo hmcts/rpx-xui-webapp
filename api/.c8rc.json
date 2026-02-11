@@ -5,16 +5,9 @@
   "statements": 0,
   "functions": 0,
   "branches": 0,
-  "extension": [
-    ".ts",
-    ".tsx"
-  ],
-  "require": [
-    "ts-node/register"
-  ],
-  "include": [
-    "**/*"
-  ],
+  "extension": [".ts", ".tsx"],
+  "require": ["ts-node/register"],
+  "include": ["**/*"],
   "exclude": [
     "**/*.js",
     "**/*.d.ts",
@@ -47,12 +40,7 @@
     "**/menuConfigs/base-config.ts",
     "**/menuConfigs/aat-diffs.ts"
   ],
-  "reporter": [
-    "lcov",
-    "html",
-    "text-summary"
-  ],
-  "cache": true,
+  "reporter": ["lcov", "html", "text", "text-summary"],
   "all": true,
   "report-dir": "../reports/tests/coverage/node"
 }

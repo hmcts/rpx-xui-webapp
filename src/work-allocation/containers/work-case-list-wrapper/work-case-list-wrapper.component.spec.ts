@@ -16,7 +16,12 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { JurisdictionsService } from '../../../work-allocation/services/juridictions.service';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationCaseService,
+} from '../../services';
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { MyAccessComponent } from '../my-access/my-access.component';
 import { MyCasesComponent } from '../my-cases/my-cases.component';
@@ -31,25 +36,30 @@ const USER_DETAILS = {
     surname: 'surName',
     email: 'email@email.com',
     active: true,
-    roles: ['pui-case-manager']
+    roles: ['pui-case-manager'],
   },
   roleAssignmentInfo: [
     {
       roleName: 'test',
       jurisdiction: 'service',
-      roleType: 'type'
-    }
-  ]
+      roleType: 'type',
+    },
+  ],
 };
-const JURISDICTIONS = [{
-  id: '123',
-  name: 'IA',
-  description: '',
-  caseTypes: []
-}];
+const JURISDICTIONS = [
+  {
+    id: '123',
+    name: 'IA',
+    description: '',
+    caseTypes: [],
+  },
+];
 
 describe('WorkCaseListWrapperComponent', () => {
-  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions', 'getDetailedWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', [
+    'getWASupportedJurisdictions',
+    'getDetailedWASupportedJurisdictions',
+  ]);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
 
   const mockJurisdictionService = jasmine.createSpyObj('mockJurisdictionService', ['getJurisdictions']);
@@ -60,7 +70,12 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
   const mockRef = jasmine.createSpyObj('mockRef', ['']);
   const mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
-  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['searchCase', 'getCase', 'getMyCases', 'getMyAccess']);
+  const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', [
+    'searchCase',
+    'getCase',
+    'getMyCases',
+    'getMyAccess',
+  ]);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
@@ -70,10 +85,10 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll', 'getUserByIdamId']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromActions.State>;
 
-  beforeEach((() => {
+  beforeEach(() => {
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
     TestBed.configureTestingModule({
@@ -83,7 +98,7 @@ describe('WorkCaseListWrapperComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({ ...fromActions.reducers }),
         CdkTableModule,
-        PaginationModule
+        PaginationModule,
       ],
       declarations: [MyCasesComponent, MyAccessComponent, WorkCaseListWrapperComponent, WorkCaseListComponent],
       providers: [
@@ -100,8 +115,8 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
-        { provide: Store, useValue: storeMock }
-      ]
+        { provide: Store, useValue: storeMock },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WorkCaseListWrapperComponent);
     component = fixture.componentInstance;
@@ -118,7 +133,7 @@ describe('WorkCaseListWrapperComponent', () => {
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
     mockSessionStorageService.getItem.and.returnValue(undefined);
     fixture.detectChanges();
-  }));
+  });
 
   afterEach(() => {
     fixture.destroy();

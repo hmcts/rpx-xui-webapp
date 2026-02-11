@@ -18,7 +18,7 @@ describe('RejectedRequestViewComponent', () => {
   let fixture: ComponentFixture<RejectedRequestViewComponent>;
 
   const router = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
   };
 
   const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getCaseRolesUserDetails']);
@@ -48,16 +48,15 @@ describe('RejectedRequestViewComponent', () => {
                 infoRequired: false,
                 reviewer: 'example',
                 dateSubmitted: '01-01-2019',
-                specificAccessReason: 'I would like access'
-              }
-            }
-          }
+                specificAccessReason: 'I would like access',
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

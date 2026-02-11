@@ -47,7 +47,7 @@ export interface CaseInternalData {
   caseManagementCategory?: CaseManagementCategory;
   caseManagementLocation?: CaseManagementLocation;
   hmctsCaseNameInternal?: string;
-  nextHearingDetails?: {hearingDateTime: Date};
+  nextHearingDetails?: { hearingDateTime: Date };
   caseNameHmctsInternal?: string;
 }
 
@@ -57,8 +57,8 @@ export interface CaseManagementLocation {
 }
 
 export interface CaseManagementCategory {
-  value: CaseManagementCategoryData,
-  list_items: CaseManagementCategoryData[]
+  value: CaseManagementCategoryData;
+  list_items: CaseManagementCategoryData[];
 }
 
 export interface CaseManagementCategoryData {

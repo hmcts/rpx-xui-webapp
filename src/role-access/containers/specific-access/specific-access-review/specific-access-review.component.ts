@@ -8,7 +8,14 @@ import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserDetails } from '../../../../app/models';
 import { CaseworkerDataService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
-import { DisplayedAccessReason, OptionsModel, RequestAccessDetails, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
+import {
+  DisplayedAccessReason,
+  OptionsModel,
+  RequestAccessDetails,
+  SpecificAccessNavigationEvent,
+  SpecificAccessState,
+  SpecificAccessStateData,
+} from '../../../models';
 import { AccessReason, SpecificAccessErrors, SpecificAccessText } from '../../../models/enums';
 import { SpecificAccessNavigation } from '../../../models/specific-access-navigation.interface';
 import { AllocateRoleService } from '../../../services';
@@ -17,7 +24,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-review',
-  templateUrl: './specific-access-review.component.html'
+  templateUrl: './specific-access-review.component.html',
 })
 export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -29,7 +36,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
   public userDetails$: Observable<UserDetails>;
   public errorMessage = {
     title: 'There is a problem',
-    description: SpecificAccessErrors.NO_SELECTION
+    description: SpecificAccessErrors.NO_SELECTION,
   };
 
   public optionsList: OptionsModel[];
@@ -56,22 +63,22 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
       { reason: AccessReason.REJECT_REQUEST, checked: false },
-      { reason: AccessReason.REQUEST_MORE_INFORMATION, checked: false }
+      { reason: AccessReason.REQUEST_MORE_INFORMATION, checked: false },
     ];
   }
 
   public ngOnInit(): void {
-    this.specificAccessStateDataSub = this.store.pipe(select(fromFeature.getSpecificAccessState)).subscribe(
-      (specificAccessStateData) => {
+    this.specificAccessStateDataSub = this.store
+      .pipe(select(fromFeature.getSpecificAccessState))
+      .subscribe((specificAccessStateData) => {
         this.specificAccessStateData = specificAccessStateData;
-      }
-    );
+      });
     if (this.specificAccessStateData.roleCategory === RoleCategory.JUDICIAL) {
-      this.allocateRoleService.getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => {
+      this.allocateRoleService
+        .getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction])
+        .subscribe((caseRoleUserDetails) => {
           this.requesterName = caseRoleUserDetails[0].full_name;
-        }
-      );
+        });
     } else {
       this.caseworkerDataService.getUserByIdamId(this.specificAccessStateData.actorId).pipe(first()).subscribe((caseworker) => {
         if (caseworker) {
@@ -81,21 +88,21 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({
-      radioSelected: this.reviewOptionControl
+      radioSelected: this.reviewOptionControl,
     });
     this.optionsList = [
       {
         optionId: EnumUtil(AccessReason).getKeyOrDefault(AccessReason.APPROVE_REQUEST),
-        optionValue: AccessReason.APPROVE_REQUEST
+        optionValue: AccessReason.APPROVE_REQUEST,
       },
       {
         optionId: EnumUtil(AccessReason).getKeyOrDefault(AccessReason.REJECT_REQUEST),
-        optionValue: AccessReason.REJECT_REQUEST
+        optionValue: AccessReason.REJECT_REQUEST,
       },
       {
         optionId: EnumUtil(AccessReason).getKeyOrDefault(AccessReason.REQUEST_MORE_INFORMATION),
-        optionValue: AccessReason.REQUEST_MORE_INFORMATION
-      }
+        optionValue: AccessReason.REQUEST_MORE_INFORMATION,
+      },
     ];
   }
 
@@ -107,7 +114,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.reviewOptionControl.invalid) {
       this.reviewOptionControl.setErrors({
-        invalid: true
+        invalid: true,
       });
       return;
     }
@@ -126,24 +133,27 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           case AccessReason.REJECT_REQUEST:
             const rejectedRole = { id: 'specific-access-denied', name: 'specific-access-denied' };
             let specificAccessBody;
-            this.store.pipe(select(fromFeature.getSpecificAccessState)).pipe(take(1)).subscribe((specificAccess) => {
-              if (specificAccess) {
-                specificAccessBody = {
-                  accessReason,
-                  specificAccessReason: specificAccess.specificAccessReason,
-                  typeOfRole: rejectedRole,
-                  caseId: specificAccess.caseId,
-                  requestId: specificAccess.requestId,
-                  taskId: specificAccess.taskId,
-                  jurisdiction: specificAccess.jurisdiction,
-                  assigneeId: specificAccess.actorId,
-                  caseName: specificAccess.caseName,
-                  requestCreated: specificAccess.requestCreated,
-                  roleCategory: specificAccess.roleCategory,
-                  person: { id: specificAccess.actorId, name: null, domain: null }
-                };
-              }
-            });
+            this.store
+              .pipe(select(fromFeature.getSpecificAccessState))
+              .pipe(take(1))
+              .subscribe((specificAccess) => {
+                if (specificAccess) {
+                  specificAccessBody = {
+                    accessReason,
+                    specificAccessReason: specificAccess.specificAccessReason,
+                    typeOfRole: rejectedRole,
+                    caseId: specificAccess.caseId,
+                    requestId: specificAccess.requestId,
+                    taskId: specificAccess.taskId,
+                    jurisdiction: specificAccess.jurisdiction,
+                    assigneeId: specificAccess.actorId,
+                    caseName: specificAccess.caseName,
+                    requestCreated: specificAccess.requestCreated,
+                    roleCategory: specificAccess.roleCategory,
+                    person: { id: specificAccess.actorId, name: null, domain: null },
+                  };
+                }
+              });
             this.store.dispatch(new fromFeature.RequestMoreInfoSpecificAccessRequest(specificAccessBody));
             break;
           case AccessReason.REQUEST_MORE_INFORMATION:
@@ -152,10 +162,12 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           default:
             throw new Error('Invalid option');
         }
-        this.store.dispatch(new fromFeature.DecideSpecificAccessAndGo({
-          accessReason,
-          specificAccessState
-        }));
+        this.store.dispatch(
+          new fromFeature.DecideSpecificAccessAndGo({
+            accessReason,
+            specificAccessState,
+          })
+        );
         break;
       default:
         throw new Error('Invalid option');

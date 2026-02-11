@@ -14,7 +14,7 @@ import { getAssigneeIdsFromTasks, getAssigneeNameFromList } from '../../../work-
   standalone: false,
   selector: 'exui-tasks-container',
   templateUrl: './tasks-container.component.html',
-  styleUrls: ['./tasks-container.component.scss']
+  styleUrls: ['./tasks-container.component.scss'],
 })
 export class TasksContainerComponent implements OnInit {
   public caseDetails: CaseView;
@@ -98,9 +98,11 @@ export class TasksContainerComponent implements OnInit {
         assignedJudicialUsers.push(task.assignee);
       }
     });
-    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap((judicialUserData) => {
-      return this.getJudicialNamedTasks(judicialUserData);
-    }));
+    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(
+      switchMap((judicialUserData) => {
+        return this.getJudicialNamedTasks(judicialUserData);
+      })
+    );
   }
 
   public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {

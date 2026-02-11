@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
@@ -13,7 +11,8 @@
     "noEmit": true,
     "allowJs": true,
     "noImplicitAny": false,
+    "lib": ["ES2021", "dom"]
   },
-  "include":["../E2E/**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
-  "extends": "../../tsconfig.json"
+  "include": ["../**/*.ts", "../E2E/**/*.*.ts", "../E2E/utils/config.utils.ts", "../E2E/fixtures.ts"],
+  "extends": "../tsconfig.json"
 }

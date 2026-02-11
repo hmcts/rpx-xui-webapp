@@ -53,7 +53,7 @@ class CreateCaseStartPage {
     await dropdown.selectOption({ label: eventText });
   }
 
-  async startCaseCreation(jurisdiction, caseType, event){
+  async startCaseCreation(jurisdiction, caseType, event) {
     this.selectJurisdiction(jurisdiction);
 
     this.selectCaseType(caseType);
@@ -70,22 +70,22 @@ class CreateCaseStartPage {
     // await this._startBtn.click();
   }
 
-  async getPageHeader(){
+  async getPageHeader() {
     await BrowserWaits.waitForElement($(this.header));
     return await $(this.header).textContent();
   }
 
-  async amOnPage(){
+  async amOnPage() {
     try {
       await BrowserWaits.waitForElement(this.caseCaseFilterContainer);
       return true;
-    } catch (err){
-      await CucumberRepprter.AddMessage('Create case page not displayed ' + err.message + ' : ' + err.stack), LOG_LEVELS.Error;
+    } catch (err) {
+      (await CucumberRepprter.AddMessage('Create case page not displayed ' + err.message + ' : ' + err.stack), LOG_LEVELS.Error);
       return false;
     }
   }
 
-  async getLoadedJurisdictionsCount(){
+  async getLoadedJurisdictionsCount() {
     return await this.jurisdictionOptions.count();
   }
 }

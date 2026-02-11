@@ -7,7 +7,7 @@ import { HearingRequestMainModel } from '../../../../models/hearingRequestMain.m
 @Component({
   standalone: false,
   selector: 'exui-additional-instructions-section',
-  templateUrl: './additional-instructions-section.component.html'
+  templateUrl: './additional-instructions-section.component.html',
 })
 export class AdditionalInstructionsSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
@@ -23,7 +23,8 @@ export class AdditionalInstructionsSectionComponent implements OnInit {
       this.hearingRequestToCompareMainModel.hearingDetails.listingComments,
       this.hearingRequestMainModel.hearingDetails.listingComments
     );
-    this.additionalInstructions = this.hearingRequestMainModel.hearingDetails.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
+    this.additionalInstructions =
+      this.hearingRequestMainModel.hearingDetails.listingComments?.replace(/(?:\r\n|\r|\n)/g, '<br>') || '';
   }
 
   public onChange(fragmentId: string): void {

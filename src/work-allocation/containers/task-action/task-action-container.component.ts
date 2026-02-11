@@ -22,7 +22,7 @@ import { getAssigneeName, handleFatalErrors } from '../../utils';
 @Component({
   standalone: false,
   selector: 'exui-task-action-container',
-  templateUrl: 'task-action-container.component.html'
+  templateUrl: 'task-action-container.component.html',
 })
 export class TaskActionContainerComponent implements OnInit {
   public tasks: any[];
@@ -37,10 +37,12 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly roleService: AllocateRoleService
-  ) { }
+  ) {}
 
   public get fields(): FieldConfig[] {
-    return this.isJudicial ? ConfigConstants.TaskActionsWithAssigneeForJudicial : ConfigConstants.TaskActionsWithAssigneeForLegalOps;
+    return this.isJudicial
+      ? ConfigConstants.TaskActionsWithAssigneeForJudicial
+      : ConfigConstants.TaskActionsWithAssigneeForLegalOps;
   }
 
   private get returnUrl(): string {
@@ -58,7 +60,7 @@ export class TaskActionContainerComponent implements OnInit {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: this.fields
+    fields: this.fields,
   };
 
   public ngOnInit(): void {
@@ -66,7 +68,7 @@ export class TaskActionContainerComponent implements OnInit {
     // Set up the default sorting.
     this.sortedBy = {
       fieldName: this.taskServiceConfig.defaultSortFieldName,
-      order: this.taskServiceConfig.defaultSortDirection
+      order: this.taskServiceConfig.defaultSortDirection,
     };
 
     // Get the task from the route, which will have been put there by the resolver.
@@ -78,9 +80,11 @@ export class TaskActionContainerComponent implements OnInit {
     if (this.tasks[0].assignee) {
       this.tasks[0].assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworker.caseworker, this.tasks[0].assignee);
       if (!this.tasks[0].assigneeName) {
-        this.roleService.getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction).subscribe((judicialDetails) => {
-          this.tasks[0].assigneeName = judicialDetails[0].full_name;
-        });
+        this.roleService
+          .getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction)
+          .subscribe((judicialDetails) => {
+            this.tasks[0].assigneeName = judicialDetails[0].full_name;
+          });
       }
     }
   }
@@ -122,7 +126,8 @@ export class TaskActionContainerComponent implements OnInit {
         break;
     }
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
-    const hasNoAssigneeOnComplete = action === Actions.Complete.toString() ? this.isTaskUnAssignedOrReAssigned(this.tasks[0]) : false;
+    const hasNoAssigneeOnComplete =
+      action === Actions.Complete.toString() ? this.isTaskUnAssignedOrReAssigned(this.tasks[0]) : false;
     if (action) {
       if (action === ACTION.UNASSIGN) {
         this.taskService.assignTask(this.tasks[0].id, { userId: null }).subscribe({
@@ -132,17 +137,20 @@ export class TaskActionContainerComponent implements OnInit {
             if (handledStatus > 0) {
               this.reportUnavailableErrorAndReturn();
             }
-          }
+          },
         });
       } else {
-        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(() => {
-          this.reportSuccessAndReturn();
-        }, (error) => {
-          const handledStatus = handleFatalErrors(error.status, this.router);
-          if (handledStatus > 0) {
-            this.reportUnavailableErrorAndReturn();
+        this.taskService.performActionOnTask(this.tasks[0].id, action, hasNoAssigneeOnComplete).subscribe(
+          () => {
+            this.reportSuccessAndReturn();
+          },
+          (error) => {
+            const handledStatus = handleFatalErrors(error.status, this.router);
+            if (handledStatus > 0) {
+              this.reportUnavailableErrorAndReturn();
+            }
           }
-        });
+        );
       }
     }
   }
@@ -165,10 +173,7 @@ export class TaskActionContainerComponent implements OnInit {
 
   private reportSuccessAndReturn(): void {
     const message = this.routeData.successMessage;
-    this.returnWithMessage(
-      { type: InfoMessageType.SUCCESS, message },
-      { badRequest: false }
-    );
+    this.returnWithMessage({ type: InfoMessageType.SUCCESS, message }, { badRequest: false });
   }
 
   private reportUnavailableErrorAndReturn(): void {
@@ -183,7 +188,7 @@ export class TaskActionContainerComponent implements OnInit {
       if (this.returnUrl.includes('case-details')) {
         state = {
           showMessage: true,
-          messageText: message.message
+          messageText: message.message,
         };
       } else {
         this.messageService.nextMessage(message);

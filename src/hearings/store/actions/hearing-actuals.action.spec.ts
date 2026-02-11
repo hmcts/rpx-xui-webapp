@@ -8,7 +8,7 @@ describe('Hearing Actuals Actions', () => {
     hearingActuals: null,
     hearingPlanned: null,
     hmcStatus: HMCStatus.AWAITING_ACTUALS,
-    caseDetails: null
+    caseDetails: null,
   };
 
   describe('Reset', () => {
@@ -21,7 +21,8 @@ describe('Hearing Actuals Actions', () => {
   describe('UpdateHearingActuals', () => {
     it('should update hearing actuals action', () => {
       const action = new fromHearingActualsAction.UpdateHearingActuals({
-        hearingId: '1', hearingActuals: payload.hearingActuals
+        hearingId: '1',
+        hearingActuals: payload.hearingActuals,
       });
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_HEARING_ACTUALS);
     });
@@ -43,7 +44,7 @@ describe('Hearing Actuals Actions', () => {
         status: 400,
         statusText: 'Bad Request',
         message: 'Bad Request',
-        errors: []
+        errors: [],
       };
       const action = new fromHearingActualsAction.SubmitHearingActualsFailure(error);
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS_FAILURE);

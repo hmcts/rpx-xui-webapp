@@ -14,7 +14,7 @@ import {
   getExclusionRequestPayload,
   getJudicialUsersFromApi,
   getUserName,
-  mapResponseToExclusions
+  mapResponseToExclusions,
 } from './exclusionService';
 import { getRoleCategoryRequestPayload } from './index';
 import { RoleCategory } from './models/allocate-role.enum';
@@ -34,7 +34,7 @@ describe('exclusions.exclusionService', () => {
     name: 'Judge Birch',
     notes: 'this case been remitted from Upper Tribunal and required different judge',
     type: 'Other',
-    userType: 'Judicial'
+    userType: 'Judicial',
   };
 
   beforeEach(() => {
@@ -63,35 +63,41 @@ describe('exclusions.exclusionService', () => {
     });
 
     it('mapResponseToExclusions with an array', () => {
-      const exclusions = [{
-        actorId: 'actorId',
-        actorIdType: 'actorIdType',
-        attributes: {
-          caseId: '334455',
-          isCaseAllocator: false,
-          jurisdiction: 'jurisdiction',
-          baseLocation: 'loc123',
-          region: 'region1'
+      const exclusions = [
+        {
+          actorId: 'actorId',
+          actorIdType: 'actorIdType',
+          attributes: {
+            caseId: '334455',
+            isCaseAllocator: false,
+            jurisdiction: 'jurisdiction',
+            baseLocation: 'loc123',
+            region: 'region1',
+          },
+          authorisations: [],
+          classification: 'classification',
+          created: new Date(2020, 11, 20),
+          grantType: 'grantType',
+          id: '123',
+          name: 'roleName',
+          readOnly: true,
+          roleCategory: 'roleCategory',
+          roleName: 'roleName',
+          roleType: 'roleType',
         },
-        authorisations: [],
-        classification: 'classification',
-        created: new Date(2020, 11, 20),
-        grantType: 'grantType',
-        id: '123',
-        name: 'roleName',
-        readOnly: true,
-        roleCategory: 'roleCategory',
-        roleName: 'roleName',
-        roleType: 'roleType'
-      }];
-      const caseworker = {
-        firstName: 'John',
-        idamId: 'actorId',
-        lastName: 'Priest'
-      };
-      sandbox.stub(FullUserDetailCache, 'getUserByIdamId')
-        .withArgs('actorId')
-        .returns(caseworker as any);
+      ];
+      const req = {
+        session: {
+          caseworkers: [
+            {
+              firstName: 'John',
+              idamId: 'actorId',
+              lastName: 'Priest',
+            },
+          ],
+          roleAssignments: [],
+        },
+      } as unknown as EnhancedRequest;
       const result = mapResponseToExclusions(exclusions, null);
       expect(result.length).to.equal(1);
       expect(result[0].id).to.equal('123');
@@ -112,10 +118,10 @@ describe('exclusions.exclusionService', () => {
         passport: {
           user: {
             userinfo: {
-              id: 'someId'
-            }
-          }
-        }
+              id: 'someId',
+            },
+          },
+        },
       };
       const response = mockRes();
       await confirmUserExclusion(req, response, next);
@@ -129,7 +135,7 @@ describe('exclusions.exclusionService', () => {
     it('should delete successfully', async () => {
       sandbox.stub(http, 'delete').resolves(res);
       const req = mockReq({
-        body: { roleExclusion: exampleRoleExclusion }
+        body: { roleExclusion: exampleRoleExclusion },
       });
       const response = mockRes();
       await deleteUserExclusion(req, response, next);
@@ -192,11 +198,11 @@ describe('exclusions.exclusionService', () => {
           attributes: {
             caseId: ['123'],
             caseType: ['Asylum'],
-            jurisdiction: ['IA']
+            jurisdiction: ['IA'],
           },
-          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN']
-        }
-      ]
+          roleCategory: ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'],
+        },
+      ],
     } as unknown as EnhancedRequest;
     it('should get the correct payload', async () => {
       expect(getRoleCategoryRequestPayload('123', 'IA', 'Asylum')).to.deep.equal(caseRoleRequestPayload);
@@ -224,24 +230,24 @@ describe('getJudicialUsersFromApi', () => {
     {
       sidam_id: '123',
       full_name: 'John-Priest',
-      email_id: 'john-priest@example.com'
+      email_id: 'john-priest@example.com',
     },
     {
       sidam_id: '456',
       full_name: 'Jane-Priest',
-      email_id: 'jane-priest@example.com'
-    }
+      email_id: 'jane-priest@example.com',
+    },
   ];
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = mockReq({
       body: {
-        userIds
-      }
+        userIds,
+      },
     });
     sandbox.stub(http, 'post').resolves({
-      data
+      data,
     });
   });
 
@@ -252,8 +258,8 @@ describe('getJudicialUsersFromApi', () => {
   it('should get the judicial users successfully', async () => {
     req = mockReq({
       headers: {
-        accept: 'application/json'
-      }
+        accept: 'application/json',
+      },
     });
     const response = await getJudicialUsersFromApi(req, userIds, 'BFA1');
     expect(response.data.length).to.equal(2);

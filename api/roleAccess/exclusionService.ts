@@ -4,7 +4,11 @@ import { NextFunction, Response } from 'express';
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { sendPost } from '../common/crudService';
 import { getConfigValue, showFeature } from '../configuration';
-import { FEATURE_JRD_E_LINKS_V2_ENABLED, SERVICES_CASE_JUDICIAL_REF_PATH, SERVICES_ROLE_ASSIGNMENT_API_PATH } from '../configuration/references';
+import {
+  FEATURE_JRD_E_LINKS_V2_ENABLED,
+  SERVICES_CASE_JUDICIAL_REF_PATH,
+  SERVICES_ROLE_ASSIGNMENT_API_PATH,
+} from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
@@ -63,22 +67,24 @@ export function prepareExclusionBody(currentUserId: string, assigneeId: string, 
   return {
     roleRequest: {
       assignerId: currentUserId,
-      replaceExisting: false
+      replaceExisting: false,
     },
-    requestedRoles: [{
-      roleType: 'CASE',
-      grantType: 'EXCLUDED',
-      classification: 'RESTRICTED',
-      attributes: {
-        caseId: body.caseId,
-        jurisdiction: body.jurisdiction,
-        notes: body.exclusionDescription
+    requestedRoles: [
+      {
+        roleType: 'CASE',
+        grantType: 'EXCLUDED',
+        classification: 'RESTRICTED',
+        attributes: {
+          caseId: body.caseId,
+          jurisdiction: body.jurisdiction,
+          notes: body.exclusionDescription,
+        },
+        roleCategory,
+        roleName: 'conflict-of-interest',
+        actorIdType: 'IDAM',
+        actorId: assigneeId,
       },
-      roleCategory,
-      roleName: 'conflict-of-interest',
-      actorIdType: 'IDAM',
-      actorId: assigneeId
-    }]
+    ],
   };
 }
 
@@ -107,7 +113,7 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[],
     name: roleAssignment.actorId ? getUserName(roleAssignment.actorId) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
-    notes: roleAssignment.attributes.notes as string
+    notes: roleAssignment.attributes.notes as string,
   }));
 }
 
@@ -134,11 +140,11 @@ export function getExclusionRequestPayload(caseId: string, jurisdiction: string,
         attributes: {
           caseId: [caseId],
           caseType: [caseType],
-          jurisdiction: [jurisdiction]
+          jurisdiction: [jurisdiction],
         },
-        grantType: ['EXCLUDED']
-      }
-    ]
+        grantType: ['EXCLUDED'],
+      },
+    ],
   };
 }
 
@@ -172,11 +178,13 @@ export function getCorrectRoleCategory(domain: string): RoleCategory {
   }
 }
 
-export function getJudicialUsersFromApi(req: express.Request, ids: string[], serviceCode: string): Promise<AxiosResponse<JudicialUserDto[]>> {
+export function getJudicialUsersFromApi(
+  req: express.Request,
+  ids: string[],
+  serviceCode: string
+): Promise<AxiosResponse<JudicialUserDto[]>> {
   // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-  req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-    ? HEADER_ACCEPT_V2
-    : HEADER_ACCEPT_V1;
+  req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED) ? HEADER_ACCEPT_V2 : HEADER_ACCEPT_V1;
   const headers = setHeaders(req);
   return http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users`, { sidam_ids: ids, serviceCode }, { headers });
 }

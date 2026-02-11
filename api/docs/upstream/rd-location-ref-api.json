@@ -1,0 +1,493 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [{ "url": "http://localhost", "description": "Generated server url" }],
+  "paths": {
+    "/refdata/location/regions": {
+      "get": {
+        "tags": ["lrd-api-controller"],
+        "summary": "This API will retrieve Region details for the given Region description",
+        "description": "No roles required to access this API",
+        "operationId": "retrieveRegionDetails",
+        "parameters": [
+          { "name": "region", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "regionId", "in": "query", "required": false, "schema": { "type": "string" } },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a list of Region Details",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/LrdRegionResponse" } } }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "404": { "description": "No Region(s) found with the given Description(s) or ID(s)" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }]
+      }
+    },
+    "/refdata/location/orgServices": {
+      "get": {
+        "tags": ["lrd-api-controller"],
+        "summary": "This API will retrieve service code details association with ccd case type",
+        "description": "No roles required to access this API",
+        "operationId": "retrieveOrgServiceDetails",
+        "parameters": [
+          { "name": "serviceCode", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "ccdCaseType", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "ccdServiceNames", "in": "query", "required": false, "schema": { "type": "string" } },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LrdOrgInfoServiceResponse" } } }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "404": { "description": "No Service found with the given ID" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }]
+      }
+    },
+    "/refdata/location/court-venues": {
+      "get": {
+        "tags": ["lrd-court-venue-controller"],
+        "summary": "This API will retrieve Court Venues for the request provided",
+        "description": "No roles required to access this API.<br>For the request param 'epimms_id', either a single epimms_id or a list of epimms_ids separated by comas can be passed. In any of these cases, a list of associated court venues would be returned.<br>Additionally, if 'ALL' is passed as the epimms_id value, then all the available court venues associated with the available list of epimms_id are returned as a list.<br>For the request param 'court_type_id', then all the court venues that have the status as 'Open' with the requested court_type_id are returned as a list.<br>request param 'epimms_id' can be passed with 'court_type_id' . Court venues associated with the epimmsId and\ncourt type id returned as list.\nFor the request param 'region_id', the value needs to be a single region_id for which all the associated court venues with the status as 'Open' would be returned as a list.<br>For the request param 'cluster_id', the value needs to be a single cluster_id for which all the associated court venues with the status as 'Open' would be returned as a list.<br>For the request param 'court_venue_name', all the associated court venues that have the same site name or court name irrespective of the case are returned as a list.<br>If no params are passed, then all the available court venues which have the status as 'OPEN' are returned as a list.<br>Additional API filters are applied with request params 'is_hearing_location', 'is_case_management_location'<br>'location_type' and 'is_temporary_location'.<br>Optional param's are 'is_hearing_location','is_case_management_location','location_type'and 'is_temporary_location'.<br>At a time only one param is allowed from 'region_id','cluster_id','court_venue_name'. 'epimms_id' can be passed along with 'court_type_id'. ",
+        "operationId": "retrieveCourtVenues",
+        "parameters": [
+          { "name": "epimms_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "court_type_id", "in": "query", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "name": "region_id", "in": "query", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "name": "cluster_id", "in": "query", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "name": "court_venue_name", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "is_hearing_location", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "is_case_management_location", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "location_type", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "is_temporary_location", "in": "query", "required": false, "schema": { "type": "string" } },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of Court Venues for the request provided",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/LrdCourtVenueResponse" } }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "404": { "description": "No Court Venues found for the request provided" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "ServiceAuthorization": [] }, { "Authorization": [] }]
+      }
+    },
+    "/refdata/location/court-venues/venue-search": {
+      "get": {
+        "tags": ["lrd-court-venue-controller"],
+        "summary": "This endpoint will be used for Court Venues search based on partial query. When the consumers inputs any 3 characters, they will call this api to fetch the required result.",
+        "description": "No roles required to access this API",
+        "operationId": "retrieveCourtVenuesBySearchString",
+        "parameters": [
+          {
+            "name": "search-string",
+            "in": "query",
+            "description": "Alphabets, Numeric And Special characters(_@.,’&-() ) only allowed and String should contain minimum three chars.",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "court-type-id",
+            "in": "query",
+            "description": "Alphabets and Numeric values only allowed in comma separated format",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "is_hearing_location",
+            "in": "query",
+            "description": "Allowed values are \"Y\" or \"N\"",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "is_case_management_location",
+            "in": "query",
+            "description": "Allowed values are \"Y\" or \"N\"",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "location_type",
+            "in": "query",
+            "description": "allowed values are CTSC, NBC, Court,CCBC etc",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "is_temporary_location",
+            "in": "query",
+            "description": "Allowed values are \"Y\" or \"N\"",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of Court Venues for the request provided",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/LrdCourtVenueResponse" } }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "ServiceAuthorization": [] }, { "Authorization": [] }]
+      }
+    },
+    "/refdata/location/court-venues/services": {
+      "get": {
+        "tags": ["lrd-court-venue-controller"],
+        "summary": "This API will retrieve Court Venues for given Service Code",
+        "description": "No roles required to access this API",
+        "operationId": "retrieveCourtVenuesByServiceCode",
+        "parameters": [
+          { "name": "service_code", "in": "query", "required": true, "schema": { "type": "string", "minLength": 1 } },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of Court Venues for given Service Code",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/LrdCourtVenuesByServiceCodeResponse" } }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "404": { "description": "No Court Venues found with the given Service Code" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "ServiceAuthorization": [] }, { "Authorization": [] }]
+      }
+    },
+    "/refdata/location/building-locations": {
+      "get": {
+        "tags": ["lrd-api-controller"],
+        "summary": "This API will retrieve the Building Location details for the request param provided",
+        "description": "Any valid IDAM role is sufficient to access this API <br>For the request param 'epimms_id', the value can be a single id for which single building location object would be returned or a list of ids passed as comma separated values for which the associated building location objects would be returned as a list.<br>Additionally, if 'ALL' is passed as the epimms_id value, all the available building locations are returned as a list.For the request param 'building_location_name', the value needs to be a single building location name for which a single building location object would be returned.<br>For the request param 'region_id', the value needs to be a single region_id for which all the associated building location objects would be returned as a list.<br>For the request param 'cluster_id', the value needs to be a single cluster_id for which all the associated building location objects would be returned as a list.<br>If no params are passed, then all the available building locations which have the building location status as 'OPEN' are returned as a list.<br>At a time only one param is allowed from 'epimms_id','building_location_name','region_id','cluster_id'.",
+        "operationId": "retrieveBuildingLocationDetails",
+        "parameters": [
+          { "name": "epimms_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "building_location_name", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "region_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "cluster_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/LrdBuildingLocationResponse" } }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "404": { "description": "No Service found with the given ID" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }]
+      }
+    },
+    "/refdata/location/building-locations/search": {
+      "get": {
+        "tags": ["lrd-api-controller"],
+        "summary": "This end point will be used to search the open building locations based on the the partial search string . When the consumers inputs minimum 3 characters, they will call this api to fetch the required result.",
+        "description": "No roles required to access this API",
+        "operationId": "retrieveBuildingLocationDetailsBySearchString",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Alphabets, Numeric And Special characters(&,/-()[]<space>') only allowed and String should contain minimum three chars.",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the building location information for the given search string",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/LrdBuildingLocationBySearchResponse" } }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Forbidden Error: Access denied" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }]
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["welcome-controller"],
+        "description": "Welcome message for the Location Ref Data API",
+        "operationId": "welcome",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Welcome message", "content": { "application/json": { "schema": { "type": "string" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LrdRegionResponse": {
+        "type": "object",
+        "properties": {
+          "region_id": { "type": "string" },
+          "description": { "type": "string" },
+          "welsh_description": { "type": "string" }
+        }
+      },
+      "LrdOrgInfoServiceResponse": {
+        "type": "object",
+        "properties": {
+          "jurisdiction": { "type": "string" },
+          "service_id": { "type": "integer", "format": "int64" },
+          "org_unit": { "type": "string" },
+          "business_area": { "type": "string" },
+          "sub_business_area": { "type": "string" },
+          "service_description": { "type": "string" },
+          "service_code": { "type": "string" },
+          "service_short_description": { "type": "string" },
+          "ccd_service_name": { "type": "string" },
+          "last_update": { "type": "string" },
+          "ccd_case_types": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "LrdCourtVenueResponse": {
+        "type": "object",
+        "properties": {
+          "court_venue_id": { "type": "string" },
+          "epimms_id": { "type": "string" },
+          "site_name": { "type": "string" },
+          "region_id": { "type": "string" },
+          "region": { "type": "string" },
+          "court_type": { "type": "string" },
+          "court_type_id": { "type": "string" },
+          "cluster_id": { "type": "string" },
+          "cluster_name": { "type": "string" },
+          "open_for_public": { "type": "string" },
+          "court_address": { "type": "string" },
+          "postcode": { "type": "string" },
+          "phone_number": { "type": "string" },
+          "closed_date": { "type": "string" },
+          "court_location_code": { "type": "string" },
+          "dx_address": { "type": "string" },
+          "welsh_site_name": { "type": "string" },
+          "welsh_court_address": { "type": "string" },
+          "court_status": { "type": "string" },
+          "court_open_date": { "type": "string" },
+          "court_name": { "type": "string" },
+          "venue_name": { "type": "string" },
+          "is_case_management_location": { "type": "string" },
+          "is_hearing_location": { "type": "string" },
+          "welsh_venue_name": { "type": "string" },
+          "is_temporary_location": { "type": "string" },
+          "is_nightingale_court": { "type": "string" },
+          "location_type": { "type": "string" },
+          "parent_location": { "type": "string" },
+          "welsh_court_name": { "type": "string" },
+          "uprn": { "type": "string" },
+          "venue_ou_code": { "type": "string" },
+          "mrd_building_location_id": { "type": "string" },
+          "mrd_venue_id": { "type": "string" },
+          "service_url": { "type": "string" },
+          "fact_url": { "type": "string" },
+          "external_short_name": { "type": "string" },
+          "welsh_external_short_name": { "type": "string" }
+        }
+      },
+      "LrdCourtVenuesByServiceCodeResponse": {
+        "type": "object",
+        "properties": {
+          "service_code": { "type": "string" },
+          "court_type_id": { "type": "string" },
+          "court_type": { "type": "string" },
+          "welsh_court_type": { "type": "string" },
+          "court_venues": { "type": "array", "items": { "$ref": "#/components/schemas/LrdCourtVenueResponse" } }
+        }
+      },
+      "LrdBuildingLocationResponse": {
+        "type": "object",
+        "properties": {
+          "area": { "type": "string" },
+          "region": { "type": "string" },
+          "postcode": { "type": "string" },
+          "address": { "type": "string" },
+          "building_location_id": { "type": "string" },
+          "building_location_name": { "type": "string" },
+          "epimms_id": { "type": "string" },
+          "building_location_status": { "type": "string" },
+          "region_id": { "type": "string" },
+          "cluster_name": { "type": "string" },
+          "cluster_id": { "type": "string" },
+          "court_finder_url": { "type": "string" },
+          "court_venues": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LrdCourtVenueResponse" },
+            "uniqueItems": true
+          }
+        }
+      },
+      "LrdBuildingLocationBySearchResponse": {
+        "type": "object",
+        "properties": {
+          "area": { "type": "string" },
+          "region": { "type": "string" },
+          "address": { "type": "string" },
+          "postcode": { "type": "string" },
+          "epimms_id": { "type": "string" },
+          "building_location_name": { "type": "string" },
+          "building_location_status": { "type": "string" },
+          "region_id": { "type": "string" },
+          "cluster_id": { "type": "string" },
+          "cluster_name": { "type": "string" },
+          "court_finder_url": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" },
+      "ServiceAuthorization": {
+        "type": "apiKey",
+        "description": "ServiceAuthorization",
+        "name": "ServiceAuthorization",
+        "in": "header",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

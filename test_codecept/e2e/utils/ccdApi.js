@@ -18,8 +18,8 @@ class CcdApi {
         expect(response.status, `${reqPath} ccd api faild status code: ${response.status}`).to.eql(200);
         return response.data;
       });
-    } catch (err){
-      CucumberReportLogger.AddMessage('Error occured, will attempt again in 5sec '+err);
+    } catch (err) {
+      CucumberReportLogger.AddMessage('Error occured, will attempt again in 5sec ' + err);
       await BrowserWaits.waitForSeconds(5);
       throw new Error(err);
     }
@@ -92,13 +92,16 @@ class CcdApi {
   async _getCaseId() {
     let publicUrl;
     const caseId = await BrowserWaits.retryWithActionCallback(() => {
-      return browser.getCurrentUrl().then((url) => {
-        publicUrl = url;
-        this.caseId = publicUrl.split('/').slice(5, 6).join('/');
-        return this.caseId;
-      }).catch((error) => {
-        return error;
-      });
+      return browser
+        .getCurrentUrl()
+        .then((url) => {
+          publicUrl = url;
+          this.caseId = publicUrl.split('/').slice(5, 6).join('/');
+          return this.caseId;
+        })
+        .catch((error) => {
+          return error;
+        });
     });
     return caseId;
   }

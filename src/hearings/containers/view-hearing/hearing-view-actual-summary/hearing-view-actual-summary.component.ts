@@ -10,30 +10,33 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-hearing-view-actual-summary',
-  templateUrl: './hearing-view-actual-summary.component.html'
+  templateUrl: './hearing-view-actual-summary.component.html',
 })
 export class HearingViewActualSummaryComponent implements OnInit, OnDestroy {
   public hearingActualsMainModel: HearingActualsMainModel;
   public subscription: Subscription;
   public showSpinner$: Observable<boolean>;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly loadingService: LoadingService) {
-  }
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loadingService: LoadingService
+  ) {}
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.subscription = this.hearingStore.select(fromHearingStore.getHearingActuals)
-      .pipe(
-        filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel),
-      )
-      .subscribe((state: HearingActualsStateData) => {
-        this.hearingActualsMainModel = state.hearingActualsMainModel;
-        this.loadingService.unregister(loadingToken);
-      }, () => {
-        this.loadingService.unregister(loadingToken);
-      });
+    this.subscription = this.hearingStore
+      .select(fromHearingStore.getHearingActuals)
+      .pipe(filter((state: HearingActualsStateData) => !!state.hearingActualsMainModel))
+      .subscribe(
+        (state: HearingActualsStateData) => {
+          this.hearingActualsMainModel = state.hearingActualsMainModel;
+          this.loadingService.unregister(loadingToken);
+        },
+        () => {
+          this.loadingService.unregister(loadingToken);
+        }
+      );
   }
 
   public ngOnDestroy(): void {

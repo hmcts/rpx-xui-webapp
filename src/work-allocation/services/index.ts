@@ -13,5 +13,5 @@ export {
   StaffSupportedJurisdictionsService,
   WASupportedJurisdictionsService,
   WorkAllocationCaseService,
-  WorkAllocationTaskService
+  WorkAllocationTaskService,
 };

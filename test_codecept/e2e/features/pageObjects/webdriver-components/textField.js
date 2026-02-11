@@ -25,7 +25,7 @@ class TextField {
    * @returns {Promise<boolean|*>}
    */
   async isType(type) {
-    return await $(this.css).getAttribute('type') === type;
+    return (await $(this.css).getAttribute('type')) === type;
   }
 
   /**
@@ -55,16 +55,16 @@ class TextField {
     }
   }
 
-  async waitForElementToBeVisible(page, timeout= DEFAULT_TIMEOUT) {
-  try {
-    const locator = page.locator(this.css);
-    await locator.waitFor({ state: 'visible', timeout });
-    return true;
-  } catch (e) {
-    const message = `timed out after ${timeout}ms waiting for element "${this.css}" to be visible`;
-    throw new CustomError(message, e);
+  async waitForElementToBeVisible(page, timeout = DEFAULT_TIMEOUT) {
+    try {
+      const locator = page.locator(this.css);
+      await locator.waitFor({ state: 'visible', timeout });
+      return true;
+    } catch (e) {
+      const message = `timed out after ${timeout}ms waiting for element "${this.css}" to be visible`;
+      throw new CustomError(message, e);
+    }
   }
-}
 
   /**
    * Clear contents of an input field

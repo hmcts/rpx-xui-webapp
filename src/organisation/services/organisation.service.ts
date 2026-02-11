@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
 export const ENVIRONMENT = {
-  orgUri: '/api/organisation'
+  orgUri: '/api/organisation',
 };
 
 @Injectable()
@@ -21,12 +21,9 @@ export class OrganisationService {
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        'body was:', error.error);
+      console.error(`Backend returned code ${error.status}, ` + 'body was:', error.error);
     }
     // return an observable with a user-facing error message
-    return throwError(
-      'error please try again later.');
+    return throwError('error please try again later.');
   }
 }

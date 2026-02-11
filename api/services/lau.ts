@@ -2,7 +2,7 @@ import { getConfigValue, showFeature } from '../configuration';
 import * as log4jui from '../lib/log4jui';
 import {
   SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH,
-  FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED
+  FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED,
 } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
@@ -12,31 +12,31 @@ export let featureSpecificChallengedAccessEnabled = showFeature(FEATURE_LAU_SPEC
 export const logger = log4jui.getLogger('lauService');
 
 export const ENDPOINTS = {
-  CREATE_ACTION_LOG: '/audit/accessRequest'
+  CREATE_ACTION_LOG: '/audit/accessRequest',
 };
 
 export const ACTION_TYPE = {
   CREATED: 'CREATED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
-  AUTO_APPROVED: 'AUTO-APPROVED'
+  AUTO_APPROVED: 'AUTO-APPROVED',
 };
 
 export const REQUEST_TYPE = {
   SPECIFIC: 'specific',
-  CHALLENGED: 'challenged'
+  CHALLENGED: 'challenged',
 };
 
 const CHALLENGED_REASON = {
   0: 'The cases or parties are linked to the case I am working on',
   1: 'To determine if the case needs to be consolidated',
   2: 'To consider an order for transfer',
-  3: 'Other reason'
+  3: 'Other reason',
 };
 
 export type AccessLogContainer = {
-  accessLog: AccessLog
-}
+  accessLog: AccessLog;
+};
 
 export type AccessLog = {
   requestType: string;
@@ -46,7 +46,7 @@ export type AccessLog = {
   timestamp: string;
   reason: string;
   requestEndTimestamp: string;
-}
+};
 
 export interface detailObject {
   reason?: number;
@@ -123,13 +123,13 @@ async function createAccessLogFromRequest(req: EnhancedRequest) {
 
   try {
     const accessLog: AccessLog = {
-      requestType: (process === 'specific-access') ? REQUEST_TYPE.SPECIFIC : REQUEST_TYPE.CHALLENGED,
+      requestType: process === 'specific-access' ? REQUEST_TYPE.SPECIFIC : REQUEST_TYPE.CHALLENGED,
       caseRef: requestedRole?.attributes?.caseId,
       userId: requestedRole?.actorId,
       action: process === 'specific-access' ? ACTION_TYPE.CREATED : ACTION_TYPE.AUTO_APPROVED,
       timestamp: requestedRole?.notes[0]?.time,
       reason: reason,
-      requestEndTimestamp: process ==='specific-access' ? null : requestedRole?.endTime
+      requestEndTimestamp: process === 'specific-access' ? null : requestedRole?.endTime,
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);
   } catch (error) {
@@ -190,7 +190,7 @@ async function createAccessLogFromRequest(req: EnhancedRequest) {
  */
 async function createAccessLogFromDecision(req: EnhancedRequest) {
   const approval = !!req.body.specificAccessStateData;
-  const data = approval? req.body.specificAccessStateData : req.body;
+  const data = approval ? req.body.specificAccessStateData : req.body;
 
   const userInfo = req.session?.passport?.user?.userinfo;
   const actorId = userInfo?.id ? userInfo.id : userInfo.uid;
@@ -202,7 +202,7 @@ async function createAccessLogFromDecision(req: EnhancedRequest) {
       action: approval ? ACTION_TYPE.APPROVED : ACTION_TYPE.REJECTED,
       timestamp: new Date().toISOString(),
       reason: data?.comment ? `Request more information - ${data.comment}` : data?.comment,
-      requestEndTimestamp: req.body.period?.endDate
+      requestEndTimestamp: req.body.period?.endDate,
     };
     return await createAccessLog(req.headers.ServiceAuthorization, accessLog);
   } catch (error) {
@@ -211,7 +211,7 @@ async function createAccessLogFromDecision(req: EnhancedRequest) {
   return false;
 }
 
-function getRequestReason(process: string, detail:detailObject): string {
+function getRequestReason(process: string, detail: detailObject): string {
   let reason = '';
   if (process === 'specific-access') {
     reason = detail.specificReason;
@@ -226,11 +226,11 @@ function getRequestReason(process: string, detail:detailObject): string {
   return reason;
 }
 
-export async function createAccessLog(serviceToken:string, accessLog: AccessLog) {
+export async function createAccessLog(serviceToken: string, accessLog: AccessLog) {
   const headers: any = {
-    'ServiceAuthorization': serviceToken,
+    ServiceAuthorization: serviceToken,
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    Accept: 'application/json',
   };
 
   return await http.post(`${baseURL}${ENDPOINTS.CREATE_ACTION_LOG}`, { accessLog } as AccessLogContainer, { headers });

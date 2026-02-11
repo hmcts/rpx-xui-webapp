@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-// import mocha from 'mocha';
 import { config } from '../config/config';
 import { getXSRFToken } from '../utils/authUtil';
 import { setTestContext } from '../utils/helper';
@@ -22,12 +21,12 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
 
     const reqBody = {
-      serviceIds: ['IA']
+      serviceIds: ['IA'],
     };
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': String(JSON.stringify(reqBody).length),
     };
 
     const response = await Request.post('workallocation/caseworker/getUsersByServiceName', reqBody, headers, 200);
@@ -46,12 +45,12 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
 
     const reqBody = {
       services: ['IA'],
-      userIds: [config.workallocation[config.testEnv].judgeUser.id]
+      userIds: [config.workallocation[config.testEnv].judgeUser.id],
     };
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': String(JSON.stringify(reqBody).length),
     };
 
     const response = await Request.post('api/role-access/roles/getJudicialUsers', reqBody, headers, 200);
@@ -68,13 +67,13 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
       searchOptions: {
         services: ['IA'],
         searchTerm: 'Tom',
-        userRole: 'Judicial'
-      }
+        userRole: 'Judicial',
+      },
     };
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length
+      'content-length': String(JSON.stringify(reqBody).length),
     };
 
     const response = await Request.post('workallocation/findPerson', reqBody, headers, 200);
@@ -85,4 +84,3 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
     expect(Object.keys(response.data[0])).to.have.all.keys(Object.keys(expectedCases));
   });
 });
-

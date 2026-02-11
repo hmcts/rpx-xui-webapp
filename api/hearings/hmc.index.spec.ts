@@ -176,7 +176,9 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith('submitHearingRequest error for caseID: undefined hearingID: undefined : (400) : undefined');
+      expect(trackTraceStub).to.have.been.calledWith(
+        'submitHearingRequest error for caseID: undefined hearingID: undefined : (400) : undefined'
+      );
       expect(next).to.have.been.calledWith(error);
     });
 
@@ -188,7 +190,9 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(trackTraceStub).to.have.been.calledWith('submitHearingRequest error for caseID: undefined hearingID: undefined : (500) : undefined');
+      expect(trackTraceStub).to.have.been.calledWith(
+        'submitHearingRequest error for caseID: undefined hearingID: undefined : (500) : undefined'
+      );
       expect(next).to.have.been.calledWith(error);
     });
   });
@@ -417,11 +421,7 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.putLinkedHearingGroup(req, res, next);
 
-      expect(sendPutStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup?id=g1000000`,
-        req.body,
-        req
-      );
+      expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup?id=g1000000`, req.body, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -452,11 +452,7 @@ describe('HMC Hearings API', () => {
 
       await hmcIndex.deleteLinkedHearingGroup(req, res, next);
 
-      expect(handleDeleteStub).to.have.been.calledWith(
-        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`,
-        req.body,
-        req
-      );
+      expect(handleDeleteStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`, req.body, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });

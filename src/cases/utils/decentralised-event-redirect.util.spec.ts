@@ -12,6 +12,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'pcs',
         caseId: '1234567890',
+        isCaseCreate: false,
         eventId: 'ext:fooEvent',
         queryParams: { tid: 'task-1', foo: 'bar' },
       },
@@ -46,6 +47,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'PCS',
         caseId: '1234567890',
+        isCaseCreate: false,
         eventId: 'standardEvent',
       },
       { PCS: 'https://pcs-frontend.service.gov.uk' },
@@ -61,6 +63,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'Prefix-Case',
         caseId: '123',
+        isCaseCreate: false,
         eventId: 'ext:fooEvent',
       },
       {
@@ -79,6 +82,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'PCS_PR_1234',
         caseId: '123',
+        isCaseCreate: false,
         eventId: 'ext:fooEvent',
       },
       {
@@ -96,6 +100,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'AB123',
         caseId: '123',
+        isCaseCreate: false,
         eventId: 'ext:fooEvent',
       },
       {
@@ -114,6 +119,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'PCS_PR_1234',
         caseId: '123',
+        isCaseCreate: false,
         eventId: 'ext:fooEvent',
       },
       {
@@ -131,6 +137,7 @@ describe('decentralised-event-redirect.util', () => {
       {
         caseType: 'PCS_PR_',
         caseId: '123',
+        isCaseCreate: false,
         eventId: 'ext:fooEvent',
       },
       {

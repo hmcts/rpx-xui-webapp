@@ -6,7 +6,7 @@ type DecentralisedEventBaseUrls = EnvironmentConfig['decentralisedEventBaseUrls'
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
 
-const isDecentralisedEvent = (eventId?: string): boolean => {
+const isDecentralisedEvent = (eventId?: string): eventId is string => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
 };
 
@@ -36,8 +36,8 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
-const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType?: string): string | null => {
-  if (!baseUrls || !caseType) {
+const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType: string): string | null => {
+  if (!baseUrls) {
     return null;
   }
 
@@ -98,14 +98,25 @@ const appendQueryParams = (params: URLSearchParams, queryParams?: Params): void 
   });
 };
 
-export interface BuildDecentralisedEventUrlInput {
-  caseType?: string;
-  eventId?: string;
-  caseId?: string;
-  jurisdiction?: string;
+interface BuildDecentralisedEventUrlCommonInput {
+  eventId: string;
+  caseType: string;
   queryParams?: Params;
-  isCaseCreate?: boolean;
 }
+
+interface BuildDecentralisedCaseCreateEventUrlInput extends BuildDecentralisedEventUrlCommonInput {
+  isCaseCreate: true;
+  jurisdiction: string;
+}
+
+interface BuildDecentralisedCaseEventUrlInput extends BuildDecentralisedEventUrlCommonInput {
+  isCaseCreate: false;
+  caseId: string;
+}
+
+export type BuildDecentralisedEventUrlInput =
+  | BuildDecentralisedCaseCreateEventUrlInput
+  | BuildDecentralisedCaseEventUrlInput;
 
 export const buildDecentralisedEventUrl = (
   params: BuildDecentralisedEventUrlInput,
@@ -121,19 +132,14 @@ export const buildDecentralisedEventUrl = (
     return null;
   }
 
-  if (params.isCaseCreate && (!params.jurisdiction || !params.caseType)) {
-    return null;
-  }
-
-  if (!params.isCaseCreate && !params.caseId) {
-    return null;
-  }
-
   // Remove any trailing slashes from our base url
   const base = baseUrl.replace(/\/+$/, '');
-  const eventPath = params.isCaseCreate
-    ? `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`
-    : `/cases/${encodeURIComponent(params.caseId)}/event/${encodeURIComponent(params.eventId)}`;
+  let eventPath: string;
+  if (params.isCaseCreate === true) {
+    eventPath = `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`;
+  } else {
+    eventPath = `/cases/${encodeURIComponent(params.caseId)}/event/${encodeURIComponent(params.eventId)}`;
+  }
 
   const searchParams = new URLSearchParams();
   appendQueryParams(searchParams, params.queryParams);

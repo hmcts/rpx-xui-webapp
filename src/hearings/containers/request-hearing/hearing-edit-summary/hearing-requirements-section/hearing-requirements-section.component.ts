@@ -59,14 +59,14 @@ export class HearingRequirementsSectionComponent implements OnInit {
           const reasonableAdjustments = partyInSHV.individualDetails?.reasonableAdjustments?.filter((flagCode) =>
             flagCode?.startsWith('RA')
           );
-          flagIds = CaseFlagsUtils.addLanguageFlagIfMissing(reasonableAdjustments.slice(), partyInSHV.individualDetails);
+          flagIds = CaseFlagsUtils.addLanguageFlagIfMissing(reasonableAdjustments?.slice(), partyInSHV.individualDetails);
         } else {
           const partyInHMC = this.partyDetails.find((partyInHMC) => partyInHMC.partyID === partyInSHV.partyID);
           if (partyInHMC) {
             const reasonableAdjustments = partyInHMC.individualDetails?.reasonableAdjustments?.filter((flagCode) =>
               flagCode?.startsWith('RA')
             );
-            flagIds = CaseFlagsUtils.addLanguageFlagIfMissing(reasonableAdjustments.slice(), partyInHMC?.individualDetails);
+            flagIds = CaseFlagsUtils.addLanguageFlagIfMissing(reasonableAdjustments?.slice(), partyInHMC?.individualDetails);
           }
         }
         const flags = flagIds

@@ -122,9 +122,9 @@ test.describe('Node app endpoints', () => {
     expect(JSON.stringify(response.data).length).toBeLessThan(6);
   });
 
-  test('healthCheck responds with healthState', async ({ anonymousClient }) => {
-    const response = await anonymousClient.get<{ healthState?: boolean }>('api/healthCheck?path=', { throwOnError: false });
-    expectStatus(response.status, [200, 500, 502, 504]);
+  test('healthCheck responds with healthState', async ({ apiClient }) => {
+    const response = await apiClient.get<{ healthState?: boolean }>('api/healthCheck?path=', { throwOnError: false });
+    expectStatus(response.status, StatusSets.guardedExtended);
     if (response.status === 200) {
       expect(typeof response.data?.healthState).toBe('boolean');
     }

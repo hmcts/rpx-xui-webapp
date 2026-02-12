@@ -23,8 +23,6 @@ import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdicti
 
 const router = express.Router({ mergeParams: true });
 
-router.use('/healthCheck', healthCheck);
-
 router.get('/monitoring-tools', (req, res) => {
   res.send({
     key: getConfigValue(APP_INSIGHTS_KEY),
@@ -44,6 +42,8 @@ if (docsEnabled) {
 }
 
 router.use(authInterceptor);
+
+router.use('/healthCheck', healthCheck);
 
 router.use('/user', userRouter);
 

@@ -5,7 +5,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { SessionStorageService } from '../../app/services';
 import { JurisdictionsService } from './juridictions.service';
 
-xdescribe('JurisdictionsService', () => {
+describe('JurisdictionsService', () => {
   let service: JurisdictionsService;
   let httpMock: HttpTestingController;
   let sessionStorageService: SessionStorageService;

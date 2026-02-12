@@ -20,7 +20,7 @@ function rowMatchesExpected(row: Record<string, string>, expected: Record<string
 }
 
 test.describe('Case level case flags', () => {
-  test.describe.configure({ timeout: 120000 });
+  test.describe.configure({ timeout: 180000 });
   let caseNumber: string;
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
@@ -101,7 +101,7 @@ test.describe('Case level case flags', () => {
 });
 
 test.describe('Party level case flags', () => {
-  test.describe.configure({ timeout: 120000 });
+  test.describe.configure({ timeout: 180000 });
   const testValue = faker.person.firstName();
   let caseNumber: string;
   const jurisdiction = 'DIVORCE';

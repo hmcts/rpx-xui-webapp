@@ -53,14 +53,47 @@ index b631af70f15c2a4c7b76f6a8d9d4f6a2c9d8e4a1..3005ca02f4f85dfaf1f4f179f430f9b6
 @@ -38,5 +38,5 @@
  							<tr>
 -								<th class="odhin-text-2 px-2">Status</th>
-+								<th class="odhin-text-2 px-2">Status (Final Outcomes)</th>
++								<th class="odhin-text-2 px-2">Status (Final Outcomes After Retries)</th>
  								<th class="odhin-text-2 px-2">Tests</th>
  								<th class="odhin-text-2 px-2">Percentage</th>
  							</tr>
-@@ -87,6 +87,54 @@
+@@ -87,6 +87,67 @@
  									{{.TestFlakyPercentage}}%
  								</td>
  							</tr>
++							<tr>
++								<th class="odhin-text-2 px-2 pt-3" colspan="3">Status (Attempt Outcomes Including Retries)</th>
++							</tr>
++							<tr>
++								<td class="chart-status-passed fs-6">Passed Attempts</td>
++								<td class="chart-status-passed-info">{{.AttemptPassedValue}}</td>
++								<td class="chart-status-passed-info fst-italic">{{.AttemptPassedPercentage}}%</td>
++							</tr>
++							<tr>
++								<td class="chart-status-failed fs-6">Failed Attempts</td>
++								<td class="chart-status-failed-info">{{.AttemptFailedValue}}</td>
++								<td class="chart-status-failed-info fst-italic">{{.AttemptFailedPercentage}}%</td>
++							</tr>
++							<tr>
++								<td class="chart-status-timedOut fs-6">Timed Out Attempts</td>
++								<td class="chart-status-timedOut-info">{{.AttemptTimedOutValue}}</td>
++								<td class="chart-status-timedOut-info fst-italic">{{.AttemptTimedOutPercentage}}%</td>
++							</tr>
++							<tr>
++								<td class="chart-status-skipped fs-6">Skipped Attempts</td>
++								<td class="chart-status-skipped-info">{{.AttemptSkippedValue}}</td>
++								<td class="chart-status-skipped-info fst-italic">{{.AttemptSkippedPercentage}}%</td>
++							</tr>
++							<tr>
++								<td class="chart-status-interrupted fs-6">Interrupted Attempts</td>
++								<td class="chart-status-interrupted-info">{{.AttemptInterruptedValue}}</td>
++								<td class="chart-status-interrupted-info fst-italic">{{.AttemptInterruptedPercentage}}%</td>
++							</tr>
++							<tr>
++								<td class="chart-status-flaky fs-6">Flaky Attempts</td>
++								<td class="chart-status-flaky-info">{{.AttemptFlakyValue}}</td>
++								<td class="chart-status-flaky-info fst-italic">{{.AttemptFlakyPercentage}}%</td>
++							</tr>
 +							<tr>
 +								<th class="odhin-text-2 px-2 pt-3" colspan="3">Execution Detail</th>
 +							</tr>
@@ -89,26 +122,6 @@ index b631af70f15c2a4c7b76f6a8d9d4f6a2c9d8e4a1..3005ca02f4f85dfaf1f4f179f430f9b6
 +								<td class="chart-status-flaky-info">{{.RecoveredFlakyTests}}</td>
 +								<td></td>
 +							</tr>
-+							<tr>
-+								<td class="chart-status-failed fs-6">Transient Failed/Timed Out/Interrupted Attempts</td>
-+								<td class="chart-status-failed-info">{{.TransientFailureAttempts}}</td>
-+								<td></td>
-+							</tr>
-+							<tr>
-+								<td class="chart-status-failed fs-6">Transient Failed Attempts</td>
-+								<td class="chart-status-failed-info">{{.TransientFailedAttempts}}</td>
-+								<td></td>
-+							</tr>
-+							<tr>
-+								<td class="chart-status-timedOut fs-6">Transient Timed Out Attempts</td>
-+								<td class="chart-status-timedOut-info">{{.TransientTimedOutAttempts}}</td>
-+								<td></td>
-+							</tr>
-+							<tr>
-+								<td class="chart-status-interrupted fs-6">Transient Interrupted Attempts</td>
-+								<td class="chart-status-interrupted-info">{{.TransientInterruptedAttempts}}</td>
-+								<td></td>
-+							</tr>
  						</table>
  					</td>
  				</tr>
@@ -116,7 +129,7 @@ diff --git a/lib/generate.js b/lib/generate.js
 index a4679f3122e76eb27f18b7019666cf129b3f2b56..0ee54f845b6f2e4574e2d24a2c14ddae2f1ff8d8 100644
 --- a/lib/generate.js
 +++ b/lib/generate.js
-@@ -721,12 +721,62 @@ class Generate {
+@@ -721,12 +721,69 @@ class Generate {
          // Edit RunInfo
          this.runInfo = this.runInfo.replaceAll("{{.Project}}", this.execOptions.project);
          this.runInfo = this.runInfo.replaceAll("{{.Release}}", this.execOptions.release);
@@ -137,10 +150,12 @@ index a4679f3122e76eb27f18b7019666cf129b3f2b56..0ee54f845b6f2e4574e2d24a2c14ddae
 +        let retryAttempts = 0;
 +        let testsWithRetries = 0;
 +        let recoveredFlakyTests = 0;
-+        let transientFailureAttempts = 0;
-+        let transientFailedAttempts = 0;
-+        let transientTimedOutAttempts = 0;
-+        let transientInterruptedAttempts = 0;
++        let attemptPassedCount = 0;
++        let attemptFailedCount = 0;
++        let attemptTimedOutCount = 0;
++        let attemptSkippedCount = 0;
++        let attemptInterruptedCount = 0;
++        let attemptFlakyCount = 0;
 +        attemptsByTestId.forEach((attempts) => {
 +            const sortedAttempts = attempts
 +                .slice()
@@ -155,26 +170,31 @@ index a4679f3122e76eb27f18b7019666cf129b3f2b56..0ee54f845b6f2e4574e2d24a2c14ddae
 +            if ((finalAttempt === null || finalAttempt === void 0 ? void 0 : finalAttempt.status) === "flaky") {
 +                recoveredFlakyTests++;
 +            }
-+            transientFailedAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
-+                attempt.status === "failed").length;
-+            transientTimedOutAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
-+                attempt.status === "timedOut").length;
-+            transientInterruptedAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
-+                attempt.status === "interrupted").length;
-+            transientFailureAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
-+                (attempt.status === "failed" ||
-+                    attempt.status === "timedOut" ||
-+                    attempt.status === "interrupted")).length;
++            attemptPassedCount += sortedAttempts.filter((attempt) => attempt.status === "passed").length;
++            attemptFailedCount += sortedAttempts.filter((attempt) => attempt.status === "failed").length;
++            attemptTimedOutCount += sortedAttempts.filter((attempt) => attempt.status === "timedOut").length;
++            attemptSkippedCount += sortedAttempts.filter((attempt) => attempt.status === "skipped").length;
++            attemptInterruptedCount += sortedAttempts.filter((attempt) => attempt.status === "interrupted").length;
++            attemptFlakyCount += sortedAttempts.filter((attempt) => attempt.status === "flaky").length;
 +        });
++        const attemptsPercentage = (value) => (0, lodash_1.round)((value / (totalAttempts || 1)) * 100, 2).toString();
 +        this.chartStatus = this.chartStatus.replaceAll("{{.UniqueTests}}", uniqueTests.toString());
 +        this.chartStatus = this.chartStatus.replaceAll("{{.TotalAttempts}}", totalAttempts.toString());
 +        this.chartStatus = this.chartStatus.replaceAll("{{.RetryAttempts}}", retryAttempts.toString());
 +        this.chartStatus = this.chartStatus.replaceAll("{{.TestsWithRetries}}", testsWithRetries.toString());
 +        this.chartStatus = this.chartStatus.replaceAll("{{.RecoveredFlakyTests}}", recoveredFlakyTests.toString());
-+        this.chartStatus = this.chartStatus.replaceAll("{{.TransientFailureAttempts}}", transientFailureAttempts.toString());
-+        this.chartStatus = this.chartStatus.replaceAll("{{.TransientFailedAttempts}}", transientFailedAttempts.toString());
-+        this.chartStatus = this.chartStatus.replaceAll("{{.TransientTimedOutAttempts}}", transientTimedOutAttempts.toString());
-+        this.chartStatus = this.chartStatus.replaceAll("{{.TransientInterruptedAttempts}}", transientInterruptedAttempts.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptPassedValue}}", attemptPassedCount.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptFailedValue}}", attemptFailedCount.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptTimedOutValue}}", attemptTimedOutCount.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptSkippedValue}}", attemptSkippedCount.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptInterruptedValue}}", attemptInterruptedCount.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptFlakyValue}}", attemptFlakyCount.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptPassedPercentage}}", attemptsPercentage(attemptPassedCount));
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptFailedPercentage}}", attemptsPercentage(attemptFailedCount));
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptTimedOutPercentage}}", attemptsPercentage(attemptTimedOutCount));
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptSkippedPercentage}}", attemptsPercentage(attemptSkippedCount));
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptInterruptedPercentage}}", attemptsPercentage(attemptInterruptedCount));
++        this.chartStatus = this.chartStatus.replaceAll("{{.AttemptFlakyPercentage}}", attemptsPercentage(attemptFlakyCount));
          // Prepara test data
          let testCases = "";
          let testCasesDetails = "";

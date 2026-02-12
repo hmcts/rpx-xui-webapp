@@ -27,6 +27,11 @@ import {
 } from './utils/searchRefDataUtils';
 
 test.describe('Global search', () => {
+  const globalSearchJurisdictions = (process.env.API_JOURNEY_GLOBAL_SEARCH_JURISDICTIONS ?? 'PUBLICLAW')
+    .split(',')
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+
   test('lists available services', async ({ apiClient }) => {
     const response = await withRetry(
       () =>
@@ -41,7 +46,21 @@ test.describe('Global search', () => {
 
   test('returns results payload or guarded status', async ({ apiClient }) => {
     const response = await apiClient.post<{ results?: unknown }>('api/globalSearch/results', {
-      data: { searchRequest: { caseReferences: ['1234567890123456'] } },
+      data: {
+        searchCriteria: {
+          CCDCaseTypeIds: null,
+          CCDJurisdictionIds: globalSearchJurisdictions,
+          caseManagementBaseLocationIds: null,
+          caseManagementRegionIds: null,
+          caseReferences: ['1234567890123456'],
+          otherReferences: null,
+          parties: [],
+          stateIds: null,
+        },
+        sortCriteria: null,
+        maxReturnRecordCount: 25,
+        startRecordNumber: 1,
+      },
       throwOnError: false,
     });
     expectStatus(response.status, StatusSets.globalSearch);

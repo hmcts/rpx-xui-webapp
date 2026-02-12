@@ -15,7 +15,7 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
-  env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+  env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright/odhin-report';
 
 const resolveBranchName = (env: EnvMap = process.env): string => {
   const envBranch =
@@ -99,6 +99,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
+  if (env === process.env) {
+    process.env.PLAYWRIGHT_REPORT_FOLDER = process.env.PLAYWRIGHT_REPORT_FOLDER ?? odhinOutputFolder;
+  }
   const reportBranch = resolveBranchName(env);
 
   return defineConfig({
@@ -145,6 +148,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           testOutput: 'only-on-failure',
         },
       ],
+      ['./playwright_tests_new/common/reporters/odhin-postprocess.reporter.cjs'],
     ],
 
     projects: [

@@ -3,6 +3,7 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
+import { buildLastBackendCallContext } from '../../../utils/api-tracker';
 
 const logger = createLogger({
   serviceName: 'create-case',
@@ -462,6 +463,7 @@ export class CreateCasePage extends Base {
     const initialPath = this.normalizePath(initialUrl);
     const expectedPathIncludes = options.expectedPathIncludes;
     const expectedLocator = options.expectedLocator;
+    const waitStartedAtMs = Date.now();
     const waitForAdvance = async () => {
       if (expectedPathIncludes) {
         await this.page.waitForURL((url) => url.pathname.includes(expectedPathIncludes), { timeout: timeoutMs });
@@ -472,25 +474,37 @@ export class CreateCasePage extends Base {
         await expectedLocator.waitFor({ state: 'visible', timeout: timeoutMs });
       }
     };
+    const buildTimeoutContext = () => {
+      const waitedMs = Date.now() - waitStartedAtMs;
+      const expectation = expectedPathIncludes
+        ? `URL path to include "${expectedPathIncludes}"`
+        : `URL path to change from "${initialPath}"`;
+      const locatorExpectation = expectedLocator ? ' and expected locator to be visible' : '';
+      return `Waited ${waitedMs}ms for ${expectation}${locatorExpectation}. ${buildLastBackendCallContext(this.page)}`;
+    };
 
     try {
       await waitForAdvance();
       return;
     } catch {
       if (this.page.isClosed()) {
-        throw new Error(`Page closed while waiting for wizard to advance after ${context}`);
+        throw new Error(`Page closed while waiting for wizard to advance after ${context}. ${buildTimeoutContext()}`);
       }
       const hasValidationError = await this.checkForErrorMessage();
       if (hasValidationError) {
         throw new Error(`Validation error after ${context}`);
       }
       if (this.page.isClosed()) {
-        throw new Error(`Page closed before retrying wizard advance after ${context}`);
+        throw new Error(`Page closed before retrying wizard advance after ${context}. ${buildTimeoutContext()}`);
       }
       await this.continueButton.scrollIntoViewIfNeeded();
       await this.continueButton.click();
       await this.waitForSpinnerToComplete('after retrying continue in ensureWizardAdvanced');
-      await waitForAdvance();
+      try {
+        await waitForAdvance();
+      } catch {
+        throw new Error(`Wizard did not advance after retry ${context}. ${buildTimeoutContext()}`);
+      }
     }
   }
 

@@ -91,7 +91,7 @@ test.describe('Playwright config coverage', () => {
     });
     expect(config.reporter[0][0]).toBe('list');
     const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
-    expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
+    expect(odhinOptions?.outputFolder).toContain('playwright/odhin-report');
     expect(odhinOptions?.project).toBe('RPX XUI Webapp');
     expect(odhinOptions?.release).toContain('branch=');
     expect(odhinOptions?.testEnvironment).toContain('aat');

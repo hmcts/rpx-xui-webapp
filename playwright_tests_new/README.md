@@ -26,11 +26,14 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
 ### Running API Tests
 
 ```bash
-# Smoke the API suite
+# Smoke the core API suite (excludes @journeys tests)
 yarn test:api:pw
 
-# Capture raw V8 coverage + Playwright attachments
+# Capture raw V8 coverage + Playwright attachments (excludes @journeys tests)
 yarn test:api:pw:coverage
+
+# API-only journey monitors (tagged with @journeys)
+yarn test:api:pw:journeys
 ```
 
 ### API Test Parallelism
@@ -50,7 +53,17 @@ yarn test:api:pw:coverage
 
 - Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright.html`
 - Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
+- Journey Odhin report: `functional-output/tests/playwright-api-journeys/odhin-report/xui-playwright.html`
+- Journey report copy: `functional-output/tests/api_functional_journeys/odhin-report/`
 - API call logs attached automatically per test as `node-api-calls.json`
+- Fetch-level failures (for example request timeouts) are also captured in API logs with `status=0`
+- API performance summary attached automatically per test:
+- `node-api-performance-summary.json` (machine-friendly metrics)
+- `node-api-performance-summary.txt` (human-readable summary with p50/p95/p99 and slowest endpoints)
+- Optional performance warning env vars:
+- `API_SLOW_THRESHOLD_MS` (slow-call threshold, default `5000`)
+- `API_PERF_WARN_P95_MS` (adds warning annotation when p95 exceeds threshold)
+- `API_PERF_WARN_ERROR_RATE` (0..1, adds warning when 4xx+5xx rate exceeds threshold)
 - Jenkins archives Playwright diagnostics artifacts including:
 - `functional-output/tests/**/odhin-report/**/*`
 - `test-results/**/*`
@@ -71,6 +84,36 @@ yarn test:api:pw:coverage
 - **Postcode lookup**: Assert result/header structure and DPA fields
 - **Work Allocation**: Locations, catalogues, task search, dashboards, negative actions, caseworker endpoints
 - **Global search/ref-data**: Services, results, proxy smoke, WA/staff supported jurisdictions, role-access/AM checks
+
+### API Journey Monitor (Latency Focus)
+
+- Spec: `playwright_tests_new/api/user-journey.api.ts`
+- Tag: `@journeys`
+- Purpose: runs multiple API-only user journeys and records per-step latency to spot slow environments quickly:
+- solicitor search + work allocation
+- role access + case-share
+- hearings reference data (PRL-inspired)
+- document view
+- Artifacts attached per run:
+  - `api-journey-*-latency.txt`
+  - `api-journey-*-latency.json`
+- Optional threshold controls:
+  - `API_JOURNEY_STEP_WARN_MS` (default falls back to `API_SLOW_THRESHOLD_MS` or `5000`)
+  - `API_JOURNEY_TOTAL_WARN_MS` (default `stepWarnMs * 6`)
+  - `API_JOURNEY_STEP_FAIL_MS` (optional hard fail threshold)
+  - `API_JOURNEY_TOTAL_FAIL_MS` (optional hard fail threshold)
+  - `API_JOURNEY_CASE_REFERENCE` (optional 16-digit reference used for global search)
+  - `API_JOURNEY_GLOBAL_SEARCH_JURISDICTIONS` (optional comma-separated list, defaults to service IDs from `/api/globalSearch/services`, fallback `PUBLICLAW`)
+  - `API_JOURNEY_HEARING_SERVICE_ID` (default `BBA3`)
+  - `API_JOURNEY_HEARING_LOV_CATEGORY` (default `HearingChannel`)
+  - `API_JOURNEY_HEARING_IS_CHILD_REQUIRED` (default `Y`)
+  - `API_JOURNEY_WA_TASK_TIMEOUT_MS` (default `45000`)
+  - `API_JOURNEY_TEST_TIMEOUT_MS` (default `120000`)
+  - `API_JOURNEY_WA_TASK_RETRIES` (default `1`)
+  - `API_JOURNEY_TASK_SEARCH_BY` (optional override: `caseworker` or `judge`)
+  - `API_JOURNEY_TASK_JURISDICTIONS` (optional comma-separated jurisdiction filter; default follows UI baseline and leaves this filter unset)
+  - `API_JOURNEY_TASK_TYPES` (optional comma-separated work-type filter applied to `/workallocation/task`)
+  - UI trace baseline for journey realism is documented in `playwright_tests_new/api/UI_TRACE_CALLMAP.md`
 
 ---
 

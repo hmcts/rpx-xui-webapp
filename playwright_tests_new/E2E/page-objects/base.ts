@@ -1,28 +1,9 @@
 import { ExuiCaseDetailsComponent, ExuiCaseListComponent, ExuiSpinnerComponent, createLogger } from '@hmcts/playwright-common';
 import { Page } from '@playwright/test';
 import { ExuiHeaderComponent } from './components/index.js';
+import { clearApiTracking, ensureApiTracker, getApiTrackingSnapshot, type TrackedApiCall } from '../utils/api-tracker';
 
 const logger = createLogger({ serviceName: 'api-monitor', format: 'pretty' });
-
-type BenignApiErrorRule = {
-  method: string;
-  status: number;
-  urlPattern: RegExp;
-};
-
-const benignApiErrorRules: BenignApiErrorRule[] = [
-  { method: 'GET', status: 403, urlPattern: /\/api\/organisation$/ },
-  { method: 'GET', status: 400, urlPattern: /\/data\/internal\/cases\/\d+$/ },
-];
-
-interface ApiCall {
-  url: string;
-  method: string;
-  status: number;
-  duration: number;
-  timestamp: string;
-  error?: string;
-}
 
 // A base page inherited by pages & components
 // can contain any additional config needed + instantiated page object
@@ -32,123 +13,33 @@ export abstract class Base {
   readonly exuiCaseDetailsComponent = new ExuiCaseDetailsComponent(this.page);
   readonly exuiHeader = new ExuiHeaderComponent(this.page);
   readonly exuiSpinnerComponent = new ExuiSpinnerComponent(this.page);
-  private static readonly monitoredPages = new WeakSet<Page>();
-  private apiCalls: ApiCall[] = [];
-  private readonly monitoringEnabled = true;
-  private readonly maxApiCallsTracked = 500; // Prevent memory leaks in long-running tests
 
   constructor(public readonly page: Page) {
-    if (this.monitoringEnabled && !Base.monitoredPages.has(page)) {
-      Base.monitoredPages.add(page);
-      this.setupApiMonitoring();
-    }
+    ensureApiTracker(page);
   }
 
-  private setupApiMonitoring(): void {
-    this.page.on('response', async (response) => {
-      const request = response.request();
-      const url = request.url();
-
-      // Only track backend APIs (not static assets, fonts, images)
-      if (this.isBackendApi(url)) {
-        const timing = request.timing();
-        const duration = timing.responseEnd;
-        const status = response.status();
-        const method = request.method();
-        const sanitizedUrl = this.sanitizeUrl(url);
-
-        const call: ApiCall = {
-          url: sanitizedUrl,
-          method,
-          status,
-          duration,
-          timestamp: new Date().toISOString(),
-        };
-
-        this.apiCalls.push(call);
-
-        // Prevent memory leaks: cap at maxApiCallsTracked (FIFO - remove oldest)
-        if (this.apiCalls.length > this.maxApiCallsTracked) {
-          this.apiCalls.shift(); // Remove oldest call
-        }
-
-        // INSTANT FAILURE DIAGNOSIS
-        if (status >= 500) {
-          // DO NOT log response body - may contain PII, case data, or credentials
-          call.error = `HTTP ${status} - Server Error`;
-          logger.error('DOWNSTREAM_API_FAILURE', {
-            url: call.url,
-            status,
-            duration: duration === -1 ? 'unknown' : `${duration}ms`,
-            method,
-          });
-        } else if (duration !== -1 && duration > 5000) {
-          logger.warn('SLOW_API_RESPONSE', {
-            url: call.url,
-            duration: `${duration}ms`,
-            status,
-            method,
-          });
-        } else if (status >= 400 && status < 500 && !this.isKnownBenignApiError(sanitizedUrl, method, status)) {
-          // DO NOT log response body - may contain PII or sensitive error details
-          call.error = `HTTP ${status} - Client Error`;
-          logger.warn('CLIENT_ERROR', {
-            url: call.url,
-            status,
-            method,
-          });
-        }
-      }
-    });
-  }
-
-  private isBackendApi(url: string): boolean {
-    return (
-      (url.includes('/api/') ||
-        url.includes('/data/') ||
-        url.includes('/auth/') ||
-        url.includes('/workallocation/') ||
-        url.includes('/aggregated/') ||
-        url.includes('/caseworkers/')) &&
-      !url.includes('.js') &&
-      !url.includes('.css') &&
-      !url.includes('.woff')
-    );
-  }
-
-  private isKnownBenignApiError(url: string, method: string, status: number): boolean {
-    const requestMethod = method.toUpperCase();
-    return benignApiErrorRules.some((rule) => {
-      return rule.status === status && rule.method === requestMethod && rule.urlPattern.test(url);
-    });
-  }
-
-  private sanitizeUrl(url: string): string {
-    // Remove query parameters to avoid logging sensitive data
-    return url.split('?')[0];
-  }
-
-  public getApiCalls(): ApiCall[] {
-    return [...this.apiCalls];
+  public getApiCalls(): TrackedApiCall[] {
+    return getApiTrackingSnapshot(this.page).apiCalls;
   }
 
   public clearApiCalls(): void {
-    this.apiCalls = [];
+    clearApiTracking(this.page);
   }
 
   public getApiCallsSummary(): string {
-    const slow = this.apiCalls.filter((c) => c.duration > 5000);
-    const errors = this.apiCalls.filter((c) => c.status >= 400);
+    const apiCalls = this.getApiCalls();
+    const slow = apiCalls.filter((c) => c.duration > 5000);
+    const errors = apiCalls.filter((c) => c.status >= 400);
     const serverErrors = errors.filter((c) => c.status >= 500);
     const clientErrors = errors.filter((c) => c.status >= 400 && c.status < 500);
 
-    const totalDuration = this.apiCalls.reduce((sum, c) => sum + c.duration, 0);
-    const avgDuration = this.apiCalls.length > 0 ? Math.round(totalDuration / this.apiCalls.length) : 0;
+    const totalDuration = apiCalls.reduce((sum, c) => sum + c.duration, 0);
+    const avgDuration = apiCalls.length > 0 ? Math.round(totalDuration / apiCalls.length) : 0;
 
     let summary = `
 API CALLS SUMMARY:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Total calls: ${this.apiCalls.length}
+• Total calls: ${apiCalls.length}
 • Server errors (5xx): ${serverErrors.length}
 • Client errors (4xx): ${clientErrors.length}
 • Slow responses (>5s): ${slow.length}
@@ -187,7 +78,7 @@ API CALLS SUMMARY:
   }
 
   protected getApiTimingStats(sampleSize = 50): { count: number; avg: number; p95: number } {
-    const durations = this.apiCalls
+    const durations = this.getApiCalls()
       .slice(-sampleSize)
       .map((c) => c.duration)
       .filter((d) => Number.isFinite(d) && d > 0)

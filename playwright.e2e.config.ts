@@ -6,6 +6,7 @@ module.exports = (() => {
 
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+  process.env.PLAYWRIGHT_REPORT_FOLDER = process.env.PLAYWRIGHT_REPORT_FOLDER ?? odhinOutputFolder;
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 
   const resolveEnvironmentFromUrl = (url) => {
@@ -111,6 +112,7 @@ module.exports = (() => {
           testOutput: 'only-on-failure',
         },
       ],
+      ['./playwright_tests_new/common/reporters/odhin-postprocess.reporter.cjs'],
     ],
     use: {
       baseURL: baseUrl,

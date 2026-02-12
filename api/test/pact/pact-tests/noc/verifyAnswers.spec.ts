@@ -19,22 +19,24 @@ describe('verifyAnswers API', () => {
     sandbox.restore();
   });
 
-  const answers: NocAnswer[] = [{
-    question_id: '1233434',
-    value: 'test@email.com'
-  }];
+  const answers: NocAnswer[] = [
+    {
+      question_id: '1233434',
+      value: 'test@email.com',
+    },
+  ];
   const mockRequest = {
     case_id: '1234567812345670',
-    answers: answers
+    answers: answers,
   };
 
   const req = mockReq({
     headers: {
-      'Authorization': 'Bearer someAuthorizationToken',
-      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-      'content-Type': 'application/json'
+      Authorization: 'Bearer someAuthorizationToken',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+      'content-Type': 'application/json',
     },
-    body: mockRequest
+    body: mockRequest,
   });
 
   function setUpMockConfigForFunction(url) {
@@ -50,9 +52,9 @@ describe('verifyAnswers API', () => {
     const expectedResponse = {
       organisation: {
         OrganisationID: somethingLike('QUK822NA'),
-        OrganisationName: somethingLike('Some Org')
+        OrganisationName: somethingLike('Some Org'),
       },
-      status_message: somethingLike('Notice of Change answers verified successfully')
+      status_message: somethingLike('Notice of Change answers verified successfully'),
     };
 
     before(async () => {
@@ -62,12 +64,12 @@ describe('verifyAnswers API', () => {
         withRequest: {
           method: 'POST',
           path: '/noc/verify-noc-answers',
-          body: mockRequest
+          body: mockRequest,
         },
         willRespondWith: {
           status: 200,
-          body: expectedResponse
-        }
+          body: expectedResponse,
+        },
       });
     });
 

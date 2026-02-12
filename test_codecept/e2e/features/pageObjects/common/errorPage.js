@@ -2,7 +2,7 @@ const { $, getText } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
-class ErrorPage{
+class ErrorPage {
   get serviceDownContainer() {
     return $('exui-service-down');
   }
@@ -15,11 +15,11 @@ class ErrorPage{
     return $('exui-service-down,exui-not-authorised');
   }
 
-  async isServiceDownMessageDisplayed(){
+  async isServiceDownMessageDisplayed() {
     return this.isContainerDisplayed(this.serviceDownContainer);
   }
 
-  async isUnathorisedMessageDIsplayed(){
+  async isUnathorisedMessageDIsplayed() {
     return this.isContainerDisplayed(this.unauthorisedContainer);
   }
 
@@ -33,15 +33,15 @@ class ErrorPage{
     }
   }
 
-  async getServiceDownErrorMessage(){
+  async getServiceDownErrorMessage() {
     return await getText(this.serviceDownContainer);
   }
 
-  async getUnauthorisedErrorMessage(){
+  async getUnauthorisedErrorMessage() {
     return await getText(this.unauthorisedContainer);
   }
 
-  async getErrorMessage(){
+  async getErrorMessage() {
     return await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.errorMessage);
       return getText(this.errorMessage);

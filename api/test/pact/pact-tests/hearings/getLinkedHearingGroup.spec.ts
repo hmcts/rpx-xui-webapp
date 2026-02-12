@@ -17,14 +17,16 @@ const RESPONSE_BODY = {
     groupComments: somethingLike('string'),
     groupLinkType: somethingLike('string'),
     groupName: somethingLike('string'),
-    groupReason: somethingLike('string')
+    groupReason: somethingLike('string'),
   },
-  hearingsInGroup: [{
-    caseRef: somethingLike('string'),
-    hearingId: somethingLike(0),
-    hearingOrder: somethingLike(0),
-    hmctsInternalCaseName: somethingLike('string')
-  }]
+  hearingsInGroup: [
+    {
+      caseRef: somethingLike('string'),
+      hearingId: somethingLike(0),
+      hearingOrder: somethingLike(0),
+      hmctsInternalCaseName: somethingLike('string'),
+    },
+  ],
 };
 
 describe('Hearings, get single hearing linked group for given groupId', () => {
@@ -44,18 +46,18 @@ describe('Hearings, get single hearing linked group for given groupId', () => {
           method: 'GET',
           path: `/linkedHearingGroup/${groupId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -77,13 +79,13 @@ describe('Hearings, get single hearing linked group for given groupId', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           query: {
-            groupId
-          }
+            groupId,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

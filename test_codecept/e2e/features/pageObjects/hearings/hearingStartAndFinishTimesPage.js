@@ -1,12 +1,20 @@
 const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class HearingStartAndFinishTimesPage {
-  get container() { return $('exui-hearing-actuals-timing'); }
+  get container() {
+    return $('exui-hearing-actuals-timing');
+  }
 
-  get hearingStageSelect() { return $('#hearing-stage'); }
-  get hearingResultRadios() { return elementByXpath('//h1[contains(text(),"Hearing result")]/../../div[contains(@class,"govuk-radios")]'); }
+  get hearingStageSelect() {
+    return $('#hearing-stage');
+  }
+  get hearingResultRadios() {
+    return elementByXpath('//h1[contains(text(),"Hearing result")]/../../div[contains(@class,"govuk-radios")]');
+  }
 
-  get saveAndContinueButton() { return elementByXpath('//button[contains(text(),"Save and continue")]'); }
+  get saveAndContinueButton() {
+    return elementByXpath('//button[contains(text(),"Save and continue")]');
+  }
 
   getTimeInputFieldElement(fieldName) {
     return elementByXpath(`//label[contains(text(),'${fieldName}')]/../input`);

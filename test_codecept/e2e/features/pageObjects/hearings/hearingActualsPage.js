@@ -1,15 +1,27 @@
 const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 
 class HearingActualsPage {
-  get container() { return $('exui-hearing-actuals'); }
-  get hearinsgSummaryContainer() { return $('exui-hearing-actuals-add-edit-summary .govuk-summary-list'); }
+  get container() {
+    return $('exui-hearing-actuals');
+  }
+  get hearinsgSummaryContainer() {
+    return $('exui-hearing-actuals-add-edit-summary .govuk-summary-list');
+  }
 
-  get hearingStageAndResultUpdateLink() { return $('#hearing-stage-result-update-link'); }
+  get hearingStageAndResultUpdateLink() {
+    return $('#hearing-stage-result-update-link');
+  }
 
-  get continueBtn() { return elementByXpath('//button[contains(text(),"Continue")]'); }
-  get submitBtn() { return elementByXpath('//button[contains(text(),"Submit hearing details")]'); }
+  get continueBtn() {
+    return elementByXpath('//button[contains(text(),"Continue")]');
+  }
+  get submitBtn() {
+    return elementByXpath('//button[contains(text(),"Submit hearing details")]');
+  }
 
-  get checkYourAnswersHeader() { return elementByXpath('//exui-hearing-actuals//h1[contains(text(),"Check your answers")]'); }
+  get checkYourAnswersHeader() {
+    return elementByXpath('//exui-hearing-actuals//h1[contains(text(),"Check your answers")]');
+  }
 
   getTableKeyElementXpath(key) {
     return `//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${key}')]`;
@@ -41,10 +53,7 @@ class ActualHearingDate {
 
     this.hearingDateDetailsContainer = `${this.hearingDateDetailsSummary}/..`;
 
-    this.headingRows = [
-      'Hearing timings',
-      'Participants'
-    ];
+    this.headingRows = ['Hearing timings', 'Participants'];
   }
 
   async clickHearingSummary() {
@@ -60,36 +69,36 @@ class ActualHearingDate {
   }
 
   async getValue(field) {
-    const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]` :
-      `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
-    const valueEleXpath = this.headingRows.includes(field) ?
-      `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__value')]` :
-      `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__value')]`;
+    const fieldEleXpath = this.headingRows.includes(field)
+      ? `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]`
+      : `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
+    const valueEleXpath = this.headingRows.includes(field)
+      ? `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__value')]`
+      : `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__value')]`;
 
     expect(await elementByXpath(fieldEleXpath).isVisible(), `${field} not displayed`).to.be.true;
     return await getText(elementByXpath(valueEleXpath));
   }
 
   async clickAction(field, action) {
-    const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]` :
-      `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
-    const actionEleXpath = this.headingRows.includes(field) ?
-      `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]/a[contains(text(),'${action}')]` :
-      `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__actions')]/a[contains(text(),'${action}')]`;
+    const fieldEleXpath = this.headingRows.includes(field)
+      ? `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]`
+      : `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
+    const actionEleXpath = this.headingRows.includes(field)
+      ? `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]/a[contains(text(),'${action}')]`
+      : `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__actions')]/a[contains(text(),'${action}')]`;
 
     expect(await elementByXpath(fieldEleXpath).isVisible()).to.be.true;
     await elementByXpath(actionEleXpath).click();
   }
 
   async getActions(field) {
-    const fieldEleXpath = this.headingRows.includes(field) ?
-      `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]` :
-      `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
-    const actionEleXpath = this.headingRows.includes(field) ?
-      `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]` :
-      `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__actions')]`;
+    const fieldEleXpath = this.headingRows.includes(field)
+      ? `${this.hearingDateDetailsContainer}//div//h2[contains(text(),'${field}')]`
+      : `${this.hearingDateDetailsContainer}//dt[contains(text(),'${field}')]`;
+    const actionEleXpath = this.headingRows.includes(field)
+      ? `${fieldEleXpath}/../../dd[contains(@class,'govuk-summary-list__actions')]`
+      : `${fieldEleXpath}/../dd[contains(@class,'govuk-summary-list__actions')]`;
 
     expect(await elementByXpath(fieldEleXpath).isVisible()).to.be.true;
     return await getText(elementByXpath(actionEleXpath));
@@ -97,4 +106,3 @@ class ActualHearingDate {
 }
 
 module.exports = new HearingActualsPage();
-

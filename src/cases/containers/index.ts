@@ -36,7 +36,7 @@ export const containers: any[] = [
   CaseShareCompleteComponent,
   CaseHearingsComponent,
   QueryManagementContainerComponent,
-  RestrictedCaseAccessContainerComponent
+  RestrictedCaseAccessContainerComponent,
 ];
 
 export * from './case-create-submit/case-create-submit.component';

@@ -51,6 +51,6 @@ export function transformToJudicialUserModel(rawJudicialUserModel: RawJudicialUs
     personalCode: rawJudicialUserModel.personal_code,
     isJudge: rawJudicialUserModel.is_judge,
     isMagistrate: rawJudicialUserModel.is_magistrate,
-    isPanelMember: rawJudicialUserModel.is_panel_number
+    isPanelMember: rawJudicialUserModel.is_panel_number,
   };
 }

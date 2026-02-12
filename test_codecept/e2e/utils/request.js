@@ -1,4 +1,3 @@
-
 const axios = require('axios');
 const config = require('./config/config');
 
@@ -6,15 +5,15 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 const axiosOptions = {
-  baseURL: config.getBaseUrl()
+  baseURL: config.getBaseUrl(),
 };
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.TEST_URL;
 const http = axios.create(axiosOptions);
 
 const requestInterceptor = (request) => {
-  console.log('Base url:::::::'+config.getBaseUrl());
-  console.log('requestInterceptor:::::::'+`${request.method.toUpperCase()} to ${request.url}`);
+  console.log('Base url:::::::' + config.getBaseUrl());
+  console.log('requestInterceptor:::::::' + `${request.method.toUpperCase()} to ${request.url}`);
   return request;
 };
 http.interceptors.request.use(requestInterceptor);
@@ -25,30 +24,34 @@ class Request {
     this.cookieString = await this.getCookieString();
   }
 
-  async getCookieString(){
+  async getCookieString() {
     let cookieString = '';
 
     return new Promise((resolve, reject) => {
       try {
-        browser.manage().getCookies().then(function (cookiesArray) {
-          for (let i = 0; i < cookiesArray.length; i++) {
-            cookieString = `${cookieString}${cookiesArray[i].name}=${cookiesArray[i].value};`;
-          }
-          resolve(cookieString);
-        }).catch((err) => {
-          reject(err);
-        });
-      } catch (err){
+        browser
+          .manage()
+          .getCookies()
+          .then(function (cookiesArray) {
+            for (let i = 0; i < cookiesArray.length; i++) {
+              cookieString = `${cookieString}${cookiesArray[i].name}=${cookiesArray[i].value};`;
+            }
+            resolve(cookieString);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } catch (err) {
         reject(err);
       }
     });
   }
 
-  async getCookievalue(name){
+  async getCookievalue(name) {
     const cookies = await browser.manage().getCookies();
     let retval = null;
-    for (const cookie of cookies){
-      if (cookie.name === name){
+    for (const cookie of cookies) {
+      if (cookie.name === name) {
         retval = cookie.value;
         break;
       }
@@ -60,7 +63,7 @@ class Request {
     this.cookieString = '';
   }
 
-  getApi(){
+  getApi() {
     return 'Test Api';
   }
 
@@ -71,7 +74,7 @@ class Request {
     }
     if (this.cookieString !== '') {
       reqheaders.cookie = await this.getCookieString();
-      reqheaders.Authorization = 'Bearer '+await this.getCookievalue('__auth__');
+      reqheaders.Authorization = 'Bearer ' + (await this.getCookievalue('__auth__'));
     }
 
     return { headers: reqheaders };
@@ -87,7 +90,7 @@ class Request {
     return error;
   }
 
-  async get(reqpath, headers){
+  async get(reqpath, headers) {
     try {
       const config = await this.getRequestConfig(headers);
       return await http.get(reqpath, config);
@@ -105,7 +108,7 @@ class Request {
     }
   }
 
-  async put(reqpath, data, headers){
+  async put(reqpath, data, headers) {
     try {
       const config = await this.getRequestConfig(headers);
       return await http.put(reqpath, data, config);
@@ -117,7 +120,7 @@ class Request {
   async delete(reqpath, payload, moreHeaders) {
     try {
       const requestConfig = await this.getRequestConfig(moreHeaders);
-      if (payload){
+      if (payload) {
         requestConfig.data = payload;
       }
       return await http.delete(reqpath, requestConfig);
@@ -126,5 +129,4 @@ class Request {
     }
   }
 }
-module.exports =new Request();
-
+module.exports = new Request();

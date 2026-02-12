@@ -21,17 +21,18 @@ describe('Hearing Request Effects', () => {
   let store: any;
   let effects: HearingRequestEffects;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'getAllHearings', 'loadHearingRequest', 'updateHearingRequest', 'submitHearingRequest'
+    'getAllHearings',
+    'loadHearingRequest',
+    'updateHearingRequest',
+    'submitHearingRequest',
   ]);
   const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
   const mockLocation = jasmine.createSpyObj('Location', ['back']);
-  const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', [
-    'getCurrentPage', 'getLastPage', 'getNextPage'
-  ]);
+  const pageflowMock = jasmine.createSpyObj('AbstractPageFlow', ['getCurrentPage', 'getLastPage', 'getNextPage']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const hearingConditions = {
     isInit: false,
-    region: 'Wales'
+    region: 'Wales',
   };
   beforeEach(() => {
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
@@ -42,27 +43,27 @@ describe('Hearing Request Effects', () => {
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock
+          useValue: hearingsServiceMock,
         },
         {
           provide: AbstractPageFlow,
-          useValue: pageflowMock
+          useValue: pageflowMock,
         },
         {
           provide: Router,
-          useValue: mockRouter
+          useValue: mockRouter,
         },
         {
           provide: LoggerService,
-          useValue: loggerServiceMock
+          useValue: loggerServiceMock,
         },
         {
           provide: Location,
-          useValue: mockLocation
+          useValue: mockLocation,
         },
         HearingRequestEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
     effects = TestBed.inject(HearingRequestEffects);
     store = TestBed.inject(Store);
@@ -91,7 +92,9 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       const expected = cold('-b', { b: navigateAction });
       expect(effects.continueNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: 'venue' });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-create-edit-summary'], {
+        fragment: 'venue',
+      });
     });
 
     it('should navigate to create edit page if on VIEW_EDIT mode', () => {
@@ -101,7 +104,9 @@ describe('Hearing Request Effects', () => {
       const navigateAction = new hearingRequestActions.UpdateHearingRequest(null, hearingConditions);
       const expected = cold('-b', { b: navigateAction });
       expect(effects.continueNavigation$).toBeObservable(expected);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], { fragment: 'venue' });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['hearings', 'request', 'hearing-view-edit-summary'], {
+        fragment: 'venue',
+      });
     });
   });
 
@@ -136,7 +141,7 @@ describe('Hearing Request Effects', () => {
         message: 'Http failure response: 403 Forbidden',
         timestamp: '',
         exception: '',
-        path: ''
+        path: '',
       };
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.submitHearingRequest.and.returnValue(throwError(error));
@@ -167,7 +172,7 @@ describe('Hearing Request Effects', () => {
         message: 'Http failure response: 403 Forbidden',
         timestamp: '',
         exception: '',
-        path: ''
+        path: '',
       };
       const dispatchSpy = spyOn(store, 'dispatch');
       hearingsServiceMock.updateHearingRequest.and.returnValue(throwError(error));
@@ -184,7 +189,7 @@ describe('Hearing Request Effects', () => {
     it('should handle 500', () => {
       const action$ = HearingRequestEffects.handleError({
         status: 400,
-        message: 'error'
+        message: 'error',
       });
       action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
@@ -192,7 +197,7 @@ describe('Hearing Request Effects', () => {
     it('should handle 4xx related errors', () => {
       const action$ = HearingRequestEffects.handleError({
         status: 403,
-        message: 'error'
+        message: 'error',
       });
       action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });

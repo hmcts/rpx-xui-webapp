@@ -1,4 +1,4 @@
-import {initAxios} from './http';
+import { initAxios } from './http';
 
 require('chai').should();
 

@@ -48,7 +48,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    setVaultName(vault)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
     

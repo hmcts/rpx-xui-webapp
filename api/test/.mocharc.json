@@ -6,5 +6,5 @@
   "extension": ["ts"],
   "spec": ["**/*.spec.ts"],
   "exclude": ["**/pact/**"],
-  "require": ["ts-node/register", "source-map-support/register"]
+  "require": ["ts-node/register", "source-map-support/register", "./test/setup-config-env.ts"]
 }

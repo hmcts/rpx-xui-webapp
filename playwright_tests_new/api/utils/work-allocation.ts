@@ -1,3 +1,5 @@
+import type { TaskListResponse } from './types';
+
 export interface TaskSearchOptions {
   userIds?: string[];
   locations?: string[];

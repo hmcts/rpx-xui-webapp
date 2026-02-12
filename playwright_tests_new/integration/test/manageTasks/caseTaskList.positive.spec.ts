@@ -6,9 +6,10 @@ import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.build
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
+faker.seed(54312);
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
 const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
-const inTenDays = faker.date.soon({ days: 10 }).toISOString();
+const in90Days = faker.date.future().toISOString();
 let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 
@@ -19,8 +20,26 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`User ${userIdentifier} can see task tab contents on a case`, () => {
-  test(`Task values and meta data is displayed as expected`, async ({ taskListPage, caseDetailsPage, page }) => {
+  test(`Task values and meta data is displayed as expected`, async ({ taskListPage, caseDetailsPage, page }, testInfo) => {
+    console.log(in90Days
+
+    )
     const caseMockResponse = buildAsylumCaseMock({ caseId: '1111111111111111' });
+    // Attach session cookies and assigneeId for CI debugging when missing
+    try {
+      await testInfo.attach('session-cookies.json', {
+        body: JSON.stringify(sessionCookies ?? [], null, 2),
+        contentType: 'application/json',
+      });
+      await testInfo.attach('assignee-id.txt', {
+        body: String(assigneeId ?? ''),
+        contentType: 'text/plain',
+      });
+      console.log('Session cookies:', JSON.stringify(sessionCookies ?? [], null, 2));
+      console.log('Extracted assigneeId:', assigneeId);
+    } catch (err) {
+      /* ignore attach failures */
+    }
     const taskData = {
       caseId: caseMockResponse.case_id,
       titles: ['Follow-up extended direction', 'follow up overdue respondent evidence', 'follow up overdue respondent evidence'],
@@ -33,8 +52,8 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
         'Current progress of the case ![Progress map showing that the appeal is now at stage 1 of 11 stages - the Appeal started stage](https://raw.githubusercontent.com/hmcts/ia-appeal-frontend/master/app/assets/images/progress_legalRep_appealStarted.svg)',
         '# Next steps\nPlease review the evidence before proceeding.',
       ],
-      priorityDates: [inTenDays],
-      dueDates: [inTenDays],
+      priorityDates: [in90Days],
+      dueDates: [in90Days],
       assignees: assigneeId ? [assigneeId] : [],
     };
     await test.step('Setup route mock for task details', async () => {
@@ -55,6 +74,16 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
 
+      await page.waitForLoadState('domcontentloaded');
+
+      // capture screenshot before assertions to help diagnose CI/headless layout issues
+      try {
+        const shot = await page.screenshot({ fullPage: true });
+        await testInfo.attach('caseTaskList.before-asserts.png', { body: shot, contentType: 'image/png' });
+      } catch (err) {
+        /* ignore screenshot failures */
+      }
+
       expect.soft(table.length).toBe(taskData.titles.length);
       expect.soft(table[0]['Title']).toContain(taskData.titles[0]);
       expect.soft(table[1]['Title']).toContain(taskData.titles[1]);
@@ -64,13 +93,13 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       expect.soft(table[1]['Priority']).toContain('LOW');
       expect.soft(table[2]['Priority']).toContain('LOW');
 
-      expect.soft(table[0]['Next steps']).toContain('You still need to submit your appeal. Submit your appeal');
-      expect.soft(table[1]['Next steps']).toContain('Current progress of the case');
-      expect.soft(table[2]['Next steps']).toContain('Next steps Please review the evidence before proceeding.');
+      expect.soft(table[0]['Next steps'],"Next steps not showing expected text").toContain('You still need to submit your appeal. Submit your appeal');
+      expect.soft(table[1]['Next steps'],"Next steps not showing expected text").toContain('Current progress of the case');
+      expect.soft(table[2]['Next steps'],"Next steps not showing expected text").toContain('Next steps Please review the evidence before proceeding.');
     });
   });
 
-  test(`Priority labels render for each category`, async ({ taskListPage, caseDetailsPage, page }) => {
+  test(`Priority labels render for each category`, async ({ taskListPage, caseDetailsPage, page }, testInfo) => {
     const caseMockResponse = buildAsylumCaseMock({ caseId: '1111111111111111' });
     const taskData = {
       caseId: caseMockResponse.case_id,
@@ -102,10 +131,21 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       await page.goto(`/cases/case-details/IA/Asylum/${caseMockResponse.case_id}/tasks`);
       await caseDetailsPage.taskListContainer.waitFor();
       const table = await caseDetailsPage.getTaskKeyValueRows();
+      await page.waitForLoadState('domcontentloaded');
+      // capture screenshot before assertions to help diagnose CI/headless layout issues
+      try {
+        const shot = await page.screenshot({ fullPage: true });
+        await testInfo.attach('caseTaskList.priority.before-asserts.png', { body: shot, contentType: 'image/png' });
+      } catch (err) {
+        /* ignore screenshot failures */
+      }
+
       expect.soft(table[0]['Priority'], 'The priority label for the first task should be URGENT').toContain('URGENT');
       expect.soft(table[1]['Priority'], 'The priority label for the second task should be HIGH').toContain('HIGH');
       expect.soft(table[2]['Priority'], 'The priority label for the third task should be MEDIUM').toContain('MEDIUM');
       expect.soft(table[3]['Priority'], 'The priority label for the fourth task should be LOW').toContain('LOW');
+
+       expect.soft(table[0]['Next steps'],"Next steps not showing expected text").toContain('Click link to proceed to task');
     });
   });
 

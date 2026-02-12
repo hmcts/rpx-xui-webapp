@@ -21,9 +21,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe(`User ${userIdentifier} can see task tab contents on a case`, () => {
   test(`Task values and meta data is displayed as expected`, async ({ taskListPage, caseDetailsPage, page }, testInfo) => {
-    console.log(in90Days
-
-    )
+    console.log(in90Days);
     const caseMockResponse = buildAsylumCaseMock({ caseId: '1111111111111111' });
     // Attach session cookies and assigneeId for CI debugging when missing
     try {
@@ -93,9 +91,13 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       expect.soft(table[1]['Priority']).toContain('LOW');
       expect.soft(table[2]['Priority']).toContain('LOW');
 
-      expect.soft(table[0]['Next steps'],"Next steps not showing expected text").toContain('You still need to submit your appeal. Submit your appeal');
-      expect.soft(table[1]['Next steps'],"Next steps not showing expected text").toContain('Current progress of the case');
-      expect.soft(table[2]['Next steps'],"Next steps not showing expected text").toContain('Next steps Please review the evidence before proceeding.');
+      expect
+        .soft(table[0]['Next steps'], 'Next steps not showing expected text')
+        .toContain('You still need to submit your appeal. Submit your appeal');
+      expect.soft(table[1]['Next steps'], 'Next steps not showing expected text').toContain('Current progress of the case');
+      expect
+        .soft(table[2]['Next steps'], 'Next steps not showing expected text')
+        .toContain('Next steps Please review the evidence before proceeding.');
     });
   });
 
@@ -145,7 +147,7 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
       expect.soft(table[2]['Priority'], 'The priority label for the third task should be MEDIUM').toContain('MEDIUM');
       expect.soft(table[3]['Priority'], 'The priority label for the fourth task should be LOW').toContain('LOW');
 
-       expect.soft(table[0]['Next steps'],"Next steps not showing expected text").toContain('Click link to proceed to task');
+      expect.soft(table[0]['Next steps'], 'Next steps not showing expected text').toContain('Click link to proceed to task');
     });
   });
 

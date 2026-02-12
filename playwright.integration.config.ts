@@ -84,6 +84,10 @@ module.exports = (() => {
       },
       video: 'retain-on-failure',
       timezoneId: 'Europe/London',
+      viewport: { width: 1366, height: 1024 },
+      launchOptions: {
+        args: ['--window-size=1366,1024'],
+      },
       headless: headlessMode,
     },
     projects: [

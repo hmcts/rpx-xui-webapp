@@ -7,7 +7,7 @@ import {
   getExpectedSubFromUserDetails,
 } from '../utils/decentralised-event-redirect.util';
 
-export type DecentralisedRedirectParams = Omit<BuildDecentralisedEventUrlParams, 'baseUrls' | 'expectedSub'>;
+type DecentralisedRedirectParams = Omit<BuildDecentralisedEventUrlParams, 'baseUrls' | 'expectedSub'>;
 
 @Injectable({
   providedIn: 'root',

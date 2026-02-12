@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
+import { lastValueFrom, of, toArray } from 'rxjs';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import { SessionStorageService } from '../../../app/services';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
@@ -89,7 +90,7 @@ describe('CaseCreate Effects', () => {
       expect(effects.applyChangeCaseCreateFilter$).toBeObservable(expected);
     });
 
-    it('should redirect when decentralised case-create event is configured', () => {
+    it('should redirect when decentralised case-create event is configured', async () => {
       mockEnvironmentService.get.and.returnValue({
         PCS: 'https://pcs-frontend.service.gov.uk',
       });
@@ -101,9 +102,9 @@ describe('CaseCreate Effects', () => {
         eventId: 'ext:createCase',
       });
 
-      actions$ = hot('-a', { a: action });
-      const expected = cold('---');
-      expect(effects.applyChangeCaseCreateFilter$).toBeObservable(expected);
+      actions$ = of(action);
+      const emitted = await lastValueFrom(effects.applyChangeCaseCreateFilter$.pipe(toArray()));
+      expect(emitted).toEqual([]);
       expect(mockWindow.location.assign).toHaveBeenCalledWith(
         'https://pcs-frontend.service.gov.uk/cases/case-create/IA/PCS/ext%3AcreateCase?expected_sub=user-123'
       );

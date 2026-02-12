@@ -24,7 +24,7 @@ export class CaseTaskComponent implements OnInit {
   private static readonly CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
   private static readonly CASE_ID_VARIABLE = '${[case_id]}';
   private static readonly TASK_ID_VARIABLE = '${[id]}';
-  private static readonly EXPECTED_SUB_PLACEHOLDER = '__EXPECTED_SUB__';
+  private static readonly EXPECTED_SUB_VARIABLE = '${[EXPECTED_SUB]}';
   private static readonly VARIABLES: string[] = [
     CaseTaskComponent?.CASE_REFERENCE_VARIABLE,
     CaseTaskComponent?.CASE_ID_VARIABLE,
@@ -81,7 +81,7 @@ export class CaseTaskComponent implements OnInit {
     if (expectedSub) {
       task.description = Utils.replaceAll(
         task.description,
-        CaseTaskComponent.EXPECTED_SUB_PLACEHOLDER,
+        CaseTaskComponent.EXPECTED_SUB_VARIABLE,
         encodeURIComponent(expectedSub)
       );
     }

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { v4 as uuid } from 'uuid';
-// import mocha from 'mocha';
 import { config } from './config/config';
 import { getUserId, getXSRFToken } from './utils/authUtil';
 import { setTestContext } from './utils/helper';
@@ -10,8 +9,6 @@ describe('Evidence Manager Endpoints', () => {
   const userName = config.users[config.testEnv].solicitor.e;
   const password = config.users[config.testEnv].solicitor.sec;
 
-  // const userName = 'peterxuisuperuser@mailnesia.com';
-  // const password = 'Monday01';
   beforeEach(function () {
     this.timeout(120000);
 
@@ -24,7 +21,7 @@ describe('Evidence Manager Endpoints', () => {
     await Request.withSession(userName, password);
     const xsrfToken = await getXSRFToken(userName, password);
     const headers = {
-      experimental: true,
+      experimental: 'true',
       'X-XSRF-TOKEN': xsrfToken,
     };
     const response = await Request.get(`documents/${config.em[config.testEnv].docId}/binary`, headers, 200);
@@ -35,24 +32,12 @@ describe('Evidence Manager Endpoints', () => {
     await Request.withSession(userName, password);
     const xsrfToken = await getXSRFToken(userName, password);
     const headers = {
-      experimental: true,
+      experimental: 'true',
       'X-XSRF-TOKEN': xsrfToken,
     };
     const response = await Request.get(`em-anno/metadata/${config.em[config.testEnv].docId}`, headers, [200, 204]);
     expect(response.status).to.equal(204);
   });
-
-  // it('Get document annotations filter', async () => {
-  //     await Request.withSession(userName, password);
-  //     const xsrfToken = await getXSRFToken(userName, password);
-  //     const headers = {
-  //         experimental: true,
-  //         'X-XSRF-TOKEN': xsrfToken
-  //     };
-  //     const response = await Request.get(`em-anno/annotation-sets/filter?documentId=${config.em[config.testEnv].docId}`, null, 200);
-  //     expect(response.status).to.equal(200);
-  //     expect(response.data).to.have.all.keys('createdBy', 'createdByDetails', 'lastModifiedByDetails', 'createdDate', 'lastModifiedBy', 'annotations', 'documentId', 'id','lastModifiedDate');
-  // });
 
   it('Put document annotation', async () => {
     await Request.withSession(userName, password);
@@ -90,11 +75,6 @@ describe('Evidence Manager Endpoints', () => {
 
   it('Get document bookmarks', async () => {
     await Request.withSession(userName, password);
-    const xsrfToken = await getXSRFToken(userName, password);
-    const headers = {
-      experimental: true,
-      'X-XSRF-TOKEN': xsrfToken,
-    };
     const response = await Request.get(`em-anno/${config.em[config.testEnv].docId}/bookmarks`, null, 200);
     expect(response.status).to.equal(200);
     expect(response.data).to.be.an('array');
@@ -120,8 +100,6 @@ describe('Evidence Manager Endpoints', () => {
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
     };
-
-    const bookmarksCountBefore = await Request.get(`em-anno/${config.em[config.testEnv].docId}/bookmarks`, null, 200);
 
     const response = await Request.put(
       'em-anno/bookmarks',

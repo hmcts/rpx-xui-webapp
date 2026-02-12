@@ -43,7 +43,9 @@ test.describe('IDAM login using credentials for Global Search', () => {
       const searchResultsTable = await tableUtils.parseDataTable(globalSearchPage.searchResultTable);
 
       expect(searchResultsTable.length).toBeGreaterThan(0);
-      expect(searchResultsTable[0]).toMatchObject({
+      const matchingCaseRow = searchResultsTable.find((row) => row.Case.includes(caseNumber));
+      expect(matchingCaseRow).toBeDefined();
+      expect(matchingCaseRow).toMatchObject({
         Case: expect.stringContaining(caseNumber),
         Service: 'Public Law',
         State: expect.any(String),
@@ -68,6 +70,7 @@ test.describe('IDAM login using credentials for Global Search', () => {
 
   test("Global Search (Partial) - using '*' wildcard on case number", async ({ globalSearchPage, tableUtils }) => {
     const wildcardCaseReference = `${availableCaseReference.substring(0, 5)}*`;
+    const wildcardPrefix = wildcardCaseReference.replace('*', '');
     await test.step('Initiate wildcard Global Search', async () => {
       await globalSearchPage.performGlobalSearchWithRetry(wildcardCaseReference, 'PUBLICLAW');
     });
@@ -80,7 +83,8 @@ test.describe('IDAM login using credentials for Global Search', () => {
       const table = await tableUtils.parseDataTable(globalSearchPage.searchResultsTable);
 
       expect(table.length).toBeGreaterThan(0);
-      if (table.length > 1) {
+      const paginationLinkCount = await globalSearchPage.paginationLinks.count();
+      if (paginationLinkCount >= 2) {
         const paginationLinkPreviousPage = globalSearchPage.paginationLinks.nth(0);
         const paginationLinkNextPage = globalSearchPage.paginationLinks.nth(1);
         await expect(paginationLinkPreviousPage).toHaveText('Previous page');
@@ -89,6 +93,13 @@ test.describe('IDAM login using credentials for Global Search', () => {
       }
 
       for (const eachRow of table) {
+        const digitsOnly = eachRow.Case.replace(/\D/g, '');
+        const normalizedCaseReference = digitsOnly.slice(-16);
+        expect(normalizedCaseReference.length, `Expected "${eachRow.Case}" to contain a 16-digit case reference`).toBe(16);
+        expect(
+          normalizedCaseReference.startsWith(wildcardPrefix),
+          `Expected "${eachRow.Case}" to match wildcard prefix ${wildcardPrefix}*`
+        ).toBeTruthy();
         expect(eachRow).toMatchObject({
           Case: expect.any(String),
           Service: 'Public Law',

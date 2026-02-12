@@ -16,6 +16,14 @@ type ResolveCaseReferenceOptions = {
   maxReturnRecordCount?: number;
 };
 
+function randomDigitString(length: number): string {
+  let value = '';
+  for (let index = 0; index < length; index += 1) {
+    value += Math.floor(Math.random() * 10).toString();
+  }
+  return value;
+}
+
 function normalize(value: string): string {
   return value.toLowerCase().replace(/[\s_-]/g, '');
 }
@@ -91,6 +99,58 @@ export async function resolveCaseReferenceWithFallback(
   } catch {
     return fallbackResolver();
   }
+}
+
+export async function resolveNonExistentCaseReference(
+  page: Page,
+  options: ResolveCaseReferenceOptions = {},
+  maxAttempts = 12
+): Promise<string> {
+  const { jurisdictionIds = ['PUBLICLAW'] } = options;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const candidateReference = `9${randomDigitString(15)}`;
+    const response = await page.request.post('/api/globalsearch/results', {
+      data: {
+        searchCriteria: {
+          CCDCaseTypeIds: null,
+          CCDJurisdictionIds: jurisdictionIds,
+          caseManagementBaseLocationIds: null,
+          caseManagementRegionIds: null,
+          caseReferences: [candidateReference],
+          otherReferences: null,
+          parties: [],
+          stateIds: null,
+        },
+        sortCriteria: null,
+        maxReturnRecordCount: 10,
+        startRecordNumber: 1,
+      },
+      failOnStatusCode: false,
+    });
+
+    if (response.status() !== 200) {
+      let responseBodySnippet = '';
+      try {
+        responseBodySnippet = (await response.text()).replace(/\s+/g, ' ').trim().slice(0, 200);
+      } catch {
+        responseBodySnippet = '';
+      }
+
+      throw new Error(
+        `Infrastructure error while resolving non-existent case reference: expected 200 from /api/globalsearch/results but received ${response.status()} on attempt ${attempt + 1}/${maxAttempts} for candidate ${candidateReference}.${responseBodySnippet ? ` Response snippet: ${responseBodySnippet}` : ''}`
+      );
+    }
+
+    const payload = (await response.json()) as GlobalSearchResponse;
+    const results = Array.isArray(payload.results) ? payload.results : [];
+    const exactMatchFound = results.some((result) => result.caseReference === candidateReference);
+    if (!exactMatchFound) {
+      return candidateReference;
+    }
+  }
+
+  throw new Error(`Unable to generate a non-existent 16-digit case reference after ${maxAttempts} attempts`);
 }
 
 async function resolveCaseReferenceFromHtmlPages(page: Page): Promise<string | null> {

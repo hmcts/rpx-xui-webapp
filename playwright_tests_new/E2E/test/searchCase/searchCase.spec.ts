@@ -1,6 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
-import { resolveCaseReferenceWithFallback } from '../../../E2E/utils/case-reference.utils.ts';
+import { resolveCaseReferenceWithFallback, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login to trigger For 16 digit Case Search', () => {
   let availableCaseReference = '';
@@ -35,7 +35,7 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
     );
   });
 
-  test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, validatorUtils, page }) => {
+  test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, page }) => {
     const caseNumber = availableCaseReference;
 
     await test.step('Search using 16-digit case reference', async () => {
@@ -59,8 +59,8 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
     });
   });
 
-  test('Search invalid 16-digit case reference shows no results', async ({ searchCasePage, validatorUtils }) => {
-    const invalidCaseReference = validatorUtils.mutateCaseNumber(availableCaseReference);
+  test('Search invalid 16-digit case reference shows no results', async ({ searchCasePage, page }) => {
+    const invalidCaseReference = await resolveNonExistentCaseReference(page, { jurisdictionIds: ['PUBLICLAW'] });
 
     await test.step('Submit a non-existent 16 digit case reference', async () => {
       await searchCasePage.searchWith16DigitCaseId(invalidCaseReference);

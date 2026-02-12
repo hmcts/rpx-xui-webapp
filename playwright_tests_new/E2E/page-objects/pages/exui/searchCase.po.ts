@@ -1,12 +1,15 @@
 import { Page } from '@playwright/test';
 import { Base } from '../../base';
+import { EXUI_TIMEOUTS } from './exui-timeouts';
 
 export class SearchCasePage extends Base {
   // Locators
   readonly pageHeading = this.page.locator('main h1');
   readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
+  readonly quickSearchContainerFallback = this.page.locator('li:has(#exuiCaseReferenceSearch)').first();
   readonly caseIdTextBox = this.page.locator('#exuiCaseReferenceSearch');
-  readonly searchCaseFindButton = this.page.locator('button.govuk-button--secondary');
+  readonly searchCaseFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
+  readonly searchCaseFindButtonFallback = this.quickSearchContainerFallback.getByRole('button', { name: 'Find', exact: true });
   readonly caseProgressHeading = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31 h2').first();
   readonly caseProgressPanel = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly noResultsHeading = this.page.locator('exui-no-results .govuk-heading-xl');
@@ -17,10 +20,32 @@ export class SearchCasePage extends Base {
     if (!/^\d{16}$/.test(caseId)) {
       throw new Error(`Expected 16-digit case reference, received "${caseId}"`);
     }
+    await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);
-    await this.searchCaseFindButton.click();
-    await this.exuiSpinnerComponent.wait();
+    const primaryFindButtonVisible = await this.searchCaseFindButton.isVisible().catch(() => false);
+    const findButton = primaryFindButtonVisible ? this.searchCaseFindButton : this.searchCaseFindButtonFallback;
+    await findButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_VISIBLE });
+    await findButton.scrollIntoViewIfNeeded();
+    try {
+      await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+    } catch (error) {
+      if (!String(error).includes('intercepts pointer events')) {
+        throw error;
+      }
+      await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+    }
+    await this.waitForPostSearchSpinnerCycle();
+  }
+
+  private async waitForPostSearchSpinnerCycle(): Promise<void> {
+    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    await spinner.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SPINNER_APPEAR_BRIEF }).catch(() => {
+      // Spinner may not appear for very fast case lookups.
+    });
+    await spinner.waitFor({ state: 'hidden', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN }).catch(() => {
+      // Continue with URL/assertion checks in tests for better diagnostics.
+    });
   }
 
   constructor(page: Page) {

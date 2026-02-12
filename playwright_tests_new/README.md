@@ -51,6 +51,11 @@ yarn test:api:pw:coverage
 - Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright.html`
 - Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
 - API call logs attached automatically per test as `node-api-calls.json`
+- Jenkins archives Playwright diagnostics artifacts including:
+- `functional-output/tests/**/odhin-report/**/*`
+- `test-results/**/*`
+- `functional-output/tests/playwright-diagnostics/failure-data/**/*`
+- `**/failure-data.json`
 
 ### API Coverage
 
@@ -88,6 +93,46 @@ npx playwright test --project chromium --workers=1
 # Clean sessions and re-run
 rm -rf .sessions && npx playwright test
 ```
+
+### Flake Gate Reporter
+
+Playwright runs include `playwright_tests_new/common/reporters/flake-gate.reporter.cjs`.
+
+- Default mode: report-only (prints flaky summary, does not fail run).
+- Enforce in CI: set `PW_ENABLE_FLAKE_GATE=true`.
+- Tune with `PW_MAX_FLAKY_TESTS` (default `20`).
+- Tune with `PW_MAX_FLAKY_RATE` (default `0.2`).
+
+### Locator Audit
+
+```bash
+# report-only mode (default)
+yarn lint:playwright:locators
+
+# strict mode (fail on findings)
+STRICT_PLAYWRIGHT_LOCATORS=true yarn lint:playwright:locators
+```
+
+The locator audit script scans for high-risk locator patterns in:
+
+- `playwright_tests_new/E2E/page-objects`
+- `playwright_tests_new/E2E/test`
+
+Opt-outs are available for justified cases:
+
+- `locator-audit:ignore-line`
+- `locator-audit:ignore-file`
+
+Validation rules:
+
+- `no-xpath-engine`: flags `locator('xpath=...')`.
+- `no-text-engine`: flags `locator('text=...')`.
+- `css-descendant-chain`: flags long descendant class-chain selectors inside `locator(...)`.
+
+What this command is for:
+
+- Fast static guardrail to highlight brittle locator patterns early in PRs.
+- It reports risky patterns but does not execute tests or inspect live DOM.
 
 ---
 

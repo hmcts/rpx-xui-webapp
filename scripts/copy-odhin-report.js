@@ -11,6 +11,7 @@ const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
 const target = path.join(targetRoot, 'odhin-report');
 const coverageRoot = path.resolve('reports', 'tests', 'coverage', 'api-playwright');
 const coverageTarget = path.join(target, 'coverage');
+const coverageSourceTarget = path.join(source, 'coverage');
 const coverageLinkFlag = process.env.PW_ODHIN_LINK_COVERAGE === 'true';
 
 try {
@@ -24,18 +25,36 @@ try {
   fs.cpSync(source, target, { recursive: true, force: true });
 
   const { endpoints, totalHits, logFiles } = collectApiEndpointsFromLogs(resolveNodeApiLogRoots());
+  injectNodeApiTab(source, endpoints, totalHits, logFiles);
   injectNodeApiTab(target, endpoints, totalHits, logFiles);
 
   if (coverageLinkFlag && fs.existsSync(coverageRoot)) {
+    // Keep coverage artifacts and tabs available in both locations:
+    // - source (playwright-api) for local direct opens
+    // - target (api_functional) for CI/Jenkins artifacts
+    fs.rmSync(coverageSourceTarget, { recursive: true, force: true });
+    fs.cpSync(coverageRoot, coverageSourceTarget, { recursive: true, force: true });
     fs.rmSync(coverageTarget, { recursive: true, force: true });
     fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
-    const coverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
-    const coverageSummary = loadCoverageSummary(coverageTarget);
-    if (coverageIndex) {
-      injectCoverageLink(target, path.relative(target, coverageIndex), coverageSummary);
-      injectCoverageTab(target, path.relative(target, coverageIndex));
+
+    const sourceCoverageIndex = renameCoverageIndex(findCoverageIndex(coverageSourceTarget));
+    const targetCoverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
+
+    const sourceCoverageSummary = loadCoverageSummary(coverageSourceTarget);
+    const targetCoverageSummary = loadCoverageSummary(coverageTarget);
+
+    if (sourceCoverageIndex) {
+      injectCoverageLink(source, path.relative(source, sourceCoverageIndex), sourceCoverageSummary);
+      injectCoverageTab(source, path.relative(source, sourceCoverageIndex));
     } else {
-      console.warn('copy-odhin-report: coverage index not found; skipping coverage block injection.');
+      console.warn('copy-odhin-report: source coverage index not found; skipping source coverage injection.');
+    }
+
+    if (targetCoverageIndex) {
+      injectCoverageLink(target, path.relative(target, targetCoverageIndex), targetCoverageSummary);
+      injectCoverageTab(target, path.relative(target, targetCoverageIndex));
+    } else {
+      console.warn('copy-odhin-report: target coverage index not found; skipping target coverage injection.');
     }
   }
 } catch (error) {

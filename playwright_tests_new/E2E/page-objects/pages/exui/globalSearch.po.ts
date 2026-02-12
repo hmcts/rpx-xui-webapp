@@ -13,9 +13,9 @@ export class GlobalSearchPage extends Base {
   readonly globalSearchInput = this.page.locator('input#searchTerm');
   readonly viewLink = this.page.locator('.govuk-table a.govuk-link[href*="/cases/case-details/"]').first();
   readonly changeSearchLink = this.page.locator('a[href*="/search"]');
-  readonly searchResultTable = this.page.locator('.govuk-width-container .govuk-main-wrapper .govuk-table');
-  readonly searchResultsTable = this.page.locator('.govuk-width-container .govuk-table');
-  readonly searchResultRows = this.page.locator('.govuk-width-container .govuk-table tbody tr');
+  readonly searchResultTable = this.page.locator('main').getByRole('table').first();
+  readonly searchResultsTable = this.page.locator('main').getByRole('table').first();
+  readonly searchResultRows = this.searchResultsTable.locator('tbody tr');
   readonly applicantOrPartyName = this.page.locator('.govuk-form-group').locator('#fullName');
   readonly paginationLinks = this.page.locator('.govuk-width-container #pagination-label .hmcts-pagination__link');
   readonly searchResultsHeader = this.page.locator('.govuk-width-container .govuk-heading-xl');
@@ -23,6 +23,9 @@ export class GlobalSearchPage extends Base {
 
   async performGlobalSearchWithCase(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
     await this.searchLinkOnMenuBar.click();
+    await this.page.waitForURL(/\/search/, { timeout: 60000 });
+    await this.searchForm.waitFor({ state: 'visible', timeout: 60000 });
+    await this.caseIdTextBox.waitFor({ state: 'visible', timeout: 60000 });
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);
     if (applicantOrPartyName) {

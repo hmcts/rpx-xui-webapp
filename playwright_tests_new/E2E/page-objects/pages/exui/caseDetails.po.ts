@@ -27,7 +27,7 @@ export class CaseDetailsPage extends Base {
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
 
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
-  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly continueButton = this.container.getByRole('button', { name: 'Continue', exact: true });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
   readonly eventTable = this.page.locator('EventLogTable');
   readonly firstNameCell = this.page.locator('tr:has-text("First Name") + td');
@@ -38,9 +38,9 @@ export class CaseDetailsPage extends Base {
 
   // Case details - FindSearch FPL
   readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
-  readonly ccdCaseReference = this.page.locator('ccd-case-header .case-field .markdown >h2 >strong');
+  readonly ccdCaseReference = this.page.locator('ccd-case-header').getByRole('heading', { level: 2 }).locator('strong');
   readonly tabList = this.page.locator('div[role="tablist"]');
-  readonly tablist2 = this.page.locator('.mat-tab-label-container .mat-tab-list .mat-tab-labels > div[role="tab"]');
+  readonly tablist2 = this.page.getByRole('tab');
 
   //Case flags
   // Case flags
@@ -67,9 +67,7 @@ export class CaseDetailsPage extends Base {
 
   // Search case (16 Digit Search)
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
-  readonly resultsNotFoundHeading = this.page.locator(
-    'exui-page-wrapper .govuk-width-container .govuk-grid-row .govuk-heading-xl'
-  );
+  readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
   readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
 
   // GlobalSearch
@@ -511,12 +509,58 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectCaseDetailsTab(tabName: string) {
-    const tab = this.caseDetailsTabs.filter({ hasText: tabName });
-    await tab.click();
-    // Wait for tab content to load
-    await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.TAB_LOAD }).catch(() => {
-      // Swallow timeout - some tabs don't trigger network activity
+    const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
+      min: TIMEOUTS.TAB_LOAD,
+      max: 30_000,
+      multiplier: 3,
+      fallback: 15_000,
     });
+    const tab = this.caseDetailsTabs.filter({ hasText: tabName }).first();
+    await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
+    await tab.click();
+    await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
+      // Some tabs render without spinner; readiness is verified via tabpanel checks below.
+    });
+
+    const controlledPanelId = await tab.getAttribute('aria-controls');
+    if (controlledPanelId) {
+      const controlledPanel = this.page.locator(`#${controlledPanelId}`);
+      await controlledPanel.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
+      await this.page.waitForFunction(
+        (panelId: string) => {
+          const panel = document.getElementById(panelId);
+          if (!panel) {
+            return false;
+          }
+          const hasTextContent = (panel.textContent || '').trim().length > 0;
+          const hasStructuredContent = panel.querySelector('table, form, ccd-read-collection-field, ccd-read-complex-type-field');
+          return hasTextContent || Boolean(hasStructuredContent);
+        },
+        controlledPanelId,
+        { timeout: tabLoadTimeoutMs }
+      );
+      return;
+    }
+
+    await this.page.waitForFunction(
+      (selectedTabName: string) => {
+        const selectedTab = Array.from(document.querySelectorAll('div[role="tab"]')).find((candidate) => {
+          const label = (candidate.textContent || '').trim();
+          return label.includes(selectedTabName) && candidate.getAttribute('aria-selected') === 'true';
+        });
+        if (!selectedTab) {
+          return false;
+        }
+        return Array.from(document.querySelectorAll('[role="tabpanel"]')).some((panel) => {
+          const style = window.getComputedStyle(panel);
+          const isVisible = style.display !== 'none' && style.visibility !== 'hidden';
+          const hasText = (panel.textContent || '').trim().length > 0;
+          return isVisible && hasText;
+        });
+      },
+      tabName,
+      { timeout: tabLoadTimeoutMs }
+    );
   }
 
   async getTabCount() {

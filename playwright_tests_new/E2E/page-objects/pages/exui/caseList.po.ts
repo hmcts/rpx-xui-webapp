@@ -16,8 +16,9 @@ export class CaseListPage extends Base {
   readonly textField0FallbackInput = this.page
     .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
     .first();
+  readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
   readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
-  readonly quickSearchFindButton = this.page.locator('button.govuk-button--secondary');
+  readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
   readonly caseResultsTable = this.page.locator('#search-result table');
   readonly caseResultLinks = this.page.locator('#search-result a[href*="/cases/case-details/"]');

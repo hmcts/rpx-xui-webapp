@@ -2,6 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
+import { EXUI_TIMEOUTS } from './exui-timeouts';
 
 const logger = createLogger({
   serviceName: 'create-case',
@@ -150,7 +151,7 @@ export class CreateCasePage extends Base {
    * @throws {Error} If dropdown doesn't populate within timeout
    * @private
    */
-  private async waitForSelectReady(selector: string, timeoutMs = 20000) {
+  private async waitForSelectReady(selector: string, timeoutMs = EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT) {
     await this.page.waitForFunction(
       (sel) => {
         const el = document.querySelector(sel);
@@ -254,7 +255,7 @@ export class CreateCasePage extends Base {
    */
   private async waitForCaseDetails(context: string) {
     await this.assertNoEventCreationError(context);
-    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: 60000 });
+    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
   }
 
   /**
@@ -285,7 +286,10 @@ export class CreateCasePage extends Base {
     await this.continueButton.waitFor({ state: 'visible' });
     await this.continueButton.scrollIntoViewIfNeeded();
     await expect(this.continueButton).toBeEnabled();
-    const clickTimeout = options.timeoutMs ?? 15000;
+    const clickTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
+    await this.waitForSpinnerToComplete(`before ${context}`, clickTimeout).catch(() => {
+      // Best-effort pre-click sync; fallback click strategy below still handles spinner interception.
+    });
     try {
       await this.continueButton.click({ force: options.force, timeout: clickTimeout });
     } catch (error) {
@@ -297,13 +301,13 @@ export class CreateCasePage extends Base {
       await this.page
         .locator('xuilib-loading-spinner')
         .first()
-        .waitFor({ state: 'hidden', timeout: 10000 })
+        .waitFor({ state: 'hidden', timeout: clickTimeout })
         .catch(() => {
           // Best-effort wait; if spinner persists, we still attempt force click.
         });
       await this.continueButton.click({ force: true, timeout: clickTimeout });
     }
-    await this.waitForSpinnerToComplete(`after ${context}`);
+    await this.waitForSpinnerCycle(`after ${context}`, clickTimeout);
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
@@ -319,6 +323,10 @@ export class CreateCasePage extends Base {
     const timeoutMs = options.timeoutMs ?? this.getRecommendedTimeoutMs();
     const deadline = Date.now() + timeoutMs;
     let autoAdvanceCount = 0;
+    const autoAdvanceTimeoutMs = Math.max(
+      EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MIN,
+      Math.min(EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX, Math.floor(timeoutMs / 2))
+    );
 
     while (Date.now() < deadline) {
       if (this.page.isClosed()) {
@@ -331,19 +339,32 @@ export class CreateCasePage extends Base {
         throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
       }
 
+      const spinnerVisible = await this.page
+        .locator('xuilib-loading-spinner')
+        .first()
+        .isVisible()
+        .catch(() => false);
+      if (spinnerVisible) {
+        await this.waitForSpinnerToComplete(`while waiting for submit ${context}`, autoAdvanceTimeoutMs).catch(() => {
+          // Keep polling in the main loop even when spinner is slow or intermittent.
+        });
+        await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_SPINNER_STABILIZE_WAIT);
+        continue;
+      }
+
       const submitVisible = await this.submitButton.isVisible().catch(() => false);
       if (submitVisible) {
         await this.submitButton.scrollIntoViewIfNeeded();
         await expect(this.submitButton).toBeEnabled();
         try {
-          await this.submitButton.click({ timeout: 10000 });
+          await this.submitButton.click({ timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
         } catch (error) {
           const message = String(error);
           if (!message.includes('intercepts pointer events')) {
             throw error;
           }
           this.logger.warn('Submit click intercepted; retrying with force', { context });
-          await this.submitButton.click({ force: true, timeout: 10000 });
+          await this.submitButton.click({ force: true, timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
         }
         await this.waitForSpinnerToComplete(`after submit ${context}`);
         return;
@@ -352,11 +373,13 @@ export class CreateCasePage extends Base {
       const continueVisible = await this.continueButton.isVisible().catch(() => false);
       if (continueVisible) {
         autoAdvanceCount += 1;
-        await this.clickContinueAndWait(`auto-advance ${autoAdvanceCount} before submit ${context}`, { timeoutMs: 12000 });
+        await this.clickContinueAndWait(`auto-advance ${autoAdvanceCount} before submit ${context}`, {
+          timeoutMs: autoAdvanceTimeoutMs,
+        });
         continue;
       }
 
-      await this.page.waitForTimeout(500);
+      await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
     }
 
     const visibleActionButtons = await this.page
@@ -388,6 +411,15 @@ export class CreateCasePage extends Base {
       }
       this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
     }
+  }
+
+  private async waitForSpinnerCycle(context: string, timeoutMs?: number) {
+    const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
+    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    await spinner.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SPINNER_APPEAR_BRIEF }).catch(() => {
+      // Spinner may already have completed before visibility wait.
+    });
+    await this.waitForSpinnerToComplete(context, effectiveTimeoutMs);
   }
 
   /**
@@ -426,7 +458,7 @@ export class CreateCasePage extends Base {
       timeoutMs?: number;
     } = {}
   ) {
-    const timeoutMs = options.timeoutMs ?? 20000;
+    const timeoutMs = options.timeoutMs ?? EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT;
     const initialPath = this.normalizePath(initialUrl);
     const expectedPathIncludes = options.expectedPathIncludes;
     const expectedLocator = options.expectedLocator;
@@ -475,7 +507,7 @@ export class CreateCasePage extends Base {
   async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
     for (let i = 0; i < count; i++) {
       try {
-        await this.continueButton.waitFor({ state: 'visible', timeout: 5000 });
+        await this.continueButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CONTINUE_VISIBLE_BRIEF });
       } catch (error: unknown) {
         logger.info('Continue button not visible; stopping early', {
           iteration: i + 1,
@@ -501,7 +533,7 @@ export class CreateCasePage extends Base {
    * @param timeout - Wait time for error to appear (default: 2000ms)
    * @returns true if error found, false otherwise
    */
-  async checkForErrorMessage(message?: string, timeout = 2000): Promise<boolean> {
+  async checkForErrorMessage(message?: string, timeout = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
     const check = async (sel: Locator) => {
       try {
         await sel.waitFor({ state: 'visible', timeout });
@@ -527,7 +559,7 @@ export class CreateCasePage extends Base {
       }
       return sel
         .first()
-        .innerText({ timeout: 1000 })
+        .innerText({ timeout: EXUI_TIMEOUTS.ERROR_META_TEXT_READ })
         .then((text) => {
           const trimmed = text.trim();
           return {
@@ -557,7 +589,7 @@ export class CreateCasePage extends Base {
       try {
         if (!this.page.url().includes('/cases/case-filter')) {
           try {
-            await this.createCaseButton.waitFor({ state: 'visible', timeout: 5000 });
+            await this.createCaseButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CREATE_CASE_BUTTON_VISIBLE });
             await this.createCaseButton.click();
           } catch (error: unknown) {
             // Button not visible - navigate directly to filter page
@@ -568,15 +600,15 @@ export class CreateCasePage extends Base {
           }
         }
         await this.jurisdictionSelect.waitFor({ state: 'visible' });
-        await this.waitForSelectReady('#cc-jurisdiction', 30000);
+        await this.waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
         await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
 
         await this.caseTypeSelect.waitFor({ state: 'visible' });
-        await this.waitForSelectReady('#cc-case-type', 30000);
+        await this.waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
         await this.selectOptionSmart(this.caseTypeSelect, caseType);
         if (eventType) {
           await this.eventTypeSelect.click();
-          await this.waitForSelectReady('#cc-event', 30000);
+          await this.waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
           await this.selectOptionSmart(this.eventTypeSelect, eventType);
         }
         await this.startButton.click();
@@ -601,7 +633,7 @@ export class CreateCasePage extends Base {
             jurisdictionBootstrapFailed,
             onSomethingWentWrongPage,
           });
-          await this.page.waitForTimeout(1500);
+          await this.page.waitForTimeout(EXUI_TIMEOUTS.CREATE_CASE_RETRY_BACKOFF);
         } else {
           logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
         }
@@ -646,7 +678,9 @@ export class CreateCasePage extends Base {
       });
 
       const res = await this.page
-        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', { timeout: 5000 })
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
+          timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+        })
         .catch(() => null);
 
       if (!res) {
@@ -872,13 +906,13 @@ export class CreateCasePage extends Base {
         await this.person1JobTitleInput.fill(faker.person.jobTitle());
         await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
         await this.clickContinueAndWait('after PoC personal details');
-        await this.textField0Input.waitFor({ state: 'visible', timeout: 30000 });
+        await this.textField0Input.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
         await this.textField0Input.fill(textField0);
         await this.textField3Input.fill(faker.lorem.word());
         await this.textField1Input.fill(faker.lorem.word());
         await this.textField2Input.fill(faker.lorem.word());
         await this.clickContinueAndWait('after PoC text fields');
-        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: 30000 });
+        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
         await this.testSubmitButton.click();
         await this.waitForSpinnerToComplete('after submitting divorce PoC case');
         await this.waitForCaseDetails('after submitting divorce PoC case');

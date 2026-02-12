@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
-import { resolveCaseReferenceWithFallback } from '../../../E2E/utils/case-reference.utils.ts';
+import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login for Find Search page', () => {
   let availableCaseReference = '';
@@ -15,24 +15,25 @@ test.describe('IDAM login for Find Search page', () => {
     }
 
     await page.goto('/');
-    availableCaseReference = await resolveCaseReferenceWithFallback(
-      page,
-      async () => {
+    try {
+      const caseReference = await (async () => {
         await caseListPage.goto();
-        const caseReference = await caseListPage.getRandomCaseReferenceFromResults([
+        const selectedCaseReference = await caseListPage.getRandomCaseReferenceFromResults([
           'Case management',
           'Submitted',
           'Gatekeeping',
           'Closed',
         ]);
         await page.goto('/');
-        return caseReference;
-      },
-      {
+        return selectedCaseReference;
+      })();
+      availableCaseReference = caseReference;
+    } catch {
+      availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
         jurisdictionIds: ['PUBLICLAW'],
         preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
-      }
-    );
+      });
+    }
   });
 
   test('Find case using Public Law jurisdiction', async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {

@@ -17,7 +17,7 @@ export class FindCasePage extends Base {
   readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');
   readonly searchResultsDataTable = this.searchResultsTable.locator('table').first();
   readonly firstRowOfSearchResultsTable = this.searchResultsTable.locator('.govuk-link').first();
-  readonly workBasketFilterPanel = this.page.locator('.search-block .hmcts-filter-layout__filter ccd-search-filters-wrapper');
+  readonly workBasketFilterPanel = this.page.locator('ccd-search-filters-wrapper').first();
   readonly findCaseLinkOnMenu = this.page
     .locator('.hmcts-primary-navigation__nav .hmcts-primary-navigation__link[href*="case-search"]')
     .first();
@@ -43,9 +43,9 @@ export class FindCasePage extends Base {
     await this.openFromMainMenu();
     await this.ensureFiltersVisible();
 
-    await this.jurisdictionSelect.selectOption(jurisdiction);
+    await this.jurisdictionSelect.selectOption({ label: jurisdiction });
 
-    await this.caseTypeSelect.selectOption(caseType);
+    await this.caseTypeSelect.selectOption({ label: caseType });
 
     await this.ccdCaseReference.fill(caseNumber);
 

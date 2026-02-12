@@ -126,6 +126,10 @@ describe('Caseworker Cache Service', () => {
           ccd_service_names: ['PRIVATELAW'],
         },
       ];
+      const postStub = sandbox.stub(http, 'post');
+      postStub.onCall(0).resolves({ data: 's2s-token' });
+      postStub.onCall(1).resolves({ data: { access_token: 'idam-token' } });
+
       const res = mockRes({ status: 200, data: mockStaffDetails });
       sandbox.stub(http, 'get').resolves(res);
       const data = await fetchNewUserData();

@@ -8,14 +8,16 @@ describe('decentralised-event-redirect.util', () => {
   });
 
   it('should build an external URL for existing case events', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: { PCS: 'https://pcs-frontend.service.gov.uk' },
-      caseType: 'pcs',
-      caseId: '1234567890',
-      eventId: 'ext:fooEvent',
-      queryParams: { tid: 'task-1', foo: 'bar' },
-      expectedSub: 'user-123',
-    });
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'pcs',
+        caseId: '1234567890',
+        eventId: 'ext:fooEvent',
+        queryParams: { tid: 'task-1', foo: 'bar' },
+      },
+      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      'user-123'
+    );
 
     expect(url).toBe(
       'https://pcs-frontend.service.gov.uk/cases/1234567890/event/ext%3AfooEvent?tid=task-1&foo=bar&expected_sub=user-123'
@@ -24,104 +26,118 @@ describe('decentralised-event-redirect.util', () => {
   });
 
   it('should build an external URL for case-create events', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: { PCS: 'https://pcs-frontend.service.gov.uk' },
-      caseType: 'PCS',
-      jurisdiction: 'IA',
-      eventId: 'ext:createCase',
-      expectedSub: 'user-456',
-      isCaseCreate: true,
-    });
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'PCS',
+        jurisdiction: 'IA',
+        eventId: 'ext:createCase',
+        isCaseCreate: true,
+      },
+      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      'user-456'
+    );
 
     expect(url).toBe('https://pcs-frontend.service.gov.uk/cases/case-create/IA/PCS/ext%3AcreateCase?expected_sub=user-456');
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should return null when the event is not decentralised', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: { PCS: 'https://pcs-frontend.service.gov.uk' },
-      caseType: 'PCS',
-      caseId: '1234567890',
-      eventId: 'standardEvent',
-      expectedSub: 'user-123',
-    });
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'PCS',
+        caseId: '1234567890',
+        eventId: 'standardEvent',
+      },
+      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      'user-123'
+    );
 
     expect(url).toBeNull();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should prefer the longest matching prefix for base URL resolution', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: {
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'Prefix-Case',
+        caseId: '123',
+        eventId: 'ext:fooEvent',
+      },
+      {
         pre: 'https://one.test',
         prefix: 'https://two.test',
       },
-      caseType: 'Prefix-Case',
-      caseId: '123',
-      eventId: 'ext:fooEvent',
-      expectedSub: 'user-123',
-    });
+      'user-123'
+    );
 
     expect(url).toBe('https://two.test/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should resolve base URL from a template with %s placeholder', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: {
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'PCS_PR_1234',
+        caseId: '123',
+        eventId: 'ext:fooEvent',
+      },
+      {
         PCS_PR_: 'https://pcs-xui-pr-%s.preview.platform',
       },
-      caseType: 'PCS_PR_1234',
-      caseId: '123',
-      eventId: 'ext:fooEvent',
-      expectedSub: 'user-123',
-    });
+      'user-123'
+    );
 
     expect(url).toBe('https://pcs-xui-pr-1234.preview.platform/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should return null when multiple longest prefixes match (ambiguous)', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: {
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'AB123',
+        caseId: '123',
+        eventId: 'ext:fooEvent',
+      },
+      {
         ab: 'https://one.test',
         AB: 'https://two.test',
       },
-      caseType: 'AB123',
-      caseId: '123',
-      eventId: 'ext:fooEvent',
-      expectedSub: 'user-123',
-    });
+      'user-123'
+    );
 
     expect(url).toBeNull();
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
   it('should return null when template has multiple %s placeholders', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: {
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'PCS_PR_1234',
+        caseId: '123',
+        eventId: 'ext:fooEvent',
+      },
+      {
         PCS_PR_: 'https://%s.%s.preview.platform',
       },
-      caseType: 'PCS_PR_1234',
-      caseId: '123',
-      eventId: 'ext:fooEvent',
-      expectedSub: 'user-123',
-    });
+      'user-123'
+    );
 
     expect(url).toBeNull();
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
   it('should return null when template substitution suffix is missing', () => {
-    const url = buildDecentralisedEventUrl({
-      baseUrls: {
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: 'PCS_PR_',
+        caseId: '123',
+        eventId: 'ext:fooEvent',
+      },
+      {
         PCS_PR_: 'https://pcs-xui-pr-%s.preview.platform',
       },
-      caseType: 'PCS_PR_',
-      caseId: '123',
-      eventId: 'ext:fooEvent',
-      expectedSub: 'user-123',
-    });
+      'user-123'
+    );
 
     expect(url).toBeNull();
     expect(consoleErrorSpy).toHaveBeenCalled();

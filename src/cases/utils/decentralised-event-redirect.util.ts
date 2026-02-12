@@ -1,4 +1,7 @@
 import { Params } from '@angular/router';
+import type { EnvironmentConfig } from '../../models/environmentConfig.model';
+
+type DecentralisedEventBaseUrls = EnvironmentConfig['decentralisedEventBaseUrls'];
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
@@ -33,7 +36,7 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
-const getDecentralisedBaseUrl = (baseUrls: Record<string, string> | null | undefined, caseType?: string): string | null => {
+const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType?: string): string | null => {
   if (!baseUrls || !caseType) {
     return null;
   }
@@ -95,45 +98,45 @@ const appendQueryParams = (params: URLSearchParams, queryParams?: Params): void 
   });
 };
 
-export interface BuildDecentralisedEventUrlParams {
-  baseUrls: Record<string, string> | null | undefined;
+export interface BuildDecentralisedEventUrlInput {
   caseType?: string;
   eventId?: string;
   caseId?: string;
   jurisdiction?: string;
   queryParams?: Params;
-  expectedSub?: string;
   isCaseCreate?: boolean;
 }
 
-export const buildDecentralisedEventUrl = (params: BuildDecentralisedEventUrlParams): string | null => {
-  const { baseUrls, caseType, eventId, caseId, jurisdiction, queryParams, expectedSub, isCaseCreate } = params;
-
-  if (!isDecentralisedEvent(eventId)) {
+export const buildDecentralisedEventUrl = (
+  params: BuildDecentralisedEventUrlInput,
+  baseUrls: DecentralisedEventBaseUrls,
+  expectedSub?: string
+): string | null => {
+  if (!isDecentralisedEvent(params.eventId)) {
     return null;
   }
 
-  const baseUrl = getDecentralisedBaseUrl(baseUrls, caseType);
+  const baseUrl = getDecentralisedBaseUrl(baseUrls, params.caseType);
   if (!baseUrl) {
     return null;
   }
 
-  if (isCaseCreate && (!jurisdiction || !caseType)) {
+  if (params.isCaseCreate && (!params.jurisdiction || !params.caseType)) {
     return null;
   }
 
-  if (!isCaseCreate && !caseId) {
+  if (!params.isCaseCreate && !params.caseId) {
     return null;
   }
 
   // Remove any trailing slashes from our base url
   const base = baseUrl.replace(/\/+$/, '');
-  const eventPath = isCaseCreate
-    ? `/cases/case-create/${encodeURIComponent(jurisdiction)}/${encodeURIComponent(caseType)}/${encodeURIComponent(eventId)}`
-    : `/cases/${encodeURIComponent(caseId)}/event/${encodeURIComponent(eventId)}`;
+  const eventPath = params.isCaseCreate
+    ? `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`
+    : `/cases/${encodeURIComponent(params.caseId)}/event/${encodeURIComponent(params.eventId)}`;
 
   const searchParams = new URLSearchParams();
-  appendQueryParams(searchParams, queryParams);
+  appendQueryParams(searchParams, params.queryParams);
   if (expectedSub) {
     searchParams.set('expected_sub', expectedSub);
   }

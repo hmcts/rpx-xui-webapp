@@ -5,8 +5,10 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
 import { hot } from 'jasmine-marbles';
 import { of } from 'rxjs';
+import { MOCK_ENVIRONMENT_CONFIG } from '../../app.test-constants.spec';
 import { AuthService } from '../../services/auth/auth.service';
 import { AppConfigService } from '../../services/config/configuration.services';
+import { ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import { Logout } from '../actions';
 import * as fromAppEffects from './app.effects';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -28,6 +30,7 @@ describe('App Effects', () => {
         RoleService,
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

@@ -29,6 +29,8 @@ import { combineReducers, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
+import { MOCK_ENVIRONMENT_CONFIG } from '../../../app/app.test-constants.spec';
+import { ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import * as fromCases from '../../store/reducers';
 import { CaseCreateSubmitComponent } from './case-create-submit.component';
 import { InitialisationSyncService } from '../../../app/services/ccd-config/initialisation-sync-service';
@@ -164,6 +166,7 @@ describe('CaseCreateSubmitComponent', () => {
         },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LoggerService, useValue: mockLoggerService },
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

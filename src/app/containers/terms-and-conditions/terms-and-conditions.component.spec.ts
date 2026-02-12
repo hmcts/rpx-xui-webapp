@@ -7,6 +7,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { RpxTranslatePipe, RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
+import { MOCK_ENVIRONMENT_CONFIG } from '../../app.test-constants.spec';
+import { ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import { TermsConditionsService } from '../../../app/services/terms-and-conditions/terms-and-conditions.service';
 import { TermsAndConditionsComponent } from './terms-and-conditions.component';
 
@@ -60,6 +62,7 @@ describe('TermsAndConditionsComponent', () => {
           useFactory: rpxTranslationServiceStub,
         },
         TermsConditionsService,
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

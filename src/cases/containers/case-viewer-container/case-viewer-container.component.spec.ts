@@ -13,10 +13,11 @@ import { StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 
-import { AppTestConstants } from '../../../app/app.test-constants.spec';
+import { AppTestConstants, MOCK_ENVIRONMENT_CONFIG } from '../../../app/app.test-constants.spec';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import { State, reducers } from '../../../app/store';
 import * as fromRoot from '../../../app/store';
+import { ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import { AllocateRoleService } from '../../../role-access/services';
 import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { CaseViewerContainerComponent } from './case-viewer-container.component';
@@ -270,6 +271,7 @@ describe('CaseViewerContainerComponent', () => {
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -362,6 +364,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -440,6 +443,7 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -520,6 +524,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
         { provide: AllocateRoleService, useClass: MockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],

@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
@@ -5,7 +6,9 @@ import { Store, StoreModule } from '@ngrx/store';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
+import { MOCK_ENVIRONMENT_CONFIG } from '../../app.test-constants.spec';
 import { ApplicationThemeLogo } from '../../enums';
+import { ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
@@ -41,6 +44,7 @@ describe('AppHeaderComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [AppHeaderComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [StoreModule.forRoot({})],
       providers: [
         {
@@ -66,6 +70,7 @@ describe('AppHeaderComponent', () => {
           provide: Window,
           useValue: window,
         },
+        { provide: ENVIRONMENT_CONFIG, useValue: MOCK_ENVIRONMENT_CONFIG },
         AppHeaderComponent,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

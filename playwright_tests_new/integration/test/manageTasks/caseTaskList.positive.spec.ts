@@ -38,6 +38,7 @@ test.describe(`User ${userIdentifier} can see task tab contents on a case`, () =
     } catch (err) {
       /* ignore attach failures */
     }
+     assigneeId = extractUserIdFromCookies(sessionCookies);
     const taskData = {
       caseId: caseMockResponse.case_id,
       titles: ['Follow-up extended direction', 'follow up overdue respondent evidence', 'follow up overdue respondent evidence'],

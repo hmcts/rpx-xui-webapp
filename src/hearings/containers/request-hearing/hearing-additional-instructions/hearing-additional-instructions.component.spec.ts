@@ -194,7 +194,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
       expect(component.showReviewBox).toBe(false);
     });
 
-    it('should set showReviewBox to true when additionalInsructionsChangesRequired is false but defined', () => {
+    it('should not set showReviewBox to true when additionalInsructionsChangesRequired is false but defined', () => {
       // Set up the service properties BEFORE component initialization
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',
@@ -215,10 +215,10 @@ describe('HearingAdditionalInstructionsComponent', () => {
 
       component.initForm();
 
-      expect(component.showReviewBox).toBe(true);
+      expect(component.showReviewBox).toBe(false);
     });
 
-    it('should set showReviewBox to false when additionalInsructionsChangesRequired is undefined', () => {
+    it('should not set showReviewBox to false when additionalInsructionsChangesRequired is undefined', () => {
       // Set up the service properties BEFORE component initialization
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',

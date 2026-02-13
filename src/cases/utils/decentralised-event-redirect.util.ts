@@ -131,7 +131,10 @@ export const buildDecentralisedEventUrl = (
   }
 
   // Remove any trailing slashes from our base url
-  const base = baseUrl.replace(/\/+$/, '');
+  let base = baseUrl;
+  while (base.endsWith('/')) {
+    base = base.slice(0, -1);
+  }
   let eventPath: string;
   if (params.isCaseCreate === true) {
     eventPath = `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`;

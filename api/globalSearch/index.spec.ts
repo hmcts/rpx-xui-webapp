@@ -135,7 +135,7 @@ describe('Jurisdiction', () => {
     { serviceId: 'PUBLICLAW', serviceName: 'Family Public Law' },
     { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' },
     { serviceId: 'ST_CIC', serviceName: 'Criminal Injuries Compensation' },
-    { serviceId: 'PROBATE', serviceName: 'Probate' }
+    { serviceId: 'PROBATE', serviceName: 'Probate' },
   ];
 
   beforeEach(() => {

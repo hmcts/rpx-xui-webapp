@@ -423,12 +423,19 @@ describe('CaseHearingsComponent', () => {
       },
     },
   } as CaseView;
+  const DEFAULT_CASE_INFO = { caseId: '1234', jurisdiction: 'CIVIL', caseType: 'CIVIL' };
 
   beforeEach(() => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
 
     mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    mockSessionStore.getItem.and.callFake((key: string) => {
+      if (key === 'caseInfo') {
+        return JSON.stringify(DEFAULT_CASE_INFO);
+      }
+      return null;
+    });
     const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
     const mockCaseNotifier = new CaseNotifier(mockCasesService);
     mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();

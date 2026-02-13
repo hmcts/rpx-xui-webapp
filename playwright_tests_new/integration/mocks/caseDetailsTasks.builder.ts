@@ -103,6 +103,7 @@ export type CaseDetailsTasksParamsOptions = {
 
 export type CaseDetailsTasksMinimalOptions = {
   caseId: string;
+  id?: string[];
   titles?: string[];
   states?: string[];
   types?: string[];
@@ -238,6 +239,7 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     types = [],
     taskSystems = [],
     locations = [],
+    id = [],
     assignees = [],
     descriptions = [],
     majorPriorities = [],
@@ -249,12 +251,14 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     const type = types[index] ?? types[0];
     const taskSystem = taskSystems[index] ?? taskSystems[0];
     const location = locations[index] ?? locations[0];
+    const idValue = id[index] ?? id[0];
     const assignee = assignees[index] ?? assignees[0];
     const description = descriptions[index] ?? descriptions[0];
     const majorPriority = majorPriorities[index] ?? majorPriorities[0];
     const priorityDate = priorityDates[index] ?? priorityDates[0];
     const dueDate = dueDates[index] ?? dueDates[0] ?? priorityDate;
     return buildTaskDetailsMock(caseId, {
+      id: idValue,
       task_title: title,
       task_state: state,
       type,

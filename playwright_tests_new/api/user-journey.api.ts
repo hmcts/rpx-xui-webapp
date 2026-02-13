@@ -614,9 +614,7 @@ async function finalizeJourney(
 
 function resolveJourneyCaseReference(): string {
   const configuredCaseReference = process.env.API_JOURNEY_CASE_REFERENCE;
-  return configuredCaseReference && /^\d{16}$/.test(configuredCaseReference)
-    ? configuredCaseReference
-    : defaultCaseReference;
+  return configuredCaseReference && /^\d{16}$/.test(configuredCaseReference) ? configuredCaseReference : defaultCaseReference;
 }
 
 function assertUserJurisdictionsResponse(status: number, data: unknown): void {
@@ -686,10 +684,9 @@ function assertConfigurationFlagResponse(status: number, data: unknown): void {
   if (status !== 200) {
     return;
   }
-  expect(
-    typeof data === 'boolean' || typeof data === 'string',
-    'api/configuration should return a boolean-like value.'
-  ).toBe(true);
+  expect(typeof data === 'boolean' || typeof data === 'string', 'api/configuration should return a boolean-like value.').toBe(
+    true
+  );
 }
 
 function assertMonitoringToolsResponse(status: number, data: unknown): void {

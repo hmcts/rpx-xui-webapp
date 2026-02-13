@@ -348,12 +348,7 @@ export class CreateCasePage extends Base {
     await this.assertNoValidationErrorAfterContinue(context);
   }
 
-  private async clickContinueButtonWithRetry(
-    continueButton: Locator,
-    context: string,
-    clickTimeout: number,
-    force?: boolean
-  ) {
+  private async clickContinueButtonWithRetry(continueButton: Locator, context: string, clickTimeout: number, force?: boolean) {
     try {
       await continueButton.click({ force, timeout: clickTimeout });
     } catch (error) {
@@ -617,12 +612,7 @@ export class CreateCasePage extends Base {
     const expectedLocator = options.expectedLocator;
     const waitStartedAtMs = Date.now();
     const timeoutContext = () =>
-      this.buildWizardAdvanceTimeoutContext(
-        initialPath,
-        expectedPathIncludes,
-        Boolean(expectedLocator),
-        waitStartedAtMs
-      );
+      this.buildWizardAdvanceTimeoutContext(initialPath, expectedPathIncludes, Boolean(expectedLocator), waitStartedAtMs);
 
     try {
       await this.waitForWizardAdvance(initialPath, expectedPathIncludes, expectedLocator, timeoutMs);

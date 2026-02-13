@@ -259,8 +259,7 @@ async function createNodeApiClient(
     seenRequestIds.add(entry.id);
     entries.push(entry);
   };
-  const defaultRequestTimeoutMs =
-    parsePositiveInteger(process.env.API_REQUEST_TIMEOUT_MS) ?? DEFAULT_API_REQUEST_TIMEOUT_MS;
+  const defaultRequestTimeoutMs = parsePositiveInteger(process.env.API_REQUEST_TIMEOUT_MS) ?? DEFAULT_API_REQUEST_TIMEOUT_MS;
 
   const client = new PlaywrightApiClient({
     baseUrl,

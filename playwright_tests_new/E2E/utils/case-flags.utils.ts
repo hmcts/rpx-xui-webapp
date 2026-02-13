@@ -7,10 +7,7 @@ export function isPlaywrightContextClosedError(error: unknown): boolean {
   );
 }
 
-export function rowMatchesExpectedColumns(
-  row: Record<string, string>,
-  expected: Record<string, string>
-): boolean {
+export function rowMatchesExpectedColumns(row: Record<string, string>, expected: Record<string, string>): boolean {
   return Object.entries(expected).every(([key, value]) => {
     return (row[key] ?? '').trim() === value.trim();
   });

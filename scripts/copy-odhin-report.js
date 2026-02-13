@@ -488,8 +488,7 @@ function loadApiEventsFromNodeApiFile(filePath) {
 
 function buildApiEventFromNodeApiEntry(entry) {
   const endpoint = extractEndpointFromLog(entry);
-  const status =
-    typeof entry?.status === 'number' && Number.isFinite(entry.status) ? Math.trunc(entry.status) : undefined;
+  const status = typeof entry?.status === 'number' && Number.isFinite(entry.status) ? Math.trunc(entry.status) : undefined;
   const durationMs =
     typeof entry?.durationMs === 'number' && Number.isFinite(entry.durationMs) ? Math.round(entry.durationMs) : undefined;
   const errorMessage = `${entry?.error ?? ''} ${entry?.errorMessage ?? ''}`.trim();
@@ -547,9 +546,7 @@ function recordApiEvent(state, event, slowThresholdMs) {
   const normalizedMethod = normalizeMethod(method);
   const key = `${normalizedMethod} ${endpoint}`;
   const failedOutcome =
-    typeof failed === 'boolean'
-      ? failed
-      : timedOut || hasError || status === 0 || (typeof status === 'number' && status >= 400);
+    typeof failed === 'boolean' ? failed : timedOut || hasError || status === 0 || (typeof status === 'number' && status >= 400);
   const slowOutcome = typeof slow === 'boolean' ? slow : typeof durationMs === 'number' && durationMs > slowThresholdMs;
   const slowDurationMs = typeof durationMs === 'number' ? durationMs : slowThresholdMs;
 
@@ -1047,15 +1044,17 @@ function buildNodeApiFailedRows(apiReport, usingNodeApiAttachments) {
     ];
   }
 
-  return apiReport.failedEndpoints.slice(0, API_LEADERBOARD_LIMIT).map(({ method, endpoint, hits, timeoutHits, statusBreakdown }) => {
-    return `<tr>
+  return apiReport.failedEndpoints
+    .slice(0, API_LEADERBOARD_LIMIT)
+    .map(({ method, endpoint, hits, timeoutHits, statusBreakdown }) => {
+      return `<tr>
         <td class="text-secondary-emphasis">${escapeHtml(method)}</td>
         <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${escapeHtml(endpoint)}</td>
         <td class="text-secondary-emphasis">${hits}</td>
         <td class="text-secondary-emphasis">${timeoutHits}</td>
         <td class="text-secondary-emphasis text-start">${escapeHtml(formatBreakdown(statusBreakdown))}</td>
       </tr>`;
-  });
+    });
 }
 
 function buildNodeApiSlowRows(apiReport, usingNodeApiAttachments) {

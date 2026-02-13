@@ -2,9 +2,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { AlertService, CaseField, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, CaseField, CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { TaskAlertBannerComponent } from '../../../cases/components';
 import { AllocateRoleService } from '../../../role-access/services';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
@@ -113,6 +113,19 @@ const CASE_VIEW: CaseView = {
   ],
 };
 
+const cv = {
+  case_id: '1620409659381330',
+  case_type: {
+    id: 'CIVIL',
+    name: '',
+    jurisdiction: {
+      id: 'CIVIL',
+      name: '',
+      description: '',
+    },
+  },
+} as CaseView;
+
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
@@ -122,6 +135,10 @@ describe('TasksContainerComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   let component: TasksContainerComponent;
   let fixture: ComponentFixture<TasksContainerComponent>;
+
+  const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
+  const mockCaseNotifier = new CaseNotifier(mockCasesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -149,6 +166,10 @@ describe('TasksContainerComponent', () => {
               paramMap: convertToParamMap({ cId: '1234567890123456' }),
             },
           },
+        },
+        {
+          provide: CaseNotifier,
+          useValue: mockCaseNotifier,
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

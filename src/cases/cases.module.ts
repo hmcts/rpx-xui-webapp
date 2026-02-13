@@ -150,14 +150,17 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
  */
 export class CasesModule {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(@Optional() @SkipSelf() parentModule: CasesModule, private injector: Injector) {
+  constructor(
+    @Optional() @SkipSelf() parentModule: CasesModule,
+    private injector: Injector
+  ) {
     CasesModule.forRoot();
     // There are elements that need to be registered as custom elements to be used in the toolkit
     if (typeof customElements !== 'undefined') {
       const registrations: Array<{ tag: string; component: any }> = [
         { tag: 'exui-case-hearings-ce', component: CaseHearingsComponent },
         { tag: 'exui-roles-and-access-ce', component: RolesAndAccessContainerComponent },
-        { tag: 'exui-tasks-ce', component: TasksContainerComponent }
+        { tag: 'exui-tasks-ce', component: TasksContainerComponent },
       ];
       for (const { tag, component } of registrations) {
         if (!customElements.get(tag)) {

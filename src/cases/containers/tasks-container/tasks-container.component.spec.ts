@@ -121,9 +121,9 @@ const cv = {
     jurisdiction: {
       id: 'CIVIL',
       name: '',
-      description: ''
-    }
-  }
+      description: '',
+    },
+  },
 } as CaseView;
 
 describe('TasksContainerComponent', () => {
@@ -169,7 +169,7 @@ describe('TasksContainerComponent', () => {
         },
         {
           provide: CaseNotifier,
-          useValue: mockCaseNotifier
+          useValue: mockCaseNotifier,
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

@@ -58,6 +58,22 @@ describe('decentralised-event-redirect.util', () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
+  it('should return null when case type is missing at runtime', () => {
+    const url = buildDecentralisedEventUrl(
+      {
+        caseType: undefined,
+        caseId: '1234567890',
+        isCaseCreate: false,
+        eventId: 'ext:fooEvent',
+      } as any,
+      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      'user-123'
+    );
+
+    expect(url).toBeNull();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
   it('should prefer the longest matching prefix for base URL resolution', () => {
     const url = buildDecentralisedEventUrl(
       {

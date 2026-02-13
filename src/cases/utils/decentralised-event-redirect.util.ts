@@ -36,8 +36,8 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
-const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType: string): string | null => {
-  if (!baseUrls) {
+const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType?: string): string | null => {
+  if (!baseUrls || !caseType || caseType.trim().length === 0) {
     return null;
   }
 

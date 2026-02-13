@@ -32,6 +32,35 @@ router.get('/aggregated/caseworkers/:uid/jurisdictions', (req, res) => {
   } else {
     responseData.data[0].description = 'create request';
   }
+  res.send(responseData);
+});
+
+router.get('/aggregated/caseworkers/:uid/jurisdictions-lite', (req, res) => {
+  const responseData = JSON.parse(JSON.stringify(ccdMockData.getJurisdictions()));
+
+  // responseData[0].description = 'Div '+Date.now()
+  // res.set('Content-Type', 'application/json');
+  // res.setEncoding('gzip');
+  // console.log('jurisdictions response size: '+JSON.stringify(responseData).length)
+  // res.set('Cache-control', 'public, max-age=0')
+  if (req.query.access === 'read'){
+    responseData.data[0].description = 'read request';
+  } else {
+    responseData.data[0].description = 'create request';
+  }
+  res.send(responseData);
+});
+
+  // responseData[0].description = 'Div '+Date.now()
+  // res.set('Content-Type', 'application/json');
+  // res.setEncoding('gzip');
+  // console.log('jurisdictions response size: '+JSON.stringify(responseData).length)
+  // res.set('Cache-control', 'public, max-age=0')
+  if (req.query.access === 'read'){
+    responseData.data[0].description = 'read request';
+  } else {
+    responseData.data[0].description = 'create request';
+  }
   res.removeHeader('etag');
   setTimeout(() => {
     res.send(responseData.data);

@@ -78,7 +78,7 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
       },
     };
     if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
-      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired != null) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed = true;
       }
     }

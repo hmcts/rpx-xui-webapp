@@ -4,29 +4,28 @@ import { normalizeCaseNumber } from '../../utils';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
+let caseNumber: string;
+const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 
-test.describe('Verify creating cases works as expected', () => {
-  test.beforeEach(async ({ page }) => {
+
+test.describe('Verify creating cases works as expected', async () => {
+  let caseData 
+  test.beforeEach(async ({ page,caseDetailsPage, createCasePage }) => {
     await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+    caseData = await createCasePage.generateDivorcePoCData();
+    await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData);
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
   });
 
   test('Verify creating a case in the divorce jurisdiction works as expected', async ({
     page,
     validatorUtils,
-    createCasePage,
-    caseDetailsPage,
     caseListPage,
     tableUtils,
   }) => {
-    let caseNumber: string;
-    const testField = faker.lorem.word() + new Date().toLocaleTimeString();
-
-    await test.step('Create a case and validate the case details', async () => {
-      await createCasePage.createDivorceCase(jurisdiction, caseType, testField);
-      // Always collect case number from URL for consistency and reliability
-      caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-      expect(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
-      expect(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
+    await test.step('Validate the case details', async () => {
+      expect.soft(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
+      expect.soft(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
     });
 
     await test.step('Find the created case in the case list', async () => {

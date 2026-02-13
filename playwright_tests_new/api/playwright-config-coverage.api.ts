@@ -81,7 +81,8 @@ test.describe('Playwright config coverage', () => {
     expect(config.reporter[1][1].outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.reporter[1][1].project).toBe('RPX XUI Webapp');
     expect(config.reporter[1][1].release).toContain('branch=local');
-    expect(config.reporter[1][1].testEnvironment).toContain('local');
+    expect(config.reporter[1][1].testEnvironment).toContain('aat');
+    expect(config.reporter[1][1].testEnvironment).toContain('local-run');
     expect(config.use.baseURL).toContain('manage-case');
   });
 });

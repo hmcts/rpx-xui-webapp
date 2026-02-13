@@ -1,4 +1,4 @@
-  {
+{
   "environment": "production",
   "cookies": {
     "token": "__auth__",
@@ -173,10 +173,12 @@
     "xuiTestCaseType": [
       "TextField"
     ]
+  "wildcardSearchFields": {
+    "Benefit": ["generatedSurname", "appeal.appellant.name.lastName"],
+    "HearingRecordings": ["recordingReference"],
+    "xuiTestCaseType": ["TextField"]
   },
-  "wildcardSearchRoles": [
-    "caseworker"
-  ],
+  "wildcardSearchRoles": ["caseworker"],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {

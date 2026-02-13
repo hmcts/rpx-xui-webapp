@@ -19,13 +19,13 @@ function getUserDetails_oidc(): UserDetails {
         ...getUserDetailsLocationInfo(),
         caseId: '',
         caseType: '',
-        roleType: 'ORGANISATION'
-      }
+        roleType: 'ORGANISATION',
+      },
     ],
     sessionTimeout: {
       idleModalDisplayTime: 10,
       pattern: '.',
-      totalIdleTime: 480
+      totalIdleTime: 480,
     },
     userInfo: {
       uid: randomUUID(),
@@ -33,18 +33,14 @@ function getUserDetails_oidc(): UserDetails {
       family_name: 'auto',
       name: 'test name',
       sub: 'juser8@mailinator.com',
-      roles: [
-        'caseworker',
-        'caseworker-ia',
-        'caseworker-ia-iacjudge'
-      ],
+      roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       token: 'Bearer eyJ0eXAiOiJKV1Q',
       roleCategory: 'LEGAL_OPS',
       email: '',
       identity: '',
       iss: '',
-      subname: ''
-    }
+      subname: '',
+    },
   };
 }
 
@@ -55,7 +51,7 @@ function getUserDetails_oauth(): UserDetails {
     sessionTimeout: {
       idleModalDisplayTime: 10,
       pattern: '.',
-      totalIdleTime: 480
+      totalIdleTime: 480,
     },
     userInfo: {
       id: randomUUID(),
@@ -63,14 +59,10 @@ function getUserDetails_oauth(): UserDetails {
       surname: 'Judge',
       email: 'juser8@mailinator.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-ia',
-        'caseworker-ia-iacjudge'
-      ],
+      roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       token: 'Bearer eyJ0eXAiOiJKV1Q',
-      roleCategory: 'LEGAL_OPS'
-    }
+      roleCategory: 'LEGAL_OPS',
+    },
   };
 }
 
@@ -78,14 +70,14 @@ function getUserDetailsLocationInfo(): Record<string, unknown> {
   return {
     jurisdiction: 'IA',
     isCaseAllocator: true,
-    substantive: true
+    substantive: true,
   };
 }
 
 const nodeAppDataModels = {
   getUserDetails_oidc,
   getUserDetails_oauth,
-  getUserDetailsLocationInfo
+  getUserDetailsLocationInfo,
 };
 
 export default nodeAppDataModels;

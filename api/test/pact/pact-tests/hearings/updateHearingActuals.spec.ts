@@ -13,67 +13,79 @@ const pactSetUp = new PactV3TestSetup({ provider: 'hmc_hearingActuals', port: 80
 const hearingId = '1234567890123456';
 
 const EXAMPLE_REQUEST_BODY = {
-  actualHearingDays: [{
-    actualDayParties: [{
-      actualOrganisationName: 'string',
-      actualPartyId: 'string',
-      didNotAttendFlag: true,
-      individualDetails: {
-        firstName: 'string',
-        lastName: 'string'
-      },
-      partyChannelSubType: 'string',
-      partyRole: 'string',
-      representedParty: 'string'
-    }],
-    hearingDate: '2023-07-03',
-    hearingEndTime: '2023-07-03T13:00:50.368Z',
-    hearingStartTime: '2023-07-03T13:00:50.368Z',
-    notRequired: true,
-    pauseDateTimes: [{
-      pauseEndTime: '2023-07-03T13:00:50.368Z',
-      pauseStartTime: '2023-07-03T13:00:50.368Z'
-    }]
-  }],
+  actualHearingDays: [
+    {
+      actualDayParties: [
+        {
+          actualOrganisationName: 'string',
+          actualPartyId: 'string',
+          didNotAttendFlag: true,
+          individualDetails: {
+            firstName: 'string',
+            lastName: 'string',
+          },
+          partyChannelSubType: 'string',
+          partyRole: 'string',
+          representedParty: 'string',
+        },
+      ],
+      hearingDate: '2023-07-03',
+      hearingEndTime: '2023-07-03T13:00:50.368Z',
+      hearingStartTime: '2023-07-03T13:00:50.368Z',
+      notRequired: true,
+      pauseDateTimes: [
+        {
+          pauseEndTime: '2023-07-03T13:00:50.368Z',
+          pauseStartTime: '2023-07-03T13:00:50.368Z',
+        },
+      ],
+    },
+  ],
   hearingOutcome: {
     hearingFinalFlag: true,
     hearingResult: 'string',
     hearingResultDate: '2023-07-03',
     hearingResultReasonType: 'string',
-    hearingType: 'string'
-  }
+    hearingType: 'string',
+  },
 };
 
 const REQUEST_BODY = {
-  actualHearingDays: [{
-    actualDayParties: [{
-      actualOrganisationName: somethingLike('string'),
-      actualPartyId: somethingLike('string'),
-      didNotAttendFlag: somethingLike(true),
-      individualDetails: {
-        firstName: somethingLike('string'),
-        lastName: somethingLike('string')
-      },
-      partyChannelSubType: somethingLike('string'),
-      partyRole: somethingLike('string'),
-      representedParty: somethingLike('string')
-    }],
-    hearingDate: somethingLike('2023-07-03'),
-    hearingEndTime: somethingLike('2023-07-03T13:00:50.368Z'),
-    hearingStartTime: somethingLike('2023-07-03T13:00:50.368Z'),
-    notRequired: somethingLike(true),
-    pauseDateTimes: [{
-      pauseEndTime: somethingLike('2023-07-03T13:00:50.368Z'),
-      pauseStartTime: somethingLike('2023-07-03T13:00:50.368Z')
-    }]
-  }],
+  actualHearingDays: [
+    {
+      actualDayParties: [
+        {
+          actualOrganisationName: somethingLike('string'),
+          actualPartyId: somethingLike('string'),
+          didNotAttendFlag: somethingLike(true),
+          individualDetails: {
+            firstName: somethingLike('string'),
+            lastName: somethingLike('string'),
+          },
+          partyChannelSubType: somethingLike('string'),
+          partyRole: somethingLike('string'),
+          representedParty: somethingLike('string'),
+        },
+      ],
+      hearingDate: somethingLike('2023-07-03'),
+      hearingEndTime: somethingLike('2023-07-03T13:00:50.368Z'),
+      hearingStartTime: somethingLike('2023-07-03T13:00:50.368Z'),
+      notRequired: somethingLike(true),
+      pauseDateTimes: [
+        {
+          pauseEndTime: somethingLike('2023-07-03T13:00:50.368Z'),
+          pauseStartTime: somethingLike('2023-07-03T13:00:50.368Z'),
+        },
+      ],
+    },
+  ],
   hearingOutcome: {
     hearingFinalFlag: somethingLike(true),
     hearingResult: somethingLike('string'),
     hearingResultDate: somethingLike('2023-07-03'),
     hearingResultReasonType: somethingLike('string'),
-    hearingType: somethingLike('string')
-  }
+    hearingType: somethingLike('string'),
+  },
 };
 
 describe('Hearings, update single hearing actuals for given hearingId', () => {
@@ -93,19 +105,19 @@ describe('Hearings, update single hearing actuals for given hearingId', () => {
           method: 'PUT',
           path: `/hearingActuals/${hearingId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: {}
-        }
+          body: {},
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -127,14 +139,14 @@ describe('Hearings, update single hearing actuals for given hearingId', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           query: {
-            hearingId
+            hearingId,
           },
-          body: EXAMPLE_REQUEST_BODY
+          body: EXAMPLE_REQUEST_BODY,
         });
         let returnedResponse = null;
         const response = mockRes();

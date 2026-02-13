@@ -1,0 +1,3 @@
+#!/bin/sh
+
+yarn lint || (yarn lint:prettier:fix && yarn lint:src:fix && yarn lint:api:fix && yarn lint)

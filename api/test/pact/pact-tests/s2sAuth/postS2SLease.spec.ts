@@ -8,7 +8,8 @@ const pactSetUp = new PactV3TestSetup({ provider: 's2s_auth', port: 8000 });
 describe('S2S Auth API', () => {
   describe('post S2S lease', () => {
     const mockRequest = {
-      microservice: 'xui-webapp', oneTimePassword: 'exPassword'
+      microservice: 'xui-webapp',
+      oneTimePassword: 'exPassword',
     };
 
     before(async () => {
@@ -19,18 +20,18 @@ describe('S2S Auth API', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8',
-            'ServiceAuthorization': 'ServiceAuthToken'
+            ServiceAuthorization: 'ServiceAuthToken',
           },
           path: '/lease',
-          body: mockRequest
+          body: mockRequest,
         },
         willRespondWith: {
           headers: {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'text/plain',
           },
           status: 200,
-          body: 'sometoken'
-        }
+          body: 'sometoken',
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });

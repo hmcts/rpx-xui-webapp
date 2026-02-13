@@ -17,14 +17,14 @@ import { WorkCaseListComponent } from './work-case-list.component';
 
 @Component({
   standalone: false,
-  template: `
-    <exui-work-case-list
-      [fields]='fields'
-      [cases]='cases'
-      [casesTotal]="casesTotal"
-      [caseServiceConfig]="caseServiceConfig"
-      [sortedBy]="CaseSortField"
-      [pagination]="pagination"></exui-work-case-list>`
+  template: ` <exui-work-case-list
+    [fields]="fields"
+    [cases]="cases"
+    [casesTotal]="casesTotal"
+    [caseServiceConfig]="caseServiceConfig"
+    [sortedBy]="CaseSortField"
+    [pagination]="pagination"
+  ></exui-work-case-list>`,
 })
 class WrapperComponent {
   @ViewChild(WorkCaseListComponent, { static: true }) public appComponentRef: WorkCaseListComponent;
@@ -58,7 +58,7 @@ function getCaseService(): CaseServiceConfig {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: getFields()
+    fields: getFields(),
   };
 }
 
@@ -66,25 +66,19 @@ describe('CaseListComponent', () => {
   let component: WorkCaseListComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let routerSpy: jasmine.SpyObj<any>;
   const mockWorkAllocationService = jasmine.createSpyObj('mockWorkAllocationService', ['getCase']);
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
+
+  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(() => {
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
       declarations: [WorkCaseListComponent, WrapperComponent, PaginatePipe],
-      imports: [
-        WorkAllocationComponentsModule,
-        CdkTableModule,
-        RouterTestingModule
-      ],
-      providers: [
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
-      ]
+      imports: [WorkAllocationComponentsModule, CdkTableModule, RouterTestingModule],
+      providers: [{ provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -96,7 +90,7 @@ describe('CaseListComponent', () => {
     wrapper.casesTotal = 2;
     wrapper.pagination = {
       page_number: 1,
-      page_size: 10
+      page_size: 10,
     };
     mockWorkAllocationService.getCase.and.returnValue(of({}));
     mockFeatureToggleService.isEnabled.and.returnValue(of(true));

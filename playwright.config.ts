@@ -1,8 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
-
-const { execSync } = require('node:child_process');
-const { cpus } = require('node:os');
-const { version: appVersion } = require('./package.json');
+import { execSync } from 'node:child_process';
+import { cpus } from 'node:os';
+import { version as appVersion } from './package.json' assert { type: 'json' };
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -210,4 +209,4 @@ const config = buildConfig(process.env);
   buildConfig,
 };
 
-module.exports = config;
+export default config;

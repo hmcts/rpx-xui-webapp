@@ -23,6 +23,17 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
   - IDAM/S2S endpoints used by `@hmcts/playwright-common`: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `S2S_URL`, optional `S2S_SECRET`
 - User credentials are read from `common/apiTestConfig.ts` for the selected `TEST_ENV`
 
+### Runtime Environment Knobs
+
+Use environment-level configuration to tune diagnostics/retries without code changes.
+
+| Variable                              | Default | Purpose                                                                                                                           |
+| ------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `API_SLOW_THRESHOLD_MS`               | `5000`  | Slow API threshold (ms) used by API and E2E fixtures for failure diagnosis and slow-call annotations/logging.                     |
+| `CASE_REFERENCE_RESOLVE_API_ATTEMPTS` | `3`     | Max attempts for `/api/globalsearch/results` when resolving case references in E2E helpers (retries transient `429/502/503/504`). |
+
+Invalid or non-positive values for these variables fall back to the defaults above.
+
 ### Running API Tests
 
 ```bash
@@ -99,9 +110,8 @@ rm -rf .sessions && npx playwright test
 Playwright runs include `playwright_tests_new/common/reporters/flake-gate.reporter.cjs`.
 
 - Default mode: report-only (prints flaky summary, does not fail run).
-- Enforce in CI: set `PW_ENABLE_FLAKE_GATE=true`.
-- Tune with `PW_MAX_FLAKY_TESTS` (default `20`).
-- Tune with `PW_MAX_FLAKY_RATE` (default `0.2`).
+- `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
+- `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`) are reporting thresholds only.
 
 ### Locator Audit
 

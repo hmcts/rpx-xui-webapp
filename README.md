@@ -196,9 +196,9 @@ Key behaviour:
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
 - Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
-- Flake gate is report-only by default. To enforce thresholds in CI, set `PW_ENABLE_FLAKE_GATE=true`.
-- Optional flake threshold `PW_MAX_FLAKY_TESTS` (default `20`).
-- Optional flake threshold `PW_MAX_FLAKY_RATE` (default `0.2`, meaning 20%).
+- Flake gate is currently report-only in all environments; it does not fail the run.
+- `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
+- Optional flake thresholds `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`, meaning 20%) are used for reporting output only.
 
 ### Playwright diagnostics artifacts in Jenkins
 

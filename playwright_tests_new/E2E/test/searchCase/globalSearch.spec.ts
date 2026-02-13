@@ -1,6 +1,8 @@
 import { test, expect } from '../../fixtures';
-import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
-import { resolveCaseReferenceWithFallback } from '../../../E2E/utils/case-reference.utils.ts';
+import { ensureSession } from '../../../common/sessionCapture';
+import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils';
+import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
+import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-timeouts';
 
 test.describe('IDAM login using credentials for Global Search', () => {
   let availableCaseReference = '';
@@ -8,31 +10,9 @@ test.describe('IDAM login using credentials for Global Search', () => {
     await ensureSession('FPL_GLOBAL_SEARCH');
   });
 
-  test.beforeEach(async ({ page, caseListPage }) => {
-    const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
-    if (cookies.length) {
-      await page.context().addCookies(cookies);
-    }
-
-    await page.goto('/');
-    availableCaseReference = await resolveCaseReferenceWithFallback(
-      page,
-      async () => {
-        await caseListPage.goto();
-        const caseReference = await caseListPage.getRandomCaseReferenceFromResults([
-          'Case management',
-          'Submitted',
-          'Gatekeeping',
-          'Closed',
-        ]);
-        await page.goto('/');
-        return caseReference;
-      },
-      {
-        jurisdictionIds: ['PUBLICLAW'],
-        preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
-      }
-    );
+  test.beforeEach(async ({ page }) => {
+    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
+    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
   });
 
   test('Global Search - using case id and FPL jurisdiction', async ({ globalSearchPage, caseDetailsPage, tableUtils, page }) => {
@@ -53,12 +33,12 @@ test.describe('IDAM login using credentials for Global Search', () => {
       });
     });
 
-    await test.step('Check that case details page is shown. ', async () => {
-      await globalSearchPage.viewCaseDetails();
+    await test.step('Verify case details page navigation and elements', async () => {
+      await globalSearchPage.viewCaseDetails(caseNumber);
       await expect(page).toHaveURL(/\/cases\/case-details\//);
       const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
-      await expect.soft(caseNumberFromUrl).toContain(caseNumber);
-      await expect.soft(caseDetailsPage.caseSummaryHeading).toHaveText('Case information');
+      expect.soft(caseNumberFromUrl).toContain(caseNumber);
+      expect.soft(caseDetailsPage.caseSummaryHeading).toHaveText('Case information');
 
       await caseDetailsPage.caseActionsDropdown.waitFor();
       await caseDetailsPage.caseActionGoButton.waitFor();
@@ -93,9 +73,12 @@ test.describe('IDAM login using credentials for Global Search', () => {
       }
 
       for (const eachRow of table) {
-        const digitsOnly = eachRow.Case.replace(/\D/g, '');
-        const normalizedCaseReference = digitsOnly.slice(-16);
-        expect(normalizedCaseReference.length, `Expected "${eachRow.Case}" to contain a 16-digit case reference`).toBe(16);
+        const digitsOnly = eachRow.Case.replaceAll(/\D/g, '');
+        const normalizedCaseReference = digitsOnly.slice(-CCD_CASE_REFERENCE_LENGTH);
+        expect(
+          normalizedCaseReference.length,
+          `Expected "${eachRow.Case}" to contain a ${CCD_CASE_REFERENCE_LENGTH}-digit case reference`
+        ).toBe(CCD_CASE_REFERENCE_LENGTH);
         expect(
           normalizedCaseReference.startsWith(wildcardPrefix),
           `Expected "${eachRow.Case}" to match wildcard prefix ${wildcardPrefix}*`

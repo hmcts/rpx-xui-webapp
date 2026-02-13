@@ -12,6 +12,7 @@ import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/a
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
+const DEFAULT_API_SLOW_THRESHOLD_MS = 5_000;
 
 export interface ApiFixtures {
   apiClient: PlaywrightApiClient;
@@ -39,6 +40,16 @@ function sanitizeUrl(url: string): string {
   return url.split('?')[0];
 }
 
+function getApiSlowThresholdMs(): number {
+  const rawThreshold = process.env.API_SLOW_THRESHOLD_MS;
+  if (!rawThreshold) {
+    return DEFAULT_API_SLOW_THRESHOLD_MS;
+  }
+
+  const parsedThreshold = Number.parseInt(rawThreshold, 10);
+  return Number.isFinite(parsedThreshold) && parsedThreshold > 0 ? parsedThreshold : DEFAULT_API_SLOW_THRESHOLD_MS;
+}
+
 function classifyFailure(
   error: string,
   serverErrors: ApiError[],
@@ -62,7 +73,7 @@ function classifyFailure(
 }
 
 export const test = base.extend<ApiFixtures>({
-  logger: async ({}, use, workerInfo) => {
+  logger: async (_fixtures, use, workerInfo) => {
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
       defaultMeta: { workerId: workerInfo.workerIndex },
@@ -70,7 +81,7 @@ export const test = base.extend<ApiFixtures>({
     });
     await use(logger);
   },
-  apiLogs: async ({}, use, testInfo) => {
+  apiLogs: async (_fixtures, use, testInfo) => {
     const entries: ApiLogEntry[] = [];
     await use(entries);
     if (entries.length) {
@@ -99,7 +110,7 @@ export const test = base.extend<ApiFixtures>({
       const serverErrors = apiErrors.filter((e) => e.status >= 500);
       const clientErrors = apiErrors.filter((e) => e.status >= 400 && e.status < 500);
 
-      const slowThreshold = Number.parseInt(process.env.API_SLOW_THRESHOLD_MS || '5000', 10);
+      const slowThreshold = getApiSlowThresholdMs();
       const slowCalls = entries
         .filter((entry) => typeof entry.durationMs === 'number' && entry.durationMs > slowThreshold)
         .map((entry) => ({
@@ -118,7 +129,7 @@ export const test = base.extend<ApiFixtures>({
         `Test failed: ${testInfo.title}`,
         `Failure type: ${failureType}`,
         errorMessage ? `Error: ${errorMessage.substring(0, 300)}` : '',
-        `API summary: total=${apiErrors.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, slow>${slowCalls.length}`,
+        `API summary: total=${apiErrors.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
       ]
         .filter(Boolean)
         .join('\n');
@@ -205,7 +216,7 @@ async function createNodeApiClient(
 
       // Monitor API response times and log slow requests
       const duration = entry.durationMs;
-      const slowThreshold = Number.parseInt(process.env.API_SLOW_THRESHOLD_MS || '5000', 10);
+      const slowThreshold = getApiSlowThresholdMs();
 
       if (duration > slowThreshold) {
         logger.warn('Slow API response detected', {

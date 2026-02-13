@@ -52,6 +52,7 @@ const benignApiErrorRules: BenignApiErrorRule[] = [
 ];
 
 const MAX_API_ERRORS_DETAILS_CHARS = 420;
+const DEFAULT_API_SLOW_THRESHOLD_MS = 5_000;
 const ANSI_ESCAPE = String.fromCodePoint(27);
 const ANSI_ESCAPE_PATTERN = new RegExp(String.raw`${ANSI_ESCAPE}\[[0-?]*[ -/]*[@-~]`, 'g');
 
@@ -67,6 +68,16 @@ function sanitizeUrl(url: string): string {
 
 function stripAnsi(value: string): string {
   return value.replaceAll(ANSI_ESCAPE_PATTERN, '');
+}
+
+function getApiSlowThresholdMs(): number {
+  const rawThreshold = process.env.API_SLOW_THRESHOLD_MS;
+  if (!rawThreshold) {
+    return DEFAULT_API_SLOW_THRESHOLD_MS;
+  }
+
+  const parsedThreshold = Number.parseInt(rawThreshold, 10);
+  return Number.isFinite(parsedThreshold) && parsedThreshold > 0 ? parsedThreshold : DEFAULT_API_SLOW_THRESHOLD_MS;
 }
 
 function isKnownBenignApiError(url: string, method: string, status: number): boolean {
@@ -226,6 +237,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
     const slowCalls: Array<{ url: string; duration: number; method: string }> = [];
     let networkTimeout = false;
     const maxTracked = 500;
+    const slowThreshold = getApiSlowThresholdMs();
 
     const isBackendApi = (url: string) =>
       (url.includes('/api/') ||
@@ -273,7 +285,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
       }
 
       const timing = request.timing();
-      if (timing.responseEnd !== -1 && timing.responseEnd > 5000) {
+      if (timing.responseEnd !== -1 && timing.responseEnd > slowThreshold) {
         slowCalls.push({
           url: sanitizeUrl(url),
           duration: timing.responseEnd,
@@ -303,7 +315,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
         if (failedRequests.length > maxTracked) {
           failedRequests.shift();
         }
-        if (failure?.errorText.includes('Timeout') || failure?.errorText.includes('timeout')) {
+        if (failure?.errorText?.includes('Timeout') || failure?.errorText?.includes('timeout')) {
           networkTimeout = true;
         }
       }
@@ -332,7 +344,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
         `Test failed: ${testInfo.title}`,
         `Failure type: ${failureType}`,
         error ? `Error: ${error.substring(0, 300)}` : '',
-        `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowCalls.length}`,
+        `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
         timeoutSummary ? `Timeout suspects: ${timeoutSummary}` : '',
       ]
         .filter(Boolean)

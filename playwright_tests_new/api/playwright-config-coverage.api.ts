@@ -8,11 +8,11 @@ const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
   if (!Array.isArray(reporter)) {
-    throw new Error('Unexpected reporter config shape');
+    throw new TypeError('Unexpected reporter config shape');
   }
   const match = reporter.find((entry) => Array.isArray(entry) && entry[0] === name);
   if (!match || !Array.isArray(match)) {
-    throw new Error(`Reporter "${name}" not found`);
+    throw new TypeError(`Reporter "${name}" not found`);
   }
   const [, options] = match as [string, Record<string, unknown> | undefined];
   return [name, options];

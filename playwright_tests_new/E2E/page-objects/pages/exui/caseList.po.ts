@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class CaseListPage extends Base {
@@ -21,8 +21,6 @@ export class CaseListPage extends Base {
   readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
   readonly caseResultsTable = this.page.locator('#search-result table');
-  readonly caseResultLinks = this.page.locator('#search-result a[href*="/cases/case-details/"]');
-  readonly caseDetailsLinks = this.page.locator('a[href*="/cases/case-details/"]');
   readonly pagination = this.page.locator('.ngx-pagination');
 
   // Some case list views use an id, others a data-test attribute for the summary
@@ -96,69 +94,5 @@ export class CaseListPage extends Base {
     const caseLink = this.page.locator(`a:has-text("${cleanedCaseNumber}")`);
     await caseLink.first().waitFor({ state: 'visible' });
     await caseLink.first().click();
-  }
-
-  async getRandomCaseReferenceFromResults(
-    preferredStates: string[] = [],
-    selection: 'first' | 'random' = 'first'
-  ): Promise<string> {
-    await this.page.waitForSelector('#search-result, exui-no-results, exui-case-home', { timeout: 60000 }).catch(() => {});
-    await this.exuiSpinnerComponent.wait();
-    let candidates = await this.collectLinkCandidates(this.caseResultLinks);
-
-    if (candidates.length === 0 && !this.page.url().includes('/cases')) {
-      await this.page.goto('/cases');
-      await this.exuiSpinnerComponent.wait();
-      candidates = await this.collectLinkCandidates(this.caseResultLinks);
-    }
-
-    if (candidates.length === 0) {
-      candidates = await this.collectLinkCandidates(this.caseDetailsLinks);
-    }
-
-    if (candidates.length === 0) {
-      throw new Error(`No case links found in case list or page context: ${this.page.url()}`);
-    }
-
-    const caseEntries = candidates
-      .map((candidate) => {
-        const hrefPattern = /(\d{16})/;
-        const hrefMatch = hrefPattern.exec(candidate.href);
-        const textDigits = candidate.text.replaceAll(/\D/g, '');
-        const caseReference = hrefMatch?.[1] || (textDigits.length === 16 ? textDigits : '');
-        return {
-          caseReference,
-          rowText: candidate.rowText,
-        };
-      })
-      .filter((entry) => entry.caseReference.length === 16);
-
-    if (caseEntries.length === 0) {
-      throw new Error('No 16-digit case references found in case list links');
-    }
-
-    const preferredEntries =
-      preferredStates.length > 0
-        ? caseEntries.filter((entry) => preferredStates.some((state) => entry.rowText.includes(state)))
-        : caseEntries;
-
-    const pickFrom = preferredEntries.length > 0 ? preferredEntries : caseEntries;
-    const uniqueReferences = Array.from(new Set(pickFrom.map((entry) => entry.caseReference)));
-    if (selection === 'random') {
-      const randomIndex = Math.floor(Math.random() * uniqueReferences.length);
-      return uniqueReferences[randomIndex];
-    }
-    return uniqueReferences[0];
-  }
-
-  private async collectLinkCandidates(linkLocator: Locator) {
-    return linkLocator.evaluateAll((links) =>
-      links.map((link) => {
-        const href = link.getAttribute('href') || '';
-        const text = (link.textContent || '').trim();
-        const rowText = (link.closest('tr')?.textContent || '').trim();
-        return { href, text, rowText };
-      })
-    );
   }
 }

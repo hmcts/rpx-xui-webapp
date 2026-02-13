@@ -1,9 +1,11 @@
-module.exports = (() => {
-  const { defineConfig, devices } = require('@playwright/test');
-  const { version: appVersion } = require('./package.json');
-  const { execSync } = require('node:child_process');
-  const { cpus } = require('node:os');
+import { defineConfig, devices } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus } from 'node:os';
+import packageJson from './package.json';
 
+const appVersion = packageJson.version;
+
+export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';

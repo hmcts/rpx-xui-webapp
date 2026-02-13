@@ -37,6 +37,36 @@ const resolveWorkerCount = (env: EnvMap = process.env) => {
   return suggested;
 };
 
+const resolveEnvironmentFromUrl = (baseUrl: string): string => {
+  try {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'local';
+    }
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.ithc.')) {
+      return 'ithc';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    if (hostname.includes('.perftest.')) {
+      return 'perftest';
+    }
+    return hostname;
+  } catch {
+    return 'unknown';
+  }
+};
+
+const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string => {
+  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(resolveBaseUrl(env));
+  const runContext = env.CI ? 'ci' : 'local-run';
+  return `${targetEnv} | ${runContext} | workers=${workerCount}`;
+};
+
 const buildConfig = (env: EnvMap = process.env) => {
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
@@ -47,13 +77,17 @@ const buildConfig = (env: EnvMap = process.env) => {
       baseURL: resolveBaseUrl(env),
     },
     testDir: '.',
-    testMatch: ['playwright_tests/**/*.test.ts', 'playwright_tests_new/E2E/**/*.spec.ts'],
+    testMatch: [
+      'playwright_tests/**/*.test.ts',
+      'playwright_tests_new/E2E/**/*.spec.ts',
+      'playwright_tests_new/integration/**/*.spec.ts',
+    ],
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
     /* Retry on CI only */
-    retries: 3, // Set the number of retries for all projects
+    retries: env.CI ? 2 : 0, // Set the number of retries for all projects
 
     timeout: 3 * 60 * 1000,
     expect: {
@@ -64,8 +98,6 @@ const buildConfig = (env: EnvMap = process.env) => {
     /* Control the number of parallel test workers. */
     workers: workerCount,
 
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
-
     reporter: [
       [env.CI ? 'dot' : 'list'],
       [
@@ -74,7 +106,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright.html',
           title: 'RPX XUI Playwright',
-          testEnvironment: `${env.TEST_TYPE ?? (env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+          testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
           project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
           release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
           startServer: false,
@@ -122,7 +154,7 @@ const buildConfig = (env: EnvMap = process.env) => {
         name: 'node-api',
         testMatch: ['playwright_tests_new/api/**/*.api.ts'],
         fullyParallel: true,
-        workers: env.CI ? 8 : Math.min(8, cpus()?.length ?? 4),
+        workers: env.CI ? 8 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
         retries: 0,
         timeout: 60 * 1000,
         expect: {

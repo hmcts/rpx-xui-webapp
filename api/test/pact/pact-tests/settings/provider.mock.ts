@@ -1,5 +1,5 @@
 import { PactV3 } from '@pact-foundation/pact';
-import * as path from 'path';
+import * as path from 'node:path';
 import { SpecificationVersion } from '@pact-foundation/pact/src/v3/types';
 
 const CONSUMER_NAME = 'xui_webApp';
@@ -14,6 +14,7 @@ export class PactV3TestSetup {
   port: number;
 
   constructor(config: PactTestSetupConfig) {
+    this.port = config.port;
     this.provider = new PactV3({
       consumer: CONSUMER_NAME,
       logLevel: 'info',

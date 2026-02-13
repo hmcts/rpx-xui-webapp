@@ -490,7 +490,9 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
-    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1234', caseType: 'CIVIL' })
+    );
   });
 
   it('should unsubscribe', () => {

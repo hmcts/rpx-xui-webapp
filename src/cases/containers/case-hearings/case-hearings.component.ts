@@ -82,7 +82,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadHearingValues({
+        jurisdictionId: this.jurisdiction,
+        caseReference: this.caseId,
+        caseType: this.caseType,
+      })
+    );
   }
 
   public ngOnInit(): void {
@@ -96,7 +102,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       })
     );
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadHearingValues({
+        jurisdictionId: this.jurisdiction,
+        caseReference: this.caseId,
+        caseType: this.caseType,
+      })
+    );
 
     this.hearingValuesSubscription = this.hearingStore
       .pipe(select(fromHearingStore.getHearingValuesModel))

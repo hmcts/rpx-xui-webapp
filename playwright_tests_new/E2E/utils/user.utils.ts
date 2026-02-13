@@ -6,7 +6,9 @@ export class UserUtils {
     const envUsers = testConfig.users[testConfig.testEnv];
     const user = envUsers.find((u: any) => u.userIdentifier === userIdentifier);
 
-    if (!user) throw new Error(`User "${userIdentifier}" not found`);
+    if (!user) {
+      throw new Error(`User "${userIdentifier}" not found`);
+    }
 
     return { email: user.email, password: user.key };
   }

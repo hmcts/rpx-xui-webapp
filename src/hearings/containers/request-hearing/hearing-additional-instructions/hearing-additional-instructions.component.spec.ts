@@ -218,7 +218,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
       expect(component.showReviewBox).toBe(false);
     });
 
-    it('should not set showReviewBox to false when additionalInsructionsChangesRequired is undefined', () => {
+    it('should set showReviewBox to false when additionalInsructionsChangesRequired is undefined', () => {
       // Set up the service properties BEFORE component initialization
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',

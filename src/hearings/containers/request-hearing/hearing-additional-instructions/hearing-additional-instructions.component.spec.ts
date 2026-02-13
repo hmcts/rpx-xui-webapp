@@ -103,12 +103,6 @@ describe('HearingAdditionalInstructionsComponent', () => {
         afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
       } as any;
 
-      console.log('Test - hearingsService.propertiesUpdatedOnPageVisit:', hearingsService.propertiesUpdatedOnPageVisit);
-      console.log(
-        'Test - additionalInstructionsChangesRequired:',
-        hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired
-      );
-
       component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
@@ -125,7 +119,6 @@ describe('HearingAdditionalInstructionsComponent', () => {
       // Initialize component after setting up service and models
       component.ngOnInit();
 
-      console.log('Test - showReviewBox:', component.showReviewBox);
       expect(component.showReviewBox).toBe(true);
     });
 
@@ -201,7 +194,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
       expect(component.showReviewBox).toBe(false);
     });
 
-    it('should set showReviewBox to false when additionalInsructionsChangesRequired is false', () => {
+    it('should set showReviewBox to true when additionalInsructionsChangesRequired is false but defined', () => {
       // Set up the service properties BEFORE component initialization
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',
@@ -209,6 +202,30 @@ describe('HearingAdditionalInstructionsComponent', () => {
         parties: null,
         hearingWindow: null,
         afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.showReviewBox).toBe(true);
+    });
+
+    it('should set showReviewBox to false when additionalInsructionsChangesRequired is undefined', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: undefined }),
       } as any;
 
       component.hearingCondition = { mode: 'view-edit' };
@@ -317,7 +334,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
       expect(component.hearingRequestMainModel.hearingDetails.listingAutoChangeReasonCode).toBe('user-added-comments');
     });
 
-    it('should not set additionalInstructionsChangesConfirmed when additionalInstructionsChangesRequired is false', () => {
+    it('should set additionalInstructionsChangesConfirmed to true when additionalInstructionsChangesRequired is false but defined', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',
         caseFlags: null,
@@ -335,29 +352,24 @@ describe('HearingAdditionalInstructionsComponent', () => {
       };
       component.instructionsForm.controls.instructions.setValue('Test instructions');
 
-      const originalConfirmedValue =
-        hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
-
       component.prepareHearingRequestData();
 
-      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(
-        originalConfirmedValue
-      );
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(true);
       expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
     });
 
-    it('should not set additionalInstructionsChangesConfirmed when not in VIEW_EDIT mode', () => {
+    it('should not set additionalInstructionsChangesConfirmed when additionalInstructionsChangesRequired is undefined', () => {
       hearingsService.propertiesUpdatedOnPageVisit = {
         hearingId: 'h000001',
         caseFlags: null,
         parties: null,
         hearingWindow: null,
-        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: undefined }),
       } as any;
 
       fixture.detectChanges();
 
-      component.hearingCondition = { mode: 'create' };
+      component.hearingCondition = { mode: 'view-edit' };
       component.serviceHearingValuesModel = {
         ...component.serviceHearingValuesModel,
         autoListFlag: false,

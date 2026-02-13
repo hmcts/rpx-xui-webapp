@@ -7,10 +7,12 @@ class OdhinPostprocessReporter {
       return;
     }
 
+    const repoRoot = path.resolve(__dirname, '../../..');
     const scriptPath = path.resolve(__dirname, '../../../scripts/copy-odhin-report.js');
     const result = spawnSync(process.execPath, [scriptPath], {
       stdio: 'inherit',
       env: process.env,
+      cwd: repoRoot,
     });
 
     if (result.error) {

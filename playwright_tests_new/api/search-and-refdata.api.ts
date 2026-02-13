@@ -63,7 +63,7 @@ test.describe('Global search', () => {
       },
       throwOnError: false,
     });
-    expectStatus(response.status, StatusSets.globalSearch);
+    expectStatus(response.status, [200, 400, 401, 403, 502, 504]);
     assertGlobalSearchResults(response.status, response.data);
   });
 
@@ -76,7 +76,7 @@ test.describe('Global search', () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    expectStatus(response.status, [200, 400, 401, 403, 404, 502, 504]);
     assertSearchCasesResponse(response.status, response.data);
   });
 });
@@ -110,7 +110,7 @@ test.describe('Ref data and supported jurisdictions', () => {
       data: { attributes: ['email'], searchString: 'test' },
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 400, 401, 403, 500]);
+    expectStatus(res.status, [200, 400, 401, 403]);
     assertStaffRefDataResponse(res.status, res.data);
   });
 });
@@ -149,7 +149,7 @@ test.describe('Role access / AM', () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
+    expectStatus(res.status, [200, 401, 403, 502, 504]);
     assertMyAccessCount(res.status, res.data);
   });
 
@@ -162,7 +162,7 @@ test.describe('Role access / AM', () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    expectStatus(res.status, [200, 400, 401, 403, 404]);
     assertRoleAccessGetResponse(res.status, res.data);
   });
 
@@ -171,7 +171,7 @@ test.describe('Role access / AM', () => {
       data: { requestedRoles: [], jurisdiction: 'IA' },
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    expectStatus(res.status, [200, 400, 401, 403, 404, 502, 504]);
     assertValidRolesResponse(res.status, res.data);
   });
 
@@ -180,7 +180,7 @@ test.describe('Role access / AM', () => {
       data: { case_id: roleAccessCaseId },
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    expectStatus(res.status, [200, 400, 401, 403, 404]);
     assertRoleAccessByCaseIdResponse(res.status, res.data);
   });
 
@@ -280,7 +280,7 @@ test.describe('Role access / AM', () => {
       data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
       throwOnError: false,
     });
-    expectStatus(res.status, [401, 403, 500]);
+    expectStatus(res.status, [401, 403]);
   });
 
   test('role access confirm returns guarded status for stale session', async () => {

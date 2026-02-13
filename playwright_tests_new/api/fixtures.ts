@@ -12,6 +12,7 @@ import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/a
 import { formatApiPerformanceSummary, sanitizeUrl, summarizeApiPerformance } from './utils/apiPerformanceUtils';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
+const DEFAULT_API_REQUEST_TIMEOUT_MS = 60_000;
 type LoggerInstance = ReturnType<typeof createLogger>;
 
 export interface ApiFixtures {
@@ -258,8 +259,10 @@ async function createNodeApiClient(
     seenRequestIds.add(entry.id);
     entries.push(entry);
   };
+  const defaultRequestTimeoutMs =
+    parsePositiveInteger(process.env.API_REQUEST_TIMEOUT_MS) ?? DEFAULT_API_REQUEST_TIMEOUT_MS;
 
-  return new PlaywrightApiClient({
+  const client = new PlaywrightApiClient({
     baseUrl,
     name: `node-api-${role}`,
     logger,
@@ -309,6 +312,8 @@ async function createNodeApiClient(
     },
     requestFactory: async () => context,
   });
+
+  return withDefaultRequestTimeout(client, defaultRequestTimeoutMs);
 }
 
 function stripTrailingSlash(value: string): string {
@@ -335,6 +340,44 @@ function parseRateThreshold(raw?: string): number | undefined {
     return undefined;
   }
   return value;
+}
+
+type TimeoutAwareApiMethodName = 'get' | 'post' | 'put' | 'patch' | 'delete';
+const TIMEOUT_AWARE_API_METHODS = new Set<TimeoutAwareApiMethodName>(['get', 'post', 'put', 'patch', 'delete']);
+
+type ApiRequestOptionsWithTimeout = {
+  timeoutMs?: number;
+} & Record<string, unknown>;
+
+function withDefaultRequestTimeout(client: PlaywrightApiClient, defaultTimeoutMs: number): PlaywrightApiClient {
+  return new Proxy(client, {
+    get(target, property) {
+      const value = Reflect.get(target, property);
+
+      if (typeof value !== 'function') {
+        return value;
+      }
+
+      const bound = value.bind(target);
+      if (typeof property === 'string' && TIMEOUT_AWARE_API_METHODS.has(property as TimeoutAwareApiMethodName)) {
+        return (path: string, options?: ApiRequestOptionsWithTimeout) =>
+          bound(path, ensureRequestTimeout(options, defaultTimeoutMs));
+      }
+
+      return bound;
+    },
+  }) as PlaywrightApiClient;
+}
+
+function ensureRequestTimeout(
+  options: ApiRequestOptionsWithTimeout | undefined,
+  defaultTimeoutMs: number
+): ApiRequestOptionsWithTimeout {
+  const timeoutMs = options?.timeoutMs;
+  if (typeof timeoutMs === 'number' && Number.isFinite(timeoutMs) && timeoutMs > 0) {
+    return options;
+  }
+  return { ...(options ?? {}), timeoutMs: defaultTimeoutMs };
 }
 
 function shouldAutoInjectXsrf(): boolean {

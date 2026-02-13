@@ -62,6 +62,7 @@ yarn test:api:pw:journeys
 - `node-api-performance-summary.txt` (human-readable summary with p50/p95/p99 and slowest endpoints)
 - Optional performance warning env vars:
 - `API_SLOW_THRESHOLD_MS` (slow-call threshold, default `5000`)
+- `API_REQUEST_TIMEOUT_MS` (default request timeout per API call, default `60000`; per-call `timeoutMs` still overrides)
 - `API_PERF_WARN_P95_MS` (adds warning annotation when p95 exceeds threshold)
 - `API_PERF_WARN_ERROR_RATE` (0..1, adds warning when 4xx+5xx rate exceeds threshold)
 - Jenkins archives Playwright diagnostics artifacts including:

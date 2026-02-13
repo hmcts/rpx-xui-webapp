@@ -3,7 +3,7 @@ import type { TestInfo } from '@playwright/test';
 import { config } from '../common/apiTestConfig';
 import { EM_DOC_ID, ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expect, test } from './fixtures';
-import { StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { withRetry, withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries } from './utils/caseShareUtils';
 import { assertBinaryResponse, resolveConfiguredDocId } from './utils/evidenceManagerUtils';
@@ -38,7 +38,9 @@ const defaultRoleAccessCaseId = resolveRoleAccessCaseId(ROLE_ACCESS_CASE_ID);
 const hearingServiceId = process.env.API_JOURNEY_HEARING_SERVICE_ID ?? 'BBA3';
 const hearingCategory = process.env.API_JOURNEY_HEARING_LOV_CATEGORY ?? 'HearingChannel';
 const hearingChildRequired = process.env.API_JOURNEY_HEARING_IS_CHILD_REQUIRED ?? 'Y';
-const readGuardedStatuses = [200, 400, 401, 403, 404, 500, 502, 504];
+const readGuardedStatuses = [200, 400, 401, 403, 404, 502, 504];
+const guardedExtendedStatuses = [200, 401, 403, 404, 502, 504];
+const globalSearchStatuses = [200, 400, 401, 403, 502, 504];
 const globalSearchPageSize = 25;
 const defaultJourneyTestTimeoutMs = 120000;
 const defaultGlobalSearchJurisdictions = resolveDefaultGlobalSearchJurisdictions();
@@ -70,7 +72,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load terms-and-conditions feature flag',
         method: 'GET',
         endpoint: termsConfigEndpoint,
-        allowedStatuses: [200, 401, 500, 502, 504],
+        allowedStatuses: [200, 401, 502, 504],
         execute: () =>
           apiClient.get<boolean | string>(termsConfigEndpoint, {
             throwOnError: false,
@@ -103,7 +105,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load monitoring-tools configuration',
         method: 'GET',
         endpoint: 'api/monitoring-tools',
-        allowedStatuses: [200, 401, 500, 502, 504],
+        allowedStatuses: [200, 401, 502, 504],
         execute: () =>
           apiClient.get<Record<string, unknown>>('api/monitoring-tools', {
             throwOnError: false,
@@ -119,6 +121,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load user jurisdictions',
         method: 'GET',
         endpoint: `aggregated/caseworkers/${encodeURIComponent(resolvedUserId)}/jurisdictions?access=read`,
+        allowedStatuses: guardedExtendedStatuses,
         execute: () =>
           apiClient.get<Array<{ id?: string; name?: string }>>(
             `aggregated/caseworkers/${encodeURIComponent(resolvedUserId)}/jurisdictions?access=read`,
@@ -130,6 +133,7 @@ test.describe('@journeys API user journey monitor', () => {
       latencyPolicy.stepWarnMs
     );
     journeySteps.push(jurisdictionsStep);
+    assertUserJurisdictionsResponse(jurisdictionsStep.status, jurisdictionsStep.response.data);
 
     const globalSearchServicesStep = await executeJourneyStep(
       {
@@ -152,7 +156,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Search for case reference',
         method: 'POST',
         endpoint: 'api/globalsearch/results',
-        allowedStatuses: StatusSets.globalSearch,
+        allowedStatuses: globalSearchStatuses,
         execute: () =>
           apiClient.post<{ results?: unknown[] }>('api/globalsearch/results', {
             data: buildGlobalSearchRequest(caseReference, globalSearchJurisdictions),
@@ -169,7 +173,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load role-access notification count',
         method: 'GET',
         endpoint: 'api/role-access/roles/get-my-access-new-count',
-        allowedStatuses: [200, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 401, 403, 502, 504],
         execute: () =>
           apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
             throwOnError: false,
@@ -185,7 +189,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load WA supported jurisdictions',
         method: 'GET',
         endpoint: waSupportedJurisdictionsEndpoint,
-        allowedStatuses: [200, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 401, 403, 502, 504],
         execute: () =>
           apiClient.get<string[]>(waSupportedJurisdictionsEndpoint, {
             throwOnError: false,
@@ -205,7 +209,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load region-to-location mapping',
         method: 'POST',
         endpoint: 'workallocation/region-location',
-        allowedStatuses: [200, 400, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 400, 401, 403, 502, 504],
         execute: () =>
           apiClient.post<Array<{ regionId?: string; locations?: string[] }>>('workallocation/region-location', {
             data: { serviceIds: journeyServiceIds },
@@ -222,7 +226,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load types-of-work catalogue',
         method: 'GET',
         endpoint: 'workallocation/task/types-of-work',
-        allowedStatuses: [200, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 401, 403, 502, 504],
         execute: () =>
           apiClient.get<unknown>('workallocation/task/types-of-work', {
             throwOnError: false,
@@ -238,7 +242,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load caseworkers for supported services',
         method: 'POST',
         endpoint: 'workallocation/caseworker/getUsersByServiceName',
-        allowedStatuses: [200, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 401, 403, 502, 504],
         execute: () =>
           apiClient.post<Array<{ idamId?: string; firstName?: string; lastName?: string }>>(
             'workallocation/caseworker/getUsersByServiceName',
@@ -270,7 +274,7 @@ test.describe('@journeys API user journey monitor', () => {
                 throwOnError: false,
                 timeoutMs: taskSearchTimeoutMs,
               }),
-            { retries: taskSearchRetries, retryStatuses: [500, 502, 503, 504] }
+            { retries: taskSearchRetries, retryStatuses: [502, 503, 504] }
           ),
       },
       latencyPolicy.stepWarnMs
@@ -313,7 +317,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load case-share cases',
         method: 'GET',
         endpoint: 'caseshare/cases',
-        allowedStatuses: [200, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 401, 403, 502, 504],
         execute: () =>
           withXsrf('solicitor', (headers) =>
             apiClient.get('caseshare/cases', {
@@ -332,7 +336,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load role access notification count',
         method: 'GET',
         endpoint: 'api/role-access/roles/get-my-access-new-count',
-        allowedStatuses: [200, 401, 403, 500, 502, 504],
+        allowedStatuses: [200, 401, 403, 502, 504],
         execute: () =>
           apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
             throwOnError: false,
@@ -507,7 +511,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load document binary',
         method: 'GET',
         endpoint: `documents/${configuredDocId}/binary`,
-        allowedStatuses: [200, 204, 401, 403, 404, 500],
+        allowedStatuses: [200, 204, 401, 403, 404],
         execute: () =>
           apiClient.get<ArrayBuffer | string>(`documents/${configuredDocId}/binary`, {
             headers: { ...xsrfHeaders, experimental: 'true' },
@@ -524,7 +528,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load document annotation metadata',
         method: 'GET',
         endpoint: `em-anno/metadata/${configuredDocId}`,
-        allowedStatuses: [200, 204, 401, 403, 404, 500],
+        allowedStatuses: [200, 204, 401, 403, 404],
         execute: () =>
           apiClient.get(`em-anno/metadata/${configuredDocId}`, {
             headers: { ...xsrfHeaders, experimental: 'true' },
@@ -540,7 +544,7 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load document bookmarks',
         method: 'GET',
         endpoint: `em-anno/${configuredDocId}/bookmarks`,
-        allowedStatuses: [200, 204, 401, 403, 404, 500],
+        allowedStatuses: [200, 204, 401, 403, 404],
         execute: () =>
           apiClient.get(`em-anno/${configuredDocId}/bookmarks`, {
             headers: xsrfHeaders,
@@ -613,6 +617,22 @@ function resolveJourneyCaseReference(): string {
   return configuredCaseReference && /^\d{16}$/.test(configuredCaseReference)
     ? configuredCaseReference
     : defaultCaseReference;
+}
+
+function assertUserJurisdictionsResponse(status: number, data: unknown): void {
+  if (status !== 200) {
+    return;
+  }
+  expect(Array.isArray(data)).toBe(true);
+  if (!Array.isArray(data) || data.length === 0) {
+    return;
+  }
+  expect(data[0]).toEqual(
+    expect.objectContaining({
+      id: expect.any(String),
+      name: expect.any(String),
+    })
+  );
 }
 
 function buildGlobalSearchRequest(caseReference: string, jurisdictions: string[]): Record<string, unknown> {

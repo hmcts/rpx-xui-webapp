@@ -20,6 +20,9 @@ const STDIO_MAX_LINES = parsePositiveInteger(process.env.PW_ODHIN_STDIO_MAX_LINE
 const STDIO_MAX_LINE_LENGTH = parsePositiveInteger(process.env.PW_ODHIN_STDIO_MAX_LINE_LENGTH) ?? 260;
 const STDIO_MAX_CHARS = parsePositiveInteger(process.env.PW_ODHIN_STDIO_MAX_CHARS) ?? 18000;
 const API_LEADERBOARD_LIMIT = parsePositiveInteger(process.env.PW_ODHIN_API_LEADERBOARD_LIMIT) ?? 20;
+const NODE_API_SCAN_MAX_DIRS = parsePositiveInteger(process.env.PW_ODHIN_NODE_API_SCAN_MAX_DIRS) ?? 2000;
+const NODE_API_SCAN_MAX_DEPTH = parsePositiveInteger(process.env.PW_ODHIN_NODE_API_SCAN_MAX_DEPTH) ?? 8;
+const NODE_API_SCAN_SKIP_DIRS = new Set(['.git', 'node_modules', 'coverage', 'playwright-report', 'odhin-report', 'lcov-report']);
 
 try {
   if (!fs.existsSync(source)) {
@@ -30,7 +33,7 @@ try {
     fs.mkdirSync(targetRoot, { recursive: true });
     // Best-effort clean copy
     fs.rmSync(target, { recursive: true, force: true });
-    fs.cpSync(source, target, { recursive: true, force: true });
+    copyReportArtifacts(source, target, { skipCoverage: coverageLinkFlag });
   }
 
   const reportFolders = sourceAndTargetAreSame ? [source] : [source, target];
@@ -39,10 +42,10 @@ try {
   reportFolders.forEach((reportFolder) => compactVerboseStdIo(reportFolder));
   reportFolders.forEach((reportFolder) => injectNodeApiTab(reportFolder, apiReport));
 
-  if (coverageLinkFlag && fs.existsSync(coverageRoot)) {
+  const coverageRootIndex = coverageLinkFlag && fs.existsSync(coverageRoot) ? findCoverageIndex(coverageRoot) : undefined;
+  if (coverageRootIndex) {
     if (sourceAndTargetAreSame) {
-      fs.rmSync(coverageSourceTarget, { recursive: true, force: true });
-      fs.cpSync(coverageRoot, coverageSourceTarget, { recursive: true, force: true });
+      copyCoverageArtifacts(coverageRoot, coverageSourceTarget);
 
       const sourceCoverageIndex = renameCoverageIndex(findCoverageIndex(coverageSourceTarget));
       const sourceCoverageSummary = loadCoverageSummary(coverageSourceTarget);
@@ -57,10 +60,8 @@ try {
       // Keep coverage artifacts and tabs available in both locations:
       // - source (playwright-api) for local direct opens
       // - target (api_functional) for CI/Jenkins artifacts
-      fs.rmSync(coverageSourceTarget, { recursive: true, force: true });
-      fs.cpSync(coverageRoot, coverageSourceTarget, { recursive: true, force: true });
-      fs.rmSync(coverageTarget, { recursive: true, force: true });
-      fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
+      copyCoverageArtifacts(coverageRoot, coverageSourceTarget);
+      copyCoverageArtifacts(coverageRoot, coverageTarget);
 
       const sourceCoverageIndex = renameCoverageIndex(findCoverageIndex(coverageSourceTarget));
       const targetCoverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
@@ -88,14 +89,53 @@ try {
   process.exit(0); // do not fail the build if copy fails
 }
 
+function copyCoverageArtifacts(sourceDir, destinationDir) {
+  fs.rmSync(destinationDir, { recursive: true, force: true });
+  fs.cpSync(sourceDir, destinationDir, {
+    recursive: true,
+    force: true,
+    // Raw V8 payloads are large and not needed for embedded HTML coverage viewing.
+    filter: (srcPath) => {
+      const relativePath = path.relative(sourceDir, srcPath);
+      if (!relativePath || relativePath === '.') {
+        return true;
+      }
+      return relativePath !== 'tmp' && !relativePath.startsWith(`tmp${path.sep}`);
+    },
+  });
+}
+
+function copyReportArtifacts(sourceDir, destinationDir, { skipCoverage = false } = {}) {
+  fs.cpSync(sourceDir, destinationDir, {
+    recursive: true,
+    force: true,
+    filter: (srcPath) => {
+      if (!skipCoverage) {
+        return true;
+      }
+      const relativePath = path.relative(sourceDir, srcPath);
+      if (!relativePath || relativePath === '.') {
+        return true;
+      }
+      return relativePath !== 'coverage' && !relativePath.startsWith(`coverage${path.sep}`);
+    },
+  });
+}
+
 function findCoverageIndex(rootDir) {
-  // Prefer the TS/API folder produced by c8 (`.../rpx-xui-webapp/playwright_tests_new/api/index.html`)
-  const preferred = path.join(rootDir, 'rpx-xui-webapp', 'playwright_tests_new', 'api', 'index.html');
-  if (fs.existsSync(preferred)) {
-    return preferred;
-  }
-  const fallback = path.join(rootDir, 'index.html');
-  return fs.existsSync(fallback) ? fallback : undefined;
+  const candidates = [
+    // Preferred: folder-scoped API index
+    path.join(rootDir, 'rpx-xui-webapp', 'playwright_tests_new', 'api', 'index.html'),
+    path.join(rootDir, 'rpx-xui-webapp', 'playwright_tests_new', 'api', 'api-coverage-report.html'),
+    // c8 layout variant under lcov-report
+    path.join(rootDir, 'lcov-report', 'rpx-xui-webapp', 'playwright_tests_new', 'api', 'index.html'),
+    path.join(rootDir, 'lcov-report', 'rpx-xui-webapp', 'playwright_tests_new', 'api', 'api-coverage-report.html'),
+    // Root-level fallbacks
+    path.join(rootDir, 'index.html'),
+    path.join(rootDir, 'api-coverage-report.html'),
+    path.join(rootDir, 'lcov-report', 'index.html'),
+  ];
+  return candidates.find((candidate) => fs.existsSync(candidate));
 }
 
 function resolveReportSourceFolder() {
@@ -149,9 +189,7 @@ function getReportFolderFreshness(folder) {
     if (htmlFiles.length === 0) {
       return fs.statSync(folder).mtimeMs;
     }
-    return htmlFiles
-      .map((file) => fs.statSync(file).mtimeMs)
-      .sort((left, right) => right - left)[0];
+    return htmlFiles.map((file) => fs.statSync(file).mtimeMs).sort((left, right) => right - left)[0];
   } catch {
     return 0;
   }
@@ -331,9 +369,12 @@ function compactVerboseStdIo(reportFolder) {
 }
 
 function compactStdIoHtml(html) {
-  const compactedLogs = html.replace(/(<pre class="pre"><code>)([\s\S]*?)(<\/code><\/pre>)/g, (_match, openTag, logText, closeTag) => {
-    return `${openTag}${compactStdIoText(logText)}${closeTag}`;
-  });
+  const compactedLogs = html.replace(
+    /(<pre class="pre"><code>)([\s\S]*?)(<\/code><\/pre>)/g,
+    (_match, openTag, logText, closeTag) => {
+      return `${openTag}${compactStdIoText(logText)}${closeTag}`;
+    }
+  );
 
   const compactedDownloads = compactedLogs.replace(
     /<a([^>]*download="(?:stdout|stderr)\.txt"[^>]*)href="data:text\/html,[^"]*"([^>]*)>/gi,
@@ -375,7 +416,7 @@ function compactStdIoText(rawText) {
 function redactSecrets(value) {
   return value
     .replace(/(cookie:\s*).*/gi, '$1[REDACTED]')
-    .replace(/('cookie'\s*:\s*')[^']*(')/gi, "$1[REDACTED]$2")
+    .replace(/('cookie'\s*:\s*')[^']*(')/gi, '$1[REDACTED]$2')
     .replace(/("cookie"\s*:\s*")[^"]*(")/gi, '$1[REDACTED]$2')
     .replace(/(XSRF-TOKEN=)[^;\s'"]+/gi, '$1[REDACTED]')
     .replace(/(__auth__=)[^;\s'"]+/gi, '$1[REDACTED]')
@@ -391,113 +432,165 @@ function truncateLine(value, maxLength) {
 }
 
 function collectApiEndpointsFromLogs(roots, reportFolders = []) {
-  const endpointCounts = new Map();
-  const failedEndpointCounts = new Map();
-  const slowEndpointCounts = new Map();
-  let logFiles = 0;
-  let reportFilesScanned = 0;
-  let totalCalls = 0;
-  let totalFailedCalls = 0;
-  let totalTimeoutCalls = 0;
-  let totalSlowCalls = 0;
-  let dataSource = 'node-api-calls';
   const slowThresholdMs = parsePositiveInteger(process.env.API_SLOW_THRESHOLD_MS) ?? 5000;
+  const nodeApiCollection = collectApiEventsFromNodeApiLogs(roots);
+  let dataSource = 'node-api-calls';
+  let reportFilesScanned = 0;
+  let events = nodeApiCollection.events;
 
-  const recordApiEvent = ({ method, endpoint, status, durationMs, timedOut = false, hasError = false, failed, slow }) => {
-    if (!endpoint) {
-      return;
-    }
-
-    const normalizedMethod = normalizeMethod(method);
-    const key = `${normalizedMethod} ${endpoint}`;
-    const failedOutcome =
-      typeof failed === 'boolean'
-        ? failed
-        : timedOut || hasError || status === 0 || (typeof status === 'number' && status >= 400);
-    const slowOutcome = typeof slow === 'boolean' ? slow : typeof durationMs === 'number' && durationMs > slowThresholdMs;
-    const slowDurationMs = typeof durationMs === 'number' ? durationMs : slowThresholdMs;
-
-    totalCalls += 1;
-    if (!endpointCounts.has(key)) {
-      endpointCounts.set(key, { method: normalizedMethod, endpoint, hits: 0 });
-    }
-    endpointCounts.get(key).hits += 1;
-
-    if (failedOutcome) {
-      totalFailedCalls += 1;
-      if (timedOut) {
-        totalTimeoutCalls += 1;
-      }
-      if (!failedEndpointCounts.has(key)) {
-        failedEndpointCounts.set(key, { method: normalizedMethod, endpoint, hits: 0, timeoutHits: 0, statusBreakdown: {} });
-      }
-      const failedRecord = failedEndpointCounts.get(key);
-      failedRecord.hits += 1;
-      if (timedOut) {
-        failedRecord.timeoutHits += 1;
-      }
-      const failedStatusKey = resolveStatusKey(status, timedOut, hasError || failedOutcome);
-      failedRecord.statusBreakdown[failedStatusKey] = (failedRecord.statusBreakdown[failedStatusKey] ?? 0) + 1;
-    }
-
-    if (slowOutcome) {
-      totalSlowCalls += 1;
-      if (!slowEndpointCounts.has(key)) {
-        slowEndpointCounts.set(key, { method: normalizedMethod, endpoint, hits: 0, durations: [], statusBreakdown: {} });
-      }
-      const slowRecord = slowEndpointCounts.get(key);
-      slowRecord.hits += 1;
-      slowRecord.durations.push(Math.round(slowDurationMs));
-      const slowStatusKey = resolveStatusKey(status, timedOut, hasError || failedOutcome);
-      slowRecord.statusBreakdown[slowStatusKey] = (slowRecord.statusBreakdown[slowStatusKey] ?? 0) + 1;
-    }
-  };
-
-  roots.forEach((rootDir) => {
-    if (!fs.existsSync(rootDir)) {
-      return;
-    }
-    const files = walkFiles(rootDir).filter((file) => file.endsWith('node-api-calls.json'));
-    files.forEach((file) => {
-      logFiles += 1;
-      try {
-        const raw = fs.readFileSync(file, 'utf8');
-        const entries = JSON.parse(raw);
-        if (!Array.isArray(entries)) {
-          return;
-        }
-        entries.forEach((entry) => {
-          const endpoint = extractEndpointFromLog(entry);
-          const status = typeof entry?.status === 'number' && Number.isFinite(entry.status) ? Math.trunc(entry.status) : undefined;
-          const durationMs = typeof entry?.durationMs === 'number' && Number.isFinite(entry.durationMs) ? Math.round(entry.durationMs) : undefined;
-          const errorMessage = `${entry?.error ?? ''} ${entry?.errorMessage ?? ''}`.trim();
-          const timedOut = isTimeoutError(errorMessage);
-          const hasError = Boolean(errorMessage);
-          const failed = timedOut || hasError || status === 0 || (typeof status === 'number' && status >= 400) || entry?.ok === false;
-          recordApiEvent({
-            method: entry?.method,
-            endpoint,
-            status,
-            durationMs,
-            timedOut,
-            hasError,
-            failed,
-          });
-        });
-      } catch {
-        // ignore malformed attachments
-      }
-    });
-  });
-
-  if (logFiles === 0) {
+  if (nodeApiCollection.logFiles === 0) {
     dataSource = 'runtime-logs';
     const reportEvents = collectApiEventsFromReportLogs(reportFolders, slowThresholdMs);
     reportFilesScanned = reportEvents.reportFilesScanned;
-    reportEvents.events.forEach((event) => recordApiEvent(event));
+    events = reportEvents.events;
   }
 
-  const endpoints = Array.from(endpointCounts.values()).sort((left, right) => {
+  return buildApiEndpointReport(events, {
+    dataSource,
+    logFiles: nodeApiCollection.logFiles,
+    reportFilesScanned,
+    slowThresholdMs,
+  });
+}
+
+function collectApiEventsFromNodeApiLogs(roots) {
+  const events = [];
+  let logFiles = 0;
+
+  (roots || []).forEach((rootDir) => {
+    if (!fs.existsSync(rootDir)) {
+      return;
+    }
+
+    const files = findNodeApiCallFiles(rootDir);
+    files.forEach((file) => {
+      logFiles += 1;
+      events.push(...loadApiEventsFromNodeApiFile(file));
+    });
+  });
+
+  return { events, logFiles };
+}
+
+function loadApiEventsFromNodeApiFile(filePath) {
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const entries = JSON.parse(raw);
+    if (!Array.isArray(entries)) {
+      return [];
+    }
+    return entries.map((entry) => buildApiEventFromNodeApiEntry(entry));
+  } catch {
+    // ignore malformed attachments
+    return [];
+  }
+}
+
+function buildApiEventFromNodeApiEntry(entry) {
+  const endpoint = extractEndpointFromLog(entry);
+  const status =
+    typeof entry?.status === 'number' && Number.isFinite(entry.status) ? Math.trunc(entry.status) : undefined;
+  const durationMs =
+    typeof entry?.durationMs === 'number' && Number.isFinite(entry.durationMs) ? Math.round(entry.durationMs) : undefined;
+  const errorMessage = `${entry?.error ?? ''} ${entry?.errorMessage ?? ''}`.trim();
+  const timedOut = isTimeoutError(errorMessage);
+  const hasError = Boolean(errorMessage);
+  const failed = timedOut || hasError || status === 0 || (typeof status === 'number' && status >= 400) || entry?.ok === false;
+  return {
+    method: entry?.method,
+    endpoint,
+    status,
+    durationMs,
+    timedOut,
+    hasError,
+    failed,
+  };
+}
+
+function buildApiEndpointReport(events, metadata) {
+  const state = {
+    endpointCounts: new Map(),
+    failedEndpointCounts: new Map(),
+    slowEndpointCounts: new Map(),
+    totalCalls: 0,
+    totalFailedCalls: 0,
+    totalTimeoutCalls: 0,
+    totalSlowCalls: 0,
+  };
+
+  events.forEach((event) => {
+    recordApiEvent(state, event, metadata.slowThresholdMs);
+  });
+
+  return {
+    dataSource: metadata.dataSource,
+    logFiles: metadata.logFiles,
+    reportFilesScanned: metadata.reportFilesScanned,
+    slowThresholdMs: metadata.slowThresholdMs,
+    totalCalls: state.totalCalls,
+    uniqueEndpoints: state.endpointCounts.size,
+    endpoints: sortEndpointInventory(state.endpointCounts),
+    totalFailedCalls: state.totalFailedCalls,
+    totalTimeoutCalls: state.totalTimeoutCalls,
+    failedEndpoints: sortFailedEndpointInventory(state.failedEndpointCounts),
+    totalSlowCalls: state.totalSlowCalls,
+    slowEndpoints: sortSlowEndpointInventory(state.slowEndpointCounts),
+  };
+}
+
+function recordApiEvent(state, event, slowThresholdMs) {
+  const { method, endpoint, status, durationMs, timedOut = false, hasError = false, failed, slow } = event;
+  if (!endpoint) {
+    return;
+  }
+
+  const normalizedMethod = normalizeMethod(method);
+  const key = `${normalizedMethod} ${endpoint}`;
+  const failedOutcome =
+    typeof failed === 'boolean'
+      ? failed
+      : timedOut || hasError || status === 0 || (typeof status === 'number' && status >= 400);
+  const slowOutcome = typeof slow === 'boolean' ? slow : typeof durationMs === 'number' && durationMs > slowThresholdMs;
+  const slowDurationMs = typeof durationMs === 'number' ? durationMs : slowThresholdMs;
+
+  state.totalCalls += 1;
+  if (!state.endpointCounts.has(key)) {
+    state.endpointCounts.set(key, { method: normalizedMethod, endpoint, hits: 0 });
+  }
+  state.endpointCounts.get(key).hits += 1;
+
+  if (failedOutcome) {
+    state.totalFailedCalls += 1;
+    if (timedOut) {
+      state.totalTimeoutCalls += 1;
+    }
+    if (!state.failedEndpointCounts.has(key)) {
+      state.failedEndpointCounts.set(key, { method: normalizedMethod, endpoint, hits: 0, timeoutHits: 0, statusBreakdown: {} });
+    }
+    const failedRecord = state.failedEndpointCounts.get(key);
+    failedRecord.hits += 1;
+    if (timedOut) {
+      failedRecord.timeoutHits += 1;
+    }
+    const failedStatusKey = resolveStatusKey(status, timedOut, hasError || failedOutcome);
+    failedRecord.statusBreakdown[failedStatusKey] = (failedRecord.statusBreakdown[failedStatusKey] ?? 0) + 1;
+  }
+
+  if (slowOutcome) {
+    state.totalSlowCalls += 1;
+    if (!state.slowEndpointCounts.has(key)) {
+      state.slowEndpointCounts.set(key, { method: normalizedMethod, endpoint, hits: 0, durations: [], statusBreakdown: {} });
+    }
+    const slowRecord = state.slowEndpointCounts.get(key);
+    slowRecord.hits += 1;
+    slowRecord.durations.push(Math.round(slowDurationMs));
+    const slowStatusKey = resolveStatusKey(status, timedOut, hasError || failedOutcome);
+    slowRecord.statusBreakdown[slowStatusKey] = (slowRecord.statusBreakdown[slowStatusKey] ?? 0) + 1;
+  }
+}
+
+function sortEndpointInventory(endpointCounts) {
+  return Array.from(endpointCounts.values()).sort((left, right) => {
     if (right.hits !== left.hits) {
       return right.hits - left.hits;
     }
@@ -506,8 +599,10 @@ function collectApiEndpointsFromLogs(roots, reportFolders = []) {
     }
     return left.endpoint.localeCompare(right.endpoint);
   });
+}
 
-  const failedEndpoints = Array.from(failedEndpointCounts.values()).sort((left, right) => {
+function sortFailedEndpointInventory(failedEndpointCounts) {
+  return Array.from(failedEndpointCounts.values()).sort((left, right) => {
     if (right.hits !== left.hits) {
       return right.hits - left.hits;
     }
@@ -519,8 +614,10 @@ function collectApiEndpointsFromLogs(roots, reportFolders = []) {
     }
     return left.endpoint.localeCompare(right.endpoint);
   });
+}
 
-  const slowEndpoints = Array.from(slowEndpointCounts.values())
+function sortSlowEndpointInventory(slowEndpointCounts) {
+  return Array.from(slowEndpointCounts.values())
     .map((entry) => {
       const sortedDurations = [...entry.durations].sort((left, right) => left - right);
       const maxMs = sortedDurations.length > 0 ? sortedDurations[sortedDurations.length - 1] : 0;
@@ -551,21 +648,6 @@ function collectApiEndpointsFromLogs(roots, reportFolders = []) {
       }
       return left.endpoint.localeCompare(right.endpoint);
     });
-
-  return {
-    dataSource,
-    logFiles,
-    reportFilesScanned,
-    slowThresholdMs,
-    totalCalls,
-    uniqueEndpoints: endpointCounts.size,
-    endpoints,
-    totalFailedCalls,
-    totalTimeoutCalls,
-    failedEndpoints,
-    totalSlowCalls,
-    slowEndpoints,
-  };
 }
 
 function collectApiEventsFromReportLogs(reportFolders, slowThresholdMs) {
@@ -616,7 +698,9 @@ function parseApiEventsFromLogText(logText, slowThresholdMs) {
   const inlineStatusRegex = /\b(GET|POST|PUT|PATCH|DELETE)\s+(https?:\/\/[^\s]+)\s*->\s*(\d{3})/gi;
   let inlineMatch = inlineStatusRegex.exec(logText);
   while (inlineMatch) {
-    const timestamp = extractIsoTimestamp(logText.slice(Math.max(0, inlineMatch.index - 80), inlineMatch.index + inlineMatch[0].length));
+    const timestamp = extractIsoTimestamp(
+      logText.slice(Math.max(0, inlineMatch.index - 80), inlineMatch.index + inlineMatch[0].length)
+    );
     const method = normalizeMethod(inlineMatch[1]);
     const endpoint = extractEndpointFromRawUrl(inlineMatch[2]);
     const status = Number.parseInt(inlineMatch[3], 10);
@@ -659,12 +743,12 @@ function parseStructuredApiEvents(logText, marker, defaults, slowThresholdMs) {
     const method = normalizeMethod(methodMatch ? methodMatch[1] : 'UNKNOWN');
     const endpoint = extractEndpointFromRawUrl(urlMatch[1]);
     const status = statusMatch ? Number.parseInt(statusMatch[1], 10) : undefined;
-    const durationMs = durationMsMatch ? Math.round(Number.parseFloat(durationMsMatch[1])) : parseDurationMs(durationTextMatch?.[1]);
+    const durationMs = durationMsMatch
+      ? Math.round(Number.parseFloat(durationMsMatch[1]))
+      : parseDurationMs(durationTextMatch?.[1]);
     const timedOut = status === 408 || status === 504 || isTimeoutError(body);
-    const failed =
-      defaults.failed === true || timedOut || (typeof status === 'number' && status >= 400);
-    const slow =
-      defaults.slow === true || (typeof durationMs === 'number' && durationMs > slowThresholdMs);
+    const failed = defaults.failed === true || timedOut || (typeof status === 'number' && status >= 400);
+    const slow = defaults.slow === true || (typeof durationMs === 'number' && durationMs > slowThresholdMs);
 
     events.push({
       method,
@@ -810,10 +894,7 @@ function percentile(sortedDurations, rank) {
   if (sortedDurations.length === 0) {
     return 0;
   }
-  const index = Math.min(
-    sortedDurations.length - 1,
-    Math.max(0, Math.ceil((rank / 100) * sortedDurations.length) - 1)
-  );
+  const index = Math.min(sortedDurations.length - 1, Math.max(0, Math.ceil((rank / 100) * sortedDurations.length) - 1));
   return sortedDurations[index];
 }
 
@@ -849,71 +930,149 @@ function parsePositiveInteger(raw) {
   return value;
 }
 
-function walkFiles(dir) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  let files = [];
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files = files.concat(walkFiles(full));
-    } else if (entry.isFile()) {
-      files.push(full);
+function findNodeApiCallFiles(rootDir) {
+  const root = path.resolve(rootDir);
+  const files = [];
+  const pending = [{ dir: root, depth: 0 }];
+  let scannedDirs = 0;
+
+  while (pending.length > 0 && scannedDirs < NODE_API_SCAN_MAX_DIRS) {
+    const current = pending.pop();
+    if (!current) {
+      continue;
     }
+
+    let entries;
+    try {
+      entries = fs.readdirSync(current.dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+
+    scannedDirs += 1;
+    entries.forEach((entry) => {
+      const fullPath = path.join(current.dir, entry.name);
+      if (entry.isFile() && entry.name === 'node-api-calls.json') {
+        files.push(fullPath);
+        return;
+      }
+      if (!entry.isDirectory()) {
+        return;
+      }
+      if (current.depth >= NODE_API_SCAN_MAX_DEPTH) {
+        return;
+      }
+      if (NODE_API_SCAN_SKIP_DIRS.has(entry.name.toLowerCase())) {
+        return;
+      }
+      pending.push({ dir: fullPath, depth: current.depth + 1 });
+    });
+  }
+
+  if (pending.length > 0) {
+    console.warn(
+      `copy-odhin-report: node-api scan truncated for ${root} after ${scannedDirs} directories ` +
+        `(maxDirs=${NODE_API_SCAN_MAX_DIRS}, maxDepth=${NODE_API_SCAN_MAX_DEPTH}).`
+    );
   }
   return files;
 }
 
 function injectNodeApiTab(reportFolder, apiReport) {
   const files = fs.readdirSync(reportFolder).filter((f) => f.toLowerCase().endsWith('.html'));
+  const tabView = buildNodeApiTabView(apiReport);
+  const tabButton = buildNodeApiTabButton();
+  const tabPane = buildNodeApiTabPane(apiReport, tabView);
+
+  files.forEach((file) => {
+    const fullPath = path.join(reportFolder, file);
+    try {
+      let html = fs.readFileSync(fullPath, 'utf8');
+      html = injectNodeApiTabIntoHtml(html, tabButton, tabPane);
+      fs.writeFileSync(fullPath, html, 'utf8');
+    } catch {
+      // ignore
+    }
+  });
+}
+
+function buildNodeApiTabView(apiReport) {
   const usingNodeApiAttachments = apiReport.dataSource === 'node-api-calls';
-  const dataSourceLabel = usingNodeApiAttachments ? 'node-api-calls.json attachments' : 'Odhin stdout/stderr runtime logs';
-  const sourceCountLabel = usingNodeApiAttachments ? 'node-api-calls.json files' : 'Odhin HTML files scanned';
-  const sourceCountValue = usingNodeApiAttachments ? apiReport.logFiles : apiReport.reportFilesScanned;
-  const totalCallsLabel = usingNodeApiAttachments ? 'Total API attempts' : 'Observed API warning/error events';
-  const sourceDescription = usingNodeApiAttachments
-    ? 'Counts come from node-api-calls.json attachments captured during Playwright runs; percent is share of total calls.'
-    : 'Counts come from Odhin stdout/stderr logs (DOWNSTREAM_API_FAILURE, Slow API response detected, and HTTP status lines). They represent observed warning/error events, not all successful calls.';
-  const endpointRows = apiReport.endpoints.length
-    ? apiReport.endpoints
-        .map(({ method, endpoint, hits }) => {
-          const pct = apiReport.totalCalls ? ((hits / apiReport.totalCalls) * 100).toFixed(2) : '0.00';
-          return `<tr>
+  return {
+    dataSourceLabel: usingNodeApiAttachments ? 'node-api-calls.json attachments' : 'Odhin stdout/stderr runtime logs',
+    sourceCountLabel: usingNodeApiAttachments ? 'node-api-calls.json files' : 'Odhin HTML files scanned',
+    sourceCountValue: usingNodeApiAttachments ? apiReport.logFiles : apiReport.reportFilesScanned,
+    totalCallsLabel: usingNodeApiAttachments ? 'Total API attempts' : 'Observed API warning/error events',
+    sourceDescription: usingNodeApiAttachments
+      ? 'Counts come from node-api-calls.json attachments captured during Playwright runs; percent is share of total calls.'
+      : 'Counts come from Odhin stdout/stderr logs (DOWNSTREAM_API_FAILURE, Slow API response detected, and HTTP status lines). They represent observed warning/error events, not all successful calls.',
+    endpointRows: buildNodeApiEndpointRows(apiReport, usingNodeApiAttachments),
+    failedRows: buildNodeApiFailedRows(apiReport, usingNodeApiAttachments),
+    slowRows: buildNodeApiSlowRows(apiReport, usingNodeApiAttachments),
+  };
+}
+
+function buildNodeApiEndpointRows(apiReport, usingNodeApiAttachments) {
+  if (!apiReport.endpoints.length) {
+    return `<tr><td colspan="4" class="text-secondary-emphasis">${
+      usingNodeApiAttachments
+        ? apiReport.logFiles
+          ? 'No API endpoints found in node-api-calls.json attachments.'
+          : 'No node-api-calls.json attachments found.'
+        : 'No API warning/error events found in Odhin runtime logs.'
+    }</td></tr>`;
+  }
+
+  return apiReport.endpoints
+    .map(({ method, endpoint, hits }) => {
+      const pct = apiReport.totalCalls ? ((hits / apiReport.totalCalls) * 100).toFixed(2) : '0.00';
+      return `<tr>
         <td class="text-secondary-emphasis">${escapeHtml(method)}</td>
         <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${escapeHtml(endpoint)}</td>
         <td class="text-secondary-emphasis">${hits}</td>
         <td class="text-secondary-emphasis">${pct}%</td>
       </tr>`;
-        })
-        .join('\n')
-    : `<tr><td colspan="4" class="text-secondary-emphasis">${
-        usingNodeApiAttachments
-          ? apiReport.logFiles
-            ? 'No API endpoints found in node-api-calls.json attachments.'
-            : 'No node-api-calls.json attachments found.'
-          : 'No API warning/error events found in Odhin runtime logs.'
-      }</td></tr>`;
+    })
+    .join('\n');
+}
 
-  const failedRows = apiReport.failedEndpoints.length
-    ? apiReport.failedEndpoints.slice(0, API_LEADERBOARD_LIMIT).map(({ method, endpoint, hits, timeoutHits, statusBreakdown }) => {
-        return `<tr>
+function buildNodeApiFailedRows(apiReport, usingNodeApiAttachments) {
+  if (!apiReport.failedEndpoints.length) {
+    return [
+      `<tr><td colspan="5" class="text-secondary-emphasis">${
+        usingNodeApiAttachments
+          ? 'No failed/timed-out API attempts captured in node-api-calls.json.'
+          : 'No failed/timed-out API events captured in Odhin runtime logs.'
+      }</td></tr>`,
+    ];
+  }
+
+  return apiReport.failedEndpoints.slice(0, API_LEADERBOARD_LIMIT).map(({ method, endpoint, hits, timeoutHits, statusBreakdown }) => {
+    return `<tr>
         <td class="text-secondary-emphasis">${escapeHtml(method)}</td>
         <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${escapeHtml(endpoint)}</td>
         <td class="text-secondary-emphasis">${hits}</td>
         <td class="text-secondary-emphasis">${timeoutHits}</td>
         <td class="text-secondary-emphasis text-start">${escapeHtml(formatBreakdown(statusBreakdown))}</td>
       </tr>`;
-      })
-    : [
-        `<tr><td colspan="5" class="text-secondary-emphasis">${
-          usingNodeApiAttachments
-            ? 'No failed/timed-out API attempts captured in node-api-calls.json.'
-            : 'No failed/timed-out API events captured in Odhin runtime logs.'
-        }</td></tr>`,
-      ];
+  });
+}
 
-  const slowRows = apiReport.slowEndpoints.length
-    ? apiReport.slowEndpoints.slice(0, API_LEADERBOARD_LIMIT).map(({ method, endpoint, hits, avgDurationMs, p95DurationMs, maxDurationMs, statusBreakdown }) => {
-        return `<tr>
+function buildNodeApiSlowRows(apiReport, usingNodeApiAttachments) {
+  if (!apiReport.slowEndpoints.length) {
+    return [
+      `<tr><td colspan="7" class="text-secondary-emphasis">${
+        usingNodeApiAttachments
+          ? 'No slow API attempts above threshold captured in node-api-calls.json.'
+          : 'No slow API events above threshold captured in Odhin runtime logs.'
+      }</td></tr>`,
+    ];
+  }
+
+  return apiReport.slowEndpoints
+    .slice(0, API_LEADERBOARD_LIMIT)
+    .map(({ method, endpoint, hits, avgDurationMs, p95DurationMs, maxDurationMs, statusBreakdown }) => {
+      return `<tr>
         <td class="text-secondary-emphasis">${escapeHtml(method)}</td>
         <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${escapeHtml(endpoint)}</td>
         <td class="text-secondary-emphasis">${hits}</td>
@@ -922,16 +1081,11 @@ function injectNodeApiTab(reportFolder, apiReport) {
         <td class="text-secondary-emphasis">${maxDurationMs}</td>
         <td class="text-secondary-emphasis text-start">${escapeHtml(formatBreakdown(statusBreakdown))}</td>
       </tr>`;
-      })
-    : [
-        `<tr><td colspan="7" class="text-secondary-emphasis">${
-          usingNodeApiAttachments
-            ? 'No slow API attempts above threshold captured in node-api-calls.json.'
-            : 'No slow API events above threshold captured in Odhin runtime logs.'
-        }</td></tr>`,
-      ];
+    });
+}
 
-  const tabButton = `
+function buildNodeApiTabButton() {
+  return `
 <!-- NODE_API_TAB_BUTTON_START -->
             <button
               class="main-tablinks"
@@ -940,7 +1094,10 @@ function injectNodeApiTab(reportFolder, apiReport) {
               Tested NodeJs API
             </button>
 <!-- NODE_API_TAB_BUTTON_END -->`;
-  const tabPane = `
+}
+
+function buildNodeApiTabPane(apiReport, tabView) {
+  return `
 <!-- NODE_API_TAB_START -->
 <div id="TabNodeApi" style="display: none" class="main-tabcontent">
   <div class="container-fluid text-center mt-3 mb-5">
@@ -949,7 +1106,7 @@ function injectNodeApiTab(reportFolder, apiReport) {
         <div class="mt-3 mb-3 odhin-thin-border dashboard-block">
           <div class="info-box-header">Tested NodeJs API endpoints</div>
           <p class="text-secondary-emphasis small mb-3 ps-4">
-            ${sourceDescription}
+            ${tabView.sourceDescription}
           </p>
           <p class="text-secondary-emphasis small mb-3 ps-4">
             Leaderboards include retries because each observed attempt is tracked independently.
@@ -964,9 +1121,9 @@ function injectNodeApiTab(reportFolder, apiReport) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td class="text-secondary-emphasis text-start">Data source</td><td class="text-secondary-emphasis">${dataSourceLabel}</td></tr>
-                  <tr><td class="text-secondary-emphasis text-start">${sourceCountLabel}</td><td class="text-secondary-emphasis">${sourceCountValue}</td></tr>
-                  <tr><td class="text-secondary-emphasis text-start">${totalCallsLabel}</td><td class="text-secondary-emphasis">${apiReport.totalCalls}</td></tr>
+                  <tr><td class="text-secondary-emphasis text-start">Data source</td><td class="text-secondary-emphasis">${tabView.dataSourceLabel}</td></tr>
+                  <tr><td class="text-secondary-emphasis text-start">${tabView.sourceCountLabel}</td><td class="text-secondary-emphasis">${tabView.sourceCountValue}</td></tr>
+                  <tr><td class="text-secondary-emphasis text-start">${tabView.totalCallsLabel}</td><td class="text-secondary-emphasis">${apiReport.totalCalls}</td></tr>
                   <tr><td class="text-secondary-emphasis text-start">Unique method+endpoint pairs</td><td class="text-secondary-emphasis">${apiReport.uniqueEndpoints}</td></tr>
                   <tr><td class="text-secondary-emphasis text-start">Failed/timed-out attempts</td><td class="text-secondary-emphasis">${apiReport.totalFailedCalls} (timeout=${apiReport.totalTimeoutCalls})</td></tr>
                   <tr><td class="text-secondary-emphasis text-start">Slow attempts (&gt; ${apiReport.slowThresholdMs}ms)</td><td class="text-secondary-emphasis">${apiReport.totalSlowCalls}</td></tr>
@@ -993,7 +1150,7 @@ function injectNodeApiTab(reportFolder, apiReport) {
                   </tr>
                 </thead>
                 <tbody>
-                  ${endpointRows}
+                  ${tabView.endpointRows}
                 </tbody>
               </table>
             </div>
@@ -1021,7 +1178,7 @@ function injectNodeApiTab(reportFolder, apiReport) {
                   </tr>
                 </thead>
                 <tbody>
-                  ${failedRows.join('\n')}
+                  ${tabView.failedRows.join('\n')}
                 </tbody>
               </table>
             </div>
@@ -1051,7 +1208,7 @@ function injectNodeApiTab(reportFolder, apiReport) {
                   </tr>
                 </thead>
                 <tbody>
-                  ${slowRows.join('\n')}
+                  ${tabView.slowRows.join('\n')}
                 </tbody>
               </table>
             </div>
@@ -1062,27 +1219,21 @@ function injectNodeApiTab(reportFolder, apiReport) {
   </div>
 </div>
 <!-- NODE_API_TAB_END -->`;
+}
 
-  files.forEach((file) => {
-    const fullPath = path.join(reportFolder, file);
-    try {
-      let html = fs.readFileSync(fullPath, 'utf8');
-      html = html.replace(/<!-- NODE_API_TAB_BUTTON_START -->[\s\S]*?<!-- NODE_API_TAB_BUTTON_END -->/g, '');
-      html = html.replace(/<!-- NODE_API_TAB_START -->[\s\S]*?<!-- NODE_API_TAB_END -->/g, '');
-      html = html.replace(/\s*<button[\s\S]*?openMainTab\(event,\s*'TabNodeApi'\)[\s\S]*?<\/button>/g, '');
-      html = removeNodeApiPane(html);
+function injectNodeApiTabIntoHtml(html, tabButton, tabPane) {
+  let updated = html;
+  updated = updated.replace(/<!-- NODE_API_TAB_BUTTON_START -->[\s\S]*?<!-- NODE_API_TAB_BUTTON_END -->/g, '');
+  updated = updated.replace(/<!-- NODE_API_TAB_START -->[\s\S]*?<!-- NODE_API_TAB_END -->/g, '');
+  updated = updated.replace(/\s*<button[\s\S]*?openMainTab\(event,\s*'TabNodeApi'\)[\s\S]*?<\/button>/g, '');
+  updated = removeNodeApiPane(updated);
 
-      const tabBlock = /(<div class="tab">[\s\S]*?)(<\/div>\s*<\/div>\s*<\/div>\s*<\/div>)/m;
-      if (tabBlock.test(html)) {
-        html = html.replace(tabBlock, `$1${tabButton}$2`);
-      }
+  const tabBlock = /(<div class="tab">[\s\S]*?)(<\/div>\s*<\/div>\s*<\/div>\s*<\/div>)/m;
+  if (tabBlock.test(updated)) {
+    updated = updated.replace(tabBlock, `$1${tabButton}$2`);
+  }
 
-      html = html.replace('</body>', `${tabPane}\n</body>`);
-      fs.writeFileSync(fullPath, html, 'utf8');
-    } catch {
-      // ignore
-    }
-  });
+  return updated.replace('</body>', `${tabPane}\n</body>`);
 }
 
 function removeNodeApiPane(html) {

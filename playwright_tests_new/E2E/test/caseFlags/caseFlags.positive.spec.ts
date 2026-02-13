@@ -1,23 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { filterEmptyRows } from '../../utils';
-import { caseBannerMatches, getCaseBannerInfo, normalizeCaseNumber } from '../../utils/banner.utils';
-
-function isPageClosingError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error);
-  return (
-    message.includes('Target page, context or browser has been closed') ||
-    message.includes('Execution context was destroyed') ||
-    message.includes('Test ended')
-  );
-}
-
-function rowMatchesExpected(row: Record<string, string>, expected: Record<string, string>): boolean {
-  return Object.entries(expected).every(([key, value]) => {
-    return (row[key] ?? '').trim() === value.trim();
-  });
-}
+import { filterEmptyRows, isPlaywrightContextClosedError, rowMatchesExpectedColumns } from '../../utils';
+import { caseBannerMatches } from '../../utils/banner.utils';
 
 test.describe('Case level case flags', () => {
   test.describe.configure({ timeout: 180000 });
@@ -35,7 +20,10 @@ test.describe('Case level case flags', () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
       const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      test.info().annotations.push({
+        type: 'existing-case-level-flags',
+        description: `${visibleRows.length}`,
+      });
     });
 
     await test.step('Create a new case level flag', async () => {
@@ -85,9 +73,9 @@ test.describe('Case level case flags', () => {
             try {
               const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
               const visibleRows = filterEmptyRows(table);
-              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+              return visibleRows.some((row) => rowMatchesExpectedColumns(row, expectedFlag));
             } catch (error) {
-              if (isPageClosingError(error)) {
+              if (isPlaywrightContextClosedError(error)) {
                 return false;
               }
               throw error;
@@ -117,7 +105,10 @@ test.describe('Party level case flags', () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
       const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
       const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      test.info().annotations.push({
+        type: 'existing-party-level-flags',
+        description: `${visibleRows.length}`,
+      });
     });
 
     await test.step('Create a new party level flag', async () => {
@@ -176,9 +167,9 @@ test.describe('Party level case flags', () => {
               });
               const table = await tableUtils.parseDataTable(partyFlagsTables);
               const visibleRows = filterEmptyRows(table);
-              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+              return visibleRows.some((row) => rowMatchesExpectedColumns(row, expectedFlag));
             } catch (error) {
-              if (isPageClosingError(error)) {
+              if (isPlaywrightContextClosedError(error)) {
                 return false;
               }
               throw error;

@@ -114,10 +114,7 @@ function buildBoundedApiDetails(entries: string[], maxChars: number): string {
   return overflow > 0 ? `${details} | +${overflow} more (see failure-data.json)` : details;
 }
 
-function buildTimeoutSuspects(
-  slowCalls: TrackedSlowCall[],
-  failedRequests: TrackedFailedRequest[]
-): string[] {
+function buildTimeoutSuspects(slowCalls: TrackedSlowCall[], failedRequests: TrackedFailedRequest[]): string[] {
   const timeoutFailures = failedRequests.filter((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
   const suspectsFromFailed = timeoutFailures.map(
     (request) => `${request.method} ${request.url} -> REQUEST_FAILED (${stripAnsi(request.errorText).substring(0, 120)})`

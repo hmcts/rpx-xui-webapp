@@ -49,14 +49,20 @@ export const pageFixtures = {
   idamPage: async ({ determinePage }, use) => {
     await use(new IdamPage(determinePage));
   },
-  logger: async ({}, use, workerInfo) => {
+  logger: async ({ page }, use, workerInfo) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy lint rules
+    }
     const logger = createLogger({
       serviceName: 'case-service-ui',
       defaultMeta: { workerId: workerInfo.workerIndex },
     });
     await use(logger);
   },
-  capturedCalls: async ({}, use) => {
+  capturedCalls: async ({ page }, use) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy lint rules
+    }
     const calls: ApiLogEntry[] = [];
     await use(calls);
   },

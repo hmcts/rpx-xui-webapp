@@ -114,9 +114,7 @@ interface BuildDecentralisedCaseEventUrlInput extends BuildDecentralisedEventUrl
   caseId: string;
 }
 
-export type BuildDecentralisedEventUrlInput =
-  | BuildDecentralisedCaseCreateEventUrlInput
-  | BuildDecentralisedCaseEventUrlInput;
+export type BuildDecentralisedEventUrlInput = BuildDecentralisedCaseCreateEventUrlInput | BuildDecentralisedCaseEventUrlInput;
 
 export const buildDecentralisedEventUrl = (
   params: BuildDecentralisedEventUrlInput,

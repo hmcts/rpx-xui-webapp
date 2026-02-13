@@ -37,7 +37,7 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   public initForm(): void {
     if (
       this.hearingCondition.mode === Mode.VIEW_EDIT &&
-      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired != null
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired
     ) {
       this.showReviewBox = true;
       this.instructionsForm = this.formBuilder.group({

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
@@ -31,18 +32,24 @@ export class MediaViewerWrapperComponent implements OnInit {
     private readonly windowService: WindowService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly titleService: Title
+    private readonly titleService: Title,
+    private readonly route: ActivatedRoute
   ) {}
 
   public ngOnInit(): void {
-    const localStorageMedia = this.windowService.getLocalStorage(MEDIA_VIEWER);
+    const token = this.route.snapshot.queryParamMap.get('mvToken');
     let sessionStorageMedia = this.sessionStorageService.getItem(MEDIA_VIEWER);
 
-    if (!sessionStorageMedia && localStorageMedia) {
-      // move media viewer item from local to session storage to allow page refresh on multiple media viewer tabs
-      sessionStorageMedia = localStorageMedia;
-      this.sessionStorageService.setItem(MEDIA_VIEWER, sessionStorageMedia);
-      this.windowService.removeLocalStorage(MEDIA_VIEWER);
+    if (!sessionStorageMedia && token) {
+      const localKey = `${MEDIA_VIEWER}:${token}`;
+      const localStorageMedia = this.windowService.getLocalStorage(localKey);
+
+      if (localStorageMedia) {
+        this.sessionStorageService.setItem(MEDIA_VIEWER, localStorageMedia);
+        this.windowService.removeLocalStorage(localKey);
+        this.cleanUrl(token);
+        sessionStorageMedia = localStorageMedia;
+      }
     }
 
     if (sessionStorageMedia) {
@@ -60,13 +67,21 @@ export class MediaViewerWrapperComponent implements OnInit {
       this.mediaAnnotationApiUrl = media.annotation_api_url;
       this.caseId = media.case_id;
       this.caseJurisdiction = media.case_jurisdiction;
+
+      this.titleService.setTitle(this.mediaFilename + ' - View Document');
+    } else {
+      this.titleService.setTitle('View Document');
     }
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
     this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
+  }
 
-    this.titleService.setTitle(this.mediaFilename + ' - View Document');
+  private cleanUrl(token: string | null): void {
+    if (token) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }
 
   /**

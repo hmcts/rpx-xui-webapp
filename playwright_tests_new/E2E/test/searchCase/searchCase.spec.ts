@@ -1,9 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { ensureSession } from '../../../common/sessionCapture';
-import {
-  resolveCaseReferenceFromGlobalSearch,
-  resolveNonExistentCaseReference,
-} from '../../../E2E/utils/case-reference.utils';
+import { resolveCaseReferenceFromGlobalSearch, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
 test.describe('IDAM login to trigger For 16 digit Case Search', () => {

@@ -749,12 +749,9 @@ export class CreateCasePage extends Base {
       if (this.page.isClosed()) {
         throw new Error('Page closed before upload retry attempt');
       }
-      const responsePromise = this.page.waitForResponse(
-        (r) => r.url().includes('/document') && r.request().method() === 'POST',
-        {
-          timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
-        }
-      );
+      const responsePromise = this.page.waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
+        timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+      });
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
@@ -913,12 +910,7 @@ export class CreateCasePage extends Base {
         await this.manualEntryLink.click();
         await this.complexType2AddressLine1Input.fill('10 Test Street');
         await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
-        await this.uploadFile(
-          'sample.pdf',
-          'application/pdf',
-          '%PDF-1.4\n%test\n%%EOF',
-          this.complexType3FileUploadInput
-        );
+        await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF', this.complexType3FileUploadInput);
         await this.complexType3ComplianceButton.click();
         await this.complexType3ComplianceInput.fill('Compliant response');
         await this.complexType3DateOfBirthDay.fill('15');

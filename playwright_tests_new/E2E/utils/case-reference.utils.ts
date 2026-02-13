@@ -89,12 +89,7 @@ export async function resolveCaseReferenceFromGlobalSearch(
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     attempts = attempt;
-    const response = await executeGlobalSearchRequest(
-      page,
-      caseReferencePattern,
-      jurisdictionIds ?? null,
-      maxReturnRecordCount
-    );
+    const response = await executeGlobalSearchRequest(page, caseReferencePattern, jurisdictionIds ?? null, maxReturnRecordCount);
 
     lastStatus = response.status();
     if (lastStatus === 200) {

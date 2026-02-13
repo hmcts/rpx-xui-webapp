@@ -8,6 +8,9 @@ module.exports = {
     '/aggregated/caseworkers/:uid/jurisdictions': (req, res) => {
       res.send(ccdMockData.getJurisdictions());
     },
+    '/aggregated/caseworkers/:uid/jurisdictions-lite': (req, res) => {
+      res.send(ccdMockData.getJurisdictions());
+    },
     '/data/internal/case-types/:jurisdiction/work-basket-inputs': (req, res) => {
       res.send(ccdMockData.getWorkbasketInputs(req.params.jurisdiction));
     },

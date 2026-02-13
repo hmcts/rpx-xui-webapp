@@ -63,6 +63,7 @@ export class CaseDetailsPage extends Base {
   readonly taskItem = this.taskListContainer.locator('exui-case-task');
   readonly taskKeyPairRow = this.taskItem.locator('.govuk-summary-list__row');
   readonly taskTitle = this.taskItem.locator('p.govuk-body');
+  readonly taskAlerts = this.taskListContainer.locator('#alertMessage');
 
   constructor(page: Page) {
     super(page);

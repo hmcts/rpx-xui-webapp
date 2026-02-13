@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 type TaskWarningList = {
-  values: Array<unknown>;
+  values: Array<{ warningCode: string; warningText: string }>;
 };
 
 type TaskPermissions = {
@@ -83,6 +83,7 @@ export type TaskDetailsParams = {
   caseName?: string;
   autoAssigned?: boolean;
   warnings?: boolean;
+  warningList?: TaskWarningList;
   caseManagementCategory?: string;
   workTypeId?: string;
   workTypeLabel?: string;
@@ -114,6 +115,10 @@ export type CaseDetailsTasksMinimalOptions = {
   majorPriorities?: number[];
   priorityDates?: string[];
   dueDates?: string[];
+  warnings?: boolean[];
+  warningList?: TaskWarningList[];
+  // legacy snake_case support for tests that pass warning_list
+  warning_list?: TaskWarningList[];
 };
 
 const toIso = (date: Date) => date.toISOString();
@@ -145,7 +150,7 @@ const createBaseTask = (caseId: string): CaseDetailsTaskMock => {
     case_name: faker.person.fullName(),
     auto_assigned: false,
     warnings: false,
-    warning_list: { values: [] },
+    warning_list: { values: [{ warningCode: '1200', warningText: 'this is a warning' }] },
     case_management_category: 'Protection',
     work_type_id: 'decision_making_work',
     work_type_label: 'Decision-making work',
@@ -211,6 +216,7 @@ const mapParamsToOverrides = (caseId: string, params: TaskDetailsParams): TaskDe
     case_name: params.caseName,
     auto_assigned: params.autoAssigned,
     warnings: params.warnings,
+    warning_list: params.warningList,
     case_management_category: params.caseManagementCategory,
     work_type_id: params.workTypeId,
     work_type_label: params.workTypeLabel,
@@ -245,7 +251,10 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     majorPriorities = [],
     priorityDates = [],
     dueDates = [],
+    warnings = [],
   } = options;
+  // support both camelCase `warningList` and legacy `warning_list` from tests
+  const warningList: TaskWarningList[] | undefined = (options as any).warningList ?? (options as any).warning_list;
   return titles.map((title, index) => {
     const state = states[index] ?? states[0];
     const type = types[index] ?? types[0];
@@ -257,7 +266,10 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
     const majorPriority = majorPriorities[index] ?? majorPriorities[0];
     const priorityDate = priorityDates[index] ?? priorityDates[0];
     const dueDate = dueDates[index] ?? dueDates[0] ?? priorityDate;
-    return buildTaskDetailsMock(caseId, {
+    const warningsValue = warnings[index] ?? warnings[0] ?? false;
+    const hasWarningList =
+      Array.isArray(warningList) && warningList.length > 0 && (warningList[index] !== undefined || warningList[0] !== undefined);
+    const overrides: TaskDetailsOverrides = {
       id: idValue,
       task_title: title,
       task_state: state,
@@ -271,6 +283,13 @@ export const buildCaseDetailsTasksMinimal = (options: CaseDetailsTasksMinimalOpt
       priority_date: priorityDate,
       dueDate,
       due_date: dueDate,
-    });
+      warnings: warningsValue,
+    };
+
+    if (hasWarningList) {
+      overrides.warning_list = warningList![index] ?? warningList![0] ?? { values: [] };
+    }
+
+    return buildTaskDetailsMock(caseId, overrides);
   });
 };
